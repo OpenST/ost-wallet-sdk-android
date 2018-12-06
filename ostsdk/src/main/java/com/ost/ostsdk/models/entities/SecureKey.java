@@ -15,6 +15,9 @@ public class SecureKey extends BaseEntity {
         super(new JSONObject(jsonString));
     }
 
+    public SecureKey() {
+    }
+
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject);

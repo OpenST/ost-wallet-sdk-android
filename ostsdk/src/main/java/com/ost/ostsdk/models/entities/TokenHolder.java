@@ -2,6 +2,7 @@ package com.ost.ostsdk.models.entities;
 
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,12 +19,19 @@ public class TokenHolder extends BaseEntity {
     public static final String EXECUTE_RULE_CALL_PREFIX = "execute_rule_call_prefix";
     public static final String AUTHORIZE_SESSION_CALL_PREFIX = "authorize_session_callprefix";
 
+    @Ignore
     private double userId;
+    @Ignore
     private String address;
+    @Ignore
     private String[] wallets;
+    @Ignore
     private String[] sessions;
+    @Ignore
     private int requirements;
+    @Ignore
     private String executeRuleCallPrefix;
+    @Ignore
     private String authorizeSessionCallPrefix;
 
 
@@ -33,6 +41,9 @@ public class TokenHolder extends BaseEntity {
 
     private TokenHolder(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
+    }
+
+    public TokenHolder() {
     }
 
     @Override
@@ -82,31 +93,31 @@ public class TokenHolder extends BaseEntity {
         return authorizeSessionCallPrefix;
     }
 
-    public void setUserId(double userId) {
+    private void setUserId(double userId) {
         this.userId = userId;
     }
 
-    public void setAddress(String address) {
+    private void setAddress(String address) {
         this.address = address;
     }
 
-    public void setWallets(String[] wallets) {
+    private void setWallets(String[] wallets) {
         this.wallets = wallets;
     }
 
-    public void setSessions(String[] sessions) {
+    private void setSessions(String[] sessions) {
         this.sessions = sessions;
     }
 
-    public void setRequirements(int requirements) {
+    private void setRequirements(int requirements) {
         this.requirements = requirements;
     }
 
-    public void setExecuteRuleCallPrefix(String executeRuleCallPrefix) {
+    private void setExecuteRuleCallPrefix(String executeRuleCallPrefix) {
         this.executeRuleCallPrefix = executeRuleCallPrefix;
     }
 
-    public void setAuthorizeSessionCallPrefix(String authorizeSessionCallPrefix) {
+    private void setAuthorizeSessionCallPrefix(String authorizeSessionCallPrefix) {
         this.authorizeSessionCallPrefix = authorizeSessionCallPrefix;
     }
 }

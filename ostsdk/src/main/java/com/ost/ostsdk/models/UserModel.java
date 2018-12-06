@@ -6,17 +6,17 @@ import org.json.JSONObject;
 
 public interface UserModel {
 
-    void insertUser(User user, DbProcessCallback callback);
+    void insertUser(User user, TaskCompleteCallback callback);
 
-    void insertAllUsers(User[] user, DbProcessCallback callback);
+    void insertAllUsers(User[] user, TaskCompleteCallback callback);
 
-    void deleteUser(User user, DbProcessCallback callback);
+    void deleteUser(User user, TaskCompleteCallback callback);
 
     User getUsersByIds(double[] ids);
 
     User getUserById(double id);
 
-    void deleteAllUsers(DbProcessCallback callback);
+    void deleteAllUsers(TaskCompleteCallback callback);
 
     User initUser(JSONObject jsonObject);
 }

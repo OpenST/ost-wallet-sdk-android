@@ -1,6 +1,7 @@
 package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,10 +13,11 @@ public class User extends BaseEntity {
     public static final String TOKEN_HOLDER_ID = "token_holder_id";
     public static final String NAME = "name";
 
+    @Ignore
     private double economyId;
-
+    @Ignore
     private double tokenHolderId;
-
+    @Ignore
     private String name;
 
     public User() {
@@ -41,15 +43,15 @@ public class User extends BaseEntity {
         return name;
     }
 
-    public void setEconomyId(double economyId) {
+    private void setEconomyId(double economyId) {
         this.economyId = economyId;
     }
 
-    public void setTokenHolderId(double tokenHolderId) {
+    private void setTokenHolderId(double tokenHolderId) {
         this.tokenHolderId = tokenHolderId;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 

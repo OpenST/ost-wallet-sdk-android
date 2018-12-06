@@ -1,6 +1,7 @@
 package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 
 import org.json.JSONObject;
 
@@ -12,12 +13,13 @@ public class Rule extends BaseEntity {
     public static final String NAME = "name";
     public static final String ABI = "abi";
 
+    @Ignore
     private double economyId;
-
+    @Ignore
     private String name;
-
+    @Ignore
     private String address;
-
+    @Ignore
     private String abi;
 
     public Rule() {
@@ -41,19 +43,19 @@ public class Rule extends BaseEntity {
     }
 
 
-    public void setEconomyId(double economyId) {
+    private void setEconomyId(double economyId) {
         this.economyId = economyId;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
-    public void setAddress(String address) {
+    private void setAddress(String address) {
         this.address = address;
     }
 
-    public void setAbi(String abi) {
+    private void setAbi(String abi) {
         this.abi = abi;
     }
 

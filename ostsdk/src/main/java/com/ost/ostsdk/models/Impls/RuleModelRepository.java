@@ -1,13 +1,13 @@
 package com.ost.ostsdk.models.Impls;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
+import com.ost.ostsdk.Utils.DispatchAsync;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.RuleDao;
-import com.ost.ostsdk.models.entities.Rule;
-import com.ost.ostsdk.models.DbProcessCallback;
 import com.ost.ostsdk.models.RuleModel;
+import com.ost.ostsdk.models.TaskCompleteCallback;
+import com.ost.ostsdk.models.entities.Rule;
 
 public class RuleModelRepository implements RuleModel {
 
@@ -19,34 +19,49 @@ public class RuleModelRepository implements RuleModel {
     }
 
     @Override
-    public void insertUser(Rule userEntity, DbProcessCallback callback) {
-        new DataBaseAsyncTask(new Executor() {
+    public void insertUser(final Rule ruleEntity, final TaskCompleteCallback callback) {
+        DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
-            public void execute(Rule... params) {
-                mRuleDao.insertAll(params);
+            public void execute() {
+                mRuleDao.insertAll(ruleEntity);
             }
-        }, callback).execute(userEntity);
+
+            @Override
+            public void onExecuteComplete() {
+                callback.onTaskComplete();
+            }
+        }));
     }
 
     @Override
-    public void insertAllUsers(Rule[] userEntity, DbProcessCallback callback) {
-        new DataBaseAsyncTask(new Executor() {
+    public void insertAllUsers(final Rule[] ruleEntity, final TaskCompleteCallback callback) {
+        DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
-            public void execute(Rule... params) {
-                mRuleDao.insertAll(params);
+            public void execute() {
+                mRuleDao.insertAll(ruleEntity);
             }
-        }, callback).execute(userEntity);
+
+            @Override
+            public void onExecuteComplete() {
+                callback.onTaskComplete();
+            }
+        }));
+
     }
 
     @Override
-    public void deleteUser(Rule userEntity, DbProcessCallback callback) {
-        new DataBaseAsyncTask(new Executor() {
+    public void deleteUser(final Rule ruleEntity, final TaskCompleteCallback callback) {
+        DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
-            public void execute(Rule... params) {
-                mRuleDao.delete(params[0]);
+            public void execute() {
+                mRuleDao.delete(ruleEntity);
             }
-        }, callback).execute(userEntity);
 
+            @Override
+            public void onExecuteComplete() {
+                callback.onTaskComplete();
+            }
+        }));
     }
 
     @Override
@@ -60,41 +75,17 @@ public class RuleModelRepository implements RuleModel {
     }
 
     @Override
-    public void deleteAllUsers(DbProcessCallback callback) {
-        new DataBaseAsyncTask(new Executor() {
+    public void deleteAllUsers(final TaskCompleteCallback callback) {
+        DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
-            public void execute(Rule... params) {
+            public void execute() {
                 mRuleDao.deleteAll();
             }
-        }, callback).execute();
-    }
 
-    private interface Executor {
-        void execute(final Rule... params);
-    }
-
-    private static class DataBaseAsyncTask extends AsyncTask<Rule, Void, Void> {
-
-        private Executor mExecutor;
-        private DbProcessCallback mCallback;
-
-        DataBaseAsyncTask(Executor executor, DbProcessCallback callback) {
-            mExecutor = executor;
-            mCallback = callback;
-        }
-
-        @Override
-        protected Void doInBackground(final Rule... params) {
-            mExecutor.execute(params);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if (null != mCallback) {
-                mCallback.onProcessComplete();
+            @Override
+            public void onExecuteComplete() {
+                callback.onTaskComplete();
             }
-            super.onPostExecute(aVoid);
-        }
+        }));
     }
 }

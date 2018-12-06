@@ -7,7 +7,12 @@ import android.content.Context;
 
 import com.ost.ostsdk.database.daos.EconomyDao;
 import com.ost.ostsdk.database.daos.ExecutableRuleDao;
+import com.ost.ostsdk.database.daos.MutiSigOperationDao;
 import com.ost.ostsdk.database.daos.RuleDao;
+import com.ost.ostsdk.database.daos.SecureKeyDao;
+import com.ost.ostsdk.database.daos.TokenHolderDao;
+import com.ost.ostsdk.database.daos.TokenHolderSessionDao;
+import com.ost.ostsdk.database.daos.TokenHolderWalletDao;
 import com.ost.ostsdk.database.daos.UserDao;
 import com.ost.ostsdk.models.entities.Economy;
 import com.ost.ostsdk.models.entities.ExecutableRule;
@@ -33,6 +38,16 @@ public abstract class OstSdkDatabase extends RoomDatabase {
     public abstract EconomyDao economyDao();
 
     public abstract ExecutableRuleDao executableRuleDao();
+
+    public abstract MutiSigOperationDao mutiSigOperationDao();
+
+    public abstract TokenHolderDao tokenHolderDao();
+
+    public abstract TokenHolderWalletDao tokenHolderWalletDao();
+
+    public abstract TokenHolderSessionDao tokenHolderSessionDao();
+
+    public abstract SecureKeyDao secureKeyDao();
 
     private static volatile OstSdkDatabase INSTANCE;
 

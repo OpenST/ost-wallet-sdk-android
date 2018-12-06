@@ -2,6 +2,7 @@ package com.ost.ostsdk.models.entities;
 
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,9 +16,13 @@ public class TokenHolderWallet extends BaseEntity {
     public static final String LOCAL_ENTITY_ID = "local_entity_id";
     public static final String TOKEN_HOLDER_ID = "token_holder_id";
 
+    @Ignore
     private String status;
+    @Ignore
     private double tokenHolderId;
+    @Ignore
     private String address;
+    @Ignore
     private double localEntityId;
 
     public TokenHolderWallet(JSONObject jsonObject) {
@@ -26,6 +31,9 @@ public class TokenHolderWallet extends BaseEntity {
 
     private TokenHolderWallet(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
+    }
+
+    public TokenHolderWallet() {
     }
 
     @Override
@@ -47,12 +55,10 @@ public class TokenHolderWallet extends BaseEntity {
         return address;
     }
 
-    public void setAddress(String address) {
+    private void setAddress(String address) {
         this.address = address;
     }
 
-
-    @Override
     public String getStatus() {
         return status;
     }
@@ -65,16 +71,15 @@ public class TokenHolderWallet extends BaseEntity {
         return localEntityId;
     }
 
-    @Override
-    public void setStatus(String status) {
+    private void setStatus(String status) {
         this.status = status;
     }
 
-    public void setTokenHolderId(double tokenHolderId) {
+    private void setTokenHolderId(double tokenHolderId) {
         this.tokenHolderId = tokenHolderId;
     }
 
-    public void setLocalEntityId(double localEntityId) {
+    private void setLocalEntityId(double localEntityId) {
         this.localEntityId = localEntityId;
     }
 }

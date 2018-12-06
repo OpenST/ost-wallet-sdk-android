@@ -15,6 +15,9 @@ public class Economy extends BaseEntity {
         super(new JSONObject(jsonString));
     }
 
+    public Economy() {
+    }
+
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject);

@@ -2,6 +2,7 @@ package com.ost.ostsdk.models.entities;
 
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,20 +21,31 @@ public class ExecutableRule extends BaseEntity {
     public static final String SESSION = "session";
     public static final String EXECUTE_RULE_PAYLOAD = "execute_rule_payload";
 
-
+    @Ignore
     private double localEntityId;
+    @Ignore
     private double userId;
+    @Ignore
     private String tokenHolderAddress;
+    @Ignore
     private double ruleId;
+    @Ignore
     private String method;
+    @Ignore
     private String params;
+    @Ignore
     private String session;
+    @Ignore
     private JSONObject executeRulePayload;
+    @Ignore
     private String status;
 
 
     public ExecutableRule(JSONObject jsonObject) {
         super(jsonObject);
+    }
+
+    public ExecutableRule() {
     }
 
     private ExecutableRule(String jsonString) throws JSONException {
@@ -65,7 +77,7 @@ public class ExecutableRule extends BaseEntity {
         return localEntityId;
     }
 
-    public void setLocalEntityId(double localEntityId) {
+    private void setLocalEntityId(double localEntityId) {
         this.localEntityId = localEntityId;
     }
 
@@ -73,7 +85,7 @@ public class ExecutableRule extends BaseEntity {
         return userId;
     }
 
-    public void setUserId(double userId) {
+    private void setUserId(double userId) {
         this.userId = userId;
     }
 
@@ -81,7 +93,7 @@ public class ExecutableRule extends BaseEntity {
         return tokenHolderAddress;
     }
 
-    public void setTokenHolderAddress(String tokenHolderAddress) {
+    private void setTokenHolderAddress(String tokenHolderAddress) {
         this.tokenHolderAddress = tokenHolderAddress;
     }
 
@@ -89,7 +101,7 @@ public class ExecutableRule extends BaseEntity {
         return ruleId;
     }
 
-    public void setRuleId(double ruleId) {
+    private void setRuleId(double ruleId) {
         this.ruleId = ruleId;
     }
 
@@ -97,7 +109,7 @@ public class ExecutableRule extends BaseEntity {
         return method;
     }
 
-    public void setMethod(String method) {
+    private void setMethod(String method) {
         this.method = method;
     }
 
@@ -105,7 +117,7 @@ public class ExecutableRule extends BaseEntity {
         return params;
     }
 
-    public void setParams(String params) {
+    private void setParams(String params) {
         this.params = params;
     }
 
@@ -113,7 +125,7 @@ public class ExecutableRule extends BaseEntity {
         return session;
     }
 
-    public void setSession(String session) {
+    private void setSession(String session) {
         this.session = session;
     }
 
@@ -121,17 +133,15 @@ public class ExecutableRule extends BaseEntity {
         return executeRulePayload;
     }
 
-    public void setExecuteRulePayload(JSONObject executeRulePayload) {
+    private void setExecuteRulePayload(JSONObject executeRulePayload) {
         this.executeRulePayload = executeRulePayload;
     }
 
-    @Override
     public String getStatus() {
         return status;
     }
 
-    @Override
-    public void setStatus(String status) {
+    private void setStatus(String status) {
         this.status = status;
     }
 }

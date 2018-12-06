@@ -5,7 +5,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.ost.ostsdk.models.entities.User;
-import com.ost.ostsdk.models.DbProcessCallback;
+import com.ost.ostsdk.models.TaskCompleteCallback;
 import com.ost.ostsdk.models.Impls.UserModelRepository;
 import com.ost.ostsdk.models.UserModel;
 
@@ -40,9 +40,9 @@ public class UserModelTest {
         userObj.put(User.TOKEN_HOLDER_ID, 1);
 
         User user = new User(userObj);
-        mUserRepository.insertUser(user, new DbProcessCallback() {
+        mUserRepository.insertUser(user, new TaskCompleteCallback() {
             @Override
-            public void onProcessComplete() {
+            public void onTaskComplete() {
                 User user = mUserRepository.getUserById(1);
                 assertEquals("user", user.getName());
             }

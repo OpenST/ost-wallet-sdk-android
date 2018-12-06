@@ -2,6 +2,7 @@ package com.ost.ostsdk.models.entities;
 
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,14 +20,21 @@ public class TokenHolderSession extends BaseEntity {
     public static final String SPENDING_LIMIT = "spending_limit";
     public static final String REDEMPTION_LIMIT = "redemption_limit";
 
-
+    @Ignore
     private String status;
+    @Ignore
     private String address;
+    @Ignore
     private double localEntityId;
+    @Ignore
     private double tokenHolderId;
+    @Ignore
     private double blockHeight;
+    @Ignore
     private double expiryTime;
+    @Ignore
     private double spendingLimit;
+    @Ignore
     private double redemptionLimit;
 
 
@@ -36,6 +44,9 @@ public class TokenHolderSession extends BaseEntity {
 
     private TokenHolderSession(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
+    }
+
+    public TokenHolderSession() {
     }
 
     @Override
@@ -60,17 +71,15 @@ public class TokenHolderSession extends BaseEntity {
         return address;
     }
 
-    public void setAddress(String address) {
+    private void setAddress(String address) {
         this.address = address;
     }
 
-    @Override
     public String getStatus() {
         return status;
     }
 
-    @Override
-    public void setStatus(String status) {
+    private void setStatus(String status) {
         this.status = status;
     }
 
@@ -78,7 +87,7 @@ public class TokenHolderSession extends BaseEntity {
         return localEntityId;
     }
 
-    public void setLocalEntityId(double localEntityId) {
+    private void setLocalEntityId(double localEntityId) {
         this.localEntityId = localEntityId;
     }
 
@@ -86,7 +95,7 @@ public class TokenHolderSession extends BaseEntity {
         return tokenHolderId;
     }
 
-    public void setTokenHolderId(double tokenHolderId) {
+    private void setTokenHolderId(double tokenHolderId) {
         this.tokenHolderId = tokenHolderId;
     }
 
@@ -94,7 +103,7 @@ public class TokenHolderSession extends BaseEntity {
         return blockHeight;
     }
 
-    public void setBlockHeight(double blockHeight) {
+    private void setBlockHeight(double blockHeight) {
         this.blockHeight = blockHeight;
     }
 
@@ -102,7 +111,7 @@ public class TokenHolderSession extends BaseEntity {
         return expiryTime;
     }
 
-    public void setExpiryTime(double expiryTime) {
+    private void setExpiryTime(double expiryTime) {
         this.expiryTime = expiryTime;
     }
 
@@ -110,7 +119,7 @@ public class TokenHolderSession extends BaseEntity {
         return spendingLimit;
     }
 
-    public void setSpendingLimit(double spendingLimit) {
+    private void setSpendingLimit(double spendingLimit) {
         this.spendingLimit = spendingLimit;
     }
 
@@ -118,7 +127,7 @@ public class TokenHolderSession extends BaseEntity {
         return redemptionLimit;
     }
 
-    public void setRedemptionLimit(double redemptionLimit) {
+    private void setRedemptionLimit(double redemptionLimit) {
         this.redemptionLimit = redemptionLimit;
     }
 }

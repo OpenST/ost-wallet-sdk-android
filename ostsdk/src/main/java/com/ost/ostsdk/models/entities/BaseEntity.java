@@ -10,7 +10,7 @@ public class BaseEntity {
     public static final String ID = "id";
     public static final String PARENT_ID = "parent_id";
     public static final String JSON_DATA = "data";
-    public static final String STATUS = "status";
+    public static final String STATUS = "baseStatus";
     public static final String UTS = "uts";
 
     public static final String ACTIVE_STATUS = "ACTIVE";
@@ -26,8 +26,8 @@ public class BaseEntity {
     @ColumnInfo(name = "data")
     private String data;
 
-    @ColumnInfo(name = "status")
-    private String status = ACTIVE_STATUS;
+    @ColumnInfo(name = "baseStatus")
+    private String baseStatus = ACTIVE_STATUS;
 
     @ColumnInfo(name = "uts")
     private double uts;
@@ -50,8 +50,8 @@ public class BaseEntity {
         return data;
     }
 
-    public String getStatus() {
-        return status;
+    public String getBaseStatus() {
+        return baseStatus;
     }
 
     public double getUts() {
@@ -66,8 +66,8 @@ public class BaseEntity {
         this.data = data;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setBaseStatus(String status) {
+        this.baseStatus = status;
     }
 
     public void setUts(double uts) {

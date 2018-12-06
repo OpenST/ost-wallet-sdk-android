@@ -2,6 +2,7 @@ package com.ost.ostsdk.models.entities;
 
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,13 +20,21 @@ public class MultiSigOperation extends BaseEntity {
     public static final String RAW_DATA = "raw_data";
     public static final String SIGNATURES = "signatures";
 
+    @Ignore
     private double userId;
+    @Ignore
     private double localEntityId;
+    @Ignore
     private String tokenHolderAddress;
+    @Ignore
     private String kind;
+    @Ignore
     private String encodedData;
+    @Ignore
     private JSONObject rawData;
+    @Ignore
     private JSONObject signatures;
+    @Ignore
     private String status;
 
 
@@ -35,6 +44,9 @@ public class MultiSigOperation extends BaseEntity {
 
     private MultiSigOperation(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
+    }
+
+    public MultiSigOperation() {
     }
 
     @Override
@@ -61,7 +73,7 @@ public class MultiSigOperation extends BaseEntity {
         return userId;
     }
 
-    public void setUserId(double userId) {
+    private void setUserId(double userId) {
         this.userId = userId;
     }
 
@@ -69,7 +81,7 @@ public class MultiSigOperation extends BaseEntity {
         return localEntityId;
     }
 
-    public void setLocalEntityId(double localEntityId) {
+    private void setLocalEntityId(double localEntityId) {
         this.localEntityId = localEntityId;
     }
 
@@ -77,7 +89,7 @@ public class MultiSigOperation extends BaseEntity {
         return tokenHolderAddress;
     }
 
-    public void setTokenHolderAddress(String tokenHolderAddress) {
+    private void setTokenHolderAddress(String tokenHolderAddress) {
         this.tokenHolderAddress = tokenHolderAddress;
     }
 
@@ -85,7 +97,7 @@ public class MultiSigOperation extends BaseEntity {
         return kind;
     }
 
-    public void setKind(String kind) {
+    private void setKind(String kind) {
         this.kind = kind;
     }
 
@@ -93,7 +105,7 @@ public class MultiSigOperation extends BaseEntity {
         return encodedData;
     }
 
-    public void setEncodedData(String encodedData) {
+    private void setEncodedData(String encodedData) {
         this.encodedData = encodedData;
     }
 
@@ -101,7 +113,7 @@ public class MultiSigOperation extends BaseEntity {
         return rawData;
     }
 
-    public void setRawData(JSONObject rawData) {
+    private void setRawData(JSONObject rawData) {
         this.rawData = rawData;
     }
 
@@ -109,17 +121,15 @@ public class MultiSigOperation extends BaseEntity {
         return signatures;
     }
 
-    public void setSignatures(JSONObject signatures) {
+    private void setSignatures(JSONObject signatures) {
         this.signatures = signatures;
     }
 
-    @Override
     public String getStatus() {
         return status;
     }
 
-    @Override
-    public void setStatus(String status) {
+    private void setStatus(String status) {
         this.status = status;
     }
 }
