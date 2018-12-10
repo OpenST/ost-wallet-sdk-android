@@ -2,6 +2,7 @@ package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import org.json.JSONObject;
 
@@ -15,13 +16,15 @@ public class BaseEntity {
 
     public static final String ACTIVE_STATUS = "ACTIVE";
     public static final String DELETED_STATUS = "DELETED";
+    private static final String DEFAULT_PARENT_ID = "";
 
     @PrimaryKey()
+    @NonNull
     @ColumnInfo(name = "id")
-    private double id;
+    private String id = "";
 
     @ColumnInfo(name = "parent_id")
-    private double parentId;
+    private String parentId = DEFAULT_PARENT_ID;
 
     @ColumnInfo(name = "data")
     private String data;
@@ -31,6 +34,7 @@ public class BaseEntity {
 
     @ColumnInfo(name = "uts")
     private double uts;
+
 
     BaseEntity() {
     }
@@ -42,7 +46,7 @@ public class BaseEntity {
         processJson(jsonObject);
     }
 
-    public double getId() {
+    public String getId() {
         return id;
     }
 
@@ -58,7 +62,7 @@ public class BaseEntity {
         return uts;
     }
 
-    public void setId(double id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -79,34 +83,26 @@ public class BaseEntity {
     }
 
     public void processJson(JSONObject jsonObject) {
-        if (jsonObject != null && jsonObject.length() > 0) {
-            try {
-                if (jsonObject.has(BaseEntity.ID)) {
-                    this.id = jsonObject.getDouble(BaseEntity.ID);
-                } else {
-
-                }
-                this.uts = jsonObject.optDouble(BaseEntity.UTS, -1 * System.currentTimeMillis());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            if (null == jsonObject) {
-            } else {
-            }
+        try {
+            setId(jsonObject.getString(BaseEntity.ID));
+            setUts(jsonObject.optDouble(BaseEntity.UTS, -1 * System.currentTimeMillis()));
+            setBaseStatus(jsonObject.optString(BaseEntity.STATUS, BaseEntity.ACTIVE_STATUS));
+            setParentId(jsonObject.optString(BaseEntity.PARENT_ID, BaseEntity.DEFAULT_PARENT_ID));
+            setData(jsonObject.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     public void generateLocalUts() {
         this.uts = -1 * System.currentTimeMillis();
     }
 
-    public double getParentId() {
+    public String getParentId() {
         return parentId;
     }
 
-    public void setParentId(double parentId) {
+    public void setParentId(String parentId) {
         this.parentId = parentId;
     }
 }

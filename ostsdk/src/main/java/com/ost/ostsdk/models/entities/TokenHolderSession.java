@@ -13,7 +13,6 @@ public class TokenHolderSession extends BaseEntity {
 
     public static final String STATUS = "status";
     public static final String ADDRESS = "address";
-    public static final String LOCAL_ENTITY_ID = "local_entity_id";
     public static final String TOKEN_HOLDER_ID = "token_holder_id";
     public static final String BLOCK_HEIGHT = "block_height";
     public static final String EXPIRY_TIME = "expiry_time";
@@ -25,9 +24,7 @@ public class TokenHolderSession extends BaseEntity {
     @Ignore
     private String address;
     @Ignore
-    private double localEntityId;
-    @Ignore
-    private double tokenHolderId;
+    private String tokenHolderId;
     @Ignore
     private double blockHeight;
     @Ignore
@@ -54,7 +51,6 @@ public class TokenHolderSession extends BaseEntity {
         return super.validate(jsonObject) &&
                 jsonObject.has(TokenHolderSession.STATUS) &&
                 jsonObject.has(TokenHolderSession.ADDRESS) &&
-                jsonObject.has(TokenHolderSession.LOCAL_ENTITY_ID) &&
                 jsonObject.has(TokenHolderSession.TOKEN_HOLDER_ID) &&
                 jsonObject.has(TokenHolderSession.BLOCK_HEIGHT) &&
                 jsonObject.has(TokenHolderSession.EXPIRY_TIME) &&
@@ -83,19 +79,11 @@ public class TokenHolderSession extends BaseEntity {
         this.status = status;
     }
 
-    public double getLocalEntityId() {
-        return localEntityId;
-    }
-
-    private void setLocalEntityId(double localEntityId) {
-        this.localEntityId = localEntityId;
-    }
-
-    public double getTokenHolderId() {
+    public String getTokenHolderId() {
         return tokenHolderId;
     }
 
-    private void setTokenHolderId(double tokenHolderId) {
+    private void setTokenHolderId(String tokenHolderId) {
         this.tokenHolderId = tokenHolderId;
     }
 

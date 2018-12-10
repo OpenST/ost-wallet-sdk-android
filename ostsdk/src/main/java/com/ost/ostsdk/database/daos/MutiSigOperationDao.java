@@ -5,25 +5,39 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
+import com.ost.ostsdk.models.entities.BaseEntity;
 import com.ost.ostsdk.models.entities.MultiSigOperation;
 
 @Dao
-public interface MutiSigOperationDao {
-    @Insert
-    void insert(MultiSigOperation multiSigOperation);
+public abstract class MutiSigOperationDao implements BaseDao {
+
+    public void insert(BaseEntity baseEntity) {
+        this.insert((MultiSigOperation) baseEntity);
+    }
+
+    public void insertAll(BaseEntity... baseEntity) {
+        this.insertAll((MultiSigOperation[]) baseEntity);
+    }
+
+    public void delete(BaseEntity baseEntity) {
+        this.delete((MultiSigOperation) baseEntity);
+    }
 
     @Insert
-    void insertAll(MultiSigOperation... multiSigOperation);
+    public abstract void insert(MultiSigOperation multiSigOperation);
+
+    @Insert
+    public abstract void insertAll(MultiSigOperation... multiSigOperation);
 
     @Delete
-    void delete(MultiSigOperation multiSigOperation);
+    public abstract void delete(MultiSigOperation multiSigOperation);
 
     @Query("SELECT * FROM multi_sig_operation WHERE id IN (:ids)")
-    MultiSigOperation getByIds(double[] ids);
+    public abstract MultiSigOperation[] getByIds(String[] ids);
 
     @Query("SELECT * FROM multi_sig_operation WHERE id=:id")
-    MultiSigOperation getById(double id);
+    public abstract MultiSigOperation getById(String id);
 
     @Query("DELETE FROM multi_sig_operation")
-    void deleteAll();
+    public abstract void deleteAll();
 }

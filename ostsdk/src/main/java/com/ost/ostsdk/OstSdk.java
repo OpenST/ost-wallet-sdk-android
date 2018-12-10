@@ -4,28 +4,24 @@ import android.content.Context;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.EconomyModel;
+import com.ost.ostsdk.models.Impls.EconomyModelRepository;
 import com.ost.ostsdk.models.Impls.UserModelRepository;
 import com.ost.ostsdk.models.UserModel;
-import com.ost.ostsdk.models.entities.Economy;
-import com.ost.ostsdk.models.entities.User;
-
-import org.json.JSONObject;
 
 public class OstSdk {
 
-    private UserModel mUserModel;
-    private EconomyModel mEconomyModel;
+    private static Context mApplicationContext;
 
-    public void init(Context context) {
-        OstSdkDatabase.getDatabase(context);
-        mUserModel = new UserModelRepository(context);
+    public static void init(Context context) {
+        mApplicationContext = context.getApplicationContext();
+        OstSdkDatabase.initDatabase(mApplicationContext);
     }
 
-    public Economy registerEconomy(JSONObject jsonObject) {
-        return mEconomyModel.registerEconomy(jsonObject);
+    public static EconomyModel getEconomyModel() {
+        return EconomyModelRepository.getInstance();
     }
 
-    public User initUser(JSONObject jsonObject) {
-        return mUserModel.initUser(jsonObject);
+    public static UserModel getUserModel() {
+        return UserModelRepository.getInstance();
     }
 }

@@ -14,15 +14,12 @@ public class ExecutableRule extends BaseEntity {
     public static final String STATUS = "status";
     public static final String USER_ID = "user_id";
     public static final String RULE_ID = "rule_id";
-    public static final String LOCAL_ENTITY_ID = "local_entity_id";
     public static final String TOKEN_HOLDER_ADDRESS = "token_holder_address";
     public static final String METHOD = "method";
     public static final String PARAMS = "params";
     public static final String SESSION = "session";
     public static final String EXECUTE_RULE_PAYLOAD = "execute_rule_payload";
 
-    @Ignore
-    private double localEntityId;
     @Ignore
     private double userId;
     @Ignore
@@ -58,7 +55,6 @@ public class ExecutableRule extends BaseEntity {
                 jsonObject.has(ExecutableRule.USER_ID) &&
                 jsonObject.has(ExecutableRule.STATUS) &&
                 jsonObject.has(ExecutableRule.RULE_ID) &&
-                jsonObject.has(ExecutableRule.LOCAL_ENTITY_ID) &&
                 jsonObject.has(ExecutableRule.TOKEN_HOLDER_ADDRESS) &&
                 jsonObject.has(ExecutableRule.METHOD) &&
                 jsonObject.has(ExecutableRule.PARAMS) &&
@@ -71,14 +67,6 @@ public class ExecutableRule extends BaseEntity {
     @Override
     public void processJson(JSONObject jsonObject) {
         super.processJson(jsonObject);
-    }
-
-    public double getLocalEntityId() {
-        return localEntityId;
-    }
-
-    private void setLocalEntityId(double localEntityId) {
-        this.localEntityId = localEntityId;
     }
 
     public double getUserId() {

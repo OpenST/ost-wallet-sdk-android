@@ -12,7 +12,6 @@ import org.json.JSONObject;
 public class MultiSigOperation extends BaseEntity {
 
     public static final String STATUS = "status";
-    public static final String LOCAL_ENTITY_ID = "local_entity_id";
     public static final String USER_ID = "user_id";
     public static final String TOKEN_HOLDER_ADDRESS = "token_holder_address";
     public static final String KIND = "kind";
@@ -21,9 +20,7 @@ public class MultiSigOperation extends BaseEntity {
     public static final String SIGNATURES = "signatures";
 
     @Ignore
-    private double userId;
-    @Ignore
-    private double localEntityId;
+    private String userId;
     @Ignore
     private String tokenHolderAddress;
     @Ignore
@@ -54,7 +51,6 @@ public class MultiSigOperation extends BaseEntity {
         return super.validate(jsonObject) &&
                 jsonObject.has(MultiSigOperation.USER_ID) &&
                 jsonObject.has(MultiSigOperation.STATUS) &&
-                jsonObject.has(MultiSigOperation.LOCAL_ENTITY_ID) &&
                 jsonObject.has(MultiSigOperation.TOKEN_HOLDER_ADDRESS) &&
                 jsonObject.has(MultiSigOperation.KIND) &&
                 jsonObject.has(MultiSigOperation.ENCODED_DATA) &&
@@ -69,20 +65,12 @@ public class MultiSigOperation extends BaseEntity {
         super.processJson(jsonObject);
     }
 
-    public double getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    private void setUserId(double userId) {
+    private void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public double getLocalEntityId() {
-        return localEntityId;
-    }
-
-    private void setLocalEntityId(double localEntityId) {
-        this.localEntityId = localEntityId;
     }
 
     public String getTokenHolderAddress() {

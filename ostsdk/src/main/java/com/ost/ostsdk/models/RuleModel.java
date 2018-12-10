@@ -9,9 +9,9 @@ public interface RuleModel {
 
     void deleteUser(Rule rule, TaskCompleteCallback callback);
 
-    Rule getUsersByIds(double[] ids);
+    Rule[] getUsersByIds(String[] ids);
 
-    Rule getUserById(double id);
+    Rule getUserById(String id);
 
     void deleteAllUsers(TaskCompleteCallback callback);
 }

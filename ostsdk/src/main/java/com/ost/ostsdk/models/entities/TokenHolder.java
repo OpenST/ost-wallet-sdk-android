@@ -20,7 +20,7 @@ public class TokenHolder extends BaseEntity {
     public static final String AUTHORIZE_SESSION_CALL_PREFIX = "authorize_session_callprefix";
 
     @Ignore
-    private double userId;
+    private String userId;
     @Ignore
     private String address;
     @Ignore
@@ -65,7 +65,7 @@ public class TokenHolder extends BaseEntity {
         super.processJson(jsonObject);
     }
 
-    public double getUserId() {
+    public String getUserId() {
         return userId;
     }
 
@@ -93,7 +93,7 @@ public class TokenHolder extends BaseEntity {
         return authorizeSessionCallPrefix;
     }
 
-    private void setUserId(double userId) {
+    private void setUserId(String userId) {
         this.userId = userId;
     }
 

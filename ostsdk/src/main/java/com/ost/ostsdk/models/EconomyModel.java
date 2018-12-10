@@ -6,4 +6,6 @@ import org.json.JSONObject;
 
 public interface EconomyModel {
     Economy registerEconomy(JSONObject jsonObject);
+
+    Economy getEconomyById(String id);
 }

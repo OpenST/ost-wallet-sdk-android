@@ -1,4 +1,4 @@
-package com.ost.ostsdk.Utils;
+package com.ost.ostsdk.utils;
 
 import android.os.AsyncTask;
 

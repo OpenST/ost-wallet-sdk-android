@@ -51,7 +51,7 @@ public abstract class OstSdkDatabase extends RoomDatabase {
 
     private static volatile OstSdkDatabase INSTANCE;
 
-    public static OstSdkDatabase getDatabase(final Context context) {
+    public static OstSdkDatabase initDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (OstSdkDatabase.class) {
                 if (INSTANCE == null) {
@@ -66,6 +66,13 @@ public abstract class OstSdkDatabase extends RoomDatabase {
                             .build();
                 }
             }
+        }
+        return INSTANCE;
+    }
+
+    public static OstSdkDatabase getDatabase() {
+        if (INSTANCE == null) {
+            throw new RuntimeException("OstSdkDatabase not initialized");
         }
         return INSTANCE;
     }

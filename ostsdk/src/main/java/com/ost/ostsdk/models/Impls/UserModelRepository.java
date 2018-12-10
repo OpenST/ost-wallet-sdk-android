@@ -1,99 +1,75 @@
 package com.ost.ostsdk.models.Impls;
 
-import android.content.Context;
-import android.os.AsyncTask;
-
-import com.ost.ostsdk.Utils.DispatchAsync;
 import com.ost.ostsdk.database.OstSdkDatabase;
+import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.UserDao;
-import com.ost.ostsdk.models.entities.User;
 import com.ost.ostsdk.models.TaskCompleteCallback;
 import com.ost.ostsdk.models.UserModel;
+import com.ost.ostsdk.models.entities.User;
 
 import org.json.JSONObject;
 
-public class UserModelRepository implements UserModel {
+public final class UserModelRepository extends BaseModelRepository implements UserModel {
 
+    private static final int LRU_CACHE_SIZE = 5;
     private UserDao mUserDao;
+    private static volatile UserModel INSTANCE;
 
-    public UserModelRepository(Context application) {
-        OstSdkDatabase db = OstSdkDatabase.getDatabase(application);
+    private UserModelRepository() {
+        super(LRU_CACHE_SIZE);
+        OstSdkDatabase db = OstSdkDatabase.getDatabase();
         mUserDao = db.userDao();
+    }
+
+    public static UserModel getInstance() {
+        if (INSTANCE == null) {
+            synchronized (UserModelRepository.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new UserModelRepository();
+                }
+            }
+        }
+        return INSTANCE;
     }
 
     @Override
     public void insertUser(final User user, final TaskCompleteCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                mUserDao.insertAll(user);
-            }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onTaskComplete();
-            }
-        }));
+        super.insert(user, callback);
     }
 
     @Override
     public void insertAllUsers(final User[] user, final TaskCompleteCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                mUserDao.insertAll(user);
-            }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onTaskComplete();
-            }
-        }));
+        super.insertAll(user, callback);
     }
 
     @Override
     public void deleteUser(final User user, final TaskCompleteCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                mUserDao.delete(user);
-            }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onTaskComplete();
-            }
-        }));
+        super.delete(user, callback);
     }
 
     @Override
-    public User getUsersByIds(double[] ids) {
-        return mUserDao.getByIds(ids);
+    public User[] getUsersByIds(String[] ids) {
+        return (User[]) super.getByIds(ids);
     }
 
     @Override
-    public User getUserById(double id) {
-        return mUserDao.getById(id);
+    public User getUserById(String id) {
+        return (User) super.getById(id);
     }
 
     @Override
     public void deleteAllUsers(final TaskCompleteCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                mUserDao.deleteAll();
-            }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onTaskComplete();
-            }
-        }));
+        super.deleteAll(callback);
     }
 
     @Override
     public User initUser(JSONObject jsonObject) {
         //Code to update user in cache and db.
         return new User(jsonObject);
+    }
+
+    @Override
+    BaseDao getModel() {
+        return mUserDao;
     }
 }

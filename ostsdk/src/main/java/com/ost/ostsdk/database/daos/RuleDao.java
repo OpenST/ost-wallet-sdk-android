@@ -5,26 +5,39 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
+import com.ost.ostsdk.models.entities.BaseEntity;
 import com.ost.ostsdk.models.entities.Rule;
 
 @Dao
-public interface RuleDao {
+public abstract class RuleDao implements BaseDao {
+
+    public void insert(BaseEntity baseEntity) {
+        this.insert((Rule) baseEntity);
+    }
+
+    public void insertAll(BaseEntity... baseEntity) {
+        this.insertAll((Rule[]) baseEntity);
+    }
+
+    public void delete(BaseEntity baseEntity) {
+        this.delete((Rule) baseEntity);
+    }
 
     @Insert
-    void insert(Rule rule);
+    public abstract void insert(Rule rule);
 
     @Insert
-    void insertAll(Rule... rule);
+    public abstract void insertAll(Rule... rule);
 
     @Delete
-    void delete(Rule rule);
+    public abstract void delete(Rule rule);
 
     @Query("SELECT * FROM Rule WHERE id IN (:ids)")
-    Rule getByIds(double[] ids);
+    public abstract Rule[] getByIds(String[] ids);
 
     @Query("SELECT * FROM Rule WHERE id=:id")
-    Rule getById(double id);
+    public abstract Rule getById(String id);
 
     @Query("DELETE FROM Rule")
-    void deleteAll();
+    public abstract void deleteAll();
 }

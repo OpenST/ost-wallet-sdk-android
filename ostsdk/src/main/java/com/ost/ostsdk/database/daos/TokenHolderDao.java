@@ -5,25 +5,39 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
+import com.ost.ostsdk.models.entities.BaseEntity;
 import com.ost.ostsdk.models.entities.TokenHolder;
 
 @Dao
-public interface TokenHolderDao {
-    @Insert
-    void insert(TokenHolder tokenHolder);
+public abstract class TokenHolderDao implements BaseDao {
+
+    public void insert(BaseEntity baseEntity) {
+        this.insert((TokenHolder) baseEntity);
+    }
+
+    public void insertAll(BaseEntity... baseEntity) {
+        this.insertAll((TokenHolder[]) baseEntity);
+    }
+
+    public void delete(BaseEntity baseEntity) {
+        this.delete((TokenHolder) baseEntity);
+    }
 
     @Insert
-    void insertAll(TokenHolder... tokenHolder);
+    public abstract void insert(TokenHolder tokenHolder);
+
+    @Insert
+    public abstract void insertAll(TokenHolder... tokenHolder);
 
     @Delete
-    void delete(TokenHolder tokenHolder);
+    public abstract void delete(TokenHolder tokenHolder);
 
     @Query("SELECT * FROM token_holder WHERE id IN (:ids)")
-    TokenHolder getByIds(double[] ids);
+    public abstract TokenHolder[] getByIds(String[] ids);
 
     @Query("SELECT * FROM token_holder WHERE id=:id")
-    TokenHolder getById(double id);
+    public abstract TokenHolder getById(String id);
 
     @Query("DELETE FROM token_holder")
-    void deleteAll();
+    public abstract void deleteAll();
 }

@@ -14,7 +14,7 @@ public class Rule extends BaseEntity {
     public static final String ABI = "abi";
 
     @Ignore
-    private double economyId;
+    private String economyId;
     @Ignore
     private String name;
     @Ignore
@@ -26,7 +26,7 @@ public class Rule extends BaseEntity {
         super();
     }
 
-    public double getEconomyId() {
+    public String getEconomyId() {
         return economyId;
     }
 
@@ -43,7 +43,7 @@ public class Rule extends BaseEntity {
     }
 
 
-    private void setEconomyId(double economyId) {
+    private void setEconomyId(String economyId) {
         this.economyId = economyId;
     }
 

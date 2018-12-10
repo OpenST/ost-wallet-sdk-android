@@ -5,25 +5,39 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
+import com.ost.ostsdk.models.entities.BaseEntity;
 import com.ost.ostsdk.models.entities.ExecutableRule;
 
 @Dao
-public interface ExecutableRuleDao {
-    @Insert
-    void insert(ExecutableRule executableRule);
+public abstract class ExecutableRuleDao implements BaseDao {
+
+    public void insert(BaseEntity baseEntity) {
+        this.insert((ExecutableRule) baseEntity);
+    }
+
+    public void insertAll(BaseEntity... baseEntity) {
+        this.insertAll((ExecutableRule[]) baseEntity);
+    }
+
+    public void delete(BaseEntity baseEntity) {
+        this.delete((ExecutableRule) baseEntity);
+    }
 
     @Insert
-    void insertAll(ExecutableRule... executableRule);
+    public abstract void insert(ExecutableRule executableRule);
+
+    @Insert
+    public abstract void insertAll(ExecutableRule... executableRule);
 
     @Delete
-    void delete(ExecutableRule executableRule);
+    public abstract void delete(ExecutableRule executableRule);
 
     @Query("SELECT * FROM executable_rule WHERE id IN (:ids)")
-    ExecutableRule getByIds(double[] ids);
+    public abstract ExecutableRule[] getByIds(String[] ids);
 
     @Query("SELECT * FROM executable_rule WHERE id=:id")
-    ExecutableRule getById(double id);
+    public abstract ExecutableRule getById(String id);
 
     @Query("DELETE FROM executable_rule")
-    void deleteAll();
+    public abstract void deleteAll();
 }

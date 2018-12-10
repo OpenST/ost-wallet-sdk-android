@@ -12,9 +12,9 @@ public interface UserModel {
 
     void deleteUser(User user, TaskCompleteCallback callback);
 
-    User getUsersByIds(double[] ids);
+    User[] getUsersByIds(String[] ids);
 
-    User getUserById(double id);
+    User getUserById(String id);
 
     void deleteAllUsers(TaskCompleteCallback callback);
 

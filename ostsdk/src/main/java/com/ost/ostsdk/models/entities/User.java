@@ -14,9 +14,9 @@ public class User extends BaseEntity {
     public static final String NAME = "name";
 
     @Ignore
-    private double economyId;
+    private String economyId;
     @Ignore
-    private double tokenHolderId;
+    private String tokenHolderId;
     @Ignore
     private String name;
 
@@ -31,11 +31,11 @@ public class User extends BaseEntity {
         super(new JSONObject(jsonString));
     }
 
-    public double getEconomyId() {
+    public String getEconomyId() {
         return economyId;
     }
 
-    public double getTokenHolderId() {
+    public String getTokenHolderId() {
         return tokenHolderId;
     }
 
@@ -43,11 +43,11 @@ public class User extends BaseEntity {
         return name;
     }
 
-    private void setEconomyId(double economyId) {
+    private void setEconomyId(String economyId) {
         this.economyId = economyId;
     }
 
-    private void setTokenHolderId(double tokenHolderId) {
+    private void setTokenHolderId(String tokenHolderId) {
         this.tokenHolderId = tokenHolderId;
     }
 
@@ -58,8 +58,14 @@ public class User extends BaseEntity {
 
     @Override
     public void processJson(JSONObject data) {
-        super.processJson(data);
-
+        try {
+            super.processJson(data);
+            setName(data.getString(User.NAME));
+            setEconomyId(this.economyId = data.getString(User.ECONOMY_ID));
+            setTokenHolderId(this.tokenHolderId = data.getString(User.TOKEN_HOLDER_ID));
+        } catch (Exception e) {
+            //Exception handling
+        }
     }
 
     @Override
