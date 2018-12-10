@@ -16,8 +16,7 @@ public class TokenHolder extends BaseEntity {
     public static final String WALLETS = "wallets";
     public static final String SESSIONS = "sessions";
     public static final String REQUIREMENTS = "requirements";
-    public static final String EXECUTE_RULE_CALL_PREFIX = "execute_rule_call_prefix";
-    public static final String AUTHORIZE_SESSION_CALL_PREFIX = "authorize_session_callprefix";
+    public static final String EXECUTE_RULE_CALL_PREFIX = "execute_rule_callprefix";
 
     @Ignore
     private String userId;
@@ -31,9 +30,6 @@ public class TokenHolder extends BaseEntity {
     private int requirements;
     @Ignore
     private String executeRuleCallPrefix;
-    @Ignore
-    private String authorizeSessionCallPrefix;
-
 
     public TokenHolder(JSONObject jsonObject) {
         super(jsonObject);
@@ -54,8 +50,7 @@ public class TokenHolder extends BaseEntity {
                 jsonObject.has(TokenHolder.WALLETS) &&
                 jsonObject.has(TokenHolder.SESSIONS) &&
                 jsonObject.has(TokenHolder.REQUIREMENTS) &&
-                jsonObject.has(TokenHolder.EXECUTE_RULE_CALL_PREFIX) &&
-                jsonObject.has(TokenHolder.AUTHORIZE_SESSION_CALL_PREFIX);
+                jsonObject.has(TokenHolder.EXECUTE_RULE_CALL_PREFIX);
 
 
     }
@@ -89,10 +84,6 @@ public class TokenHolder extends BaseEntity {
         return executeRuleCallPrefix;
     }
 
-    public String getAuthorizeSessionCallPrefix() {
-        return authorizeSessionCallPrefix;
-    }
-
     private void setUserId(String userId) {
         this.userId = userId;
     }
@@ -115,9 +106,5 @@ public class TokenHolder extends BaseEntity {
 
     private void setExecuteRuleCallPrefix(String executeRuleCallPrefix) {
         this.executeRuleCallPrefix = executeRuleCallPrefix;
-    }
-
-    private void setAuthorizeSessionCallPrefix(String authorizeSessionCallPrefix) {
-        this.authorizeSessionCallPrefix = authorizeSessionCallPrefix;
     }
 }
