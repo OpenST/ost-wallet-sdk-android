@@ -13,6 +13,7 @@ public class BaseEntity {
     public static final String JSON_DATA = "data";
     public static final String STATUS = "baseStatus";
     public static final String UTS = "uts";
+    public static final String LOCAL_ENTITY_ID = "local_entity_id";
 
     public static final String ACTIVE_STATUS = "ACTIVE";
     public static final String DELETED_STATUS = "DELETED";

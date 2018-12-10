@@ -9,7 +9,7 @@ import com.ost.ostsdk.models.entities.BaseEntity;
 import com.ost.ostsdk.models.entities.MultiSigOperation;
 
 @Dao
-public abstract class MutiSigOperationDao implements BaseDao {
+public abstract class MultiSigOperationDao implements BaseDao {
 
     public void insert(BaseEntity baseEntity) {
         this.insert((MultiSigOperation) baseEntity);

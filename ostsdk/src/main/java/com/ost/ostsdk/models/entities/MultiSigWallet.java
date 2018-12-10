@@ -8,37 +8,37 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-@Entity(tableName = "token_holder_wallet")
-public class TokenHolderWallet extends BaseEntity {
+@Entity(tableName = "multi_sig_wallet")
+public class MultiSigWallet extends BaseEntity {
 
     public static final String STATUS = "status";
     public static final String ADDRESS = "address";
-    public static final String TOKEN_HOLDER_ID = "token_holder_id";
+    public static final String MULTI_SIG_ID = "multi_sig_id";
 
     @Ignore
     private String status;
     @Ignore
-    private String tokenHolderId;
+    private String multiSigId;
     @Ignore
     private String address;
 
-    public TokenHolderWallet(JSONObject jsonObject) {
+    public MultiSigWallet(JSONObject jsonObject) {
         super(jsonObject);
     }
 
-    private TokenHolderWallet(String jsonString) throws JSONException {
+    private MultiSigWallet(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
     }
 
-    public TokenHolderWallet() {
+    public MultiSigWallet() {
     }
 
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(TokenHolderWallet.ADDRESS) &&
-                jsonObject.has(TokenHolderWallet.STATUS) &&
-                jsonObject.has(TokenHolderWallet.TOKEN_HOLDER_ID);
+                jsonObject.has(MultiSigWallet.ADDRESS) &&
+                jsonObject.has(MultiSigWallet.STATUS) &&
+                jsonObject.has(MultiSigWallet.MULTI_SIG_ID);
     }
 
     @Override
@@ -59,15 +59,15 @@ public class TokenHolderWallet extends BaseEntity {
         return status;
     }
 
-    public String getTokenHolderId() {
-        return tokenHolderId;
+    public String getMultiSigId() {
+        return multiSigId;
     }
 
     private void setStatus(String status) {
         this.status = status;
     }
 
-    private void setTokenHolderId(String tokenHolderId) {
-        this.tokenHolderId = tokenHolderId;
+    private void setMultiSigId(String multiSigId) {
+        this.multiSigId = multiSigId;
     }
 }
