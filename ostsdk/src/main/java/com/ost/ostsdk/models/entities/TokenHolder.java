@@ -31,7 +31,7 @@ public class TokenHolder extends BaseEntity {
     @Ignore
     private String executeRuleCallPrefix;
 
-    public TokenHolder(JSONObject jsonObject) {
+    public TokenHolder(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
@@ -56,7 +56,7 @@ public class TokenHolder extends BaseEntity {
     }
 
     @Override
-    public void processJson(JSONObject jsonObject) {
+    public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
     }
 

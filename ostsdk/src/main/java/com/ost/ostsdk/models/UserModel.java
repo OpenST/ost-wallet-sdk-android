@@ -2,6 +2,7 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.User;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface UserModel {
@@ -18,5 +19,5 @@ public interface UserModel {
 
     void deleteAllUsers(TaskCompleteCallback callback);
 
-    User initUser(JSONObject jsonObject);
+    User initUser(JSONObject jsonObject) throws JSONException;
 }

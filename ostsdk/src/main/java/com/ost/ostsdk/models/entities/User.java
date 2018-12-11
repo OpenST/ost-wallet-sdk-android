@@ -23,7 +23,7 @@ public class User extends BaseEntity {
     public User() {
     }
 
-    public User(JSONObject jsonObject) {
+    public User(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 

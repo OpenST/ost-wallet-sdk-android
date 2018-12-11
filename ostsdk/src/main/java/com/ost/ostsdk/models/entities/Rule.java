@@ -3,6 +3,7 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 @Entity(tableName = "rule")
@@ -60,7 +61,7 @@ public class Rule extends BaseEntity {
     }
 
     @Override
-    public void processJson(JSONObject data) {
+    public void processJson(JSONObject data) throws JSONException {
         super.processJson(data);
 
     }

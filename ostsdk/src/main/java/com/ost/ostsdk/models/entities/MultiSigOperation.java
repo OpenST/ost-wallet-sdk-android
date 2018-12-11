@@ -35,7 +35,7 @@ public class MultiSigOperation extends BaseEntity {
     private String status;
 
 
-    public MultiSigOperation(JSONObject jsonObject) {
+    public MultiSigOperation(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
@@ -61,8 +61,15 @@ public class MultiSigOperation extends BaseEntity {
     }
 
     @Override
-    public void processJson(JSONObject jsonObject) {
+    public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
+        setUserId(jsonObject.getString(MultiSigOperation.USER_ID));
+        setStatus(jsonObject.getString(MultiSigOperation.STATUS));
+        setTokenHolderAddress(jsonObject.getString(MultiSigOperation.TOKEN_HOLDER_ADDRESS));
+        setKind(jsonObject.getString(MultiSigOperation.KIND));
+        setEncodedData(jsonObject.getString(MultiSigOperation.ENCODED_DATA));
+        setSignatures(jsonObject.getJSONObject(MultiSigOperation.SIGNATURES));
+        setRawData(jsonObject.getJSONObject(MultiSigOperation.RAW_DATA));
     }
 
     public String getUserId() {

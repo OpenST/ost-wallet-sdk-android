@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 @Entity(tableName = "economy")
 public class Economy extends BaseEntity {
-    public Economy(JSONObject jsonObject) {
+    public Economy(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
@@ -24,7 +24,7 @@ public class Economy extends BaseEntity {
     }
 
     @Override
-    public void processJson(JSONObject jsonObject) {
+    public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
     }
 }

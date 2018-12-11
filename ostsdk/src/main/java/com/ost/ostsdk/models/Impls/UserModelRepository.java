@@ -7,30 +7,20 @@ import com.ost.ostsdk.models.TaskCompleteCallback;
 import com.ost.ostsdk.models.UserModel;
 import com.ost.ostsdk.models.entities.User;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-public final class UserModelRepository extends BaseModelRepository implements UserModel {
+class UserModelRepository extends BaseModelRepository implements UserModel {
 
     private static final int LRU_CACHE_SIZE = 5;
     private UserDao mUserDao;
-    private static volatile UserModel INSTANCE;
 
-    private UserModelRepository() {
+    UserModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
         mUserDao = db.userDao();
     }
 
-    public static UserModel getInstance() {
-        if (INSTANCE == null) {
-            synchronized (UserModelRepository.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new UserModelRepository();
-                }
-            }
-        }
-        return INSTANCE;
-    }
 
     @Override
     public void insertUser(final User user, final TaskCompleteCallback callback) {
@@ -63,9 +53,10 @@ public final class UserModelRepository extends BaseModelRepository implements Us
     }
 
     @Override
-    public User initUser(JSONObject jsonObject) {
-        //Code to update user in cache and db.
-        return new User(jsonObject);
+    public User initUser(JSONObject jsonObject) throws JSONException {
+        User user = new User(jsonObject);
+        insert(user, null);
+        return user;
     }
 
     @Override

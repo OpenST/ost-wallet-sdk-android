@@ -35,7 +35,7 @@ public class TokenHolderSession extends BaseEntity {
     private double redemptionLimit;
 
 
-    public TokenHolderSession(JSONObject jsonObject) {
+    public TokenHolderSession(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
@@ -59,7 +59,7 @@ public class TokenHolderSession extends BaseEntity {
     }
 
     @Override
-    public void processJson(JSONObject jsonObject) {
+    public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
     }
 

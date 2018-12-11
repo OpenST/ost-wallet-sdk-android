@@ -7,26 +7,15 @@ import com.ost.ostsdk.models.entities.Economy;
 
 import org.json.JSONObject;
 
-public final class EconomyModelRepository implements EconomyModel {
+class EconomyModelRepository implements EconomyModel {
 
     private static volatile EconomyModel INSTANCE;
 
     private EconomyDao mEconomyDao;
 
-    private EconomyModelRepository() {
+    EconomyModelRepository() {
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
         mEconomyDao = db.economyDao();
-    }
-
-    public static EconomyModel getInstance() {
-        if (INSTANCE == null) {
-            synchronized (UserModelRepository.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new EconomyModelRepository();
-                }
-            }
-        }
-        return INSTANCE;
     }
 
 

@@ -21,11 +21,11 @@ public class ExecutableRule extends BaseEntity {
     public static final String EXECUTE_RULE_PAYLOAD = "execute_rule_payload";
 
     @Ignore
-    private double userId;
+    private String userId;
     @Ignore
     private String tokenHolderAddress;
     @Ignore
-    private double ruleId;
+    private String ruleId;
     @Ignore
     private String method;
     @Ignore
@@ -38,7 +38,7 @@ public class ExecutableRule extends BaseEntity {
     private String status;
 
 
-    public ExecutableRule(JSONObject jsonObject) {
+    public ExecutableRule(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
@@ -60,20 +60,26 @@ public class ExecutableRule extends BaseEntity {
                 jsonObject.has(ExecutableRule.PARAMS) &&
                 jsonObject.has(ExecutableRule.EXECUTE_RULE_PAYLOAD) &&
                 jsonObject.has(ExecutableRule.SESSION);
-
-
     }
 
     @Override
-    public void processJson(JSONObject jsonObject) {
+    public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
+        setExecuteRulePayload(jsonObject.getJSONObject(ExecutableRule.EXECUTE_RULE_PAYLOAD));
+        setMethod(jsonObject.getString(ExecutableRule.METHOD));
+        setParams(jsonObject.getString(ExecutableRule.PARAMS));
+        setRuleId(jsonObject.getString(ExecutableRule.RULE_ID));
+        setTokenHolderAddress(jsonObject.getString(ExecutableRule.TOKEN_HOLDER_ADDRESS));
+        setStatus(jsonObject.getString(ExecutableRule.STATUS));
+        setUserId(jsonObject.getString(ExecutableRule.USER_ID));
+        setSession(jsonObject.getString(ExecutableRule.SESSION));
     }
 
-    public double getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    private void setUserId(double userId) {
+    private void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -85,11 +91,11 @@ public class ExecutableRule extends BaseEntity {
         this.tokenHolderAddress = tokenHolderAddress;
     }
 
-    public double getRuleId() {
+    public String getRuleId() {
         return ruleId;
     }
 
-    private void setRuleId(double ruleId) {
+    private void setRuleId(String ruleId) {
         this.ruleId = ruleId;
     }
 

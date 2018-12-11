@@ -6,8 +6,9 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.models.Impls.UserModelRepository;
+import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCompleteCallback;
 import com.ost.ostsdk.models.UserModel;
 import com.ost.ostsdk.models.entities.User;
@@ -26,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class UserModelTest {
 
-    static UserModel mUserRepository;
+    static UserModel mUserModel;
 
     @ClassRule
     public static MigrationTestHelper testHelper =
@@ -39,10 +40,11 @@ public class UserModelTest {
     public static void setUp() throws IOException {
         Context appContext = InstrumentationRegistry.getTargetContext();
         testHelper.createDatabase("ostsdk_db", 1);
-        OstSdkDatabase.initDatabase(appContext.getApplicationContext());
+        OstSdk.init(appContext.getApplicationContext());
 
-        mUserRepository = UserModelRepository.getInstance();
-        mUserRepository.deleteAllUsers(null);
+        mUserModel = OstSdk.getUserModel();
+        ModelFactory.getRuleModel();
+        mUserModel.deleteAllUsers(null);
     }
 
     @Test
@@ -56,14 +58,13 @@ public class UserModelTest {
         userObj.put(User.TOKEN_HOLDER_ID, "1");
 
         User user = new User(userObj);
-        mUserRepository.insertUser(user, new TaskCompleteCallback() {
+        mUserModel.insertUser(user, new TaskCompleteCallback() {
             @Override
             public void onTaskComplete() {
-                User user = mUserRepository.getUserById("1");
+                User user = mUserModel.getUserById("1");
                 assertEquals("user", user.getName());
                 assertEquals("1", user.getId());
             }
         });
-        System.out.print("j");
     }
 }

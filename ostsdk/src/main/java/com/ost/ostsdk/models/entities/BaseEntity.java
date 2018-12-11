@@ -4,7 +4,11 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class BaseEntity {
 
@@ -18,6 +22,7 @@ public class BaseEntity {
     public static final String ACTIVE_STATUS = "ACTIVE";
     public static final String DELETED_STATUS = "DELETED";
     private static final String DEFAULT_PARENT_ID = "";
+    private static final List<String> STATUS_VALUE = Arrays.asList(ACTIVE_STATUS, DELETED_STATUS);
 
     @PrimaryKey()
     @NonNull
@@ -40,9 +45,9 @@ public class BaseEntity {
     BaseEntity() {
     }
 
-    BaseEntity(JSONObject jsonObject) {
+    BaseEntity(JSONObject jsonObject) throws JSONException {
         if (!validate(jsonObject)) {
-            throw new RuntimeException("Invalid JSON Object");
+            throw new JSONException("Invalid JSON Object");
         }
         processJson(jsonObject);
     }
@@ -83,16 +88,28 @@ public class BaseEntity {
         return jsonObject.has(BaseEntity.ID);
     }
 
-    public void processJson(JSONObject jsonObject) {
-        try {
-            setId(jsonObject.getString(BaseEntity.ID));
-            setUts(jsonObject.optDouble(BaseEntity.UTS, -1 * System.currentTimeMillis()));
-            setBaseStatus(jsonObject.optString(BaseEntity.STATUS, BaseEntity.ACTIVE_STATUS));
-            setParentId(jsonObject.optString(BaseEntity.PARENT_ID, BaseEntity.DEFAULT_PARENT_ID));
-            setData(jsonObject.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void processJson(JSONObject jsonObject) throws JSONException {
+        String id = jsonObject.getString(BaseEntity.ID);
+        if (!id.matches("[a-zA-Z0-9]+")) {
+            throw new JSONException("Id having special characters in it");
         }
+        setId(id);
+
+        setUts(jsonObject.optDouble(BaseEntity.UTS, -1 * System.currentTimeMillis()));
+
+        String status = jsonObject.optString(BaseEntity.STATUS, BaseEntity.ACTIVE_STATUS);
+        if (!BaseEntity.DEFAULT_PARENT_ID.equals(status) && !STATUS_VALUE.contains(status)) {
+            throw new JSONException("status having invalid value");
+        }
+        setBaseStatus(status);
+
+        String parentId = jsonObject.optString(BaseEntity.PARENT_ID, BaseEntity.DEFAULT_PARENT_ID);
+        if (!BaseEntity.DEFAULT_PARENT_ID.equals(parentId) && !parentId.matches("[a-zA-Z0-9]+")) {
+            throw new JSONException("Parent Id having special characters in it");
+        }
+        setParentId(parentId);
+
+        setData(jsonObject.toString());
     }
 
     public void generateLocalUts() {

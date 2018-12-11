@@ -7,11 +7,11 @@ import com.ost.ostsdk.models.TaskCompleteCallback;
 import com.ost.ostsdk.models.entities.Rule;
 import com.ost.ostsdk.utils.DispatchAsync;
 
-public final class RuleModelRepository implements RuleModel {
+class RuleModelRepository implements RuleModel {
 
     private RuleDao mRuleDao;
 
-    private RuleModelRepository() {
+    RuleModelRepository() {
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
         mRuleDao = db.ruleDao();
     }

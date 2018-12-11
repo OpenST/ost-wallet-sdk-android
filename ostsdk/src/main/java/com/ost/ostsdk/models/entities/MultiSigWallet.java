@@ -22,7 +22,7 @@ public class MultiSigWallet extends BaseEntity {
     @Ignore
     private String address;
 
-    public MultiSigWallet(JSONObject jsonObject) {
+    public MultiSigWallet(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
@@ -42,7 +42,7 @@ public class MultiSigWallet extends BaseEntity {
     }
 
     @Override
-    public void processJson(JSONObject jsonObject) {
+    public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
     }
 

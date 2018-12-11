@@ -4,6 +4,7 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,7 +33,7 @@ public class MultiSig extends BaseEntity {
     private String authorizeSessionCallPrefix;
 
 
-    public MultiSig(JSONObject jsonObject) {
+    public MultiSig(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
@@ -55,8 +56,22 @@ public class MultiSig extends BaseEntity {
     }
 
     @Override
-    public void processJson(JSONObject jsonObject) {
+    public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
+        setAddress(jsonObject.getString(MultiSig.ADDRESS));
+        setUserId(jsonObject.getString(MultiSig.USER_ID));
+
+        JSONArray walletArray = jsonObject.getJSONArray(MultiSig.WALLETS);
+        String walletList[] = new String[walletArray.length()];
+        for (int i = 0; i < walletArray.length(); i++) {
+            walletList[i] = walletArray.getString(i);
+        }
+        setWallets(walletList);
+
+        setTokenHolderId(jsonObject.getString(MultiSig.TOKEN_HOLDER_ID));
+        setRequirement(jsonObject.getInt(MultiSig.REQUIREMENT));
+        setAuthorizeSessionCallPrefix(jsonObject.getString(MultiSig.AUTHORIZE_SESSION_CALL_PREFIX));
+
     }
 
     public String getUserId() {

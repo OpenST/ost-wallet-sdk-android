@@ -4,8 +4,7 @@ import android.content.Context;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.EconomyModel;
-import com.ost.ostsdk.models.Impls.EconomyModelRepository;
-import com.ost.ostsdk.models.Impls.UserModelRepository;
+import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.UserModel;
 
 public class OstSdk {
@@ -18,10 +17,10 @@ public class OstSdk {
     }
 
     public static EconomyModel getEconomyModel() {
-        return EconomyModelRepository.getInstance();
+        return ModelFactory.getEconomyModel();
     }
 
     public static UserModel getUserModel() {
-        return UserModelRepository.getInstance();
+        return ModelFactory.getUserModel();
     }
 }

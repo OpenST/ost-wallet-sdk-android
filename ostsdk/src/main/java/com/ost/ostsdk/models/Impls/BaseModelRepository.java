@@ -7,7 +7,11 @@ import com.ost.ostsdk.models.TaskCompleteCallback;
 import com.ost.ostsdk.models.entities.BaseEntity;
 import com.ost.ostsdk.utils.DispatchAsync;
 
-public abstract class BaseModelRepository {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+abstract class BaseModelRepository {
 
     private LruCache<String, BaseEntity> mLruCache;
 
@@ -24,7 +28,9 @@ public abstract class BaseModelRepository {
 
             @Override
             public void onExecuteComplete() {
-                callback.onTaskComplete();
+                if (callback != null) {
+                    callback.onTaskComplete();
+                }
             }
         }));
         insertInCache(baseEntity);
@@ -39,7 +45,9 @@ public abstract class BaseModelRepository {
 
             @Override
             public void onExecuteComplete() {
-                callback.onTaskComplete();
+                if (callback != null) {
+                    callback.onTaskComplete();
+                }
             }
         }));
         insertInCache(baseEntities);
@@ -54,14 +62,50 @@ public abstract class BaseModelRepository {
 
             @Override
             public void onExecuteComplete() {
-                callback.onTaskComplete();
+                if (callback != null) {
+                    callback.onTaskComplete();
+                }
             }
         }));
     }
 
     public BaseEntity[] getByIds(String[] ids) {
+        String[] failedCacheIdsList = getIdsNotInCache(ids);
+        BaseEntity[] baseEntities = getModel().getByIds(failedCacheIdsList);
+        return buildResultSet(ids, baseEntities);
+    }
 
-        return getModel().getByIds(ids);
+    private BaseEntity[] buildResultSet(String[] ids, BaseEntity[] baseEntities) {
+        HashMap<String, BaseEntity> baseEntityHashMap = new HashMap<>();
+        for (BaseEntity baseEntity : baseEntities) {
+            baseEntityHashMap.put(baseEntity.getId(), baseEntity);
+        }
+        List<BaseEntity> resultSet = new ArrayList<>();
+        for (String id : ids) {
+            BaseEntity cacheEntity = mLruCache.get(id);
+            if (null == cacheEntity) {
+                if (null != baseEntityHashMap.get(id)) {
+                    resultSet.add(baseEntityHashMap.get(id));
+                } else {
+                    //TODO::
+                    //Throw exception Or print warning
+                }
+            } else {
+                resultSet.add(cacheEntity);
+            }
+        }
+        return (BaseEntity[]) resultSet.toArray();
+    }
+
+    private String[] getIdsNotInCache(String[] ids) {
+        ArrayList<String> idsList = new ArrayList<>();
+        for (String id : ids) {
+            if (null == mLruCache.get(id)) {
+                idsList.add(id);
+            }
+        }
+
+        return (String[]) idsList.toArray();
     }
 
     public BaseEntity getById(String id) {
