@@ -26,13 +26,13 @@ public class TokenHolderSession extends BaseEntity {
     @Ignore
     private String tokenHolderId;
     @Ignore
-    private double blockHeight;
+    private String blockHeight;
     @Ignore
-    private double expiryTime;
+    private String expiryTime;
     @Ignore
-    private double spendingLimit;
+    private String spendingLimit;
     @Ignore
-    private double redemptionLimit;
+    private String redemptionLimit;
 
 
     public TokenHolderSession(JSONObject jsonObject) throws JSONException {
@@ -61,6 +61,13 @@ public class TokenHolderSession extends BaseEntity {
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
+        setStatus(jsonObject.getString(TokenHolderSession.STATUS));
+        setAddress(jsonObject.getString(TokenHolderSession.ADDRESS));
+        setTokenHolderId(jsonObject.getString(TokenHolderSession.TOKEN_HOLDER_ID));
+        setBlockHeight(jsonObject.getString(TokenHolderSession.BLOCK_HEIGHT));
+        setExpiryTime(jsonObject.getString(TokenHolderSession.EXPIRY_TIME));
+        setRedemptionLimit(jsonObject.getString(TokenHolderSession.REDEMPTION_LIMIT));
+        setSpendingLimit(jsonObject.getString(TokenHolderSession.SPENDING_LIMIT));
     }
 
     public String getAddress() {
@@ -87,35 +94,35 @@ public class TokenHolderSession extends BaseEntity {
         this.tokenHolderId = tokenHolderId;
     }
 
-    public double getBlockHeight() {
+    public String getBlockHeight() {
         return blockHeight;
     }
 
-    private void setBlockHeight(double blockHeight) {
+    private void setBlockHeight(String blockHeight) {
         this.blockHeight = blockHeight;
     }
 
-    public double getExpiryTime() {
+    public String getExpiryTime() {
         return expiryTime;
     }
 
-    private void setExpiryTime(double expiryTime) {
+    private void setExpiryTime(String expiryTime) {
         this.expiryTime = expiryTime;
     }
 
-    public double getSpendingLimit() {
+    public String getSpendingLimit() {
         return spendingLimit;
     }
 
-    private void setSpendingLimit(double spendingLimit) {
+    private void setSpendingLimit(String spendingLimit) {
         this.spendingLimit = spendingLimit;
     }
 
-    public double getRedemptionLimit() {
+    public String getRedemptionLimit() {
         return redemptionLimit;
     }
 
-    private void setRedemptionLimit(double redemptionLimit) {
+    private void setRedemptionLimit(String redemptionLimit) {
         this.redemptionLimit = redemptionLimit;
     }
 }

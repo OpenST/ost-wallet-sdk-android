@@ -4,6 +4,7 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,7 +14,6 @@ public class TokenHolder extends BaseEntity {
 
     public static final String USER_ID = "user_id";
     public static final String ADDRESS = "address";
-    public static final String WALLETS = "wallets";
     public static final String SESSIONS = "sessions";
     public static final String REQUIREMENTS = "requirements";
     public static final String EXECUTE_RULE_CALL_PREFIX = "execute_rule_callprefix";
@@ -22,8 +22,6 @@ public class TokenHolder extends BaseEntity {
     private String userId;
     @Ignore
     private String address;
-    @Ignore
-    private String[] wallets;
     @Ignore
     private String[] sessions;
     @Ignore
@@ -47,7 +45,6 @@ public class TokenHolder extends BaseEntity {
         return super.validate(jsonObject) &&
                 jsonObject.has(TokenHolder.USER_ID) &&
                 jsonObject.has(TokenHolder.ADDRESS) &&
-                jsonObject.has(TokenHolder.WALLETS) &&
                 jsonObject.has(TokenHolder.SESSIONS) &&
                 jsonObject.has(TokenHolder.REQUIREMENTS) &&
                 jsonObject.has(TokenHolder.EXECUTE_RULE_CALL_PREFIX);
@@ -58,6 +55,18 @@ public class TokenHolder extends BaseEntity {
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
+        setUserId(jsonObject.getString(TokenHolder.USER_ID));
+        setAddress(jsonObject.getString(TokenHolder.ADDRESS));
+
+        JSONArray sessionArray = jsonObject.getJSONArray(TokenHolder.SESSIONS);
+        String sessionList[] = new String[sessionArray.length()];
+        for (int i = 0; i < sessionArray.length(); i++) {
+            sessionList[i] = sessionArray.getString(i);
+        }
+        setSessions(sessionList);
+
+        setRequirements(jsonObject.getInt(TokenHolder.REQUIREMENTS));
+        setExecuteRuleCallPrefix(jsonObject.getString(TokenHolder.EXECUTE_RULE_CALL_PREFIX));
     }
 
     public String getUserId() {
@@ -66,10 +75,6 @@ public class TokenHolder extends BaseEntity {
 
     public String getAddress() {
         return address;
-    }
-
-    public String[] getWallets() {
-        return wallets;
     }
 
     public String[] getSessions() {
@@ -90,10 +95,6 @@ public class TokenHolder extends BaseEntity {
 
     private void setAddress(String address) {
         this.address = address;
-    }
-
-    private void setWallets(String[] wallets) {
-        this.wallets = wallets;
     }
 
     private void setSessions(String[] sessions) {

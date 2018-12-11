@@ -24,7 +24,10 @@ public class Rule extends BaseEntity {
     private String abi;
 
     public Rule() {
-        super();
+    }
+
+    public Rule(JSONObject jsonObject) throws JSONException {
+        super(jsonObject);
     }
 
     public String getEconomyId() {
@@ -61,9 +64,12 @@ public class Rule extends BaseEntity {
     }
 
     @Override
-    public void processJson(JSONObject data) throws JSONException {
-        super.processJson(data);
-
+    public void processJson(JSONObject jsonObject) throws JSONException {
+        super.processJson(jsonObject);
+        setName(jsonObject.getString(Rule.NAME));
+        setEconomyId(jsonObject.getString(Rule.ECONOMY_ID));
+        setAbi(jsonObject.getString(Rule.ABI));
+        setAddress(jsonObject.getString(Rule.ADDRESS));
     }
 
     @Override

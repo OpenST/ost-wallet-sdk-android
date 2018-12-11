@@ -57,15 +57,11 @@ public class User extends BaseEntity {
 
 
     @Override
-    public void processJson(JSONObject data) {
-        try {
-            super.processJson(data);
-            setName(data.getString(User.NAME));
-            setEconomyId(this.economyId = data.getString(User.ECONOMY_ID));
-            setTokenHolderId(this.tokenHolderId = data.getString(User.TOKEN_HOLDER_ID));
-        } catch (Exception e) {
-            //Exception handling
-        }
+    public void processJson(JSONObject data) throws JSONException {
+        super.processJson(data);
+        setName(data.getString(User.NAME));
+        setEconomyId(data.getString(User.ECONOMY_ID));
+        setTokenHolderId(data.getString(User.TOKEN_HOLDER_ID));
     }
 
     @Override

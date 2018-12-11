@@ -44,6 +44,9 @@ public class MultiSigWallet extends BaseEntity {
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
+        setAddress(jsonObject.getString(MultiSigWallet.ADDRESS));
+        setStatus(jsonObject.getString(MultiSigWallet.STATUS));
+        setMultiSigId(jsonObject.getString(MultiSigWallet.MULTI_SIG_ID));
     }
 
 
