@@ -2,16 +2,21 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.Rule;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public interface RuleModel {
-    void insertUser(Rule rule, TaskCompleteCallback callback);
+    void insertRule(Rule rule, TaskCompleteCallback callback);
 
-    void insertAllUsers(Rule[] rule, TaskCompleteCallback callback);
+    void insertAllRules(Rule[] rule, TaskCompleteCallback callback);
 
-    void deleteUser(Rule rule, TaskCompleteCallback callback);
+    void deleteRule(Rule rule, TaskCompleteCallback callback);
 
-    Rule[] getUsersByIds(String[] ids);
+    Rule[] getRulesByIds(String[] ids);
 
-    Rule getUserById(String id);
+    Rule getRuleById(String id);
 
-    void deleteAllUsers(TaskCompleteCallback callback);
+    void deleteAllRules(TaskCompleteCallback callback);
+
+    Rule initRule(JSONObject jsonObject) throws JSONException;
 }

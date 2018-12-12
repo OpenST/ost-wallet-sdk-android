@@ -2,6 +2,7 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.TokenHolderSession;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface TokenHolderSessionModel {
@@ -18,5 +19,5 @@ public interface TokenHolderSessionModel {
 
     void deleteAllTokenHolderSessions(TaskCompleteCallback callback);
 
-    TokenHolderSession initTokenHolderSession(JSONObject jsonObject);
+    TokenHolderSession initTokenHolderSession(JSONObject jsonObject) throws JSONException;
 }

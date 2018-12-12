@@ -2,6 +2,7 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.ExecutableRule;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface ExecutableRuleModel {
@@ -18,5 +19,5 @@ public interface ExecutableRuleModel {
 
     void deleteAllExecutableRules(TaskCompleteCallback callback);
 
-    ExecutableRule initExecutableRule(JSONObject jsonObject);
+    ExecutableRule initExecutableRule(JSONObject jsonObject) throws JSONException;
 }

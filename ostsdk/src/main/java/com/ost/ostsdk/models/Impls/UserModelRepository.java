@@ -10,7 +10,7 @@ import com.ost.ostsdk.models.entities.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class UserModelRepository extends BaseModelRepository implements UserModel {
+class UserModelRepository extends BaseModelCacheRepository implements UserModel {
 
     private static final int LRU_CACHE_SIZE = 5;
     private UserDao mUserDao;
@@ -63,4 +63,5 @@ class UserModelRepository extends BaseModelRepository implements UserModel {
     BaseDao getModel() {
         return mUserDao;
     }
+
 }

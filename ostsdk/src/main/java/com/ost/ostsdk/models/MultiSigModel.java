@@ -2,6 +2,7 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.MultiSig;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface MultiSigModel {
@@ -18,5 +19,5 @@ public interface MultiSigModel {
 
     void deleteAllMultiSigs(TaskCompleteCallback callback);
 
-    MultiSig initMultiSig(JSONObject jsonObject);
+    MultiSig initMultiSig(JSONObject jsonObject) throws JSONException;
 }

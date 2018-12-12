@@ -2,6 +2,7 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.MultiSigWallet;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface MultiSigWalletModel {
@@ -18,5 +19,5 @@ public interface MultiSigWalletModel {
 
     void deleteAllMultiSigWallets(TaskCompleteCallback callback);
 
-    MultiSigWallet initMultiSigWallet(JSONObject jsonObject);
+    MultiSigWallet initMultiSigWallet(JSONObject jsonObject) throws JSONException;
 }

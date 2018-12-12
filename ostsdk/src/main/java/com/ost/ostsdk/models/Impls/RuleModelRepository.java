@@ -1,89 +1,66 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
+import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.RuleDao;
 import com.ost.ostsdk.models.RuleModel;
 import com.ost.ostsdk.models.TaskCompleteCallback;
 import com.ost.ostsdk.models.entities.Rule;
-import com.ost.ostsdk.utils.DispatchAsync;
 
-class RuleModelRepository implements RuleModel {
+import org.json.JSONException;
+import org.json.JSONObject;
 
+class RuleModelRepository extends BaseModelCacheRepository implements RuleModel {
+
+    private static final int LRU_CACHE_SIZE = 5;
     private RuleDao mRuleDao;
 
     RuleModelRepository() {
+        super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
         mRuleDao = db.ruleDao();
     }
 
-    @Override
-    public void insertUser(final Rule ruleEntity, final TaskCompleteCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                mRuleDao.insertAll(ruleEntity);
-            }
 
-            @Override
-            public void onExecuteComplete() {
-                callback.onTaskComplete();
-            }
-        }));
+    @Override
+    public void insertRule(final Rule rule, final TaskCompleteCallback callback) {
+        super.insert(rule, callback);
     }
 
     @Override
-    public void insertAllUsers(final Rule[] ruleEntity, final TaskCompleteCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                mRuleDao.insertAll(ruleEntity);
-            }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onTaskComplete();
-            }
-        }));
-
+    public void insertAllRules(final Rule[] rule, final TaskCompleteCallback callback) {
+        super.insertAll(rule, callback);
     }
 
     @Override
-    public void deleteUser(final Rule ruleEntity, final TaskCompleteCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                mRuleDao.delete(ruleEntity);
-            }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onTaskComplete();
-            }
-        }));
+    public void deleteRule(final Rule rule, final TaskCompleteCallback callback) {
+        super.delete(rule, callback);
     }
 
     @Override
-    public Rule[] getUsersByIds(String[] ids) {
-        return mRuleDao.getByIds(ids);
+    public Rule[] getRulesByIds(String[] ids) {
+        return (Rule[]) super.getByIds(ids);
     }
 
     @Override
-    public Rule getUserById(String id) {
-        return mRuleDao.getById(id);
+    public Rule getRuleById(String id) {
+        return (Rule) super.getById(id);
     }
 
     @Override
-    public void deleteAllUsers(final TaskCompleteCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                mRuleDao.deleteAll();
-            }
+    public void deleteAllRules(final TaskCompleteCallback callback) {
+        super.deleteAll(callback);
+    }
 
-            @Override
-            public void onExecuteComplete() {
-                callback.onTaskComplete();
-            }
-        }));
+    @Override
+    public Rule initRule(JSONObject jsonObject) throws JSONException {
+        Rule rule = new Rule(jsonObject);
+        insert(rule, null);
+        return rule;
+    }
+
+    @Override
+    BaseDao getModel() {
+        return mRuleDao;
     }
 }

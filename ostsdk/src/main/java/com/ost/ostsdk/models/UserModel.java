@@ -20,4 +20,5 @@ public interface UserModel {
     void deleteAllUsers(TaskCompleteCallback callback);
 
     User initUser(JSONObject jsonObject) throws JSONException;
+
 }
