@@ -33,8 +33,8 @@ class RuleModelRepository extends BaseModelCacheRepository implements RuleModel 
     }
 
     @Override
-    public void deleteRule(final Rule rule, final TaskCallback callback) {
-        super.delete(rule, callback);
+    public void deleteRule(final String id, final TaskCallback callback) {
+        super.delete(id, callback);
     }
 
     @Override
@@ -53,9 +53,9 @@ class RuleModelRepository extends BaseModelCacheRepository implements RuleModel 
     }
 
     @Override
-    public Rule initRule(JSONObject jsonObject) throws JSONException {
+    public Rule initRule(JSONObject jsonObject, TaskCallback callback) throws JSONException {
         Rule rule = new Rule(jsonObject);
-        insert(rule, null);
+        insert(rule, callback);
         return rule;
     }
 

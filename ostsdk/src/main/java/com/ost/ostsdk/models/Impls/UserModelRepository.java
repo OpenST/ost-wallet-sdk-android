@@ -32,8 +32,8 @@ class UserModelRepository extends BaseModelCacheRepository implements UserModel 
     }
 
     @Override
-    public void deleteUser(final User user, final TaskCallback callback) {
-        super.delete(user, callback);
+    public void deleteUser(String id, TaskCallback callback) {
+        super.delete(id, callback);
     }
 
     @Override

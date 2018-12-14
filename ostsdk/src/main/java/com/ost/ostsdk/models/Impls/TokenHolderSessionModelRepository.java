@@ -3,8 +3,8 @@ package com.ost.ostsdk.models.Impls;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.TokenHolderSessionDao;
-import com.ost.ostsdk.models.TokenHolderSessionModel;
 import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.TokenHolderSessionModel;
 import com.ost.ostsdk.models.entities.TokenHolderSession;
 
 import org.json.JSONException;
@@ -33,8 +33,8 @@ class TokenHolderSessionModelRepository extends BaseModelCacheRepository impleme
     }
 
     @Override
-    public void deleteTokenHolderSession(final TokenHolderSession tokenHolderSession, final TaskCallback callback) {
-        super.delete(tokenHolderSession, callback);
+    public void deleteTokenHolderSession(final String id, final TaskCallback callback) {
+        super.delete(id, callback);
     }
 
     @Override

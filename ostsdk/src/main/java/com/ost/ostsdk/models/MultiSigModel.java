@@ -11,7 +11,7 @@ public interface MultiSigModel {
 
     void insertAllMultiSigs(MultiSig[] multiSig, TaskCallback callback);
 
-    void deleteMultiSig(MultiSig multiSig, TaskCallback callback);
+    void deleteMultiSig(String id, TaskCallback callback);
 
     MultiSig[] getMultiSigsByIds(String[] ids);
 

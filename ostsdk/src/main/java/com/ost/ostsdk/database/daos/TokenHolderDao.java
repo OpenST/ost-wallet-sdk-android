@@ -1,7 +1,6 @@
 package com.ost.ostsdk.database.daos;
 
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -19,18 +18,14 @@ public abstract class TokenHolderDao implements BaseDao {
         this.insertAll((TokenHolder[]) baseEntity);
     }
 
-    public void delete(BaseEntity baseEntity) {
-        this.delete((TokenHolder) baseEntity);
-    }
-
     @Insert
     public abstract void insert(TokenHolder tokenHolder);
 
     @Insert
     public abstract void insertAll(TokenHolder... tokenHolder);
 
-    @Delete
-    public abstract void delete(TokenHolder tokenHolder);
+    @Query("DELETE FROM token_holder WHERE id=:id")
+    public abstract void delete(String id);
 
     @Query("SELECT * FROM token_holder WHERE id IN (:ids)")
     public abstract TokenHolder[] getByIds(String[] ids);

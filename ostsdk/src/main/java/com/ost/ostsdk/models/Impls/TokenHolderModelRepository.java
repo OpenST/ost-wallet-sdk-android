@@ -37,8 +37,8 @@ class TokenHolderModelRepository extends BaseModelCacheRepository implements Tok
     }
 
     @Override
-    public void deleteTokenHolder(TokenHolder tokenHolder, TaskCallback callback) {
-        super.delete(tokenHolder, callback);
+    public void deleteTokenHolder(String id, TaskCallback callback) {
+        super.delete(id, callback);
     }
 
     @Override
@@ -57,9 +57,9 @@ class TokenHolderModelRepository extends BaseModelCacheRepository implements Tok
     }
 
     @Override
-    public TokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException {
+    public TokenHolder initTokenHolder(JSONObject jsonObject, TaskCallback callback) throws JSONException {
         TokenHolder tokenHolder = new TokenHolder(jsonObject);
-        insert(tokenHolder, null);
+        insert(tokenHolder, callback);
         return tokenHolder;
     }
 }

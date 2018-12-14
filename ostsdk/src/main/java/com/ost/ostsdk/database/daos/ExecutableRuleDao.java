@@ -1,7 +1,6 @@
 package com.ost.ostsdk.database.daos;
 
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -19,18 +18,14 @@ public abstract class ExecutableRuleDao implements BaseDao {
         this.insertAll((ExecutableRule[]) baseEntity);
     }
 
-    public void delete(BaseEntity baseEntity) {
-        this.delete((ExecutableRule) baseEntity);
-    }
-
     @Insert
     public abstract void insert(ExecutableRule executableRule);
 
     @Insert
     public abstract void insertAll(ExecutableRule... executableRule);
 
-    @Delete
-    public abstract void delete(ExecutableRule executableRule);
+    @Query("DELETE FROM executable_rule WHERE id=:id")
+    public abstract void delete(String id);
 
     @Query("SELECT * FROM executable_rule WHERE id IN (:ids)")
     public abstract ExecutableRule[] getByIds(String[] ids);

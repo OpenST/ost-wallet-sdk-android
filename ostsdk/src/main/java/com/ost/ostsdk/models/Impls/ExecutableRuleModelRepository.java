@@ -33,8 +33,8 @@ class ExecutableRuleModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    public void deleteExecutableRule(final ExecutableRule executableRule, final TaskCallback callback) {
-        super.delete(executableRule, callback);
+    public void deleteExecutableRule(final String id, final TaskCallback callback) {
+        super.delete(id, callback);
     }
 
     @Override

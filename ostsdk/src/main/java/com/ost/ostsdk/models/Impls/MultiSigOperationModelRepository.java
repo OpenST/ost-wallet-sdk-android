@@ -33,8 +33,8 @@ class MultiSigOperationModelRepository extends BaseModelCacheRepository implemen
     }
 
     @Override
-    public void deleteMultiSigOperation(final MultiSigOperation multiSigOperation, final TaskCallback callback) {
-        super.delete(multiSigOperation, callback);
+    public void deleteMultiSigOperation(final String id, final TaskCallback callback) {
+        super.delete(id, callback);
     }
 
     @Override

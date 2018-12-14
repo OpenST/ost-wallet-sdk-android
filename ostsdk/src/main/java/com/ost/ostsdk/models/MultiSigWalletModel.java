@@ -11,7 +11,7 @@ public interface MultiSigWalletModel {
 
     void insertAllMultiSigWallets(MultiSigWallet[] multiSigWallet, TaskCallback callback);
 
-    void deleteMultiSigWallet(MultiSigWallet multiSigWallet, TaskCallback callback);
+    void deleteMultiSigWallet(String id, TaskCallback callback);
 
     MultiSigWallet[] getMultiSigWalletsByIds(String[] ids);
 

@@ -1,11 +1,16 @@
 package com.ost.ostsdk;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.models.EconomyModel;
 import com.ost.ostsdk.models.Impls.ModelFactory;
-import com.ost.ostsdk.models.UserModel;
+import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.entities.Economy;
+import com.ost.ostsdk.models.entities.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class OstSdk {
 
@@ -16,11 +21,38 @@ public class OstSdk {
         OstSdkDatabase.initDatabase(mApplicationContext);
     }
 
-    public static EconomyModel getEconomyModel() {
-        return ModelFactory.getEconomyModel();
+    public static Economy registerEconomy(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
+        return ModelFactory.getEconomyModel().registerEconomy(jsonObject, callback);
     }
 
-    public static UserModel getUserModel() {
-        return ModelFactory.getUserModel();
+    public static Economy registerEconomy(JSONObject jsonObject) throws JSONException {
+        return registerEconomy(jsonObject, new TaskCallback() {
+        });
+    }
+
+    public static Economy getEconomy(String economyId) {
+        return ModelFactory.getEconomyModel().getEconomyById(economyId);
+    }
+
+    public static User initUser(JSONObject jsonObject) throws JSONException {
+        return initUser(jsonObject, new TaskCallback() {
+        });
+    }
+
+    public static User initUser(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
+        return ModelFactory.getUserModel().initUser(jsonObject, callback);
+    }
+
+    public static User getUser(String id) {
+        return ModelFactory.getUserModel().getUserById(id);
+    }
+
+    public static void delUser(String userId) {
+        delUser(userId, new TaskCallback() {
+        });
+    }
+
+    public static void delUser(String userId, @NonNull TaskCallback callback) {
+        ModelFactory.getUserModel().deleteUser(userId, callback);
     }
 }

@@ -1,7 +1,6 @@
 package com.ost.ostsdk.database.daos;
 
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -19,18 +18,14 @@ public abstract class SecureKeyDao implements BaseDao {
         this.insertAll((SecureKey[]) baseEntity);
     }
 
-    public void delete(BaseEntity baseEntity) {
-        this.delete((SecureKey) baseEntity);
-    }
-
     @Insert
     public abstract void insert(SecureKey secureKey);
 
     @Insert
     public abstract void insertAll(SecureKey... secureKey);
 
-    @Delete
-    public abstract void delete(SecureKey secureKey);
+    @Query("DELETE FROM secure_key WHERE id=:id")
+    public abstract void delete(String id);
 
     @Query("SELECT * FROM secure_key WHERE id IN (:ids)")
     public abstract SecureKey[] getByIds(String[] ids);

@@ -66,11 +66,11 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         return buildResultSet(ids, baseEntities);
     }
 
-    public void delete(final BaseEntity baseEntity, final TaskCallback callback) {
-        super.delete(baseEntity, new TaskCallback() {
+    public void delete(final String id, final TaskCallback callback) {
+        super.delete(id, new TaskCallback() {
             @Override
             public void onSuccess() {
-                removeFromCache(baseEntity);
+                removeFromCache(id);
                 callback.onSuccess();
             }
         });
@@ -131,13 +131,13 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         this.mInMemoryMap.remove(baseEntity.getId());
     }
 
-    private void removeFromCache(BaseEntity baseEntity) {
-        this.mLruCache.remove(baseEntity.getId());
+    private void removeFromCache(String id) {
+        this.mLruCache.remove(id);
     }
 
-    private void removeFromCache(BaseEntity[] baseEntities) {
-        for (BaseEntity baseEntity : baseEntities) {
-            this.mLruCache.remove(baseEntity.getId());
+    private void removeFromCache(String[] ids) {
+        for (String id : ids) {
+            this.mLruCache.remove(id);
         }
     }
 

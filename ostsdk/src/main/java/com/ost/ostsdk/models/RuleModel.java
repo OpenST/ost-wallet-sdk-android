@@ -10,7 +10,7 @@ public interface RuleModel {
 
     void insertAllRules(Rule[] rule, TaskCallback callback);
 
-    void deleteRule(Rule rule, TaskCallback callback);
+    void deleteRule(String id, TaskCallback callback);
 
     Rule[] getRulesByIds(String[] ids);
 
@@ -18,5 +18,5 @@ public interface RuleModel {
 
     void deleteAllRules(TaskCallback callback);
 
-    Rule initRule(JSONObject jsonObject) throws JSONException;
+    Rule initRule(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 }

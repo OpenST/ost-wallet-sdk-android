@@ -33,8 +33,8 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    public void deleteMultiSigWallet(final MultiSigWallet multiSigWallet, final TaskCallback callback) {
-        super.delete(multiSigWallet, callback);
+    public void deleteMultiSigWallet(final String id, final TaskCallback callback) {
+        super.delete(id, callback);
     }
 
     @Override

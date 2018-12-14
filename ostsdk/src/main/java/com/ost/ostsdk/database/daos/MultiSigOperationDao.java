@@ -1,7 +1,6 @@
 package com.ost.ostsdk.database.daos;
 
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -19,18 +18,14 @@ public abstract class MultiSigOperationDao implements BaseDao {
         this.insertAll((MultiSigOperation[]) baseEntity);
     }
 
-    public void delete(BaseEntity baseEntity) {
-        this.delete((MultiSigOperation) baseEntity);
-    }
-
     @Insert
     public abstract void insert(MultiSigOperation multiSigOperation);
 
     @Insert
     public abstract void insertAll(MultiSigOperation... multiSigOperation);
 
-    @Delete
-    public abstract void delete(MultiSigOperation multiSigOperation);
+    @Query("DELETE FROM multi_sig_operation WHERE id=:id")
+    public abstract void delete(String id);
 
     @Query("SELECT * FROM multi_sig_operation WHERE id IN (:ids)")
     public abstract MultiSigOperation[] getByIds(String[] ids);

@@ -7,7 +7,7 @@ public interface BaseDao {
 
     void insertAll(BaseEntity... baseEntity);
 
-    void delete(BaseEntity baseEntity);
+    void delete(String id);
 
     BaseEntity[] getByIds(String[] ids);
 

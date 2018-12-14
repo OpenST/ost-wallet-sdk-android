@@ -4,8 +4,10 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.EconomyDao;
 import com.ost.ostsdk.models.EconomyModel;
+import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.Economy;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 class EconomyModelRepository extends BaseModelCacheRepository implements EconomyModel {
@@ -25,12 +27,14 @@ class EconomyModelRepository extends BaseModelCacheRepository implements Economy
 
 
     @Override
-    public Economy registerEconomy(JSONObject jsonObject) {
-        return null;
+    public Economy registerEconomy(JSONObject jsonObject, TaskCallback callback) throws JSONException {
+        Economy economy = new Economy(jsonObject);
+        super.insert(economy, callback);
+        return economy;
     }
 
     @Override
     public Economy getEconomyById(String id) {
-        return null;
+        return (Economy) super.getById(id);
     }
 }

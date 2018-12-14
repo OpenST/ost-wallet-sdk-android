@@ -10,9 +10,11 @@ import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.UserModel;
+import com.ost.ostsdk.models.TokenHolderModel;
+import com.ost.ostsdk.models.entities.TokenHolder;
 import com.ost.ostsdk.models.entities.User;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
@@ -29,7 +31,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(AndroidJUnit4.class)
-public class UserModelTest {
+public class TokenHolderModelTest {
 
 
     @ClassRule
@@ -45,31 +47,31 @@ public class UserModelTest {
         testHelper.createDatabase("ostsdk_db", 1);
         OstSdk.init(appContext.getApplicationContext());
 
-        UserModel userModel = ModelFactory.getUserModel();
-        userModel.deleteAllUsers(new TaskCallback() {
+        TokenHolderModel tokenHolderModel = ModelFactory.getTokenHolderModel();
+        tokenHolderModel.deleteAllTokenHolders(new TaskCallback() {
         });
     }
 
 
     @Test
-    public void testUserInsertion() throws JSONException, InterruptedException {
+    public void testTokenHolderInsertion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        insertUserData();
+        insertTokenHolderData();
 
-        User user = OstSdk.getUser("1");
-        assertNotNull(user);
-        assertEquals("user", user.getName());
-        assertEquals("1", user.getId());
+        TokenHolder tokenHolder = OstSdk.getUser("1").getTokenHolder("1");
+        assertNotNull(tokenHolder);
+        assertEquals(1, tokenHolder.getRequirements());
+        assertEquals("address", tokenHolder.getAddress());
     }
 
 
     @Test
-    public void testUserDeletion() throws JSONException, InterruptedException {
+    public void testTokenHolderDeletion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        User user = insertUserData();
+        TokenHolder tokenHolder = insertTokenHolderData();
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.delUser(user.getId(), new TaskCallback() {
+        OstSdk.getUser("1").delTokenHolder(tokenHolder.getId(), new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -78,55 +80,41 @@ public class UserModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        user = OstSdk.getUser("1");
-        assertNull(user);
+        tokenHolder = OstSdk.getUser("1").getTokenHolder("1");
+        assertNull(tokenHolder);
     }
 
     @Test
     public void testUserInsertionInCache() throws JSONException, InterruptedException {
         // Context of the app under test.
-        User user = insertUserData();
+        TokenHolder tokenHolder = insertTokenHolderData();
 
-        OstSdkDatabase.getDatabase().userDao().delete(user.getId());
-        user = OstSdk.getUser("1");
-        assertNotNull(user);
-        assertEquals("user", user.getName());
-        assertEquals("1", user.getId());
-    }
-
-    @Test
-    public void testUserInsertionInMemory() throws JSONException, InterruptedException {
-        // Context of the app under test.
-        User user = insertUserData();
-
-        populateCache(2);
-
-        OstSdkDatabase.getDatabase().userDao().delete(user.getId());
-
-        user = OstSdk.getUser("1");
-        assertNotNull(user);
-        assertEquals("user", user.getName());
-        assertEquals("1", user.getId());
+        OstSdkDatabase.getDatabase().tokenHolderDao().delete(tokenHolder.getId());
+        tokenHolder = OstSdk.getUser("1").getTokenHolder("1");
+        assertNotNull(tokenHolder);
+        assertEquals(1, tokenHolder.getRequirements());
+        assertEquals("address", tokenHolder.getAddress());
     }
 
     private void populateCache(int cacheSizeToPopulate) throws JSONException, InterruptedException {
 
         for (int i = 0; i < cacheSizeToPopulate; i++) {
-            insertUserData(i + 10);
+            insertTokenHolderData(i + 10);
         }
     }
 
-    private User insertUserData() throws JSONException, InterruptedException {
-        return insertUserData(1);
+    private TokenHolder insertTokenHolderData() throws JSONException, InterruptedException {
+        return insertTokenHolderData(1);
     }
 
-    private User insertUserData(int param) throws JSONException, InterruptedException {
+    private TokenHolder insertTokenHolderData(int param) throws JSONException, InterruptedException {
         JSONObject userObj = new JSONObject();
 
         userObj.put(User.ID, String.valueOf(param));
         userObj.put(User.ECONOMY_ID, "1");
         userObj.put(User.NAME, "user");
         userObj.put(User.TOKEN_HOLDER_ID, "1");
+
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -139,6 +127,14 @@ public class UserModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        return user;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(TokenHolder.ID, "1");
+        jsonObject.put(TokenHolder.USER_ID, "1");
+        jsonObject.put(TokenHolder.SESSIONS, new JSONArray());
+        jsonObject.put(TokenHolder.EXECUTE_RULE_CALL_PREFIX, "tokenHolderNo1");
+        jsonObject.put(TokenHolder.REQUIREMENTS, 1);
+        jsonObject.put(TokenHolder.ADDRESS, "address");
+
+        return user.initTokenHolder(jsonObject);
     }
 }

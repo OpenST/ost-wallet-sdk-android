@@ -10,7 +10,7 @@ public interface SecureKeyModel {
 
     void insertAllSecureKeys(SecureKey[] secureKey, TaskCallback callback);
 
-    void deleteSecureKey(SecureKey secureKey, TaskCallback callback);
+    void deleteSecureKey(String id, TaskCallback callback);
 
     SecureKey[] getSecureKeysByIds(String[] ids);
 

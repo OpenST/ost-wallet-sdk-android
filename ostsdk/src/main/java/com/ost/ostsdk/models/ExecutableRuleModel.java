@@ -11,7 +11,7 @@ public interface ExecutableRuleModel {
 
     void insertAllExecutableRules(ExecutableRule[] executableRule, TaskCallback callback);
 
-    void deleteExecutableRule(ExecutableRule executableRule, TaskCallback callback);
+    void deleteExecutableRule(String id, TaskCallback callback);
 
     ExecutableRule[] getExecutableRulesByIds(String[] ids);
 

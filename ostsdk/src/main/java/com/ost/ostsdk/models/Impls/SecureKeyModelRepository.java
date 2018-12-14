@@ -31,8 +31,8 @@ class SecureKeyModelRepository extends BaseModelRepository implements SecureKeyM
     }
 
     @Override
-    public void deleteSecureKey(final SecureKey secureKey, final TaskCallback callback) {
-        super.delete(secureKey, callback);
+    public void deleteSecureKey(final String id, final TaskCallback callback) {
+        super.delete(id, callback);
     }
 
     @Override

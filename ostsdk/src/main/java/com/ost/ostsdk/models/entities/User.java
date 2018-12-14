@@ -2,6 +2,10 @@ package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.support.annotation.NonNull;
+
+import com.ost.ostsdk.models.Impls.ModelFactory;
+import com.ost.ostsdk.models.TaskCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,5 +74,28 @@ public class User extends BaseEntity {
                 jsonObject.has(User.ECONOMY_ID) &&
                 jsonObject.has(User.TOKEN_HOLDER_ID) &&
                 jsonObject.has(User.NAME);
+    }
+
+    public TokenHolder initTokenHolder(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
+        jsonObject.put(BaseEntity.PARENT_ID, getId());
+        return ModelFactory.getTokenHolderModel().initTokenHolder(jsonObject, callback);
+    }
+
+    public TokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException {
+        return initTokenHolder(jsonObject, new TaskCallback() {
+        });
+    }
+
+    public TokenHolder getTokenHolder(String id) {
+        return ModelFactory.getTokenHolderModel().getTokenHolderById(id);
+    }
+
+    public void delTokenHolder(String id, @NonNull TaskCallback callback) {
+        ModelFactory.getTokenHolderModel().deleteTokenHolder(id, callback);
+    }
+
+    public void delTokenHolder(String id) {
+        delTokenHolder(id, new TaskCallback() {
+        });
     }
 }

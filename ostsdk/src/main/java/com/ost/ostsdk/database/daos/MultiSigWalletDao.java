@@ -1,7 +1,6 @@
 package com.ost.ostsdk.database.daos;
 
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
@@ -29,8 +28,8 @@ public abstract class MultiSigWalletDao implements BaseDao {
     @Insert
     public abstract void insertAll(MultiSigWallet... multiSigWallet);
 
-    @Delete
-    public abstract void delete(MultiSigWallet multiSigWallet);
+    @Query("DELETE FROM multi_sig_wallet WHERE id=:id")
+    public abstract void delete(String id);
 
     @Query("SELECT * FROM multi_sig_wallet WHERE id IN (:ids)")
     public abstract MultiSigWallet[] getByIds(String[] ids);

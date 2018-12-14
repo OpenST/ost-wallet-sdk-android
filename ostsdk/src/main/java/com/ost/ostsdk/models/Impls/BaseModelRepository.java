@@ -38,11 +38,11 @@ abstract class BaseModelRepository {
         }));
     }
 
-    public void delete(final BaseEntity baseEntity, final TaskCallback callback) {
+    public void delete(final String id, final TaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
-                getModel().delete(baseEntity);
+                getModel().delete(id);
             }
 
             @Override

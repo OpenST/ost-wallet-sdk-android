@@ -11,7 +11,7 @@ public interface TokenHolderModel {
 
     void insertAllTokenHolders(TokenHolder[] tokenHolders, TaskCallback callback);
 
-    void deleteTokenHolder(TokenHolder tokenHolder, TaskCallback callback);
+    void deleteTokenHolder(String id, TaskCallback callback);
 
     TokenHolder[] getTokenHoldersByIds(String[] ids);
 
@@ -19,5 +19,5 @@ public interface TokenHolderModel {
 
     void deleteAllTokenHolders(TaskCallback callback);
 
-    TokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException;
+    TokenHolder initTokenHolder(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 }

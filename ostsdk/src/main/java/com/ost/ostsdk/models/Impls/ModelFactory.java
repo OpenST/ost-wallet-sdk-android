@@ -2,6 +2,7 @@ package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.models.EconomyModel;
 import com.ost.ostsdk.models.RuleModel;
+import com.ost.ostsdk.models.TokenHolderModel;
 import com.ost.ostsdk.models.UserModel;
 
 public class ModelFactory {
@@ -9,6 +10,8 @@ public class ModelFactory {
     private static volatile UserModel USER_MODEL_INSTANCE;
     private static volatile RuleModel RULE_MODEL_INSTANCE;
     private static volatile EconomyModel ECONOMY_MODEL_INSTANCE;
+    private static volatile TokenHolderModel TOKEN_HOLDER_MODEL_INSTANCE;
+
 
 
     public static UserModel getUserModel() {
@@ -42,6 +45,17 @@ public class ModelFactory {
             }
         }
         return ECONOMY_MODEL_INSTANCE;
+    }
+
+    public static TokenHolderModel getTokenHolderModel() {
+        if (TOKEN_HOLDER_MODEL_INSTANCE == null) {
+            synchronized (TokenHolderModelRepository.class) {
+                if (TOKEN_HOLDER_MODEL_INSTANCE == null) {
+                    TOKEN_HOLDER_MODEL_INSTANCE = new TokenHolderModelRepository();
+                }
+            }
+        }
+        return TOKEN_HOLDER_MODEL_INSTANCE;
     }
 
 

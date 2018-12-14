@@ -33,8 +33,8 @@ class MultiSigModelRepository extends BaseModelCacheRepository implements MultiS
     }
 
     @Override
-    public void deleteMultiSig(final MultiSig multiSig, final TaskCallback callback) {
-        super.delete(multiSig, callback);
+    public void deleteMultiSig(final String id, final TaskCallback callback) {
+        super.delete(id, callback);
     }
 
     @Override

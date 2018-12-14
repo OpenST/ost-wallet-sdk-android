@@ -9,7 +9,7 @@ public interface UserModel {
 
     void insertAllUsers(User[] user, TaskCallback callback);
 
-    void deleteUser(User user, TaskCallback callback);
+    void deleteUser(String id, TaskCallback callback);
 
     User[] getUsersByIds(String[] ids);
 

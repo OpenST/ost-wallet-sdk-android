@@ -11,7 +11,7 @@ public interface MultiSigOperationModel {
 
     void insertAllMultiSigOperations(MultiSigOperation[] multiSigOperation, TaskCallback callback);
 
-    void deleteMultiSigOperation(MultiSigOperation multiSigOperation, TaskCallback callback);
+    void deleteMultiSigOperation(String id, TaskCallback callback);
 
     MultiSigOperation[] getMultiSigOperationsByIds(String[] ids);
 

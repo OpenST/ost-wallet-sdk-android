@@ -9,8 +9,10 @@ import android.support.test.runner.AndroidJUnit4;
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
+import com.ost.ostsdk.models.RuleModel;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.UserModel;
+import com.ost.ostsdk.models.entities.Economy;
+import com.ost.ostsdk.models.entities.Rule;
 import com.ost.ostsdk.models.entities.User;
 
 import org.json.JSONException;
@@ -29,7 +31,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(AndroidJUnit4.class)
-public class UserModelTest {
+public class RuleModelTest {
 
 
     @ClassRule
@@ -45,31 +47,31 @@ public class UserModelTest {
         testHelper.createDatabase("ostsdk_db", 1);
         OstSdk.init(appContext.getApplicationContext());
 
-        UserModel userModel = ModelFactory.getUserModel();
-        userModel.deleteAllUsers(new TaskCallback() {
+        RuleModel ruleModel = ModelFactory.getRuleModel();
+        ruleModel.deleteAllRules(new TaskCallback() {
         });
     }
 
 
     @Test
-    public void testUserInsertion() throws JSONException, InterruptedException {
+    public void testRuleInsertion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        insertUserData();
+        insertRuleData();
 
-        User user = OstSdk.getUser("1");
-        assertNotNull(user);
-        assertEquals("user", user.getName());
-        assertEquals("1", user.getId());
+        Rule rule = OstSdk.getEconomy("1").getRule("1");
+        assertNotNull(rule);
+        assertEquals("ruleNo1", rule.getName());
+        assertEquals("1", rule.getId());
     }
 
 
     @Test
-    public void testUserDeletion() throws JSONException, InterruptedException {
+    public void testRuleDeletion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        User user = insertUserData();
+        Rule rule = insertRuleData();
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.delUser(user.getId(), new TaskCallback() {
+        OstSdk.getEconomy("1").delRule(rule.getId(), new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -78,59 +80,42 @@ public class UserModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        user = OstSdk.getUser("1");
-        assertNull(user);
+        rule = OstSdk.getEconomy("1").getRule("1");
+        assertNull(rule);
     }
 
     @Test
     public void testUserInsertionInCache() throws JSONException, InterruptedException {
         // Context of the app under test.
-        User user = insertUserData();
+        Rule rule = insertRuleData();
 
-        OstSdkDatabase.getDatabase().userDao().delete(user.getId());
-        user = OstSdk.getUser("1");
-        assertNotNull(user);
-        assertEquals("user", user.getName());
-        assertEquals("1", user.getId());
-    }
-
-    @Test
-    public void testUserInsertionInMemory() throws JSONException, InterruptedException {
-        // Context of the app under test.
-        User user = insertUserData();
-
-        populateCache(2);
-
-        OstSdkDatabase.getDatabase().userDao().delete(user.getId());
-
-        user = OstSdk.getUser("1");
-        assertNotNull(user);
-        assertEquals("user", user.getName());
-        assertEquals("1", user.getId());
+        OstSdkDatabase.getDatabase().ruleDao().delete(rule.getId());
+        rule = OstSdk.getEconomy("1").getRule("1");
+        assertNotNull(rule);
+        assertEquals("ruleNo1", rule.getName());
+        assertEquals("1", rule.getId());
     }
 
     private void populateCache(int cacheSizeToPopulate) throws JSONException, InterruptedException {
 
         for (int i = 0; i < cacheSizeToPopulate; i++) {
-            insertUserData(i + 10);
+            insertRuleData(i + 10);
         }
     }
 
-    private User insertUserData() throws JSONException, InterruptedException {
-        return insertUserData(1);
+    private Rule insertRuleData() throws JSONException, InterruptedException {
+        return insertRuleData(1);
     }
 
-    private User insertUserData(int param) throws JSONException, InterruptedException {
-        JSONObject userObj = new JSONObject();
+    private Rule insertRuleData(int param) throws JSONException, InterruptedException {
+        JSONObject economyJson = new JSONObject();
 
-        userObj.put(User.ID, String.valueOf(param));
-        userObj.put(User.ECONOMY_ID, "1");
-        userObj.put(User.NAME, "user");
-        userObj.put(User.TOKEN_HOLDER_ID, "1");
+        economyJson.put(User.ID, String.valueOf(param));
+
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        User user = OstSdk.initUser(userObj, new TaskCallback() {
+        Economy economy = OstSdk.registerEconomy(economyJson, new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -139,6 +124,13 @@ public class UserModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        return user;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(Rule.ID, "1");
+        jsonObject.put(Rule.ECONOMY_ID, "1");
+        jsonObject.put(Rule.ABI, "asdfgh");
+        jsonObject.put(Rule.NAME, "ruleNo1");
+        jsonObject.put(Rule.ADDRESS, "address");
+
+        return economy.initRule(jsonObject);
     }
 }
