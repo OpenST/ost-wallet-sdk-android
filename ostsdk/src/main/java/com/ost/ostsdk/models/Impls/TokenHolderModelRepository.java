@@ -3,11 +3,9 @@ package com.ost.ostsdk.models.Impls;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.TokenHolderDao;
-import com.ost.ostsdk.models.TaskCompleteCallback;
+import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.TokenHolderModel;
-import com.ost.ostsdk.models.UserModel;
 import com.ost.ostsdk.models.entities.TokenHolder;
-import com.ost.ostsdk.models.entities.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,17 +27,17 @@ class TokenHolderModelRepository extends BaseModelCacheRepository implements Tok
     }
 
     @Override
-    public void insertTokenHolder(TokenHolder tokenHolder, TaskCompleteCallback callback) {
+    public void insertTokenHolder(TokenHolder tokenHolder, TaskCallback callback) {
         super.insert(tokenHolder, callback);
     }
 
     @Override
-    public void insertAllTokenHolders(TokenHolder[] tokenHolders, TaskCompleteCallback callback) {
+    public void insertAllTokenHolders(TokenHolder[] tokenHolders, TaskCallback callback) {
         super.insertAll(tokenHolders, callback);
     }
 
     @Override
-    public void deleteTokenHolder(TokenHolder tokenHolder, TaskCompleteCallback callback) {
+    public void deleteTokenHolder(TokenHolder tokenHolder, TaskCallback callback) {
         super.delete(tokenHolder, callback);
     }
 
@@ -54,7 +52,7 @@ class TokenHolderModelRepository extends BaseModelCacheRepository implements Tok
     }
 
     @Override
-    public void deleteAllTokenHolders(TaskCompleteCallback callback) {
+    public void deleteAllTokenHolders(TaskCallback callback) {
         super.deleteAll(callback);
     }
 

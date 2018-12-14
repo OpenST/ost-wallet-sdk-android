@@ -4,7 +4,7 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.RuleDao;
 import com.ost.ostsdk.models.RuleModel;
-import com.ost.ostsdk.models.TaskCompleteCallback;
+import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.Rule;
 
 import org.json.JSONException;
@@ -23,17 +23,17 @@ class RuleModelRepository extends BaseModelCacheRepository implements RuleModel 
 
 
     @Override
-    public void insertRule(final Rule rule, final TaskCompleteCallback callback) {
+    public void insertRule(final Rule rule, final TaskCallback callback) {
         super.insert(rule, callback);
     }
 
     @Override
-    public void insertAllRules(final Rule[] rule, final TaskCompleteCallback callback) {
+    public void insertAllRules(final Rule[] rule, final TaskCallback callback) {
         super.insertAll(rule, callback);
     }
 
     @Override
-    public void deleteRule(final Rule rule, final TaskCompleteCallback callback) {
+    public void deleteRule(final Rule rule, final TaskCallback callback) {
         super.delete(rule, callback);
     }
 
@@ -48,7 +48,7 @@ class RuleModelRepository extends BaseModelCacheRepository implements RuleModel 
     }
 
     @Override
-    public void deleteAllRules(final TaskCompleteCallback callback) {
+    public void deleteAllRules(final TaskCallback callback) {
         super.deleteAll(callback);
     }
 

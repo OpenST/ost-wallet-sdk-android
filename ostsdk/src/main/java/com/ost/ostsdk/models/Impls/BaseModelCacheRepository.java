@@ -2,7 +2,7 @@ package com.ost.ostsdk.models.Impls;
 
 import android.util.LruCache;
 
-import com.ost.ostsdk.models.TaskCompleteCallback;
+import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.BaseEntity;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         this.mInMemoryMap = new HashMap<>();
     }
 
-    public void insert(final BaseEntity baseEntity, final TaskCompleteCallback callback) {
+    public void insert(final BaseEntity baseEntity, final TaskCallback callback) {
 
         //check in cache for for entity with same uts
         BaseEntity oldEntity = getById(baseEntity.getId());
@@ -28,26 +28,22 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
             return;
         }
 
-        super.insert(baseEntity, new TaskCompleteCallback() {
+        super.insert(baseEntity, new TaskCallback() {
             @Override
-            public void onTaskComplete() {
-                if (null != callback) {
-                    callback.onTaskComplete();
-                }
+            public void onSuccess() {
+                callback.onSuccess();
                 removeInMemory(baseEntity);
             }
         });
         insertInCacheAndMemory(baseEntity);
     }
 
-    public void insertAll(final BaseEntity[] baseEntities, final TaskCompleteCallback callback) {
+    public void insertAll(final BaseEntity[] baseEntities, final TaskCallback callback) {
 
-        super.insertAll(baseEntities, new TaskCompleteCallback() {
+        super.insertAll(baseEntities, new TaskCallback() {
             @Override
-            public void onTaskComplete() {
-                if (null != callback) {
-                    callback.onTaskComplete();
-                }
+            public void onSuccess() {
+                callback.onSuccess();
                 removeInMemory(baseEntities);
             }
         });
@@ -70,26 +66,21 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         return buildResultSet(ids, baseEntities);
     }
 
-    public void delete(final BaseEntity baseEntity, final TaskCompleteCallback callback) {
-        super.delete(baseEntity, new TaskCompleteCallback() {
+    public void delete(final BaseEntity baseEntity, final TaskCallback callback) {
+        super.delete(baseEntity, new TaskCallback() {
             @Override
-            public void onTaskComplete() {
+            public void onSuccess() {
                 removeFromCache(baseEntity);
-                if (null != callback) {
-                    callback.onTaskComplete();
-                }
+                callback.onSuccess();
             }
         });
     }
 
-    public void deleteAll(final TaskCompleteCallback callback) {
-        super.deleteAll(new TaskCompleteCallback() {
+    public void deleteAll(final TaskCallback callback) {
+        super.deleteAll(new TaskCallback() {
             @Override
-            public void onTaskComplete() {
-                if (null != callback) {
-                    callback.onTaskComplete();
-                }
-
+            public void onSuccess() {
+                callback.onSuccess();
             }
         });
         mLruCache.evictAll();

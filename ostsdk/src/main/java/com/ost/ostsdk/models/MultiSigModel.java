@@ -7,17 +7,17 @@ import org.json.JSONObject;
 
 public interface MultiSigModel {
 
-    void insertMultiSig(MultiSig multiSig, TaskCompleteCallback callback);
+    void insertMultiSig(MultiSig multiSig, TaskCallback callback);
 
-    void insertAllMultiSigs(MultiSig[] multiSig, TaskCompleteCallback callback);
+    void insertAllMultiSigs(MultiSig[] multiSig, TaskCallback callback);
 
-    void deleteMultiSig(MultiSig multiSig, TaskCompleteCallback callback);
+    void deleteMultiSig(MultiSig multiSig, TaskCallback callback);
 
     MultiSig[] getMultiSigsByIds(String[] ids);
 
     MultiSig getMultiSigById(String id);
 
-    void deleteAllMultiSigs(TaskCompleteCallback callback);
+    void deleteAllMultiSigs(TaskCallback callback);
 
     MultiSig initMultiSig(JSONObject jsonObject) throws JSONException;
 }

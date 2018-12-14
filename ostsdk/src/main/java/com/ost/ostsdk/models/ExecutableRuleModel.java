@@ -7,17 +7,17 @@ import org.json.JSONObject;
 
 public interface ExecutableRuleModel {
 
-    void insertExecutableRule(ExecutableRule executableRule, TaskCompleteCallback callback);
+    void insertExecutableRule(ExecutableRule executableRule, TaskCallback callback);
 
-    void insertAllExecutableRules(ExecutableRule[] executableRule, TaskCompleteCallback callback);
+    void insertAllExecutableRules(ExecutableRule[] executableRule, TaskCallback callback);
 
-    void deleteExecutableRule(ExecutableRule executableRule, TaskCompleteCallback callback);
+    void deleteExecutableRule(ExecutableRule executableRule, TaskCallback callback);
 
     ExecutableRule[] getExecutableRulesByIds(String[] ids);
 
     ExecutableRule getExecutableRuleById(String id);
 
-    void deleteAllExecutableRules(TaskCompleteCallback callback);
+    void deleteAllExecutableRules(TaskCallback callback);
 
     ExecutableRule initExecutableRule(JSONObject jsonObject) throws JSONException;
 }

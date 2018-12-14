@@ -7,17 +7,17 @@ import org.json.JSONObject;
 
 public interface UserModel {
 
-    void insertUser(User user, TaskCompleteCallback callback);
+    void insertAllUsers(User[] user, TaskCallback callback);
 
-    void insertAllUsers(User[] user, TaskCompleteCallback callback);
-
-    void deleteUser(User user, TaskCompleteCallback callback);
+    void deleteUser(User user, TaskCallback callback);
 
     User[] getUsersByIds(String[] ids);
 
     User getUserById(String id);
 
-    void deleteAllUsers(TaskCompleteCallback callback);
+    void deleteAllUsers(TaskCallback callback);
+
+    User initUser(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 
     User initUser(JSONObject jsonObject) throws JSONException;
 

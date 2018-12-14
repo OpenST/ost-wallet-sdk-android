@@ -8,7 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.models.TaskCompleteCallback;
+import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.UserModel;
 import com.ost.ostsdk.models.entities.User;
 
@@ -52,39 +52,25 @@ public class UserModelTest {
     @Test
     public void testUserInsertion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        JSONObject userObj = new JSONObject();
+        insertUserData();
 
-        userObj.put(User.ID, "1");
-        userObj.put(User.ECONOMY_ID, "1");
-        userObj.put(User.NAME, "user");
-        userObj.put(User.TOKEN_HOLDER_ID, "1");
-
-        final UserModel userModel = OstSdk.getUserModel();
-        User user = userModel.initUser(userObj);
-        user = userModel.getUserById("1");
+        User user = OstSdk.getUserModel().getUserById("1");
         assertNotNull(user);
         assertEquals("user", user.getName());
         assertEquals("1", user.getId());
     }
 
+
     @Test
     public void testUserDeletion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        JSONObject userObj = new JSONObject();
+        User user = insertUserData();
 
-        userObj.put(User.ID, "1");
-        userObj.put(User.ECONOMY_ID, "1");
-        userObj.put(User.NAME, "user");
-        userObj.put(User.TOKEN_HOLDER_ID, "1");
-
-        final UserModel userModel = OstSdk.getUserModel();
-        User user = userModel.initUser(userObj);
-
-        final CountDownLatch countDownLatch = new CountDownLatch(3);
-
-        userModel.deleteUser(user, new TaskCompleteCallback() {
+        UserModel userModel = OstSdk.getUserModel();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        userModel.deleteUser(user, new TaskCallback() {
             @Override
-            public void onTaskComplete() {
+            public void onSuccess() {
                 countDownLatch.countDown();
             }
         });
@@ -93,5 +79,67 @@ public class UserModelTest {
 
         user = userModel.getUserById("1");
         assertNull(user);
+    }
+
+    @Test
+    public void testUserInsertionInCache() throws JSONException, InterruptedException {
+        // Context of the app under test.
+        User user = insertUserData();
+
+        OstSdkDatabase.getDatabase().userDao().delete(user);
+        UserModel userModel = OstSdk.getUserModel();
+        user = userModel.getUserById("1");
+        assertNotNull(user);
+        assertEquals("user", user.getName());
+        assertEquals("1", user.getId());
+    }
+
+    @Test
+    public void testUserInsertionInMemory() throws JSONException, InterruptedException {
+        // Context of the app under test.
+        User user = insertUserData();
+
+        populateCache(2);
+
+        OstSdkDatabase.getDatabase().userDao().delete(user);
+
+        UserModel userModel = OstSdk.getUserModel();
+        user = userModel.getUserById("1");
+        assertNotNull(user);
+        assertEquals("user", user.getName());
+        assertEquals("1", user.getId());
+    }
+
+    private void populateCache(int cacheSizeToPopulate) throws JSONException, InterruptedException {
+
+        for (int i = 0; i < cacheSizeToPopulate; i++) {
+            insertUserData(i + 10);
+        }
+    }
+
+    private User insertUserData() throws JSONException, InterruptedException {
+        return insertUserData(1);
+    }
+
+    private User insertUserData(int param) throws JSONException, InterruptedException {
+        JSONObject userObj = new JSONObject();
+
+        userObj.put(User.ID, String.valueOf(param));
+        userObj.put(User.ECONOMY_ID, "1");
+        userObj.put(User.NAME, "user");
+        userObj.put(User.TOKEN_HOLDER_ID, "1");
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        User user = OstSdk.getUserModel().initUser(userObj, new TaskCallback() {
+            @Override
+            public void onSuccess() {
+                countDownLatch.countDown();
+            }
+        });
+
+        countDownLatch.await(5, TimeUnit.SECONDS);
+
+        return user;
     }
 }

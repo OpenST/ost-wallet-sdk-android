@@ -4,7 +4,7 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.MultiSigOperationDao;
 import com.ost.ostsdk.models.MultiSigOperationModel;
-import com.ost.ostsdk.models.TaskCompleteCallback;
+import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.MultiSigOperation;
 
 import org.json.JSONException;
@@ -23,17 +23,17 @@ class MultiSigOperationModelRepository extends BaseModelCacheRepository implemen
 
 
     @Override
-    public void insertMultiSigOperation(final MultiSigOperation multiSigOperation, final TaskCompleteCallback callback) {
+    public void insertMultiSigOperation(final MultiSigOperation multiSigOperation, final TaskCallback callback) {
         super.insert(multiSigOperation, callback);
     }
 
     @Override
-    public void insertAllMultiSigOperations(final MultiSigOperation[] multiSigOperation, final TaskCompleteCallback callback) {
+    public void insertAllMultiSigOperations(final MultiSigOperation[] multiSigOperation, final TaskCallback callback) {
         super.insertAll(multiSigOperation, callback);
     }
 
     @Override
-    public void deleteMultiSigOperation(final MultiSigOperation multiSigOperation, final TaskCompleteCallback callback) {
+    public void deleteMultiSigOperation(final MultiSigOperation multiSigOperation, final TaskCallback callback) {
         super.delete(multiSigOperation, callback);
     }
 
@@ -48,7 +48,7 @@ class MultiSigOperationModelRepository extends BaseModelCacheRepository implemen
     }
 
     @Override
-    public void deleteAllMultiSigOperations(final TaskCompleteCallback callback) {
+    public void deleteAllMultiSigOperations(final TaskCallback callback) {
         super.deleteAll(callback);
     }
 

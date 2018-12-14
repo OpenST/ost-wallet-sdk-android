@@ -3,7 +3,7 @@ package com.ost.ostsdk.models.Impls;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.UserDao;
-import com.ost.ostsdk.models.TaskCompleteCallback;
+import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.UserModel;
 import com.ost.ostsdk.models.entities.User;
 
@@ -22,18 +22,17 @@ class UserModelRepository extends BaseModelCacheRepository implements UserModel 
     }
 
 
-    @Override
-    public void insertUser(final User user, final TaskCompleteCallback callback) {
+    public void insertUser(final User user, final TaskCallback callback) {
         super.insert(user, callback);
     }
 
     @Override
-    public void insertAllUsers(final User[] user, final TaskCompleteCallback callback) {
+    public void insertAllUsers(final User[] user, final TaskCallback callback) {
         super.insertAll(user, callback);
     }
 
     @Override
-    public void deleteUser(final User user, final TaskCompleteCallback callback) {
+    public void deleteUser(final User user, final TaskCallback callback) {
         super.delete(user, callback);
     }
 
@@ -48,15 +47,21 @@ class UserModelRepository extends BaseModelCacheRepository implements UserModel 
     }
 
     @Override
-    public void deleteAllUsers(final TaskCompleteCallback callback) {
+    public void deleteAllUsers(final TaskCallback callback) {
         super.deleteAll(callback);
     }
 
     @Override
-    public User initUser(JSONObject jsonObject) throws JSONException {
+    public User initUser(JSONObject jsonObject, TaskCallback callback) throws JSONException {
         User user = new User(jsonObject);
-        insert(user, null);
+        insert(user, callback);
         return user;
+    }
+
+    @Override
+    public User initUser(JSONObject jsonObject) throws JSONException {
+        return initUser(jsonObject, new TaskCallback() {
+        });
     }
 
     @Override

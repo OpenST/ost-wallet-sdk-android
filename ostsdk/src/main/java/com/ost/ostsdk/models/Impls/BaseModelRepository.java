@@ -1,18 +1,16 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.daos.BaseDao;
-import com.ost.ostsdk.models.TaskCompleteCallback;
+import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.BaseEntity;
 import com.ost.ostsdk.utils.DispatchAsync;
-
-import java.util.HashMap;
 
 abstract class BaseModelRepository {
 
     BaseModelRepository() {
     }
 
-    public void insert(final BaseEntity baseEntity, final TaskCompleteCallback callback) {
+    public void insert(final BaseEntity baseEntity, final TaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -21,14 +19,12 @@ abstract class BaseModelRepository {
 
             @Override
             public void onExecuteComplete() {
-                if (callback != null) {
-                    callback.onTaskComplete();
-                }
+                callback.onSuccess();
             }
         }));
     }
 
-    public void insertAll(final BaseEntity[] baseEntities, final TaskCompleteCallback callback) {
+    public void insertAll(final BaseEntity[] baseEntities, final TaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -37,14 +33,12 @@ abstract class BaseModelRepository {
 
             @Override
             public void onExecuteComplete() {
-                if (callback != null) {
-                    callback.onTaskComplete();
-                }
+                callback.onSuccess();
             }
         }));
     }
 
-    public void delete(final BaseEntity baseEntity, final TaskCompleteCallback callback) {
+    public void delete(final BaseEntity baseEntity, final TaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -53,9 +47,7 @@ abstract class BaseModelRepository {
 
             @Override
             public void onExecuteComplete() {
-                if (callback != null) {
-                    callback.onTaskComplete();
-                }
+                callback.onSuccess();
             }
         }));
     }
@@ -70,7 +62,7 @@ abstract class BaseModelRepository {
     }
 
 
-    public void deleteAll(final TaskCompleteCallback callback) {
+    public void deleteAll(final TaskCallback callback) {
         getModel().deleteAll();
     }
 

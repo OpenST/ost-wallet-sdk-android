@@ -6,17 +6,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface RuleModel {
-    void insertRule(Rule rule, TaskCompleteCallback callback);
+    void insertRule(Rule rule, TaskCallback callback);
 
-    void insertAllRules(Rule[] rule, TaskCompleteCallback callback);
+    void insertAllRules(Rule[] rule, TaskCallback callback);
 
-    void deleteRule(Rule rule, TaskCompleteCallback callback);
+    void deleteRule(Rule rule, TaskCallback callback);
 
     Rule[] getRulesByIds(String[] ids);
 
     Rule getRuleById(String id);
 
-    void deleteAllRules(TaskCompleteCallback callback);
+    void deleteAllRules(TaskCallback callback);
 
     Rule initRule(JSONObject jsonObject) throws JSONException;
 }

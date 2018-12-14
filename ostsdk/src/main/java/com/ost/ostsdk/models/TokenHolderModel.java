@@ -7,17 +7,17 @@ import org.json.JSONObject;
 
 public interface TokenHolderModel {
 
-    void insertTokenHolder(TokenHolder tokenHolder, TaskCompleteCallback callback);
+    void insertTokenHolder(TokenHolder tokenHolder, TaskCallback callback);
 
-    void insertAllTokenHolders(TokenHolder[] tokenHolders, TaskCompleteCallback callback);
+    void insertAllTokenHolders(TokenHolder[] tokenHolders, TaskCallback callback);
 
-    void deleteTokenHolder(TokenHolder tokenHolder, TaskCompleteCallback callback);
+    void deleteTokenHolder(TokenHolder tokenHolder, TaskCallback callback);
 
     TokenHolder[] getTokenHoldersByIds(String[] ids);
 
     TokenHolder getTokenHolderById(String id);
 
-    void deleteAllTokenHolders(TaskCompleteCallback callback);
+    void deleteAllTokenHolders(TaskCallback callback);
 
     TokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException;
 }

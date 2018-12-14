@@ -4,7 +4,7 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.TokenHolderSessionDao;
 import com.ost.ostsdk.models.TokenHolderSessionModel;
-import com.ost.ostsdk.models.TaskCompleteCallback;
+import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.TokenHolderSession;
 
 import org.json.JSONException;
@@ -23,17 +23,17 @@ class TokenHolderSessionModelRepository extends BaseModelCacheRepository impleme
 
 
     @Override
-    public void insertTokenHolderSession(final TokenHolderSession tokenHolderSession, final TaskCompleteCallback callback) {
+    public void insertTokenHolderSession(final TokenHolderSession tokenHolderSession, final TaskCallback callback) {
         super.insert(tokenHolderSession, callback);
     }
 
     @Override
-    public void insertAllTokenHolderSessions(final TokenHolderSession[] tokenHolderSession, final TaskCompleteCallback callback) {
+    public void insertAllTokenHolderSessions(final TokenHolderSession[] tokenHolderSession, final TaskCallback callback) {
         super.insertAll(tokenHolderSession, callback);
     }
 
     @Override
-    public void deleteTokenHolderSession(final TokenHolderSession tokenHolderSession, final TaskCompleteCallback callback) {
+    public void deleteTokenHolderSession(final TokenHolderSession tokenHolderSession, final TaskCallback callback) {
         super.delete(tokenHolderSession, callback);
     }
 
@@ -48,7 +48,7 @@ class TokenHolderSessionModelRepository extends BaseModelCacheRepository impleme
     }
 
     @Override
-    public void deleteAllTokenHolderSessions(final TaskCompleteCallback callback) {
+    public void deleteAllTokenHolderSessions(final TaskCallback callback) {
         super.deleteAll(callback);
     }
 

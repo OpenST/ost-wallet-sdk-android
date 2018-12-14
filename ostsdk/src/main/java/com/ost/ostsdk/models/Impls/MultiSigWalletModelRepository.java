@@ -4,7 +4,7 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.MultiSigWalletDao;
 import com.ost.ostsdk.models.MultiSigWalletModel;
-import com.ost.ostsdk.models.TaskCompleteCallback;
+import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.MultiSigWallet;
 
 import org.json.JSONException;
@@ -23,17 +23,17 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
 
 
     @Override
-    public void insertMultiSigWallet(final MultiSigWallet multiSigWallet, final TaskCompleteCallback callback) {
+    public void insertMultiSigWallet(final MultiSigWallet multiSigWallet, final TaskCallback callback) {
         super.insert(multiSigWallet, callback);
     }
 
     @Override
-    public void insertAllMultiSigWallets(final MultiSigWallet[] multiSigWallet, final TaskCompleteCallback callback) {
+    public void insertAllMultiSigWallets(final MultiSigWallet[] multiSigWallet, final TaskCallback callback) {
         super.insertAll(multiSigWallet, callback);
     }
 
     @Override
-    public void deleteMultiSigWallet(final MultiSigWallet multiSigWallet, final TaskCompleteCallback callback) {
+    public void deleteMultiSigWallet(final MultiSigWallet multiSigWallet, final TaskCallback callback) {
         super.delete(multiSigWallet, callback);
     }
 
@@ -48,7 +48,7 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    public void deleteAllMultiSigWallets(final TaskCompleteCallback callback) {
+    public void deleteAllMultiSigWallets(final TaskCallback callback) {
         super.deleteAll(callback);
     }
 

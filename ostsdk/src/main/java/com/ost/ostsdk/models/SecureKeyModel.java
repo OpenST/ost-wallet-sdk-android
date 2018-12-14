@@ -6,17 +6,17 @@ import org.json.JSONObject;
 
 public interface SecureKeyModel {
 
-    void insertSecureKey(SecureKey secureKey, TaskCompleteCallback callback);
+    void insertSecureKey(SecureKey secureKey, TaskCallback callback);
 
-    void insertAllSecureKeys(SecureKey[] secureKey, TaskCompleteCallback callback);
+    void insertAllSecureKeys(SecureKey[] secureKey, TaskCallback callback);
 
-    void deleteSecureKey(SecureKey secureKey, TaskCompleteCallback callback);
+    void deleteSecureKey(SecureKey secureKey, TaskCallback callback);
 
     SecureKey[] getSecureKeysByIds(String[] ids);
 
     SecureKey getSecureKeyById(String id);
 
-    void deleteAllSecureKeys(TaskCompleteCallback callback);
+    void deleteAllSecureKeys(TaskCallback callback);
 
     SecureKey initSecureKey(JSONObject jsonObject);
 }
