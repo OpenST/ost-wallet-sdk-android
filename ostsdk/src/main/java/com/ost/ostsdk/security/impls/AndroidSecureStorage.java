@@ -6,6 +6,7 @@ import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.ost.ostsdk.security.SecureStorage;
@@ -31,16 +32,16 @@ public class AndroidSecureStorage implements SecureStorage {
 
     private static final String TAG = AndroidSecureStorage.class.getName();
     private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
-    private static final String KEY_ALIAS = "AndroidKeyStorageKey";
     private static final String TRANSFORMATION_ASYMMETRIC = "RSA/ECB/PKCS1Padding";
     private static final String RSA = "RSA";
     private final Context mContext;
-
+    private String mKeyAlias;
 
     private KeyStore mKeyStore;
 
-    private AndroidSecureStorage(Context context) {
+    private AndroidSecureStorage(@NonNull Context context, @NonNull String keyAlias) {
         this.mContext = context.getApplicationContext();
+        this.mKeyAlias = keyAlias;
         try {
             mKeyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
             mKeyStore.load(null);
@@ -53,22 +54,12 @@ public class AndroidSecureStorage implements SecureStorage {
         }
     }
 
-    public static SecureStorage getInstance(Context context) {
-        return new AndroidSecureStorage(context);
+    public static SecureStorage getInstance(@NonNull Context context, @NonNull String keyAlias) {
+        return new AndroidSecureStorage(context, keyAlias);
     }
 
     @Override
-    public void addKeyIdentifier(String identifier) {
-
-    }
-
-    @Override
-    public void removeIdentifier(String identifier) {
-
-    }
-
-    @Override
-    public byte[] encrypt(String identifier, byte[] data) {
+    public byte[] encrypt(byte[] data) {
         try {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION_ASYMMETRIC);
             cipher.init(Cipher.ENCRYPT_MODE, Objects.requireNonNull(getKey()).getPublic());
@@ -80,7 +71,7 @@ public class AndroidSecureStorage implements SecureStorage {
     }
 
     @Override
-    public byte[] retrieve(String identifier, byte[] data) {
+    public byte[] decrypt(byte[] data) {
         try {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION_ASYMMETRIC);
             cipher.init(Cipher.DECRYPT_MODE, Objects.requireNonNull(getKey()).getPrivate());
@@ -106,7 +97,7 @@ public class AndroidSecureStorage implements SecureStorage {
 
     @TargetApi(Build.VERSION_CODES.M)
     private KeyGenParameterSpec initGeneratorWithKeyGenParameterSpec() {
-        KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(KEY_ALIAS, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+        KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(mKeyAlias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                 .setBlockModes(KeyProperties.BLOCK_MODE_ECB)
                 .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1);
 
@@ -119,9 +110,9 @@ public class AndroidSecureStorage implements SecureStorage {
         endDate.add(Calendar.YEAR, 20);
 
         KeyPairGeneratorSpec.Builder builder = new KeyPairGeneratorSpec.Builder(mContext)
-                .setAlias(KEY_ALIAS)
+                .setAlias(mKeyAlias)
                 .setSerialNumber(BigInteger.ONE)
-                .setSubject(new X500Principal("CN=$KEY_ALIAS CA Certificate"))
+                .setSubject(new X500Principal("CN=$mKeyAlias CA Certificate"))
                 .setStartDate(startDate.getTime())
                 .setEndDate(endDate.getTime());
 
@@ -131,8 +122,8 @@ public class AndroidSecureStorage implements SecureStorage {
     private KeyPair getKey() {
         PrivateKey privateKey = null;
         try {
-            privateKey = (PrivateKey) mKeyStore.getKey(KEY_ALIAS, null);
-            PublicKey publicKey = mKeyStore.getCertificate(KEY_ALIAS).getPublicKey();
+            privateKey = (PrivateKey) mKeyStore.getKey(mKeyAlias, null);
+            PublicKey publicKey = mKeyStore.getCertificate(mKeyAlias).getPublicKey();
             if (null == privateKey || null == publicKey) {
                 return null;
             }
