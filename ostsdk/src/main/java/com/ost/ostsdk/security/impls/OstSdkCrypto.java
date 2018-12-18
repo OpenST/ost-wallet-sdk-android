@@ -37,7 +37,6 @@ public class OstSdkCrypto implements Crypto {
 
     @Override
     public ECKeyPair genECKey(String seed) {
-//        TransactionEncoder.createEip155SignatureData();
         return Bip32ECKeyPair.generateKeyPair(Numeric.hexStringToByteArray(seed));
     }
 }

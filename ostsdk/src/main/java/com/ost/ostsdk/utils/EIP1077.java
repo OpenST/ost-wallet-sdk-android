@@ -41,8 +41,8 @@ public class EIP1077 {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("0x");
 
-        stringBuilder.append(processSha3Arguments("bytes1", "0x19"));
-        stringBuilder.append(processSha3Arguments("bytes1", "0x00"));
+        stringBuilder.append(processSha3Arguments("bytes", "0x19"));
+        stringBuilder.append(processSha3Arguments("bytes", "0x00"));
         stringBuilder.append(processSha3Arguments("address", mTxnHash.getString(TXN_FROM)));
         stringBuilder.append(processSha3Arguments("address", mTxnHash.getString(TXN_TO)));
         stringBuilder.append(processSha3Arguments("uint8", mTxnHash.getString(TXN_VALUE)));
@@ -54,6 +54,7 @@ public class EIP1077 {
         stringBuilder.append(processSha3Arguments("bytes4", mTxnHash.getString(TXN_CALL_PREFIX)));
         stringBuilder.append(processSha3Arguments("uint8", mTxnHash.getString(TXN_OPERATION_TYPE)));
         stringBuilder.append(processSha3Arguments("bytes32", mTxnHash.getString(TXN_EXTRA_HASH)));
+
 
         String sha3Hash = Hash.sha3(stringBuilder.toString());
 
@@ -70,15 +71,26 @@ public class EIP1077 {
             }
 
             value = Numeric.cleanHexPrefix(value);
+            if (value.length() > unitNibble) {
+                throw new Exception("uint size exceeded");
+            }
             return String.format(String.format(Locale.getDefault(), "%%%ds", unitNibble), value).replace(' ', '0');
         } else if (type.startsWith(("bytes"))) {
-            int unitBytes = Integer.parseInt(type.substring(5));
-            int unitNibble = unitBytes * 2;
             if (!Numeric.containsHexPrefix(value)) {
                 value = Numeric.toHexString(value.getBytes());
             }
-
             value = Numeric.cleanHexPrefix(value);
+
+            if (type.length() == 5) {
+                return value;
+            }
+
+            int unitBytes = Integer.parseInt(type.substring(5));
+            int unitNibble = unitBytes * 2;
+
+            if (value.length() > unitNibble) {
+                throw new Exception("bytes size exceeded");
+            }
             return String.format(String.format(Locale.getDefault(), "%%%ds", unitNibble), value).replace(' ', '0');
         } else if (type.startsWith("address")) {
             if (!Numeric.containsHexPrefix(value)) {

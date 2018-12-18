@@ -7,6 +7,8 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
+import java.math.BigInteger;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -33,6 +35,7 @@ public class EIP1077Test {
             String eip1077Hash = new EIP1077(transactionHash).toEIP1077TransactionHash();
             assertEquals(MSG_HASH, eip1077Hash);
             Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(eip1077Hash), ECKeyPair.create(Numeric.hexStringToByteArray("0xF281e85a0B992efA5fda4f52b35685dC5Ee67BEa")), false);
+            BigInteger publicKey = Sign.signedPrefixedMessageToKey(Numeric.hexStringToByteArray(eip1077Hash), signatureData);
             assertEquals(27, signatureData.getV());
             assertEquals("0x405ceacacd719c669a34287674825b04f11aa2f7514ff39928eecd6c3c3fb52b", Numeric.toHexString(signatureData.getR()));
             assertEquals("0x0e6419a6a7f61f69d42ffb496df36697f2ef130a7f54cabe7d0f86cb7b75647b", Numeric.toHexString(signatureData.getS()));
