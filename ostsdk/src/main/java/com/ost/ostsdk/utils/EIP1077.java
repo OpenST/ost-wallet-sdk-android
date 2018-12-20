@@ -2,9 +2,6 @@ package com.ost.ostsdk.utils;
 
 import org.json.JSONObject;
 import org.web3j.crypto.Hash;
-import org.web3j.utils.Numeric;
-
-import java.util.Locale;
 
 public class EIP1077 {
     public static final String TXN_VALUE = "value";
@@ -18,10 +15,16 @@ public class EIP1077 {
     public static final String TXN_EXTRA_HASH = "extraHash";
     public static final String TXN_FROM = "from";
     public static final String TXN_CALL_PREFIX = "callPrefix";
+    private String mVersion;
     JSONObject mTxnHash;
 
-    public EIP1077(JSONObject txnObject) {
+    public EIP1077(JSONObject txnObject, String version) {
         mTxnHash = txnObject;
+        mVersion = version;
+    }
+
+    public EIP1077(JSONObject jsonObject) {
+        this(jsonObject, "0x00");
     }
 
 
@@ -41,65 +44,23 @@ public class EIP1077 {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("0x");
 
-        stringBuilder.append(processSha3Arguments("bytes", "0x19"));
-        stringBuilder.append(processSha3Arguments("bytes", "0x00"));
-        stringBuilder.append(processSha3Arguments("address", mTxnHash.getString(TXN_FROM)));
-        stringBuilder.append(processSha3Arguments("address", mTxnHash.getString(TXN_TO)));
-        stringBuilder.append(processSha3Arguments("uint8", mTxnHash.getString(TXN_VALUE)));
-        stringBuilder.append(processSha3Arguments("bytes32", Hash.sha3(mTxnHash.getString(TXN_DATA))));
-        stringBuilder.append(processSha3Arguments("uint256", mTxnHash.getString(TXN_NONCE)));
-        stringBuilder.append(processSha3Arguments("uint8", mTxnHash.getString(TXN_GAS_PRICE)));
-        stringBuilder.append(processSha3Arguments("uint8", mTxnHash.getString(TXN_GAS)));
-        stringBuilder.append(processSha3Arguments("uint8", mTxnHash.getString(TXN_GAS_TOKEN)));
-        stringBuilder.append(processSha3Arguments("bytes4", mTxnHash.getString(TXN_CALL_PREFIX)));
-        stringBuilder.append(processSha3Arguments("uint8", mTxnHash.getString(TXN_OPERATION_TYPE)));
-        stringBuilder.append(processSha3Arguments("bytes32", mTxnHash.getString(TXN_EXTRA_HASH)));
-
-
-        String sha3Hash = Hash.sha3(stringBuilder.toString());
+        String sha3Hash = new SoliditySha3().soliditySha3(
+                new JSONObject(String.format("{ t: 'bytes', v: '%s' }", "0x19")),
+                new JSONObject(String.format("{ t: 'bytes', v: '%s' }", mVersion)),
+                new JSONObject(String.format("{ t: 'address', v: '%s' }", mTxnHash.getString(TXN_FROM))),
+                new JSONObject(String.format("{ t: 'address', v: '%s' }", mTxnHash.getString(TXN_TO))),
+                new JSONObject(String.format("{ t: 'uint8', v: '%s' }", mTxnHash.getString(TXN_VALUE))),
+                new JSONObject(String.format("{ t: 'bytes', v:'%s' }", Hash.sha3(mTxnHash.getString(TXN_DATA)))),
+                new JSONObject(String.format("{ t: 'uint256', v: '%s' }", mTxnHash.getString(TXN_NONCE))),
+                new JSONObject(String.format("{ t: 'uint8', v: '%s' }", mTxnHash.getString(TXN_GAS_PRICE))),
+                new JSONObject(String.format("{ t: 'uint8', v: '%s' }", mTxnHash.getString(TXN_GAS))),
+                new JSONObject(String.format("{ t: 'uint8', v: '%s' }", mTxnHash.getString(TXN_GAS_TOKEN))),
+                new JSONObject(String.format("{ t: 'bytes4', v: '%s' }", mTxnHash.getString(TXN_CALL_PREFIX))),
+                new JSONObject(String.format("{ t: 'uint8', v: '%s' }", mTxnHash.getString(TXN_OPERATION_TYPE))),
+                new JSONObject(String.format("{ t: 'bytes32', v: '%s' }", mTxnHash.getString(TXN_EXTRA_HASH)))
+        );
 
         return sha3Hash;
-    }
-
-
-    public String processSha3Arguments(String type, String value) throws Exception {
-        if (type.startsWith("uint")) {
-            int unitBits = Integer.parseInt(type.substring(4));
-            int unitNibble = unitBits / 4;
-            if (!Numeric.containsHexPrefix(value)) {
-                value = Integer.toHexString(Integer.parseInt(value));
-            }
-
-            value = Numeric.cleanHexPrefix(value);
-            if (value.length() > unitNibble) {
-                throw new Exception("uint size exceeded");
-            }
-            return String.format(String.format(Locale.getDefault(), "%%%ds", unitNibble), value).replace(' ', '0');
-        } else if (type.startsWith(("bytes"))) {
-            if (!Numeric.containsHexPrefix(value)) {
-                value = Numeric.toHexString(value.getBytes());
-            }
-            value = Numeric.cleanHexPrefix(value);
-
-            if (type.length() == 5) {
-                return value;
-            }
-
-            int unitBytes = Integer.parseInt(type.substring(5));
-            int unitNibble = unitBytes * 2;
-
-            if (value.length() > unitNibble) {
-                throw new Exception("bytes size exceeded");
-            }
-            return String.format(String.format(Locale.getDefault(), "%%%ds", unitNibble), value).replace(' ', '0');
-        } else if (type.startsWith("address")) {
-            if (!Numeric.containsHexPrefix(value)) {
-                value = Numeric.toHexString(value.getBytes());
-            }
-            return Numeric.cleanHexPrefix(value);
-        } else {
-            throw new Exception("Unknown type provided");
-        }
     }
 }
 

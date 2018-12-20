@@ -38,5 +38,3 @@ public class DispatchAsync extends AsyncTask<Void, Void, Void> {
         }
     }
 }
-
-
