@@ -7,7 +7,9 @@ import android.arch.persistence.room.Ignore;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * EIP1077 Transaction Signing
+ */
 @Entity(tableName = "token_holder_session")
 public class TokenHolderSession extends BaseEntity {
 

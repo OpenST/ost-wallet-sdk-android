@@ -10,6 +10,9 @@ import com.ost.ostsdk.models.TaskCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Execute transaction signing
+ */
 @Entity(tableName = "user")
 public class User extends BaseEntity {
 

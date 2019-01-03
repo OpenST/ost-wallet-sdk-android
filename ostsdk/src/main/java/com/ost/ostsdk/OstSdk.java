@@ -12,6 +12,12 @@ import com.ost.ostsdk.models.entities.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Work Flows
+ * 1. Key Recovery (Work flow, key Rotation)
+ * 2. Additional Key Provisioning (Work Flow)
+ * 3. QR code scanning (Work Flow)
+ */
 public class OstSdk {
 
     private static Context mApplicationContext;

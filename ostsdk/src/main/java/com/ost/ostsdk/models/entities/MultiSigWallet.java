@@ -7,7 +7,9 @@ import android.arch.persistence.room.Ignore;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+/**
+ * Transaction Signing
+ */
 @Entity(tableName = "multi_sig_wallet")
 public class MultiSigWallet extends BaseEntity {
 

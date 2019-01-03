@@ -11,6 +11,6 @@ import org.web3j.utils.Numeric;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-        System.out.print(Numeric.toHexString("a".getBytes()));
+        System.out.print(Numeric.toHexString("aniket".getBytes()));
     }
 }
