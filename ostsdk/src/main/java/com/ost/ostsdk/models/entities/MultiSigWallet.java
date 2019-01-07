@@ -3,9 +3,18 @@ package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.content.Context;
+
+import com.ost.ostsdk.OstSdk;
+import com.ost.ostsdk.database.OstSdkKeyDatabase;
+import com.ost.ostsdk.security.impls.AndroidSecureStorage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
+import org.web3j.utils.Numeric;
 
 /**
  * Transaction Signing
@@ -49,6 +58,14 @@ public class MultiSigWallet extends BaseEntity {
         setAddress(jsonObject.getString(MultiSigWallet.ADDRESS));
         setStatus(jsonObject.getString(MultiSigWallet.STATUS));
         setMultiSigId(jsonObject.getString(MultiSigWallet.MULTI_SIG_ID));
+    }
+
+    public String signTransaction(RawTransaction rawTransaction) {
+        Context context = null;
+        String alias = "alias";
+        String data = OstSdkKeyDatabase.getDatabase().secureKeyDao().getById(alias).getData();
+        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, Credentials.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), alias).decrypt(data.getBytes()).toString()));
+        return Numeric.toHexString(signedMessage);
     }
 
 

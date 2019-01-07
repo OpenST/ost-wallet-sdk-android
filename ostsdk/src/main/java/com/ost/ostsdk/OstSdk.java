@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
+import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.Economy;
@@ -22,9 +23,14 @@ public class OstSdk {
 
     private static Context mApplicationContext;
 
+    public static Context getContext() {
+        return mApplicationContext;
+    }
+
     public static void init(Context context) {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
+        OstSdkKeyDatabase.initDatabase(mApplicationContext);
     }
 
     public static Economy registerEconomy(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {

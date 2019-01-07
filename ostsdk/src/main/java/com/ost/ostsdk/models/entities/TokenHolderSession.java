@@ -3,9 +3,19 @@ package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.content.Context;
+
+import com.ost.ostsdk.OstSdk;
+import com.ost.ostsdk.database.OstSdkKeyDatabase;
+import com.ost.ostsdk.security.impls.AndroidSecureStorage;
+import com.ost.ostsdk.utils.EIP1077;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.Sign;
+import org.web3j.utils.Numeric;
 
 /**
  * EIP1077 Transaction Signing
@@ -70,6 +80,14 @@ public class TokenHolderSession extends BaseEntity {
         setExpiryTime(jsonObject.getString(TokenHolderSession.EXPIRY_TIME));
         setRedemptionLimit(jsonObject.getString(TokenHolderSession.REDEMPTION_LIMIT));
         setSpendingLimit(jsonObject.getString(TokenHolderSession.SPENDING_LIMIT));
+    }
+
+    public String signTransaction(RawTransaction rawTransaction) throws Exception {
+        Context context = null;
+        String alias = "alias";
+        String data = OstSdkKeyDatabase.getDatabase().secureKeyDao().getById(alias).getData();
+        byte[] signedMessage = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(new JSONObject()).toEIP1077TransactionHash()), ECKeyPair.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), alias).decrypt(data.getBytes()))).getR();
+        return Numeric.toHexString(signedMessage);
     }
 
     public String getAddress() {

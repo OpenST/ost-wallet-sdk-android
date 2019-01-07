@@ -11,7 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Execute transaction signing
+ * Manage transaction signing
  */
 @Entity(tableName = "user")
 public class User extends BaseEntity {

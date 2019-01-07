@@ -8,10 +8,9 @@ import android.content.Context;
 import com.ost.ostsdk.database.daos.EconomyDao;
 import com.ost.ostsdk.database.daos.ExecutableRuleDao;
 import com.ost.ostsdk.database.daos.MultiSigDao;
-import com.ost.ostsdk.database.daos.MultiSigWalletDao;
 import com.ost.ostsdk.database.daos.MultiSigOperationDao;
+import com.ost.ostsdk.database.daos.MultiSigWalletDao;
 import com.ost.ostsdk.database.daos.RuleDao;
-import com.ost.ostsdk.database.daos.SecureKeyDao;
 import com.ost.ostsdk.database.daos.TokenHolderDao;
 import com.ost.ostsdk.database.daos.TokenHolderSessionDao;
 import com.ost.ostsdk.database.daos.UserDao;
@@ -19,16 +18,15 @@ import com.ost.ostsdk.models.entities.Economy;
 import com.ost.ostsdk.models.entities.ExecutableRule;
 import com.ost.ostsdk.models.entities.MultiSig;
 import com.ost.ostsdk.models.entities.MultiSigOperation;
+import com.ost.ostsdk.models.entities.MultiSigWallet;
 import com.ost.ostsdk.models.entities.Rule;
-import com.ost.ostsdk.models.entities.SecureKey;
 import com.ost.ostsdk.models.entities.TokenHolder;
 import com.ost.ostsdk.models.entities.TokenHolderSession;
-import com.ost.ostsdk.models.entities.MultiSigWallet;
 import com.ost.ostsdk.models.entities.User;
 
 @Database(entities = {User.class, Rule.class, Economy.class, ExecutableRule.class,
         MultiSigOperation.class, TokenHolder.class, TokenHolderSession.class,
-        MultiSigWallet.class, SecureKey.class, MultiSig.class}, version = 1)
+        MultiSigWallet.class, MultiSig.class}, version = 1)
 public abstract class OstSdkDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "ostsdk_db";
@@ -50,8 +48,6 @@ public abstract class OstSdkDatabase extends RoomDatabase {
     public abstract MultiSigDao multiSigDao();
 
     public abstract TokenHolderSessionDao tokenHolderSessionDao();
-
-    public abstract SecureKeyDao secureKeyDao();
 
     private static volatile OstSdkDatabase INSTANCE;
 
