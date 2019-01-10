@@ -57,8 +57,8 @@ public class SoliditySha3Test {
     public void testSoliditySha3SingleArguments() {
         String sha3Hash;
         try {
-            sha3Hash = new SoliditySha3().soliditySha3(1);
-            assertEquals("0xff5fa2a47214bd12e073aa16f8c5f68cbcae28ed9131ae8b413805ba2e1aa7d3", sha3Hash);
+            sha3Hash = new SoliditySha3().soliditySha3("1");
+            assertEquals("0x637df1eb4c09a98dc453cdea36c6242657b34c2792a700647d14e62033140a83", sha3Hash);
         } catch (Exception e) {
             e.printStackTrace();
         }

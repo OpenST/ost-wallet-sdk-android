@@ -4,6 +4,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.support.annotation.NonNull;
 
+import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCallback;
 
@@ -19,6 +20,7 @@ public class User extends BaseEntity {
     public static final String ECONOMY_ID = "economy_id";
     public static final String TOKEN_HOLDER_ID = "token_holder_id";
     public static final String NAME = "name";
+    public static final String MULTI_SIG_ID = "multi_sig_id";
 
     @Ignore
     private String economyId;
@@ -26,6 +28,8 @@ public class User extends BaseEntity {
     private String tokenHolderId;
     @Ignore
     private String name;
+    @Ignore
+    private String multiSigId;
 
     public User() {
     }
@@ -69,6 +73,7 @@ public class User extends BaseEntity {
         setName(data.getString(User.NAME));
         setEconomyId(data.getString(User.ECONOMY_ID));
         setTokenHolderId(data.getString(User.TOKEN_HOLDER_ID));
+        setMultiSigId(data.getString(User.MULTI_SIG_ID));
     }
 
     @Override
@@ -76,7 +81,8 @@ public class User extends BaseEntity {
         return super.validate(jsonObject) &&
                 jsonObject.has(User.ECONOMY_ID) &&
                 jsonObject.has(User.TOKEN_HOLDER_ID) &&
-                jsonObject.has(User.NAME);
+                jsonObject.has(User.NAME) &&
+                jsonObject.has(User.MULTI_SIG_ID);
     }
 
     public TokenHolder initTokenHolder(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
@@ -100,5 +106,17 @@ public class User extends BaseEntity {
     public void delTokenHolder(String id) {
         delTokenHolder(id, new TaskCallback() {
         });
+    }
+
+    public String getMultiSigId() {
+        return multiSigId;
+    }
+
+    public void setMultiSigId(String multiSigId) {
+        this.multiSigId = multiSigId;
+    }
+
+    public MultiSig getMultiSig() {
+        return OstSdkDatabase.getDatabase().multiSigDao().getById(getMultiSigId());
     }
 }

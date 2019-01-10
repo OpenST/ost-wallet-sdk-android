@@ -1,12 +1,16 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.models.EconomyModel;
+import com.ost.ostsdk.models.MultiSigModel;
+import com.ost.ostsdk.models.MultiSigWalletModel;
 import com.ost.ostsdk.models.RuleModel;
 import com.ost.ostsdk.models.TokenHolderModel;
 import com.ost.ostsdk.models.UserModel;
 
 public class ModelFactory {
 
+    private static volatile MultiSigWalletModelRepository MULTI_SIG_WALLET_MODEL_INSTANCE;
+    private static volatile MultiSigModel MULTI_SIG_MODEL_INSTANCE;
     private static volatile UserModel USER_MODEL_INSTANCE;
     private static volatile RuleModel RULE_MODEL_INSTANCE;
     private static volatile EconomyModel ECONOMY_MODEL_INSTANCE;
@@ -59,4 +63,26 @@ public class ModelFactory {
     }
 
 
+    public static MultiSigModel getMultiSig() {
+        if (MULTI_SIG_MODEL_INSTANCE == null) {
+            synchronized (MultiSigModelRepository.class) {
+                if (MULTI_SIG_MODEL_INSTANCE == null) {
+                    MULTI_SIG_MODEL_INSTANCE = new MultiSigModelRepository();
+                }
+            }
+        }
+        return MULTI_SIG_MODEL_INSTANCE;
+    }
+
+    public static MultiSigWalletModel getMultiSigWallet() {
+        if (MULTI_SIG_WALLET_MODEL_INSTANCE == null) {
+            synchronized (MultiSigModelRepository.class) {
+                if (MULTI_SIG_WALLET_MODEL_INSTANCE == null) {
+                    MULTI_SIG_WALLET_MODEL_INSTANCE = new MultiSigWalletModelRepository();
+                }
+            }
+        }
+        return MULTI_SIG_WALLET_MODEL_INSTANCE;
+
+    }
 }

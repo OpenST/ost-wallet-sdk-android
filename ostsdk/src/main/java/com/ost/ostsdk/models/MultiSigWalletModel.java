@@ -19,5 +19,5 @@ public interface MultiSigWalletModel {
 
     void deleteAllMultiSigWallets(TaskCallback callback);
 
-    MultiSigWallet initMultiSigWallet(JSONObject jsonObject) throws JSONException;
+    MultiSigWallet initMultiSigWallet(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 }

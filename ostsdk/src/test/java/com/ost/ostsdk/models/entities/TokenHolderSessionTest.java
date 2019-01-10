@@ -45,6 +45,7 @@ public class TokenHolderSessionTest {
         jsonObject.put(TokenHolderSession.EXPIRY_TIME, "100");
         jsonObject.put(TokenHolderSession.SPENDING_LIMIT, "9999");
         jsonObject.put(TokenHolderSession.REDEMPTION_LIMIT, "1000");
+        jsonObject.put(TokenHolderSession.NONCE, "1");
 
 
         TokenHolderSession tokenHolderSession = new TokenHolderSession(jsonObject);
@@ -56,6 +57,7 @@ public class TokenHolderSessionTest {
         assertEquals("9999", tokenHolderSession.getSpendingLimit());
         assertEquals("1000", tokenHolderSession.getRedemptionLimit());
         assertEquals("ID", tokenHolderSession.getId());
+        assertEquals("1", tokenHolderSession.getNonce());
 
     }
 

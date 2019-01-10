@@ -19,5 +19,5 @@ public interface MultiSigModel {
 
     void deleteAllMultiSigs(TaskCallback callback);
 
-    MultiSig initMultiSig(JSONObject jsonObject) throws JSONException;
+    MultiSig initMultiSig(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 }

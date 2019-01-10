@@ -6,7 +6,7 @@ import android.arch.persistence.room.Ignore;
 import android.content.Context;
 
 import com.ost.ostsdk.OstSdk;
-import com.ost.ostsdk.database.OstSdkKeyDatabase;
+import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
 import com.ost.ostsdk.security.impls.AndroidSecureStorage;
 import com.ost.ostsdk.utils.EIP1077;
 
@@ -30,6 +30,7 @@ public class TokenHolderSession extends BaseEntity {
     public static final String EXPIRY_TIME = "expiry_time";
     public static final String SPENDING_LIMIT = "spending_limit";
     public static final String REDEMPTION_LIMIT = "redemption_limit";
+    public static final String NONCE = "nonce";
 
     @Ignore
     private String status;
@@ -45,6 +46,8 @@ public class TokenHolderSession extends BaseEntity {
     private String spendingLimit;
     @Ignore
     private String redemptionLimit;
+    @Ignore
+    private String nonce;
 
 
     public TokenHolderSession(JSONObject jsonObject) throws JSONException {
@@ -67,7 +70,8 @@ public class TokenHolderSession extends BaseEntity {
                 jsonObject.has(TokenHolderSession.BLOCK_HEIGHT) &&
                 jsonObject.has(TokenHolderSession.EXPIRY_TIME) &&
                 jsonObject.has(TokenHolderSession.REDEMPTION_LIMIT) &&
-                jsonObject.has(TokenHolderSession.SPENDING_LIMIT);
+                jsonObject.has(TokenHolderSession.SPENDING_LIMIT) &&
+                jsonObject.has(TokenHolderSession.NONCE);
     }
 
     @Override
@@ -80,13 +84,14 @@ public class TokenHolderSession extends BaseEntity {
         setExpiryTime(jsonObject.getString(TokenHolderSession.EXPIRY_TIME));
         setRedemptionLimit(jsonObject.getString(TokenHolderSession.REDEMPTION_LIMIT));
         setSpendingLimit(jsonObject.getString(TokenHolderSession.SPENDING_LIMIT));
+        setNonce(jsonObject.getString(TokenHolderSession.NONCE));
     }
 
     public String signTransaction(RawTransaction rawTransaction) throws Exception {
         Context context = null;
         String alias = "alias";
-        String data = OstSdkKeyDatabase.getDatabase().secureKeyDao().getById(alias).getData();
-        byte[] signedMessage = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(new JSONObject()).toEIP1077TransactionHash()), ECKeyPair.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), alias).decrypt(data.getBytes()))).getR();
+        byte[] data = new SecureKeyModelRepository().getById(alias).getData();
+        byte[] signedMessage = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(new JSONObject()).toEIP1077TransactionHash()), ECKeyPair.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), alias).decrypt(data))).getR();
         return Numeric.toHexString(signedMessage);
     }
 
@@ -144,5 +149,13 @@ public class TokenHolderSession extends BaseEntity {
 
     private void setRedemptionLimit(String redemptionLimit) {
         this.redemptionLimit = redemptionLimit;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 }

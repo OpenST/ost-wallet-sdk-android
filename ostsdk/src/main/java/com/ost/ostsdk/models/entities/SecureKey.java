@@ -18,10 +18,10 @@ public class SecureKey {
     private String key = "";
 
     @NonNull
-    @ColumnInfo(name = "parent_id")
-    private String data = "";
+    @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
+    private byte[] data;
 
-    public SecureKey(@NonNull String key, @NonNull String data) {
+    public SecureKey(@NonNull String key, @NonNull byte[] data) {
         this.key = key;
         this.data = data;
     }
@@ -32,7 +32,7 @@ public class SecureKey {
     }
 
     @NonNull
-    public String getData() {
+    public byte[] getData() {
         return data;
     }
 }

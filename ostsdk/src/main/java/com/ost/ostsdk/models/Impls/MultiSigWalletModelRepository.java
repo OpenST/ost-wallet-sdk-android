@@ -53,9 +53,9 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    public MultiSigWallet initMultiSigWallet(JSONObject jsonObject) throws JSONException {
+    public MultiSigWallet initMultiSigWallet(JSONObject jsonObject, TaskCallback callback) throws JSONException {
         MultiSigWallet multiSigWallet = new MultiSigWallet(jsonObject);
-        insert(multiSigWallet, null);
+        insert(multiSigWallet, callback);
         return multiSigWallet;
     }
 

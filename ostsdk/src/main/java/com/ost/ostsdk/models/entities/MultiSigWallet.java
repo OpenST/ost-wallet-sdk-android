@@ -3,7 +3,6 @@ package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.content.Context;
 
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.database.OstSdkKeyDatabase;
@@ -16,6 +15,8 @@ import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.utils.Numeric;
 
+import java.math.BigInteger;
+
 /**
  * Transaction Signing
  */
@@ -25,6 +26,7 @@ public class MultiSigWallet extends BaseEntity {
     public static final String STATUS = "status";
     public static final String ADDRESS = "address";
     public static final String MULTI_SIG_ID = "multi_sig_id";
+    public static final String NONCE = "nonce";
 
     @Ignore
     private String status;
@@ -32,6 +34,8 @@ public class MultiSigWallet extends BaseEntity {
     private String multiSigId;
     @Ignore
     private String address;
+    @Ignore
+    private String nonce;
 
     public MultiSigWallet(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
@@ -49,7 +53,8 @@ public class MultiSigWallet extends BaseEntity {
         return super.validate(jsonObject) &&
                 jsonObject.has(MultiSigWallet.ADDRESS) &&
                 jsonObject.has(MultiSigWallet.STATUS) &&
-                jsonObject.has(MultiSigWallet.MULTI_SIG_ID);
+                jsonObject.has(MultiSigWallet.MULTI_SIG_ID) &&
+                jsonObject.has(MultiSigWallet.NONCE);
     }
 
     @Override
@@ -58,13 +63,13 @@ public class MultiSigWallet extends BaseEntity {
         setAddress(jsonObject.getString(MultiSigWallet.ADDRESS));
         setStatus(jsonObject.getString(MultiSigWallet.STATUS));
         setMultiSigId(jsonObject.getString(MultiSigWallet.MULTI_SIG_ID));
+        setNonce(jsonObject.getString(MultiSigWallet.NONCE));
     }
 
     public String signTransaction(RawTransaction rawTransaction) {
-        Context context = null;
         String alias = "alias";
-        String data = OstSdkKeyDatabase.getDatabase().secureKeyDao().getById(alias).getData();
-        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, Credentials.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), alias).decrypt(data.getBytes()).toString()));
+        byte[] data = OstSdkKeyDatabase.getDatabase().secureKeyDao().getById(alias).getData();
+        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, Credentials.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), alias).decrypt(data).toString()));
         return Numeric.toHexString(signedMessage);
     }
 
@@ -91,5 +96,20 @@ public class MultiSigWallet extends BaseEntity {
 
     private void setMultiSigId(String multiSigId) {
         this.multiSigId = multiSigId;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
+    }
+
+    public static class Transaction extends RawTransaction {
+
+        protected Transaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value, String data) {
+            super(nonce, gasPrice, gasLimit, to, value, data);
+        }
     }
 }

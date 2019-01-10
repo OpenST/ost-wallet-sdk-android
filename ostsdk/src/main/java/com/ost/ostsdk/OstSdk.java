@@ -3,6 +3,8 @@ package com.ost.ostsdk;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.ost.ostsdk.Network.ApiClient;
+import com.ost.ostsdk.Network.KitApi;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
@@ -66,5 +68,9 @@ public class OstSdk {
 
     public static void delUser(String userId, @NonNull TaskCallback callback) {
         ModelFactory.getUserModel().deleteUser(userId, callback);
+    }
+
+    public static KitApi getKitNetworkClient() {
+        return ApiClient.getClient().create(KitApi.class);
     }
 }

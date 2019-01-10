@@ -17,11 +17,11 @@ import okhttp3.Response;
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class AdditionalDeviceProvisioningFlow {
+public class InitialDeviceProvisioningFlow {
 
-    private static final String TAG = "ADPFlow";
+    private static final String TAG = "IDPFlow";
 
-    public AdditionalDeviceProvisioningFlow() {
+    public InitialDeviceProvisioningFlow() {
 
     }
 

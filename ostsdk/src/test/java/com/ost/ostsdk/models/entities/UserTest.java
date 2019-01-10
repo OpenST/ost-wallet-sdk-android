@@ -41,12 +41,14 @@ public class UserTest {
         jsonObject.put(User.ECONOMY_ID, "0x2901239");
         jsonObject.put(User.TOKEN_HOLDER_ID, "123");
         jsonObject.put(User.NAME, "name");
+        jsonObject.put(User.MULTI_SIG_ID, "1");
 
         User user = new User(jsonObject);
         assertEquals("0x2901239", user.getEconomyId());
         assertEquals("123", user.getTokenHolderId());
         assertEquals("name", user.getName());
         assertEquals("ID", user.getId());
+        assertEquals("1", user.getMultiSigId());
     }
 
 

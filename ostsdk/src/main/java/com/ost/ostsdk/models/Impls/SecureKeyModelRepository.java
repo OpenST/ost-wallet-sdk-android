@@ -1,64 +1,105 @@
 package com.ost.ostsdk.models.Impls;
 
-import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.daos.BaseDao;
+import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.database.daos.SecureKeyDao;
 import com.ost.ostsdk.models.SecureKeyModel;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.SecureKey;
+import com.ost.ostsdk.utils.DispatchAsync;
 
-import org.json.JSONObject;
-
-class SecureKeyModelRepository extends BaseModelRepository implements SecureKeyModel {
+public class SecureKeyModelRepository implements SecureKeyModel {
 
     private SecureKeyDao mSecureKeyDao;
 
-    SecureKeyModelRepository() {
+    public SecureKeyModelRepository() {
         super();
-        OstSdkDatabase db = OstSdkDatabase.getDatabase();
+        OstSdkKeyDatabase db = OstSdkKeyDatabase.getDatabase();
         mSecureKeyDao = db.secureKeyDao();
     }
 
 
     @Override
-    public void insertSecureKey(final SecureKey secureKey, final TaskCallback callback) {
-        super.insert(secureKey, callback);
+    public void insertSecureKey(final SecureKey baseEntity, final TaskCallback callback) {
+        DispatchAsync.dispatch((new DispatchAsync.Executor() {
+            @Override
+            public void execute() {
+                getModel().insert(baseEntity);
+            }
+
+            @Override
+            public void onExecuteComplete() {
+                callback.onSuccess();
+            }
+        }));
     }
 
     @Override
-    public void insertAllSecureKeys(final SecureKey[] secureKey, final TaskCallback callback) {
-        super.insertAll(secureKey, callback);
+    public void insertAllSecureKeys(final SecureKey[] secureKeys, final TaskCallback callback) {
+        DispatchAsync.dispatch((new DispatchAsync.Executor() {
+            @Override
+            public void execute() {
+                getModel().insertAll(secureKeys);
+            }
+
+            @Override
+            public void onExecuteComplete() {
+                callback.onSuccess();
+            }
+        }));
     }
 
-    @Override
+
     public void deleteSecureKey(final String id, final TaskCallback callback) {
-        super.delete(id, callback);
+        DispatchAsync.dispatch((new DispatchAsync.Executor() {
+            @Override
+            public void execute() {
+                getModel().delete(id);
+            }
+
+            @Override
+            public void onExecuteComplete() {
+                callback.onSuccess();
+            }
+        }));
     }
 
     @Override
     public SecureKey[] getSecureKeysByIds(String[] ids) {
-        return (SecureKey[]) super.getByIds(ids);
+        return new SecureKey[0];
     }
 
     @Override
     public SecureKey getSecureKeyById(String id) {
-        return (SecureKey) super.getById(id);
+        return null;
     }
 
     @Override
-    public void deleteAllSecureKeys(final TaskCallback callback) {
-        super.deleteAll(callback);
+    public void deleteAllSecureKeys(TaskCallback callback) {
+
     }
 
-    @Override
-    public SecureKey initSecureKey(JSONObject jsonObject) {
-        SecureKey secureKey = new SecureKey();
-        insert(secureKey, null);
+    public SecureKey[] getByIds(String[] ids) {
+        return getModel().getByIds(ids);
+    }
+
+
+    public SecureKey getById(String id) {
+        return getModel().getById(id);
+    }
+
+
+    public void deleteAll(final TaskCallback callback) {
+        getModel().deleteAll();
+    }
+
+    public SecureKey initSecureKey(String key, byte[] data) {
+        SecureKey secureKey = new SecureKey(key, data);
+        insertSecureKey(secureKey, new TaskCallback() {
+        });
         return secureKey;
     }
 
-    @Override
-    BaseDao getModel() {
+    SecureKeyDao getModel() {
         return mSecureKeyDao;
     }
 }

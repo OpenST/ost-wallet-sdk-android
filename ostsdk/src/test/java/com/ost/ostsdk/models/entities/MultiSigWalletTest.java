@@ -3,8 +3,6 @@ package com.ost.ostsdk.models.entities;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -43,12 +41,14 @@ public class MultiSigWalletTest {
         jsonObject.put(MultiSigWallet.ADDRESS, "0x2901239");
         jsonObject.put(MultiSigWallet.MULTI_SIG_ID, "123");
         jsonObject.put(MultiSigWallet.STATUS, "status");
+        jsonObject.put(MultiSigWallet.NONCE, "1");
 
         MultiSigWallet multiSigWallet = new MultiSigWallet(jsonObject);
         assertEquals("0x2901239", multiSigWallet.getAddress());
         assertEquals("status", multiSigWallet.getStatus());
         assertEquals("123", multiSigWallet.getMultiSigId());
         assertEquals("ID", multiSigWallet.getId());
+        assertEquals("1", multiSigWallet.getNonce());
 
     }
 

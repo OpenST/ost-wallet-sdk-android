@@ -53,9 +53,9 @@ class MultiSigModelRepository extends BaseModelCacheRepository implements MultiS
     }
 
     @Override
-    public MultiSig initMultiSig(JSONObject jsonObject) throws JSONException {
+    public MultiSig initMultiSig(JSONObject jsonObject, TaskCallback callback) throws JSONException {
         MultiSig multiSig = new MultiSig(jsonObject);
-        insert(multiSig, null);
+        insert(multiSig, callback);
         return multiSig;
     }
 

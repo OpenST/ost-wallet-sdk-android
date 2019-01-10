@@ -4,6 +4,9 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
+import com.ost.ostsdk.database.OstSdkDatabase;
+import com.ost.ostsdk.database.OstSdkKeyDatabase;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -120,5 +123,20 @@ public class MultiSig extends BaseEntity {
 
     public void setTokenHolderId(String tokenHolderId) {
         this.tokenHolderId = tokenHolderId;
+    }
+
+    public MultiSigWallet getDeviceMultiSigWallet() throws Exception {
+        String[] wallets = getWallets();
+        String deviceWalletId = null;
+        for (String walletId : wallets) {
+            if (null != OstSdkKeyDatabase.getDatabase().secureKeyDao().getById(walletId)) {
+                deviceWalletId = walletId;
+                break;
+            }
+        }
+        if (null == deviceWalletId) {
+            throw new Exception("Wallet Id not found in db");
+        }
+        return OstSdkDatabase.getDatabase().multiSigWalletDao().getById(deviceWalletId);
     }
 }
