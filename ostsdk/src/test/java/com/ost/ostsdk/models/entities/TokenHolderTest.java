@@ -5,9 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.util.Arrays;
-
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -47,15 +44,12 @@ public class TokenHolderTest {
         jsonObject.put(TokenHolder.USER_ID, "123");
         JSONArray jsonArray = new JSONArray();
         jsonArray.put("0x12345678");
-        jsonObject.put(TokenHolder.SESSIONS, jsonArray);
         jsonObject.put(TokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
 
 
         TokenHolder tokenHolder = new TokenHolder(jsonObject);
         assertEquals("0x2901239", tokenHolder.getAddress());
         assertEquals(1, tokenHolder.getRequirements());
-        String[] session = (String[]) Arrays.asList("0x12345678").toArray();
-        assertArrayEquals(session, tokenHolder.getSessions());
         assertEquals("123", tokenHolder.getUserId());
         assertEquals("callPrefix", tokenHolder.getExecuteRuleCallPrefix());
         assertEquals("ID", tokenHolder.getId());

@@ -44,6 +44,7 @@ public class MultiSigTest {
         jsonObject.put(MultiSig.REQUIREMENT, 1);
         jsonObject.put(MultiSig.AUTHORIZE_SESSION_CALL_PREFIX, "callPrefix");
         jsonObject.put(MultiSig.USER_ID, "123");
+        jsonObject.put(MultiSig.NONCE, "1");
         testMultiSigJsonWithNoException(jsonObject);
 
         //Test Id with partial ExecutableRule attribute
@@ -54,6 +55,7 @@ public class MultiSigTest {
         assertEquals("callPrefix", multiSig.getAuthorizeSessionCallPrefix());
         assertEquals("123", multiSig.getUserId());
         assertEquals("ID", multiSig.getId());
+        assertEquals("1", multiSig.getNonce());
 
     }
 

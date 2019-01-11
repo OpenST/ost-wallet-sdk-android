@@ -35,11 +35,12 @@ public class MultiSigWalletTest {
 
     @Test
     public void testMultiSigWalletSigning() throws Exception {
-        insertUserData(1);
-        //new InitialDeviceProvisioningFlow().init("1");
-        insertTokenHolder(1);
-        insertMultiSig(1);
-        insertMultiSigWallet(1);
+
+//        insertUserData("1", "1","1");
+//        String walletAddress = new KeyGenProcess().execute("1");
+//        insertMultiSig("1", "1");
+//        insertTokenHolder("1", "1");
+//        insertMultiSigWallet("1", walletAddress, "1" );
         // Create User
         // Create Multi Sig
         // Create SecureKey
@@ -47,18 +48,17 @@ public class MultiSigWalletTest {
         User user = OstSdk.getUser("1");
         MultiSig multiSig = user.getMultiSig();
         MultiSigWallet multiSigWallet = multiSig.getDeviceMultiSigWallet();
-        MultiSigWallet.Transaction transaction = (MultiSigWallet.Transaction) MultiSigWallet.Transaction.createTransaction(new BigInteger(multiSigWallet.getNonce()),
+        MultiSigWallet.Transaction transaction = (MultiSigWallet.Transaction) MultiSigWallet.Transaction.createTransaction(new BigInteger(multiSig.getNonce()),
                 new BigInteger("100000"), new BigInteger("100000"), "0xF281e85a0B992efA5fda4f52b35685dC5Ee67BEa", "0x");
-        Assert.assertEquals("", multiSigWallet.signTransaction(transaction));
+        Assert.assertEquals("", multiSigWallet.signTransaction(transaction, user.getId()));
     }
 
-    private MultiSigWallet insertMultiSigWallet(int param) throws JSONException, InterruptedException {
+    private MultiSigWallet insertMultiSigWallet(String multiSigWalletId, String walletAddress, String multiSigId) throws JSONException, InterruptedException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, String.valueOf(param));
-        jsonObject.put(MultiSigWallet.ADDRESS, "0x2901239");
-        jsonObject.put(MultiSigWallet.MULTI_SIG_ID, "123");
-        jsonObject.put(MultiSigWallet.STATUS, "status");
-        jsonObject.put(MultiSigWallet.NONCE, "1");
+        jsonObject.put(BaseEntity.ID, multiSigWalletId);
+        jsonObject.put(MultiSigWallet.ADDRESS, walletAddress);
+        jsonObject.put(MultiSigWallet.MULTI_SIG_ID, multiSigId);
+        jsonObject.put(MultiSigWallet.STATUS, MultiSigWallet.CREATED_STATUS);
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -74,11 +74,11 @@ public class MultiSigWalletTest {
         return multiSigWallet;
     }
 
-    private MultiSig insertMultiSig(int param) throws JSONException, InterruptedException {
+    private MultiSig insertMultiSig(String multiSigId, String tokenHolderId) throws JSONException, InterruptedException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, String.valueOf(param));
+        jsonObject.put(BaseEntity.ID, multiSigId);
         jsonObject.put(MultiSig.ADDRESS, "0x2901239");
-        jsonObject.put(MultiSig.TOKEN_HOLDER_ID, "123");
+        jsonObject.put(MultiSig.TOKEN_HOLDER_ID, tokenHolderId);
         jsonObject.put(MultiSig.REQUIREMENT, 1);
         jsonObject.put(MultiSig.AUTHORIZE_SESSION_CALL_PREFIX, "callPrefix");
 
@@ -99,14 +99,14 @@ public class MultiSigWalletTest {
     }
 
 
-    private User insertUserData(int param) throws JSONException, InterruptedException {
+    private User insertUserData(String userId, String tokenHolderId, String multiSigId) throws JSONException, InterruptedException {
         JSONObject userObj = new JSONObject();
 
-        userObj.put(User.ID, String.valueOf(param));
+        userObj.put(User.ID, userId);
         userObj.put(User.ECONOMY_ID, "1");
         userObj.put(User.NAME, "user");
-        userObj.put(User.TOKEN_HOLDER_ID, "1");
-        userObj.put(User.MULTI_SIG_ID, "1");
+        userObj.put(User.TOKEN_HOLDER_ID, tokenHolderId);
+        userObj.put(User.MULTI_SIG_ID, multiSigId);
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -122,13 +122,13 @@ public class MultiSigWalletTest {
         return user;
     }
 
-    private TokenHolder insertTokenHolder(int param) throws JSONException, InterruptedException {
+    private TokenHolder insertTokenHolder(String param, String userId) throws JSONException, InterruptedException {
         JSONObject jsonObject = new JSONObject();
 
-        jsonObject.put(BaseEntity.ID, "ID");
+        jsonObject.put(BaseEntity.ID, param);
         jsonObject.put(TokenHolder.ADDRESS, "0x2901239");
         jsonObject.put(TokenHolder.REQUIREMENTS, 1);
-        jsonObject.put(TokenHolder.USER_ID, "123");
+        jsonObject.put(TokenHolder.USER_ID, userId);
         jsonObject.put(TokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);

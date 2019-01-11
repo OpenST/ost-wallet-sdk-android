@@ -1,11 +1,17 @@
 package com.ost.ostsdk.models.Impls;
 
+import android.util.Log;
+
 import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.BaseEntity;
 import com.ost.ostsdk.utils.DispatchAsync;
 
+import org.json.JSONObject;
+
 abstract class BaseModelRepository {
+
+    private static final String TAG = "BaseModelRepository";
 
     BaseModelRepository() {
     }
@@ -53,12 +59,18 @@ abstract class BaseModelRepository {
     }
 
     public BaseEntity[] getByIds(String[] ids) {
-        return getModel().getByIds(ids);
+        return processEntity(getModel().getByIds(ids));
     }
 
 
     public BaseEntity getById(String id) {
-        return getModel().getById(id);
+        BaseEntity baseEntity = getModel().getById(id);
+        try {
+            baseEntity.processJson(new JSONObject(baseEntity.getData()));
+        } catch (Exception exception) {
+            Log.e(TAG, "Exception in BaseModelRepository for parsing data");
+        }
+        return baseEntity;
     }
 
 
@@ -69,6 +81,17 @@ abstract class BaseModelRepository {
     abstract BaseDao getModel();
 
     protected BaseEntity[] getByParentId(String id) {
-        return getModel().getByParentId(id);
+        return processEntity(getModel().getByParentId(id));
+    }
+
+    private BaseEntity[] processEntity(BaseEntity[] baseEntities) {
+        for (BaseEntity baseEntity : baseEntities) {
+            try {
+                baseEntity.processJson(new JSONObject(baseEntity.getData()));
+            } catch (Exception exception) {
+                Log.e(TAG, "Exception in BaseModelRepository for parsing data");
+            }
+        }
+        return baseEntities;
     }
 }

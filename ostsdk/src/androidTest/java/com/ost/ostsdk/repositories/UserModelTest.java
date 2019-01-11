@@ -127,6 +127,7 @@ public class UserModelTest {
         userObj.put(User.ECONOMY_ID, "1");
         userObj.put(User.NAME, "user");
         userObj.put(User.TOKEN_HOLDER_ID, "1");
+        userObj.put(User.MULTI_SIG_ID, "1");
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 

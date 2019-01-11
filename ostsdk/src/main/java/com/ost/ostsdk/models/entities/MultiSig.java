@@ -19,6 +19,7 @@ public class MultiSig extends BaseEntity {
     public static final String TOKEN_HOLDER_ID = "token_holder_id";
     public static final String REQUIREMENT = "requirement";
     public static final String AUTHORIZE_SESSION_CALL_PREFIX = "authorize_session_callprefix";
+    public static final String NONCE = "nonce";
 
     @Ignore
     private String userId;
@@ -30,6 +31,8 @@ public class MultiSig extends BaseEntity {
     private int requirement;
     @Ignore
     private String authorizeSessionCallPrefix;
+    @Ignore
+    private String nonce;
 
 
     public MultiSig(JSONObject jsonObject) throws JSONException {
@@ -50,7 +53,8 @@ public class MultiSig extends BaseEntity {
                 jsonObject.has(MultiSig.ADDRESS) &&
                 jsonObject.has(MultiSig.TOKEN_HOLDER_ID) &&
                 jsonObject.has(MultiSig.REQUIREMENT) &&
-                jsonObject.has(MultiSig.AUTHORIZE_SESSION_CALL_PREFIX);
+                jsonObject.has(MultiSig.AUTHORIZE_SESSION_CALL_PREFIX) &&
+                jsonObject.has(MultiSig.NONCE);
     }
 
     @Override
@@ -62,6 +66,7 @@ public class MultiSig extends BaseEntity {
         setTokenHolderId(jsonObject.getString(MultiSig.TOKEN_HOLDER_ID));
         setRequirement(jsonObject.getInt(MultiSig.REQUIREMENT));
         setAuthorizeSessionCallPrefix(jsonObject.getString(MultiSig.AUTHORIZE_SESSION_CALL_PREFIX));
+        setNonce(jsonObject.getString(MultiSig.NONCE));
 
     }
 
@@ -115,8 +120,16 @@ public class MultiSig extends BaseEntity {
             }
         }
         if (null == deviceWallet) {
-            throw new Exception("Wallet Id not found in db");
+            throw new Exception("Wallet not found in db");
         }
         return deviceWallet;
+    }
+
+    public String getNonce() {
+        return nonce;
+    }
+
+    public void setNonce(String nonce) {
+        this.nonce = nonce;
     }
 }
