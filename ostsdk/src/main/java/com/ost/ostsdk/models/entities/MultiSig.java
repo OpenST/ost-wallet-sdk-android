@@ -4,10 +4,9 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
-import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.OstSdkKeyDatabase;
+import com.ost.ostsdk.models.Impls.ModelFactory;
+import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,7 +17,6 @@ public class MultiSig extends BaseEntity {
     public static final String USER_ID = "user_id";
     public static final String ADDRESS = "address";
     public static final String TOKEN_HOLDER_ID = "token_holder_id";
-    public static final String WALLETS = "wallets";
     public static final String REQUIREMENT = "requirement";
     public static final String AUTHORIZE_SESSION_CALL_PREFIX = "authorize_session_callprefix";
 
@@ -28,8 +26,6 @@ public class MultiSig extends BaseEntity {
     private String address;
     @Ignore
     private String tokenHolderId;
-    @Ignore
-    private String[] wallets;
     @Ignore
     private int requirement;
     @Ignore
@@ -52,7 +48,6 @@ public class MultiSig extends BaseEntity {
         return super.validate(jsonObject) &&
                 jsonObject.has(MultiSig.USER_ID) &&
                 jsonObject.has(MultiSig.ADDRESS) &&
-                jsonObject.has(MultiSig.WALLETS) &&
                 jsonObject.has(MultiSig.TOKEN_HOLDER_ID) &&
                 jsonObject.has(MultiSig.REQUIREMENT) &&
                 jsonObject.has(MultiSig.AUTHORIZE_SESSION_CALL_PREFIX);
@@ -63,13 +58,6 @@ public class MultiSig extends BaseEntity {
         super.processJson(jsonObject);
         setAddress(jsonObject.getString(MultiSig.ADDRESS));
         setUserId(jsonObject.getString(MultiSig.USER_ID));
-
-        JSONArray walletArray = jsonObject.getJSONArray(MultiSig.WALLETS);
-        String walletList[] = new String[walletArray.length()];
-        for (int i = 0; i < walletArray.length(); i++) {
-            walletList[i] = walletArray.getString(i);
-        }
-        setWallets(walletList);
 
         setTokenHolderId(jsonObject.getString(MultiSig.TOKEN_HOLDER_ID));
         setRequirement(jsonObject.getInt(MultiSig.REQUIREMENT));
@@ -83,10 +71,6 @@ public class MultiSig extends BaseEntity {
 
     public String getAddress() {
         return address;
-    }
-
-    public String[] getWallets() {
-        return wallets;
     }
 
     public int getRequirement() {
@@ -103,10 +87,6 @@ public class MultiSig extends BaseEntity {
 
     private void setAddress(String address) {
         this.address = address;
-    }
-
-    private void setWallets(String[] wallets) {
-        this.wallets = wallets;
     }
 
     private void setRequirement(int requirement) {
@@ -126,17 +106,17 @@ public class MultiSig extends BaseEntity {
     }
 
     public MultiSigWallet getDeviceMultiSigWallet() throws Exception {
-        String[] wallets = getWallets();
-        String deviceWalletId = null;
-        for (String walletId : wallets) {
-            if (null != OstSdkKeyDatabase.getDatabase().secureKeyDao().getById(walletId)) {
-                deviceWalletId = walletId;
+        MultiSigWallet deviceWallet = null;
+        MultiSigWallet wallets[] = ModelFactory.getMultiSigWallet().getMultiSigWalletsByParentId(getId());
+        for (MultiSigWallet wallet : wallets) {
+            if (null != new SecureKeyModelRepository().getById(wallet.getAddress())) {
+                deviceWallet = wallet;
                 break;
             }
         }
-        if (null == deviceWalletId) {
+        if (null == deviceWallet) {
             throw new Exception("Wallet Id not found in db");
         }
-        return OstSdkDatabase.getDatabase().multiSigWalletDao().getById(deviceWalletId);
+        return deviceWallet;
     }
 }

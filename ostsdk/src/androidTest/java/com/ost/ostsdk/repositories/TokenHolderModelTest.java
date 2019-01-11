@@ -14,7 +14,6 @@ import com.ost.ostsdk.models.TokenHolderModel;
 import com.ost.ostsdk.models.entities.TokenHolder;
 import com.ost.ostsdk.models.entities.User;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
@@ -114,6 +113,7 @@ public class TokenHolderModelTest {
         userObj.put(User.ECONOMY_ID, "1");
         userObj.put(User.NAME, "user");
         userObj.put(User.TOKEN_HOLDER_ID, "1");
+        userObj.put(User.MULTI_SIG_ID, "1");
 
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -130,7 +130,6 @@ public class TokenHolderModelTest {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(TokenHolder.ID, "1");
         jsonObject.put(TokenHolder.USER_ID, "1");
-        jsonObject.put(TokenHolder.SESSIONS, new JSONArray());
         jsonObject.put(TokenHolder.EXECUTE_RULE_CALL_PREFIX, "tokenHolderNo1");
         jsonObject.put(TokenHolder.REQUIREMENTS, 1);
         jsonObject.put(TokenHolder.ADDRESS, "address");

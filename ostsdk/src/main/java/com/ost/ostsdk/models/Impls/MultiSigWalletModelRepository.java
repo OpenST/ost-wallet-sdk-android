@@ -60,6 +60,11 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
+    public MultiSigWallet[] getMultiSigWalletsByParentId(String id) {
+        return (MultiSigWallet[]) super.getByParentId(id);
+    }
+
+    @Override
     BaseDao getModel() {
         return mMultiSigWalletDao;
     }

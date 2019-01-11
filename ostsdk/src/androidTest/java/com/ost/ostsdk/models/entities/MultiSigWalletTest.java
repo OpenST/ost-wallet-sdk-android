@@ -9,7 +9,6 @@ import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.UserModel;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -82,9 +81,7 @@ public class MultiSigWalletTest {
         jsonObject.put(MultiSig.TOKEN_HOLDER_ID, "123");
         jsonObject.put(MultiSig.REQUIREMENT, 1);
         jsonObject.put(MultiSig.AUTHORIZE_SESSION_CALL_PREFIX, "callPrefix");
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put("0x2389234234");
-        jsonObject.put(MultiSig.WALLETS, jsonArray);
+
         jsonObject.put(MultiSig.USER_ID, "123");
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -109,6 +106,7 @@ public class MultiSigWalletTest {
         userObj.put(User.ECONOMY_ID, "1");
         userObj.put(User.NAME, "user");
         userObj.put(User.TOKEN_HOLDER_ID, "1");
+        userObj.put(User.MULTI_SIG_ID, "1");
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -131,9 +129,6 @@ public class MultiSigWalletTest {
         jsonObject.put(TokenHolder.ADDRESS, "0x2901239");
         jsonObject.put(TokenHolder.REQUIREMENTS, 1);
         jsonObject.put(TokenHolder.USER_ID, "123");
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.put("0x12345678");
-        jsonObject.put(TokenHolder.SESSIONS, jsonArray);
         jsonObject.put(TokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);

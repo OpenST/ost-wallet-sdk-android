@@ -68,4 +68,7 @@ abstract class BaseModelRepository {
 
     abstract BaseDao getModel();
 
+    protected BaseEntity[] getByParentId(String id) {
+        return getModel().getByParentId(id);
+    }
 }

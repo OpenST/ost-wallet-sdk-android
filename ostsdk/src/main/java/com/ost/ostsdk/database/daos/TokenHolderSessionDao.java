@@ -35,4 +35,7 @@ public abstract class TokenHolderSessionDao implements BaseDao {
 
     @Query("DELETE FROM token_holder_session")
     public abstract void deleteAll();
+
+    @Query("SELECT * FROM token_holder_session WHERE parent_id=:id")
+    public abstract TokenHolderSession[] getByParentId(String id);
 }

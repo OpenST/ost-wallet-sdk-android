@@ -14,4 +14,6 @@ public interface BaseDao {
     BaseEntity getById(String id);
 
     void deleteAll();
+
+    BaseEntity[] getByParentId(String id);
 }

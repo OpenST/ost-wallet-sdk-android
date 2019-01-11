@@ -35,4 +35,7 @@ public abstract class ExecutableRuleDao implements BaseDao {
 
     @Query("DELETE FROM executable_rule")
     public abstract void deleteAll();
+
+    @Query("SELECT * FROM executable_rule WHERE parent_id=:id")
+    public abstract ExecutableRule[] getByParentId(String id);
 }

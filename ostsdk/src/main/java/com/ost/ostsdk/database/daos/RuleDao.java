@@ -35,4 +35,7 @@ public abstract class RuleDao implements BaseDao {
 
     @Query("DELETE FROM Rule")
     public abstract void deleteAll();
+
+    @Query("SELECT * FROM rule WHERE parent_id=:id")
+    public abstract Rule[] getByParentId(String id);
 }

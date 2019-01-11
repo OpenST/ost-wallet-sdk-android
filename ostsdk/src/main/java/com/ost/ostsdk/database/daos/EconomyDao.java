@@ -24,15 +24,18 @@ public abstract class EconomyDao implements BaseDao {
     @Insert
     public abstract void insertAll(Economy... economy);
 
-    @Query("DELETE FROM Economy WHERE id=:id")
+    @Query("DELETE FROM economy WHERE id=:id")
     public abstract void delete(String id);
 
-    @Query("SELECT * FROM Economy WHERE id IN (:ids)")
+    @Query("SELECT * FROM economy WHERE id IN (:ids)")
     public abstract Economy[] getByIds(String[] ids);
 
-    @Query("SELECT * FROM Economy WHERE id=:id")
+    @Query("SELECT * FROM economy WHERE id=:id")
     public abstract Economy getById(String id);
 
-    @Query("DELETE FROM Economy")
+    @Query("DELETE FROM economy")
     public abstract void deleteAll();
+
+    @Query("SELECT * FROM economy WHERE parent_id=:id")
+    public abstract Economy[] getByParentId(String id);
 }

@@ -39,4 +39,7 @@ public abstract class MultiSigWalletDao implements BaseDao {
 
     @Query("DELETE FROM multi_sig_wallet")
     public abstract void deleteAll();
+
+    @Query("SELECT * FROM multi_sig_wallet WHERE parent_id=:id")
+    public abstract MultiSigWallet[] getByParentId(String id);
 }

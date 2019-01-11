@@ -35,4 +35,7 @@ public abstract class UserDao implements BaseDao {
 
     @Query("DELETE FROM User")
     public abstract void deleteAll();
+
+    @Query("SELECT * FROM user WHERE parent_id=:id")
+    public abstract User[] getByParentId(String id);
 }

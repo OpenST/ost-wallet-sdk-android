@@ -35,4 +35,7 @@ public abstract class MultiSigOperationDao implements BaseDao {
 
     @Query("DELETE FROM multi_sig_operation")
     public abstract void deleteAll();
+
+    @Query("SELECT * FROM multi_sig_operation WHERE parent_id=:id")
+    public abstract MultiSigOperation[] getByParentId(String id);
 }

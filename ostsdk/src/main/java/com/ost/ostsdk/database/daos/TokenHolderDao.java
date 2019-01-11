@@ -35,4 +35,7 @@ public abstract class TokenHolderDao implements BaseDao {
 
     @Query("DELETE FROM token_holder")
     public abstract void deleteAll();
+
+    @Query("SELECT * FROM token_holder WHERE parent_id=:id")
+    public abstract TokenHolder[] getByParentId(String id);
 }
