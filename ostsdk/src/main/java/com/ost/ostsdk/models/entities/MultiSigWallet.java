@@ -67,7 +67,7 @@ public class MultiSigWallet extends BaseEntity {
 
     public String signTransaction(RawTransaction rawTransaction, String userId) {
         byte[] data = new SecureKeyModelRepository().getById(getAddress()).getData();
-        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, Credentials.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data).toString()));
+        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, Credentials.create(Numeric.toHexString(AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data))));
         return Numeric.toHexString(signedMessage);
     }
 
@@ -98,7 +98,7 @@ public class MultiSigWallet extends BaseEntity {
 
     public static class Transaction extends RawTransaction {
 
-        protected Transaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value, String data) {
+        public Transaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value, String data) {
             super(nonce, gasPrice, gasLimit, to, value, data);
         }
     }

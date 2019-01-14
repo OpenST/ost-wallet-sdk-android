@@ -3,7 +3,7 @@ package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.content.Context;
+import android.util.Log;
 
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
@@ -13,9 +13,10 @@ import com.ost.ostsdk.utils.EIP1077;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
+
+import java.math.BigInteger;
 
 /**
  * EIP1077 Transaction Signing
@@ -87,12 +88,14 @@ public class TokenHolderSession extends BaseEntity {
         setNonce(jsonObject.getString(TokenHolderSession.NONCE));
     }
 
-    public String signTransaction(RawTransaction rawTransaction) throws Exception {
-        Context context = null;
-        String alias = "alias";
-        byte[] data = new SecureKeyModelRepository().getById(alias).getData();
-        byte[] signedMessage = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(new JSONObject()).toEIP1077TransactionHash()), ECKeyPair.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), alias).decrypt(data))).getR();
+    public String signTransaction(JSONObject jsonObject, String userId) throws Exception {
+        byte[] data = new SecureKeyModelRepository().getById(getAddress()).getData();
+        byte[] signedMessage = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(jsonObject).toEIP1077TransactionHash()), ECKeyPair.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data))).getR();
         return Numeric.toHexString(signedMessage);
+    }
+
+    public String signTransaction(TokenHolderSession.Transaction transaction, String userId) throws Exception {
+        return signTransaction(transaction.toJSONObject(), userId);
     }
 
     public String getAddress() {
@@ -157,5 +160,37 @@ public class TokenHolderSession extends BaseEntity {
 
     public void setNonce(String nonce) {
         this.nonce = nonce;
+    }
+
+    public static class Transaction {
+        private static final String TAG = "THS.Transaction";
+        private BigInteger value = new BigInteger("0");
+        private BigInteger gas = new BigInteger("0");
+
+        Transaction() {
+
+        }
+
+        Transaction setValue(BigInteger bigInteger) {
+            this.value = bigInteger;
+            return this;
+        }
+
+        Transaction setGas(BigInteger bigInteger) {
+            this.gas = bigInteger;
+            return this;
+        }
+
+        JSONObject toJSONObject() {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put(EIP1077.TXN_GAS, this.gas.toString());
+                return jsonObject;
+            } catch (JSONException jsonException) {
+                Log.e(TAG, "JSON exception");
+                return null;
+            }
+
+        }
     }
 }

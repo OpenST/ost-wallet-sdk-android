@@ -3,6 +3,7 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +24,7 @@ public class BaseEntity {
     public static final String DELETED_STATUS = "DELETED";
     private static final String DEFAULT_PARENT_ID = "";
     private static final List<String> STATUS_VALUE = Arrays.asList(ACTIVE_STATUS, DELETED_STATUS);
+    private static final String TAG = "BaseEntity";
 
     @PrimaryKey()
     @NonNull
@@ -85,7 +87,7 @@ public class BaseEntity {
     }
 
     boolean validate(JSONObject jsonObject) {
-        return jsonObject.has(BaseEntity.ID);
+        return jsonObject.has(BaseEntity.ID) && jsonObject.has(BaseEntity.PARENT_ID);
     }
 
     public void processJson(JSONObject jsonObject) throws JSONException {
@@ -122,5 +124,18 @@ public class BaseEntity {
 
     public void setParentId(String parentId) {
         this.parentId = parentId;
+    }
+
+    public void updateJSON() {
+        try {
+            JSONObject jsonObject = new JSONObject(getData());
+            jsonObject.put(BaseEntity.UTS, getUts());
+            jsonObject.put(BaseEntity.PARENT_ID, getParentId());
+            jsonObject.put(BaseEntity.STATUS, getBaseStatus());
+            setData(jsonObject.toString());
+        } catch (JSONException jsonException) {
+            Log.e(TAG, "Unexpected exception while parsing JSON String");
+            throw new RuntimeException("Unexpected exception while parsing JSON String");
+        }
     }
 }

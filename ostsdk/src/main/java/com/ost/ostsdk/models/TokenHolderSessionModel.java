@@ -19,6 +19,7 @@ public interface TokenHolderSessionModel {
 
     void deleteAllTokenHolderSessions(TaskCallback callback);
 
-    TokenHolderSession initTokenHolderSession(JSONObject jsonObject) throws JSONException;
+    TokenHolderSession initTokenHolderSession(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 
+    TokenHolderSession[] getTokenHolderSessionsByParentId(String id);
 }

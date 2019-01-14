@@ -53,10 +53,15 @@ class TokenHolderSessionModelRepository extends BaseModelCacheRepository impleme
     }
 
     @Override
-    public TokenHolderSession initTokenHolderSession(JSONObject jsonObject) throws JSONException {
+    public TokenHolderSession initTokenHolderSession(JSONObject jsonObject, TaskCallback callback) throws JSONException {
         TokenHolderSession multiSig = new TokenHolderSession(jsonObject);
-        insert(multiSig, null);
+        insert(multiSig, callback);
         return multiSig;
+    }
+
+    @Override
+    public TokenHolderSession[] getTokenHolderSessionsByParentId(String id) {
+        return (TokenHolderSession[]) super.getByParentId(id);
     }
 
     @Override

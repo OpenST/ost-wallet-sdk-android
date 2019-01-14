@@ -65,8 +65,17 @@ class UserModelRepository extends BaseModelCacheRepository implements UserModel 
     }
 
     @Override
+    public User update(User user, TaskCallback callback) {
+        user.setUts(System.currentTimeMillis());
+        user.updateJSON();
+        insertUser(user, callback);
+        return user;
+    }
+
+    @Override
     BaseDao getModel() {
         return mUserDao;
     }
+
 
 }

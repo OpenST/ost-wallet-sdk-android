@@ -21,4 +21,5 @@ public interface UserModel {
 
     User initUser(JSONObject jsonObject) throws JSONException;
 
+    User update(User user, TaskCallback callback);
 }

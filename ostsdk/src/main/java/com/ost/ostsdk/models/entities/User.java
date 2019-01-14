@@ -3,8 +3,8 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
-import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCallback;
 
@@ -16,6 +16,8 @@ import org.json.JSONObject;
  */
 @Entity(tableName = "user")
 public class User extends BaseEntity {
+
+    private static final String TAG = "User";
 
     public static final String ECONOMY_ID = "economy_id";
     public static final String TOKEN_HOLDER_ID = "token_holder_id";
@@ -58,7 +60,7 @@ public class User extends BaseEntity {
         this.economyId = economyId;
     }
 
-    private void setTokenHolderId(String tokenHolderId) {
+    public void setTokenHolderId(String tokenHolderId) {
         this.tokenHolderId = tokenHolderId;
     }
 
@@ -95,8 +97,8 @@ public class User extends BaseEntity {
         });
     }
 
-    public TokenHolder getTokenHolder(String id) {
-        return ModelFactory.getTokenHolderModel().getTokenHolderById(id);
+    public TokenHolder getTokenHolder() {
+        return ModelFactory.getTokenHolderModel().getTokenHolderById(getTokenHolderId());
     }
 
     public void delTokenHolder(String id, @NonNull TaskCallback callback) {
@@ -117,6 +119,22 @@ public class User extends BaseEntity {
     }
 
     public MultiSig getMultiSig() {
-        return OstSdkDatabase.getDatabase().multiSigDao().getById(getMultiSigId());
+        return ModelFactory.getMultiSig().getMultiSigById(getMultiSigId());
+    }
+
+    @Override
+    public void updateJSON() {
+        super.updateJSON();
+        try {
+            JSONObject jsonObject = new JSONObject(getData());
+            jsonObject.put(User.MULTI_SIG_ID, getMultiSigId());
+            jsonObject.put(User.NAME, getName());
+            jsonObject.put(User.TOKEN_HOLDER_ID, getTokenHolderId());
+            jsonObject.put(User.ECONOMY_ID, getEconomyId());
+            setData(jsonObject.toString());
+        } catch (JSONException jsonException) {
+            Log.e(TAG, "Unexpected exception while parsing JSON String");
+            throw new RuntimeException("Unexpected exception while parsing JSON String");
+        }
     }
 }

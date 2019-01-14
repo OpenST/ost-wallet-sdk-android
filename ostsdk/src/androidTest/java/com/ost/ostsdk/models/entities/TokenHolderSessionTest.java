@@ -17,14 +17,13 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.web3j.crypto.RawTransaction;
 
 import java.math.BigInteger;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(AndroidJUnit4.class)
-public class MultiSigWalletTest {
+public class TokenHolderSessionTest {
 
     private static Context mAppContext;
 
@@ -44,10 +43,11 @@ public class MultiSigWalletTest {
         ModelFactory.getMultiSig().deleteAllMultiSigs(null);
         ModelFactory.getTokenHolderModel().deleteAllTokenHolders(null);
         ModelFactory.getRuleModel().deleteAllRules(null);
+        ModelFactory.getTokenHolderSession().deleteAllTokenHolderSessions(null);
     }
 
     @Test
-    public void testMultiSigWalletSigning() throws Exception {
+    public void testTokenHolderSessionSigning() throws Exception {
 
         // Create User
         User user = insertUserData("1", "1", "1", "1");
@@ -55,26 +55,28 @@ public class MultiSigWalletTest {
         // Create SecureKey
         String walletAddress = new KeyGenProcess().execute("1");
 
+        TokenHolder tokenHolder = insertTokenHolder(user.getId(), "1", "1");
+
         // Create Multi Sig
         MultiSig multiSig = insertMultiSig(user.getId(), "1", "1");
 
-        TokenHolder tokenHolder = insertTokenHolder(user.getId(), "1");
-
-        // Create MultiSigWallet
-        MultiSigWallet multiSigWallet = insertMultiSigWallet(multiSig.getId(), "1", walletAddress, "1");
+        //Create TokenHolderSession
+        TokenHolderSession tokenHolderSession = insertTokenHolderSession(tokenHolder.getId(), "1", walletAddress);
 
         user = updateUserData(user, multiSig, tokenHolder);
 
         user = OstSdk.getUser("1");
-        multiSig = user.getMultiSig();
-        multiSigWallet = multiSig.getDeviceMultiSigWallet();
+        tokenHolder = user.getTokenHolder();
+        tokenHolderSession = tokenHolder.getDeviceTokenHolderSession();
 
-        MultiSigWallet.Transaction transaction = new MultiSigWallet.Transaction(new BigInteger(multiSig.getNonce()),
-                new BigInteger("100000"), new BigInteger("100000"), "0xF281e85a0B992efA5fda4f52b35685dC5Ee67BEa", new BigInteger("0"), "0x");
+        JSONObject jsonObject = new TokenHolderSession.Transaction()
+                .setGas(new BigInteger("0"))
+                .setValue(new BigInteger("0"))
+                .toJSONObject();
 
+        String signature = tokenHolderSession.signTransaction(jsonObject, user.getId());
 
-        Assert.assertEquals(204,
-                multiSigWallet.signTransaction((RawTransaction) transaction, user.getId()).length());
+        Assert.assertEquals(204, signature.length());
     }
 
     private User updateUserData(User user, MultiSig multiSig, TokenHolder tokenHolder) throws InterruptedException {
@@ -94,17 +96,22 @@ public class MultiSigWalletTest {
         return user;
     }
 
-    private MultiSigWallet insertMultiSigWallet(String parentId, String multiSigWalletId, String walletAddress, String multiSigId) throws JSONException, InterruptedException {
+    private TokenHolderSession insertTokenHolderSession(String parentId, String tokenHolderSessionId, String walletAddress) throws JSONException, InterruptedException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(BaseEntity.PARENT_ID, parentId);
-        jsonObject.put(BaseEntity.ID, multiSigWalletId);
-        jsonObject.put(MultiSigWallet.ADDRESS, walletAddress);
-        jsonObject.put(MultiSigWallet.MULTI_SIG_ID, multiSigId);
+        jsonObject.put(BaseEntity.ID, tokenHolderSessionId);
+        jsonObject.put(TokenHolderSession.ADDRESS, walletAddress);
+        jsonObject.put(TokenHolderSession.NONCE, "1");
+        jsonObject.put(TokenHolderSession.SPENDING_LIMIT, "10000");
+        jsonObject.put(TokenHolderSession.REDEMPTION_LIMIT, "10000");
+        jsonObject.put(TokenHolderSession.EXPIRY_TIME, "100");
+        jsonObject.put(TokenHolderSession.BLOCK_HEIGHT, "100");
+        jsonObject.put(TokenHolderSession.TOKEN_HOLDER_ID, parentId);
         jsonObject.put(MultiSigWallet.STATUS, MultiSigWallet.CREATED_STATUS);
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        MultiSigWallet multiSigWallet = ModelFactory.getMultiSigWallet().initMultiSigWallet(jsonObject, new TaskCallback() {
+        TokenHolderSession tokenHolderSession = ModelFactory.getTokenHolderSession().initTokenHolderSession(jsonObject, new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -113,7 +120,7 @@ public class MultiSigWalletTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        return multiSigWallet;
+        return tokenHolderSession;
     }
 
     private MultiSig insertMultiSig(String parentId, String multiSigId, String tokenHolderId) throws JSONException, InterruptedException {
@@ -166,14 +173,14 @@ public class MultiSigWalletTest {
         return user;
     }
 
-    private TokenHolder insertTokenHolder(String parentId, String tokenHolderId) throws JSONException, InterruptedException {
+    private TokenHolder insertTokenHolder(String parentId, String param, String userId) throws JSONException, InterruptedException {
         JSONObject jsonObject = new JSONObject();
 
         jsonObject.put(BaseEntity.PARENT_ID, parentId);
-        jsonObject.put(BaseEntity.ID, tokenHolderId);
+        jsonObject.put(BaseEntity.ID, param);
         jsonObject.put(TokenHolder.ADDRESS, "0x2901239");
         jsonObject.put(TokenHolder.REQUIREMENTS, 1);
-        jsonObject.put(TokenHolder.USER_ID, parentId);
+        jsonObject.put(TokenHolder.USER_ID, userId);
         jsonObject.put(TokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);

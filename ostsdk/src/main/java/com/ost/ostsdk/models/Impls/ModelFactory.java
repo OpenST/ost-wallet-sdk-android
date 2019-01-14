@@ -5,10 +5,12 @@ import com.ost.ostsdk.models.MultiSigModel;
 import com.ost.ostsdk.models.MultiSigWalletModel;
 import com.ost.ostsdk.models.RuleModel;
 import com.ost.ostsdk.models.TokenHolderModel;
+import com.ost.ostsdk.models.TokenHolderSessionModel;
 import com.ost.ostsdk.models.UserModel;
 
 public class ModelFactory {
 
+    private static volatile TokenHolderSessionModelRepository TOKEN_HOLDER_SESSION_MODEL_INSTANCE;
     private static volatile MultiSigWalletModelRepository MULTI_SIG_WALLET_MODEL_INSTANCE;
     private static volatile MultiSigModel MULTI_SIG_MODEL_INSTANCE;
     private static volatile UserModel USER_MODEL_INSTANCE;
@@ -83,6 +85,18 @@ public class ModelFactory {
             }
         }
         return MULTI_SIG_WALLET_MODEL_INSTANCE;
+
+    }
+
+    public static TokenHolderSessionModel getTokenHolderSession() {
+        if (TOKEN_HOLDER_SESSION_MODEL_INSTANCE == null) {
+            synchronized (TokenHolderSessionModelRepository.class) {
+                if (TOKEN_HOLDER_SESSION_MODEL_INSTANCE == null) {
+                    TOKEN_HOLDER_SESSION_MODEL_INSTANCE = new TokenHolderSessionModelRepository();
+                }
+            }
+        }
+        return TOKEN_HOLDER_SESSION_MODEL_INSTANCE;
 
     }
 }

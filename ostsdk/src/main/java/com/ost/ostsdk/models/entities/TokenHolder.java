@@ -4,6 +4,9 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
+import com.ost.ostsdk.models.Impls.ModelFactory;
+import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -87,5 +90,20 @@ public class TokenHolder extends BaseEntity {
 
     private void setExecuteRuleCallPrefix(String executeRuleCallPrefix) {
         this.executeRuleCallPrefix = executeRuleCallPrefix;
+    }
+
+    public TokenHolderSession getDeviceTokenHolderSession() throws Exception {
+        TokenHolderSession deviceSession = null;
+        TokenHolderSession sessions[] = ModelFactory.getTokenHolderSession().getTokenHolderSessionsByParentId(getId());
+        for (TokenHolderSession session : sessions) {
+            if (null != new SecureKeyModelRepository().getById(session.getAddress())) {
+                deviceSession = session;
+                break;
+            }
+        }
+        if (null == deviceSession) {
+            throw new Exception("Wallet not found in db");
+        }
+        return deviceSession;
     }
 }
