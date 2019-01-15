@@ -124,7 +124,7 @@ public class UserModelTest {
         JSONObject userObj = new JSONObject();
 
         userObj.put(User.ID, String.valueOf(param));
-        userObj.put(User.ECONOMY_ID, "1");
+        userObj.put(User.TOKEN_ID, "1");
         userObj.put(User.NAME, "user");
         userObj.put(User.TOKEN_HOLDER_ID, "1");
         userObj.put(User.MULTI_SIG_ID, "1");

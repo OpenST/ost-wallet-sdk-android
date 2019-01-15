@@ -41,13 +41,13 @@ public class RuleTest {
         jsonObject.put(Rule.ADDRESS, "0x2901239");
         jsonObject.put(Rule.NAME, "name");
         jsonObject.put(Rule.ABI, "abi");
-        jsonObject.put(Rule.ECONOMY_ID, "123");
+        jsonObject.put(Rule.TOKEN_ID, "123");
 
         Rule rule = new Rule(jsonObject);
         assertEquals("0x2901239", rule.getAddress());
         assertEquals("name", rule.getName());
         assertEquals("abi", rule.getAbi());
-        assertEquals("123", rule.getEconomyId());
+        assertEquals("123", rule.getTokenId());
         assertEquals("ID", rule.getId());
 
     }

@@ -20,6 +20,6 @@ public class MigrationSample extends Migration {
     @Override
     public void migrate(@NonNull SupportSQLiteDatabase database) {
         database.execSQL(
-                "CREATE TABLE IF NOT EXISTS user (id LONG AUTO INCREMENT, economy_id LONG, token_holder_id LONG, name TEXT, uts LONG, PRIMARY KEY(id))");
+                "CREATE TABLE IF NOT EXISTS user (id LONG AUTO INCREMENT, token_id LONG, token_holder_id LONG, name TEXT, uts LONG, PRIMARY KEY(id))");
     }
 }

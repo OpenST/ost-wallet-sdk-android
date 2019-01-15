@@ -9,7 +9,7 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.Economy;
+import com.ost.ostsdk.models.entities.Token;
 import com.ost.ostsdk.models.entities.User;
 
 import org.json.JSONException;
@@ -35,17 +35,17 @@ public class OstSdk {
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
     }
 
-    public static Economy registerEconomy(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
-        return ModelFactory.getEconomyModel().registerEconomy(jsonObject, callback);
+    public static Token registerToken(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
+        return ModelFactory.getTokenModel().registerToken(jsonObject, callback);
     }
 
-    public static Economy registerEconomy(JSONObject jsonObject) throws JSONException {
-        return registerEconomy(jsonObject, new TaskCallback() {
+    public static Token registerToken(JSONObject jsonObject) throws JSONException {
+        return registerToken(jsonObject, new TaskCallback() {
         });
     }
 
-    public static Economy getEconomy(String economyId) {
-        return ModelFactory.getEconomyModel().getEconomyById(economyId);
+    public static Token getToken(String tokenId) {
+        return ModelFactory.getTokenModel().getTokenById(tokenId);
     }
 
     public static User initUser(JSONObject jsonObject) throws JSONException {

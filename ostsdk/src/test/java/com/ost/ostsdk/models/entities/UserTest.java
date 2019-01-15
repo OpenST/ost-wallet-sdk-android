@@ -24,7 +24,7 @@ public class UserTest {
         //Test Id with partial User attribute
         jsonObject = new JSONObject();
         jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(User.ECONOMY_ID, "123");
+        jsonObject.put(User.TOKEN_ID, "123");
         jsonObject.put(User.NAME, "status");
         testUserJsonException(jsonObject);
     }
@@ -38,13 +38,13 @@ public class UserTest {
         //Test without any User  attribute
         jsonObject = new JSONObject();
         jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(User.ECONOMY_ID, "0x2901239");
+        jsonObject.put(User.TOKEN_ID, "0x2901239");
         jsonObject.put(User.TOKEN_HOLDER_ID, "123");
         jsonObject.put(User.NAME, "name");
         jsonObject.put(User.MULTI_SIG_ID, "1");
 
         User user = new User(jsonObject);
-        assertEquals("0x2901239", user.getEconomyId());
+        assertEquals("0x2901239", user.getTokenId());
         assertEquals("123", user.getTokenHolderId());
         assertEquals("name", user.getName());
         assertEquals("ID", user.getId());

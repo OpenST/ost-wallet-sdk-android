@@ -9,17 +9,17 @@ import com.ost.ostsdk.models.TaskCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-@Entity(tableName = "economy")
-public class Economy extends BaseEntity {
-    public Economy(JSONObject jsonObject) throws JSONException {
+@Entity(tableName = "token")
+public class Token extends BaseEntity {
+    public Token(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
-    private Economy(String jsonString) throws JSONException {
+    private Token(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
     }
 
-    public Economy() {
+    public Token() {
     }
 
     @Override

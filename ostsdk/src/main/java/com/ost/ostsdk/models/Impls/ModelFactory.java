@@ -1,11 +1,11 @@
 package com.ost.ostsdk.models.Impls;
 
-import com.ost.ostsdk.models.EconomyModel;
 import com.ost.ostsdk.models.MultiSigModel;
 import com.ost.ostsdk.models.MultiSigWalletModel;
 import com.ost.ostsdk.models.RuleModel;
 import com.ost.ostsdk.models.TokenHolderModel;
 import com.ost.ostsdk.models.TokenHolderSessionModel;
+import com.ost.ostsdk.models.TokenModel;
 import com.ost.ostsdk.models.UserModel;
 
 public class ModelFactory {
@@ -15,7 +15,7 @@ public class ModelFactory {
     private static volatile MultiSigModel MULTI_SIG_MODEL_INSTANCE;
     private static volatile UserModel USER_MODEL_INSTANCE;
     private static volatile RuleModel RULE_MODEL_INSTANCE;
-    private static volatile EconomyModel ECONOMY_MODEL_INSTANCE;
+    private static volatile TokenModel TOKEN_MODEL_INSTANCE;
     private static volatile TokenHolderModel TOKEN_HOLDER_MODEL_INSTANCE;
 
 
@@ -42,15 +42,15 @@ public class ModelFactory {
         return RULE_MODEL_INSTANCE;
     }
 
-    public static EconomyModel getEconomyModel() {
-        if (ECONOMY_MODEL_INSTANCE == null) {
-            synchronized (EconomyModelRepository.class) {
-                if (ECONOMY_MODEL_INSTANCE == null) {
-                    ECONOMY_MODEL_INSTANCE = new EconomyModelRepository();
+    public static TokenModel getTokenModel() {
+        if (TOKEN_MODEL_INSTANCE == null) {
+            synchronized (TokenModelRepository.class) {
+                if (TOKEN_MODEL_INSTANCE == null) {
+                    TOKEN_MODEL_INSTANCE = new TokenModelRepository();
                 }
             }
         }
-        return ECONOMY_MODEL_INSTANCE;
+        return TOKEN_MODEL_INSTANCE;
     }
 
     public static TokenHolderModel getTokenHolderModel() {

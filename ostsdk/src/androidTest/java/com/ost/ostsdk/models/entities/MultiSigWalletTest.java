@@ -147,7 +147,7 @@ public class MultiSigWalletTest {
 
         userObj.put(User.PARENT_ID, parentId);
         userObj.put(User.ID, userId);
-        userObj.put(User.ECONOMY_ID, "1");
+        userObj.put(User.TOKEN_ID, "1");
         userObj.put(User.NAME, "user");
         userObj.put(User.TOKEN_HOLDER_ID, tokenHolderId);
         userObj.put(User.MULTI_SIG_ID, multiSigId);

@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.utils.KeyGenProcess;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,13 +20,13 @@ public class User extends BaseEntity {
 
     private static final String TAG = "User";
 
-    public static final String ECONOMY_ID = "economy_id";
+    public static final String TOKEN_ID = "token_id";
     public static final String TOKEN_HOLDER_ID = "token_holder_id";
     public static final String NAME = "name";
     public static final String MULTI_SIG_ID = "multi_sig_id";
 
     @Ignore
-    private String economyId;
+    private String tokenId;
     @Ignore
     private String tokenHolderId;
     @Ignore
@@ -44,8 +45,8 @@ public class User extends BaseEntity {
         super(new JSONObject(jsonString));
     }
 
-    public String getEconomyId() {
-        return economyId;
+    public String getTokenId() {
+        return tokenId;
     }
 
     public String getTokenHolderId() {
@@ -56,8 +57,8 @@ public class User extends BaseEntity {
         return name;
     }
 
-    private void setEconomyId(String economyId) {
-        this.economyId = economyId;
+    private void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
     }
 
     public void setTokenHolderId(String tokenHolderId) {
@@ -68,12 +69,15 @@ public class User extends BaseEntity {
         this.name = name;
     }
 
+    public String createDevice() {
+        return new KeyGenProcess().execute(getId());
+    }
 
     @Override
     public void processJson(JSONObject data) throws JSONException {
         super.processJson(data);
         setName(data.getString(User.NAME));
-        setEconomyId(data.getString(User.ECONOMY_ID));
+        setTokenId(data.getString(User.TOKEN_ID));
         setTokenHolderId(data.getString(User.TOKEN_HOLDER_ID));
         setMultiSigId(data.getString(User.MULTI_SIG_ID));
     }
@@ -81,7 +85,7 @@ public class User extends BaseEntity {
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(User.ECONOMY_ID) &&
+                jsonObject.has(User.TOKEN_ID) &&
                 jsonObject.has(User.TOKEN_HOLDER_ID) &&
                 jsonObject.has(User.NAME) &&
                 jsonObject.has(User.MULTI_SIG_ID);
@@ -130,7 +134,7 @@ public class User extends BaseEntity {
             jsonObject.put(User.MULTI_SIG_ID, getMultiSigId());
             jsonObject.put(User.NAME, getName());
             jsonObject.put(User.TOKEN_HOLDER_ID, getTokenHolderId());
-            jsonObject.put(User.ECONOMY_ID, getEconomyId());
+            jsonObject.put(User.TOKEN_ID, getTokenId());
             setData(jsonObject.toString());
         } catch (JSONException jsonException) {
             Log.e(TAG, "Unexpected exception while parsing JSON String");

@@ -9,13 +9,13 @@ import org.json.JSONObject;
 @Entity(tableName = "rule")
 public class Rule extends BaseEntity {
 
-    public static final String ECONOMY_ID = "economy_id";
+    public static final String TOKEN_ID = "token_id";
     public static final String ADDRESS = "address";
     public static final String NAME = "name";
     public static final String ABI = "abi";
 
     @Ignore
-    private String economyId;
+    private String tokenId;
     @Ignore
     private String name;
     @Ignore
@@ -30,8 +30,8 @@ public class Rule extends BaseEntity {
         super(jsonObject);
     }
 
-    public String getEconomyId() {
-        return economyId;
+    public String getTokenId() {
+        return tokenId;
     }
 
     public String getAddress() {
@@ -47,8 +47,8 @@ public class Rule extends BaseEntity {
     }
 
 
-    private void setEconomyId(String economyId) {
-        this.economyId = economyId;
+    private void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
     }
 
     private void setName(String name) {
@@ -67,7 +67,7 @@ public class Rule extends BaseEntity {
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
         setName(jsonObject.getString(Rule.NAME));
-        setEconomyId(jsonObject.getString(Rule.ECONOMY_ID));
+        setTokenId(jsonObject.getString(Rule.TOKEN_ID));
         setAbi(jsonObject.getString(Rule.ABI));
         setAddress(jsonObject.getString(Rule.ADDRESS));
     }
@@ -75,7 +75,7 @@ public class Rule extends BaseEntity {
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(Rule.ECONOMY_ID) &&
+                jsonObject.has(Rule.TOKEN_ID) &&
                 jsonObject.has(Rule.NAME) &&
                 jsonObject.has(Rule.ABI) &&
                 jsonObject.has(Rule.ADDRESS);

@@ -11,8 +11,8 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.RuleModel;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.Economy;
 import com.ost.ostsdk.models.entities.Rule;
+import com.ost.ostsdk.models.entities.Token;
 import com.ost.ostsdk.models.entities.User;
 
 import org.json.JSONException;
@@ -58,7 +58,7 @@ public class RuleModelTest {
         // Context of the app under test.
         insertRuleData();
 
-        Rule rule = OstSdk.getEconomy("1").getRule("1");
+        Rule rule = OstSdk.getToken("1").getRule("1");
         assertNotNull(rule);
         assertEquals("ruleNo1", rule.getName());
         assertEquals("1", rule.getId());
@@ -71,7 +71,7 @@ public class RuleModelTest {
         Rule rule = insertRuleData();
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.getEconomy("1").delRule(rule.getId(), new TaskCallback() {
+        OstSdk.getToken("1").delRule(rule.getId(), new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -80,7 +80,7 @@ public class RuleModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        rule = OstSdk.getEconomy("1").getRule("1");
+        rule = OstSdk.getToken("1").getRule("1");
         assertNull(rule);
     }
 
@@ -90,7 +90,7 @@ public class RuleModelTest {
         Rule rule = insertRuleData();
 
         OstSdkDatabase.getDatabase().ruleDao().delete(rule.getId());
-        rule = OstSdk.getEconomy("1").getRule("1");
+        rule = OstSdk.getToken("1").getRule("1");
         assertNotNull(rule);
         assertEquals("ruleNo1", rule.getName());
         assertEquals("1", rule.getId());
@@ -108,14 +108,14 @@ public class RuleModelTest {
     }
 
     private Rule insertRuleData(int param) throws JSONException, InterruptedException {
-        JSONObject economyJson = new JSONObject();
+        JSONObject tokenJson = new JSONObject();
 
-        economyJson.put(User.ID, String.valueOf(param));
+        tokenJson.put(User.ID, String.valueOf(param));
 
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        Economy economy = OstSdk.registerEconomy(economyJson, new TaskCallback() {
+        Token token = OstSdk.registerToken(tokenJson, new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -126,11 +126,11 @@ public class RuleModelTest {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(Rule.ID, "1");
-        jsonObject.put(Rule.ECONOMY_ID, "1");
+        jsonObject.put(Rule.TOKEN_ID, "1");
         jsonObject.put(Rule.ABI, "asdfgh");
         jsonObject.put(Rule.NAME, "ruleNo1");
         jsonObject.put(Rule.ADDRESS, "address");
 
-        return economy.initRule(jsonObject);
+        return token.initRule(jsonObject);
     }
 }
