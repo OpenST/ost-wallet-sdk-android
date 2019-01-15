@@ -112,7 +112,7 @@ public class MultiSig extends BaseEntity {
 
     public MultiSigWallet getDeviceMultiSigWallet() throws Exception {
         MultiSigWallet deviceWallet = null;
-        MultiSigWallet wallets[] = ModelFactory.getMultiSigWallet().getMultiSigWalletsByParentId(getId());
+        MultiSigWallet wallets[] = ModelFactory.getMultiSigWalletModel().getMultiSigWalletsByParentId(getId());
         for (MultiSigWallet wallet : wallets) {
             if (null != new SecureKeyModelRepository().getById(wallet.getAddress())) {
                 deviceWallet = wallet;

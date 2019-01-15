@@ -90,8 +90,9 @@ public class TokenHolderSession extends BaseEntity {
 
     public String signTransaction(JSONObject jsonObject, String userId) throws Exception {
         byte[] data = new SecureKeyModelRepository().getById(getAddress()).getData();
-        byte[] signedMessage = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(jsonObject).toEIP1077TransactionHash()), ECKeyPair.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data))).getR();
-        return Numeric.toHexString(signedMessage);
+        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(jsonObject).toEIP1077TransactionHash()), ECKeyPair.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data)));
+        String signedMessage = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + Integer.toHexString(signatureData.getV() & 0xFF);
+        return signedMessage;
     }
 
     public String signTransaction(TokenHolderSession.Transaction transaction, String userId) throws Exception {
@@ -166,9 +167,51 @@ public class TokenHolderSession extends BaseEntity {
         private static final String TAG = "THS.Transaction";
         private BigInteger value = new BigInteger("0");
         private BigInteger gas = new BigInteger("0");
+        private String fromAddress = "0x0";
 
-        Transaction() {
+        public Transaction setToAddress(String toAddress) {
+            this.toAddress = toAddress;
+            return this;
+        }
 
+        public Transaction setGasPrice(BigInteger gasPrice) {
+            this.gasPrice = gasPrice;
+            return this;
+        }
+
+        public Transaction setGasToken(BigInteger gasToken) {
+            this.gasToken = gasToken;
+            return this;
+        }
+
+        public Transaction setTxnOperationType(String txnOperationType) {
+            this.txnOperationType = txnOperationType;
+            return this;
+        }
+
+        public Transaction setNonce(BigInteger nonce) {
+            this.nonce = nonce;
+            return this;
+        }
+
+        public Transaction setData(String data) {
+            this.data = data;
+            return this;
+        }
+
+        public Transaction setTxnExtraHash(String txnExtraHash) {
+            this.txnExtraHash = txnExtraHash;
+            return this;
+        }
+
+        public Transaction setTxnCallPrefix(String txnCallPrefix) {
+            this.txnCallPrefix = txnCallPrefix;
+            return this;
+        }
+
+        public Transaction setFromAddress(String fromAddress) {
+            this.fromAddress = fromAddress;
+            return this;
         }
 
         Transaction setValue(BigInteger bigInteger) {
@@ -181,10 +224,34 @@ public class TokenHolderSession extends BaseEntity {
             return this;
         }
 
+        private String toAddress = "0x0";
+        private BigInteger gasPrice = new BigInteger("0");
+        private BigInteger gasToken = new BigInteger("0");
+        private String txnOperationType = "0";
+        private BigInteger nonce = new BigInteger("0");
+        private String data = "0x0";
+        private String txnExtraHash = "0x0";
+        private String txnCallPrefix = "0x0";
+
+        Transaction(String fromAddress, String toAddress) {
+            this.fromAddress = fromAddress;
+            this.toAddress = toAddress;
+        }
+
         JSONObject toJSONObject() {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put(EIP1077.TXN_GAS, this.gas.toString());
+                jsonObject.put(EIP1077.TXN_VALUE, this.value.toString());
+                jsonObject.put(EIP1077.TXN_FROM, this.fromAddress);
+                jsonObject.put(EIP1077.TXN_TO, this.toAddress);
+                jsonObject.put(EIP1077.TXN_GAS_PRICE, this.gasPrice);
+                jsonObject.put(EIP1077.TXN_GAS_TOKEN, this.gasToken);
+                jsonObject.put(EIP1077.TXN_OPERATION_TYPE, this.txnOperationType);
+                jsonObject.put(EIP1077.TXN_NONCE, this.nonce);
+                jsonObject.put(EIP1077.TXN_DATA, this.data);
+                jsonObject.put(EIP1077.TXN_EXTRA_HASH, this.txnExtraHash);
+                jsonObject.put(EIP1077.TXN_CALL_PREFIX, this.txnCallPrefix);
                 return jsonObject;
             } catch (JSONException jsonException) {
                 Log.e(TAG, "JSON exception");

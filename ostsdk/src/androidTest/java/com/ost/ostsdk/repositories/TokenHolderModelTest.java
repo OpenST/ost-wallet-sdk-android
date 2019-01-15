@@ -57,7 +57,7 @@ public class TokenHolderModelTest {
         // Context of the app under test.
         insertTokenHolderData();
 
-        TokenHolder tokenHolder = OstSdk.getUser("1").getTokenHolder("1");
+        TokenHolder tokenHolder = OstSdk.getUser("1").getTokenHolder();
         assertNotNull(tokenHolder);
         assertEquals(1, tokenHolder.getRequirements());
         assertEquals("address", tokenHolder.getAddress());
@@ -79,7 +79,7 @@ public class TokenHolderModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        tokenHolder = OstSdk.getUser("1").getTokenHolder("1");
+        tokenHolder = OstSdk.getUser("1").getTokenHolder();
         assertNull(tokenHolder);
     }
 
@@ -89,7 +89,7 @@ public class TokenHolderModelTest {
         TokenHolder tokenHolder = insertTokenHolderData();
 
         OstSdkDatabase.getDatabase().tokenHolderDao().delete(tokenHolder.getId());
-        tokenHolder = OstSdk.getUser("1").getTokenHolder("1");
+        tokenHolder = OstSdk.getUser("1").getTokenHolder();
         assertNotNull(tokenHolder);
         assertEquals(1, tokenHolder.getRequirements());
         assertEquals("address", tokenHolder.getAddress());

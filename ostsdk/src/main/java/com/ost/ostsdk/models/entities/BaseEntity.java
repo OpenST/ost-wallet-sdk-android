@@ -87,7 +87,7 @@ public class BaseEntity {
     }
 
     boolean validate(JSONObject jsonObject) {
-        return jsonObject.has(BaseEntity.ID) && jsonObject.has(BaseEntity.PARENT_ID);
+        return jsonObject.has(BaseEntity.ID);
     }
 
     public void processJson(JSONObject jsonObject) throws JSONException {

@@ -119,7 +119,7 @@ public class User extends BaseEntity {
     }
 
     public MultiSig getMultiSig() {
-        return ModelFactory.getMultiSig().getMultiSigById(getMultiSigId());
+        return ModelFactory.getMultiSigModel().getMultiSigById(getMultiSigId());
     }
 
     @Override

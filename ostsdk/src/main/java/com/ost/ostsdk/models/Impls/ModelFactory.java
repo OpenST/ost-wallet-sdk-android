@@ -65,7 +65,7 @@ public class ModelFactory {
     }
 
 
-    public static MultiSigModel getMultiSig() {
+    public static MultiSigModel getMultiSigModel() {
         if (MULTI_SIG_MODEL_INSTANCE == null) {
             synchronized (MultiSigModelRepository.class) {
                 if (MULTI_SIG_MODEL_INSTANCE == null) {
@@ -76,7 +76,7 @@ public class ModelFactory {
         return MULTI_SIG_MODEL_INSTANCE;
     }
 
-    public static MultiSigWalletModel getMultiSigWallet() {
+    public static MultiSigWalletModel getMultiSigWalletModel() {
         if (MULTI_SIG_WALLET_MODEL_INSTANCE == null) {
             synchronized (MultiSigModelRepository.class) {
                 if (MULTI_SIG_WALLET_MODEL_INSTANCE == null) {

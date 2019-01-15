@@ -40,8 +40,8 @@ public class MultiSigWalletTest {
     private static void cleanDB() {
         new SecureKeyModelRepository().deleteAll(null);
         ModelFactory.getUserModel().deleteAllUsers(null);
-        ModelFactory.getMultiSigWallet().deleteAllMultiSigWallets(null);
-        ModelFactory.getMultiSig().deleteAllMultiSigs(null);
+        ModelFactory.getMultiSigWalletModel().deleteAllMultiSigWallets(null);
+        ModelFactory.getMultiSigModel().deleteAllMultiSigs(null);
         ModelFactory.getTokenHolderModel().deleteAllTokenHolders(null);
         ModelFactory.getRuleModel().deleteAllRules(null);
     }
@@ -104,7 +104,7 @@ public class MultiSigWalletTest {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        MultiSigWallet multiSigWallet = ModelFactory.getMultiSigWallet().initMultiSigWallet(jsonObject, new TaskCallback() {
+        MultiSigWallet multiSigWallet = ModelFactory.getMultiSigWalletModel().initMultiSigWallet(jsonObject, new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -129,7 +129,7 @@ public class MultiSigWalletTest {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        MultiSig multiSig = ModelFactory.getMultiSig().initMultiSig(jsonObject, new TaskCallback() {
+        MultiSig multiSig = ModelFactory.getMultiSigModel().initMultiSig(jsonObject, new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();

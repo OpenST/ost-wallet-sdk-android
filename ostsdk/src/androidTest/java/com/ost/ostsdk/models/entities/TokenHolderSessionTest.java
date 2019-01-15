@@ -39,8 +39,8 @@ public class TokenHolderSessionTest {
     private static void cleanDB() {
         new SecureKeyModelRepository().deleteAll(null);
         ModelFactory.getUserModel().deleteAllUsers(null);
-        ModelFactory.getMultiSigWallet().deleteAllMultiSigWallets(null);
-        ModelFactory.getMultiSig().deleteAllMultiSigs(null);
+        ModelFactory.getMultiSigWalletModel().deleteAllMultiSigWallets(null);
+        ModelFactory.getMultiSigModel().deleteAllMultiSigs(null);
         ModelFactory.getTokenHolderModel().deleteAllTokenHolders(null);
         ModelFactory.getRuleModel().deleteAllRules(null);
         ModelFactory.getTokenHolderSession().deleteAllTokenHolderSessions(null);
@@ -69,14 +69,18 @@ public class TokenHolderSessionTest {
         tokenHolder = user.getTokenHolder();
         tokenHolderSession = tokenHolder.getDeviceTokenHolderSession();
 
-        JSONObject jsonObject = new TokenHolderSession.Transaction()
+        JSONObject jsonObject = new TokenHolderSession.Transaction("0x5a85a1E5a749A76dDf378eC2A0a2Ac310ca86Ba8", "0xF281e85a0B992efA5fda4f52b35685dC5Ee67BEa")
+                .setValue(new BigInteger("1"))
+                .setGasPrice(new BigInteger("0"))
                 .setGas(new BigInteger("0"))
-                .setValue(new BigInteger("0"))
+                .setTxnCallPrefix("0x0")
+                .setData("0xF281e85a0B992efA5fda4f52b35685dC5Ee67BEa")
+                .setNonce(new BigInteger("1"))
                 .toJSONObject();
 
         String signature = tokenHolderSession.signTransaction(jsonObject, user.getId());
 
-        Assert.assertEquals(204, signature.length());
+        Assert.assertEquals(132, signature.length());
     }
 
     private User updateUserData(User user, MultiSig multiSig, TokenHolder tokenHolder) throws InterruptedException {
@@ -136,7 +140,7 @@ public class TokenHolderSessionTest {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        MultiSig multiSig = ModelFactory.getMultiSig().initMultiSig(jsonObject, new TaskCallback() {
+        MultiSig multiSig = ModelFactory.getMultiSigModel().initMultiSig(jsonObject, new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
