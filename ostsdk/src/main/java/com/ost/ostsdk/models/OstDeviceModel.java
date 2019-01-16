@@ -7,19 +7,19 @@ import org.json.JSONObject;
 
 public interface OstDeviceModel {
 
-    void insertMultiSigWallet(OstDevice ostDevice, OstTaskCallback callback);
+    void insertMultiSigWallet(OstDevice ostDevice);
 
-    void insertAllMultiSigWallets(OstDevice[] ostDevice, OstTaskCallback callback);
+    void insertAllMultiSigWallets(OstDevice[] ostDevice);
 
-    void deleteMultiSigWallet(String id, OstTaskCallback callback);
+    void deleteMultiSigWallet(String id);
 
     OstDevice[] getMultiSigWalletsByIds(String[] ids);
 
     OstDevice getMultiSigWalletById(String id);
 
-    void deleteAllMultiSigWallets(OstTaskCallback callback);
+    void deleteAllMultiSigWallets();
 
-    OstDevice initMultiSigWallet(JSONObject jsonObject, OstTaskCallback callback) throws JSONException;
+    OstDevice initMultiSigWallet(JSONObject jsonObject) throws JSONException;
 
     OstDevice[] getMultiSigWalletsByParentId(String id);
 }

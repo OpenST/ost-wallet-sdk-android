@@ -23,18 +23,18 @@ class OstSessionModelRepository extends OstBaseModelCacheRepository implements O
 
 
     @Override
-    public void insertTokenHolderSession(final OstSession ostSession, final OstTaskCallback callback) {
-        super.insert(ostSession, callback);
+    public void insertTokenHolderSession(final OstSession ostSession) {
+        super.insert(ostSession, new OstTaskCallback() {});
     }
 
     @Override
-    public void insertAllTokenHolderSessions(final OstSession[] ostSession, final OstTaskCallback callback) {
-        super.insertAll(ostSession, callback);
+    public void insertAllTokenHolderSessions(final OstSession[] ostSession) {
+        super.insertAll(ostSession, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteTokenHolderSession(final String id, final OstTaskCallback callback) {
-        super.delete(id, callback);
+    public void deleteTokenHolderSession(final String id) {
+        super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
@@ -48,14 +48,14 @@ class OstSessionModelRepository extends OstBaseModelCacheRepository implements O
     }
 
     @Override
-    public void deleteAllTokenHolderSessions(final OstTaskCallback callback) {
-        super.deleteAll(callback);
+    public void deleteAllTokenHolderSessions() {
+        super.deleteAll(new OstTaskCallback() {});
     }
 
     @Override
-    public OstSession initTokenHolderSession(JSONObject jsonObject, OstTaskCallback callback) throws JSONException {
+    public OstSession initTokenHolderSession(JSONObject jsonObject) throws JSONException {
         OstSession multiSig = new OstSession(jsonObject);
-        insert(multiSig, callback);
+        insert(multiSig, new OstTaskCallback() {});
         return multiSig;
     }
 

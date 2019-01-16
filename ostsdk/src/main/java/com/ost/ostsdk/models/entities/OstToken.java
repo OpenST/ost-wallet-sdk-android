@@ -1,10 +1,8 @@
 package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
-import android.support.annotation.NonNull;
 
 import com.ost.ostsdk.models.Impls.OstModelFactory;
-import com.ost.ostsdk.models.OstTaskCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,26 +30,16 @@ public class OstToken extends OstBaseEntity {
         super.processJson(jsonObject);
     }
 
-    public OstRule initRule(JSONObject jsonObject, @NonNull OstTaskCallback callback) throws JSONException {
-        jsonObject.put(OstBaseEntity.PARENT_ID, getId());
-        return OstModelFactory.getRuleModel().initRule(jsonObject, callback);
-    }
-
     public OstRule initRule(JSONObject jsonObject) throws JSONException {
-        return initRule(jsonObject, new OstTaskCallback() {
-        });
+        jsonObject.put(OstBaseEntity.PARENT_ID, getId());
+        return OstModelFactory.getRuleModel().initRule(jsonObject);
     }
 
     public OstRule getRule(String id) {
         return OstModelFactory.getRuleModel().getRuleById(id);
     }
 
-    public void delRule(String id, OstTaskCallback callback) {
-        OstModelFactory.getRuleModel().deleteRule(id, callback);
-    }
-
     public void delRule(String id) {
-        delRule(id, new OstTaskCallback() {
-        });
+        OstModelFactory.getRuleModel().deleteRule(id);
     }
 }

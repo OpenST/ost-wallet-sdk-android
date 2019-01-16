@@ -27,6 +27,7 @@ abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
         if (null != oldEntity && oldEntity.getUts() >= baseEntity.getUts()) {
             return;
         }
+        insertInCacheAndMemory(baseEntity);
 
         super.insert(baseEntity, new OstTaskCallback() {
             @Override
@@ -35,11 +36,12 @@ abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
                 removeInMemory(baseEntity);
             }
         });
-        insertInCacheAndMemory(baseEntity);
+
     }
 
     public void insertAll(final OstBaseEntity[] baseEntities, final OstTaskCallback callback) {
 
+        insertInCacheAndMemory(baseEntities);
         super.insertAll(baseEntities, new OstTaskCallback() {
             @Override
             public void onSuccess() {
@@ -47,7 +49,7 @@ abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
                 removeInMemory(baseEntities);
             }
         });
-        insertInCacheAndMemory(baseEntities);
+
     }
 
     public OstBaseEntity getById(String id) {

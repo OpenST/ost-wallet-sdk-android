@@ -23,18 +23,18 @@ class OstExecutableRuleModelRepository extends OstBaseModelCacheRepository imple
 
 
     @Override
-    public void insertExecutableRule(final OstExecutableRule executableRule, final OstTaskCallback callback) {
-        super.insert(executableRule, callback);
+    public void insertExecutableRule(final OstExecutableRule executableRule) {
+        super.insert(executableRule, new OstTaskCallback() {});
     }
 
     @Override
-    public void insertAllExecutableRules(final OstExecutableRule[] executableRule, final OstTaskCallback callback) {
-        super.insertAll(executableRule, callback);
+    public void insertAllExecutableRules(final OstExecutableRule[] executableRule) {
+        super.insertAll(executableRule, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteExecutableRule(final String id, final OstTaskCallback callback) {
-        super.delete(id, callback);
+    public void deleteExecutableRule(final String id) {
+        super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
@@ -48,8 +48,8 @@ class OstExecutableRuleModelRepository extends OstBaseModelCacheRepository imple
     }
 
     @Override
-    public void deleteAllExecutableRules(final OstTaskCallback callback) {
-        super.deleteAll(callback);
+    public void deleteAllExecutableRules() {
+        super.deleteAll(new OstTaskCallback() {});
     }
 
     @Override

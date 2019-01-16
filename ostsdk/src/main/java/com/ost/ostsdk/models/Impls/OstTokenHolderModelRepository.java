@@ -27,18 +27,18 @@ class OstTokenHolderModelRepository extends OstBaseModelCacheRepository implemen
     }
 
     @Override
-    public void insertTokenHolder(OstTokenHolder ostTokenHolder, OstTaskCallback callback) {
-        super.insert(ostTokenHolder, callback);
+    public void insertTokenHolder(OstTokenHolder ostTokenHolder) {
+        super.insert(ostTokenHolder, new OstTaskCallback() {});
     }
 
     @Override
-    public void insertAllTokenHolders(OstTokenHolder[] ostTokenHolders, OstTaskCallback callback) {
-        super.insertAll(ostTokenHolders, callback);
+    public void insertAllTokenHolders(OstTokenHolder[] ostTokenHolders) {
+        super.insertAll(ostTokenHolders, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteTokenHolder(String id, OstTaskCallback callback) {
-        super.delete(id, callback);
+    public void deleteTokenHolder(String id) {
+        super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
@@ -52,14 +52,14 @@ class OstTokenHolderModelRepository extends OstBaseModelCacheRepository implemen
     }
 
     @Override
-    public void deleteAllTokenHolders(OstTaskCallback callback) {
-        super.deleteAll(callback);
+    public void deleteAllTokenHolders() {
+        super.deleteAll(new OstTaskCallback() {});
     }
 
     @Override
-    public OstTokenHolder initTokenHolder(JSONObject jsonObject, OstTaskCallback callback) throws JSONException {
+    public OstTokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException {
         OstTokenHolder ostTokenHolder = new OstTokenHolder(jsonObject);
-        insert(ostTokenHolder, callback);
+        insert(ostTokenHolder, new OstTaskCallback() {});
         return ostTokenHolder;
     }
 }

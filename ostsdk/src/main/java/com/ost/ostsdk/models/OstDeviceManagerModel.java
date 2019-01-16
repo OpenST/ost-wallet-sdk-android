@@ -7,17 +7,17 @@ import org.json.JSONObject;
 
 public interface OstDeviceManagerModel {
 
-    void insertMultiSig(OstDeviceManager ostDeviceManager, OstTaskCallback callback);
+    void insertMultiSig(OstDeviceManager ostDeviceManager);
 
-    void insertAllMultiSigs(OstDeviceManager[] ostDeviceManager, OstTaskCallback callback);
+    void insertAllMultiSigs(OstDeviceManager[] ostDeviceManager);
 
-    void deleteMultiSig(String id, OstTaskCallback callback);
+    void deleteMultiSig(String id);
 
     OstDeviceManager[] getMultiSigsByIds(String[] ids);
 
     OstDeviceManager getMultiSigById(String id);
 
-    void deleteAllMultiSigs(OstTaskCallback callback);
+    void deleteAllMultiSigs();
 
-    OstDeviceManager initMultiSig(JSONObject jsonObject, OstTaskCallback callback) throws JSONException;
+    OstDeviceManager initMultiSig(JSONObject jsonObject) throws JSONException;
 }

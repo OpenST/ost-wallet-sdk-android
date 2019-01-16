@@ -7,19 +7,19 @@ import org.json.JSONObject;
 
 public interface OstSessionModel {
 
-    void insertTokenHolderSession(OstSession ostSession, OstTaskCallback callback);
+    void insertTokenHolderSession(OstSession ostSession);
 
-    void insertAllTokenHolderSessions(OstSession[] ostSession, OstTaskCallback callback);
+    void insertAllTokenHolderSessions(OstSession[] ostSession);
 
-    void deleteTokenHolderSession(String id, OstTaskCallback callback);
+    void deleteTokenHolderSession(String id);
 
     OstSession[] getTokenHolderSessionsByIds(String[] ids);
 
     OstSession getTokenHolderSessionById(String id);
 
-    void deleteAllTokenHolderSessions(OstTaskCallback callback);
+    void deleteAllTokenHolderSessions();
 
-    OstSession initTokenHolderSession(JSONObject jsonObject, OstTaskCallback callback) throws JSONException;
+    OstSession initTokenHolderSession(JSONObject jsonObject) throws JSONException;
 
     OstSession[] getTokenHolderSessionsByParentId(String id);
 }

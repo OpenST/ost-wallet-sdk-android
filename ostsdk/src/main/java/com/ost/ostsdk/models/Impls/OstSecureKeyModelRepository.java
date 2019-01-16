@@ -89,7 +89,18 @@ public class OstSecureKeyModelRepository implements OstSecureKeyModel {
 
 
     public void deleteAll(final OstTaskCallback callback) {
-        getModel().deleteAll();
+        DispatchAsync.dispatch((new DispatchAsync.Executor() {
+            @Override
+            public void execute() {
+                getModel().deleteAll();
+            }
+
+            @Override
+            public void onExecuteComplete() {
+                callback.onSuccess();
+            }
+        }));
+
     }
 
     public OstSecureKey initSecureKey(String key, byte[] data) {

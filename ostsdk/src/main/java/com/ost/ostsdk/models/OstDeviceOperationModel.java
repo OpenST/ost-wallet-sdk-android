@@ -7,17 +7,17 @@ import org.json.JSONObject;
 
 public interface OstDeviceOperationModel {
 
-    void insertMultiSigOperation(OstDeviceOperation ostDeviceOperation, OstTaskCallback callback);
+    void insertMultiSigOperation(OstDeviceOperation ostDeviceOperation);
 
-    void insertAllMultiSigOperations(OstDeviceOperation[] ostDeviceOperation, OstTaskCallback callback);
+    void insertAllMultiSigOperations(OstDeviceOperation[] ostDeviceOperation);
 
-    void deleteMultiSigOperation(String id, OstTaskCallback callback);
+    void deleteMultiSigOperation(String id);
 
     OstDeviceOperation[] getMultiSigOperationsByIds(String[] ids);
 
     OstDeviceOperation getMultiSigOperationById(String id);
 
-    void deleteAllMultiSigOperations(OstTaskCallback callback);
+    void deleteAllMultiSigOperations();
 
     OstDeviceOperation initMultiSigOperation(JSONObject jsonObject) throws JSONException;
 }

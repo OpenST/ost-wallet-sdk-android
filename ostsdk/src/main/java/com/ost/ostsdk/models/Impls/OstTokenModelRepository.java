@@ -27,9 +27,9 @@ class OstTokenModelRepository extends OstBaseModelCacheRepository implements Ost
 
 
     @Override
-    public OstToken registerToken(JSONObject jsonObject, OstTaskCallback callback) throws JSONException {
+    public OstToken registerToken(JSONObject jsonObject) throws JSONException {
         OstToken ostToken = new OstToken(jsonObject);
-        super.insert(ostToken, callback);
+        super.insert(ostToken, new OstTaskCallback() {});
         return ostToken;
     }
 

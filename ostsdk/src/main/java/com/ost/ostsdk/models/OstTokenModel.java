@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 public interface OstTokenModel {
 
-    OstToken registerToken(JSONObject jsonObject, OstTaskCallback callback) throws JSONException;
+    OstToken registerToken(JSONObject jsonObject) throws JSONException;
 
     OstToken getTokenById(String id);
 }

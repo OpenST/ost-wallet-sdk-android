@@ -7,19 +7,17 @@ import org.json.JSONObject;
 
 public interface OstUserModel {
 
-    void insertAllUsers(OstUser[] ostUser, OstTaskCallback callback);
+    void insertAllUsers(OstUser[] ostUser);
 
-    void deleteUser(String id, OstTaskCallback callback);
+    void deleteUser(String id);
 
     OstUser[] getUsersByIds(String[] ids);
 
     OstUser getUserById(String id);
 
-    void deleteAllUsers(OstTaskCallback callback);
-
-    OstUser initUser(JSONObject jsonObject, OstTaskCallback callback) throws JSONException;
+    void deleteAllUsers();
 
     OstUser initUser(JSONObject jsonObject) throws JSONException;
 
-    OstUser update(OstUser ostUser, OstTaskCallback callback);
+    OstUser update(OstUser ostUser);
 }

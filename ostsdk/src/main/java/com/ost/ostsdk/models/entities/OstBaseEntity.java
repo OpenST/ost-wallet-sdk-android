@@ -52,6 +52,7 @@ public class OstBaseEntity {
             throw new JSONException("Invalid JSON Object");
         }
         processJson(jsonObject);
+        //Update in DB here. Use model as needed.
     }
 
     public String getId() {
@@ -91,6 +92,7 @@ public class OstBaseEntity {
     }
 
     public void processJson(JSONObject jsonObject) throws JSONException {
+        //Todo: getENtityId
         String id = jsonObject.getString(OstBaseEntity.ID);
         if (!id.matches("[a-zA-Z0-9]+")) {
             throw new JSONException("Id having special characters in it");
@@ -99,12 +101,14 @@ public class OstBaseEntity {
 
         setUts(jsonObject.optDouble(OstBaseEntity.UTS, -1 * System.currentTimeMillis()));
 
-        String status = jsonObject.optString(OstBaseEntity.STATUS, OstBaseEntity.ACTIVE_STATUS);
-        if (!OstBaseEntity.DEFAULT_PARENT_ID.equals(status) && !STATUS_VALUE.contains(status)) {
-            throw new JSONException("status having invalid value");
-        }
-        setBaseStatus(status);
+        //Not needed
+//        String status = jsonObject.optString(OstBaseEntity.STATUS, OstBaseEntity.ACTIVE_STATUS);
+//        if (!OstBaseEntity.DEFAULT_PARENT_ID.equals(status) && !STATUS_VALUE.contains(status)) {
+//            throw new JSONException("status having invalid value");
+//        }
+//        setBaseStatus(status);
 
+        //Todo:: getParentId
         String parentId = jsonObject.optString(OstBaseEntity.PARENT_ID, OstBaseEntity.DEFAULT_PARENT_ID);
         if (!OstBaseEntity.DEFAULT_PARENT_ID.equals(parentId) && !parentId.matches("[a-zA-Z0-9]+")) {
             throw new JSONException("Parent Id having special characters in it");

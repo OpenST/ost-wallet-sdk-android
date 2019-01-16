@@ -23,18 +23,18 @@ class OstRuleModelRepository extends OstBaseModelCacheRepository implements OstR
 
 
     @Override
-    public void insertRule(final OstRule ostRule, final OstTaskCallback callback) {
-        super.insert(ostRule, callback);
+    public void insertRule(final OstRule ostRule) {
+        super.insert(ostRule, new OstTaskCallback() {});
     }
 
     @Override
-    public void insertAllRules(final OstRule[] ostRule, final OstTaskCallback callback) {
-        super.insertAll(ostRule, callback);
+    public void insertAllRules(final OstRule[] ostRule) {
+        super.insertAll(ostRule, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteRule(final String id, final OstTaskCallback callback) {
-        super.delete(id, callback);
+    public void deleteRule(final String id) {
+        super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
@@ -48,14 +48,14 @@ class OstRuleModelRepository extends OstBaseModelCacheRepository implements OstR
     }
 
     @Override
-    public void deleteAllRules(final OstTaskCallback callback) {
-        super.deleteAll(callback);
+    public void deleteAllRules() {
+        super.deleteAll(new OstTaskCallback() {});
     }
 
     @Override
-    public OstRule initRule(JSONObject jsonObject, OstTaskCallback callback) throws JSONException {
+    public OstRule initRule(JSONObject jsonObject) throws JSONException {
         OstRule ostRule = new OstRule(jsonObject);
-        insert(ostRule, callback);
+        insert(ostRule, new OstTaskCallback() {});
         return ostRule;
     }
 

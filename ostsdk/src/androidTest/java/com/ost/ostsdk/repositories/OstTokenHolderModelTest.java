@@ -9,7 +9,6 @@ import android.support.test.runner.AndroidJUnit4;
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
-import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstTokenHolderModel;
 import com.ost.ostsdk.models.entities.OstTokenHolder;
 import com.ost.ostsdk.models.entities.OstUser;
@@ -47,8 +46,7 @@ public class OstTokenHolderModelTest {
         OstSdk.init(appContext.getApplicationContext());
 
         OstTokenHolderModel tokenHolderModel = OstModelFactory.getTokenHolderModel();
-        tokenHolderModel.deleteAllTokenHolders(new OstTaskCallback() {
-        });
+        tokenHolderModel.deleteAllTokenHolders();
     }
 
 
@@ -69,15 +67,10 @@ public class OstTokenHolderModelTest {
         // Context of the app under test.
         OstTokenHolder ostTokenHolder = insertTokenHolderData();
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.getUser("1").delTokenHolder(ostTokenHolder.getId(), new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        OstSdk.getUser("1").delTokenHolder(ostTokenHolder.getId());
 
-        countDownLatch.await(5, TimeUnit.SECONDS);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
 
         ostTokenHolder = OstSdk.getUser("1").getTokenHolder();
         assertNull(ostTokenHolder);
@@ -116,16 +109,11 @@ public class OstTokenHolderModelTest {
         userObj.put(OstUser.MULTI_SIG_ID, "1");
 
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstUser ostUser = OstSdk.initUser(userObj, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
+        OstUser ostUser = OstSdk.initUser(userObj);
 
-        countDownLatch.await(5, TimeUnit.SECONDS);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(OstTokenHolder.ID, "1");

@@ -23,18 +23,18 @@ class OstDeviceOperationModelRepository extends OstBaseModelCacheRepository impl
 
 
     @Override
-    public void insertMultiSigOperation(final OstDeviceOperation ostDeviceOperation, final OstTaskCallback callback) {
-        super.insert(ostDeviceOperation, callback);
+    public void insertMultiSigOperation(final OstDeviceOperation ostDeviceOperation) {
+        super.insert(ostDeviceOperation, new OstTaskCallback() {});
     }
 
     @Override
-    public void insertAllMultiSigOperations(final OstDeviceOperation[] ostDeviceOperation, final OstTaskCallback callback) {
-        super.insertAll(ostDeviceOperation, callback);
+    public void insertAllMultiSigOperations(final OstDeviceOperation[] ostDeviceOperation) {
+        super.insertAll(ostDeviceOperation, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteMultiSigOperation(final String id, final OstTaskCallback callback) {
-        super.delete(id, callback);
+    public void deleteMultiSigOperation(final String id) {
+        super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
@@ -48,8 +48,8 @@ class OstDeviceOperationModelRepository extends OstBaseModelCacheRepository impl
     }
 
     @Override
-    public void deleteAllMultiSigOperations(final OstTaskCallback callback) {
-        super.deleteAll(callback);
+    public void deleteAllMultiSigOperations() {
+        super.deleteAll(new OstTaskCallback() {});
     }
 
     @Override

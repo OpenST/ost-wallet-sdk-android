@@ -39,11 +39,11 @@ public class OstDeviceTest {
 
     private static void cleanDB() {
         new OstSecureKeyModelRepository().deleteAll(null);
-        OstModelFactory.getUserModel().deleteAllUsers(null);
-        OstModelFactory.getMultiSigWalletModel().deleteAllMultiSigWallets(null);
-        OstModelFactory.getMultiSigModel().deleteAllMultiSigs(null);
-        OstModelFactory.getTokenHolderModel().deleteAllTokenHolders(null);
-        OstModelFactory.getRuleModel().deleteAllRules(null);
+        OstModelFactory.getUserModel().deleteAllUsers();
+        OstModelFactory.getMultiSigWalletModel().deleteAllMultiSigWallets();
+        OstModelFactory.getMultiSigModel().deleteAllMultiSigs();
+        OstModelFactory.getTokenHolderModel().deleteAllTokenHolders();
+        OstModelFactory.getRuleModel().deleteAllRules();
     }
 
     @Test
@@ -81,16 +81,11 @@ public class OstDeviceTest {
         ostUser.setMultiSigId(ostDeviceManager.getId());
         ostUser.setTokenHolderId(ostTokenHolder.getId());
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstModelFactory.getUserModel().update(ostUser, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
+        OstModelFactory.getUserModel().update(ostUser);
 
-        countDownLatch.await(5, TimeUnit.SECONDS);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
         return ostUser;
     }
 
@@ -102,16 +97,11 @@ public class OstDeviceTest {
         jsonObject.put(OstDevice.MULTI_SIG_ID, multiSigId);
         jsonObject.put(OstDevice.STATUS, OstDevice.CREATED_STATUS);
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstDevice ostDevice = OstModelFactory.getMultiSigWalletModel().initMultiSigWallet(jsonObject, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
+        OstDevice ostDevice = OstModelFactory.getMultiSigWalletModel().initMultiSigWallet(jsonObject);
 
-        countDownLatch.await(5, TimeUnit.SECONDS);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
 
         return ostDevice;
     }
@@ -127,16 +117,11 @@ public class OstDeviceTest {
         jsonObject.put(OstDeviceManager.NONCE, "1");
         jsonObject.put(OstDeviceManager.USER_ID, "123");
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstDeviceManager ostDeviceManager = OstModelFactory.getMultiSigModel().initMultiSig(jsonObject, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
+        OstDeviceManager ostDeviceManager = OstModelFactory.getMultiSigModel().initMultiSig(jsonObject);
 
-        countDownLatch.await(5, TimeUnit.SECONDS);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
 
         return ostDeviceManager;
     }
@@ -152,16 +137,11 @@ public class OstDeviceTest {
         userObj.put(OstUser.TOKEN_HOLDER_ID, tokenHolderId);
         userObj.put(OstUser.MULTI_SIG_ID, multiSigId);
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstUser ostUser = OstSdk.initUser(userObj, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
+        OstUser ostUser = OstSdk.initUser(userObj);
 
-        countDownLatch.await(5, TimeUnit.SECONDS);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
 
         return ostUser;
     }
@@ -176,16 +156,10 @@ public class OstDeviceTest {
         jsonObject.put(OstTokenHolder.USER_ID, parentId);
         jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstTokenHolder ostTokenHolder = OstModelFactory.getTokenHolderModel().initTokenHolder(jsonObject, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
-
-        countDownLatch.await(5, TimeUnit.SECONDS);
+        OstTokenHolder ostTokenHolder = OstModelFactory.getTokenHolderModel().initTokenHolder(jsonObject);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
 
         return ostTokenHolder;
     }

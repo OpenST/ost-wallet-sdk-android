@@ -48,8 +48,7 @@ public class OstRuleModelTest {
         OstSdk.init(appContext.getApplicationContext());
 
         OstRuleModel ostRuleModel = OstModelFactory.getRuleModel();
-        ostRuleModel.deleteAllRules(new OstTaskCallback() {
-        });
+        ostRuleModel.deleteAllRules();
     }
 
 
@@ -70,15 +69,10 @@ public class OstRuleModelTest {
         // Context of the app under test.
         OstRule ostRule = insertRuleData();
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.getToken("1").delRule(ostRule.getId(), new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        OstSdk.getToken("1").delRule(ostRule.getId());
 
-        countDownLatch.await(5, TimeUnit.SECONDS);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
 
         ostRule = OstSdk.getToken("1").getRule("1");
         assertNull(ostRule);
@@ -113,16 +107,11 @@ public class OstRuleModelTest {
         tokenJson.put(OstUser.ID, String.valueOf(param));
 
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstToken ostToken = OstSdk.registerToken(tokenJson, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
+        OstToken ostToken = OstSdk.registerToken(tokenJson);
 
-        countDownLatch.await(5, TimeUnit.SECONDS);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(OstRule.ID, "1");

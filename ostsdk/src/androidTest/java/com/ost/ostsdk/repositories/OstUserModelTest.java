@@ -9,7 +9,6 @@ import android.support.test.runner.AndroidJUnit4;
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
-import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstUserModel;
 import com.ost.ostsdk.models.entities.OstUser;
 
@@ -21,8 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -46,8 +43,7 @@ public class OstUserModelTest {
         OstSdk.init(appContext.getApplicationContext());
 
         OstUserModel ostUserModel = OstModelFactory.getUserModel();
-        ostUserModel.deleteAllUsers(new OstTaskCallback() {
-        });
+        ostUserModel.deleteAllUsers();
     }
 
 
@@ -68,15 +64,10 @@ public class OstUserModelTest {
         // Context of the app under test.
         OstUser ostUser = insertUserData();
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.delUser(ostUser.getId(), new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        OstSdk.delUser(ostUser.getId());
 
-        countDownLatch.await(5, TimeUnit.SECONDS);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
 
         ostUser = OstSdk.getUser("1");
         assertNull(ostUser);
@@ -129,16 +120,11 @@ public class OstUserModelTest {
         userObj.put(OstUser.TOKEN_HOLDER_ID, "1");
         userObj.put(OstUser.MULTI_SIG_ID, "1");
 
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+//        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstUser ostUser = OstSdk.initUser(userObj, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                countDownLatch.countDown();
-            }
-        });
+        OstUser ostUser = OstSdk.initUser(userObj);
 
-        countDownLatch.await(5, TimeUnit.SECONDS);
+//        countDownLatch.await(5, TimeUnit.SECONDS);
 
         return ostUser;
     }

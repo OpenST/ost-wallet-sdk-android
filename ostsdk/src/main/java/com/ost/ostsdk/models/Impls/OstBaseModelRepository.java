@@ -68,7 +68,7 @@ abstract class OstBaseModelRepository {
         try {
             baseEntity.processJson(new JSONObject(baseEntity.getData()));
         } catch (Exception exception) {
-            Log.e(TAG, "Exception in OstBaseModelRepository for parsing data");
+            Log.e(TAG, "Exception in OstBaseModelRepository::getById for parsing data");
         }
         return baseEntity;
     }
@@ -89,7 +89,7 @@ abstract class OstBaseModelRepository {
             try {
                 baseEntity.processJson(new JSONObject(baseEntity.getData()));
             } catch (Exception exception) {
-                Log.e(TAG, "Exception in OstBaseModelRepository for parsing data");
+                Log.e(TAG, "Exception in OstBaseModelRepository:: processEntity for parsing data");
             }
         }
         return baseEntities;

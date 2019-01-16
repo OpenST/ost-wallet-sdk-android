@@ -23,18 +23,18 @@ class OstDeviceModelRepository extends OstBaseModelCacheRepository implements Os
 
 
     @Override
-    public void insertMultiSigWallet(final OstDevice ostDevice, final OstTaskCallback callback) {
-        super.insert(ostDevice, callback);
+    public void insertMultiSigWallet(final OstDevice ostDevice) {
+        super.insert(ostDevice, new OstTaskCallback() {});
     }
 
     @Override
-    public void insertAllMultiSigWallets(final OstDevice[] ostDevice, final OstTaskCallback callback) {
-        super.insertAll(ostDevice, callback);
+    public void insertAllMultiSigWallets(final OstDevice[] ostDevice) {
+        super.insertAll(ostDevice, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteMultiSigWallet(final String id, final OstTaskCallback callback) {
-        super.delete(id, callback);
+    public void deleteMultiSigWallet(final String id) {
+        super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
@@ -48,14 +48,14 @@ class OstDeviceModelRepository extends OstBaseModelCacheRepository implements Os
     }
 
     @Override
-    public void deleteAllMultiSigWallets(final OstTaskCallback callback) {
-        super.deleteAll(callback);
+    public void deleteAllMultiSigWallets() {
+        super.deleteAll(new OstTaskCallback() {});
     }
 
     @Override
-    public OstDevice initMultiSigWallet(JSONObject jsonObject, OstTaskCallback callback) throws JSONException {
+    public OstDevice initMultiSigWallet(JSONObject jsonObject) throws JSONException {
         OstDevice ostDevice = new OstDevice(jsonObject);
-        insert(ostDevice, callback);
+        insert(ostDevice, new OstTaskCallback() {});
         return ostDevice;
     }
 

@@ -23,18 +23,18 @@ class OstDeviceManagerModelRepository extends OstBaseModelCacheRepository implem
 
 
     @Override
-    public void insertMultiSig(final OstDeviceManager ostDeviceManager, final OstTaskCallback callback) {
-        super.insert(ostDeviceManager, callback);
+    public void insertMultiSig(final OstDeviceManager ostDeviceManager) {
+        super.insert(ostDeviceManager, new OstTaskCallback() {});
     }
 
     @Override
-    public void insertAllMultiSigs(final OstDeviceManager[] ostDeviceManager, final OstTaskCallback callback) {
-        super.insertAll(ostDeviceManager, callback);
+    public void insertAllMultiSigs(final OstDeviceManager[] ostDeviceManager) {
+        super.insertAll(ostDeviceManager, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteMultiSig(final String id, final OstTaskCallback callback) {
-        super.delete(id, callback);
+    public void deleteMultiSig(final String id) {
+        super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
@@ -48,14 +48,14 @@ class OstDeviceManagerModelRepository extends OstBaseModelCacheRepository implem
     }
 
     @Override
-    public void deleteAllMultiSigs(final OstTaskCallback callback) {
-        super.deleteAll(callback);
+    public void deleteAllMultiSigs() {
+        super.deleteAll(new OstTaskCallback() {});
     }
 
     @Override
-    public OstDeviceManager initMultiSig(JSONObject jsonObject, OstTaskCallback callback) throws JSONException {
+    public OstDeviceManager initMultiSig(JSONObject jsonObject) throws JSONException {
         OstDeviceManager ostDeviceManager = new OstDeviceManager(jsonObject);
-        insert(ostDeviceManager, callback);
+        insert(ostDeviceManager, new OstTaskCallback() {});
         return ostDeviceManager;
     }
 

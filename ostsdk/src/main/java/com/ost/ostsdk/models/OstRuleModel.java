@@ -6,17 +6,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface OstRuleModel {
-    void insertRule(OstRule ostRule, OstTaskCallback callback);
+    void insertRule(OstRule ostRule);
 
-    void insertAllRules(OstRule[] ostRule, OstTaskCallback callback);
+    void insertAllRules(OstRule[] ostRule);
 
-    void deleteRule(String id, OstTaskCallback callback);
+    void deleteRule(String id);
 
     OstRule[] getRulesByIds(String[] ids);
 
     OstRule getRuleById(String id);
 
-    void deleteAllRules(OstTaskCallback callback);
+    void deleteAllRules();
 
-    OstRule initRule(JSONObject jsonObject, OstTaskCallback callback) throws JSONException;
+    OstRule initRule(JSONObject jsonObject) throws JSONException;
 }

@@ -22,18 +22,18 @@ class OstUserModelRepository extends OstBaseModelCacheRepository implements OstU
     }
 
 
-    public void insertUser(final OstUser ostUser, final OstTaskCallback callback) {
-        super.insert(ostUser, callback);
+    public void insertUser(final OstUser ostUser) {
+        super.insert(ostUser, new OstTaskCallback() {});
     }
 
     @Override
-    public void insertAllUsers(final OstUser[] ostUser, final OstTaskCallback callback) {
-        super.insertAll(ostUser, callback);
+    public void insertAllUsers(final OstUser[] ostUser) {
+        super.insertAll(ostUser, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteUser(String id, OstTaskCallback callback) {
-        super.delete(id, callback);
+    public void deleteUser(String id) {
+        super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
@@ -47,28 +47,22 @@ class OstUserModelRepository extends OstBaseModelCacheRepository implements OstU
     }
 
     @Override
-    public void deleteAllUsers(final OstTaskCallback callback) {
-        super.deleteAll(callback);
-    }
-
-    @Override
-    public OstUser initUser(JSONObject jsonObject, OstTaskCallback callback) throws JSONException {
-        OstUser ostUser = new OstUser(jsonObject);
-        insert(ostUser, callback);
-        return ostUser;
+    public void deleteAllUsers() {
+        super.deleteAll(new OstTaskCallback() {});
     }
 
     @Override
     public OstUser initUser(JSONObject jsonObject) throws JSONException {
-        return initUser(jsonObject, new OstTaskCallback() {
-        });
+        OstUser ostUser = new OstUser(jsonObject);
+        insert(ostUser, new OstTaskCallback() {});
+        return ostUser;
     }
 
     @Override
-    public OstUser update(OstUser ostUser, OstTaskCallback callback) {
+    public OstUser update(OstUser ostUser) {
         ostUser.setUts(System.currentTimeMillis());
         ostUser.updateJSON();
-        insertUser(ostUser, callback);
+        insertUser(ostUser);
         return ostUser;
     }
 

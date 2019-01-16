@@ -35,13 +35,8 @@ public class OstSdk {
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
     }
 
-    public static OstToken registerToken(JSONObject jsonObject, @NonNull OstTaskCallback callback) throws JSONException {
-        return OstModelFactory.getTokenModel().registerToken(jsonObject, callback);
-    }
-
     public static OstToken registerToken(JSONObject jsonObject) throws JSONException {
-        return registerToken(jsonObject, new OstTaskCallback() {
-        });
+        return OstModelFactory.getTokenModel().registerToken(jsonObject);
     }
 
     public static OstToken getToken(String tokenId) {
@@ -49,12 +44,7 @@ public class OstSdk {
     }
 
     public static OstUser initUser(JSONObject jsonObject) throws JSONException {
-        return initUser(jsonObject, new OstTaskCallback() {
-        });
-    }
-
-    public static OstUser initUser(JSONObject jsonObject, @NonNull OstTaskCallback callback) throws JSONException {
-        return OstModelFactory.getUserModel().initUser(jsonObject, callback);
+        return OstModelFactory.getUserModel().initUser(jsonObject);
     }
 
     public static OstUser getUser(String id) {
@@ -62,12 +52,7 @@ public class OstSdk {
     }
 
     public static void delUser(String userId) {
-        delUser(userId, new OstTaskCallback() {
-        });
-    }
-
-    public static void delUser(String userId, @NonNull OstTaskCallback callback) {
-        OstModelFactory.getUserModel().deleteUser(userId, callback);
+        OstModelFactory.getUserModel().deleteUser(userId);
     }
 
     public static KitApi getKitNetworkClient() {
