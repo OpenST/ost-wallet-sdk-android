@@ -3,19 +3,19 @@ package com.ost.ostsdk.models.Impls;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstExecutableRuleDao;
-import com.ost.ostsdk.models.ExecutableRuleModel;
-import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.OstExecutableRuleModel;
+import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstExecutableRule;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class ExecutableRuleModelRepository extends BaseModelCacheRepository implements ExecutableRuleModel {
+class OstExecutableRuleModelRepository extends OstBaseModelCacheRepository implements OstExecutableRuleModel {
 
     private static final int LRU_CACHE_SIZE = 5;
     private OstExecutableRuleDao mOstExecutableRuleDao;
 
-    ExecutableRuleModelRepository() {
+    OstExecutableRuleModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
         mOstExecutableRuleDao = db.executableRuleDao();
@@ -23,17 +23,17 @@ class ExecutableRuleModelRepository extends BaseModelCacheRepository implements 
 
 
     @Override
-    public void insertExecutableRule(final OstExecutableRule executableRule, final TaskCallback callback) {
+    public void insertExecutableRule(final OstExecutableRule executableRule, final OstTaskCallback callback) {
         super.insert(executableRule, callback);
     }
 
     @Override
-    public void insertAllExecutableRules(final OstExecutableRule[] executableRule, final TaskCallback callback) {
+    public void insertAllExecutableRules(final OstExecutableRule[] executableRule, final OstTaskCallback callback) {
         super.insertAll(executableRule, callback);
     }
 
     @Override
-    public void deleteExecutableRule(final String id, final TaskCallback callback) {
+    public void deleteExecutableRule(final String id, final OstTaskCallback callback) {
         super.delete(id, callback);
     }
 
@@ -48,7 +48,7 @@ class ExecutableRuleModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    public void deleteAllExecutableRules(final TaskCallback callback) {
+    public void deleteAllExecutableRules(final OstTaskCallback callback) {
         super.deleteAll(callback);
     }
 

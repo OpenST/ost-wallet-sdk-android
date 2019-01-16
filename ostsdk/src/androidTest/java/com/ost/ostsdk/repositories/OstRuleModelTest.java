@@ -8,10 +8,11 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.models.Impls.ModelFactory;
-import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.TokenHolderModel;
-import com.ost.ostsdk.models.entities.OstTokenHolder;
+import com.ost.ostsdk.models.Impls.OstModelFactory;
+import com.ost.ostsdk.models.OstRuleModel;
+import com.ost.ostsdk.models.OstTaskCallback;
+import com.ost.ostsdk.models.entities.OstRule;
+import com.ost.ostsdk.models.entities.OstToken;
 import com.ost.ostsdk.models.entities.OstUser;
 
 import org.json.JSONException;
@@ -30,7 +31,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(AndroidJUnit4.class)
-public class TokenHolderModelTest {
+public class OstRuleModelTest {
 
 
     @ClassRule
@@ -46,31 +47,31 @@ public class TokenHolderModelTest {
         testHelper.createDatabase("ostsdk_db", 1);
         OstSdk.init(appContext.getApplicationContext());
 
-        TokenHolderModel tokenHolderModel = ModelFactory.getTokenHolderModel();
-        tokenHolderModel.deleteAllTokenHolders(new TaskCallback() {
+        OstRuleModel ostRuleModel = OstModelFactory.getRuleModel();
+        ostRuleModel.deleteAllRules(new OstTaskCallback() {
         });
     }
 
 
     @Test
-    public void testTokenHolderInsertion() throws JSONException, InterruptedException {
+    public void testRuleInsertion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        insertTokenHolderData();
+        insertRuleData();
 
-        OstTokenHolder ostTokenHolder = OstSdk.getUser("1").getTokenHolder();
-        assertNotNull(ostTokenHolder);
-        assertEquals(1, ostTokenHolder.getRequirements());
-        assertEquals("address", ostTokenHolder.getAddress());
+        OstRule ostRule = OstSdk.getToken("1").getRule("1");
+        assertNotNull(ostRule);
+        assertEquals("ruleNo1", ostRule.getName());
+        assertEquals("1", ostRule.getId());
     }
 
 
     @Test
-    public void testTokenHolderDeletion() throws JSONException, InterruptedException {
+    public void testRuleDeletion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        OstTokenHolder ostTokenHolder = insertTokenHolderData();
+        OstRule ostRule = insertRuleData();
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.getUser("1").delTokenHolder(ostTokenHolder.getId(), new TaskCallback() {
+        OstSdk.getToken("1").delRule(ostRule.getId(), new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -79,46 +80,42 @@ public class TokenHolderModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        ostTokenHolder = OstSdk.getUser("1").getTokenHolder();
-        assertNull(ostTokenHolder);
+        ostRule = OstSdk.getToken("1").getRule("1");
+        assertNull(ostRule);
     }
 
     @Test
     public void testUserInsertionInCache() throws JSONException, InterruptedException {
         // Context of the app under test.
-        OstTokenHolder ostTokenHolder = insertTokenHolderData();
+        OstRule ostRule = insertRuleData();
 
-        OstSdkDatabase.getDatabase().tokenHolderDao().delete(ostTokenHolder.getId());
-        ostTokenHolder = OstSdk.getUser("1").getTokenHolder();
-        assertNotNull(ostTokenHolder);
-        assertEquals(1, ostTokenHolder.getRequirements());
-        assertEquals("address", ostTokenHolder.getAddress());
+        OstSdkDatabase.getDatabase().ruleDao().delete(ostRule.getId());
+        ostRule = OstSdk.getToken("1").getRule("1");
+        assertNotNull(ostRule);
+        assertEquals("ruleNo1", ostRule.getName());
+        assertEquals("1", ostRule.getId());
     }
 
     private void populateCache(int cacheSizeToPopulate) throws JSONException, InterruptedException {
 
         for (int i = 0; i < cacheSizeToPopulate; i++) {
-            insertTokenHolderData(i + 10);
+            insertRuleData(i + 10);
         }
     }
 
-    private OstTokenHolder insertTokenHolderData() throws JSONException, InterruptedException {
-        return insertTokenHolderData(1);
+    private OstRule insertRuleData() throws JSONException, InterruptedException {
+        return insertRuleData(1);
     }
 
-    private OstTokenHolder insertTokenHolderData(int param) throws JSONException, InterruptedException {
-        JSONObject userObj = new JSONObject();
+    private OstRule insertRuleData(int param) throws JSONException, InterruptedException {
+        JSONObject tokenJson = new JSONObject();
 
-        userObj.put(OstUser.ID, String.valueOf(param));
-        userObj.put(OstUser.TOKEN_ID, "1");
-        userObj.put(OstUser.NAME, "ostUser");
-        userObj.put(OstUser.TOKEN_HOLDER_ID, "1");
-        userObj.put(OstUser.MULTI_SIG_ID, "1");
+        tokenJson.put(OstUser.ID, String.valueOf(param));
 
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstUser ostUser = OstSdk.initUser(userObj, new TaskCallback() {
+        OstToken ostToken = OstSdk.registerToken(tokenJson, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -128,12 +125,12 @@ public class TokenHolderModelTest {
         countDownLatch.await(5, TimeUnit.SECONDS);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(OstTokenHolder.ID, "1");
-        jsonObject.put(OstTokenHolder.USER_ID, "1");
-        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "tokenHolderNo1");
-        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
-        jsonObject.put(OstTokenHolder.ADDRESS, "address");
+        jsonObject.put(OstRule.ID, "1");
+        jsonObject.put(OstRule.TOKEN_ID, "1");
+        jsonObject.put(OstRule.ABI, "asdfgh");
+        jsonObject.put(OstRule.NAME, "ruleNo1");
+        jsonObject.put(OstRule.ADDRESS, "address");
 
-        return ostUser.initTokenHolder(jsonObject);
+        return ostToken.initRule(jsonObject);
     }
 }

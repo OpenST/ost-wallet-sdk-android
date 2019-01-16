@@ -5,7 +5,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.ost.ostsdk.OstSdk;
-import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
+import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class KeyGenProcessTest {
     public static void setUp() {
         mAppContext = InstrumentationRegistry.getTargetContext();
         OstSdk.init(mAppContext);
-        new SecureKeyModelRepository().deleteAll(null);
+        new OstSecureKeyModelRepository().deleteAll(null);
     }
 
     @Test

@@ -5,9 +5,9 @@ import com.ost.ostsdk.models.entities.OstToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public interface TokenModel {
+public interface OstTokenModel {
 
-    OstToken registerToken(JSONObject jsonObject, TaskCallback callback) throws JSONException;
+    OstToken registerToken(JSONObject jsonObject, OstTaskCallback callback) throws JSONException;
 
     OstToken getTokenById(String id);
 }

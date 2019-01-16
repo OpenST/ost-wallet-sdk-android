@@ -5,8 +5,8 @@ import android.arch.persistence.room.Ignore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.ost.ostsdk.models.Impls.ModelFactory;
-import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.Impls.OstModelFactory;
+import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.utils.KeyGenProcess;
 
 import org.json.JSONException;
@@ -91,26 +91,26 @@ public class OstUser extends OstBaseEntity {
                 jsonObject.has(OstUser.MULTI_SIG_ID);
     }
 
-    public OstTokenHolder initTokenHolder(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
+    public OstTokenHolder initTokenHolder(JSONObject jsonObject, @NonNull OstTaskCallback callback) throws JSONException {
         jsonObject.put(OstBaseEntity.PARENT_ID, getId());
-        return ModelFactory.getTokenHolderModel().initTokenHolder(jsonObject, callback);
+        return OstModelFactory.getTokenHolderModel().initTokenHolder(jsonObject, callback);
     }
 
     public OstTokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException {
-        return initTokenHolder(jsonObject, new TaskCallback() {
+        return initTokenHolder(jsonObject, new OstTaskCallback() {
         });
     }
 
     public OstTokenHolder getTokenHolder() {
-        return ModelFactory.getTokenHolderModel().getTokenHolderById(getTokenHolderId());
+        return OstModelFactory.getTokenHolderModel().getTokenHolderById(getTokenHolderId());
     }
 
-    public void delTokenHolder(String id, @NonNull TaskCallback callback) {
-        ModelFactory.getTokenHolderModel().deleteTokenHolder(id, callback);
+    public void delTokenHolder(String id, @NonNull OstTaskCallback callback) {
+        OstModelFactory.getTokenHolderModel().deleteTokenHolder(id, callback);
     }
 
     public void delTokenHolder(String id) {
-        delTokenHolder(id, new TaskCallback() {
+        delTokenHolder(id, new OstTaskCallback() {
         });
     }
 
@@ -123,7 +123,7 @@ public class OstUser extends OstBaseEntity {
     }
 
     public OstDeviceManager getMultiSig() {
-        return ModelFactory.getMultiSigModel().getMultiSigById(getMultiSigId());
+        return OstModelFactory.getMultiSigModel().getMultiSigById(getMultiSigId());
     }
 
     @Override

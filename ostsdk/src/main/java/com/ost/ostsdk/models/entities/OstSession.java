@@ -6,7 +6,7 @@ import android.arch.persistence.room.Ignore;
 import android.util.Log;
 
 import com.ost.ostsdk.OstSdk;
-import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
+import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.ostsdk.security.impls.AndroidSecureStorage;
 import com.ost.ostsdk.utils.EIP1077;
 
@@ -89,7 +89,7 @@ public class OstSession extends OstBaseEntity {
     }
 
     public String signTransaction(JSONObject jsonObject, String userId) throws Exception {
-        byte[] data = new SecureKeyModelRepository().getById(getAddress()).getData();
+        byte[] data = new OstSecureKeyModelRepository().getById(getAddress()).getData();
         Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(jsonObject).toEIP1077TransactionHash()), ECKeyPair.create(AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data)));
         String signedMessage = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + Integer.toHexString(signatureData.getV() & 0xFF);
         return signedMessage;

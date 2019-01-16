@@ -7,8 +7,8 @@ import com.ost.ostsdk.Network.ApiClient;
 import com.ost.ostsdk.Network.KitApi;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.OstSdkKeyDatabase;
-import com.ost.ostsdk.models.Impls.ModelFactory;
-import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.Impls.OstModelFactory;
+import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstToken;
 import com.ost.ostsdk.models.entities.OstUser;
 
@@ -35,39 +35,39 @@ public class OstSdk {
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
     }
 
-    public static OstToken registerToken(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
-        return ModelFactory.getTokenModel().registerToken(jsonObject, callback);
+    public static OstToken registerToken(JSONObject jsonObject, @NonNull OstTaskCallback callback) throws JSONException {
+        return OstModelFactory.getTokenModel().registerToken(jsonObject, callback);
     }
 
     public static OstToken registerToken(JSONObject jsonObject) throws JSONException {
-        return registerToken(jsonObject, new TaskCallback() {
+        return registerToken(jsonObject, new OstTaskCallback() {
         });
     }
 
     public static OstToken getToken(String tokenId) {
-        return ModelFactory.getTokenModel().getTokenById(tokenId);
+        return OstModelFactory.getTokenModel().getTokenById(tokenId);
     }
 
     public static OstUser initUser(JSONObject jsonObject) throws JSONException {
-        return initUser(jsonObject, new TaskCallback() {
+        return initUser(jsonObject, new OstTaskCallback() {
         });
     }
 
-    public static OstUser initUser(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
-        return ModelFactory.getUserModel().initUser(jsonObject, callback);
+    public static OstUser initUser(JSONObject jsonObject, @NonNull OstTaskCallback callback) throws JSONException {
+        return OstModelFactory.getUserModel().initUser(jsonObject, callback);
     }
 
     public static OstUser getUser(String id) {
-        return ModelFactory.getUserModel().getUserById(id);
+        return OstModelFactory.getUserModel().getUserById(id);
     }
 
     public static void delUser(String userId) {
-        delUser(userId, new TaskCallback() {
+        delUser(userId, new OstTaskCallback() {
         });
     }
 
-    public static void delUser(String userId, @NonNull TaskCallback callback) {
-        ModelFactory.getUserModel().deleteUser(userId, callback);
+    public static void delUser(String userId, @NonNull OstTaskCallback callback) {
+        OstModelFactory.getUserModel().deleteUser(userId, callback);
     }
 
     public static KitApi getKitNetworkClient() {

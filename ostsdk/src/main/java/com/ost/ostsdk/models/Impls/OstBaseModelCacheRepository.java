@@ -2,25 +2,25 @@ package com.ost.ostsdk.models.Impls;
 
 import android.util.LruCache;
 
-import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstBaseEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-abstract class BaseModelCacheRepository extends BaseModelRepository {
+abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
 
     private LruCache<String, OstBaseEntity> mLruCache;
     private HashMap<String, OstBaseEntity> mInMemoryMap;
 
 
-    BaseModelCacheRepository(int lruSize) {
+    OstBaseModelCacheRepository(int lruSize) {
         this.mLruCache = new LruCache<>(lruSize);
         this.mInMemoryMap = new HashMap<>();
     }
 
-    public void insert(final OstBaseEntity baseEntity, final TaskCallback callback) {
+    public void insert(final OstBaseEntity baseEntity, final OstTaskCallback callback) {
 
         //check in cache for for entity with same uts
         OstBaseEntity oldEntity = getById(baseEntity.getId());
@@ -28,7 +28,7 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
             return;
         }
 
-        super.insert(baseEntity, new TaskCallback() {
+        super.insert(baseEntity, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 callback.onSuccess();
@@ -38,9 +38,9 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         insertInCacheAndMemory(baseEntity);
     }
 
-    public void insertAll(final OstBaseEntity[] baseEntities, final TaskCallback callback) {
+    public void insertAll(final OstBaseEntity[] baseEntities, final OstTaskCallback callback) {
 
-        super.insertAll(baseEntities, new TaskCallback() {
+        super.insertAll(baseEntities, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 callback.onSuccess();
@@ -66,8 +66,8 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         return buildResultSet(ids, baseEntities);
     }
 
-    public void delete(final String id, final TaskCallback callback) {
-        super.delete(id, new TaskCallback() {
+    public void delete(final String id, final OstTaskCallback callback) {
+        super.delete(id, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 removeFromCache(id);
@@ -76,8 +76,8 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         });
     }
 
-    public void deleteAll(final TaskCallback callback) {
-        super.deleteAll(new TaskCallback() {
+    public void deleteAll(final OstTaskCallback callback) {
+        super.deleteAll(new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 callback.onSuccess();

@@ -1,6 +1,6 @@
 package com.ost.ostsdk.models;
 
-public abstract class TaskCallback {
+public abstract class OstTaskCallback {
     public void onSuccess() {
 
     }

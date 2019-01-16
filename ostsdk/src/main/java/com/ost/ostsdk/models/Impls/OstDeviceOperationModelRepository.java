@@ -3,19 +3,19 @@ package com.ost.ostsdk.models.Impls;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstDeviceOperationDao;
-import com.ost.ostsdk.models.MultiSigOperationModel;
-import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.OstDeviceOperationModel;
+import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstDeviceOperation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class MultiSigOperationModelRepository extends BaseModelCacheRepository implements MultiSigOperationModel {
+class OstDeviceOperationModelRepository extends OstBaseModelCacheRepository implements OstDeviceOperationModel {
 
     private static final int LRU_CACHE_SIZE = 5;
     private OstDeviceOperationDao mMultiSigOperation;
 
-    MultiSigOperationModelRepository() {
+    OstDeviceOperationModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
         mMultiSigOperation = db.multiSigOperationDao();
@@ -23,17 +23,17 @@ class MultiSigOperationModelRepository extends BaseModelCacheRepository implemen
 
 
     @Override
-    public void insertMultiSigOperation(final OstDeviceOperation ostDeviceOperation, final TaskCallback callback) {
+    public void insertMultiSigOperation(final OstDeviceOperation ostDeviceOperation, final OstTaskCallback callback) {
         super.insert(ostDeviceOperation, callback);
     }
 
     @Override
-    public void insertAllMultiSigOperations(final OstDeviceOperation[] ostDeviceOperation, final TaskCallback callback) {
+    public void insertAllMultiSigOperations(final OstDeviceOperation[] ostDeviceOperation, final OstTaskCallback callback) {
         super.insertAll(ostDeviceOperation, callback);
     }
 
     @Override
-    public void deleteMultiSigOperation(final String id, final TaskCallback callback) {
+    public void deleteMultiSigOperation(final String id, final OstTaskCallback callback) {
         super.delete(id, callback);
     }
 
@@ -48,7 +48,7 @@ class MultiSigOperationModelRepository extends BaseModelCacheRepository implemen
     }
 
     @Override
-    public void deleteAllMultiSigOperations(final TaskCallback callback) {
+    public void deleteAllMultiSigOperations(final OstTaskCallback callback) {
         super.deleteAll(callback);
     }
 

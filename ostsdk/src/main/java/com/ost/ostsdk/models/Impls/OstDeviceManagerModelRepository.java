@@ -3,19 +3,19 @@ package com.ost.ostsdk.models.Impls;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstDeviceManagerDao;
-import com.ost.ostsdk.models.MultiSigModel;
-import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.OstDeviceManagerModel;
+import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstDeviceManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class MultiSigModelRepository extends BaseModelCacheRepository implements MultiSigModel {
+class OstDeviceManagerModelRepository extends OstBaseModelCacheRepository implements OstDeviceManagerModel {
 
     private static final int LRU_CACHE_SIZE = 5;
     private OstDeviceManagerDao mOstDeviceManagerDao;
 
-    MultiSigModelRepository() {
+    OstDeviceManagerModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
         mOstDeviceManagerDao = db.multiSigDao();
@@ -23,17 +23,17 @@ class MultiSigModelRepository extends BaseModelCacheRepository implements MultiS
 
 
     @Override
-    public void insertMultiSig(final OstDeviceManager ostDeviceManager, final TaskCallback callback) {
+    public void insertMultiSig(final OstDeviceManager ostDeviceManager, final OstTaskCallback callback) {
         super.insert(ostDeviceManager, callback);
     }
 
     @Override
-    public void insertAllMultiSigs(final OstDeviceManager[] ostDeviceManager, final TaskCallback callback) {
+    public void insertAllMultiSigs(final OstDeviceManager[] ostDeviceManager, final OstTaskCallback callback) {
         super.insertAll(ostDeviceManager, callback);
     }
 
     @Override
-    public void deleteMultiSig(final String id, final TaskCallback callback) {
+    public void deleteMultiSig(final String id, final OstTaskCallback callback) {
         super.delete(id, callback);
     }
 
@@ -48,12 +48,12 @@ class MultiSigModelRepository extends BaseModelCacheRepository implements MultiS
     }
 
     @Override
-    public void deleteAllMultiSigs(final TaskCallback callback) {
+    public void deleteAllMultiSigs(final OstTaskCallback callback) {
         super.deleteAll(callback);
     }
 
     @Override
-    public OstDeviceManager initMultiSig(JSONObject jsonObject, TaskCallback callback) throws JSONException {
+    public OstDeviceManager initMultiSig(JSONObject jsonObject, OstTaskCallback callback) throws JSONException {
         OstDeviceManager ostDeviceManager = new OstDeviceManager(jsonObject);
         insert(ostDeviceManager, callback);
         return ostDeviceManager;

@@ -4,7 +4,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.ost.ostsdk.OstSdk;
-import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
+import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.ostsdk.security.Crypto;
 import com.ost.ostsdk.security.impls.AndroidSecureStorage;
 import com.ost.ostsdk.security.impls.OstSdkCrypto;
@@ -66,7 +66,7 @@ public class InitialDeviceProvisioningFlow {
             byte[] key = AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).encrypt(walletKey);
 
             Log.d(TAG, "Inserting encrypted key from TEE into DB");
-            new SecureKeyModelRepository().initSecureKey(credentials.getAddress(), key);
+            new OstSecureKeyModelRepository().initSecureKey(credentials.getAddress(), key);
 
             Log.d(TAG, "Generating SCyrpt key using passPhrase and salt");
             byte[] scryptKey = ostSdkCrypto.genSCryptKey(passPhrase.getBytes(), scyrptSalt.getBytes());

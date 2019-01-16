@@ -4,8 +4,8 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
-import com.ost.ostsdk.models.Impls.ModelFactory;
-import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
+import com.ost.ostsdk.models.Impls.OstModelFactory;
+import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,9 +94,9 @@ public class OstTokenHolder extends OstBaseEntity {
 
     public OstSession getDeviceTokenHolderSession() throws Exception {
         OstSession deviceSession = null;
-        OstSession sessions[] = ModelFactory.getTokenHolderSession().getTokenHolderSessionsByParentId(getId());
+        OstSession sessions[] = OstModelFactory.getTokenHolderSession().getTokenHolderSessionsByParentId(getId());
         for (OstSession session : sessions) {
-            if (null != new SecureKeyModelRepository().getById(session.getAddress())) {
+            if (null != new OstSecureKeyModelRepository().getById(session.getAddress())) {
                 deviceSession = session;
                 break;
             }

@@ -3,7 +3,7 @@ package com.ost.ostsdk.utils;
 import android.util.Log;
 
 import com.ost.ostsdk.OstSdk;
-import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
+import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.ostsdk.security.Crypto;
 import com.ost.ostsdk.security.impls.AndroidSecureStorage;
 import com.ost.ostsdk.security.impls.OstSdkCrypto;
@@ -35,7 +35,7 @@ public class KeyGenProcess {
             byte[] key = AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).encrypt(walletKey);
 
             Log.d(TAG, "Inserting encrypted key from TEE into DB");
-            new SecureKeyModelRepository().initSecureKey(credentials.getAddress(), key);
+            new OstSecureKeyModelRepository().initSecureKey(credentials.getAddress(), key);
 
             return credentials.getAddress();
 

@@ -3,19 +3,19 @@ package com.ost.ostsdk.models.Impls;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstDeviceDao;
-import com.ost.ostsdk.models.MultiSigWalletModel;
-import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.OstDeviceModel;
+import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstDevice;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class MultiSigWalletModelRepository extends BaseModelCacheRepository implements MultiSigWalletModel {
+class OstDeviceModelRepository extends OstBaseModelCacheRepository implements OstDeviceModel {
 
     private static final int LRU_CACHE_SIZE = 5;
     private OstDeviceDao mOstDeviceDao;
 
-    MultiSigWalletModelRepository() {
+    OstDeviceModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
         mOstDeviceDao = db.multiSigWalletDao();
@@ -23,17 +23,17 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
 
 
     @Override
-    public void insertMultiSigWallet(final OstDevice ostDevice, final TaskCallback callback) {
+    public void insertMultiSigWallet(final OstDevice ostDevice, final OstTaskCallback callback) {
         super.insert(ostDevice, callback);
     }
 
     @Override
-    public void insertAllMultiSigWallets(final OstDevice[] ostDevice, final TaskCallback callback) {
+    public void insertAllMultiSigWallets(final OstDevice[] ostDevice, final OstTaskCallback callback) {
         super.insertAll(ostDevice, callback);
     }
 
     @Override
-    public void deleteMultiSigWallet(final String id, final TaskCallback callback) {
+    public void deleteMultiSigWallet(final String id, final OstTaskCallback callback) {
         super.delete(id, callback);
     }
 
@@ -48,12 +48,12 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    public void deleteAllMultiSigWallets(final TaskCallback callback) {
+    public void deleteAllMultiSigWallets(final OstTaskCallback callback) {
         super.deleteAll(callback);
     }
 
     @Override
-    public OstDevice initMultiSigWallet(JSONObject jsonObject, TaskCallback callback) throws JSONException {
+    public OstDevice initMultiSigWallet(JSONObject jsonObject, OstTaskCallback callback) throws JSONException {
         OstDevice ostDevice = new OstDevice(jsonObject);
         insert(ostDevice, callback);
         return ostDevice;

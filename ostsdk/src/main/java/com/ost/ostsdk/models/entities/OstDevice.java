@@ -5,7 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
 import com.ost.ostsdk.OstSdk;
-import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
+import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.ostsdk.security.impls.AndroidSecureStorage;
 
 import org.json.JSONException;
@@ -66,7 +66,7 @@ public class OstDevice extends OstBaseEntity {
     }
 
     public String signTransaction(RawTransaction rawTransaction, String userId) {
-        byte[] data = new SecureKeyModelRepository().getById(getAddress()).getData();
+        byte[] data = new OstSecureKeyModelRepository().getById(getAddress()).getData();
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, Credentials.create(Numeric.toHexString(AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data))));
         return Numeric.toHexString(signedMessage);
     }

@@ -3,8 +3,8 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.support.annotation.NonNull;
 
-import com.ost.ostsdk.models.Impls.ModelFactory;
-import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.Impls.OstModelFactory;
+import com.ost.ostsdk.models.OstTaskCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,26 +32,26 @@ public class OstToken extends OstBaseEntity {
         super.processJson(jsonObject);
     }
 
-    public OstRule initRule(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
+    public OstRule initRule(JSONObject jsonObject, @NonNull OstTaskCallback callback) throws JSONException {
         jsonObject.put(OstBaseEntity.PARENT_ID, getId());
-        return ModelFactory.getRuleModel().initRule(jsonObject, callback);
+        return OstModelFactory.getRuleModel().initRule(jsonObject, callback);
     }
 
     public OstRule initRule(JSONObject jsonObject) throws JSONException {
-        return initRule(jsonObject, new TaskCallback() {
+        return initRule(jsonObject, new OstTaskCallback() {
         });
     }
 
     public OstRule getRule(String id) {
-        return ModelFactory.getRuleModel().getRuleById(id);
+        return OstModelFactory.getRuleModel().getRuleById(id);
     }
 
-    public void delRule(String id, TaskCallback callback) {
-        ModelFactory.getRuleModel().deleteRule(id, callback);
+    public void delRule(String id, OstTaskCallback callback) {
+        OstModelFactory.getRuleModel().deleteRule(id, callback);
     }
 
     public void delRule(String id) {
-        delRule(id, new TaskCallback() {
+        delRule(id, new OstTaskCallback() {
         });
     }
 }

@@ -3,20 +3,20 @@ package com.ost.ostsdk.models.Impls;
 import android.util.Log;
 
 import com.ost.ostsdk.database.daos.OstBaseDao;
-import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.utils.DispatchAsync;
 
 import org.json.JSONObject;
 
-abstract class BaseModelRepository {
+abstract class OstBaseModelRepository {
 
-    private static final String TAG = "BaseModelRepository";
+    private static final String TAG = "OstBaseModelRepository";
 
-    BaseModelRepository() {
+    OstBaseModelRepository() {
     }
 
-    public void insert(final OstBaseEntity baseEntity, final TaskCallback callback) {
+    public void insert(final OstBaseEntity baseEntity, final OstTaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -30,7 +30,7 @@ abstract class BaseModelRepository {
         }));
     }
 
-    public void insertAll(final OstBaseEntity[] baseEntities, final TaskCallback callback) {
+    public void insertAll(final OstBaseEntity[] baseEntities, final OstTaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -44,7 +44,7 @@ abstract class BaseModelRepository {
         }));
     }
 
-    public void delete(final String id, final TaskCallback callback) {
+    public void delete(final String id, final OstTaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -68,13 +68,13 @@ abstract class BaseModelRepository {
         try {
             baseEntity.processJson(new JSONObject(baseEntity.getData()));
         } catch (Exception exception) {
-            Log.e(TAG, "Exception in BaseModelRepository for parsing data");
+            Log.e(TAG, "Exception in OstBaseModelRepository for parsing data");
         }
         return baseEntity;
     }
 
 
-    public void deleteAll(final TaskCallback callback) {
+    public void deleteAll(final OstTaskCallback callback) {
         getModel().deleteAll();
     }
 
@@ -89,7 +89,7 @@ abstract class BaseModelRepository {
             try {
                 baseEntity.processJson(new JSONObject(baseEntity.getData()));
             } catch (Exception exception) {
-                Log.e(TAG, "Exception in BaseModelRepository for parsing data");
+                Log.e(TAG, "Exception in OstBaseModelRepository for parsing data");
             }
         }
         return baseEntities;

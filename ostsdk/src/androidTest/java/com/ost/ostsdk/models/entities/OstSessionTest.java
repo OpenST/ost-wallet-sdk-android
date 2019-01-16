@@ -5,10 +5,10 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.ost.ostsdk.OstSdk;
-import com.ost.ostsdk.models.Impls.ModelFactory;
-import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
-import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.UserModel;
+import com.ost.ostsdk.models.Impls.OstModelFactory;
+import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
+import com.ost.ostsdk.models.OstTaskCallback;
+import com.ost.ostsdk.models.OstUserModel;
 import com.ost.ostsdk.utils.KeyGenProcess;
 
 import org.json.JSONException;
@@ -27,7 +27,7 @@ public class OstSessionTest {
 
     private static Context mAppContext;
 
-    static UserModel mUserRepository;
+    static OstUserModel mUserRepository;
 
     @BeforeClass
     public static void setUp() {
@@ -37,13 +37,13 @@ public class OstSessionTest {
     }
 
     private static void cleanDB() {
-        new SecureKeyModelRepository().deleteAll(null);
-        ModelFactory.getUserModel().deleteAllUsers(null);
-        ModelFactory.getMultiSigWalletModel().deleteAllMultiSigWallets(null);
-        ModelFactory.getMultiSigModel().deleteAllMultiSigs(null);
-        ModelFactory.getTokenHolderModel().deleteAllTokenHolders(null);
-        ModelFactory.getRuleModel().deleteAllRules(null);
-        ModelFactory.getTokenHolderSession().deleteAllTokenHolderSessions(null);
+        new OstSecureKeyModelRepository().deleteAll(null);
+        OstModelFactory.getUserModel().deleteAllUsers(null);
+        OstModelFactory.getMultiSigWalletModel().deleteAllMultiSigWallets(null);
+        OstModelFactory.getMultiSigModel().deleteAllMultiSigs(null);
+        OstModelFactory.getTokenHolderModel().deleteAllTokenHolders(null);
+        OstModelFactory.getRuleModel().deleteAllRules(null);
+        OstModelFactory.getTokenHolderSession().deleteAllTokenHolderSessions(null);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class OstSessionTest {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        ModelFactory.getUserModel().update(ostUser, new TaskCallback() {
+        OstModelFactory.getUserModel().update(ostUser, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -115,7 +115,7 @@ public class OstSessionTest {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstSession ostSession = ModelFactory.getTokenHolderSession().initTokenHolderSession(jsonObject, new TaskCallback() {
+        OstSession ostSession = OstModelFactory.getTokenHolderSession().initTokenHolderSession(jsonObject, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -140,7 +140,7 @@ public class OstSessionTest {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstDeviceManager ostDeviceManager = ModelFactory.getMultiSigModel().initMultiSig(jsonObject, new TaskCallback() {
+        OstDeviceManager ostDeviceManager = OstModelFactory.getMultiSigModel().initMultiSig(jsonObject, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -165,7 +165,7 @@ public class OstSessionTest {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstUser ostUser = OstSdk.initUser(userObj, new TaskCallback() {
+        OstUser ostUser = OstSdk.initUser(userObj, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -189,7 +189,7 @@ public class OstSessionTest {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstTokenHolder ostTokenHolder = ModelFactory.getTokenHolderModel().initTokenHolder(jsonObject, new TaskCallback() {
+        OstTokenHolder ostTokenHolder = OstModelFactory.getTokenHolderModel().initTokenHolder(jsonObject, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();

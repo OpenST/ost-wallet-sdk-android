@@ -2,16 +2,16 @@ package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.database.daos.OstSecureKeyDao;
-import com.ost.ostsdk.models.SecureKeyModel;
-import com.ost.ostsdk.models.TaskCallback;
+import com.ost.ostsdk.models.OstSecureKeyModel;
+import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstSecureKey;
 import com.ost.ostsdk.utils.DispatchAsync;
 
-public class SecureKeyModelRepository implements SecureKeyModel {
+public class OstSecureKeyModelRepository implements OstSecureKeyModel {
 
     private OstSecureKeyDao mOstSecureKeyDao;
 
-    public SecureKeyModelRepository() {
+    public OstSecureKeyModelRepository() {
         super();
         OstSdkKeyDatabase db = OstSdkKeyDatabase.getDatabase();
         mOstSecureKeyDao = db.secureKeyDao();
@@ -19,7 +19,7 @@ public class SecureKeyModelRepository implements SecureKeyModel {
 
 
     @Override
-    public void insertSecureKey(final OstSecureKey baseEntity, final TaskCallback callback) {
+    public void insertSecureKey(final OstSecureKey baseEntity, final OstTaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -34,7 +34,7 @@ public class SecureKeyModelRepository implements SecureKeyModel {
     }
 
     @Override
-    public void insertAllSecureKeys(final OstSecureKey[] ostSecureKeys, final TaskCallback callback) {
+    public void insertAllSecureKeys(final OstSecureKey[] ostSecureKeys, final OstTaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -49,7 +49,7 @@ public class SecureKeyModelRepository implements SecureKeyModel {
     }
 
 
-    public void deleteSecureKey(final String id, final TaskCallback callback) {
+    public void deleteSecureKey(final String id, final OstTaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -74,7 +74,7 @@ public class SecureKeyModelRepository implements SecureKeyModel {
     }
 
     @Override
-    public void deleteAllSecureKeys(TaskCallback callback) {
+    public void deleteAllSecureKeys(OstTaskCallback callback) {
 
     }
 
@@ -88,13 +88,13 @@ public class SecureKeyModelRepository implements SecureKeyModel {
     }
 
 
-    public void deleteAll(final TaskCallback callback) {
+    public void deleteAll(final OstTaskCallback callback) {
         getModel().deleteAll();
     }
 
     public OstSecureKey initSecureKey(String key, byte[] data) {
         OstSecureKey ostSecureKey = new OstSecureKey(key, data);
-        insertSecureKey(ostSecureKey, new TaskCallback() {
+        insertSecureKey(ostSecureKey, new OstTaskCallback() {
         });
         return ostSecureKey;
     }

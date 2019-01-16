@@ -4,8 +4,8 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
-import com.ost.ostsdk.models.Impls.ModelFactory;
-import com.ost.ostsdk.models.Impls.SecureKeyModelRepository;
+import com.ost.ostsdk.models.Impls.OstModelFactory;
+import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -112,9 +112,9 @@ public class OstDeviceManager extends OstBaseEntity {
 
     public OstDevice getDeviceMultiSigWallet() throws Exception {
         OstDevice deviceWallet = null;
-        OstDevice wallets[] = ModelFactory.getMultiSigWalletModel().getMultiSigWalletsByParentId(getId());
+        OstDevice wallets[] = OstModelFactory.getMultiSigWalletModel().getMultiSigWalletsByParentId(getId());
         for (OstDevice wallet : wallets) {
-            if (null != new SecureKeyModelRepository().getById(wallet.getAddress())) {
+            if (null != new OstSecureKeyModelRepository().getById(wallet.getAddress())) {
                 deviceWallet = wallet;
                 break;
             }

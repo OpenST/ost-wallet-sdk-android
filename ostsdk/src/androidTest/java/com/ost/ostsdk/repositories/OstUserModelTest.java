@@ -8,9 +8,9 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.models.Impls.ModelFactory;
-import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.UserModel;
+import com.ost.ostsdk.models.Impls.OstModelFactory;
+import com.ost.ostsdk.models.OstTaskCallback;
+import com.ost.ostsdk.models.OstUserModel;
 import com.ost.ostsdk.models.entities.OstUser;
 
 import org.json.JSONException;
@@ -29,7 +29,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(AndroidJUnit4.class)
-public class UserModelTest {
+public class OstUserModelTest {
 
 
     @ClassRule
@@ -45,8 +45,8 @@ public class UserModelTest {
         testHelper.createDatabase("ostsdk_db", 1);
         OstSdk.init(appContext.getApplicationContext());
 
-        UserModel userModel = ModelFactory.getUserModel();
-        userModel.deleteAllUsers(new TaskCallback() {
+        OstUserModel ostUserModel = OstModelFactory.getUserModel();
+        ostUserModel.deleteAllUsers(new OstTaskCallback() {
         });
     }
 
@@ -69,7 +69,7 @@ public class UserModelTest {
         OstUser ostUser = insertUserData();
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.delUser(ostUser.getId(), new TaskCallback() {
+        OstSdk.delUser(ostUser.getId(), new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -131,7 +131,7 @@ public class UserModelTest {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstUser ostUser = OstSdk.initUser(userObj, new TaskCallback() {
+        OstUser ostUser = OstSdk.initUser(userObj, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();

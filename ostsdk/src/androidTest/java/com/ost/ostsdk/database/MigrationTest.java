@@ -6,7 +6,7 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.ost.ostsdk.models.UserModel;
+import com.ost.ostsdk.models.OstUserModel;
 
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -25,7 +25,7 @@ public class MigrationTest {
                     OstSdkDatabase.class.getCanonicalName(),
                     new FrameworkSQLiteOpenHelperFactory());
 
-    static UserModel mUserRepository;
+    static OstUserModel mOstUserRepository;
 
     @BeforeClass
     public static void setUp() {
