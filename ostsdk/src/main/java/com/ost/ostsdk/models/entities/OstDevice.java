@@ -38,15 +38,13 @@ public class OstDevice extends OstBaseEntity {
     @Ignore
     private String address;
 
+    public OstDevice(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
+        super(id, parentId, data, status, updatedTimestamp);
+    }
+
+    @Ignore
     public OstDevice(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
-    }
-
-    private OstDevice(String jsonString) throws JSONException {
-        super(new JSONObject(jsonString));
-    }
-
-    public OstDevice() {
     }
 
     @Override

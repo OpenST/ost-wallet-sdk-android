@@ -3,6 +3,7 @@ package com.ost.ostsdk.database;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import com.ost.ostsdk.database.daos.OstDeviceOperationDao;
@@ -27,6 +28,7 @@ import com.ost.ostsdk.models.entities.OstUser;
 @Database(entities = {OstUser.class, OstRule.class, OstToken.class, OstExecutableRule.class,
         OstDeviceOperation.class, OstTokenHolder.class, OstSession.class,
         OstDevice.class, OstDeviceManager.class}, version = 1)
+@TypeConverters({Converters.class})
 public abstract class OstSdkDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "ostsdk_db";

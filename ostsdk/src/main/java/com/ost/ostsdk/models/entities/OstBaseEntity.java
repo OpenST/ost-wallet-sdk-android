@@ -1,29 +1,22 @@
 package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class OstBaseEntity {
 
     public static final String ID = "id";
     public static final String PARENT_ID = "parent_id";
     public static final String JSON_DATA = "data";
-    public static final String STATUS = "baseStatus";
-    public static final String UTS = "uts";
-    public static final String LOCAL_ENTITY_ID = "local_entity_id";
+    public static final String STATUS = "status";
+    public static final String UPDATED_TIMESTAMP = "updated_timestamp";
 
-    public static final String ACTIVE_STATUS = "ACTIVE";
-    public static final String DELETED_STATUS = "DELETED";
     private static final String DEFAULT_PARENT_ID = "";
-    private static final List<String> STATUS_VALUE = Arrays.asList(ACTIVE_STATUS, DELETED_STATUS);
     private static final String TAG = "OstBaseEntity";
 
     @PrimaryKey()
@@ -35,56 +28,69 @@ public class OstBaseEntity {
     private String parentId = DEFAULT_PARENT_ID;
 
     @ColumnInfo(name = "data")
-    private String data;
+    private JSONObject data;
 
-    @ColumnInfo(name = "baseStatus")
-    private String baseStatus = ACTIVE_STATUS;
+    @ColumnInfo(name = "status")
+    private String status;
 
     @ColumnInfo(name = "uts")
-    private double uts;
+    private double updatedTimestamp;
 
 
-    OstBaseEntity() {
+    public OstBaseEntity(@NonNull String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
+        this.id = id;
+        this.parentId = parentId;
+        this.data = data;
+        this.status = status;
+        this.updatedTimestamp = updatedTimestamp;
     }
 
+    @Ignore
     OstBaseEntity(JSONObject jsonObject) throws JSONException {
         if (!validate(jsonObject)) {
             throw new JSONException("Invalid JSON Object");
         }
         processJson(jsonObject);
-        //Update in DB here. Use model as needed.
+    }
+
+    public String getParentId() {
+        return parentId;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getData() {
+    public JSONObject getData() {
         return data;
     }
 
-    public String getBaseStatus() {
-        return baseStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public double getUts() {
-        return uts;
+    public double getUpdatedTimestamp() {
+        return this.updatedTimestamp;
     }
 
-    public void setId(String id) {
+    private void setId(@NonNull String id) {
         this.id = id;
     }
 
-    public void setData(String data) {
+    private void setData(JSONObject data) {
         this.data = data;
     }
 
-    public void setBaseStatus(String status) {
-        this.baseStatus = status;
+    private void setStatus(String status) {
+        this.status = status;
     }
 
-    public void setUts(double uts) {
-        this.uts = uts;
+    private void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    private void setUpdatedTimestamp(double updatedTimestamp) {
+        this.updatedTimestamp = updatedTimestamp;
     }
 
     boolean validate(JSONObject jsonObject) {
@@ -92,54 +98,26 @@ public class OstBaseEntity {
     }
 
     public void processJson(JSONObject jsonObject) throws JSONException {
-        //Todo: getENtityId
-        String id = jsonObject.getString(OstBaseEntity.ID);
-        if (!id.matches("[a-zA-Z0-9]+")) {
-            throw new JSONException("Id having special characters in it");
+        String id = jsonObject.getString(getEntityIdKey());
+        if (id.length() > 1) {
+            throw new JSONException("Id should be more than 1 characters long");
         }
+
         setId(id);
 
-        setUts(jsonObject.optDouble(OstBaseEntity.UTS, -1 * System.currentTimeMillis()));
+        setUpdatedTimestamp(jsonObject.optDouble(OstBaseEntity.UPDATED_TIMESTAMP, -1 * System.currentTimeMillis()));
 
-        //Not needed
-//        String status = jsonObject.optString(OstBaseEntity.STATUS, OstBaseEntity.ACTIVE_STATUS);
-//        if (!OstBaseEntity.DEFAULT_PARENT_ID.equals(status) && !STATUS_VALUE.contains(status)) {
-//            throw new JSONException("status having invalid value");
-//        }
-//        setBaseStatus(status);
-
-        //Todo:: getParentId
-        String parentId = jsonObject.optString(OstBaseEntity.PARENT_ID, OstBaseEntity.DEFAULT_PARENT_ID);
-        if (!OstBaseEntity.DEFAULT_PARENT_ID.equals(parentId) && !parentId.matches("[a-zA-Z0-9]+")) {
-            throw new JSONException("Parent Id having special characters in it");
-        }
+        String parentId = jsonObject.optString(getParentIdKey(), OstBaseEntity.DEFAULT_PARENT_ID);
         setParentId(parentId);
 
-        setData(jsonObject.toString());
+        setData(jsonObject);
     }
 
-    public void generateLocalUts() {
-        this.uts = -1 * System.currentTimeMillis();
+    String getEntityIdKey() {
+        return OstBaseEntity.ID;
     }
 
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    public void updateJSON() {
-        try {
-            JSONObject jsonObject = new JSONObject(getData());
-            jsonObject.put(OstBaseEntity.UTS, getUts());
-            jsonObject.put(OstBaseEntity.PARENT_ID, getParentId());
-            jsonObject.put(OstBaseEntity.STATUS, getBaseStatus());
-            setData(jsonObject.toString());
-        } catch (JSONException jsonException) {
-            Log.e(TAG, "Unexpected exception while parsing JSON String");
-            throw new RuntimeException("Unexpected exception while parsing JSON String");
-        }
+    String getParentIdKey() {
+        return OstBaseEntity.PARENT_ID;
     }
 }

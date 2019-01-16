@@ -24,7 +24,7 @@ abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
 
         //check in cache for for entity with same uts
         OstBaseEntity oldEntity = getById(baseEntity.getId());
-        if (null != oldEntity && oldEntity.getUts() >= baseEntity.getUts()) {
+        if (null != oldEntity && oldEntity.getUpdatedTimestamp() >= baseEntity.getUpdatedTimestamp()) {
             return;
         }
         insertInCacheAndMemory(baseEntity);

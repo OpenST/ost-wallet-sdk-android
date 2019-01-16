@@ -50,16 +50,13 @@ public class OstSession extends OstBaseEntity {
     @Ignore
     private String nonce;
 
+    public OstSession(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
+        super(id, parentId, data, status, updatedTimestamp);
+    }
 
+    @Ignore
     public OstSession(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
-    }
-
-    private OstSession(String jsonString) throws JSONException {
-        super(new JSONObject(jsonString));
-    }
-
-    public OstSession() {
     }
 
     @Override

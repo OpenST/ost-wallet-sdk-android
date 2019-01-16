@@ -17,7 +17,7 @@ public interface OstUserModel {
 
     void deleteAllUsers();
 
-    OstUser initUser(JSONObject jsonObject) throws JSONException;
+    OstUser insert(OstUser ostUser);
 
     OstUser update(OstUser ostUser);
 }

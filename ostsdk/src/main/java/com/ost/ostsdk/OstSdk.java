@@ -44,7 +44,7 @@ public class OstSdk {
     }
 
     public static OstUser initUser(JSONObject jsonObject) throws JSONException {
-        return OstModelFactory.getUserModel().initUser(jsonObject);
+        return OstUser.parse(jsonObject);
     }
 
     public static OstUser getUser(String id) {

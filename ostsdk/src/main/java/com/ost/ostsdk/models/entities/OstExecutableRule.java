@@ -37,16 +37,13 @@ public class OstExecutableRule extends OstBaseEntity {
     @Ignore
     private String status;
 
+    public OstExecutableRule(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
+        super(id, parentId, data, status, updatedTimestamp);
+    }
 
+    @Ignore
     public OstExecutableRule(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
-    }
-
-    public OstExecutableRule() {
-    }
-
-    private OstExecutableRule(String jsonString) throws JSONException {
-        super(new JSONObject(jsonString));
     }
 
     @Override

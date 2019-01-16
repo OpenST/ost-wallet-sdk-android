@@ -28,15 +28,13 @@ public class OstTokenHolder extends OstBaseEntity {
     @Ignore
     private String executeRuleCallPrefix;
 
+    public OstTokenHolder(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
+        super(id, parentId, data, status, updatedTimestamp);
+    }
+
+    @Ignore
     public OstTokenHolder(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
-    }
-
-    private OstTokenHolder(String jsonString) throws JSONException {
-        super(new JSONObject(jsonString));
-    }
-
-    public OstTokenHolder() {
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.util.Log;
 
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.utils.KeyGenProcess;
@@ -32,15 +31,18 @@ public class OstUser extends OstBaseEntity {
     @Ignore
     private String multiSigId;
 
-    public OstUser() {
+    public static OstUser parse(JSONObject jsonObject) throws JSONException {
+        OstUser ostUser = new OstUser(jsonObject);
+        return OstModelFactory.getUserModel().insert(ostUser);
     }
 
-    public OstUser(JSONObject jsonObject) throws JSONException {
+    public OstUser(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
+        super(id, parentId, data, status, updatedTimestamp);
+    }
+
+    @Ignore
+    private OstUser(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
-    }
-
-    private OstUser(String jsonString) throws JSONException {
-        super(new JSONObject(jsonString));
     }
 
     public String getTokenId() {
@@ -115,18 +117,12 @@ public class OstUser extends OstBaseEntity {
     }
 
     @Override
-    public void updateJSON() {
-        super.updateJSON();
-        try {
-            JSONObject jsonObject = new JSONObject(getData());
-            jsonObject.put(OstUser.MULTI_SIG_ID, getMultiSigId());
-            jsonObject.put(OstUser.NAME, getName());
-            jsonObject.put(OstUser.TOKEN_HOLDER_ID, getTokenHolderId());
-            jsonObject.put(OstUser.TOKEN_ID, getTokenId());
-            setData(jsonObject.toString());
-        } catch (JSONException jsonException) {
-            Log.e(TAG, "Unexpected exception while parsing JSON String");
-            throw new RuntimeException("Unexpected exception while parsing JSON String");
-        }
+    String getEntityIdKey() {
+        return OstUser.ID;
+    }
+
+    @Override
+    public String getParentIdKey() {
+        return OstUser.TOKEN_ID;
     }
 }

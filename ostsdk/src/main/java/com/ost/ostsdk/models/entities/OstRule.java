@@ -23,9 +23,12 @@ public class OstRule extends OstBaseEntity {
     @Ignore
     private String abi;
 
-    public OstRule() {
+
+    public OstRule(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
+        super(id, parentId, data, status, updatedTimestamp);
     }
 
+    @Ignore
     public OstRule(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }

@@ -1,6 +1,7 @@
 package com.ost.ostsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 
@@ -9,15 +10,13 @@ import org.json.JSONObject;
 
 @Entity(tableName = "token")
 public class OstToken extends OstBaseEntity {
+    public OstToken(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
+        super(id, parentId, data, status, updatedTimestamp);
+    }
+
+    @Ignore
     public OstToken(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
-    }
-
-    private OstToken(String jsonString) throws JSONException {
-        super(new JSONObject(jsonString));
-    }
-
-    public OstToken() {
     }
 
     @Override

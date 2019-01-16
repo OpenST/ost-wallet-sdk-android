@@ -34,16 +34,13 @@ public class OstDeviceOperation extends OstBaseEntity {
     @Ignore
     private String status;
 
+    public OstDeviceOperation(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
+        super(id, parentId, data, status, updatedTimestamp);
+    }
 
+    @Ignore
     public OstDeviceOperation(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
-    }
-
-    private OstDeviceOperation(String jsonString) throws JSONException {
-        super(new JSONObject(jsonString));
-    }
-
-    public OstDeviceOperation() {
     }
 
     @Override

@@ -67,10 +67,10 @@ public class OstBaseEntityTest {
         jsonObject.put(OstBaseEntity.STATUS, "DELETED");
         testBaseEntityJsonWithNoException(jsonObject);
 
-        //Test UTS for invalid UTS type
+        //Test UPDATED_TIMESTAMP for invalid UPDATED_TIMESTAMP type
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "0x2q4234234");
-        jsonObject.put(OstBaseEntity.UTS, 123);
+        jsonObject.put(OstBaseEntity.UPDATED_TIMESTAMP, 123);
         testBaseEntityJsonWithNoException(jsonObject);
     }
 

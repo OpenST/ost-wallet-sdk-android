@@ -52,16 +52,13 @@ class OstUserModelRepository extends OstBaseModelCacheRepository implements OstU
     }
 
     @Override
-    public OstUser initUser(JSONObject jsonObject) throws JSONException {
-        OstUser ostUser = new OstUser(jsonObject);
+    public OstUser insert(OstUser ostUser) {
         insert(ostUser, new OstTaskCallback() {});
         return ostUser;
     }
 
     @Override
     public OstUser update(OstUser ostUser) {
-        ostUser.setUts(System.currentTimeMillis());
-        ostUser.updateJSON();
         insertUser(ostUser);
         return ostUser;
     }
