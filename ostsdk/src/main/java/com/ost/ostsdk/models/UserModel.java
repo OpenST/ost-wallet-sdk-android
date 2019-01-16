@@ -1,25 +1,25 @@
 package com.ost.ostsdk.models;
 
-import com.ost.ostsdk.models.entities.User;
+import com.ost.ostsdk.models.entities.OstUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface UserModel {
 
-    void insertAllUsers(User[] user, TaskCallback callback);
+    void insertAllUsers(OstUser[] ostUser, TaskCallback callback);
 
     void deleteUser(String id, TaskCallback callback);
 
-    User[] getUsersByIds(String[] ids);
+    OstUser[] getUsersByIds(String[] ids);
 
-    User getUserById(String id);
+    OstUser getUserById(String id);
 
     void deleteAllUsers(TaskCallback callback);
 
-    User initUser(JSONObject jsonObject, TaskCallback callback) throws JSONException;
+    OstUser initUser(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 
-    User initUser(JSONObject jsonObject) throws JSONException;
+    OstUser initUser(JSONObject jsonObject) throws JSONException;
 
-    User update(User user, TaskCallback callback);
+    OstUser update(OstUser ostUser, TaskCallback callback);
 }

@@ -4,7 +4,7 @@ import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.database.daos.SecureKeyDao;
 import com.ost.ostsdk.models.SecureKeyModel;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.SecureKey;
+import com.ost.ostsdk.models.entities.OstSecureKey;
 import com.ost.ostsdk.utils.DispatchAsync;
 
 public class SecureKeyModelRepository implements SecureKeyModel {
@@ -19,7 +19,7 @@ public class SecureKeyModelRepository implements SecureKeyModel {
 
 
     @Override
-    public void insertSecureKey(final SecureKey baseEntity, final TaskCallback callback) {
+    public void insertSecureKey(final OstSecureKey baseEntity, final TaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -34,11 +34,11 @@ public class SecureKeyModelRepository implements SecureKeyModel {
     }
 
     @Override
-    public void insertAllSecureKeys(final SecureKey[] secureKeys, final TaskCallback callback) {
+    public void insertAllSecureKeys(final OstSecureKey[] ostSecureKeys, final TaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
-                getModel().insertAll(secureKeys);
+                getModel().insertAll(ostSecureKeys);
             }
 
             @Override
@@ -64,12 +64,12 @@ public class SecureKeyModelRepository implements SecureKeyModel {
     }
 
     @Override
-    public SecureKey[] getSecureKeysByIds(String[] ids) {
-        return new SecureKey[0];
+    public OstSecureKey[] getSecureKeysByIds(String[] ids) {
+        return new OstSecureKey[0];
     }
 
     @Override
-    public SecureKey getSecureKeyById(String id) {
+    public OstSecureKey getSecureKeyById(String id) {
         return null;
     }
 
@@ -78,12 +78,12 @@ public class SecureKeyModelRepository implements SecureKeyModel {
 
     }
 
-    public SecureKey[] getByIds(String[] ids) {
+    public OstSecureKey[] getByIds(String[] ids) {
         return getModel().getByIds(ids);
     }
 
 
-    public SecureKey getById(String id) {
+    public OstSecureKey getById(String id) {
         return getModel().getById(id);
     }
 
@@ -92,11 +92,11 @@ public class SecureKeyModelRepository implements SecureKeyModel {
         getModel().deleteAll();
     }
 
-    public SecureKey initSecureKey(String key, byte[] data) {
-        SecureKey secureKey = new SecureKey(key, data);
-        insertSecureKey(secureKey, new TaskCallback() {
+    public OstSecureKey initSecureKey(String key, byte[] data) {
+        OstSecureKey ostSecureKey = new OstSecureKey(key, data);
+        insertSecureKey(ostSecureKey, new TaskCallback() {
         });
-        return secureKey;
+        return ostSecureKey;
     }
 
     SecureKeyDao getModel() {

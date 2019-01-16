@@ -5,7 +5,7 @@ import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.ExecutableRuleDao;
 import com.ost.ostsdk.models.ExecutableRuleModel;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.ExecutableRule;
+import com.ost.ostsdk.models.entities.OstExecutableRule;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,12 +23,12 @@ class ExecutableRuleModelRepository extends BaseModelCacheRepository implements 
 
 
     @Override
-    public void insertExecutableRule(final ExecutableRule executableRule, final TaskCallback callback) {
+    public void insertExecutableRule(final OstExecutableRule executableRule, final TaskCallback callback) {
         super.insert(executableRule, callback);
     }
 
     @Override
-    public void insertAllExecutableRules(final ExecutableRule[] executableRule, final TaskCallback callback) {
+    public void insertAllExecutableRules(final OstExecutableRule[] executableRule, final TaskCallback callback) {
         super.insertAll(executableRule, callback);
     }
 
@@ -38,13 +38,13 @@ class ExecutableRuleModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    public ExecutableRule[] getExecutableRulesByIds(String[] ids) {
-        return (ExecutableRule[]) super.getByIds(ids);
+    public OstExecutableRule[] getExecutableRulesByIds(String[] ids) {
+        return (OstExecutableRule[]) super.getByIds(ids);
     }
 
     @Override
-    public ExecutableRule getExecutableRuleById(String id) {
-        return (ExecutableRule) super.getById(id);
+    public OstExecutableRule getExecutableRuleById(String id) {
+        return (OstExecutableRule) super.getById(id);
     }
 
     @Override
@@ -53,8 +53,8 @@ class ExecutableRuleModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    public ExecutableRule initExecutableRule(JSONObject jsonObject) throws JSONException {
-        ExecutableRule executableRule = new ExecutableRule(jsonObject);
+    public OstExecutableRule initExecutableRule(JSONObject jsonObject) throws JSONException {
+        OstExecutableRule executableRule = new OstExecutableRule(jsonObject);
         insert(executableRule, null);
         return executableRule;
     }

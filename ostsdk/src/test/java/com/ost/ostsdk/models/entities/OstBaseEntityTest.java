@@ -3,13 +3,11 @@ package com.ost.ostsdk.models.entities;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class BaseEntityTest {
+public class OstBaseEntityTest {
 
     @Test
     public void testUserInvalidInsertion() throws JSONException {
@@ -20,24 +18,24 @@ public class BaseEntityTest {
 
         //Test with Id
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, 12);
+        jsonObject.put(OstBaseEntity.ID, 12);
         testBaseEntityJsonException(jsonObject);
 
         //Test Id for special characters
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "12$+{(");
+        jsonObject.put(OstBaseEntity.ID, "12$+{(");
         testBaseEntityJsonException(jsonObject);
 
         //Test parent Id for special characters
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "12");
-        jsonObject.put(BaseEntity.PARENT_ID, "12$+{(");
+        jsonObject.put(OstBaseEntity.ID, "12");
+        jsonObject.put(OstBaseEntity.PARENT_ID, "12$+{(");
         testBaseEntityJsonException(jsonObject);
 
         //Test Status for invalid Status
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "12");
-        jsonObject.put(BaseEntity.STATUS, "DELELD");
+        jsonObject.put(OstBaseEntity.ID, "12");
+        jsonObject.put(OstBaseEntity.STATUS, "DELELD");
         testBaseEntityJsonException(jsonObject);
 
     }
@@ -49,36 +47,36 @@ public class BaseEntityTest {
 
         //Test with Id
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "12");
+        jsonObject.put(OstBaseEntity.ID, "12");
         testBaseEntityJsonWithNoException(jsonObject);
 
         //Test Id for special characters
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "0x2q4234234");
+        jsonObject.put(OstBaseEntity.ID, "0x2q4234234");
         testBaseEntityJsonWithNoException(jsonObject);
 
         //Test parent Id for special characters
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "0x2q4234234");
-        jsonObject.put(BaseEntity.PARENT_ID, "0xksjdleur348w");
+        jsonObject.put(OstBaseEntity.ID, "0x2q4234234");
+        jsonObject.put(OstBaseEntity.PARENT_ID, "0xksjdleur348w");
         testBaseEntityJsonWithNoException(jsonObject);
 
         //Test Status for valid Status
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "0x2q4234234");
-        jsonObject.put(BaseEntity.STATUS, "DELETED");
+        jsonObject.put(OstBaseEntity.ID, "0x2q4234234");
+        jsonObject.put(OstBaseEntity.STATUS, "DELETED");
         testBaseEntityJsonWithNoException(jsonObject);
 
         //Test UTS for invalid UTS type
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "0x2q4234234");
-        jsonObject.put(BaseEntity.UTS, 123);
+        jsonObject.put(OstBaseEntity.ID, "0x2q4234234");
+        jsonObject.put(OstBaseEntity.UTS, 123);
         testBaseEntityJsonWithNoException(jsonObject);
     }
 
     private void testBaseEntityJsonException(JSONObject jsonObject) {
         try {
-            BaseEntity baseEntity = new BaseEntity(jsonObject);
+            OstBaseEntity baseEntity = new OstBaseEntity(jsonObject);
             fail();
         } catch (Exception ex) {
             assertTrue(true);
@@ -87,7 +85,7 @@ public class BaseEntityTest {
 
     private void testBaseEntityJsonWithNoException(JSONObject jsonObject) {
         try {
-            BaseEntity baseEntity = new BaseEntity(jsonObject);
+            OstBaseEntity baseEntity = new OstBaseEntity(jsonObject);
             assertTrue(true);
         } catch (Exception ex) {
             fail();

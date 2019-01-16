@@ -5,7 +5,7 @@ import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.TokenDao;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.TokenModel;
-import com.ost.ostsdk.models.entities.Token;
+import com.ost.ostsdk.models.entities.OstToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,14 +27,14 @@ class TokenModelRepository extends BaseModelCacheRepository implements TokenMode
 
 
     @Override
-    public Token registerToken(JSONObject jsonObject, TaskCallback callback) throws JSONException {
-        Token token = new Token(jsonObject);
-        super.insert(token, callback);
-        return token;
+    public OstToken registerToken(JSONObject jsonObject, TaskCallback callback) throws JSONException {
+        OstToken ostToken = new OstToken(jsonObject);
+        super.insert(ostToken, callback);
+        return ostToken;
     }
 
     @Override
-    public Token getTokenById(String id) {
-        return (Token) super.getById(id);
+    public OstToken getTokenById(String id) {
+        return (OstToken) super.getById(id);
     }
 }

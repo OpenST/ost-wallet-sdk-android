@@ -10,16 +10,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @Entity(tableName = "token")
-public class Token extends BaseEntity {
-    public Token(JSONObject jsonObject) throws JSONException {
+public class OstToken extends OstBaseEntity {
+    public OstToken(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
-    private Token(String jsonString) throws JSONException {
+    private OstToken(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
     }
 
-    public Token() {
+    public OstToken() {
     }
 
     @Override
@@ -32,17 +32,17 @@ public class Token extends BaseEntity {
         super.processJson(jsonObject);
     }
 
-    public Rule initRule(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
-        jsonObject.put(BaseEntity.PARENT_ID, getId());
+    public OstRule initRule(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
+        jsonObject.put(OstBaseEntity.PARENT_ID, getId());
         return ModelFactory.getRuleModel().initRule(jsonObject, callback);
     }
 
-    public Rule initRule(JSONObject jsonObject) throws JSONException {
+    public OstRule initRule(JSONObject jsonObject) throws JSONException {
         return initRule(jsonObject, new TaskCallback() {
         });
     }
 
-    public Rule getRule(String id) {
+    public OstRule getRule(String id) {
         return ModelFactory.getRuleModel().getRuleById(id);
     }
 

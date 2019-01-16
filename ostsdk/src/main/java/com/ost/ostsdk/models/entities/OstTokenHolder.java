@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 
 @Entity(tableName = "token_holder")
-public class TokenHolder extends BaseEntity {
+public class OstTokenHolder extends OstBaseEntity {
 
     public static final String USER_ID = "user_id";
     public static final String ADDRESS = "address";
@@ -28,24 +28,24 @@ public class TokenHolder extends BaseEntity {
     @Ignore
     private String executeRuleCallPrefix;
 
-    public TokenHolder(JSONObject jsonObject) throws JSONException {
+    public OstTokenHolder(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
-    private TokenHolder(String jsonString) throws JSONException {
+    private OstTokenHolder(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
     }
 
-    public TokenHolder() {
+    public OstTokenHolder() {
     }
 
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(TokenHolder.USER_ID) &&
-                jsonObject.has(TokenHolder.ADDRESS) &&
-                jsonObject.has(TokenHolder.REQUIREMENTS) &&
-                jsonObject.has(TokenHolder.EXECUTE_RULE_CALL_PREFIX);
+                jsonObject.has(OstTokenHolder.USER_ID) &&
+                jsonObject.has(OstTokenHolder.ADDRESS) &&
+                jsonObject.has(OstTokenHolder.REQUIREMENTS) &&
+                jsonObject.has(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX);
 
 
     }
@@ -53,11 +53,11 @@ public class TokenHolder extends BaseEntity {
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
-        setUserId(jsonObject.getString(TokenHolder.USER_ID));
-        setAddress(jsonObject.getString(TokenHolder.ADDRESS));
+        setUserId(jsonObject.getString(OstTokenHolder.USER_ID));
+        setAddress(jsonObject.getString(OstTokenHolder.ADDRESS));
 
-        setRequirements(jsonObject.getInt(TokenHolder.REQUIREMENTS));
-        setExecuteRuleCallPrefix(jsonObject.getString(TokenHolder.EXECUTE_RULE_CALL_PREFIX));
+        setRequirements(jsonObject.getInt(OstTokenHolder.REQUIREMENTS));
+        setExecuteRuleCallPrefix(jsonObject.getString(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX));
     }
 
     public String getUserId() {
@@ -92,10 +92,10 @@ public class TokenHolder extends BaseEntity {
         this.executeRuleCallPrefix = executeRuleCallPrefix;
     }
 
-    public TokenHolderSession getDeviceTokenHolderSession() throws Exception {
-        TokenHolderSession deviceSession = null;
-        TokenHolderSession sessions[] = ModelFactory.getTokenHolderSession().getTokenHolderSessionsByParentId(getId());
-        for (TokenHolderSession session : sessions) {
+    public OstTokenHolderSession getDeviceTokenHolderSession() throws Exception {
+        OstTokenHolderSession deviceSession = null;
+        OstTokenHolderSession sessions[] = ModelFactory.getTokenHolderSession().getTokenHolderSessionsByParentId(getId());
+        for (OstTokenHolderSession session : sessions) {
             if (null != new SecureKeyModelRepository().getById(session.getAddress())) {
                 deviceSession = session;
                 break;

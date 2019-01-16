@@ -1,20 +1,20 @@
 package com.ost.ostsdk.models;
 
-import com.ost.ostsdk.models.entities.SecureKey;
+import com.ost.ostsdk.models.entities.OstSecureKey;
 
 public interface SecureKeyModel {
 
-    void insertSecureKey(SecureKey secureKey, TaskCallback callback);
+    void insertSecureKey(OstSecureKey ostSecureKey, TaskCallback callback);
 
-    void insertAllSecureKeys(SecureKey[] secureKey, TaskCallback callback);
+    void insertAllSecureKeys(OstSecureKey[] ostSecureKey, TaskCallback callback);
 
     void deleteSecureKey(String id, TaskCallback callback);
 
-    SecureKey[] getSecureKeysByIds(String[] ids);
+    OstSecureKey[] getSecureKeysByIds(String[] ids);
 
-    SecureKey getSecureKeyById(String id);
+    OstSecureKey getSecureKeyById(String id);
 
     void deleteAllSecureKeys(TaskCallback callback);
 
-    SecureKey initSecureKey(String key, byte[] data);
+    OstSecureKey initSecureKey(String key, byte[] data);
 }

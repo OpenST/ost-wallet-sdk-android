@@ -9,7 +9,7 @@ import org.json.JSONObject;
 
 
 @Entity(tableName = "executable_rule")
-public class ExecutableRule extends BaseEntity {
+public class OstExecutableRule extends OstBaseEntity {
 
     public static final String STATUS = "status";
     public static final String USER_ID = "user_id";
@@ -38,41 +38,41 @@ public class ExecutableRule extends BaseEntity {
     private String status;
 
 
-    public ExecutableRule(JSONObject jsonObject) throws JSONException {
+    public OstExecutableRule(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
-    public ExecutableRule() {
+    public OstExecutableRule() {
     }
 
-    private ExecutableRule(String jsonString) throws JSONException {
+    private OstExecutableRule(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
     }
 
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(ExecutableRule.USER_ID) &&
-                jsonObject.has(ExecutableRule.STATUS) &&
-                jsonObject.has(ExecutableRule.RULE_ID) &&
-                jsonObject.has(ExecutableRule.TOKEN_HOLDER_ADDRESS) &&
-                jsonObject.has(ExecutableRule.METHOD) &&
-                jsonObject.has(ExecutableRule.PARAMS) &&
-                jsonObject.has(ExecutableRule.EXECUTE_RULE_PAYLOAD) &&
-                jsonObject.has(ExecutableRule.SESSION);
+                jsonObject.has(OstExecutableRule.USER_ID) &&
+                jsonObject.has(OstExecutableRule.STATUS) &&
+                jsonObject.has(OstExecutableRule.RULE_ID) &&
+                jsonObject.has(OstExecutableRule.TOKEN_HOLDER_ADDRESS) &&
+                jsonObject.has(OstExecutableRule.METHOD) &&
+                jsonObject.has(OstExecutableRule.PARAMS) &&
+                jsonObject.has(OstExecutableRule.EXECUTE_RULE_PAYLOAD) &&
+                jsonObject.has(OstExecutableRule.SESSION);
     }
 
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
-        setExecuteRulePayload(jsonObject.getJSONObject(ExecutableRule.EXECUTE_RULE_PAYLOAD));
-        setMethod(jsonObject.getString(ExecutableRule.METHOD));
-        setParams(jsonObject.getString(ExecutableRule.PARAMS));
-        setRuleId(jsonObject.getString(ExecutableRule.RULE_ID));
-        setTokenHolderAddress(jsonObject.getString(ExecutableRule.TOKEN_HOLDER_ADDRESS));
-        setStatus(jsonObject.getString(ExecutableRule.STATUS));
-        setUserId(jsonObject.getString(ExecutableRule.USER_ID));
-        setSession(jsonObject.getString(ExecutableRule.SESSION));
+        setExecuteRulePayload(jsonObject.getJSONObject(OstExecutableRule.EXECUTE_RULE_PAYLOAD));
+        setMethod(jsonObject.getString(OstExecutableRule.METHOD));
+        setParams(jsonObject.getString(OstExecutableRule.PARAMS));
+        setRuleId(jsonObject.getString(OstExecutableRule.RULE_ID));
+        setTokenHolderAddress(jsonObject.getString(OstExecutableRule.TOKEN_HOLDER_ADDRESS));
+        setStatus(jsonObject.getString(OstExecutableRule.STATUS));
+        setUserId(jsonObject.getString(OstExecutableRule.USER_ID));
+        setSession(jsonObject.getString(OstExecutableRule.SESSION));
     }
 
     public String getUserId() {

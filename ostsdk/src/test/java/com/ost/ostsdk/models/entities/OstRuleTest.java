@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class RuleTest {
+public class OstRuleTest {
 
     @Test
     public void testRuleInvalidInsertion() throws JSONException {
@@ -16,16 +16,16 @@ public class RuleTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any Rule  attribute
+        //Test without any OstRule  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
+        jsonObject.put(OstBaseEntity.ID, "ID");
         testRuleJsonException(jsonObject);
 
-        //Test Id with partial Rule attribute
+        //Test Id with partial OstRule attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(Rule.ADDRESS, "0x232");
-        jsonObject.put(Rule.ABI, "abi");
+        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstRule.ADDRESS, "0x232");
+        jsonObject.put(OstRule.ABI, "abi");
         testRuleJsonException(jsonObject);
     }
 
@@ -35,27 +35,27 @@ public class RuleTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any Rule  attribute
+        //Test without any OstRule  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(Rule.ADDRESS, "0x2901239");
-        jsonObject.put(Rule.NAME, "name");
-        jsonObject.put(Rule.ABI, "abi");
-        jsonObject.put(Rule.TOKEN_ID, "123");
+        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstRule.ADDRESS, "0x2901239");
+        jsonObject.put(OstRule.NAME, "name");
+        jsonObject.put(OstRule.ABI, "abi");
+        jsonObject.put(OstRule.TOKEN_ID, "123");
 
-        Rule rule = new Rule(jsonObject);
-        assertEquals("0x2901239", rule.getAddress());
-        assertEquals("name", rule.getName());
-        assertEquals("abi", rule.getAbi());
-        assertEquals("123", rule.getTokenId());
-        assertEquals("ID", rule.getId());
+        OstRule ostRule = new OstRule(jsonObject);
+        assertEquals("0x2901239", ostRule.getAddress());
+        assertEquals("name", ostRule.getName());
+        assertEquals("abi", ostRule.getAbi());
+        assertEquals("123", ostRule.getTokenId());
+        assertEquals("ID", ostRule.getId());
 
     }
 
 
     private void testRuleJsonException(JSONObject jsonObject) {
         try {
-            Rule rule = new Rule(jsonObject);
+            OstRule ostRule = new OstRule(jsonObject);
             fail();
         } catch (Exception ex) {
             assertTrue(true);
@@ -64,7 +64,7 @@ public class RuleTest {
 
     private void testRuleJsonWithNoException(JSONObject jsonObject) {
         try {
-            Rule rule = new Rule(jsonObject);
+            OstRule ostRule = new OstRule(jsonObject);
             assertTrue(true);
         } catch (Exception ex) {
             fail();

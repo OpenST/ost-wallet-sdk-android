@@ -8,8 +8,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-@Entity(tableName = "multi_sig_operation")
-public class MultiSigOperation extends BaseEntity {
+@Entity(tableName = "device_operation")
+public class OstDeviceOperation extends OstBaseEntity {
 
     public static final String STATUS = "status";
     public static final String USER_ID = "user_id";
@@ -35,27 +35,27 @@ public class MultiSigOperation extends BaseEntity {
     private String status;
 
 
-    public MultiSigOperation(JSONObject jsonObject) throws JSONException {
+    public OstDeviceOperation(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
-    private MultiSigOperation(String jsonString) throws JSONException {
+    private OstDeviceOperation(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
     }
 
-    public MultiSigOperation() {
+    public OstDeviceOperation() {
     }
 
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(MultiSigOperation.USER_ID) &&
-                jsonObject.has(MultiSigOperation.STATUS) &&
-                jsonObject.has(MultiSigOperation.TOKEN_HOLDER_ADDRESS) &&
-                jsonObject.has(MultiSigOperation.KIND) &&
-                jsonObject.has(MultiSigOperation.ENCODED_DATA) &&
-                jsonObject.has(MultiSigOperation.SIGNATURES) &&
-                jsonObject.has(MultiSigOperation.RAW_DATA);
+                jsonObject.has(OstDeviceOperation.USER_ID) &&
+                jsonObject.has(OstDeviceOperation.STATUS) &&
+                jsonObject.has(OstDeviceOperation.TOKEN_HOLDER_ADDRESS) &&
+                jsonObject.has(OstDeviceOperation.KIND) &&
+                jsonObject.has(OstDeviceOperation.ENCODED_DATA) &&
+                jsonObject.has(OstDeviceOperation.SIGNATURES) &&
+                jsonObject.has(OstDeviceOperation.RAW_DATA);
 
 
     }
@@ -63,13 +63,13 @@ public class MultiSigOperation extends BaseEntity {
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
-        setUserId(jsonObject.getString(MultiSigOperation.USER_ID));
-        setStatus(jsonObject.getString(MultiSigOperation.STATUS));
-        setTokenHolderAddress(jsonObject.getString(MultiSigOperation.TOKEN_HOLDER_ADDRESS));
-        setKind(jsonObject.getString(MultiSigOperation.KIND));
-        setEncodedData(jsonObject.getString(MultiSigOperation.ENCODED_DATA));
-        setSignatures(jsonObject.getJSONObject(MultiSigOperation.SIGNATURES));
-        setRawData(jsonObject.getJSONObject(MultiSigOperation.RAW_DATA));
+        setUserId(jsonObject.getString(OstDeviceOperation.USER_ID));
+        setStatus(jsonObject.getString(OstDeviceOperation.STATUS));
+        setTokenHolderAddress(jsonObject.getString(OstDeviceOperation.TOKEN_HOLDER_ADDRESS));
+        setKind(jsonObject.getString(OstDeviceOperation.KIND));
+        setEncodedData(jsonObject.getString(OstDeviceOperation.ENCODED_DATA));
+        setSignatures(jsonObject.getJSONObject(OstDeviceOperation.SIGNATURES));
+        setRawData(jsonObject.getJSONObject(OstDeviceOperation.RAW_DATA));
     }
 
     public String getUserId() {

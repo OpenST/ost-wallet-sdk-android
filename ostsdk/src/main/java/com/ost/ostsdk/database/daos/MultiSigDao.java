@@ -4,38 +4,38 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
-import com.ost.ostsdk.models.entities.BaseEntity;
-import com.ost.ostsdk.models.entities.MultiSig;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
+import com.ost.ostsdk.models.entities.OstDeviceManager;
 
 @Dao
 public abstract class MultiSigDao implements BaseDao {
 
-    public void insert(BaseEntity baseEntity) {
-        this.insert((MultiSig) baseEntity);
+    public void insert(OstBaseEntity baseEntity) {
+        this.insert((OstDeviceManager) baseEntity);
     }
 
-    public void insertAll(BaseEntity... baseEntity) {
-        this.insertAll((MultiSig[]) baseEntity);
+    public void insertAll(OstBaseEntity... baseEntity) {
+        this.insertAll((OstDeviceManager[]) baseEntity);
     }
 
     @Insert
-    public abstract void insert(MultiSig multiSig);
+    public abstract void insert(OstDeviceManager ostDeviceManager);
 
     @Insert
-    public abstract void insertAll(MultiSig... multiSig);
+    public abstract void insertAll(OstDeviceManager... ostDeviceManager);
 
-    @Query("DELETE FROM multi_sig WHERE id=:id")
+    @Query("DELETE FROM device_manager WHERE id=:id")
     public abstract void delete(String id);
 
-    @Query("SELECT * FROM multi_sig WHERE id IN (:ids)")
-    public abstract MultiSig[] getByIds(String[] ids);
+    @Query("SELECT * FROM device_manager WHERE id IN (:ids)")
+    public abstract OstDeviceManager[] getByIds(String[] ids);
 
-    @Query("SELECT * FROM multi_sig WHERE id=:id")
-    public abstract MultiSig getById(String id);
+    @Query("SELECT * FROM device_manager WHERE id=:id")
+    public abstract OstDeviceManager getById(String id);
 
-    @Query("DELETE FROM multi_sig")
+    @Query("DELETE FROM device_manager")
     public abstract void deleteAll();
 
-    @Query("SELECT * FROM multi_sig WHERE parent_id=:id")
-    public abstract MultiSig[] getByParentId(String id);
+    @Query("SELECT * FROM device_manager WHERE parent_id=:id")
+    public abstract OstDeviceManager[] getByParentId(String id);
 }

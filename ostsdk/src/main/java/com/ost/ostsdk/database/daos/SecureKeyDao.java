@@ -4,25 +4,25 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
-import com.ost.ostsdk.models.entities.SecureKey;
+import com.ost.ostsdk.models.entities.OstSecureKey;
 
 @Dao
 public interface SecureKeyDao {
 
     @Insert
-    void insert(SecureKey secureKey);
+    void insert(OstSecureKey ostSecureKey);
 
     @Insert
-    void insertAll(SecureKey... secureKey);
+    void insertAll(OstSecureKey... ostSecureKey);
 
     @Query("DELETE FROM secure_key WHERE `key`=:key")
     void delete(String key);
 
     @Query("SELECT * FROM secure_key WHERE `key` IN (:keys)")
-    SecureKey[] getByIds(String[] keys);
+    OstSecureKey[] getByIds(String[] keys);
 
     @Query("SELECT * FROM secure_key WHERE `key`=:key")
-    SecureKey getById(String key);
+    OstSecureKey getById(String key);
 
     @Query("DELETE FROM secure_key")
     void deleteAll();

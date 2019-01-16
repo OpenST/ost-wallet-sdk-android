@@ -11,8 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-@Entity(tableName = "multi_sig")
-public class MultiSig extends BaseEntity {
+@Entity(tableName = "device_manager")
+public class OstDeviceManager extends OstBaseEntity {
 
     public static final String USER_ID = "user_id";
     public static final String ADDRESS = "address";
@@ -35,38 +35,38 @@ public class MultiSig extends BaseEntity {
     private String nonce;
 
 
-    public MultiSig(JSONObject jsonObject) throws JSONException {
+    public OstDeviceManager(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
-    private MultiSig(String jsonString) throws JSONException {
+    private OstDeviceManager(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
     }
 
-    public MultiSig() {
+    public OstDeviceManager() {
     }
 
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(MultiSig.USER_ID) &&
-                jsonObject.has(MultiSig.ADDRESS) &&
-                jsonObject.has(MultiSig.TOKEN_HOLDER_ID) &&
-                jsonObject.has(MultiSig.REQUIREMENT) &&
-                jsonObject.has(MultiSig.AUTHORIZE_SESSION_CALL_PREFIX) &&
-                jsonObject.has(MultiSig.NONCE);
+                jsonObject.has(OstDeviceManager.USER_ID) &&
+                jsonObject.has(OstDeviceManager.ADDRESS) &&
+                jsonObject.has(OstDeviceManager.TOKEN_HOLDER_ID) &&
+                jsonObject.has(OstDeviceManager.REQUIREMENT) &&
+                jsonObject.has(OstDeviceManager.AUTHORIZE_SESSION_CALL_PREFIX) &&
+                jsonObject.has(OstDeviceManager.NONCE);
     }
 
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
-        setAddress(jsonObject.getString(MultiSig.ADDRESS));
-        setUserId(jsonObject.getString(MultiSig.USER_ID));
+        setAddress(jsonObject.getString(OstDeviceManager.ADDRESS));
+        setUserId(jsonObject.getString(OstDeviceManager.USER_ID));
 
-        setTokenHolderId(jsonObject.getString(MultiSig.TOKEN_HOLDER_ID));
-        setRequirement(jsonObject.getInt(MultiSig.REQUIREMENT));
-        setAuthorizeSessionCallPrefix(jsonObject.getString(MultiSig.AUTHORIZE_SESSION_CALL_PREFIX));
-        setNonce(jsonObject.getString(MultiSig.NONCE));
+        setTokenHolderId(jsonObject.getString(OstDeviceManager.TOKEN_HOLDER_ID));
+        setRequirement(jsonObject.getInt(OstDeviceManager.REQUIREMENT));
+        setAuthorizeSessionCallPrefix(jsonObject.getString(OstDeviceManager.AUTHORIZE_SESSION_CALL_PREFIX));
+        setNonce(jsonObject.getString(OstDeviceManager.NONCE));
 
     }
 
@@ -110,10 +110,10 @@ public class MultiSig extends BaseEntity {
         this.tokenHolderId = tokenHolderId;
     }
 
-    public MultiSigWallet getDeviceMultiSigWallet() throws Exception {
-        MultiSigWallet deviceWallet = null;
-        MultiSigWallet wallets[] = ModelFactory.getMultiSigWalletModel().getMultiSigWalletsByParentId(getId());
-        for (MultiSigWallet wallet : wallets) {
+    public OstDevice getDeviceMultiSigWallet() throws Exception {
+        OstDevice deviceWallet = null;
+        OstDevice wallets[] = ModelFactory.getMultiSigWalletModel().getMultiSigWalletsByParentId(getId());
+        for (OstDevice wallet : wallets) {
             if (null != new SecureKeyModelRepository().getById(wallet.getAddress())) {
                 deviceWallet = wallet;
                 break;

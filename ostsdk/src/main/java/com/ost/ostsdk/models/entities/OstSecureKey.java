@@ -6,7 +6,7 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 @Entity(tableName = "secure_key")
-public class SecureKey {
+public class OstSecureKey {
 
     public static final String KEY = "key";
     public static final String DATA = "data";
@@ -21,7 +21,7 @@ public class SecureKey {
     @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
     private byte[] data;
 
-    public SecureKey(@NonNull String key, @NonNull byte[] data) {
+    public OstSecureKey(@NonNull String key, @NonNull byte[] data) {
         this.key = key;
         this.data = data;
     }

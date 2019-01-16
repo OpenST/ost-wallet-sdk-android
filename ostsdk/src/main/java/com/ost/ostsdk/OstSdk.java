@@ -9,8 +9,8 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.Token;
-import com.ost.ostsdk.models.entities.User;
+import com.ost.ostsdk.models.entities.OstToken;
+import com.ost.ostsdk.models.entities.OstUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,29 +35,29 @@ public class OstSdk {
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
     }
 
-    public static Token registerToken(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
+    public static OstToken registerToken(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
         return ModelFactory.getTokenModel().registerToken(jsonObject, callback);
     }
 
-    public static Token registerToken(JSONObject jsonObject) throws JSONException {
+    public static OstToken registerToken(JSONObject jsonObject) throws JSONException {
         return registerToken(jsonObject, new TaskCallback() {
         });
     }
 
-    public static Token getToken(String tokenId) {
+    public static OstToken getToken(String tokenId) {
         return ModelFactory.getTokenModel().getTokenById(tokenId);
     }
 
-    public static User initUser(JSONObject jsonObject) throws JSONException {
+    public static OstUser initUser(JSONObject jsonObject) throws JSONException {
         return initUser(jsonObject, new TaskCallback() {
         });
     }
 
-    public static User initUser(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
+    public static OstUser initUser(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
         return ModelFactory.getUserModel().initUser(jsonObject, callback);
     }
 
-    public static User getUser(String id) {
+    public static OstUser getUser(String id) {
         return ModelFactory.getUserModel().getUserById(id);
     }
 

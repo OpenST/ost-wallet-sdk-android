@@ -5,7 +5,7 @@ import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.MultiSigOperationDao;
 import com.ost.ostsdk.models.MultiSigOperationModel;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.MultiSigOperation;
+import com.ost.ostsdk.models.entities.OstDeviceOperation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,13 +23,13 @@ class MultiSigOperationModelRepository extends BaseModelCacheRepository implemen
 
 
     @Override
-    public void insertMultiSigOperation(final MultiSigOperation multiSigOperation, final TaskCallback callback) {
-        super.insert(multiSigOperation, callback);
+    public void insertMultiSigOperation(final OstDeviceOperation ostDeviceOperation, final TaskCallback callback) {
+        super.insert(ostDeviceOperation, callback);
     }
 
     @Override
-    public void insertAllMultiSigOperations(final MultiSigOperation[] multiSigOperation, final TaskCallback callback) {
-        super.insertAll(multiSigOperation, callback);
+    public void insertAllMultiSigOperations(final OstDeviceOperation[] ostDeviceOperation, final TaskCallback callback) {
+        super.insertAll(ostDeviceOperation, callback);
     }
 
     @Override
@@ -38,13 +38,13 @@ class MultiSigOperationModelRepository extends BaseModelCacheRepository implemen
     }
 
     @Override
-    public MultiSigOperation[] getMultiSigOperationsByIds(String[] ids) {
-        return (MultiSigOperation[]) super.getByIds(ids);
+    public OstDeviceOperation[] getMultiSigOperationsByIds(String[] ids) {
+        return (OstDeviceOperation[]) super.getByIds(ids);
     }
 
     @Override
-    public MultiSigOperation getMultiSigOperationById(String id) {
-        return (MultiSigOperation) super.getById(id);
+    public OstDeviceOperation getMultiSigOperationById(String id) {
+        return (OstDeviceOperation) super.getById(id);
     }
 
     @Override
@@ -53,10 +53,10 @@ class MultiSigOperationModelRepository extends BaseModelCacheRepository implemen
     }
 
     @Override
-    public MultiSigOperation initMultiSigOperation(JSONObject jsonObject) throws JSONException {
-        MultiSigOperation multiSigOperation = new MultiSigOperation(jsonObject);
-        insert(multiSigOperation, null);
-        return multiSigOperation;
+    public OstDeviceOperation initMultiSigOperation(JSONObject jsonObject) throws JSONException {
+        OstDeviceOperation ostDeviceOperation = new OstDeviceOperation(jsonObject);
+        insert(ostDeviceOperation, null);
+        return ostDeviceOperation;
     }
 
     @Override

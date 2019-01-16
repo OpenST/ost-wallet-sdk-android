@@ -3,7 +3,7 @@ package com.ost.ostsdk.models.Impls;
 import android.util.LruCache;
 
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.BaseEntity;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +11,8 @@ import java.util.List;
 
 abstract class BaseModelCacheRepository extends BaseModelRepository {
 
-    private LruCache<String, BaseEntity> mLruCache;
-    private HashMap<String, BaseEntity> mInMemoryMap;
+    private LruCache<String, OstBaseEntity> mLruCache;
+    private HashMap<String, OstBaseEntity> mInMemoryMap;
 
 
     BaseModelCacheRepository(int lruSize) {
@@ -20,10 +20,10 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         this.mInMemoryMap = new HashMap<>();
     }
 
-    public void insert(final BaseEntity baseEntity, final TaskCallback callback) {
+    public void insert(final OstBaseEntity baseEntity, final TaskCallback callback) {
 
         //check in cache for for entity with same uts
-        BaseEntity oldEntity = getById(baseEntity.getId());
+        OstBaseEntity oldEntity = getById(baseEntity.getId());
         if (null != oldEntity && oldEntity.getUts() >= baseEntity.getUts()) {
             return;
         }
@@ -38,7 +38,7 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         insertInCacheAndMemory(baseEntity);
     }
 
-    public void insertAll(final BaseEntity[] baseEntities, final TaskCallback callback) {
+    public void insertAll(final OstBaseEntity[] baseEntities, final TaskCallback callback) {
 
         super.insertAll(baseEntities, new TaskCallback() {
             @Override
@@ -50,7 +50,7 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         insertInCacheAndMemory(baseEntities);
     }
 
-    public BaseEntity getById(String id) {
+    public OstBaseEntity getById(String id) {
         if (null != mLruCache.get(id)) {
             return mLruCache.get(id);
         }
@@ -60,9 +60,9 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         return super.getById(id);
     }
 
-    public BaseEntity[] getByIds(String[] ids) {
+    public OstBaseEntity[] getByIds(String[] ids) {
         String[] failedCacheIdsList = getIdsNotInCache(ids);
-        BaseEntity[] baseEntities = super.getByIds(failedCacheIdsList);
+        OstBaseEntity[] baseEntities = super.getByIds(failedCacheIdsList);
         return buildResultSet(ids, baseEntities);
     }
 
@@ -87,14 +87,14 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         mInMemoryMap = new HashMap<>();
     }
 
-    private BaseEntity[] buildResultSet(String[] ids, BaseEntity[] baseEntities) {
-        HashMap<String, BaseEntity> baseEntityHashMap = new HashMap<>();
-        for (BaseEntity baseEntity : baseEntities) {
+    private OstBaseEntity[] buildResultSet(String[] ids, OstBaseEntity[] baseEntities) {
+        HashMap<String, OstBaseEntity> baseEntityHashMap = new HashMap<>();
+        for (OstBaseEntity baseEntity : baseEntities) {
             baseEntityHashMap.put(baseEntity.getId(), baseEntity);
         }
-        List<BaseEntity> resultSet = new ArrayList<>();
+        List<OstBaseEntity> resultSet = new ArrayList<>();
         for (String id : ids) {
-            BaseEntity cacheEntity = mLruCache.get(id);
+            OstBaseEntity cacheEntity = mLruCache.get(id);
             if (null == cacheEntity) {
                 cacheEntity = mInMemoryMap.get(id);
             }
@@ -108,7 +108,7 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
                 resultSet.add(cacheEntity);
             }
         }
-        return (BaseEntity[]) resultSet.toArray();
+        return (OstBaseEntity[]) resultSet.toArray();
     }
 
     private String[] getIdsNotInCache(String[] ids) {
@@ -122,12 +122,12 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         return (String[]) idsList.toArray();
     }
 
-    private void insertInCacheAndMemory(BaseEntity baseEntity) {
+    private void insertInCacheAndMemory(OstBaseEntity baseEntity) {
         this.mLruCache.put(baseEntity.getId(), baseEntity);
         this.mInMemoryMap.put(baseEntity.getId(), baseEntity);
     }
 
-    private void removeInMemory(BaseEntity baseEntity) {
+    private void removeInMemory(OstBaseEntity baseEntity) {
         this.mInMemoryMap.remove(baseEntity.getId());
     }
 
@@ -141,15 +141,15 @@ abstract class BaseModelCacheRepository extends BaseModelRepository {
         }
     }
 
-    private void insertInCacheAndMemory(BaseEntity[] baseEntities) {
-        for (BaseEntity baseEntity : baseEntities) {
+    private void insertInCacheAndMemory(OstBaseEntity[] baseEntities) {
+        for (OstBaseEntity baseEntity : baseEntities) {
             this.mLruCache.put(baseEntity.getId(), baseEntity);
             this.mInMemoryMap.put(baseEntity.getId(), baseEntity);
         }
     }
 
-    private void removeInMemory(BaseEntity[] baseEntities) {
-        for (BaseEntity baseEntity : baseEntities) {
+    private void removeInMemory(OstBaseEntity[] baseEntities) {
+        for (OstBaseEntity baseEntity : baseEntities) {
             this.mInMemoryMap.remove(baseEntity.getId());
         }
     }

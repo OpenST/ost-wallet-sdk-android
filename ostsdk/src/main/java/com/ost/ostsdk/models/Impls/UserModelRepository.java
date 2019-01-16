@@ -5,7 +5,7 @@ import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.UserDao;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.UserModel;
-import com.ost.ostsdk.models.entities.User;
+import com.ost.ostsdk.models.entities.OstUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,13 +22,13 @@ class UserModelRepository extends BaseModelCacheRepository implements UserModel 
     }
 
 
-    public void insertUser(final User user, final TaskCallback callback) {
-        super.insert(user, callback);
+    public void insertUser(final OstUser ostUser, final TaskCallback callback) {
+        super.insert(ostUser, callback);
     }
 
     @Override
-    public void insertAllUsers(final User[] user, final TaskCallback callback) {
-        super.insertAll(user, callback);
+    public void insertAllUsers(final OstUser[] ostUser, final TaskCallback callback) {
+        super.insertAll(ostUser, callback);
     }
 
     @Override
@@ -37,13 +37,13 @@ class UserModelRepository extends BaseModelCacheRepository implements UserModel 
     }
 
     @Override
-    public User[] getUsersByIds(String[] ids) {
-        return (User[]) super.getByIds(ids);
+    public OstUser[] getUsersByIds(String[] ids) {
+        return (OstUser[]) super.getByIds(ids);
     }
 
     @Override
-    public User getUserById(String id) {
-        return (User) super.getById(id);
+    public OstUser getUserById(String id) {
+        return (OstUser) super.getById(id);
     }
 
     @Override
@@ -52,24 +52,24 @@ class UserModelRepository extends BaseModelCacheRepository implements UserModel 
     }
 
     @Override
-    public User initUser(JSONObject jsonObject, TaskCallback callback) throws JSONException {
-        User user = new User(jsonObject);
-        insert(user, callback);
-        return user;
+    public OstUser initUser(JSONObject jsonObject, TaskCallback callback) throws JSONException {
+        OstUser ostUser = new OstUser(jsonObject);
+        insert(ostUser, callback);
+        return ostUser;
     }
 
     @Override
-    public User initUser(JSONObject jsonObject) throws JSONException {
+    public OstUser initUser(JSONObject jsonObject) throws JSONException {
         return initUser(jsonObject, new TaskCallback() {
         });
     }
 
     @Override
-    public User update(User user, TaskCallback callback) {
-        user.setUts(System.currentTimeMillis());
-        user.updateJSON();
-        insertUser(user, callback);
-        return user;
+    public OstUser update(OstUser ostUser, TaskCallback callback) {
+        ostUser.setUts(System.currentTimeMillis());
+        ostUser.updateJSON();
+        insertUser(ostUser, callback);
+        return ostUser;
     }
 
     @Override

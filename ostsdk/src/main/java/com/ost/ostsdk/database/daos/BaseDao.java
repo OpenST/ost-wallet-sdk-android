@@ -1,19 +1,19 @@
 package com.ost.ostsdk.database.daos;
 
-import com.ost.ostsdk.models.entities.BaseEntity;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 
 public interface BaseDao {
-    void insert(BaseEntity baseEntity);
+    void insert(OstBaseEntity baseEntity);
 
-    void insertAll(BaseEntity... baseEntity);
+    void insertAll(OstBaseEntity... baseEntity);
 
     void delete(String id);
 
-    BaseEntity[] getByIds(String[] ids);
+    OstBaseEntity[] getByIds(String[] ids);
 
-    BaseEntity getById(String id);
+    OstBaseEntity getById(String id);
 
     void deleteAll();
 
-    BaseEntity[] getByParentId(String id);
+    OstBaseEntity[] getByParentId(String id);
 }

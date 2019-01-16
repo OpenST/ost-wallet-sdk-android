@@ -11,7 +11,7 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.UserModel;
-import com.ost.ostsdk.models.entities.User;
+import com.ost.ostsdk.models.entities.OstUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,20 +56,20 @@ public class UserModelTest {
         // Context of the app under test.
         insertUserData();
 
-        User user = OstSdk.getUser("1");
-        assertNotNull(user);
-        assertEquals("user", user.getName());
-        assertEquals("1", user.getId());
+        OstUser ostUser = OstSdk.getUser("1");
+        assertNotNull(ostUser);
+        assertEquals("ostUser", ostUser.getName());
+        assertEquals("1", ostUser.getId());
     }
 
 
     @Test
     public void testUserDeletion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        User user = insertUserData();
+        OstUser ostUser = insertUserData();
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.delUser(user.getId(), new TaskCallback() {
+        OstSdk.delUser(ostUser.getId(), new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -78,35 +78,35 @@ public class UserModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        user = OstSdk.getUser("1");
-        assertNull(user);
+        ostUser = OstSdk.getUser("1");
+        assertNull(ostUser);
     }
 
     @Test
     public void testUserInsertionInCache() throws JSONException, InterruptedException {
         // Context of the app under test.
-        User user = insertUserData();
+        OstUser ostUser = insertUserData();
 
-        OstSdkDatabase.getDatabase().userDao().delete(user.getId());
-        user = OstSdk.getUser("1");
-        assertNotNull(user);
-        assertEquals("user", user.getName());
-        assertEquals("1", user.getId());
+        OstSdkDatabase.getDatabase().userDao().delete(ostUser.getId());
+        ostUser = OstSdk.getUser("1");
+        assertNotNull(ostUser);
+        assertEquals("ostUser", ostUser.getName());
+        assertEquals("1", ostUser.getId());
     }
 
     @Test
     public void testUserInsertionInMemory() throws JSONException, InterruptedException {
         // Context of the app under test.
-        User user = insertUserData();
+        OstUser ostUser = insertUserData();
 
         populateCache(2);
 
-        OstSdkDatabase.getDatabase().userDao().delete(user.getId());
+        OstSdkDatabase.getDatabase().userDao().delete(ostUser.getId());
 
-        user = OstSdk.getUser("1");
-        assertNotNull(user);
-        assertEquals("user", user.getName());
-        assertEquals("1", user.getId());
+        ostUser = OstSdk.getUser("1");
+        assertNotNull(ostUser);
+        assertEquals("ostUser", ostUser.getName());
+        assertEquals("1", ostUser.getId());
     }
 
     private void populateCache(int cacheSizeToPopulate) throws JSONException, InterruptedException {
@@ -116,22 +116,22 @@ public class UserModelTest {
         }
     }
 
-    private User insertUserData() throws JSONException, InterruptedException {
+    private OstUser insertUserData() throws JSONException, InterruptedException {
         return insertUserData(1);
     }
 
-    private User insertUserData(int param) throws JSONException, InterruptedException {
+    private OstUser insertUserData(int param) throws JSONException, InterruptedException {
         JSONObject userObj = new JSONObject();
 
-        userObj.put(User.ID, String.valueOf(param));
-        userObj.put(User.TOKEN_ID, "1");
-        userObj.put(User.NAME, "user");
-        userObj.put(User.TOKEN_HOLDER_ID, "1");
-        userObj.put(User.MULTI_SIG_ID, "1");
+        userObj.put(OstUser.ID, String.valueOf(param));
+        userObj.put(OstUser.TOKEN_ID, "1");
+        userObj.put(OstUser.NAME, "ostUser");
+        userObj.put(OstUser.TOKEN_HOLDER_ID, "1");
+        userObj.put(OstUser.MULTI_SIG_ID, "1");
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        User user = OstSdk.initUser(userObj, new TaskCallback() {
+        OstUser ostUser = OstSdk.initUser(userObj, new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -140,6 +140,6 @@ public class UserModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        return user;
+        return ostUser;
     }
 }

@@ -3,14 +3,12 @@ package com.ost.ostsdk.models.entities;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class ExecutableRuleTest {
+public class OstExecutableRuleTest {
 
     @Test
     public void testExecutableRuleInvalidInsertion() throws JSONException {
@@ -18,17 +16,17 @@ public class ExecutableRuleTest {
         //Init json object
         JSONObject jsonObject = new JSONObject();
 
-        //Test without any ExecutableRule  attribute
+        //Test without any OstExecutableRule  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
+        jsonObject.put(OstBaseEntity.ID, "ID");
         testExecutableRuleJsonException(jsonObject);
 
-        //Test Id with partial ExecutableRule attribute
+        //Test Id with partial OstExecutableRule attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(ExecutableRule.EXECUTE_RULE_PAYLOAD, "{}");
-        jsonObject.put(ExecutableRule.METHOD, "methods");
-        jsonObject.put(ExecutableRule.PARAMS, "params");
+        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstExecutableRule.EXECUTE_RULE_PAYLOAD, "{}");
+        jsonObject.put(OstExecutableRule.METHOD, "methods");
+        jsonObject.put(OstExecutableRule.PARAMS, "params");
         testExecutableRuleJsonException(jsonObject);
     }
 
@@ -38,21 +36,21 @@ public class ExecutableRuleTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any ExecutableRule  attribute
+        //Test without any OstExecutableRule  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(ExecutableRule.EXECUTE_RULE_PAYLOAD, new JSONObject());
-        jsonObject.put(ExecutableRule.METHOD, "methods");
-        jsonObject.put(ExecutableRule.PARAMS, "params");
-        jsonObject.put(ExecutableRule.RULE_ID, "2323");
-        jsonObject.put(ExecutableRule.SESSION, "session");
-        jsonObject.put(ExecutableRule.STATUS, "status");
-        jsonObject.put(ExecutableRule.TOKEN_HOLDER_ADDRESS, "0x323W");
-        jsonObject.put(ExecutableRule.USER_ID, "123");
+        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstExecutableRule.EXECUTE_RULE_PAYLOAD, new JSONObject());
+        jsonObject.put(OstExecutableRule.METHOD, "methods");
+        jsonObject.put(OstExecutableRule.PARAMS, "params");
+        jsonObject.put(OstExecutableRule.RULE_ID, "2323");
+        jsonObject.put(OstExecutableRule.SESSION, "session");
+        jsonObject.put(OstExecutableRule.STATUS, "status");
+        jsonObject.put(OstExecutableRule.TOKEN_HOLDER_ADDRESS, "0x323W");
+        jsonObject.put(OstExecutableRule.USER_ID, "123");
         testMultiSigJsonWithNoException(jsonObject);
 
-        //Test Id with partial ExecutableRule attribute
-        ExecutableRule executableRule = new ExecutableRule(jsonObject);
+        //Test Id with partial OstExecutableRule attribute
+        OstExecutableRule executableRule = new OstExecutableRule(jsonObject);
         assertEquals("{}", executableRule.getExecuteRulePayload().toString());
         assertEquals("methods", executableRule.getMethod());
         assertEquals("params", executableRule.getParams());
@@ -67,7 +65,7 @@ public class ExecutableRuleTest {
 
     private void testExecutableRuleJsonException(JSONObject jsonObject) {
         try {
-            ExecutableRule baseEntity = new ExecutableRule(jsonObject);
+            OstExecutableRule baseEntity = new OstExecutableRule(jsonObject);
             fail();
         } catch (Exception ex) {
             assertTrue(true);
@@ -76,7 +74,7 @@ public class ExecutableRuleTest {
 
     private void testMultiSigJsonWithNoException(JSONObject jsonObject) {
         try {
-            ExecutableRule baseEntity = new ExecutableRule(jsonObject);
+            OstExecutableRule baseEntity = new OstExecutableRule(jsonObject);
             assertTrue(true);
         } catch (Exception ex) {
             fail();

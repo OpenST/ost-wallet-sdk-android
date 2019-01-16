@@ -7,7 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 @Entity(tableName = "rule")
-public class Rule extends BaseEntity {
+public class OstRule extends OstBaseEntity {
 
     public static final String TOKEN_ID = "token_id";
     public static final String ADDRESS = "address";
@@ -23,10 +23,10 @@ public class Rule extends BaseEntity {
     @Ignore
     private String abi;
 
-    public Rule() {
+    public OstRule() {
     }
 
-    public Rule(JSONObject jsonObject) throws JSONException {
+    public OstRule(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
@@ -66,18 +66,18 @@ public class Rule extends BaseEntity {
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
-        setName(jsonObject.getString(Rule.NAME));
-        setTokenId(jsonObject.getString(Rule.TOKEN_ID));
-        setAbi(jsonObject.getString(Rule.ABI));
-        setAddress(jsonObject.getString(Rule.ADDRESS));
+        setName(jsonObject.getString(OstRule.NAME));
+        setTokenId(jsonObject.getString(OstRule.TOKEN_ID));
+        setAbi(jsonObject.getString(OstRule.ABI));
+        setAddress(jsonObject.getString(OstRule.ADDRESS));
     }
 
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(Rule.TOKEN_ID) &&
-                jsonObject.has(Rule.NAME) &&
-                jsonObject.has(Rule.ABI) &&
-                jsonObject.has(Rule.ADDRESS);
+                jsonObject.has(OstRule.TOKEN_ID) &&
+                jsonObject.has(OstRule.NAME) &&
+                jsonObject.has(OstRule.ABI) &&
+                jsonObject.has(OstRule.ADDRESS);
     }
 }

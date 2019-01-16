@@ -5,7 +5,7 @@ import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.TokenHolderSessionDao;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.TokenHolderSessionModel;
-import com.ost.ostsdk.models.entities.TokenHolderSession;
+import com.ost.ostsdk.models.entities.OstTokenHolderSession;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,13 +23,13 @@ class TokenHolderSessionModelRepository extends BaseModelCacheRepository impleme
 
 
     @Override
-    public void insertTokenHolderSession(final TokenHolderSession tokenHolderSession, final TaskCallback callback) {
-        super.insert(tokenHolderSession, callback);
+    public void insertTokenHolderSession(final OstTokenHolderSession ostTokenHolderSession, final TaskCallback callback) {
+        super.insert(ostTokenHolderSession, callback);
     }
 
     @Override
-    public void insertAllTokenHolderSessions(final TokenHolderSession[] tokenHolderSession, final TaskCallback callback) {
-        super.insertAll(tokenHolderSession, callback);
+    public void insertAllTokenHolderSessions(final OstTokenHolderSession[] ostTokenHolderSession, final TaskCallback callback) {
+        super.insertAll(ostTokenHolderSession, callback);
     }
 
     @Override
@@ -38,13 +38,13 @@ class TokenHolderSessionModelRepository extends BaseModelCacheRepository impleme
     }
 
     @Override
-    public TokenHolderSession[] getTokenHolderSessionsByIds(String[] ids) {
-        return (TokenHolderSession[]) super.getByIds(ids);
+    public OstTokenHolderSession[] getTokenHolderSessionsByIds(String[] ids) {
+        return (OstTokenHolderSession[]) super.getByIds(ids);
     }
 
     @Override
-    public TokenHolderSession getTokenHolderSessionById(String id) {
-        return (TokenHolderSession) super.getById(id);
+    public OstTokenHolderSession getTokenHolderSessionById(String id) {
+        return (OstTokenHolderSession) super.getById(id);
     }
 
     @Override
@@ -53,15 +53,15 @@ class TokenHolderSessionModelRepository extends BaseModelCacheRepository impleme
     }
 
     @Override
-    public TokenHolderSession initTokenHolderSession(JSONObject jsonObject, TaskCallback callback) throws JSONException {
-        TokenHolderSession multiSig = new TokenHolderSession(jsonObject);
+    public OstTokenHolderSession initTokenHolderSession(JSONObject jsonObject, TaskCallback callback) throws JSONException {
+        OstTokenHolderSession multiSig = new OstTokenHolderSession(jsonObject);
         insert(multiSig, callback);
         return multiSig;
     }
 
     @Override
-    public TokenHolderSession[] getTokenHolderSessionsByParentId(String id) {
-        return (TokenHolderSession[]) super.getByParentId(id);
+    public OstTokenHolderSession[] getTokenHolderSessionsByParentId(String id) {
+        return (OstTokenHolderSession[]) super.getByParentId(id);
     }
 
     @Override

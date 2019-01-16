@@ -1,23 +1,23 @@
 package com.ost.ostsdk.models;
 
-import com.ost.ostsdk.models.entities.MultiSig;
+import com.ost.ostsdk.models.entities.OstDeviceManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface MultiSigModel {
 
-    void insertMultiSig(MultiSig multiSig, TaskCallback callback);
+    void insertMultiSig(OstDeviceManager ostDeviceManager, TaskCallback callback);
 
-    void insertAllMultiSigs(MultiSig[] multiSig, TaskCallback callback);
+    void insertAllMultiSigs(OstDeviceManager[] ostDeviceManager, TaskCallback callback);
 
     void deleteMultiSig(String id, TaskCallback callback);
 
-    MultiSig[] getMultiSigsByIds(String[] ids);
+    OstDeviceManager[] getMultiSigsByIds(String[] ids);
 
-    MultiSig getMultiSigById(String id);
+    OstDeviceManager getMultiSigById(String id);
 
     void deleteAllMultiSigs(TaskCallback callback);
 
-    MultiSig initMultiSig(JSONObject jsonObject, TaskCallback callback) throws JSONException;
+    OstDeviceManager initMultiSig(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 }

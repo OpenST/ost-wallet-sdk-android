@@ -11,8 +11,8 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.TokenHolderModel;
-import com.ost.ostsdk.models.entities.TokenHolder;
-import com.ost.ostsdk.models.entities.User;
+import com.ost.ostsdk.models.entities.OstTokenHolder;
+import com.ost.ostsdk.models.entities.OstUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,20 +57,20 @@ public class TokenHolderModelTest {
         // Context of the app under test.
         insertTokenHolderData();
 
-        TokenHolder tokenHolder = OstSdk.getUser("1").getTokenHolder();
-        assertNotNull(tokenHolder);
-        assertEquals(1, tokenHolder.getRequirements());
-        assertEquals("address", tokenHolder.getAddress());
+        OstTokenHolder ostTokenHolder = OstSdk.getUser("1").getTokenHolder();
+        assertNotNull(ostTokenHolder);
+        assertEquals(1, ostTokenHolder.getRequirements());
+        assertEquals("address", ostTokenHolder.getAddress());
     }
 
 
     @Test
     public void testTokenHolderDeletion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        TokenHolder tokenHolder = insertTokenHolderData();
+        OstTokenHolder ostTokenHolder = insertTokenHolderData();
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.getUser("1").delTokenHolder(tokenHolder.getId(), new TaskCallback() {
+        OstSdk.getUser("1").delTokenHolder(ostTokenHolder.getId(), new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -79,20 +79,20 @@ public class TokenHolderModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        tokenHolder = OstSdk.getUser("1").getTokenHolder();
-        assertNull(tokenHolder);
+        ostTokenHolder = OstSdk.getUser("1").getTokenHolder();
+        assertNull(ostTokenHolder);
     }
 
     @Test
     public void testUserInsertionInCache() throws JSONException, InterruptedException {
         // Context of the app under test.
-        TokenHolder tokenHolder = insertTokenHolderData();
+        OstTokenHolder ostTokenHolder = insertTokenHolderData();
 
-        OstSdkDatabase.getDatabase().tokenHolderDao().delete(tokenHolder.getId());
-        tokenHolder = OstSdk.getUser("1").getTokenHolder();
-        assertNotNull(tokenHolder);
-        assertEquals(1, tokenHolder.getRequirements());
-        assertEquals("address", tokenHolder.getAddress());
+        OstSdkDatabase.getDatabase().tokenHolderDao().delete(ostTokenHolder.getId());
+        ostTokenHolder = OstSdk.getUser("1").getTokenHolder();
+        assertNotNull(ostTokenHolder);
+        assertEquals(1, ostTokenHolder.getRequirements());
+        assertEquals("address", ostTokenHolder.getAddress());
     }
 
     private void populateCache(int cacheSizeToPopulate) throws JSONException, InterruptedException {
@@ -102,23 +102,23 @@ public class TokenHolderModelTest {
         }
     }
 
-    private TokenHolder insertTokenHolderData() throws JSONException, InterruptedException {
+    private OstTokenHolder insertTokenHolderData() throws JSONException, InterruptedException {
         return insertTokenHolderData(1);
     }
 
-    private TokenHolder insertTokenHolderData(int param) throws JSONException, InterruptedException {
+    private OstTokenHolder insertTokenHolderData(int param) throws JSONException, InterruptedException {
         JSONObject userObj = new JSONObject();
 
-        userObj.put(User.ID, String.valueOf(param));
-        userObj.put(User.TOKEN_ID, "1");
-        userObj.put(User.NAME, "user");
-        userObj.put(User.TOKEN_HOLDER_ID, "1");
-        userObj.put(User.MULTI_SIG_ID, "1");
+        userObj.put(OstUser.ID, String.valueOf(param));
+        userObj.put(OstUser.TOKEN_ID, "1");
+        userObj.put(OstUser.NAME, "ostUser");
+        userObj.put(OstUser.TOKEN_HOLDER_ID, "1");
+        userObj.put(OstUser.MULTI_SIG_ID, "1");
 
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        User user = OstSdk.initUser(userObj, new TaskCallback() {
+        OstUser ostUser = OstSdk.initUser(userObj, new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -128,12 +128,12 @@ public class TokenHolderModelTest {
         countDownLatch.await(5, TimeUnit.SECONDS);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(TokenHolder.ID, "1");
-        jsonObject.put(TokenHolder.USER_ID, "1");
-        jsonObject.put(TokenHolder.EXECUTE_RULE_CALL_PREFIX, "tokenHolderNo1");
-        jsonObject.put(TokenHolder.REQUIREMENTS, 1);
-        jsonObject.put(TokenHolder.ADDRESS, "address");
+        jsonObject.put(OstTokenHolder.ID, "1");
+        jsonObject.put(OstTokenHolder.USER_ID, "1");
+        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "tokenHolderNo1");
+        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
+        jsonObject.put(OstTokenHolder.ADDRESS, "address");
 
-        return user.initTokenHolder(jsonObject);
+        return ostUser.initTokenHolder(jsonObject);
     }
 }

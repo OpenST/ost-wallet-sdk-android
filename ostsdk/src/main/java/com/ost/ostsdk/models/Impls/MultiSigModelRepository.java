@@ -5,7 +5,7 @@ import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.MultiSigDao;
 import com.ost.ostsdk.models.MultiSigModel;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.MultiSig;
+import com.ost.ostsdk.models.entities.OstDeviceManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,13 +23,13 @@ class MultiSigModelRepository extends BaseModelCacheRepository implements MultiS
 
 
     @Override
-    public void insertMultiSig(final MultiSig multiSig, final TaskCallback callback) {
-        super.insert(multiSig, callback);
+    public void insertMultiSig(final OstDeviceManager ostDeviceManager, final TaskCallback callback) {
+        super.insert(ostDeviceManager, callback);
     }
 
     @Override
-    public void insertAllMultiSigs(final MultiSig[] multiSig, final TaskCallback callback) {
-        super.insertAll(multiSig, callback);
+    public void insertAllMultiSigs(final OstDeviceManager[] ostDeviceManager, final TaskCallback callback) {
+        super.insertAll(ostDeviceManager, callback);
     }
 
     @Override
@@ -38,13 +38,13 @@ class MultiSigModelRepository extends BaseModelCacheRepository implements MultiS
     }
 
     @Override
-    public MultiSig[] getMultiSigsByIds(String[] ids) {
-        return (MultiSig[]) super.getByIds(ids);
+    public OstDeviceManager[] getMultiSigsByIds(String[] ids) {
+        return (OstDeviceManager[]) super.getByIds(ids);
     }
 
     @Override
-    public MultiSig getMultiSigById(String id) {
-        return (MultiSig) super.getById(id);
+    public OstDeviceManager getMultiSigById(String id) {
+        return (OstDeviceManager) super.getById(id);
     }
 
     @Override
@@ -53,10 +53,10 @@ class MultiSigModelRepository extends BaseModelCacheRepository implements MultiS
     }
 
     @Override
-    public MultiSig initMultiSig(JSONObject jsonObject, TaskCallback callback) throws JSONException {
-        MultiSig multiSig = new MultiSig(jsonObject);
-        insert(multiSig, callback);
-        return multiSig;
+    public OstDeviceManager initMultiSig(JSONObject jsonObject, TaskCallback callback) throws JSONException {
+        OstDeviceManager ostDeviceManager = new OstDeviceManager(jsonObject);
+        insert(ostDeviceManager, callback);
+        return ostDeviceManager;
     }
 
     @Override

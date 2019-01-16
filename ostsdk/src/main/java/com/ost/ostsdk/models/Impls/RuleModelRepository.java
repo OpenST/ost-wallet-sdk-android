@@ -5,7 +5,7 @@ import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.RuleDao;
 import com.ost.ostsdk.models.RuleModel;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.Rule;
+import com.ost.ostsdk.models.entities.OstRule;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,13 +23,13 @@ class RuleModelRepository extends BaseModelCacheRepository implements RuleModel 
 
 
     @Override
-    public void insertRule(final Rule rule, final TaskCallback callback) {
-        super.insert(rule, callback);
+    public void insertRule(final OstRule ostRule, final TaskCallback callback) {
+        super.insert(ostRule, callback);
     }
 
     @Override
-    public void insertAllRules(final Rule[] rule, final TaskCallback callback) {
-        super.insertAll(rule, callback);
+    public void insertAllRules(final OstRule[] ostRule, final TaskCallback callback) {
+        super.insertAll(ostRule, callback);
     }
 
     @Override
@@ -38,13 +38,13 @@ class RuleModelRepository extends BaseModelCacheRepository implements RuleModel 
     }
 
     @Override
-    public Rule[] getRulesByIds(String[] ids) {
-        return (Rule[]) super.getByIds(ids);
+    public OstRule[] getRulesByIds(String[] ids) {
+        return (OstRule[]) super.getByIds(ids);
     }
 
     @Override
-    public Rule getRuleById(String id) {
-        return (Rule) super.getById(id);
+    public OstRule getRuleById(String id) {
+        return (OstRule) super.getById(id);
     }
 
     @Override
@@ -53,10 +53,10 @@ class RuleModelRepository extends BaseModelCacheRepository implements RuleModel 
     }
 
     @Override
-    public Rule initRule(JSONObject jsonObject, TaskCallback callback) throws JSONException {
-        Rule rule = new Rule(jsonObject);
-        insert(rule, callback);
-        return rule;
+    public OstRule initRule(JSONObject jsonObject, TaskCallback callback) throws JSONException {
+        OstRule ostRule = new OstRule(jsonObject);
+        insert(ostRule, callback);
+        return ostRule;
     }
 
     @Override

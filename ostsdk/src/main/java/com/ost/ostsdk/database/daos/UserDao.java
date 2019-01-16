@@ -4,38 +4,38 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
-import com.ost.ostsdk.models.entities.BaseEntity;
-import com.ost.ostsdk.models.entities.User;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
+import com.ost.ostsdk.models.entities.OstUser;
 
 @Dao
 public abstract class UserDao implements BaseDao {
 
-    public void insert(BaseEntity baseEntity) {
-        this.insert((User) baseEntity);
+    public void insert(OstBaseEntity baseEntity) {
+        this.insert((OstUser) baseEntity);
     }
 
-    public void insertAll(BaseEntity... baseEntity) {
-        this.insertAll((User[]) baseEntity);
+    public void insertAll(OstBaseEntity... baseEntity) {
+        this.insertAll((OstUser[]) baseEntity);
     }
 
     @Insert
-    public abstract void insert(User user);
+    public abstract void insert(OstUser ostUser);
 
     @Insert
-    public abstract void insertAll(User... user);
+    public abstract void insertAll(OstUser... ostUser);
 
-    @Query("DELETE FROM User WHERE id=:id")
+    @Query("DELETE FROM user WHERE id=:id")
     public abstract void delete(String id);
 
-    @Query("SELECT * FROM User WHERE id IN (:ids)")
-    public abstract User[] getByIds(String[] ids);
+    @Query("SELECT * FROM user WHERE id IN (:ids)")
+    public abstract OstUser[] getByIds(String[] ids);
 
-    @Query("SELECT * FROM User WHERE id=:id")
-    public abstract User getById(String id);
+    @Query("SELECT * FROM user WHERE id=:id")
+    public abstract OstUser getById(String id);
 
-    @Query("DELETE FROM User")
+    @Query("DELETE FROM user")
     public abstract void deleteAll();
 
     @Query("SELECT * FROM user WHERE parent_id=:id")
-    public abstract User[] getByParentId(String id);
+    public abstract OstUser[] getByParentId(String id);
 }

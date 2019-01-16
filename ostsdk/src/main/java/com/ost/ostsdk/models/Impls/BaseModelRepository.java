@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.BaseEntity;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.utils.DispatchAsync;
 
 import org.json.JSONObject;
@@ -16,7 +16,7 @@ abstract class BaseModelRepository {
     BaseModelRepository() {
     }
 
-    public void insert(final BaseEntity baseEntity, final TaskCallback callback) {
+    public void insert(final OstBaseEntity baseEntity, final TaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -30,7 +30,7 @@ abstract class BaseModelRepository {
         }));
     }
 
-    public void insertAll(final BaseEntity[] baseEntities, final TaskCallback callback) {
+    public void insertAll(final OstBaseEntity[] baseEntities, final TaskCallback callback) {
         DispatchAsync.dispatch((new DispatchAsync.Executor() {
             @Override
             public void execute() {
@@ -58,13 +58,13 @@ abstract class BaseModelRepository {
         }));
     }
 
-    public BaseEntity[] getByIds(String[] ids) {
+    public OstBaseEntity[] getByIds(String[] ids) {
         return processEntity(getModel().getByIds(ids));
     }
 
 
-    public BaseEntity getById(String id) {
-        BaseEntity baseEntity = getModel().getById(id);
+    public OstBaseEntity getById(String id) {
+        OstBaseEntity baseEntity = getModel().getById(id);
         try {
             baseEntity.processJson(new JSONObject(baseEntity.getData()));
         } catch (Exception exception) {
@@ -80,12 +80,12 @@ abstract class BaseModelRepository {
 
     abstract BaseDao getModel();
 
-    protected BaseEntity[] getByParentId(String id) {
+    protected OstBaseEntity[] getByParentId(String id) {
         return processEntity(getModel().getByParentId(id));
     }
 
-    private BaseEntity[] processEntity(BaseEntity[] baseEntities) {
-        for (BaseEntity baseEntity : baseEntities) {
+    private OstBaseEntity[] processEntity(OstBaseEntity[] baseEntities) {
+        for (OstBaseEntity baseEntity : baseEntities) {
             try {
                 baseEntity.processJson(new JSONObject(baseEntity.getData()));
             } catch (Exception exception) {

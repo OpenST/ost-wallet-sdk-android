@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class TokenHolderTest {
+public class OstTokenHolderTest {
 
     @Test
     public void testTokenHolderInvalidInsertion() throws JSONException {
@@ -17,16 +17,16 @@ public class TokenHolderTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any TokenHolder  attribute
+        //Test without any OstTokenHolder  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
+        jsonObject.put(OstBaseEntity.ID, "ID");
         testTokenHolderJsonException(jsonObject);
 
-        //Test Id with partial TokenHolder attribute
+        //Test Id with partial OstTokenHolder attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(TokenHolder.ADDRESS, "0x232");
-        jsonObject.put(TokenHolder.REQUIREMENTS, 1);
+        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstTokenHolder.ADDRESS, "0x232");
+        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
         testTokenHolderJsonException(jsonObject);
     }
 
@@ -36,30 +36,30 @@ public class TokenHolderTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any TokenHolder  attribute
+        //Test without any OstTokenHolder  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(TokenHolder.ADDRESS, "0x2901239");
-        jsonObject.put(TokenHolder.REQUIREMENTS, 1);
-        jsonObject.put(TokenHolder.USER_ID, "123");
+        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstTokenHolder.ADDRESS, "0x2901239");
+        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
+        jsonObject.put(OstTokenHolder.USER_ID, "123");
         JSONArray jsonArray = new JSONArray();
         jsonArray.put("0x12345678");
-        jsonObject.put(TokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
+        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
 
 
-        TokenHolder tokenHolder = new TokenHolder(jsonObject);
-        assertEquals("0x2901239", tokenHolder.getAddress());
-        assertEquals(1, tokenHolder.getRequirements());
-        assertEquals("123", tokenHolder.getUserId());
-        assertEquals("callPrefix", tokenHolder.getExecuteRuleCallPrefix());
-        assertEquals("ID", tokenHolder.getId());
+        OstTokenHolder ostTokenHolder = new OstTokenHolder(jsonObject);
+        assertEquals("0x2901239", ostTokenHolder.getAddress());
+        assertEquals(1, ostTokenHolder.getRequirements());
+        assertEquals("123", ostTokenHolder.getUserId());
+        assertEquals("callPrefix", ostTokenHolder.getExecuteRuleCallPrefix());
+        assertEquals("ID", ostTokenHolder.getId());
 
     }
 
 
     private void testTokenHolderJsonException(JSONObject jsonObject) {
         try {
-            TokenHolder tokenHolder = new TokenHolder(jsonObject);
+            OstTokenHolder ostTokenHolder = new OstTokenHolder(jsonObject);
             fail();
         } catch (Exception ex) {
             assertTrue(true);
@@ -68,7 +68,7 @@ public class TokenHolderTest {
 
     private void testTokenHolderJsonWithNoException(JSONObject jsonObject) {
         try {
-            TokenHolder tokenHolder = new TokenHolder(jsonObject);
+            OstTokenHolder ostTokenHolder = new OstTokenHolder(jsonObject);
             assertTrue(true);
         } catch (Exception ex) {
             fail();

@@ -11,9 +11,9 @@ import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.ModelFactory;
 import com.ost.ostsdk.models.RuleModel;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.Rule;
-import com.ost.ostsdk.models.entities.Token;
-import com.ost.ostsdk.models.entities.User;
+import com.ost.ostsdk.models.entities.OstRule;
+import com.ost.ostsdk.models.entities.OstToken;
+import com.ost.ostsdk.models.entities.OstUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,20 +58,20 @@ public class RuleModelTest {
         // Context of the app under test.
         insertRuleData();
 
-        Rule rule = OstSdk.getToken("1").getRule("1");
-        assertNotNull(rule);
-        assertEquals("ruleNo1", rule.getName());
-        assertEquals("1", rule.getId());
+        OstRule ostRule = OstSdk.getToken("1").getRule("1");
+        assertNotNull(ostRule);
+        assertEquals("ruleNo1", ostRule.getName());
+        assertEquals("1", ostRule.getId());
     }
 
 
     @Test
     public void testRuleDeletion() throws JSONException, InterruptedException {
         // Context of the app under test.
-        Rule rule = insertRuleData();
+        OstRule ostRule = insertRuleData();
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.getToken("1").delRule(rule.getId(), new TaskCallback() {
+        OstSdk.getToken("1").delRule(ostRule.getId(), new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -80,20 +80,20 @@ public class RuleModelTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        rule = OstSdk.getToken("1").getRule("1");
-        assertNull(rule);
+        ostRule = OstSdk.getToken("1").getRule("1");
+        assertNull(ostRule);
     }
 
     @Test
     public void testUserInsertionInCache() throws JSONException, InterruptedException {
         // Context of the app under test.
-        Rule rule = insertRuleData();
+        OstRule ostRule = insertRuleData();
 
-        OstSdkDatabase.getDatabase().ruleDao().delete(rule.getId());
-        rule = OstSdk.getToken("1").getRule("1");
-        assertNotNull(rule);
-        assertEquals("ruleNo1", rule.getName());
-        assertEquals("1", rule.getId());
+        OstSdkDatabase.getDatabase().ruleDao().delete(ostRule.getId());
+        ostRule = OstSdk.getToken("1").getRule("1");
+        assertNotNull(ostRule);
+        assertEquals("ruleNo1", ostRule.getName());
+        assertEquals("1", ostRule.getId());
     }
 
     private void populateCache(int cacheSizeToPopulate) throws JSONException, InterruptedException {
@@ -103,19 +103,19 @@ public class RuleModelTest {
         }
     }
 
-    private Rule insertRuleData() throws JSONException, InterruptedException {
+    private OstRule insertRuleData() throws JSONException, InterruptedException {
         return insertRuleData(1);
     }
 
-    private Rule insertRuleData(int param) throws JSONException, InterruptedException {
+    private OstRule insertRuleData(int param) throws JSONException, InterruptedException {
         JSONObject tokenJson = new JSONObject();
 
-        tokenJson.put(User.ID, String.valueOf(param));
+        tokenJson.put(OstUser.ID, String.valueOf(param));
 
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        Token token = OstSdk.registerToken(tokenJson, new TaskCallback() {
+        OstToken ostToken = OstSdk.registerToken(tokenJson, new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -125,12 +125,12 @@ public class RuleModelTest {
         countDownLatch.await(5, TimeUnit.SECONDS);
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(Rule.ID, "1");
-        jsonObject.put(Rule.TOKEN_ID, "1");
-        jsonObject.put(Rule.ABI, "asdfgh");
-        jsonObject.put(Rule.NAME, "ruleNo1");
-        jsonObject.put(Rule.ADDRESS, "address");
+        jsonObject.put(OstRule.ID, "1");
+        jsonObject.put(OstRule.TOKEN_ID, "1");
+        jsonObject.put(OstRule.ABI, "asdfgh");
+        jsonObject.put(OstRule.NAME, "ruleNo1");
+        jsonObject.put(OstRule.ADDRESS, "address");
 
-        return token.initRule(jsonObject);
+        return ostToken.initRule(jsonObject);
     }
 }

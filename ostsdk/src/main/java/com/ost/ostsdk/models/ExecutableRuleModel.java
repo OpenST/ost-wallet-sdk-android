@@ -1,23 +1,23 @@
 package com.ost.ostsdk.models;
 
-import com.ost.ostsdk.models.entities.ExecutableRule;
+import com.ost.ostsdk.models.entities.OstExecutableRule;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface ExecutableRuleModel {
 
-    void insertExecutableRule(ExecutableRule executableRule, TaskCallback callback);
+    void insertExecutableRule(OstExecutableRule executableRule, TaskCallback callback);
 
-    void insertAllExecutableRules(ExecutableRule[] executableRule, TaskCallback callback);
+    void insertAllExecutableRules(OstExecutableRule[] executableRule, TaskCallback callback);
 
     void deleteExecutableRule(String id, TaskCallback callback);
 
-    ExecutableRule[] getExecutableRulesByIds(String[] ids);
+    OstExecutableRule[] getExecutableRulesByIds(String[] ids);
 
-    ExecutableRule getExecutableRuleById(String id);
+    OstExecutableRule getExecutableRuleById(String id);
 
     void deleteAllExecutableRules(TaskCallback callback);
 
-    ExecutableRule initExecutableRule(JSONObject jsonObject) throws JSONException;
+    OstExecutableRule initExecutableRule(JSONObject jsonObject) throws JSONException;
 }

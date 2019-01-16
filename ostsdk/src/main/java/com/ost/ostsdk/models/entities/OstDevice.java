@@ -20,8 +20,8 @@ import java.math.BigInteger;
 /**
  * Transaction Signing
  */
-@Entity(tableName = "multi_sig_wallet")
-public class MultiSigWallet extends BaseEntity {
+@Entity(tableName = "device")
+public class OstDevice extends OstBaseEntity {
 
     public static final String STATUS = "status";
     public static final String ADDRESS = "address";
@@ -38,31 +38,31 @@ public class MultiSigWallet extends BaseEntity {
     @Ignore
     private String address;
 
-    public MultiSigWallet(JSONObject jsonObject) throws JSONException {
+    public OstDevice(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
-    private MultiSigWallet(String jsonString) throws JSONException {
+    private OstDevice(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
     }
 
-    public MultiSigWallet() {
+    public OstDevice() {
     }
 
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(MultiSigWallet.ADDRESS) &&
-                jsonObject.has(MultiSigWallet.STATUS) &&
-                jsonObject.has(MultiSigWallet.MULTI_SIG_ID);
+                jsonObject.has(OstDevice.ADDRESS) &&
+                jsonObject.has(OstDevice.STATUS) &&
+                jsonObject.has(OstDevice.MULTI_SIG_ID);
     }
 
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
-        setAddress(jsonObject.getString(MultiSigWallet.ADDRESS));
-        setStatus(jsonObject.getString(MultiSigWallet.STATUS));
-        setMultiSigId(jsonObject.getString(MultiSigWallet.MULTI_SIG_ID));
+        setAddress(jsonObject.getString(OstDevice.ADDRESS));
+        setStatus(jsonObject.getString(OstDevice.STATUS));
+        setMultiSigId(jsonObject.getString(OstDevice.MULTI_SIG_ID));
     }
 
     public String signTransaction(RawTransaction rawTransaction, String userId) {

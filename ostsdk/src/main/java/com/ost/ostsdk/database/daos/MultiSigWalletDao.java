@@ -4,42 +4,42 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
-import com.ost.ostsdk.models.entities.BaseEntity;
-import com.ost.ostsdk.models.entities.MultiSigWallet;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
+import com.ost.ostsdk.models.entities.OstDevice;
 
 @Dao
 public abstract class MultiSigWalletDao implements BaseDao {
 
-    public void insert(BaseEntity baseEntity) {
-        this.insert((MultiSigWallet) baseEntity);
+    public void insert(OstBaseEntity baseEntity) {
+        this.insert((OstDevice) baseEntity);
     }
 
-    public void insertAll(BaseEntity... baseEntity) {
-        this.insertAll((MultiSigWallet[]) baseEntity);
+    public void insertAll(OstBaseEntity... baseEntity) {
+        this.insertAll((OstDevice[]) baseEntity);
     }
 
-    public void delete(BaseEntity baseEntity) {
-        this.delete((MultiSigWallet) baseEntity);
+    public void delete(OstBaseEntity baseEntity) {
+        this.delete(baseEntity);
     }
 
     @Insert
-    public abstract void insert(MultiSigWallet multiSigWallet);
+    public abstract void insert(OstDevice ostDevice);
 
     @Insert
-    public abstract void insertAll(MultiSigWallet... multiSigWallet);
+    public abstract void insertAll(OstDevice... ostDevice);
 
-    @Query("DELETE FROM multi_sig_wallet WHERE id=:id")
+    @Query("DELETE FROM device WHERE id=:id")
     public abstract void delete(String id);
 
-    @Query("SELECT * FROM multi_sig_wallet WHERE id IN (:ids)")
-    public abstract MultiSigWallet[] getByIds(String[] ids);
+    @Query("SELECT * FROM device WHERE id IN (:ids)")
+    public abstract OstDevice[] getByIds(String[] ids);
 
-    @Query("SELECT * FROM multi_sig_wallet WHERE id=:id")
-    public abstract MultiSigWallet getById(String id);
+    @Query("SELECT * FROM device WHERE id=:id")
+    public abstract OstDevice getById(String id);
 
-    @Query("DELETE FROM multi_sig_wallet")
+    @Query("DELETE FROM device")
     public abstract void deleteAll();
 
-    @Query("SELECT * FROM multi_sig_wallet WHERE parent_id=:id")
-    public abstract MultiSigWallet[] getByParentId(String id);
+    @Query("SELECT * FROM device WHERE parent_id=:id")
+    public abstract OstDevice[] getByParentId(String id);
 }

@@ -5,7 +5,7 @@ import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.MultiSigWalletDao;
 import com.ost.ostsdk.models.MultiSigWalletModel;
 import com.ost.ostsdk.models.TaskCallback;
-import com.ost.ostsdk.models.entities.MultiSigWallet;
+import com.ost.ostsdk.models.entities.OstDevice;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,13 +23,13 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
 
 
     @Override
-    public void insertMultiSigWallet(final MultiSigWallet multiSigWallet, final TaskCallback callback) {
-        super.insert(multiSigWallet, callback);
+    public void insertMultiSigWallet(final OstDevice ostDevice, final TaskCallback callback) {
+        super.insert(ostDevice, callback);
     }
 
     @Override
-    public void insertAllMultiSigWallets(final MultiSigWallet[] multiSigWallet, final TaskCallback callback) {
-        super.insertAll(multiSigWallet, callback);
+    public void insertAllMultiSigWallets(final OstDevice[] ostDevice, final TaskCallback callback) {
+        super.insertAll(ostDevice, callback);
     }
 
     @Override
@@ -38,13 +38,13 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    public MultiSigWallet[] getMultiSigWalletsByIds(String[] ids) {
-        return (MultiSigWallet[]) super.getByIds(ids);
+    public OstDevice[] getMultiSigWalletsByIds(String[] ids) {
+        return (OstDevice[]) super.getByIds(ids);
     }
 
     @Override
-    public MultiSigWallet getMultiSigWalletById(String id) {
-        return (MultiSigWallet) super.getById(id);
+    public OstDevice getMultiSigWalletById(String id) {
+        return (OstDevice) super.getById(id);
     }
 
     @Override
@@ -53,15 +53,15 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    public MultiSigWallet initMultiSigWallet(JSONObject jsonObject, TaskCallback callback) throws JSONException {
-        MultiSigWallet multiSigWallet = new MultiSigWallet(jsonObject);
-        insert(multiSigWallet, callback);
-        return multiSigWallet;
+    public OstDevice initMultiSigWallet(JSONObject jsonObject, TaskCallback callback) throws JSONException {
+        OstDevice ostDevice = new OstDevice(jsonObject);
+        insert(ostDevice, callback);
+        return ostDevice;
     }
 
     @Override
-    public MultiSigWallet[] getMultiSigWalletsByParentId(String id) {
-        return (MultiSigWallet[]) super.getByParentId(id);
+    public OstDevice[] getMultiSigWalletsByParentId(String id) {
+        return (OstDevice[]) super.getByParentId(id);
     }
 
     @Override

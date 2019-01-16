@@ -1,13 +1,13 @@
 package com.ost.ostsdk.models;
 
-import com.ost.ostsdk.models.entities.Token;
+import com.ost.ostsdk.models.entities.OstToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface TokenModel {
 
-    Token registerToken(JSONObject jsonObject, TaskCallback callback) throws JSONException;
+    OstToken registerToken(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 
-    Token getTokenById(String id);
+    OstToken getTokenById(String id);
 }

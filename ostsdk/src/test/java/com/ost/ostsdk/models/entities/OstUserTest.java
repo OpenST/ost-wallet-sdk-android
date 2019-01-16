@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class UserTest {
+public class OstUserTest {
 
     @Test
     public void testUserInvalidInsertion() throws JSONException {
@@ -16,16 +16,16 @@ public class UserTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any User  attribute
+        //Test without any OstUser  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
+        jsonObject.put(OstBaseEntity.ID, "ID");
         testUserJsonException(jsonObject);
 
-        //Test Id with partial User attribute
+        //Test Id with partial OstUser attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(User.TOKEN_ID, "123");
-        jsonObject.put(User.NAME, "status");
+        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstUser.TOKEN_ID, "123");
+        jsonObject.put(OstUser.NAME, "status");
         testUserJsonException(jsonObject);
     }
 
@@ -35,26 +35,26 @@ public class UserTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any User  attribute
+        //Test without any OstUser  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(User.TOKEN_ID, "0x2901239");
-        jsonObject.put(User.TOKEN_HOLDER_ID, "123");
-        jsonObject.put(User.NAME, "name");
-        jsonObject.put(User.MULTI_SIG_ID, "1");
+        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstUser.TOKEN_ID, "0x2901239");
+        jsonObject.put(OstUser.TOKEN_HOLDER_ID, "123");
+        jsonObject.put(OstUser.NAME, "name");
+        jsonObject.put(OstUser.MULTI_SIG_ID, "1");
 
-        User user = new User(jsonObject);
-        assertEquals("0x2901239", user.getTokenId());
-        assertEquals("123", user.getTokenHolderId());
-        assertEquals("name", user.getName());
-        assertEquals("ID", user.getId());
-        assertEquals("1", user.getMultiSigId());
+        OstUser ostUser = new OstUser(jsonObject);
+        assertEquals("0x2901239", ostUser.getTokenId());
+        assertEquals("123", ostUser.getTokenHolderId());
+        assertEquals("name", ostUser.getName());
+        assertEquals("ID", ostUser.getId());
+        assertEquals("1", ostUser.getMultiSigId());
     }
 
 
     private void testUserJsonException(JSONObject jsonObject) {
         try {
-            User user = new User(jsonObject);
+            OstUser ostUser = new OstUser(jsonObject);
             fail();
         } catch (Exception ex) {
             assertTrue(true);
@@ -63,7 +63,7 @@ public class UserTest {
 
     private void testUserJsonWithNoException(JSONObject jsonObject) {
         try {
-            User user = new User(jsonObject);
+            OstUser ostUser = new OstUser(jsonObject);
             assertTrue(true);
         } catch (Exception ex) {
             fail();

@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.List;
 
-public class BaseEntity {
+public class OstBaseEntity {
 
     public static final String ID = "id";
     public static final String PARENT_ID = "parent_id";
@@ -24,7 +24,7 @@ public class BaseEntity {
     public static final String DELETED_STATUS = "DELETED";
     private static final String DEFAULT_PARENT_ID = "";
     private static final List<String> STATUS_VALUE = Arrays.asList(ACTIVE_STATUS, DELETED_STATUS);
-    private static final String TAG = "BaseEntity";
+    private static final String TAG = "OstBaseEntity";
 
     @PrimaryKey()
     @NonNull
@@ -44,10 +44,10 @@ public class BaseEntity {
     private double uts;
 
 
-    BaseEntity() {
+    OstBaseEntity() {
     }
 
-    BaseEntity(JSONObject jsonObject) throws JSONException {
+    OstBaseEntity(JSONObject jsonObject) throws JSONException {
         if (!validate(jsonObject)) {
             throw new JSONException("Invalid JSON Object");
         }
@@ -87,26 +87,26 @@ public class BaseEntity {
     }
 
     boolean validate(JSONObject jsonObject) {
-        return jsonObject.has(BaseEntity.ID);
+        return jsonObject.has(OstBaseEntity.ID);
     }
 
     public void processJson(JSONObject jsonObject) throws JSONException {
-        String id = jsonObject.getString(BaseEntity.ID);
+        String id = jsonObject.getString(OstBaseEntity.ID);
         if (!id.matches("[a-zA-Z0-9]+")) {
             throw new JSONException("Id having special characters in it");
         }
         setId(id);
 
-        setUts(jsonObject.optDouble(BaseEntity.UTS, -1 * System.currentTimeMillis()));
+        setUts(jsonObject.optDouble(OstBaseEntity.UTS, -1 * System.currentTimeMillis()));
 
-        String status = jsonObject.optString(BaseEntity.STATUS, BaseEntity.ACTIVE_STATUS);
-        if (!BaseEntity.DEFAULT_PARENT_ID.equals(status) && !STATUS_VALUE.contains(status)) {
+        String status = jsonObject.optString(OstBaseEntity.STATUS, OstBaseEntity.ACTIVE_STATUS);
+        if (!OstBaseEntity.DEFAULT_PARENT_ID.equals(status) && !STATUS_VALUE.contains(status)) {
             throw new JSONException("status having invalid value");
         }
         setBaseStatus(status);
 
-        String parentId = jsonObject.optString(BaseEntity.PARENT_ID, BaseEntity.DEFAULT_PARENT_ID);
-        if (!BaseEntity.DEFAULT_PARENT_ID.equals(parentId) && !parentId.matches("[a-zA-Z0-9]+")) {
+        String parentId = jsonObject.optString(OstBaseEntity.PARENT_ID, OstBaseEntity.DEFAULT_PARENT_ID);
+        if (!OstBaseEntity.DEFAULT_PARENT_ID.equals(parentId) && !parentId.matches("[a-zA-Z0-9]+")) {
             throw new JSONException("Parent Id having special characters in it");
         }
         setParentId(parentId);
@@ -129,9 +129,9 @@ public class BaseEntity {
     public void updateJSON() {
         try {
             JSONObject jsonObject = new JSONObject(getData());
-            jsonObject.put(BaseEntity.UTS, getUts());
-            jsonObject.put(BaseEntity.PARENT_ID, getParentId());
-            jsonObject.put(BaseEntity.STATUS, getBaseStatus());
+            jsonObject.put(OstBaseEntity.UTS, getUts());
+            jsonObject.put(OstBaseEntity.PARENT_ID, getParentId());
+            jsonObject.put(OstBaseEntity.STATUS, getBaseStatus());
             setData(jsonObject.toString());
         } catch (JSONException jsonException) {
             Log.e(TAG, "Unexpected exception while parsing JSON String");

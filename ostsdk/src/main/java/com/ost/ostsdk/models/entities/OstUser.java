@@ -16,9 +16,9 @@ import org.json.JSONObject;
  * Manage transaction signing
  */
 @Entity(tableName = "user")
-public class User extends BaseEntity {
+public class OstUser extends OstBaseEntity {
 
-    private static final String TAG = "User";
+    private static final String TAG = "OstUser";
 
     public static final String TOKEN_ID = "token_id";
     public static final String TOKEN_HOLDER_ID = "token_holder_id";
@@ -34,14 +34,14 @@ public class User extends BaseEntity {
     @Ignore
     private String multiSigId;
 
-    public User() {
+    public OstUser() {
     }
 
-    public User(JSONObject jsonObject) throws JSONException {
+    public OstUser(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
-    private User(String jsonString) throws JSONException {
+    private OstUser(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
     }
 
@@ -76,32 +76,32 @@ public class User extends BaseEntity {
     @Override
     public void processJson(JSONObject data) throws JSONException {
         super.processJson(data);
-        setName(data.getString(User.NAME));
-        setTokenId(data.getString(User.TOKEN_ID));
-        setTokenHolderId(data.getString(User.TOKEN_HOLDER_ID));
-        setMultiSigId(data.getString(User.MULTI_SIG_ID));
+        setName(data.getString(OstUser.NAME));
+        setTokenId(data.getString(OstUser.TOKEN_ID));
+        setTokenHolderId(data.getString(OstUser.TOKEN_HOLDER_ID));
+        setMultiSigId(data.getString(OstUser.MULTI_SIG_ID));
     }
 
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(User.TOKEN_ID) &&
-                jsonObject.has(User.TOKEN_HOLDER_ID) &&
-                jsonObject.has(User.NAME) &&
-                jsonObject.has(User.MULTI_SIG_ID);
+                jsonObject.has(OstUser.TOKEN_ID) &&
+                jsonObject.has(OstUser.TOKEN_HOLDER_ID) &&
+                jsonObject.has(OstUser.NAME) &&
+                jsonObject.has(OstUser.MULTI_SIG_ID);
     }
 
-    public TokenHolder initTokenHolder(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
-        jsonObject.put(BaseEntity.PARENT_ID, getId());
+    public OstTokenHolder initTokenHolder(JSONObject jsonObject, @NonNull TaskCallback callback) throws JSONException {
+        jsonObject.put(OstBaseEntity.PARENT_ID, getId());
         return ModelFactory.getTokenHolderModel().initTokenHolder(jsonObject, callback);
     }
 
-    public TokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException {
+    public OstTokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException {
         return initTokenHolder(jsonObject, new TaskCallback() {
         });
     }
 
-    public TokenHolder getTokenHolder() {
+    public OstTokenHolder getTokenHolder() {
         return ModelFactory.getTokenHolderModel().getTokenHolderById(getTokenHolderId());
     }
 
@@ -122,7 +122,7 @@ public class User extends BaseEntity {
         this.multiSigId = multiSigId;
     }
 
-    public MultiSig getMultiSig() {
+    public OstDeviceManager getMultiSig() {
         return ModelFactory.getMultiSigModel().getMultiSigById(getMultiSigId());
     }
 
@@ -131,10 +131,10 @@ public class User extends BaseEntity {
         super.updateJSON();
         try {
             JSONObject jsonObject = new JSONObject(getData());
-            jsonObject.put(User.MULTI_SIG_ID, getMultiSigId());
-            jsonObject.put(User.NAME, getName());
-            jsonObject.put(User.TOKEN_HOLDER_ID, getTokenHolderId());
-            jsonObject.put(User.TOKEN_ID, getTokenId());
+            jsonObject.put(OstUser.MULTI_SIG_ID, getMultiSigId());
+            jsonObject.put(OstUser.NAME, getName());
+            jsonObject.put(OstUser.TOKEN_HOLDER_ID, getTokenHolderId());
+            jsonObject.put(OstUser.TOKEN_ID, getTokenId());
             setData(jsonObject.toString());
         } catch (JSONException jsonException) {
             Log.e(TAG, "Unexpected exception while parsing JSON String");

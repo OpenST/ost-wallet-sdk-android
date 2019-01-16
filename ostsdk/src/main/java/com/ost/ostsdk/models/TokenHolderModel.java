@@ -1,23 +1,23 @@
 package com.ost.ostsdk.models;
 
-import com.ost.ostsdk.models.entities.TokenHolder;
+import com.ost.ostsdk.models.entities.OstTokenHolder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface TokenHolderModel {
 
-    void insertTokenHolder(TokenHolder tokenHolder, TaskCallback callback);
+    void insertTokenHolder(OstTokenHolder ostTokenHolder, TaskCallback callback);
 
-    void insertAllTokenHolders(TokenHolder[] tokenHolders, TaskCallback callback);
+    void insertAllTokenHolders(OstTokenHolder[] ostTokenHolders, TaskCallback callback);
 
     void deleteTokenHolder(String id, TaskCallback callback);
 
-    TokenHolder[] getTokenHoldersByIds(String[] ids);
+    OstTokenHolder[] getTokenHoldersByIds(String[] ids);
 
-    TokenHolder getTokenHolderById(String id);
+    OstTokenHolder getTokenHolderById(String id);
 
     void deleteAllTokenHolders(TaskCallback callback);
 
-    TokenHolder initTokenHolder(JSONObject jsonObject, TaskCallback callback) throws JSONException;
+    OstTokenHolder initTokenHolder(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 }

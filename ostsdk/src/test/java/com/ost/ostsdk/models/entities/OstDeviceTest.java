@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class MultiSigWalletTest {
+public class OstDeviceTest {
 
     @Test
     public void testMultiSigWalletInvalidInsertion() throws JSONException {
@@ -16,16 +16,16 @@ public class MultiSigWalletTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any MultiSigWallet  attribute
+        //Test without any OstDevice  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
+        jsonObject.put(OstBaseEntity.ID, "ID");
         testMultiSigWalletJsonException(jsonObject);
 
-        //Test Id with partial MultiSigWallet attribute
+        //Test Id with partial OstDevice attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(MultiSigWallet.ADDRESS, "0x232");
-        jsonObject.put(MultiSigWallet.STATUS, "status");
+        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstDevice.ADDRESS, "0x232");
+        jsonObject.put(OstDevice.STATUS, "status");
         testMultiSigWalletJsonException(jsonObject);
     }
 
@@ -35,26 +35,26 @@ public class MultiSigWalletTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any ExecutableRule  attribute
+        //Test without any OstExecutableRule  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(BaseEntity.ID, "ID");
-        jsonObject.put(MultiSigWallet.ADDRESS, "0x2901239");
-        jsonObject.put(MultiSigWallet.MULTI_SIG_ID, "123");
-        jsonObject.put(MultiSigWallet.STATUS, "status");
+        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstDevice.ADDRESS, "0x2901239");
+        jsonObject.put(OstDevice.MULTI_SIG_ID, "123");
+        jsonObject.put(OstDevice.STATUS, "status");
 
 
-        MultiSigWallet multiSigWallet = new MultiSigWallet(jsonObject);
-        assertEquals("0x2901239", multiSigWallet.getAddress());
-        assertEquals("status", multiSigWallet.getStatus());
-        assertEquals("123", multiSigWallet.getMultiSigId());
-        assertEquals("ID", multiSigWallet.getId());
+        OstDevice ostDevice = new OstDevice(jsonObject);
+        assertEquals("0x2901239", ostDevice.getAddress());
+        assertEquals("status", ostDevice.getStatus());
+        assertEquals("123", ostDevice.getMultiSigId());
+        assertEquals("ID", ostDevice.getId());
 
     }
 
 
     private void testMultiSigWalletJsonException(JSONObject jsonObject) {
         try {
-            MultiSigWallet multiSigWallet = new MultiSigWallet(jsonObject);
+            OstDevice ostDevice = new OstDevice(jsonObject);
             fail();
         } catch (Exception ex) {
             assertTrue(true);
@@ -63,7 +63,7 @@ public class MultiSigWalletTest {
 
     private void testMultiSigWalletJsonWithNoException(JSONObject jsonObject) {
         try {
-            MultiSigWallet multiSigWallet = new MultiSigWallet(jsonObject);
+            OstDevice ostDevice = new OstDevice(jsonObject);
             assertTrue(true);
         } catch (Exception ex) {
             fail();

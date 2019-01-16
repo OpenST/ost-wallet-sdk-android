@@ -5,7 +5,7 @@ import com.ost.ostsdk.database.daos.BaseDao;
 import com.ost.ostsdk.database.daos.TokenHolderDao;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.TokenHolderModel;
-import com.ost.ostsdk.models.entities.TokenHolder;
+import com.ost.ostsdk.models.entities.OstTokenHolder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,13 +27,13 @@ class TokenHolderModelRepository extends BaseModelCacheRepository implements Tok
     }
 
     @Override
-    public void insertTokenHolder(TokenHolder tokenHolder, TaskCallback callback) {
-        super.insert(tokenHolder, callback);
+    public void insertTokenHolder(OstTokenHolder ostTokenHolder, TaskCallback callback) {
+        super.insert(ostTokenHolder, callback);
     }
 
     @Override
-    public void insertAllTokenHolders(TokenHolder[] tokenHolders, TaskCallback callback) {
-        super.insertAll(tokenHolders, callback);
+    public void insertAllTokenHolders(OstTokenHolder[] ostTokenHolders, TaskCallback callback) {
+        super.insertAll(ostTokenHolders, callback);
     }
 
     @Override
@@ -42,13 +42,13 @@ class TokenHolderModelRepository extends BaseModelCacheRepository implements Tok
     }
 
     @Override
-    public TokenHolder[] getTokenHoldersByIds(String[] ids) {
-        return (TokenHolder[]) super.getByIds(ids);
+    public OstTokenHolder[] getTokenHoldersByIds(String[] ids) {
+        return (OstTokenHolder[]) super.getByIds(ids);
     }
 
     @Override
-    public TokenHolder getTokenHolderById(String id) {
-        return (TokenHolder) super.getById(id);
+    public OstTokenHolder getTokenHolderById(String id) {
+        return (OstTokenHolder) super.getById(id);
     }
 
     @Override
@@ -57,9 +57,9 @@ class TokenHolderModelRepository extends BaseModelCacheRepository implements Tok
     }
 
     @Override
-    public TokenHolder initTokenHolder(JSONObject jsonObject, TaskCallback callback) throws JSONException {
-        TokenHolder tokenHolder = new TokenHolder(jsonObject);
-        insert(tokenHolder, callback);
-        return tokenHolder;
+    public OstTokenHolder initTokenHolder(JSONObject jsonObject, TaskCallback callback) throws JSONException {
+        OstTokenHolder ostTokenHolder = new OstTokenHolder(jsonObject);
+        insert(ostTokenHolder, callback);
+        return ostTokenHolder;
     }
 }
