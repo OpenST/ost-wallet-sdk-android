@@ -1,8 +1,8 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.daos.BaseDao;
-import com.ost.ostsdk.database.daos.TokenHolderSessionDao;
+import com.ost.ostsdk.database.daos.OstBaseDao;
+import com.ost.ostsdk.database.daos.OstSessionDao;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.TokenHolderSessionModel;
 import com.ost.ostsdk.models.entities.OstTokenHolderSession;
@@ -13,12 +13,12 @@ import org.json.JSONObject;
 class TokenHolderSessionModelRepository extends BaseModelCacheRepository implements TokenHolderSessionModel {
 
     private static final int LRU_CACHE_SIZE = 5;
-    private TokenHolderSessionDao mTokenHolderSessionDao;
+    private OstSessionDao mOstSessionDao;
 
     TokenHolderSessionModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
-        mTokenHolderSessionDao = db.tokenHolderSessionDao();
+        mOstSessionDao = db.tokenHolderSessionDao();
     }
 
 
@@ -65,7 +65,7 @@ class TokenHolderSessionModelRepository extends BaseModelCacheRepository impleme
     }
 
     @Override
-    BaseDao getModel() {
-        return mTokenHolderSessionDao;
+    OstBaseDao getModel() {
+        return mOstSessionDao;
     }
 }

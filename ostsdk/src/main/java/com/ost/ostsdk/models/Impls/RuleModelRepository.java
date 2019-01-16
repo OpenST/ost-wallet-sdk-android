@@ -1,8 +1,8 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.daos.BaseDao;
-import com.ost.ostsdk.database.daos.RuleDao;
+import com.ost.ostsdk.database.daos.OstBaseDao;
+import com.ost.ostsdk.database.daos.OstRuleDao;
 import com.ost.ostsdk.models.RuleModel;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.OstRule;
@@ -13,12 +13,12 @@ import org.json.JSONObject;
 class RuleModelRepository extends BaseModelCacheRepository implements RuleModel {
 
     private static final int LRU_CACHE_SIZE = 5;
-    private RuleDao mRuleDao;
+    private OstRuleDao mOstRuleDao;
 
     RuleModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
-        mRuleDao = db.ruleDao();
+        mOstRuleDao = db.ruleDao();
     }
 
 
@@ -60,7 +60,7 @@ class RuleModelRepository extends BaseModelCacheRepository implements RuleModel 
     }
 
     @Override
-    BaseDao getModel() {
-        return mRuleDao;
+    OstBaseDao getModel() {
+        return mOstRuleDao;
     }
 }

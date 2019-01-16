@@ -1,8 +1,8 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.daos.BaseDao;
-import com.ost.ostsdk.database.daos.ExecutableRuleDao;
+import com.ost.ostsdk.database.daos.OstBaseDao;
+import com.ost.ostsdk.database.daos.OstExecutableRuleDao;
 import com.ost.ostsdk.models.ExecutableRuleModel;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.OstExecutableRule;
@@ -13,12 +13,12 @@ import org.json.JSONObject;
 class ExecutableRuleModelRepository extends BaseModelCacheRepository implements ExecutableRuleModel {
 
     private static final int LRU_CACHE_SIZE = 5;
-    private ExecutableRuleDao mExecutableRuleDao;
+    private OstExecutableRuleDao mOstExecutableRuleDao;
 
     ExecutableRuleModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
-        mExecutableRuleDao = db.executableRuleDao();
+        mOstExecutableRuleDao = db.executableRuleDao();
     }
 
 
@@ -60,7 +60,7 @@ class ExecutableRuleModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    BaseDao getModel() {
-        return mExecutableRuleDao;
+    OstBaseDao getModel() {
+        return mOstExecutableRuleDao;
     }
 }

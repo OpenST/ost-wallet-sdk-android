@@ -2,7 +2,7 @@ package com.ost.ostsdk.models.Impls;
 
 import android.util.Log;
 
-import com.ost.ostsdk.database.daos.BaseDao;
+import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.utils.DispatchAsync;
@@ -78,7 +78,7 @@ abstract class BaseModelRepository {
         getModel().deleteAll();
     }
 
-    abstract BaseDao getModel();
+    abstract OstBaseDao getModel();
 
     protected OstBaseEntity[] getByParentId(String id) {
         return processEntity(getModel().getByParentId(id));

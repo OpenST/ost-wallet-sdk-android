@@ -5,15 +5,15 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-import com.ost.ostsdk.database.daos.ExecutableRuleDao;
-import com.ost.ostsdk.database.daos.MultiSigDao;
-import com.ost.ostsdk.database.daos.MultiSigOperationDao;
-import com.ost.ostsdk.database.daos.MultiSigWalletDao;
-import com.ost.ostsdk.database.daos.RuleDao;
-import com.ost.ostsdk.database.daos.TokenDao;
-import com.ost.ostsdk.database.daos.TokenHolderDao;
-import com.ost.ostsdk.database.daos.TokenHolderSessionDao;
-import com.ost.ostsdk.database.daos.UserDao;
+import com.ost.ostsdk.database.daos.OstDeviceOperationDao;
+import com.ost.ostsdk.database.daos.OstExecutableRuleDao;
+import com.ost.ostsdk.database.daos.OstDeviceManagerDao;
+import com.ost.ostsdk.database.daos.OstDeviceDao;
+import com.ost.ostsdk.database.daos.OstRuleDao;
+import com.ost.ostsdk.database.daos.OstTokenDao;
+import com.ost.ostsdk.database.daos.OstTokenHolderDao;
+import com.ost.ostsdk.database.daos.OstSessionDao;
+import com.ost.ostsdk.database.daos.OstUserDao;
 import com.ost.ostsdk.models.entities.OstDevice;
 import com.ost.ostsdk.models.entities.OstDeviceManager;
 import com.ost.ostsdk.models.entities.OstDeviceOperation;
@@ -31,23 +31,23 @@ public abstract class OstSdkDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "ostsdk_db";
 
-    public abstract UserDao userDao();
+    public abstract OstUserDao userDao();
 
-    public abstract RuleDao ruleDao();
+    public abstract OstRuleDao ruleDao();
 
-    public abstract TokenDao tokenDao();
+    public abstract OstTokenDao tokenDao();
 
-    public abstract ExecutableRuleDao executableRuleDao();
+    public abstract OstExecutableRuleDao executableRuleDao();
 
-    public abstract MultiSigOperationDao multiSigOperationDao();
+    public abstract OstDeviceOperationDao multiSigOperationDao();
 
-    public abstract TokenHolderDao tokenHolderDao();
+    public abstract OstTokenHolderDao tokenHolderDao();
 
-    public abstract MultiSigWalletDao multiSigWalletDao();
+    public abstract OstDeviceDao multiSigWalletDao();
 
-    public abstract MultiSigDao multiSigDao();
+    public abstract OstDeviceManagerDao multiSigDao();
 
-    public abstract TokenHolderSessionDao tokenHolderSessionDao();
+    public abstract OstSessionDao tokenHolderSessionDao();
 
     private static volatile OstSdkDatabase INSTANCE;
 

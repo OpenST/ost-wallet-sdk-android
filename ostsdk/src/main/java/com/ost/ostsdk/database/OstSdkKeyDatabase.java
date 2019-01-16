@@ -5,7 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-import com.ost.ostsdk.database.daos.SecureKeyDao;
+import com.ost.ostsdk.database.daos.OstSecureKeyDao;
 import com.ost.ostsdk.models.entities.OstSecureKey;
 
 @Database(entities = {OstSecureKey.class}, version = 1)
@@ -13,7 +13,7 @@ public abstract class OstSdkKeyDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "ostsdkkey_db";
 
-    public abstract SecureKeyDao secureKeyDao();
+    public abstract OstSecureKeyDao secureKeyDao();
 
     private static volatile OstSdkKeyDatabase INSTANCE;
 

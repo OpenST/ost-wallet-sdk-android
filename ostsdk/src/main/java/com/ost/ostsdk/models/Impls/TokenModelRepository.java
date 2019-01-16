@@ -1,8 +1,8 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.daos.BaseDao;
-import com.ost.ostsdk.database.daos.TokenDao;
+import com.ost.ostsdk.database.daos.OstBaseDao;
+import com.ost.ostsdk.database.daos.OstTokenDao;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.TokenModel;
 import com.ost.ostsdk.models.entities.OstToken;
@@ -12,17 +12,17 @@ import org.json.JSONObject;
 
 class TokenModelRepository extends BaseModelCacheRepository implements TokenModel {
 
-    private TokenDao mTokenDao;
+    private OstTokenDao mOstTokenDao;
 
     TokenModelRepository() {
         super(5);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
-        mTokenDao = db.tokenDao();
+        mOstTokenDao = db.tokenDao();
     }
 
     @Override
-    BaseDao getModel() {
-        return mTokenDao;
+    OstBaseDao getModel() {
+        return mOstTokenDao;
     }
 
 

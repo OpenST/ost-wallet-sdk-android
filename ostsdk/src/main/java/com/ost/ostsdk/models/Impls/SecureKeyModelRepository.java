@@ -1,7 +1,7 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkKeyDatabase;
-import com.ost.ostsdk.database.daos.SecureKeyDao;
+import com.ost.ostsdk.database.daos.OstSecureKeyDao;
 import com.ost.ostsdk.models.SecureKeyModel;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.OstSecureKey;
@@ -9,12 +9,12 @@ import com.ost.ostsdk.utils.DispatchAsync;
 
 public class SecureKeyModelRepository implements SecureKeyModel {
 
-    private SecureKeyDao mSecureKeyDao;
+    private OstSecureKeyDao mOstSecureKeyDao;
 
     public SecureKeyModelRepository() {
         super();
         OstSdkKeyDatabase db = OstSdkKeyDatabase.getDatabase();
-        mSecureKeyDao = db.secureKeyDao();
+        mOstSecureKeyDao = db.secureKeyDao();
     }
 
 
@@ -99,7 +99,7 @@ public class SecureKeyModelRepository implements SecureKeyModel {
         return ostSecureKey;
     }
 
-    SecureKeyDao getModel() {
-        return mSecureKeyDao;
+    OstSecureKeyDao getModel() {
+        return mOstSecureKeyDao;
     }
 }

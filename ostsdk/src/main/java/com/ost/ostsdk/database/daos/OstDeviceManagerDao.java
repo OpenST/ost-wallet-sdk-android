@@ -8,7 +8,7 @@ import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstDeviceManager;
 
 @Dao
-public abstract class MultiSigDao implements BaseDao {
+public abstract class OstDeviceManagerDao implements OstBaseDao {
 
     public void insert(OstBaseEntity baseEntity) {
         this.insert((OstDeviceManager) baseEntity);

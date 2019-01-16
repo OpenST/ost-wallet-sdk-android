@@ -1,8 +1,8 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.daos.BaseDao;
-import com.ost.ostsdk.database.daos.UserDao;
+import com.ost.ostsdk.database.daos.OstBaseDao;
+import com.ost.ostsdk.database.daos.OstUserDao;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.UserModel;
 import com.ost.ostsdk.models.entities.OstUser;
@@ -13,12 +13,12 @@ import org.json.JSONObject;
 class UserModelRepository extends BaseModelCacheRepository implements UserModel {
 
     private static final int LRU_CACHE_SIZE = 5;
-    private UserDao mUserDao;
+    private OstUserDao mOstUserDao;
 
     UserModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
-        mUserDao = db.userDao();
+        mOstUserDao = db.userDao();
     }
 
 
@@ -73,8 +73,8 @@ class UserModelRepository extends BaseModelCacheRepository implements UserModel 
     }
 
     @Override
-    BaseDao getModel() {
-        return mUserDao;
+    OstBaseDao getModel() {
+        return mOstUserDao;
     }
 
 

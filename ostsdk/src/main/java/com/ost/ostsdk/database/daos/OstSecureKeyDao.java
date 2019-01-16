@@ -7,7 +7,7 @@ import android.arch.persistence.room.Query;
 import com.ost.ostsdk.models.entities.OstSecureKey;
 
 @Dao
-public interface SecureKeyDao {
+public interface OstSecureKeyDao {
 
     @Insert
     void insert(OstSecureKey ostSecureKey);

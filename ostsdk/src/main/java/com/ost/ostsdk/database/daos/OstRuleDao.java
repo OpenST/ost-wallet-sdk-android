@@ -8,7 +8,7 @@ import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstRule;
 
 @Dao
-public abstract class RuleDao implements BaseDao {
+public abstract class OstRuleDao implements OstBaseDao {
 
     public void insert(OstBaseEntity baseEntity) {
         this.insert((OstRule) baseEntity);

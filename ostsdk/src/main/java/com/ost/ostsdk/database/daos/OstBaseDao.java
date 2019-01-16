@@ -2,7 +2,7 @@ package com.ost.ostsdk.database.daos;
 
 import com.ost.ostsdk.models.entities.OstBaseEntity;
 
-public interface BaseDao {
+public interface OstBaseDao {
     void insert(OstBaseEntity baseEntity);
 
     void insertAll(OstBaseEntity... baseEntity);

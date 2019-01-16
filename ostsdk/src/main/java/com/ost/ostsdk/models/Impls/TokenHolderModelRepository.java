@@ -1,8 +1,8 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.daos.BaseDao;
-import com.ost.ostsdk.database.daos.TokenHolderDao;
+import com.ost.ostsdk.database.daos.OstBaseDao;
+import com.ost.ostsdk.database.daos.OstTokenHolderDao;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.TokenHolderModel;
 import com.ost.ostsdk.models.entities.OstTokenHolder;
@@ -13,17 +13,17 @@ import org.json.JSONObject;
 class TokenHolderModelRepository extends BaseModelCacheRepository implements TokenHolderModel {
 
     private static final int LRU_CACHE_SIZE = 5;
-    private TokenHolderDao mTokenHolderDao;
+    private OstTokenHolderDao mOstTokenHolderDao;
 
     TokenHolderModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
-        mTokenHolderDao = db.tokenHolderDao();
+        mOstTokenHolderDao = db.tokenHolderDao();
     }
 
     @Override
-    BaseDao getModel() {
-        return mTokenHolderDao;
+    OstBaseDao getModel() {
+        return mOstTokenHolderDao;
     }
 
     @Override

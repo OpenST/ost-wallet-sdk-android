@@ -1,8 +1,8 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.daos.BaseDao;
-import com.ost.ostsdk.database.daos.MultiSigWalletDao;
+import com.ost.ostsdk.database.daos.OstBaseDao;
+import com.ost.ostsdk.database.daos.OstDeviceDao;
 import com.ost.ostsdk.models.MultiSigWalletModel;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.OstDevice;
@@ -13,12 +13,12 @@ import org.json.JSONObject;
 class MultiSigWalletModelRepository extends BaseModelCacheRepository implements MultiSigWalletModel {
 
     private static final int LRU_CACHE_SIZE = 5;
-    private MultiSigWalletDao mMultiSigWalletDao;
+    private OstDeviceDao mOstDeviceDao;
 
     MultiSigWalletModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
-        mMultiSigWalletDao = db.multiSigWalletDao();
+        mOstDeviceDao = db.multiSigWalletDao();
     }
 
 
@@ -65,7 +65,7 @@ class MultiSigWalletModelRepository extends BaseModelCacheRepository implements 
     }
 
     @Override
-    BaseDao getModel() {
-        return mMultiSigWalletDao;
+    OstBaseDao getModel() {
+        return mOstDeviceDao;
     }
 }

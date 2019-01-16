@@ -1,8 +1,8 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.daos.BaseDao;
-import com.ost.ostsdk.database.daos.MultiSigDao;
+import com.ost.ostsdk.database.daos.OstBaseDao;
+import com.ost.ostsdk.database.daos.OstDeviceManagerDao;
 import com.ost.ostsdk.models.MultiSigModel;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.OstDeviceManager;
@@ -13,12 +13,12 @@ import org.json.JSONObject;
 class MultiSigModelRepository extends BaseModelCacheRepository implements MultiSigModel {
 
     private static final int LRU_CACHE_SIZE = 5;
-    private MultiSigDao mMultiSigDao;
+    private OstDeviceManagerDao mOstDeviceManagerDao;
 
     MultiSigModelRepository() {
         super(LRU_CACHE_SIZE);
         OstSdkDatabase db = OstSdkDatabase.getDatabase();
-        mMultiSigDao = db.multiSigDao();
+        mOstDeviceManagerDao = db.multiSigDao();
     }
 
 
@@ -60,7 +60,7 @@ class MultiSigModelRepository extends BaseModelCacheRepository implements MultiS
     }
 
     @Override
-    BaseDao getModel() {
-        return mMultiSigDao;
+    OstBaseDao getModel() {
+        return mOstDeviceManagerDao;
     }
 }

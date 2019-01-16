@@ -8,7 +8,7 @@ import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstDevice;
 
 @Dao
-public abstract class MultiSigWalletDao implements BaseDao {
+public abstract class OstDeviceDao implements OstBaseDao {
 
     public void insert(OstBaseEntity baseEntity) {
         this.insert((OstDevice) baseEntity);

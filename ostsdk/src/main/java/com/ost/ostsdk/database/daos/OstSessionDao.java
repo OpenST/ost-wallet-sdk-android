@@ -8,7 +8,7 @@ import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstTokenHolderSession;
 
 @Dao
-public abstract class TokenHolderSessionDao implements BaseDao {
+public abstract class OstSessionDao implements OstBaseDao {
 
     public void insert(OstBaseEntity baseEntity) {
         this.insert((OstTokenHolderSession) baseEntity);

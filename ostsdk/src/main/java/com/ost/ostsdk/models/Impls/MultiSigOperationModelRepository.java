@@ -1,8 +1,8 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.database.OstSdkDatabase;
-import com.ost.ostsdk.database.daos.BaseDao;
-import com.ost.ostsdk.database.daos.MultiSigOperationDao;
+import com.ost.ostsdk.database.daos.OstBaseDao;
+import com.ost.ostsdk.database.daos.OstDeviceOperationDao;
 import com.ost.ostsdk.models.MultiSigOperationModel;
 import com.ost.ostsdk.models.TaskCallback;
 import com.ost.ostsdk.models.entities.OstDeviceOperation;
@@ -13,7 +13,7 @@ import org.json.JSONObject;
 class MultiSigOperationModelRepository extends BaseModelCacheRepository implements MultiSigOperationModel {
 
     private static final int LRU_CACHE_SIZE = 5;
-    private MultiSigOperationDao mMultiSigOperation;
+    private OstDeviceOperationDao mMultiSigOperation;
 
     MultiSigOperationModelRepository() {
         super(LRU_CACHE_SIZE);
@@ -60,7 +60,7 @@ class MultiSigOperationModelRepository extends BaseModelCacheRepository implemen
     }
 
     @Override
-    BaseDao getModel() {
+    OstBaseDao getModel() {
         return mMultiSigOperation;
     }
 }
