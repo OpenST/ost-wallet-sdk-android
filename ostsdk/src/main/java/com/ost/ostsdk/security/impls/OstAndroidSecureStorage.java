@@ -9,7 +9,7 @@ import android.security.keystore.KeyProperties;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.ost.ostsdk.security.SecureStorage;
+import com.ost.ostsdk.security.OstSecureStorage;
 
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
@@ -28,9 +28,9 @@ import javax.crypto.Cipher;
 import javax.security.auth.x500.X500Principal;
 
 
-public class AndroidSecureStorage implements SecureStorage {
+public class OstAndroidSecureStorage implements OstSecureStorage {
 
-    private static final String TAG = AndroidSecureStorage.class.getName();
+    private static final String TAG = OstAndroidSecureStorage.class.getName();
     private static final String ANDROID_KEY_STORE = "AndroidKeyStore";
     private static final String TRANSFORMATION_ASYMMETRIC = "RSA/ECB/PKCS1Padding";
     private static final String RSA = "RSA";
@@ -39,7 +39,7 @@ public class AndroidSecureStorage implements SecureStorage {
 
     private KeyStore mKeyStore;
 
-    private AndroidSecureStorage(@NonNull Context context, @NonNull String keyAlias) {
+    private OstAndroidSecureStorage(@NonNull Context context, @NonNull String keyAlias) {
         this.mContext = context.getApplicationContext();
         this.mKeyAlias = keyAlias;
         try {
@@ -54,8 +54,8 @@ public class AndroidSecureStorage implements SecureStorage {
         }
     }
 
-    public static SecureStorage getInstance(@NonNull Context context, @NonNull String keyAlias) {
-        return new AndroidSecureStorage(context, keyAlias);
+    public static OstSecureStorage getInstance(@NonNull Context context, @NonNull String keyAlias) {
+        return new OstAndroidSecureStorage(context, keyAlias);
     }
 
     @Override

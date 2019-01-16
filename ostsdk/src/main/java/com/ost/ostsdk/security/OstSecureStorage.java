@@ -1,6 +1,6 @@
 package com.ost.ostsdk.security;
 
-public interface SecureStorage {
+public interface OstSecureStorage {
 
     /**
      * Stores a data and returns an id to decrypt the key again

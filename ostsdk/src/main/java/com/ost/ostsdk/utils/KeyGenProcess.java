@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
-import com.ost.ostsdk.security.Crypto;
-import com.ost.ostsdk.security.impls.AndroidSecureStorage;
+import com.ost.ostsdk.security.OstCrypto;
+import com.ost.ostsdk.security.impls.OstAndroidSecureStorage;
 import com.ost.ostsdk.security.impls.OstSdkCrypto;
 
 import org.web3j.crypto.Credentials;
@@ -20,19 +20,19 @@ public class KeyGenProcess {
 
     public String execute(String userId) {
 
-        Crypto ostSdkCrypto = OstSdkCrypto.getInstance();
+        OstCrypto ostSdkOstCrypto = OstSdkCrypto.getInstance();
 
         try {
 
             Log.d(TAG, "Generating Ethereum Keys");
-            ECKeyPair ecKeyPair = ostSdkCrypto.genECKey(userId);
+            ECKeyPair ecKeyPair = ostSdkOstCrypto.genECKey(userId);
             Credentials credentials = Credentials.create(ecKeyPair);
 
             Log.d(TAG, "Extracting Wallet Key");
             byte[] walletKey = credentials.getEcKeyPair().getPrivateKey().toByteArray();
 
             Log.d(TAG, "Encrypting through TEE");
-            byte[] key = AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).encrypt(walletKey);
+            byte[] key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), userId).encrypt(walletKey);
 
             Log.d(TAG, "Inserting encrypted key from TEE into DB");
             new OstSecureKeyModelRepository().initSecureKey(credentials.getAddress(), key);

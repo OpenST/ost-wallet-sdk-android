@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
-import com.ost.ostsdk.security.Crypto;
-import com.ost.ostsdk.security.impls.AndroidSecureStorage;
+import com.ost.ostsdk.security.OstCrypto;
+import com.ost.ostsdk.security.impls.OstAndroidSecureStorage;
 import com.ost.ostsdk.security.impls.OstSdkCrypto;
 
 import org.json.JSONObject;
@@ -50,35 +50,35 @@ public class AdditionalDeviceProvisioningFlow {
         String userId = "", passPhrase = "", scyrptSalt = "", hkdfSalt = "";
 
         Log.d(TAG, "Generate encrypted keys");
-        Crypto ostSdkCrypto = OstSdkCrypto.getInstance();
+        OstCrypto ostSdkOstCrypto = OstSdkCrypto.getInstance();
 
         byte[] encryptedKey;
         try {
 
             Log.d(TAG, "Generating Ethereum Keys");
-            ECKeyPair ecKeyPair = ostSdkCrypto.genECKey(passPhrase/* Todo:: Seed Need to be identified*/);
+            ECKeyPair ecKeyPair = ostSdkOstCrypto.genECKey(passPhrase/* Todo:: Seed Need to be identified*/);
             Credentials credentials = Credentials.create(ecKeyPair);
 
             Log.d(TAG, "Extracting Wallet Key");
             byte[] walletKey = credentials.getEcKeyPair().getPrivateKey().toByteArray();
 
             Log.d(TAG, "Encrypting through TEE");
-            byte[] key = AndroidSecureStorage.getInstance(OstSdk.getContext(), userId).encrypt(walletKey);
+            byte[] key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), userId).encrypt(walletKey);
 
             Log.d(TAG, "Inserting encrypted key from TEE into DB");
             new OstSecureKeyModelRepository().initSecureKey(credentials.getAddress(), key);
 
             Log.d(TAG, "Generating SCyrpt key using passPhrase and salt");
-            byte[] scryptKey = ostSdkCrypto.genSCryptKey(passPhrase.getBytes(), scyrptSalt.getBytes());
+            byte[] scryptKey = ostSdkOstCrypto.genSCryptKey(passPhrase.getBytes(), scyrptSalt.getBytes());
 
             Log.d(TAG, "Generating HKDF key from SCyrpt Key");
-            byte[] hkdfKey = ostSdkCrypto.genHKDFKey(scryptKey, hkdfSalt.getBytes());
+            byte[] hkdfKey = ostSdkOstCrypto.genHKDFKey(scryptKey, hkdfSalt.getBytes());
 
             Log.d(TAG, "Generating hkdf hash as AEAD from HKDF Key");
-            byte[] hkdfHash = ostSdkCrypto.genDigest(hkdfKey);
+            byte[] hkdfHash = ostSdkOstCrypto.genDigest(hkdfKey);
 
             Log.d(TAG, "Encrypting Wallet key from scrypt key");
-            encryptedKey = ostSdkCrypto.aesEncryption(scryptKey, walletKey, hkdfHash);
+            encryptedKey = ostSdkOstCrypto.aesEncryption(scryptKey, walletKey, hkdfHash);
         } catch (Exception exception) {
             throw new RuntimeException("Not able to encrypt wallet key :: Reason :" + exception.getMessage());
         }

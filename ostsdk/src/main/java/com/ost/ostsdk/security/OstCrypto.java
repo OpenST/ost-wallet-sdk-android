@@ -6,7 +6,7 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 
-public interface Crypto {
+public interface OstCrypto {
     byte[] genSCryptKey(byte[] feed, byte[] salt);
 
     byte[] genHKDFKey(byte[] feed, byte[] salt);

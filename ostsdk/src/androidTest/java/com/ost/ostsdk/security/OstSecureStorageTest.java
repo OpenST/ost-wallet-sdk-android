@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.ost.ostsdk.security.impls.AndroidSecureStorage;
+import com.ost.ostsdk.security.impls.OstAndroidSecureStorage;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class SecureStorageTest {
+public class OstSecureStorageTest {
     private static Context mAppContext;
 
     @BeforeClass
@@ -25,10 +25,10 @@ public class SecureStorageTest {
     public void testDataConsistency() {
         // Context of the app under test.
 
-        SecureStorage secureStorage = AndroidSecureStorage.getInstance(mAppContext, "test");
+        OstSecureStorage ostSecureStorage = OstAndroidSecureStorage.getInstance(mAppContext, "test");
         byte[] rawData = "Test".getBytes();
-        byte[] encryptedData = secureStorage.encrypt(rawData);
-        byte[] decryptedRawData = secureStorage.decrypt(encryptedData);
+        byte[] encryptedData = ostSecureStorage.encrypt(rawData);
+        byte[] decryptedRawData = ostSecureStorage.decrypt(encryptedData);
         String testString = new String(decryptedRawData);
         assertEquals("Test", testString);
     }

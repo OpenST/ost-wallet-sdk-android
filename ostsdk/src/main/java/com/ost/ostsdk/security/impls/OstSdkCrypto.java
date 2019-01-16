@@ -1,6 +1,6 @@
 package com.ost.ostsdk.security.impls;
 
-import com.ost.ostsdk.security.Crypto;
+import com.ost.ostsdk.security.OstCrypto;
 
 import org.spongycastle.crypto.digests.KeccakDigest;
 import org.spongycastle.crypto.digests.SHA256Digest;
@@ -22,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import static org.web3j.crypto.Hash.sha256;
 
-public class OstSdkCrypto implements Crypto {
+public class OstSdkCrypto implements OstCrypto {
 
     private static final String ALGORITHM = "AES";
     private static final String ALGORITHM_NAME = "AES/GCM/NoPadding";
@@ -86,7 +86,7 @@ public class OstSdkCrypto implements Crypto {
         return data;
     }
 
-    public static Crypto getInstance() {
+    public static OstCrypto getInstance() {
         return new OstSdkCrypto();
     }
 
