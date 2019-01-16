@@ -1,25 +1,25 @@
 package com.ost.ostsdk.models;
 
-import com.ost.ostsdk.models.entities.OstTokenHolderSession;
+import com.ost.ostsdk.models.entities.OstSession;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface TokenHolderSessionModel {
 
-    void insertTokenHolderSession(OstTokenHolderSession ostTokenHolderSession, TaskCallback callback);
+    void insertTokenHolderSession(OstSession ostSession, TaskCallback callback);
 
-    void insertAllTokenHolderSessions(OstTokenHolderSession[] ostTokenHolderSession, TaskCallback callback);
+    void insertAllTokenHolderSessions(OstSession[] ostSession, TaskCallback callback);
 
     void deleteTokenHolderSession(String id, TaskCallback callback);
 
-    OstTokenHolderSession[] getTokenHolderSessionsByIds(String[] ids);
+    OstSession[] getTokenHolderSessionsByIds(String[] ids);
 
-    OstTokenHolderSession getTokenHolderSessionById(String id);
+    OstSession getTokenHolderSessionById(String id);
 
     void deleteAllTokenHolderSessions(TaskCallback callback);
 
-    OstTokenHolderSession initTokenHolderSession(JSONObject jsonObject, TaskCallback callback) throws JSONException;
+    OstSession initTokenHolderSession(JSONObject jsonObject, TaskCallback callback) throws JSONException;
 
-    OstTokenHolderSession[] getTokenHolderSessionsByParentId(String id);
+    OstSession[] getTokenHolderSessionsByParentId(String id);
 }

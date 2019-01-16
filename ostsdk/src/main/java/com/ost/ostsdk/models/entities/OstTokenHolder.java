@@ -92,10 +92,10 @@ public class OstTokenHolder extends OstBaseEntity {
         this.executeRuleCallPrefix = executeRuleCallPrefix;
     }
 
-    public OstTokenHolderSession getDeviceTokenHolderSession() throws Exception {
-        OstTokenHolderSession deviceSession = null;
-        OstTokenHolderSession sessions[] = ModelFactory.getTokenHolderSession().getTokenHolderSessionsByParentId(getId());
-        for (OstTokenHolderSession session : sessions) {
+    public OstSession getDeviceTokenHolderSession() throws Exception {
+        OstSession deviceSession = null;
+        OstSession sessions[] = ModelFactory.getTokenHolderSession().getTokenHolderSessionsByParentId(getId());
+        for (OstSession session : sessions) {
             if (null != new SecureKeyModelRepository().getById(session.getAddress())) {
                 deviceSession = session;
                 break;

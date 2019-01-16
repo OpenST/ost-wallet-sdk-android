@@ -23,7 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(AndroidJUnit4.class)
-public class OstTokenHolderSessionTest {
+public class OstSessionTest {
 
     private static Context mAppContext;
 
@@ -60,16 +60,16 @@ public class OstTokenHolderSessionTest {
         // Create Multi Sig
         OstDeviceManager ostDeviceManager = insertMultiSig(ostUser.getId(), "1", "1");
 
-        //Create OstTokenHolderSession
-        OstTokenHolderSession ostTokenHolderSession = insertTokenHolderSession(ostTokenHolder.getId(), "1", walletAddress);
+        //Create OstSession
+        OstSession ostSession = insertTokenHolderSession(ostTokenHolder.getId(), "1", walletAddress);
 
         ostUser = updateUserData(ostUser, ostDeviceManager, ostTokenHolder);
 
         ostUser = OstSdk.getUser("1");
         ostTokenHolder = ostUser.getTokenHolder();
-        ostTokenHolderSession = ostTokenHolder.getDeviceTokenHolderSession();
+        ostSession = ostTokenHolder.getDeviceTokenHolderSession();
 
-        JSONObject jsonObject = new OstTokenHolderSession.Transaction("0x5a85a1E5a749A76dDf378eC2A0a2Ac310ca86Ba8", "0xF281e85a0B992efA5fda4f52b35685dC5Ee67BEa")
+        JSONObject jsonObject = new OstSession.Transaction("0x5a85a1E5a749A76dDf378eC2A0a2Ac310ca86Ba8", "0xF281e85a0B992efA5fda4f52b35685dC5Ee67BEa")
                 .setValue(new BigInteger("1"))
                 .setGasPrice(new BigInteger("0"))
                 .setGas(new BigInteger("0"))
@@ -78,7 +78,7 @@ public class OstTokenHolderSessionTest {
                 .setNonce(new BigInteger("1"))
                 .toJSONObject();
 
-        String signature = ostTokenHolderSession.signTransaction(jsonObject, ostUser.getId());
+        String signature = ostSession.signTransaction(jsonObject, ostUser.getId());
 
         Assert.assertEquals(132, signature.length());
     }
@@ -100,22 +100,22 @@ public class OstTokenHolderSessionTest {
         return ostUser;
     }
 
-    private OstTokenHolderSession insertTokenHolderSession(String parentId, String tokenHolderSessionId, String walletAddress) throws JSONException, InterruptedException {
+    private OstSession insertTokenHolderSession(String parentId, String tokenHolderSessionId, String walletAddress) throws JSONException, InterruptedException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.PARENT_ID, parentId);
         jsonObject.put(OstBaseEntity.ID, tokenHolderSessionId);
-        jsonObject.put(OstTokenHolderSession.ADDRESS, walletAddress);
-        jsonObject.put(OstTokenHolderSession.NONCE, "1");
-        jsonObject.put(OstTokenHolderSession.SPENDING_LIMIT, "10000");
-        jsonObject.put(OstTokenHolderSession.REDEMPTION_LIMIT, "10000");
-        jsonObject.put(OstTokenHolderSession.EXPIRY_TIME, "100");
-        jsonObject.put(OstTokenHolderSession.BLOCK_HEIGHT, "100");
-        jsonObject.put(OstTokenHolderSession.TOKEN_HOLDER_ID, parentId);
+        jsonObject.put(OstSession.ADDRESS, walletAddress);
+        jsonObject.put(OstSession.NONCE, "1");
+        jsonObject.put(OstSession.SPENDING_LIMIT, "10000");
+        jsonObject.put(OstSession.REDEMPTION_LIMIT, "10000");
+        jsonObject.put(OstSession.EXPIRY_TIME, "100");
+        jsonObject.put(OstSession.BLOCK_HEIGHT, "100");
+        jsonObject.put(OstSession.TOKEN_HOLDER_ID, parentId);
         jsonObject.put(OstDevice.STATUS, OstDevice.CREATED_STATUS);
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstTokenHolderSession ostTokenHolderSession = ModelFactory.getTokenHolderSession().initTokenHolderSession(jsonObject, new TaskCallback() {
+        OstSession ostSession = ModelFactory.getTokenHolderSession().initTokenHolderSession(jsonObject, new TaskCallback() {
             @Override
             public void onSuccess() {
                 countDownLatch.countDown();
@@ -124,7 +124,7 @@ public class OstTokenHolderSessionTest {
 
         countDownLatch.await(5, TimeUnit.SECONDS);
 
-        return ostTokenHolderSession;
+        return ostSession;
     }
 
     private OstDeviceManager insertMultiSig(String parentId, String multiSigId, String tokenHolderId) throws JSONException, InterruptedException {

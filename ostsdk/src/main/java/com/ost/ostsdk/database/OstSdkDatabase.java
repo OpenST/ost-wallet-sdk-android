@@ -19,13 +19,13 @@ import com.ost.ostsdk.models.entities.OstDeviceManager;
 import com.ost.ostsdk.models.entities.OstDeviceOperation;
 import com.ost.ostsdk.models.entities.OstExecutableRule;
 import com.ost.ostsdk.models.entities.OstRule;
+import com.ost.ostsdk.models.entities.OstSession;
 import com.ost.ostsdk.models.entities.OstToken;
 import com.ost.ostsdk.models.entities.OstTokenHolder;
-import com.ost.ostsdk.models.entities.OstTokenHolderSession;
 import com.ost.ostsdk.models.entities.OstUser;
 
 @Database(entities = {OstUser.class, OstRule.class, OstToken.class, OstExecutableRule.class,
-        OstDeviceOperation.class, OstTokenHolder.class, OstTokenHolderSession.class,
+        OstDeviceOperation.class, OstTokenHolder.class, OstSession.class,
         OstDevice.class, OstDeviceManager.class}, version = 1)
 public abstract class OstSdkDatabase extends RoomDatabase {
 

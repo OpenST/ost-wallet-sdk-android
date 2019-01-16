@@ -21,8 +21,8 @@ import java.math.BigInteger;
 /**
  * EIP1077 Transaction Signing
  */
-@Entity(tableName = "token_holder_session")
-public class OstTokenHolderSession extends OstBaseEntity {
+@Entity(tableName = "session")
+public class OstSession extends OstBaseEntity {
 
     public static final String STATUS = "status";
     public static final String ADDRESS = "address";
@@ -51,41 +51,41 @@ public class OstTokenHolderSession extends OstBaseEntity {
     private String nonce;
 
 
-    public OstTokenHolderSession(JSONObject jsonObject) throws JSONException {
+    public OstSession(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
-    private OstTokenHolderSession(String jsonString) throws JSONException {
+    private OstSession(String jsonString) throws JSONException {
         super(new JSONObject(jsonString));
     }
 
-    public OstTokenHolderSession() {
+    public OstSession() {
     }
 
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(OstTokenHolderSession.STATUS) &&
-                jsonObject.has(OstTokenHolderSession.ADDRESS) &&
-                jsonObject.has(OstTokenHolderSession.TOKEN_HOLDER_ID) &&
-                jsonObject.has(OstTokenHolderSession.BLOCK_HEIGHT) &&
-                jsonObject.has(OstTokenHolderSession.EXPIRY_TIME) &&
-                jsonObject.has(OstTokenHolderSession.REDEMPTION_LIMIT) &&
-                jsonObject.has(OstTokenHolderSession.SPENDING_LIMIT) &&
-                jsonObject.has(OstTokenHolderSession.NONCE);
+                jsonObject.has(OstSession.STATUS) &&
+                jsonObject.has(OstSession.ADDRESS) &&
+                jsonObject.has(OstSession.TOKEN_HOLDER_ID) &&
+                jsonObject.has(OstSession.BLOCK_HEIGHT) &&
+                jsonObject.has(OstSession.EXPIRY_TIME) &&
+                jsonObject.has(OstSession.REDEMPTION_LIMIT) &&
+                jsonObject.has(OstSession.SPENDING_LIMIT) &&
+                jsonObject.has(OstSession.NONCE);
     }
 
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
-        setStatus(jsonObject.getString(OstTokenHolderSession.STATUS));
-        setAddress(jsonObject.getString(OstTokenHolderSession.ADDRESS));
-        setTokenHolderId(jsonObject.getString(OstTokenHolderSession.TOKEN_HOLDER_ID));
-        setBlockHeight(jsonObject.getString(OstTokenHolderSession.BLOCK_HEIGHT));
-        setExpiryTime(jsonObject.getString(OstTokenHolderSession.EXPIRY_TIME));
-        setRedemptionLimit(jsonObject.getString(OstTokenHolderSession.REDEMPTION_LIMIT));
-        setSpendingLimit(jsonObject.getString(OstTokenHolderSession.SPENDING_LIMIT));
-        setNonce(jsonObject.getString(OstTokenHolderSession.NONCE));
+        setStatus(jsonObject.getString(OstSession.STATUS));
+        setAddress(jsonObject.getString(OstSession.ADDRESS));
+        setTokenHolderId(jsonObject.getString(OstSession.TOKEN_HOLDER_ID));
+        setBlockHeight(jsonObject.getString(OstSession.BLOCK_HEIGHT));
+        setExpiryTime(jsonObject.getString(OstSession.EXPIRY_TIME));
+        setRedemptionLimit(jsonObject.getString(OstSession.REDEMPTION_LIMIT));
+        setSpendingLimit(jsonObject.getString(OstSession.SPENDING_LIMIT));
+        setNonce(jsonObject.getString(OstSession.NONCE));
     }
 
     public String signTransaction(JSONObject jsonObject, String userId) throws Exception {
@@ -95,7 +95,7 @@ public class OstTokenHolderSession extends OstBaseEntity {
         return signedMessage;
     }
 
-    public String signTransaction(OstTokenHolderSession.Transaction transaction, String userId) throws Exception {
+    public String signTransaction(OstSession.Transaction transaction, String userId) throws Exception {
         return signTransaction(transaction.toJSONObject(), userId);
     }
 

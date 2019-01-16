@@ -5,37 +5,37 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import com.ost.ostsdk.models.entities.OstBaseEntity;
-import com.ost.ostsdk.models.entities.OstTokenHolderSession;
+import com.ost.ostsdk.models.entities.OstSession;
 
 @Dao
 public abstract class OstSessionDao implements OstBaseDao {
 
     public void insert(OstBaseEntity baseEntity) {
-        this.insert((OstTokenHolderSession) baseEntity);
+        this.insert((OstSession) baseEntity);
     }
 
     public void insertAll(OstBaseEntity... baseEntity) {
-        this.insertAll((OstTokenHolderSession[]) baseEntity);
+        this.insertAll((OstSession[]) baseEntity);
     }
 
     @Insert
-    public abstract void insert(OstTokenHolderSession ostTokenHolderSession);
+    public abstract void insert(OstSession ostSession);
 
     @Insert
-    public abstract void insertAll(OstTokenHolderSession... ostTokenHolderSession);
+    public abstract void insertAll(OstSession... ostSession);
 
-    @Query("DELETE FROM token_holder_session WHERE id=:id")
+    @Query("DELETE FROM session WHERE id=:id")
     public abstract void delete(String id);
 
-    @Query("SELECT * FROM token_holder_session WHERE id IN (:ids)")
-    public abstract OstTokenHolderSession[] getByIds(String[] ids);
+    @Query("SELECT * FROM session WHERE id IN (:ids)")
+    public abstract OstSession[] getByIds(String[] ids);
 
-    @Query("SELECT * FROM token_holder_session WHERE id=:id")
-    public abstract OstTokenHolderSession getById(String id);
+    @Query("SELECT * FROM session WHERE id=:id")
+    public abstract OstSession getById(String id);
 
-    @Query("DELETE FROM token_holder_session")
+    @Query("DELETE FROM session")
     public abstract void deleteAll();
 
-    @Query("SELECT * FROM token_holder_session WHERE parent_id=:id")
-    public abstract OstTokenHolderSession[] getByParentId(String id);
+    @Query("SELECT * FROM session WHERE parent_id=:id")
+    public abstract OstSession[] getByParentId(String id);
 }
