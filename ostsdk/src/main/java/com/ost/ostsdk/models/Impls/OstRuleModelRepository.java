@@ -7,9 +7,6 @@ import com.ost.ostsdk.models.OstRuleModel;
 import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstRule;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 class OstRuleModelRepository extends OstBaseModelCacheRepository implements OstRuleModel {
 
     private static final int LRU_CACHE_SIZE = 5;
@@ -53,8 +50,7 @@ class OstRuleModelRepository extends OstBaseModelCacheRepository implements OstR
     }
 
     @Override
-    public OstRule initRule(JSONObject jsonObject) throws JSONException {
-        OstRule ostRule = new OstRule(jsonObject);
+    public OstRule insert(OstRule ostRule) {
         insert(ostRule, new OstTaskCallback() {});
         return ostRule;
     }

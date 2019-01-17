@@ -117,8 +117,8 @@ public class OstUserModelTest {
         userObj.put(OstUser.ID, String.valueOf(param));
         userObj.put(OstUser.TOKEN_ID, "1");
         userObj.put(OstUser.NAME, "ostUser");
-        userObj.put(OstUser.TOKEN_HOLDER_ID, "1");
-        userObj.put(OstUser.MULTI_SIG_ID, "1");
+        userObj.put(OstUser.TOKEN_HOLDER_ADDRESS, "1");
+        userObj.put(OstUser.DEVICE_MANAGER_ADDRESS, "1");
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 

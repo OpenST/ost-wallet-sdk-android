@@ -21,8 +21,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -57,7 +55,6 @@ public class OstTokenHolderModelTest {
 
         OstTokenHolder ostTokenHolder = OstSdk.getUser("1").getTokenHolder();
         assertNotNull(ostTokenHolder);
-        assertEquals(1, ostTokenHolder.getRequirements());
         assertEquals("address", ostTokenHolder.getAddress());
     }
 
@@ -84,7 +81,6 @@ public class OstTokenHolderModelTest {
         OstSdkDatabase.getDatabase().tokenHolderDao().delete(ostTokenHolder.getId());
         ostTokenHolder = OstSdk.getUser("1").getTokenHolder();
         assertNotNull(ostTokenHolder);
-        assertEquals(1, ostTokenHolder.getRequirements());
         assertEquals("address", ostTokenHolder.getAddress());
     }
 
@@ -105,8 +101,8 @@ public class OstTokenHolderModelTest {
         userObj.put(OstUser.ID, String.valueOf(param));
         userObj.put(OstUser.TOKEN_ID, "1");
         userObj.put(OstUser.NAME, "ostUser");
-        userObj.put(OstUser.TOKEN_HOLDER_ID, "1");
-        userObj.put(OstUser.MULTI_SIG_ID, "1");
+        userObj.put(OstUser.TOKEN_HOLDER_ADDRESS, "1");
+        userObj.put(OstUser.DEVICE_MANAGER_ADDRESS, "1");
 
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -118,10 +114,10 @@ public class OstTokenHolderModelTest {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(OstTokenHolder.ID, "1");
         jsonObject.put(OstTokenHolder.USER_ID, "1");
-        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "tokenHolderNo1");
-        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
+//        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "tokenHolderNo1");
+//        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
         jsonObject.put(OstTokenHolder.ADDRESS, "address");
 
-        return ostUser.initTokenHolder(jsonObject);
+        return OstTokenHolder.parse(jsonObject);
     }
 }

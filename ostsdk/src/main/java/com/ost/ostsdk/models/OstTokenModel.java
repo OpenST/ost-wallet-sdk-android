@@ -2,12 +2,9 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.OstToken;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public interface OstTokenModel {
 
-    OstToken registerToken(JSONObject jsonObject) throws JSONException;
+    OstToken insert(OstToken ostToken);
 
     OstToken getTokenById(String id);
 }

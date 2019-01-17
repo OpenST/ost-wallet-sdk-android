@@ -53,10 +53,9 @@ class OstSessionModelRepository extends OstBaseModelCacheRepository implements O
     }
 
     @Override
-    public OstSession initTokenHolderSession(JSONObject jsonObject) throws JSONException {
-        OstSession multiSig = new OstSession(jsonObject);
-        insert(multiSig, new OstTaskCallback() {});
-        return multiSig;
+    public OstSession insert(OstSession ostSession) {
+        insert(ostSession, new OstTaskCallback() {});
+        return ostSession;
     }
 
     @Override

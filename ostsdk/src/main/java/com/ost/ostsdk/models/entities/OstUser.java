@@ -18,18 +18,11 @@ public class OstUser extends OstBaseEntity {
     private static final String TAG = "OstUser";
 
     public static final String TOKEN_ID = "token_id";
-    public static final String TOKEN_HOLDER_ID = "token_holder_id";
+    public static final String TOKEN_HOLDER_ADDRESS = "token_holder_address";
     public static final String NAME = "name";
-    public static final String MULTI_SIG_ID = "multi_sig_id";
+    public static final String DEVICE_MANAGER_ADDRESS = "device_manager_address";
+    public static final String TYPE = "type";
 
-    @Ignore
-    private String tokenId;
-    @Ignore
-    private String tokenHolderId;
-    @Ignore
-    private String name;
-    @Ignore
-    private String multiSigId;
 
     public static OstUser parse(JSONObject jsonObject) throws JSONException {
         OstUser ostUser = new OstUser(jsonObject);
@@ -46,27 +39,23 @@ public class OstUser extends OstBaseEntity {
     }
 
     public String getTokenId() {
-        return tokenId;
+        return getData().optString(OstUser.TOKEN_ID,null);
     }
 
-    public String getTokenHolderId() {
-        return tokenHolderId;
+    public String getTokenHolderAddress() {
+        return getData().optString(OstUser.TOKEN_HOLDER_ADDRESS,null);
     }
 
     public String getName() {
-        return name;
+        return getData().optString(OstUser.NAME,null);
     }
 
-    private void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
+    public String getDeviceManagerAddress() {
+        return getData().optString(OstUser.DEVICE_MANAGER_ADDRESS,null);
     }
 
-    public void setTokenHolderId(String tokenHolderId) {
-        this.tokenHolderId = tokenHolderId;
-    }
-
-    private void setName(String name) {
-        this.name = name;
+    public String getType() {
+        return getData().optString(OstUser.TYPE,null);
     }
 
     public String createDevice() {
@@ -76,44 +65,28 @@ public class OstUser extends OstBaseEntity {
     @Override
     public void processJson(JSONObject data) throws JSONException {
         super.processJson(data);
-        setName(data.getString(OstUser.NAME));
-        setTokenId(data.getString(OstUser.TOKEN_ID));
-        setTokenHolderId(data.getString(OstUser.TOKEN_HOLDER_ID));
-        setMultiSigId(data.getString(OstUser.MULTI_SIG_ID));
     }
 
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
                 jsonObject.has(OstUser.TOKEN_ID) &&
-                jsonObject.has(OstUser.TOKEN_HOLDER_ID) &&
+                jsonObject.has(OstUser.TOKEN_HOLDER_ADDRESS) &&
                 jsonObject.has(OstUser.NAME) &&
-                jsonObject.has(OstUser.MULTI_SIG_ID);
-    }
-
-    public OstTokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException {
-        jsonObject.put(OstBaseEntity.PARENT_ID, getId());
-        return OstModelFactory.getTokenHolderModel().initTokenHolder(jsonObject);
+                jsonObject.has(OstUser.TYPE) &&
+                jsonObject.has(OstUser.DEVICE_MANAGER_ADDRESS);
     }
 
     public OstTokenHolder getTokenHolder() {
-        return OstModelFactory.getTokenHolderModel().getTokenHolderById(getTokenHolderId());
+        return OstModelFactory.getTokenHolderModel().getTokenHolderById(getTokenHolderAddress());
     }
 
     public void delTokenHolder(String id) {
         OstModelFactory.getTokenHolderModel().deleteTokenHolder(id);
     }
 
-    public String getMultiSigId() {
-        return multiSigId;
-    }
-
-    public void setMultiSigId(String multiSigId) {
-        this.multiSigId = multiSigId;
-    }
-
     public OstDeviceManager getMultiSig() {
-        return OstModelFactory.getMultiSigModel().getMultiSigById(getMultiSigId());
+        return OstModelFactory.getDeviceManagerModel().getMultiSigById(getDeviceManagerAddress());
     }
 
     @Override

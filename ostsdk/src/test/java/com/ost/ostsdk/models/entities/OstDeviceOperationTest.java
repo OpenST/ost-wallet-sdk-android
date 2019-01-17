@@ -36,7 +36,7 @@ public class OstDeviceOperationTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any OstExecutableRule  attribute
+        //Test without any DeviceOperation  attribute
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstDeviceOperation.ENCODED_DATA, "0x2901239");
@@ -55,7 +55,7 @@ public class OstDeviceOperationTest {
 
         testMultiSigOperationJsonWithNoException(jsonObject);
 
-        //Test Id with partial OstExecutableRule attribute
+        //Test Id with partial DeviceOperation attribute
         OstDeviceOperation ostDeviceOperation = new OstDeviceOperation(jsonObject);
         assertEquals("0x2901239", ostDeviceOperation.getEncodedData());
         assertEquals("kind", ostDeviceOperation.getKind());

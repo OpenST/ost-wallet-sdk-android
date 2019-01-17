@@ -2,9 +2,6 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.OstSession;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public interface OstSessionModel {
 
     void insertTokenHolderSession(OstSession ostSession);
@@ -19,7 +16,7 @@ public interface OstSessionModel {
 
     void deleteAllTokenHolderSessions();
 
-    OstSession initTokenHolderSession(JSONObject jsonObject) throws JSONException;
+    OstSession insert(OstSession ostSession);
 
     OstSession[] getTokenHolderSessionsByParentId(String id);
 }

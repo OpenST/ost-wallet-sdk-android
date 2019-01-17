@@ -109,7 +109,7 @@ public class OstDeviceManager extends OstBaseEntity {
 
     public OstDevice getDeviceMultiSigWallet() throws Exception {
         OstDevice deviceWallet = null;
-        OstDevice wallets[] = OstModelFactory.getMultiSigWalletModel().getMultiSigWalletsByParentId(getId());
+        OstDevice wallets[] = OstModelFactory.getDeviceModel().getMultiSigWalletsByParentId(getId());
         for (OstDevice wallet : wallets) {
             if (null != new OstSecureKeyModelRepository().getById(wallet.getAddress())) {
                 deviceWallet = wallet;

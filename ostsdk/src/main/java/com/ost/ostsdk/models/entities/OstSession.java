@@ -6,6 +6,7 @@ import android.arch.persistence.room.Ignore;
 import android.util.Log;
 
 import com.ost.ostsdk.OstSdk;
+import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.ostsdk.security.impls.OstAndroidSecureStorage;
 import com.ost.ostsdk.utils.EIP1077;
@@ -26,29 +27,16 @@ public class OstSession extends OstBaseEntity {
 
     public static final String STATUS = "status";
     public static final String ADDRESS = "address";
-    public static final String TOKEN_HOLDER_ID = "token_holder_id";
-    public static final String BLOCK_HEIGHT = "block_height";
-    public static final String EXPIRY_TIME = "expiry_time";
+    public static final String TOKEN_HOLDER_ADDRESS = "token_holder_address";
+    public static final String USER_ID = "user_id";
+    public static final String EXPIRATION_BLOCK_HEIGHT = "expiration_block_height";
     public static final String SPENDING_LIMIT = "spending_limit";
-    public static final String REDEMPTION_LIMIT = "redemption_limit";
     public static final String NONCE = "nonce";
 
-    @Ignore
-    private String status;
-    @Ignore
-    private String address;
-    @Ignore
-    private String tokenHolderId;
-    @Ignore
-    private String blockHeight;
-    @Ignore
-    private String expiryTime;
-    @Ignore
-    private String spendingLimit;
-    @Ignore
-    private String redemptionLimit;
-    @Ignore
-    private String nonce;
+    public static OstSession parse(JSONObject jsonObject) throws JSONException {
+        OstSession ostSession = new OstSession(jsonObject);
+        return OstModelFactory.getSessionModel().insert(ostSession);
+    }
 
     public OstSession(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
         super(id, parentId, data, status, updatedTimestamp);
@@ -64,25 +52,16 @@ public class OstSession extends OstBaseEntity {
         return super.validate(jsonObject) &&
                 jsonObject.has(OstSession.STATUS) &&
                 jsonObject.has(OstSession.ADDRESS) &&
-                jsonObject.has(OstSession.TOKEN_HOLDER_ID) &&
-                jsonObject.has(OstSession.BLOCK_HEIGHT) &&
-                jsonObject.has(OstSession.EXPIRY_TIME) &&
-                jsonObject.has(OstSession.REDEMPTION_LIMIT) &&
+                jsonObject.has(OstSession.TOKEN_HOLDER_ADDRESS) &&
+                jsonObject.has(OstSession.EXPIRATION_BLOCK_HEIGHT) &&
                 jsonObject.has(OstSession.SPENDING_LIMIT) &&
+                jsonObject.has(OstSession.USER_ID) &&
                 jsonObject.has(OstSession.NONCE);
     }
 
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
-        setStatus(jsonObject.getString(OstSession.STATUS));
-        setAddress(jsonObject.getString(OstSession.ADDRESS));
-        setTokenHolderId(jsonObject.getString(OstSession.TOKEN_HOLDER_ID));
-        setBlockHeight(jsonObject.getString(OstSession.BLOCK_HEIGHT));
-        setExpiryTime(jsonObject.getString(OstSession.EXPIRY_TIME));
-        setRedemptionLimit(jsonObject.getString(OstSession.REDEMPTION_LIMIT));
-        setSpendingLimit(jsonObject.getString(OstSession.SPENDING_LIMIT));
-        setNonce(jsonObject.getString(OstSession.NONCE));
     }
 
     public String signTransaction(JSONObject jsonObject, String userId) throws Exception {
@@ -97,67 +76,41 @@ public class OstSession extends OstBaseEntity {
     }
 
     public String getAddress() {
-        return address;
+        return getData().optString(OstSession.ADDRESS, null);
     }
 
-    private void setAddress(String address) {
-        this.address = address;
-    }
 
     public String getStatus() {
-        return status;
+        return getData().optString(OstSession.STATUS, null);
     }
 
-    private void setStatus(String status) {
-        this.status = status;
+
+    public String getTokenHolderAddress() {
+        return getData().optString(OstSession.TOKEN_HOLDER_ADDRESS, null);
     }
 
-    public String getTokenHolderId() {
-        return tokenHolderId;
+
+    public String getExpirationBlockHeight() {
+        return getData().optString(OstSession.EXPIRATION_BLOCK_HEIGHT, null);
     }
 
-    private void setTokenHolderId(String tokenHolderId) {
-        this.tokenHolderId = tokenHolderId;
-    }
-
-    public String getBlockHeight() {
-        return blockHeight;
-    }
-
-    private void setBlockHeight(String blockHeight) {
-        this.blockHeight = blockHeight;
-    }
-
-    public String getExpiryTime() {
-        return expiryTime;
-    }
-
-    private void setExpiryTime(String expiryTime) {
-        this.expiryTime = expiryTime;
-    }
 
     public String getSpendingLimit() {
-        return spendingLimit;
-    }
-
-    private void setSpendingLimit(String spendingLimit) {
-        this.spendingLimit = spendingLimit;
-    }
-
-    public String getRedemptionLimit() {
-        return redemptionLimit;
-    }
-
-    private void setRedemptionLimit(String redemptionLimit) {
-        this.redemptionLimit = redemptionLimit;
+        return getData().optString(OstSession.SPENDING_LIMIT, null);
     }
 
     public String getNonce() {
-        return nonce;
+        return getData().optString(OstSession.NONCE, null);
     }
 
-    public void setNonce(String nonce) {
-        this.nonce = nonce;
+    @Override
+    String getEntityIdKey() {
+        return OstUser.ID;
+    }
+
+    @Override
+    public String getParentIdKey() {
+        return OstSession.USER_ID;
     }
 
     public static class Transaction {

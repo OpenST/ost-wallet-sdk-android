@@ -10,6 +10,12 @@ import org.json.JSONObject;
 
 @Entity(tableName = "token")
 public class OstToken extends OstBaseEntity {
+
+    public static OstToken parse(JSONObject jsonObject) throws JSONException {
+        OstToken ostToken = new OstToken(jsonObject);
+        return OstModelFactory.getTokenModel().insert(ostToken);
+    }
+
     public OstToken(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
         super(id, parentId, data, status, updatedTimestamp);
     }
@@ -31,7 +37,7 @@ public class OstToken extends OstBaseEntity {
 
     public OstRule initRule(JSONObject jsonObject) throws JSONException {
         jsonObject.put(OstBaseEntity.PARENT_ID, getId());
-        return OstModelFactory.getRuleModel().initRule(jsonObject);
+        return OstModelFactory.getRuleModel().insert(OstRule.parse(jsonObject));
     }
 
     public OstRule getRule(String id) {

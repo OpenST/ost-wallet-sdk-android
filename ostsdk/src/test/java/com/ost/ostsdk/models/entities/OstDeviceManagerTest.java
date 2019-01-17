@@ -36,7 +36,7 @@ public class OstDeviceManagerTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any OstExecutableRule  attribute
+        //Test without any OstTransaction  attribute
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstDeviceManager.ADDRESS, "0x2901239");
@@ -47,7 +47,7 @@ public class OstDeviceManagerTest {
         jsonObject.put(OstDeviceManager.NONCE, "1");
         testMultiSigJsonWithNoException(jsonObject);
 
-        //Test Id with partial OstExecutableRule attribute
+        //Test Id with partial OstTransaction attribute
         OstDeviceManager ostDeviceManager = new OstDeviceManager(jsonObject);
         assertEquals("0x2901239", ostDeviceManager.getAddress());
         assertEquals("123", ostDeviceManager.getTokenHolderId());

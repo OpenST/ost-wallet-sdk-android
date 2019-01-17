@@ -36,11 +36,11 @@ public class OstSessionTest {
     private static void cleanDB() {
         new OstSecureKeyModelRepository().deleteAll(null);
         OstModelFactory.getUserModel().deleteAllUsers();
-        OstModelFactory.getMultiSigWalletModel().deleteAllMultiSigWallets();
-        OstModelFactory.getMultiSigModel().deleteAllMultiSigs();
+        OstModelFactory.getDeviceModel().deleteAllMultiSigWallets();
+        OstModelFactory.getDeviceManagerModel().deleteAllMultiSigs();
         OstModelFactory.getTokenHolderModel().deleteAllTokenHolders();
         OstModelFactory.getRuleModel().deleteAllRules();
-        OstModelFactory.getTokenHolderSession().deleteAllTokenHolderSessions();
+        OstModelFactory.getSessionModel().deleteAllTokenHolderSessions();
     }
 
     @Test
@@ -81,8 +81,8 @@ public class OstSessionTest {
     }
 
     private OstUser updateUserData(OstUser ostUser, OstDeviceManager ostDeviceManager, OstTokenHolder ostTokenHolder) throws InterruptedException {
-        ostUser.setMultiSigId(ostDeviceManager.getId());
-        ostUser.setTokenHolderId(ostTokenHolder.getId());
+//        ostUser.setMultiSigId(ostDeviceManager.getId());
+//        ostUser.setTokenHolderId(ostTokenHolder.getId());
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -99,15 +99,15 @@ public class OstSessionTest {
         jsonObject.put(OstSession.ADDRESS, walletAddress);
         jsonObject.put(OstSession.NONCE, "1");
         jsonObject.put(OstSession.SPENDING_LIMIT, "10000");
-        jsonObject.put(OstSession.REDEMPTION_LIMIT, "10000");
-        jsonObject.put(OstSession.EXPIRY_TIME, "100");
-        jsonObject.put(OstSession.BLOCK_HEIGHT, "100");
-        jsonObject.put(OstSession.TOKEN_HOLDER_ID, parentId);
+//        jsonObject.put(OstSession.REDEMPTION_LIMIT, "10000");
+//        jsonObject.put(OstSession.EXPIRY_TIME, "100");
+        jsonObject.put(OstSession.EXPIRATION_BLOCK_HEIGHT, "100");
+        jsonObject.put(OstSession.TOKEN_HOLDER_ADDRESS, parentId);
         jsonObject.put(OstDevice.STATUS, OstDevice.CREATED_STATUS);
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstSession ostSession = OstModelFactory.getTokenHolderSession().initTokenHolderSession(jsonObject);
+        OstSession ostSession = OstModelFactory.getSessionModel().insert(OstSession.parse(jsonObject));
 
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 
@@ -127,7 +127,7 @@ public class OstSessionTest {
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstDeviceManager ostDeviceManager = OstModelFactory.getMultiSigModel().initMultiSig(jsonObject);
+        OstDeviceManager ostDeviceManager = OstModelFactory.getDeviceManagerModel().initMultiSig(jsonObject);
 
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 
@@ -142,8 +142,8 @@ public class OstSessionTest {
         userObj.put(OstUser.ID, userId);
         userObj.put(OstUser.TOKEN_ID, "1");
         userObj.put(OstUser.NAME, "ostUser");
-        userObj.put(OstUser.TOKEN_HOLDER_ID, tokenHolderId);
-        userObj.put(OstUser.MULTI_SIG_ID, multiSigId);
+        userObj.put(OstUser.TOKEN_HOLDER_ADDRESS, tokenHolderId);
+        userObj.put(OstUser.DEVICE_MANAGER_ADDRESS, multiSigId);
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -160,13 +160,13 @@ public class OstSessionTest {
         jsonObject.put(OstBaseEntity.PARENT_ID, parentId);
         jsonObject.put(OstBaseEntity.ID, param);
         jsonObject.put(OstTokenHolder.ADDRESS, "0x2901239");
-        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
+//        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
         jsonObject.put(OstTokenHolder.USER_ID, userId);
-        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
+//        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstTokenHolder ostTokenHolder = OstModelFactory.getTokenHolderModel().initTokenHolder(jsonObject);
+        OstTokenHolder ostTokenHolder = OstModelFactory.getTokenHolderModel().insert(OstTokenHolder.parse(jsonObject));
 
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 

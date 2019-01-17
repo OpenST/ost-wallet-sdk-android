@@ -7,9 +7,6 @@ import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstTokenModel;
 import com.ost.ostsdk.models.entities.OstToken;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 class OstTokenModelRepository extends OstBaseModelCacheRepository implements OstTokenModel {
 
     private OstTokenDao mOstTokenDao;
@@ -27,8 +24,7 @@ class OstTokenModelRepository extends OstBaseModelCacheRepository implements Ost
 
 
     @Override
-    public OstToken registerToken(JSONObject jsonObject) throws JSONException {
-        OstToken ostToken = new OstToken(jsonObject);
+    public OstToken insert(OstToken ostToken) {
         super.insert(ostToken, new OstTaskCallback() {});
         return ostToken;
     }

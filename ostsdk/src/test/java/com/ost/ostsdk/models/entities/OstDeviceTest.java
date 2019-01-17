@@ -35,7 +35,7 @@ public class OstDeviceTest {
         //Init json object
         JSONObject jsonObject;
 
-        //Test without any OstExecutableRule  attribute
+        //Test without any OstDevice  attribute
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstDevice.ADDRESS, "0x2901239");

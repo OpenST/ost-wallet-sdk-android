@@ -3,6 +3,8 @@ package com.ost.ostsdk.models.entities;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
+import com.ost.ostsdk.models.Impls.OstModelFactory;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,19 +12,15 @@ import org.json.JSONObject;
 public class OstRule extends OstBaseEntity {
 
     public static final String TOKEN_ID = "token_id";
-    public static final String ADDRESS = "address";
     public static final String NAME = "name";
+    public static final String ADDRESS = "address";
     public static final String ABI = "abi";
+    public static final String CALL_PREFIX = "call_prefix";
 
-    @Ignore
-    private String tokenId;
-    @Ignore
-    private String name;
-    @Ignore
-    private String address;
-    @Ignore
-    private String abi;
-
+    public static OstRule parse(JSONObject jsonObject) throws JSONException {
+        OstRule ostRule = new OstRule(jsonObject);
+        return OstModelFactory.getRuleModel().insert(ostRule);
+    }
 
     public OstRule(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
         super(id, parentId, data, status, updatedTimestamp);
@@ -34,45 +32,29 @@ public class OstRule extends OstBaseEntity {
     }
 
     public String getTokenId() {
-        return tokenId;
+        return getData().optString(OstRule.TOKEN_ID, null);
     }
 
     public String getAddress() {
-        return address;
+        return getData().optString(OstRule.ADDRESS, null);
     }
 
     public String getAbi() {
-        return abi;
+        return getData().optString(OstRule.ABI, null);
     }
 
     public String getName() {
-        return name;
+        return getData().optString(OstRule.NAME, null);
     }
 
-
-    private void setTokenId(String tokenId) {
-        this.tokenId = tokenId;
+    public String getCallPrefix() {
+        return getData().optString(OstRule.CALL_PREFIX, null);
     }
 
-    private void setName(String name) {
-        this.name = name;
-    }
-
-    private void setAddress(String address) {
-        this.address = address;
-    }
-
-    private void setAbi(String abi) {
-        this.abi = abi;
-    }
 
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
-        setName(jsonObject.getString(OstRule.NAME));
-        setTokenId(jsonObject.getString(OstRule.TOKEN_ID));
-        setAbi(jsonObject.getString(OstRule.ABI));
-        setAddress(jsonObject.getString(OstRule.ADDRESS));
     }
 
     @Override
@@ -81,6 +63,17 @@ public class OstRule extends OstBaseEntity {
                 jsonObject.has(OstRule.TOKEN_ID) &&
                 jsonObject.has(OstRule.NAME) &&
                 jsonObject.has(OstRule.ABI) &&
+                jsonObject.has(OstRule.CALL_PREFIX) &&
                 jsonObject.has(OstRule.ADDRESS);
+    }
+
+    @Override
+    String getEntityIdKey() {
+        return OstUser.ID;
+    }
+
+    @Override
+    public String getParentIdKey() {
+        return OstUser.TOKEN_ID;
     }
 }

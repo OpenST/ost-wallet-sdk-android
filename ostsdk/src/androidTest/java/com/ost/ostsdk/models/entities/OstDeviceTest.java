@@ -7,7 +7,6 @@ import android.support.test.runner.AndroidJUnit4;
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
-import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstUserModel;
 import com.ost.ostsdk.utils.KeyGenProcess;
 
@@ -20,8 +19,6 @@ import org.junit.runner.RunWith;
 import org.web3j.crypto.RawTransaction;
 
 import java.math.BigInteger;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 @RunWith(AndroidJUnit4.class)
 public class OstDeviceTest {
@@ -40,8 +37,8 @@ public class OstDeviceTest {
     private static void cleanDB() {
         new OstSecureKeyModelRepository().deleteAll(null);
         OstModelFactory.getUserModel().deleteAllUsers();
-        OstModelFactory.getMultiSigWalletModel().deleteAllMultiSigWallets();
-        OstModelFactory.getMultiSigModel().deleteAllMultiSigs();
+        OstModelFactory.getDeviceModel().deleteAllMultiSigWallets();
+        OstModelFactory.getDeviceManagerModel().deleteAllMultiSigs();
         OstModelFactory.getTokenHolderModel().deleteAllTokenHolders();
         OstModelFactory.getRuleModel().deleteAllRules();
     }
@@ -78,8 +75,8 @@ public class OstDeviceTest {
     }
 
     private OstUser updateUserData(OstUser ostUser, OstDeviceManager ostDeviceManager, OstTokenHolder ostTokenHolder) throws InterruptedException {
-        ostUser.setMultiSigId(ostDeviceManager.getId());
-        ostUser.setTokenHolderId(ostTokenHolder.getId());
+//        ostUser.setMultiSigId(ostDeviceManager.getId());
+//        ostUser.setTokenHolderId(ostTokenHolder.getId());
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -99,7 +96,7 @@ public class OstDeviceTest {
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstDevice ostDevice = OstModelFactory.getMultiSigWalletModel().initMultiSigWallet(jsonObject);
+        OstDevice ostDevice = OstModelFactory.getDeviceModel().initMultiSigWallet(jsonObject);
 
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 
@@ -119,7 +116,7 @@ public class OstDeviceTest {
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstDeviceManager ostDeviceManager = OstModelFactory.getMultiSigModel().initMultiSig(jsonObject);
+        OstDeviceManager ostDeviceManager = OstModelFactory.getDeviceManagerModel().initMultiSig(jsonObject);
 
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 
@@ -134,8 +131,8 @@ public class OstDeviceTest {
         userObj.put(OstUser.ID, userId);
         userObj.put(OstUser.TOKEN_ID, "1");
         userObj.put(OstUser.NAME, "ostUser");
-        userObj.put(OstUser.TOKEN_HOLDER_ID, tokenHolderId);
-        userObj.put(OstUser.MULTI_SIG_ID, multiSigId);
+        userObj.put(OstUser.TOKEN_HOLDER_ADDRESS, tokenHolderId);
+        userObj.put(OstUser.DEVICE_MANAGER_ADDRESS, multiSigId);
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -152,13 +149,13 @@ public class OstDeviceTest {
         jsonObject.put(OstBaseEntity.PARENT_ID, parentId);
         jsonObject.put(OstBaseEntity.ID, tokenHolderId);
         jsonObject.put(OstTokenHolder.ADDRESS, "0x2901239");
-        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
+//        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
         jsonObject.put(OstTokenHolder.USER_ID, parentId);
-        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
+//        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstTokenHolder ostTokenHolder = OstModelFactory.getTokenHolderModel().initTokenHolder(jsonObject);
+        OstTokenHolder ostTokenHolder = OstModelFactory.getTokenHolderModel().insert(OstTokenHolder.parse(jsonObject));
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 
         return ostTokenHolder;

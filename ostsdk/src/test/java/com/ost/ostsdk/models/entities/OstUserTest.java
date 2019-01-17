@@ -39,22 +39,22 @@ public class OstUserTest {
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstUser.TOKEN_ID, "0x2901239");
-        jsonObject.put(OstUser.TOKEN_HOLDER_ID, "123");
+        jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "123");
         jsonObject.put(OstUser.NAME, "name");
-        jsonObject.put(OstUser.MULTI_SIG_ID, "1");
+        jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "1");
 
-        OstUser ostUser = new OstUser(jsonObject);
+        OstUser ostUser =  OstUser.parse(jsonObject);
         assertEquals("0x2901239", ostUser.getTokenId());
-        assertEquals("123", ostUser.getTokenHolderId());
+        assertEquals("123", ostUser.getTokenHolderAddress());
         assertEquals("name", ostUser.getName());
         assertEquals("ID", ostUser.getId());
-        assertEquals("1", ostUser.getMultiSigId());
+        assertEquals("1", ostUser.getDeviceManagerAddress());
     }
 
 
     private void testUserJsonException(JSONObject jsonObject) {
         try {
-            OstUser ostUser = new OstUser(jsonObject);
+            OstUser ostUser = OstUser.parse(jsonObject);
             fail();
         } catch (Exception ex) {
             assertTrue(true);
@@ -63,7 +63,7 @@ public class OstUserTest {
 
     private void testUserJsonWithNoException(JSONObject jsonObject) {
         try {
-            OstUser ostUser = new OstUser(jsonObject);
+            OstUser ostUser = OstUser.parse(jsonObject);
             assertTrue(true);
         } catch (Exception ex) {
             fail();

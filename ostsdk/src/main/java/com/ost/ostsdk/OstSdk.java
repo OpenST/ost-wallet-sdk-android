@@ -1,14 +1,12 @@
 package com.ost.ostsdk;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.ost.ostsdk.Network.ApiClient;
 import com.ost.ostsdk.Network.KitApi;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
-import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstToken;
 import com.ost.ostsdk.models.entities.OstUser;
 
@@ -36,7 +34,7 @@ public class OstSdk {
     }
 
     public static OstToken registerToken(JSONObject jsonObject) throws JSONException {
-        return OstModelFactory.getTokenModel().registerToken(jsonObject);
+        return OstToken.parse(jsonObject);
     }
 
     public static OstToken getToken(String tokenId) {

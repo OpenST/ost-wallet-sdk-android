@@ -3,16 +3,18 @@ package com.ost.ostsdk.models.Impls;
 import com.ost.ostsdk.models.OstDeviceManagerModel;
 import com.ost.ostsdk.models.OstDeviceModel;
 import com.ost.ostsdk.models.OstRuleModel;
-import com.ost.ostsdk.models.OstTokenHolderModel;
 import com.ost.ostsdk.models.OstSessionModel;
+import com.ost.ostsdk.models.OstTokenHolderModel;
 import com.ost.ostsdk.models.OstTokenModel;
+import com.ost.ostsdk.models.OstTransactionModel;
 import com.ost.ostsdk.models.OstUserModel;
 
 public class OstModelFactory {
 
-    private static volatile OstSessionModelRepository TOKEN_HOLDER_SESSION_MODEL_INSTANCE;
-    private static volatile OstDeviceModelRepository MULTI_SIG_WALLET_MODEL_INSTANCE;
-    private static volatile OstDeviceManagerModel MULTI_SIG_MODEL_INSTANCE;
+    private static volatile OstTransactionModelRepository TRANSACTION_MODEL_INSTANCE;
+    private static volatile OstSessionModelRepository SESSION_MODEL_INSTANCE;
+    private static volatile OstDeviceModelRepository DEVICE_MODEL_INSTANCE;
+    private static volatile OstDeviceManagerModel DEVICE_MANAGER_MODEL_INSTANCE;
     private static volatile OstUserModel USER_MODEL_INSTANCE;
     private static volatile OstRuleModel RULE_MODEL_INSTANCE;
     private static volatile OstTokenModel TOKEN_MODEL_INSTANCE;
@@ -65,38 +67,49 @@ public class OstModelFactory {
     }
 
 
-    public static OstDeviceManagerModel getMultiSigModel() {
-        if (MULTI_SIG_MODEL_INSTANCE == null) {
+    public static OstDeviceManagerModel getDeviceManagerModel() {
+        if (DEVICE_MANAGER_MODEL_INSTANCE == null) {
             synchronized (OstDeviceManagerModelRepository.class) {
-                if (MULTI_SIG_MODEL_INSTANCE == null) {
-                    MULTI_SIG_MODEL_INSTANCE = new OstDeviceManagerModelRepository();
+                if (DEVICE_MANAGER_MODEL_INSTANCE == null) {
+                    DEVICE_MANAGER_MODEL_INSTANCE = new OstDeviceManagerModelRepository();
                 }
             }
         }
-        return MULTI_SIG_MODEL_INSTANCE;
+        return DEVICE_MANAGER_MODEL_INSTANCE;
     }
 
-    public static OstDeviceModel getMultiSigWalletModel() {
-        if (MULTI_SIG_WALLET_MODEL_INSTANCE == null) {
+    public static OstDeviceModel getDeviceModel() {
+        if (DEVICE_MODEL_INSTANCE == null) {
             synchronized (OstDeviceManagerModelRepository.class) {
-                if (MULTI_SIG_WALLET_MODEL_INSTANCE == null) {
-                    MULTI_SIG_WALLET_MODEL_INSTANCE = new OstDeviceModelRepository();
+                if (DEVICE_MODEL_INSTANCE == null) {
+                    DEVICE_MODEL_INSTANCE = new OstDeviceModelRepository();
                 }
             }
         }
-        return MULTI_SIG_WALLET_MODEL_INSTANCE;
+        return DEVICE_MODEL_INSTANCE;
 
     }
 
-    public static OstSessionModel getTokenHolderSession() {
-        if (TOKEN_HOLDER_SESSION_MODEL_INSTANCE == null) {
+    public static OstSessionModel getSessionModel() {
+        if (SESSION_MODEL_INSTANCE == null) {
             synchronized (OstSessionModelRepository.class) {
-                if (TOKEN_HOLDER_SESSION_MODEL_INSTANCE == null) {
-                    TOKEN_HOLDER_SESSION_MODEL_INSTANCE = new OstSessionModelRepository();
+                if (SESSION_MODEL_INSTANCE == null) {
+                    SESSION_MODEL_INSTANCE = new OstSessionModelRepository();
                 }
             }
         }
-        return TOKEN_HOLDER_SESSION_MODEL_INSTANCE;
+        return SESSION_MODEL_INSTANCE;
 
+    }
+
+    public static OstTransactionModel getTransactionModel() {
+        if (TRANSACTION_MODEL_INSTANCE == null) {
+            synchronized (OstTransactionModelRepository.class) {
+                if (TRANSACTION_MODEL_INSTANCE == null) {
+                    TRANSACTION_MODEL_INSTANCE = new OstTransactionModelRepository();
+                }
+            }
+        }
+        return TRANSACTION_MODEL_INSTANCE;
     }
 }

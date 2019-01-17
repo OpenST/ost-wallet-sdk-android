@@ -7,9 +7,6 @@ import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstTokenHolderModel;
 import com.ost.ostsdk.models.entities.OstTokenHolder;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 class OstTokenHolderModelRepository extends OstBaseModelCacheRepository implements OstTokenHolderModel {
 
     private static final int LRU_CACHE_SIZE = 5;
@@ -57,8 +54,7 @@ class OstTokenHolderModelRepository extends OstBaseModelCacheRepository implemen
     }
 
     @Override
-    public OstTokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException {
-        OstTokenHolder ostTokenHolder = new OstTokenHolder(jsonObject);
+    public OstTokenHolder insert(OstTokenHolder ostTokenHolder) {
         insert(ostTokenHolder, new OstTaskCallback() {});
         return ostTokenHolder;
     }

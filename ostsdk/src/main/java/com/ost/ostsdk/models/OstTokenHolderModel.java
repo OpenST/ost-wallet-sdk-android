@@ -2,9 +2,6 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.OstTokenHolder;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public interface OstTokenHolderModel {
 
     void insertTokenHolder(OstTokenHolder ostTokenHolder);
@@ -19,5 +16,5 @@ public interface OstTokenHolderModel {
 
     void deleteAllTokenHolders();
 
-    OstTokenHolder initTokenHolder(JSONObject jsonObject) throws JSONException;
+    OstTokenHolder insert(OstTokenHolder ostTokenHolder);
 }

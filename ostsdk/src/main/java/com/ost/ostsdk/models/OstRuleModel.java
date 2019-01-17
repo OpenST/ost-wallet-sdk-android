@@ -2,9 +2,6 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.OstRule;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public interface OstRuleModel {
     void insertRule(OstRule ostRule);
 
@@ -18,5 +15,5 @@ public interface OstRuleModel {
 
     void deleteAllRules();
 
-    OstRule initRule(JSONObject jsonObject) throws JSONException;
+    OstRule insert(OstRule ostRule);
 }

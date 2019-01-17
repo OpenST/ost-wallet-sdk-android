@@ -7,7 +7,7 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import com.ost.ostsdk.database.daos.OstDeviceOperationDao;
-import com.ost.ostsdk.database.daos.OstExecutableRuleDao;
+import com.ost.ostsdk.database.daos.OstTransactionDao;
 import com.ost.ostsdk.database.daos.OstDeviceManagerDao;
 import com.ost.ostsdk.database.daos.OstDeviceDao;
 import com.ost.ostsdk.database.daos.OstRuleDao;
@@ -18,14 +18,14 @@ import com.ost.ostsdk.database.daos.OstUserDao;
 import com.ost.ostsdk.models.entities.OstDevice;
 import com.ost.ostsdk.models.entities.OstDeviceManager;
 import com.ost.ostsdk.models.entities.OstDeviceOperation;
-import com.ost.ostsdk.models.entities.OstExecutableRule;
+import com.ost.ostsdk.models.entities.OstTransaction;
 import com.ost.ostsdk.models.entities.OstRule;
 import com.ost.ostsdk.models.entities.OstSession;
 import com.ost.ostsdk.models.entities.OstToken;
 import com.ost.ostsdk.models.entities.OstTokenHolder;
 import com.ost.ostsdk.models.entities.OstUser;
 
-@Database(entities = {OstUser.class, OstRule.class, OstToken.class, OstExecutableRule.class,
+@Database(entities = {OstUser.class, OstRule.class, OstToken.class, OstTransaction.class,
         OstDeviceOperation.class, OstTokenHolder.class, OstSession.class,
         OstDevice.class, OstDeviceManager.class}, version = 1)
 @TypeConverters({Converters.class})
@@ -39,7 +39,7 @@ public abstract class OstSdkDatabase extends RoomDatabase {
 
     public abstract OstTokenDao tokenDao();
 
-    public abstract OstExecutableRuleDao executableRuleDao();
+    public abstract OstTransactionDao executableRuleDao();
 
     public abstract OstDeviceOperationDao multiSigOperationDao();
 

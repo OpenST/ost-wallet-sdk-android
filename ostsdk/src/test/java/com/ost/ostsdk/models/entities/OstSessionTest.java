@@ -40,22 +40,22 @@ public class OstSessionTest {
         jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstSession.ADDRESS, "0x2901239");
         jsonObject.put(OstSession.STATUS, "status");
-        jsonObject.put(OstSession.TOKEN_HOLDER_ID, "123");
-        jsonObject.put(OstSession.BLOCK_HEIGHT, "1000");
-        jsonObject.put(OstSession.EXPIRY_TIME, "100");
+        jsonObject.put(OstSession.TOKEN_HOLDER_ADDRESS, "123");
+        jsonObject.put(OstSession.EXPIRATION_BLOCK_HEIGHT, "1000");
+//        jsonObject.put(OstSession.EXPIRY_TIME, "100");
         jsonObject.put(OstSession.SPENDING_LIMIT, "9999");
-        jsonObject.put(OstSession.REDEMPTION_LIMIT, "1000");
+//        jsonObject.put(OstSession.REDEMPTION_LIMIT, "1000");
         jsonObject.put(OstSession.NONCE, "1");
 
 
         OstSession ostSession = new OstSession(jsonObject);
         assertEquals("0x2901239", ostSession.getAddress());
         assertEquals("status", ostSession.getStatus());
-        assertEquals("123", ostSession.getTokenHolderId());
-        assertEquals("1000", ostSession.getBlockHeight());
-        assertEquals("100", ostSession.getExpiryTime());
+        assertEquals("123", ostSession.getTokenHolderAddress());
+//        assertEquals("1000", ostSession.getBlockHeight());
+//        assertEquals("100", ostSession.getExpiryTime());
         assertEquals("9999", ostSession.getSpendingLimit());
-        assertEquals("1000", ostSession.getRedemptionLimit());
+//        assertEquals("1000", ostSession.getRedemptionLimit());
         assertEquals("ID", ostSession.getId());
         assertEquals("1", ostSession.getNonce());
 
