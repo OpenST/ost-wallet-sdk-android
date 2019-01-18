@@ -7,6 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
+import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstUserModel;
 import com.ost.ostsdk.utils.KeyGenProcess;
 
@@ -35,7 +36,7 @@ public class OstDeviceTest {
     }
 
     private static void cleanDB() {
-        new OstSecureKeyModelRepository().deleteAll(null);
+        new OstSecureKeyModelRepository().deleteAll(new OstTaskCallback() {});
         OstModelFactory.getUserModel().deleteAllUsers();
         OstModelFactory.getDeviceModel().deleteAllMultiSigWallets();
         OstModelFactory.getDeviceManagerModel().deleteAllMultiSigs();
@@ -130,6 +131,7 @@ public class OstDeviceTest {
         userObj.put(OstUser.NAME, "ostUser");
         userObj.put(OstUser.TOKEN_HOLDER_ADDRESS, tokenHolderId);
         userObj.put(OstUser.DEVICE_MANAGER_ADDRESS, multiSigId);
+        userObj.put(OstUser.TYPE, "admin");
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
