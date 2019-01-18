@@ -5,6 +5,8 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import com.ost.ostsdk.utils.DeepCopy;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,7 +64,7 @@ public class OstBaseEntity {
     }
 
     public JSONObject getData() {
-        return data;
+        return (JSONObject) DeepCopy.copy(data);
     }
 
     public String getStatus() {

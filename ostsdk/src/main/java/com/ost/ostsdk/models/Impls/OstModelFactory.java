@@ -1,5 +1,6 @@
 package com.ost.ostsdk.models.Impls;
 
+import com.ost.ostsdk.models.OstCreditsModel;
 import com.ost.ostsdk.models.OstDeviceManagerModel;
 import com.ost.ostsdk.models.OstDeviceManagerOperationModel;
 import com.ost.ostsdk.models.OstDeviceModel;
@@ -12,6 +13,7 @@ import com.ost.ostsdk.models.OstUserModel;
 
 public class OstModelFactory {
 
+    private static volatile OstCreditsModel OST_CREDITS_MODEL_INSTANCE;
     private static volatile OstDeviceManagerOperationModel DEVICE_MANAGER_OPERATION_MODEL_INSTANCE;
     private static volatile OstTransactionModel TRANSACTION_MODEL_INSTANCE;
     private static volatile OstSessionModel SESSION_MODEL_INSTANCE;
@@ -124,5 +126,16 @@ public class OstModelFactory {
             }
         }
         return DEVICE_MANAGER_OPERATION_MODEL_INSTANCE;
+    }
+
+    public static OstCreditsModel getOstCreditsModel() {
+        if (OST_CREDITS_MODEL_INSTANCE == null) {
+            synchronized (OstTransactionModelRepository.class) {
+                if (OST_CREDITS_MODEL_INSTANCE == null) {
+                    OST_CREDITS_MODEL_INSTANCE = new OstCreditsModelRepository();
+                }
+            }
+        }
+        return OST_CREDITS_MODEL_INSTANCE;
     }
 }

@@ -17,6 +17,10 @@ public class OstTokenHolder extends OstBaseEntity {
     public static final String USER_ID = "user_id";
     public static final String ADDRESS = "address";
 
+    public static class CONST_STATUS {
+        public static final String INITIALIZING = "INITIALIZING";
+        public static final String ACTIVATED = "ACTIVATED";
+    }
 
     public static OstTokenHolder parse(JSONObject jsonObject) throws JSONException {
         OstTokenHolder ostTokenHolder = new OstTokenHolder(jsonObject);

@@ -23,6 +23,16 @@ public class OstUser extends OstBaseEntity {
     public static final String DEVICE_MANAGER_ADDRESS = "device_manager_address";
     public static final String TYPE = "type";
 
+    public static class CONST_STATUS {
+        public static final String CREATED = "CREATED";
+        public static final String ACTIVATING = "ACTIVATING";
+        public static final String ACTIVATED = "ACTIVATED";
+    }
+
+    public static class TYPE {
+        public static final String USER = "admin";
+        public static final String ADMIN = "user";
+    }
 
     public static OstUser parse(JSONObject jsonObject) throws JSONException {
         OstUser ostUser = new OstUser(jsonObject);

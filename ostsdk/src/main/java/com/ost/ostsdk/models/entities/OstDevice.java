@@ -31,6 +31,15 @@ public class OstDevice extends OstBaseEntity {
     public static final String DEVICE_UUID = "device_uuid";
     public static final String DEVICE_MODEL = "device_model";
 
+    public static class CONST_STATUS {
+        public static final String CREATED = "CREATED";
+        public static final String REGISTERED = "REGISTERED";
+        public static final String AUTHORIZING = "AUTHORIZING";
+        public static final String AUTHORIZED = "AUTHORIZED";
+        public static final String REVOKING = "REVOKING";
+        public static final String REVOKED = "REVOKED";
+    }
+
     public static OstDevice parse(JSONObject jsonObject) throws JSONException {
         OstDevice ostDevice = new OstDevice(jsonObject);
         return OstModelFactory.getDeviceModel().insert(ostDevice);

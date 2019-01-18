@@ -10,7 +10,6 @@ import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.OstRuleModel;
-import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstRule;
 import com.ost.ostsdk.models.entities.OstToken;
 import com.ost.ostsdk.models.entities.OstUser;
@@ -23,8 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

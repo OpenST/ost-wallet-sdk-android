@@ -103,7 +103,7 @@ public class OstSessionTest {
 //        jsonObject.put(OstSession.EXPIRY_TIME, "100");
         jsonObject.put(OstSession.EXPIRATION_BLOCK_HEIGHT, "100");
         jsonObject.put(OstSession.TOKEN_HOLDER_ADDRESS, parentId);
-        jsonObject.put(OstDevice.STATUS, OstDevice.CREATED_STATUS);
+        jsonObject.put(OstDevice.STATUS, OstDevice.CONST_STATUS.CREATED);
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -119,15 +119,15 @@ public class OstSessionTest {
         jsonObject.put(OstBaseEntity.PARENT_ID, parentId);
         jsonObject.put(OstBaseEntity.ID, multiSigId);
         jsonObject.put(OstDeviceManager.ADDRESS, "0x2901239");
-        jsonObject.put(OstDeviceManager.TOKEN_HOLDER_ID, tokenHolderId);
+//        jsonObject.put(OstDeviceManager.TOKEN_HOLDER_ID, tokenHolderId);
         jsonObject.put(OstDeviceManager.REQUIREMENT, 1);
-        jsonObject.put(OstDeviceManager.AUTHORIZE_SESSION_CALL_PREFIX, "callPrefix");
+//        jsonObject.put(OstDeviceManager.AUTHORIZE_SESSION_CALL_PREFIX, "callPrefix");
         jsonObject.put(OstDeviceManager.NONCE, "1");
         jsonObject.put(OstDeviceManager.USER_ID, "123");
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstDeviceManager ostDeviceManager = OstModelFactory.getDeviceManagerModel().initMultiSig(jsonObject);
+        OstDeviceManager ostDeviceManager = OstDeviceManager.parse(jsonObject);
 
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 

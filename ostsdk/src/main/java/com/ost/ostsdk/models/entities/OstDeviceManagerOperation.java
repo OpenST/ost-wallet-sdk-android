@@ -23,6 +23,26 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
     public static final String RAW_CALL_DATA = "raw_call_data";
     public static final String SIGNATURES = "signatures";
 
+    public static class CONST_STATUS {
+        public static final String CREATED = "CREATED";
+        public static final String RELAYING = "RELAYING";
+        public static final String QUEUED = "QUEUED";
+        public static final String SUBMITTED = "SUBMITTED";
+        public static final String SUCCESS = "SUCCESS";
+        public static final String FAIL = "FAIL";
+    }
+
+    public static class KIND {
+        public static final String AUTHORIZE_DEVICE = "AUTHORIZE_DEVICE";
+        public static final String REVOKE_DEVICE = "REVOKE_DEVICE";
+        public static final String SWAP_DEVICE = "SWAP_DEVICE";
+        public static final String AUTHORIZE_RECOVERY_KEY = "AUTHORIZE_RECOVERY_KEY";
+        public static final String REVOKE_RECOVERY_KEY = "REVOKE_RECOVERY_KEY";
+        public static final String SWAP_RECOVERY_KEY = "SWAP_RECOVERY_KEY";
+        public static final String AUTHORIZE_TOKEN_HOLDER_SESSION = "AUTHORIZE_TOKEN_HOLDER_SESSION";
+        public static final String REVOKE_TOKEN_HOLDER_SESSION = "REVOKE_TOKEN_HOLDER_SESSION";
+    }
+
     public static OstDeviceManagerOperation parse(JSONObject jsonObject) throws JSONException {
         OstDeviceManagerOperation ostDeviceManagerOperation = new OstDeviceManagerOperation(jsonObject);
         return OstModelFactory.getDeviceManagerOperationModel().insert(ostDeviceManagerOperation);

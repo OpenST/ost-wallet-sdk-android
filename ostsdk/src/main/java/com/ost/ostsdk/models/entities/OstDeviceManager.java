@@ -19,6 +19,11 @@ public class OstDeviceManager extends OstBaseEntity {
     public static final String REQUIREMENT = "requirement";
     public static final String NONCE = "nonce";
 
+    public static class CONST_STATUS {
+        public static final String INITIALIZING = "INITIALIZING";
+        public static final String ACTIVATED = "ACTIVATED";
+    }
+
     public static OstDeviceManager parse(JSONObject jsonObject) throws JSONException {
         OstDeviceManager ostDeviceManager = new OstDeviceManager(jsonObject);
         return OstModelFactory.getDeviceManagerModel().insert(ostDeviceManager);

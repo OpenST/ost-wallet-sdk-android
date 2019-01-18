@@ -22,6 +22,14 @@ public class OstTransaction extends OstBaseEntity {
     public static final String RULE_NAME = "rule_name";
     public static final String TRANSFERS = "transfers";
 
+    public static class CONST_STATUS {
+        public static final String CREATED = "CREATED";
+        public static final String QUEUED = "QUEUED";
+        public static final String SUBMITTED = "SUBMITTED";
+        public static final String SUCCESS = "SUCCESS";
+        public static final String FAIL = "FAIL";
+    }
+
     public static OstTransaction parse(JSONObject jsonObject) throws JSONException {
         OstTransaction ostTransaction = new OstTransaction(jsonObject);
         return OstModelFactory.getTransactionModel().insert(ostTransaction);

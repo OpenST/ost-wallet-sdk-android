@@ -33,6 +33,14 @@ public class OstSession extends OstBaseEntity {
     public static final String SPENDING_LIMIT = "spending_limit";
     public static final String NONCE = "nonce";
 
+    public static class CONST_STATUS {
+        public static final String INITIALIZING = "INITIALIZING";
+        public static final String AUTHORISED = "AUTHORISED";
+        public static final String EXPIRED = "EXPIRED";
+        public static final String REVOKING = "REVOKING";
+        public static final String FAIL = "FAIL";
+    }
+
     public static OstSession parse(JSONObject jsonObject) throws JSONException {
         OstSession ostSession = new OstSession(jsonObject);
         return OstModelFactory.getSessionModel().insert(ostSession);
