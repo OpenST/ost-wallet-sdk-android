@@ -5,37 +5,37 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 
 import com.ost.ostsdk.models.entities.OstBaseEntity;
-import com.ost.ostsdk.models.entities.OstDeviceOperation;
+import com.ost.ostsdk.models.entities.OstDeviceManagerOperation;
 
 @Dao
 public abstract class OstDeviceOperationDao implements OstBaseDao {
 
     public void insert(OstBaseEntity baseEntity) {
-        this.insert((OstDeviceOperation) baseEntity);
+        this.insert((OstDeviceManagerOperation) baseEntity);
     }
 
     public void insertAll(OstBaseEntity... baseEntity) {
-        this.insertAll((OstDeviceOperation[]) baseEntity);
+        this.insertAll((OstDeviceManagerOperation[]) baseEntity);
     }
 
     @Insert
-    public abstract void insert(OstDeviceOperation ostDeviceOperation);
+    public abstract void insert(OstDeviceManagerOperation ostDeviceManagerOperation);
 
     @Insert
-    public abstract void insertAll(OstDeviceOperation... ostDeviceOperation);
+    public abstract void insertAll(OstDeviceManagerOperation... ostDeviceManagerOperation);
 
-    @Query("DELETE FROM device_operation WHERE id=:id")
+    @Query("DELETE FROM device_manager WHERE id=:id")
     public abstract void delete(String id);
 
-    @Query("SELECT * FROM device_operation WHERE id IN (:ids)")
-    public abstract OstDeviceOperation[] getByIds(String[] ids);
+    @Query("SELECT * FROM device_manager WHERE id IN (:ids)")
+    public abstract OstDeviceManagerOperation[] getByIds(String[] ids);
 
-    @Query("SELECT * FROM device_operation WHERE id=:id")
-    public abstract OstDeviceOperation getById(String id);
+    @Query("SELECT * FROM device_manager WHERE id=:id")
+    public abstract OstDeviceManagerOperation getById(String id);
 
-    @Query("DELETE FROM device_operation")
+    @Query("DELETE FROM device_manager")
     public abstract void deleteAll();
 
-    @Query("SELECT * FROM device_operation WHERE parent_id=:id")
-    public abstract OstDeviceOperation[] getByParentId(String id);
+    @Query("SELECT * FROM device_manager WHERE parent_id=:id")
+    public abstract OstDeviceManagerOperation[] getByParentId(String id);
 }

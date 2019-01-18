@@ -53,14 +53,13 @@ class OstDeviceModelRepository extends OstBaseModelCacheRepository implements Os
     }
 
     @Override
-    public OstDevice initMultiSigWallet(JSONObject jsonObject) throws JSONException {
-        OstDevice ostDevice = new OstDevice(jsonObject);
+    public OstDevice insert(OstDevice ostDevice) {
         insert(ostDevice, new OstTaskCallback() {});
         return ostDevice;
     }
 
     @Override
-    public OstDevice[] getMultiSigWalletsByParentId(String id) {
+    public OstDevice[] getDevicesByParentId(String id) {
         return (OstDevice[]) super.getByParentId(id);
     }
 

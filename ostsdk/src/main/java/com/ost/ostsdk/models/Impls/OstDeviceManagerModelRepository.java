@@ -53,8 +53,7 @@ class OstDeviceManagerModelRepository extends OstBaseModelCacheRepository implem
     }
 
     @Override
-    public OstDeviceManager initMultiSig(JSONObject jsonObject) throws JSONException {
-        OstDeviceManager ostDeviceManager = new OstDeviceManager(jsonObject);
+    public OstDeviceManager insert(OstDeviceManager ostDeviceManager) {
         insert(ostDeviceManager, new OstTaskCallback() {});
         return ostDeviceManager;
     }

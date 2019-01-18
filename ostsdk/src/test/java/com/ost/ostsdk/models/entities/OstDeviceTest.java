@@ -39,14 +39,14 @@ public class OstDeviceTest {
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstDevice.ADDRESS, "0x2901239");
-        jsonObject.put(OstDevice.MULTI_SIG_ID, "123");
+        jsonObject.put(OstDevice.DEVICE_MANAGER_ADDRESS, "123");
         jsonObject.put(OstDevice.STATUS, "status");
 
 
         OstDevice ostDevice = new OstDevice(jsonObject);
         assertEquals("0x2901239", ostDevice.getAddress());
         assertEquals("status", ostDevice.getStatus());
-        assertEquals("123", ostDevice.getMultiSigId());
+        assertEquals("123", ostDevice.getDeviceManagerAddress());
         assertEquals("ID", ostDevice.getId());
 
     }

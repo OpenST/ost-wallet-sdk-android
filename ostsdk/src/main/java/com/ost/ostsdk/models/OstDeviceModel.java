@@ -19,7 +19,7 @@ public interface OstDeviceModel {
 
     void deleteAllMultiSigWallets();
 
-    OstDevice initMultiSigWallet(JSONObject jsonObject) throws JSONException;
+    OstDevice[] getDevicesByParentId(String id);
 
-    OstDevice[] getMultiSigWalletsByParentId(String id);
+    OstDevice insert(OstDevice ostDevice);
 }

@@ -16,23 +16,13 @@ public class OstDeviceManager extends OstBaseEntity {
 
     public static final String USER_ID = "user_id";
     public static final String ADDRESS = "address";
-    public static final String TOKEN_HOLDER_ID = "token_holder_id";
     public static final String REQUIREMENT = "requirement";
-    public static final String AUTHORIZE_SESSION_CALL_PREFIX = "authorize_session_callprefix";
     public static final String NONCE = "nonce";
 
-    @Ignore
-    private String userId;
-    @Ignore
-    private String address;
-    @Ignore
-    private String tokenHolderId;
-    @Ignore
-    private int requirement;
-    @Ignore
-    private String authorizeSessionCallPrefix;
-    @Ignore
-    private String nonce;
+    public static OstDeviceManager parse(JSONObject jsonObject) throws JSONException {
+        OstDeviceManager ostDeviceManager = new OstDeviceManager(jsonObject);
+        return OstModelFactory.getDeviceManagerModel().insert(ostDeviceManager);
+    }
 
     public OstDeviceManager(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
         super(id, parentId, data, status, updatedTimestamp);
@@ -48,68 +38,30 @@ public class OstDeviceManager extends OstBaseEntity {
         return super.validate(jsonObject) &&
                 jsonObject.has(OstDeviceManager.USER_ID) &&
                 jsonObject.has(OstDeviceManager.ADDRESS) &&
-                jsonObject.has(OstDeviceManager.TOKEN_HOLDER_ID) &&
                 jsonObject.has(OstDeviceManager.REQUIREMENT) &&
-                jsonObject.has(OstDeviceManager.AUTHORIZE_SESSION_CALL_PREFIX) &&
                 jsonObject.has(OstDeviceManager.NONCE);
     }
 
     @Override
     public void processJson(JSONObject jsonObject) throws JSONException {
         super.processJson(jsonObject);
-        setAddress(jsonObject.getString(OstDeviceManager.ADDRESS));
-        setUserId(jsonObject.getString(OstDeviceManager.USER_ID));
-
-        setTokenHolderId(jsonObject.getString(OstDeviceManager.TOKEN_HOLDER_ID));
-        setRequirement(jsonObject.getInt(OstDeviceManager.REQUIREMENT));
-        setAuthorizeSessionCallPrefix(jsonObject.getString(OstDeviceManager.AUTHORIZE_SESSION_CALL_PREFIX));
-        setNonce(jsonObject.getString(OstDeviceManager.NONCE));
-
     }
 
     public String getUserId() {
-        return userId;
+        return getData().optString(OstDeviceManager.USER_ID, null);
     }
 
     public String getAddress() {
-        return address;
+        return getData().optString(OstDeviceManager.ADDRESS, null);
     }
 
     public int getRequirement() {
-        return requirement;
-    }
-
-    public String getAuthorizeSessionCallPrefix() {
-        return authorizeSessionCallPrefix;
-    }
-
-    private void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    private void setAddress(String address) {
-        this.address = address;
-    }
-
-    private void setRequirement(int requirement) {
-        this.requirement = requirement;
-    }
-
-    private void setAuthorizeSessionCallPrefix(String authorizeSessionCallPrefix) {
-        this.authorizeSessionCallPrefix = authorizeSessionCallPrefix;
-    }
-
-    public String getTokenHolderId() {
-        return tokenHolderId;
-    }
-
-    public void setTokenHolderId(String tokenHolderId) {
-        this.tokenHolderId = tokenHolderId;
+        return getData().optInt(OstDeviceManager.REQUIREMENT);
     }
 
     public OstDevice getDeviceMultiSigWallet() throws Exception {
         OstDevice deviceWallet = null;
-        OstDevice wallets[] = OstModelFactory.getDeviceModel().getMultiSigWalletsByParentId(getId());
+        OstDevice wallets[] = OstModelFactory.getDeviceModel().getDevicesByParentId(getId());
         for (OstDevice wallet : wallets) {
             if (null != new OstSecureKeyModelRepository().getById(wallet.getAddress())) {
                 deviceWallet = wallet;
@@ -123,10 +75,16 @@ public class OstDeviceManager extends OstBaseEntity {
     }
 
     public String getNonce() {
-        return nonce;
+        return getData().optString(OstDeviceManager.NONCE, null);
     }
 
-    public void setNonce(String nonce) {
-        this.nonce = nonce;
+    @Override
+    String getEntityIdKey() {
+        return OstDeviceManager.ID;
+    }
+
+    @Override
+    public String getParentIdKey() {
+        return OstDeviceManager.ADDRESS;
     }
 }

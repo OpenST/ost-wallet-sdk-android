@@ -1,6 +1,7 @@
 package com.ost.ostsdk.models.Impls;
 
 import com.ost.ostsdk.models.OstDeviceManagerModel;
+import com.ost.ostsdk.models.OstDeviceManagerOperationModel;
 import com.ost.ostsdk.models.OstDeviceModel;
 import com.ost.ostsdk.models.OstRuleModel;
 import com.ost.ostsdk.models.OstSessionModel;
@@ -11,9 +12,10 @@ import com.ost.ostsdk.models.OstUserModel;
 
 public class OstModelFactory {
 
-    private static volatile OstTransactionModelRepository TRANSACTION_MODEL_INSTANCE;
-    private static volatile OstSessionModelRepository SESSION_MODEL_INSTANCE;
-    private static volatile OstDeviceModelRepository DEVICE_MODEL_INSTANCE;
+    private static volatile OstDeviceManagerOperationModel DEVICE_MANAGER_OPERATION_MODEL_INSTANCE;
+    private static volatile OstTransactionModel TRANSACTION_MODEL_INSTANCE;
+    private static volatile OstSessionModel SESSION_MODEL_INSTANCE;
+    private static volatile OstDeviceModel DEVICE_MODEL_INSTANCE;
     private static volatile OstDeviceManagerModel DEVICE_MANAGER_MODEL_INSTANCE;
     private static volatile OstUserModel USER_MODEL_INSTANCE;
     private static volatile OstRuleModel RULE_MODEL_INSTANCE;
@@ -111,5 +113,16 @@ public class OstModelFactory {
             }
         }
         return TRANSACTION_MODEL_INSTANCE;
+    }
+
+    public static OstDeviceManagerOperationModel getDeviceManagerOperationModel() {
+        if (DEVICE_MANAGER_OPERATION_MODEL_INSTANCE == null) {
+            synchronized (OstTransactionModelRepository.class) {
+                if (DEVICE_MANAGER_OPERATION_MODEL_INSTANCE == null) {
+                    DEVICE_MANAGER_OPERATION_MODEL_INSTANCE = new OstDeviceManagerOperationModelRepository();
+                }
+            }
+        }
+        return DEVICE_MANAGER_OPERATION_MODEL_INSTANCE;
     }
 }

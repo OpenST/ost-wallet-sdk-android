@@ -19,5 +19,5 @@ public interface OstDeviceManagerModel {
 
     void deleteAllMultiSigs();
 
-    OstDeviceManager initMultiSig(JSONObject jsonObject) throws JSONException;
+    OstDeviceManager insert(OstDeviceManager ostDeviceManager);
 }

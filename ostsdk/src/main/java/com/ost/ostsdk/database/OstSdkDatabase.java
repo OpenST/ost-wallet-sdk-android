@@ -17,7 +17,7 @@ import com.ost.ostsdk.database.daos.OstSessionDao;
 import com.ost.ostsdk.database.daos.OstUserDao;
 import com.ost.ostsdk.models.entities.OstDevice;
 import com.ost.ostsdk.models.entities.OstDeviceManager;
-import com.ost.ostsdk.models.entities.OstDeviceOperation;
+import com.ost.ostsdk.models.entities.OstDeviceManagerOperation;
 import com.ost.ostsdk.models.entities.OstTransaction;
 import com.ost.ostsdk.models.entities.OstRule;
 import com.ost.ostsdk.models.entities.OstSession;
@@ -26,7 +26,7 @@ import com.ost.ostsdk.models.entities.OstTokenHolder;
 import com.ost.ostsdk.models.entities.OstUser;
 
 @Database(entities = {OstUser.class, OstRule.class, OstToken.class, OstTransaction.class,
-        OstDeviceOperation.class, OstTokenHolder.class, OstSession.class,
+        OstDeviceManagerOperation.class, OstTokenHolder.class, OstSession.class,
         OstDevice.class, OstDeviceManager.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class OstSdkDatabase extends RoomDatabase {

@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class OstDeviceOperationTest {
+public class OstDeviceManagerOperationTest {
 
     @Test
     public void testMultiSigOperationInvalidInsertion() throws JSONException {
@@ -24,9 +24,9 @@ public class OstDeviceOperationTest {
         //Test Id with partial OstDeviceManager attribute
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
-        jsonObject.put(OstDeviceOperation.ENCODED_DATA, "encodedData");
-        jsonObject.put(OstDeviceOperation.RAW_DATA, new JSONObject());
-        jsonObject.put(OstDeviceOperation.KIND, "kind");
+        jsonObject.put(OstDeviceManagerOperation.KIND, "encodedData");
+        jsonObject.put(OstDeviceManagerOperation.OPERATION, new JSONObject());
+        jsonObject.put(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS, "kind");
         testMultiSigOperationJsonException(jsonObject);
     }
 
@@ -39,41 +39,41 @@ public class OstDeviceOperationTest {
         //Test without any DeviceOperation  attribute
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
-        jsonObject.put(OstDeviceOperation.ENCODED_DATA, "0x2901239");
-        jsonObject.put(OstDeviceOperation.KIND, "kind");
-        jsonObject.put(OstDeviceOperation.STATUS, "status");
-        jsonObject.put(OstDeviceOperation.TOKEN_HOLDER_ADDRESS, "0x9923232");
+        jsonObject.put(OstDeviceManagerOperation.KIND, "0x2901239");
+        jsonObject.put(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS, "kind");
+        jsonObject.put(OstDeviceManagerOperation.STATUS, "status");
+        jsonObject.put(OstDeviceManagerOperation.DEVICE_MANAGER_ID, "0x9923232");
 
         JSONObject rawData = new JSONObject();
-        jsonObject.put(OstDeviceOperation.RAW_DATA, rawData);
+        jsonObject.put(OstDeviceManagerOperation.OPERATION, rawData);
 
         JSONObject signatures = new JSONObject();
         signatures.put("0x123", "0x456");
-        jsonObject.put(OstDeviceOperation.SIGNATURES, signatures);
+        jsonObject.put(OstDeviceManagerOperation.SIGNATURES, signatures);
 
-        jsonObject.put(OstDeviceOperation.USER_ID, "123");
+        jsonObject.put(OstDeviceManagerOperation.USER_ID, "123");
 
         testMultiSigOperationJsonWithNoException(jsonObject);
 
         //Test Id with partial DeviceOperation attribute
-        OstDeviceOperation ostDeviceOperation = new OstDeviceOperation(jsonObject);
-        assertEquals("0x2901239", ostDeviceOperation.getEncodedData());
-        assertEquals("kind", ostDeviceOperation.getKind());
-        assertEquals("status", ostDeviceOperation.getStatus());
-        assertEquals("0x9923232", ostDeviceOperation.getTokenHolderAddress());
+        OstDeviceManagerOperation ostDeviceManagerOperation = new OstDeviceManagerOperation(jsonObject);
+        assertEquals("0x2901239", ostDeviceManagerOperation.getDeviceManagerAddress());
+        assertEquals("kind", ostDeviceManagerOperation.getKind());
+        assertEquals("status", ostDeviceManagerOperation.getStatus());
+        assertEquals("0x9923232", ostDeviceManagerOperation.getDeviceManagerId());
 
-        assertEquals(rawData, ostDeviceOperation.getRawData());
-        assertEquals(signatures, ostDeviceOperation.getSignatures());
+        assertEquals(rawData, ostDeviceManagerOperation.getSafeTxnGas());
+        assertEquals(signatures, ostDeviceManagerOperation.getSignatures());
 
-        assertEquals("123", ostDeviceOperation.getUserId());
-        assertEquals("ID", ostDeviceOperation.getId());
+        assertEquals("123", ostDeviceManagerOperation.getUserId());
+        assertEquals("ID", ostDeviceManagerOperation.getId());
 
     }
 
 
     private void testMultiSigOperationJsonException(JSONObject jsonObject) {
         try {
-            OstDeviceOperation ostDeviceOperation = new OstDeviceOperation(jsonObject);
+            OstDeviceManagerOperation ostDeviceManagerOperation = new OstDeviceManagerOperation(jsonObject);
             fail();
         } catch (Exception ex) {
             assertTrue(true);
@@ -82,7 +82,7 @@ public class OstDeviceOperationTest {
 
     private void testMultiSigOperationJsonWithNoException(JSONObject jsonObject) {
         try {
-            OstDeviceOperation ostDeviceOperation = new OstDeviceOperation(jsonObject);
+            OstDeviceManagerOperation ostDeviceManagerOperation = new OstDeviceManagerOperation(jsonObject);
             assertTrue(true);
         } catch (Exception ex) {
             fail();
