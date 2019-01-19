@@ -17,9 +17,17 @@ public class OstRule extends OstBaseEntity {
     public static final String ABI = "abi";
     public static final String CALL_PREFIX = "call_prefix";
 
+    public static String getIdentifier() {
+        return OstRule.ID;
+    }
+
     public static OstRule parse(JSONObject jsonObject) throws JSONException {
-        OstRule ostRule = new OstRule(jsonObject);
-        return OstModelFactory.getRuleModel().insert(ostRule);
+        return (OstRule) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getRuleModel(), getIdentifier(), new EntityFactory() {
+            @Override
+            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                return new OstRule(jsonObject);
+            }
+        });
     }
 
     public OstRule(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -32,23 +40,23 @@ public class OstRule extends OstBaseEntity {
     }
 
     public String getTokenId() {
-        return getData().optString(OstRule.TOKEN_ID, null);
+        return getJSONData().optString(OstRule.TOKEN_ID, null);
     }
 
     public String getAddress() {
-        return getData().optString(OstRule.ADDRESS, null);
+        return getJSONData().optString(OstRule.ADDRESS, null);
     }
 
     public String getAbi() {
-        return getData().optString(OstRule.ABI, null);
+        return getJSONData().optString(OstRule.ABI, null);
     }
 
     public String getName() {
-        return getData().optString(OstRule.NAME, null);
+        return getJSONData().optString(OstRule.NAME, null);
     }
 
     public String getCallPrefix() {
-        return getData().optString(OstRule.CALL_PREFIX, null);
+        return getJSONData().optString(OstRule.CALL_PREFIX, null);
     }
 
 
@@ -69,11 +77,11 @@ public class OstRule extends OstBaseEntity {
 
     @Override
     String getEntityIdKey() {
-        return OstUser.ID;
+        return getIdentifier();
     }
 
     @Override
     public String getParentIdKey() {
-        return OstUser.TOKEN_ID;
+        return OstRule.TOKEN_ID;
     }
 }

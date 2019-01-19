@@ -5,6 +5,7 @@ import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstTokenDao;
 import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstTokenModel;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstToken;
 
 class OstTokenModelRepository extends OstBaseModelCacheRepository implements OstTokenModel {
@@ -22,15 +23,28 @@ class OstTokenModelRepository extends OstBaseModelCacheRepository implements Ost
         return mOstTokenDao;
     }
 
-
     @Override
-    public OstToken insert(OstToken ostToken) {
-        super.insert(ostToken, new OstTaskCallback() {});
-        return ostToken;
+    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        super.insert(ostBaseEntity, new OstTaskCallback() {});
     }
 
     @Override
-    public OstToken getTokenById(String id) {
+    public OstToken getEntityById(String id) {
         return (OstToken) super.getById(id);
+    }
+
+    @Override
+    public OstToken[] getEntitiesByParentId(String id) {
+        return (OstToken[]) super.getByParentId(id);
+    }
+
+    @Override
+    public void deleteEntity(String id) {
+        super.delete(id,  new OstTaskCallback() {});
+    }
+
+    @Override
+    public void deleteAllEntities() {
+        super.deleteAll( new OstTaskCallback() {});
     }
 }

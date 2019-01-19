@@ -23,6 +23,10 @@ public class OstUser extends OstBaseEntity {
     public static final String DEVICE_MANAGER_ADDRESS = "device_manager_address";
     public static final String TYPE = "type";
 
+    public static String getIdentifier() {
+        return OstUser.ID;
+    }
+
     public static class CONST_STATUS {
         public static final String CREATED = "CREATED";
         public static final String ACTIVATING = "ACTIVATING";
@@ -35,8 +39,12 @@ public class OstUser extends OstBaseEntity {
     }
 
     public static OstUser parse(JSONObject jsonObject) throws JSONException {
-        OstUser ostUser = new OstUser(jsonObject);
-        return OstModelFactory.getUserModel().insert(ostUser);
+        return (OstUser) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getUserModel(), getIdentifier(), new EntityFactory() {
+            @Override
+            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                return new OstUser(jsonObject);
+            }
+        });
     }
 
     public OstUser(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -49,23 +57,23 @@ public class OstUser extends OstBaseEntity {
     }
 
     public String getTokenId() {
-        return getData().optString(OstUser.TOKEN_ID,null);
+        return getJSONData().optString(OstUser.TOKEN_ID,null);
     }
 
     public String getTokenHolderAddress() {
-        return getData().optString(OstUser.TOKEN_HOLDER_ADDRESS,null);
+        return getJSONData().optString(OstUser.TOKEN_HOLDER_ADDRESS,null);
     }
 
     public String getName() {
-        return getData().optString(OstUser.NAME,null);
+        return getJSONData().optString(OstUser.NAME,null);
     }
 
     public String getDeviceManagerAddress() {
-        return getData().optString(OstUser.DEVICE_MANAGER_ADDRESS,null);
+        return getJSONData().optString(OstUser.DEVICE_MANAGER_ADDRESS,null);
     }
 
     public String getType() {
-        return getData().optString(OstUser.TYPE,null);
+        return getJSONData().optString(OstUser.TYPE,null);
     }
 
     public String createDevice() {
@@ -88,20 +96,20 @@ public class OstUser extends OstBaseEntity {
     }
 
     public OstTokenHolder getTokenHolder() {
-        return OstModelFactory.getTokenHolderModel().getTokenHolderById(getTokenHolderAddress());
+        return OstModelFactory.getTokenHolderModel().getEntityById(getTokenHolderAddress());
     }
 
     public void delTokenHolder(String id) {
-        OstModelFactory.getTokenHolderModel().deleteTokenHolder(id);
+        OstModelFactory.getTokenHolderModel().deleteEntity(id);
     }
 
     public OstDeviceManager getMultiSig() {
-        return OstModelFactory.getDeviceManagerModel().getMultiSigById(getDeviceManagerAddress());
+        return OstModelFactory.getDeviceManagerModel().getEntityById(getDeviceManagerAddress());
     }
 
     @Override
     String getEntityIdKey() {
-        return OstUser.ID;
+        return getIdentifier();
     }
 
     @Override

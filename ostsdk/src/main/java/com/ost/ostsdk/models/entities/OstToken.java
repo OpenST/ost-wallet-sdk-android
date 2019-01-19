@@ -20,9 +20,17 @@ public class OstToken extends OstBaseEntity {
     public static final String AUXILIARY_CHAIN = "auxiliary_chain";
 
 
+    public static String getIdentifier() {
+        return OstUser.ID;
+    }
+
     public static OstToken parse(JSONObject jsonObject) throws JSONException {
-        OstToken ostToken = new OstToken(jsonObject);
-        return OstModelFactory.getTokenModel().insert(ostToken);
+        return (OstToken) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getTokenModel(), getIdentifier(), new EntityFactory() {
+            @Override
+            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                return new OstToken(jsonObject);
+            }
+        });
     }
 
     public OstToken(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -51,40 +59,39 @@ public class OstToken extends OstBaseEntity {
     }
 
     public OstRule initRule(JSONObject jsonObject) throws JSONException {
-        jsonObject.put(OstBaseEntity.PARENT_ID, getId());
-        return OstModelFactory.getRuleModel().insert(OstRule.parse(jsonObject));
+        return OstRule.parse(jsonObject);
     }
 
     public OstRule getRule(String id) {
-        return OstModelFactory.getRuleModel().getRuleById(id);
+        return OstModelFactory.getRuleModel().getEntityById(id);
     }
 
     public void delRule(String id) {
-        OstModelFactory.getRuleModel().deleteRule(id);
+        OstModelFactory.getRuleModel().deleteEntity(id);
     }
 
     public String getName() {
-        return getData().optString(OstToken.NAME, null);
+        return getJSONData().optString(OstToken.NAME, null);
     }
 
     public String getSymbol() {
-        return getData().optString(OstToken.SYMBOL, null);
+        return getJSONData().optString(OstToken.SYMBOL, null);
     }
 
     public String getConversionFactor() {
-        return getData().optString(OstToken.CONVERSION_FACTOR, null);
+        return getJSONData().optString(OstToken.CONVERSION_FACTOR, null);
     }
 
     public String getTotalSupply() {
-        return getData().optString(OstToken.TOTAL_SUPPLY, null);
+        return getJSONData().optString(OstToken.TOTAL_SUPPLY, null);
     }
 
     public JSONObject getOriginChain() {
-        return getData().optJSONObject(OstToken.ORIGIN_CHAIN);
+        return getJSONData().optJSONObject(OstToken.ORIGIN_CHAIN);
     }
 
     public JSONArray getAuxiliaryChain() {
-        return getData().optJSONArray(OstToken.AUXILIARY_CHAIN);
+        return getJSONData().optJSONArray(OstToken.AUXILIARY_CHAIN);
     }
 
     @Override

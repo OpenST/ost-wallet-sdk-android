@@ -17,14 +17,22 @@ public class OstTokenHolder extends OstBaseEntity {
     public static final String USER_ID = "user_id";
     public static final String ADDRESS = "address";
 
+    public static String getIdentifier() {
+        return OstTokenHolder.USER_ID;
+    }
+
     public static class CONST_STATUS {
         public static final String INITIALIZING = "INITIALIZING";
         public static final String ACTIVATED = "ACTIVATED";
     }
 
     public static OstTokenHolder parse(JSONObject jsonObject) throws JSONException {
-        OstTokenHolder ostTokenHolder = new OstTokenHolder(jsonObject);
-        return OstModelFactory.getTokenHolderModel().insert(ostTokenHolder);
+        return (OstTokenHolder) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getTokenHolderModel(), getIdentifier(), new EntityFactory() {
+            @Override
+            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                return new OstTokenHolder(jsonObject);
+            }
+        });
     }
 
     public OstTokenHolder(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -51,17 +59,17 @@ public class OstTokenHolder extends OstBaseEntity {
     }
 
     public String getUserId() {
-        return getData().optString(OstTokenHolder.USER_ID, null);
+        return getJSONData().optString(OstTokenHolder.USER_ID, null);
     }
 
     public String getAddress() {
-        return getData().optString(OstTokenHolder.ADDRESS, null);
+        return getJSONData().optString(OstTokenHolder.ADDRESS, null);
     }
 
 
     public OstSession getDeviceTokenHolderSession() throws Exception {
         OstSession deviceSession = null;
-        OstSession sessions[] = OstModelFactory.getSessionModel().getTokenHolderSessionsByParentId(getId());
+        OstSession sessions[] = OstModelFactory.getSessionModel().getEntitiesByParentId(getId());
         for (OstSession session : sessions) {
             if (null != new OstSecureKeyModelRepository().getById(session.getAddress())) {
                 deviceSession = session;
@@ -81,6 +89,6 @@ public class OstTokenHolder extends OstBaseEntity {
 
     @Override
     public String getParentIdKey() {
-        return OstTokenHolder.USER_ID;
+        return getIdentifier();
     }
 }

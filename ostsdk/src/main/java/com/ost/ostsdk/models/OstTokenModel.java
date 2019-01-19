@@ -2,9 +2,10 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.OstToken;
 
-public interface OstTokenModel {
+public interface OstTokenModel extends OstBaseModel {
+    @Override
+    OstToken getEntityById(String id);
 
-    OstToken insert(OstToken ostToken);
-
-    OstToken getTokenById(String id);
+    @Override
+    OstToken[] getEntitiesByParentId(String id);
 }

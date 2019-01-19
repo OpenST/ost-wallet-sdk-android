@@ -5,10 +5,8 @@ import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstDeviceManagerDao;
 import com.ost.ostsdk.models.OstDeviceManagerModel;
 import com.ost.ostsdk.models.OstTaskCallback;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstDeviceManager;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 class OstDeviceManagerModelRepository extends OstBaseModelCacheRepository implements OstDeviceManagerModel {
 
@@ -21,45 +19,33 @@ class OstDeviceManagerModelRepository extends OstBaseModelCacheRepository implem
         mOstDeviceManagerDao = db.multiSigDao();
     }
 
-
     @Override
-    public void insertMultiSig(final OstDeviceManager ostDeviceManager) {
-        super.insert(ostDeviceManager, new OstTaskCallback() {});
+    OstBaseDao getModel() {
+        return mOstDeviceManagerDao;
     }
 
     @Override
-    public void insertAllMultiSigs(final OstDeviceManager[] ostDeviceManager) {
-        super.insertAll(ostDeviceManager, new OstTaskCallback() {});
+    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        super.insert(ostBaseEntity, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteMultiSig(final String id) {
+    public OstDeviceManager getEntityById(String id) {
+        return (OstDeviceManager)super.getById(id);
+    }
+
+    @Override
+    public OstDeviceManager[] getEntitiesByParentId(String id) {
+        return (OstDeviceManager[]) super.getByParentId(id);
+    }
+
+    @Override
+    public void deleteEntity(String id) {
         super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
-    public OstDeviceManager[] getMultiSigsByIds(String[] ids) {
-        return (OstDeviceManager[]) super.getByIds(ids);
-    }
-
-    @Override
-    public OstDeviceManager getMultiSigById(String id) {
-        return (OstDeviceManager) super.getById(id);
-    }
-
-    @Override
-    public void deleteAllMultiSigs() {
+    public void deleteAllEntities() {
         super.deleteAll(new OstTaskCallback() {});
-    }
-
-    @Override
-    public OstDeviceManager insert(OstDeviceManager ostDeviceManager) {
-        insert(ostDeviceManager, new OstTaskCallback() {});
-        return ostDeviceManager;
-    }
-
-    @Override
-    OstBaseDao getModel() {
-        return mOstDeviceManagerDao;
     }
 }

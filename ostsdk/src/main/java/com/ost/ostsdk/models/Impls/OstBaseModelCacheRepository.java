@@ -20,23 +20,18 @@ abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
         this.mInMemoryMap = new HashMap<>();
     }
 
-    public void insert(final OstBaseEntity baseEntity, final OstTaskCallback callback) {
+    public void insert(final OstBaseEntity ostBaseEntity, final OstTaskCallback callback) {
 
         //check in cache for for entity with same uts
-        OstBaseEntity oldEntity = getById(baseEntity.getId());
-        if (null != oldEntity && oldEntity.getUpdatedTimestamp() >= baseEntity.getUpdatedTimestamp()) {
-            return;
-        }
-        insertInCacheAndMemory(baseEntity);
+        insertInCacheAndMemory(ostBaseEntity);
 
-        super.insert(baseEntity, new OstTaskCallback() {
+        super.insert(ostBaseEntity, new OstTaskCallback() {
             @Override
             public void onSuccess() {
                 callback.onSuccess();
-                removeInMemory(baseEntity);
+                removeInMemory(ostBaseEntity);
             }
         });
-
     }
 
     public void insertAll(final OstBaseEntity[] baseEntities, final OstTaskCallback callback) {

@@ -6,6 +6,8 @@ import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.ost.ostsdk.models.OstBaseModel;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,6 +56,24 @@ public class OstBaseEntity {
         processJson(jsonObject);
     }
 
+    public static OstBaseEntity insertOrUpdate(JSONObject jsonObject, OstBaseModel ostBaseModel, String identifier, EntityFactory entityFactory) throws JSONException {
+        OstBaseEntity dbEntity = ostBaseModel.getEntityById(identifier);
+        if (null != dbEntity) {
+            if (dbEntity.getUpdatedTimestamp() >= OstBaseEntity.getUpdatedTimestamp(jsonObject)) {
+                return (OstUser) dbEntity;
+            }
+            dbEntity.processJson(jsonObject);
+        } else {
+            dbEntity = entityFactory.createEntity(jsonObject);
+        }
+        ostBaseModel.insertOrUpdateEntity(dbEntity);
+        return dbEntity;
+    }
+
+    public static double getUpdatedTimestamp(JSONObject jsonObject) {
+        return jsonObject.optDouble(OstBaseEntity.UPDATED_TIMESTAMP, Double.MIN_VALUE);
+    }
+
     public String getParentId() {
         return parentId;
     }
@@ -62,17 +82,17 @@ public class OstBaseEntity {
         return id;
     }
 
-    JSONObject getData() {
-        return data;
-    }
-
-    public JSONObject getJSONData() {
+    public JSONObject getData() {
         try {
             return new JSONObject(data.toString());
         } catch (Exception e) {
             Log.e(TAG, "JSON Parsing error");
         }
         return new JSONObject();
+    }
+
+    JSONObject getJSONData() {
+        return data;
     }
 
     public String getStatus() {
@@ -129,5 +149,9 @@ public class OstBaseEntity {
 
     String getParentIdKey() {
         return OstBaseEntity.PARENT_ID;
+    }
+
+    interface EntityFactory {
+        OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException;
     }
 }

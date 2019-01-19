@@ -2,21 +2,11 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.OstSession;
 
-public interface OstSessionModel {
+public interface OstSessionModel extends OstBaseModel {
+    @Override
+    OstSession getEntityById(String id);
 
-    void insertTokenHolderSession(OstSession ostSession);
 
-    void insertAllTokenHolderSessions(OstSession[] ostSession);
-
-    void deleteTokenHolderSession(String id);
-
-    OstSession[] getTokenHolderSessionsByIds(String[] ids);
-
-    OstSession getTokenHolderSessionById(String id);
-
-    void deleteAllTokenHolderSessions();
-
-    OstSession insert(OstSession ostSession);
-
-    OstSession[] getTokenHolderSessionsByParentId(String id);
+    @Override
+    OstSession[] getEntitiesByParentId(String id);
 }

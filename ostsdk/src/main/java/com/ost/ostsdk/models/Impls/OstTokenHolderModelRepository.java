@@ -5,6 +5,7 @@ import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstTokenHolderDao;
 import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstTokenHolderModel;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstTokenHolder;
 
 class OstTokenHolderModelRepository extends OstBaseModelCacheRepository implements OstTokenHolderModel {
@@ -23,39 +24,29 @@ class OstTokenHolderModelRepository extends OstBaseModelCacheRepository implemen
         return mOstTokenHolderDao;
     }
 
+
     @Override
-    public void insertTokenHolder(OstTokenHolder ostTokenHolder) {
-        super.insert(ostTokenHolder, new OstTaskCallback() {});
+    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        super.insert(ostBaseEntity, new OstTaskCallback() {});
     }
 
     @Override
-    public void insertAllTokenHolders(OstTokenHolder[] ostTokenHolders) {
-        super.insertAll(ostTokenHolders, new OstTaskCallback() {});
+    public OstTokenHolder getEntityById(String id) {
+        return (OstTokenHolder)super.getById(id);
     }
 
     @Override
-    public void deleteTokenHolder(String id) {
+    public OstTokenHolder[] getEntitiesByParentId(String id) {
+        return (OstTokenHolder[]) super.getByParentId(id);
+    }
+
+    @Override
+    public void deleteEntity(String id) {
         super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
-    public OstTokenHolder[] getTokenHoldersByIds(String[] ids) {
-        return (OstTokenHolder[]) super.getByIds(ids);
-    }
-
-    @Override
-    public OstTokenHolder getTokenHolderById(String id) {
-        return (OstTokenHolder) super.getById(id);
-    }
-
-    @Override
-    public void deleteAllTokenHolders() {
+    public void deleteAllEntities() {
         super.deleteAll(new OstTaskCallback() {});
-    }
-
-    @Override
-    public OstTokenHolder insert(OstTokenHolder ostTokenHolder) {
-        insert(ostTokenHolder, new OstTaskCallback() {});
-        return ostTokenHolder;
     }
 }

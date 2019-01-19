@@ -40,9 +40,17 @@ public class OstDevice extends OstBaseEntity {
         public static final String REVOKED = "REVOKED";
     }
 
+    public static String getIdentifier() {
+        return OstDevice.ADDRESS;
+    }
+
     public static OstDevice parse(JSONObject jsonObject) throws JSONException {
-        OstDevice ostDevice = new OstDevice(jsonObject);
-        return OstModelFactory.getDeviceModel().insert(ostDevice);
+        return (OstDevice) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getDeviceModel(), getIdentifier(), new EntityFactory() {
+            @Override
+            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                return new OstDevice(jsonObject);
+            }
+        });
     }
 
     public OstDevice(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -78,32 +86,32 @@ public class OstDevice extends OstBaseEntity {
 
 
     public String getAddress() {
-        return getData().optString(OstDevice.ADDRESS, null);
+        return getJSONData().optString(OstDevice.ADDRESS, null);
     }
 
     public String getDeviceName() {
-        return getData().optString(OstDevice.DEVICE_NAME, null);
+        return getJSONData().optString(OstDevice.DEVICE_NAME, null);
     }
 
     public String getDeviceModel() {
-        return getData().optString(OstDevice.DEVICE_MODEL, null);
+        return getJSONData().optString(OstDevice.DEVICE_MODEL, null);
     }
 
     public String getDeviceUuid() {
-        return getData().optString(OstDevice.DEVICE_UUID, null);
+        return getJSONData().optString(OstDevice.DEVICE_UUID, null);
     }
 
     public String getUserId() {
-        return getData().optString(OstDevice.USER_ID, null);
+        return getJSONData().optString(OstDevice.USER_ID, null);
     }
 
     public String getDeviceManagerAddress() {
-        return getData().optString(OstDevice.DEVICE_MANAGER_ADDRESS, null);
+        return getJSONData().optString(OstDevice.DEVICE_MANAGER_ADDRESS, null);
     }
 
     @Override
     String getEntityIdKey() {
-        return OstDevice.ADDRESS;
+        return getIdentifier();
     }
 
     @Override

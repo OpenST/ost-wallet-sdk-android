@@ -2,19 +2,10 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.OstTransaction;
 
-public interface OstTransactionModel {
+public interface OstTransactionModel extends OstBaseModel {
+    @Override
+    OstTransaction getEntityById(String id);
 
-    void insertTransaction(OstTransaction executableRule);
-
-    void insertAllTransactions(OstTransaction[] executableRule);
-
-    void deleteTransaction(String id);
-
-    OstTransaction[] getTransactionsByIds(String[] ids);
-
-    OstTransaction getTransactionById(String id);
-
-    void deleteAllTransactions();
-
-    OstTransaction insert(OstTransaction ostTransaction);
+    @Override
+    OstTransaction[] getEntitiesByParentId(String id);
 }

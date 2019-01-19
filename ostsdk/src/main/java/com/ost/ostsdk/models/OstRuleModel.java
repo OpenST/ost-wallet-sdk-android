@@ -2,18 +2,10 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.OstRule;
 
-public interface OstRuleModel {
-    void insertRule(OstRule ostRule);
+public interface OstRuleModel extends OstBaseModel {
+    @Override
+    OstRule getEntityById(String id);
 
-    void insertAllRules(OstRule[] ostRule);
-
-    void deleteRule(String id);
-
-    OstRule[] getRulesByIds(String[] ids);
-
-    OstRule getRuleById(String id);
-
-    void deleteAllRules();
-
-    OstRule insert(OstRule ostRule);
+    @Override
+    OstRule[] getEntitiesByParentId(String id);
 }

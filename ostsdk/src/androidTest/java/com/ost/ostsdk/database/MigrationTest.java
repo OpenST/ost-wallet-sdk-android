@@ -40,7 +40,7 @@ public class MigrationTest {
 //        cv.put("token_holder_id","123");
 //        cv.put("name","name");
 //        cv.put("uts",123);
-//        db.insert("user",SQLiteDatabase.CONFLICT_REPLACE, cv);
+//        db.insertOrUpdate("user",SQLiteDatabase.CONFLICT_REPLACE, cv);
 //        testHelper.closeWhenFinished(db);
 //
 //        db = testHelper.runMigrationsAndValidate("ostsdk_db", 1, true, new MigrationSample(1, 1));

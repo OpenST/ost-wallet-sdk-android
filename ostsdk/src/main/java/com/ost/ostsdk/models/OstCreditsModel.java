@@ -2,8 +2,10 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.OstCredits;
 
-public interface OstCreditsModel {
+public interface OstCreditsModel extends OstBaseModel{
+    @Override
+    OstCredits getEntityById(String id);
 
-    OstCredits insert(OstCredits ostCredits);
-
+    @Override
+    OstCredits[] getEntitiesByParentId(String id);
 }

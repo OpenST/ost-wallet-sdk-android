@@ -7,8 +7,6 @@ import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.utils.DispatchAsync;
 
-import org.json.JSONObject;
-
 abstract class OstBaseModelRepository {
 
     private static final String TAG = "OstBaseModelRepository";
@@ -66,7 +64,7 @@ abstract class OstBaseModelRepository {
     public OstBaseEntity getById(String id) {
         OstBaseEntity baseEntity = getModel().getById(id);
         try {
-            baseEntity.processJson(baseEntity.getJSONData());
+            baseEntity.processJson(baseEntity.getData());
         } catch (Exception exception) {
             Log.e(TAG, "Exception in OstBaseModelRepository::getById for parsing data");
         }
@@ -87,7 +85,7 @@ abstract class OstBaseModelRepository {
     private OstBaseEntity[] processEntity(OstBaseEntity[] baseEntities) {
         for (OstBaseEntity baseEntity : baseEntities) {
             try {
-                baseEntity.processJson(baseEntity.getJSONData());
+                baseEntity.processJson(baseEntity.getData());
             } catch (Exception exception) {
                 Log.e(TAG, "Exception in OstBaseModelRepository:: processEntity for parsing data");
             }

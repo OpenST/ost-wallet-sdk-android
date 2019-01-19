@@ -2,19 +2,10 @@ package com.ost.ostsdk.models;
 
 import com.ost.ostsdk.models.entities.OstTokenHolder;
 
-public interface OstTokenHolderModel {
+public interface OstTokenHolderModel extends OstBaseModel {
+    @Override
+    OstTokenHolder getEntityById(String id);
 
-    void insertTokenHolder(OstTokenHolder ostTokenHolder);
-
-    void insertAllTokenHolders(OstTokenHolder[] ostTokenHolders);
-
-    void deleteTokenHolder(String id);
-
-    OstTokenHolder[] getTokenHoldersByIds(String[] ids);
-
-    OstTokenHolder getTokenHolderById(String id);
-
-    void deleteAllTokenHolders();
-
-    OstTokenHolder insert(OstTokenHolder ostTokenHolder);
+    @Override
+    OstTokenHolder[] getEntitiesByParentId(String id);
 }

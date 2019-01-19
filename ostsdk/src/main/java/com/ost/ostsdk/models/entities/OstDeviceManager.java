@@ -24,9 +24,17 @@ public class OstDeviceManager extends OstBaseEntity {
         public static final String ACTIVATED = "ACTIVATED";
     }
 
+    public static String getIdentifier() {
+        return OstDeviceManager.ID;
+    }
+
     public static OstDeviceManager parse(JSONObject jsonObject) throws JSONException {
-        OstDeviceManager ostDeviceManager = new OstDeviceManager(jsonObject);
-        return OstModelFactory.getDeviceManagerModel().insert(ostDeviceManager);
+        return (OstDeviceManager) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getDeviceManagerModel(), getIdentifier(), new EntityFactory() {
+            @Override
+            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                return new OstDeviceManager(jsonObject);
+            }
+        });
     }
 
     public OstDeviceManager(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -53,20 +61,20 @@ public class OstDeviceManager extends OstBaseEntity {
     }
 
     public String getUserId() {
-        return getData().optString(OstDeviceManager.USER_ID, null);
+        return getJSONData().optString(OstDeviceManager.USER_ID, null);
     }
 
     public String getAddress() {
-        return getData().optString(OstDeviceManager.ADDRESS, null);
+        return getJSONData().optString(OstDeviceManager.ADDRESS, null);
     }
 
     public int getRequirement() {
-        return getData().optInt(OstDeviceManager.REQUIREMENT);
+        return getJSONData().optInt(OstDeviceManager.REQUIREMENT);
     }
 
     public OstDevice getDeviceMultiSigWallet() throws Exception {
         OstDevice deviceWallet = null;
-        OstDevice wallets[] = OstModelFactory.getDeviceModel().getDevicesByParentId(getId());
+        OstDevice wallets[] = OstModelFactory.getDeviceModel().getEntitiesByParentId(getId());
         for (OstDevice wallet : wallets) {
             if (null != new OstSecureKeyModelRepository().getById(wallet.getAddress())) {
                 deviceWallet = wallet;
@@ -80,12 +88,12 @@ public class OstDeviceManager extends OstBaseEntity {
     }
 
     public String getNonce() {
-        return getData().optString(OstDeviceManager.NONCE, null);
+        return getJSONData().optString(OstDeviceManager.NONCE, null);
     }
 
     @Override
     String getEntityIdKey() {
-        return OstDeviceManager.ID;
+        return getIdentifier();
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstRuleDao;
 import com.ost.ostsdk.models.OstRuleModel;
 import com.ost.ostsdk.models.OstTaskCallback;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstRule;
 
 class OstRuleModelRepository extends OstBaseModelCacheRepository implements OstRuleModel {
@@ -18,45 +19,33 @@ class OstRuleModelRepository extends OstBaseModelCacheRepository implements OstR
         mOstRuleDao = db.ruleDao();
     }
 
-
     @Override
-    public void insertRule(final OstRule ostRule) {
-        super.insert(ostRule, new OstTaskCallback() {});
+    OstBaseDao getModel() {
+        return mOstRuleDao;
     }
 
     @Override
-    public void insertAllRules(final OstRule[] ostRule) {
-        super.insertAll(ostRule, new OstTaskCallback() {});
+    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        super.insert(ostBaseEntity, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteRule(final String id) {
+    public OstRule getEntityById(String id) {
+        return (OstRule)super.getById(id);
+    }
+
+    @Override
+    public OstRule[] getEntitiesByParentId(String id) {
+        return (OstRule[]) super.getByParentId(id);
+    }
+
+    @Override
+    public void deleteEntity(String id) {
         super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
-    public OstRule[] getRulesByIds(String[] ids) {
-        return (OstRule[]) super.getByIds(ids);
-    }
-
-    @Override
-    public OstRule getRuleById(String id) {
-        return (OstRule) super.getById(id);
-    }
-
-    @Override
-    public void deleteAllRules() {
+    public void deleteAllEntities() {
         super.deleteAll(new OstTaskCallback() {});
-    }
-
-    @Override
-    public OstRule insert(OstRule ostRule) {
-        insert(ostRule, new OstTaskCallback() {});
-        return ostRule;
-    }
-
-    @Override
-    OstBaseDao getModel() {
-        return mOstRuleDao;
     }
 }

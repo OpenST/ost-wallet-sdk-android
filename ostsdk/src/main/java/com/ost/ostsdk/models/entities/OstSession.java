@@ -33,6 +33,10 @@ public class OstSession extends OstBaseEntity {
     public static final String SPENDING_LIMIT = "spending_limit";
     public static final String NONCE = "nonce";
 
+    public static String getIdentifier() {
+        return OstSession.ID;
+    }
+
     public static class CONST_STATUS {
         public static final String INITIALIZING = "INITIALIZING";
         public static final String AUTHORISED = "AUTHORISED";
@@ -42,8 +46,12 @@ public class OstSession extends OstBaseEntity {
     }
 
     public static OstSession parse(JSONObject jsonObject) throws JSONException {
-        OstSession ostSession = new OstSession(jsonObject);
-        return OstModelFactory.getSessionModel().insert(ostSession);
+        return (OstSession) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getSessionModel(), getIdentifier(), new EntityFactory() {
+            @Override
+            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                return new OstSession(jsonObject);
+            }
+        });
     }
 
     public OstSession(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -84,36 +92,36 @@ public class OstSession extends OstBaseEntity {
     }
 
     public String getAddress() {
-        return getData().optString(OstSession.ADDRESS, null);
+        return getJSONData().optString(OstSession.ADDRESS, null);
     }
 
 
     public String getStatus() {
-        return getData().optString(OstSession.STATUS, null);
+        return getJSONData().optString(OstSession.STATUS, null);
     }
 
 
     public String getTokenHolderAddress() {
-        return getData().optString(OstSession.TOKEN_HOLDER_ADDRESS, null);
+        return getJSONData().optString(OstSession.TOKEN_HOLDER_ADDRESS, null);
     }
 
 
     public String getExpirationBlockHeight() {
-        return getData().optString(OstSession.EXPIRATION_BLOCK_HEIGHT, null);
+        return getJSONData().optString(OstSession.EXPIRATION_BLOCK_HEIGHT, null);
     }
 
 
     public String getSpendingLimit() {
-        return getData().optString(OstSession.SPENDING_LIMIT, null);
+        return getJSONData().optString(OstSession.SPENDING_LIMIT, null);
     }
 
     public String getNonce() {
-        return getData().optString(OstSession.NONCE, null);
+        return getJSONData().optString(OstSession.NONCE, null);
     }
 
     @Override
     String getEntityIdKey() {
-        return OstUser.ID;
+        return getIdentifier();
     }
 
     @Override

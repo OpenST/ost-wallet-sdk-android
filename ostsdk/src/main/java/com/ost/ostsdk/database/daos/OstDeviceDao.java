@@ -2,6 +2,7 @@ package com.ost.ostsdk.database.daos;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
 import com.ost.ostsdk.models.entities.OstBaseEntity;
@@ -22,10 +23,10 @@ public abstract class OstDeviceDao implements OstBaseDao {
         this.delete(baseEntity);
     }
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insert(OstDevice ostDevice);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     public abstract void insertAll(OstDevice... ostDevice);
 
     @Query("DELETE FROM device WHERE id=:id")

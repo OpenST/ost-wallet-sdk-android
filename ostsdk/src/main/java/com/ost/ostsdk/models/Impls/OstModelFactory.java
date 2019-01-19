@@ -128,7 +128,7 @@ public class OstModelFactory {
         return DEVICE_MANAGER_OPERATION_MODEL_INSTANCE;
     }
 
-    public static OstCreditsModel getOstCreditsModel() {
+    public static OstCreditsModel getCreditsModel() {
         if (OST_CREDITS_MODEL_INSTANCE == null) {
             synchronized (OstTransactionModelRepository.class) {
                 if (OST_CREDITS_MODEL_INSTANCE == null) {

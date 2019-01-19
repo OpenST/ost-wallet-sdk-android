@@ -5,10 +5,8 @@ import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstDeviceOperationDao;
 import com.ost.ostsdk.models.OstDeviceManagerOperationModel;
 import com.ost.ostsdk.models.OstTaskCallback;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstDeviceManagerOperation;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 class OstDeviceManagerOperationModelRepository extends OstBaseModelCacheRepository implements OstDeviceManagerOperationModel {
 
@@ -23,43 +21,32 @@ class OstDeviceManagerOperationModelRepository extends OstBaseModelCacheReposito
 
 
     @Override
-    public void insertMultiSigOperation(final OstDeviceManagerOperation ostDeviceManagerOperation) {
-        super.insert(ostDeviceManagerOperation, new OstTaskCallback() {});
+    OstBaseDao getModel() {
+        return mMultiSigOperation;
     }
 
     @Override
-    public void insertAllMultiSigOperations(final OstDeviceManagerOperation[] ostDeviceManagerOperation) {
-        super.insertAll(ostDeviceManagerOperation, new OstTaskCallback() {});
+    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        super.insert(ostBaseEntity, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteMultiSigOperation(final String id) {
+    public OstDeviceManagerOperation getEntityById(String id) {
+        return (OstDeviceManagerOperation)super.getById(id);
+    }
+
+    @Override
+    public OstDeviceManagerOperation[] getEntitiesByParentId(String id) {
+        return (OstDeviceManagerOperation[]) super.getByParentId(id);
+    }
+
+    @Override
+    public void deleteEntity(String id) {
         super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
-    public OstDeviceManagerOperation[] getMultiSigOperationsByIds(String[] ids) {
-        return (OstDeviceManagerOperation[]) super.getByIds(ids);
-    }
-
-    @Override
-    public OstDeviceManagerOperation getMultiSigOperationById(String id) {
-        return (OstDeviceManagerOperation) super.getById(id);
-    }
-
-    @Override
-    public void deleteAllMultiSigOperations() {
+    public void deleteAllEntities() {
         super.deleteAll(new OstTaskCallback() {});
-    }
-
-    @Override
-    public OstDeviceManagerOperation insert(OstDeviceManagerOperation ostDeviceManagerOperation) {
-        insert(ostDeviceManagerOperation, null);
-        return ostDeviceManagerOperation;
-    }
-
-    @Override
-    OstBaseDao getModel() {
-        return mMultiSigOperation;
     }
 }

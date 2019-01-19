@@ -17,10 +17,17 @@ public class OstCredits extends OstBaseEntity {
     public static final String USER_IDS = "address";
     public static final String STEP_COMPLETE = "step_complete";
 
+    public static String getIdentifier() {
+        return OstCredits.ID;
+    }
 
     public static OstCredits parse(JSONObject jsonObject) throws JSONException {
-        OstCredits ostCredits = new OstCredits(jsonObject);
-        return OstModelFactory.getOstCreditsModel().insert(ostCredits);
+        return (OstCredits) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getCreditsModel(), getIdentifier(), new EntityFactory() {
+            @Override
+            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                return new OstCredits(jsonObject);
+            }
+        });
     }
 
     public OstCredits(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -48,21 +55,21 @@ public class OstCredits extends OstBaseEntity {
     }
 
     public String getAmount() {
-        return getData().optString(OstCredits.AMOUNT, null);
+        return getJSONData().optString(OstCredits.AMOUNT, null);
     }
 
     public String getUserIds() {
-        return getData().optString(OstCredits.USER_IDS, null);
+        return getJSONData().optString(OstCredits.USER_IDS, null);
     }
 
     public String getStepComplete() {
-        return getData().optString(OstCredits.STEP_COMPLETE, null);
+        return getJSONData().optString(OstCredits.STEP_COMPLETE, null);
     }
 
 
     @Override
     String getEntityIdKey() {
-        return OstCredits.ID;
+        return getIdentifier();
     }
 
     @Override

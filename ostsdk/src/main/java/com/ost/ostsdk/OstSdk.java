@@ -38,19 +38,26 @@ public class OstSdk {
     }
 
     public static OstToken getToken(String tokenId) {
-        return OstModelFactory.getTokenModel().getTokenById(tokenId);
+        return OstModelFactory.getTokenModel().getEntityById(tokenId);
     }
 
-    public static OstUser initUser(JSONObject jsonObject) throws JSONException {
+    public static OstUser initUser(String id) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(OstUser.ID, id);
+        jsonObject.put(OstUser.NAME, "");
+        jsonObject.put(OstUser.TOKEN_ID, "");
+        jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "");
+        jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "");
+        jsonObject.put(OstUser.TYPE, "");
         return OstUser.parse(jsonObject);
     }
 
     public static OstUser getUser(String id) {
-        return OstModelFactory.getUserModel().getUserById(id);
+        return OstModelFactory.getUserModel().getEntityById(id);
     }
 
     public static void delUser(String userId) {
-        OstModelFactory.getUserModel().deleteUser(userId);
+        OstModelFactory.getUserModel().deleteEntity(userId);
     }
 
     public static KitApi getKitNetworkClient() {

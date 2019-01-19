@@ -43,9 +43,17 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
         public static final String REVOKE_TOKEN_HOLDER_SESSION = "REVOKE_TOKEN_HOLDER_SESSION";
     }
 
+    public static String getIdentifier() {
+        return OstUser.ID;
+    }
+
     public static OstDeviceManagerOperation parse(JSONObject jsonObject) throws JSONException {
-        OstDeviceManagerOperation ostDeviceManagerOperation = new OstDeviceManagerOperation(jsonObject);
-        return OstModelFactory.getDeviceManagerOperationModel().insert(ostDeviceManagerOperation);
+        return (OstDeviceManagerOperation) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getDeviceManagerOperationModel(), getIdentifier(), new EntityFactory() {
+            @Override
+            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                return new OstDeviceManagerOperation(jsonObject);
+            }
+        });
     }
 
     public OstDeviceManagerOperation(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -79,45 +87,45 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
     }
 
     public String getUserId() {
-        return getData().optString(OstDeviceManagerOperation.USER_ID, null);
+        return getJSONData().optString(OstDeviceManagerOperation.USER_ID, null);
     }
 
     public String getDeviceManagerId() {
-        return getData().optString(OstDeviceManagerOperation.DEVICE_MANAGER_ID, null);
+        return getJSONData().optString(OstDeviceManagerOperation.DEVICE_MANAGER_ID, null);
     }
 
 
     public String getKind() {
-        return getData().optString(OstDeviceManagerOperation.KIND, null);
+        return getJSONData().optString(OstDeviceManagerOperation.KIND, null);
     }
 
     public String getDeviceManagerAddress() {
-        return getData().optString(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS, null);
+        return getJSONData().optString(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS, null);
     }
 
     public String getSafeTxnGas() {
-        return getData().optString(OstDeviceManagerOperation.SAFE_TXN_GAS, null);
+        return getJSONData().optString(OstDeviceManagerOperation.SAFE_TXN_GAS, null);
     }
 
     public JSONObject getSignatures() {
-        return getData().optJSONObject(OstDeviceManagerOperation.SIGNATURES);
+        return getJSONData().optJSONObject(OstDeviceManagerOperation.SIGNATURES);
     }
 
     public String getCallData() {
-        return getData().optString(OstDeviceManagerOperation.CALL_DATA, null);
+        return getJSONData().optString(OstDeviceManagerOperation.CALL_DATA, null);
     }
 
     public JSONObject getRawCallData() {
-        return getData().optJSONObject(OstDeviceManagerOperation.RAW_CALL_DATA);
+        return getJSONData().optJSONObject(OstDeviceManagerOperation.RAW_CALL_DATA);
     }
 
     public String getOperation() {
-        return getData().optString(OstDeviceManagerOperation.OPERATION, null);
+        return getJSONData().optString(OstDeviceManagerOperation.OPERATION, null);
     }
 
     @Override
     String getEntityIdKey() {
-        return OstUser.ID;
+        return getIdentifier();
     }
 
     @Override

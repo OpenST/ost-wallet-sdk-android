@@ -5,6 +5,7 @@ import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstTransactionDao;
 import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstTransactionModel;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstTransaction;
 
 class OstTransactionModelRepository extends OstBaseModelCacheRepository implements OstTransactionModel {
@@ -18,45 +19,33 @@ class OstTransactionModelRepository extends OstBaseModelCacheRepository implemen
         mOstTransactionDao = db.executableRuleDao();
     }
 
-
     @Override
-    public void insertTransaction(final OstTransaction executableRule) {
-        super.insert(executableRule, new OstTaskCallback() {});
+    OstBaseDao getModel() {
+        return mOstTransactionDao;
     }
 
     @Override
-    public void insertAllTransactions(final OstTransaction[] executableRule) {
-        super.insertAll(executableRule, new OstTaskCallback() {});
+    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        super.insert(ostBaseEntity, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteTransaction(final String id) {
+    public OstTransaction getEntityById(String id) {
+        return (OstTransaction)super.getById(id);
+    }
+
+    @Override
+    public OstTransaction[] getEntitiesByParentId(String id) {
+        return (OstTransaction[]) super.getByParentId(id);
+    }
+
+    @Override
+    public void deleteEntity(String id) {
         super.delete(id, new OstTaskCallback() {});
     }
 
     @Override
-    public OstTransaction[] getTransactionsByIds(String[] ids) {
-        return (OstTransaction[]) super.getByIds(ids);
-    }
-
-    @Override
-    public OstTransaction getTransactionById(String id) {
-        return (OstTransaction) super.getById(id);
-    }
-
-    @Override
-    public void deleteAllTransactions() {
+    public void deleteAllEntities() {
         super.deleteAll(new OstTaskCallback() {});
-    }
-
-    @Override
-    public OstTransaction insert(OstTransaction ostTransaction) {
-        insert(ostTransaction, null);
-        return ostTransaction;
-    }
-
-    @Override
-    OstBaseDao getModel() {
-        return mOstTransactionDao;
     }
 }

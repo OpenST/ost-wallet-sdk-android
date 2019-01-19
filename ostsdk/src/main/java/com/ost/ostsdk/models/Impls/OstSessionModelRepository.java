@@ -3,12 +3,10 @@ package com.ost.ostsdk.models.Impls;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstSessionDao;
-import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstSessionModel;
+import com.ost.ostsdk.models.OstTaskCallback;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstSession;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 class OstSessionModelRepository extends OstBaseModelCacheRepository implements OstSessionModel {
 
@@ -21,50 +19,33 @@ class OstSessionModelRepository extends OstBaseModelCacheRepository implements O
         mOstSessionDao = db.tokenHolderSessionDao();
     }
 
-
     @Override
-    public void insertTokenHolderSession(final OstSession ostSession) {
-        super.insert(ostSession, new OstTaskCallback() {});
+    OstBaseDao getModel() {
+        return mOstSessionDao;
     }
 
     @Override
-    public void insertAllTokenHolderSessions(final OstSession[] ostSession) {
-        super.insertAll(ostSession, new OstTaskCallback() {});
+    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        super.insert(ostBaseEntity, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteTokenHolderSession(final String id) {
-        super.delete(id, new OstTaskCallback() {});
+    public OstSession getEntityById(String id) {
+        return (OstSession)super.getById(id);
     }
 
     @Override
-    public OstSession[] getTokenHolderSessionsByIds(String[] ids) {
-        return (OstSession[]) super.getByIds(ids);
-    }
-
-    @Override
-    public OstSession getTokenHolderSessionById(String id) {
-        return (OstSession) super.getById(id);
-    }
-
-    @Override
-    public void deleteAllTokenHolderSessions() {
-        super.deleteAll(new OstTaskCallback() {});
-    }
-
-    @Override
-    public OstSession insert(OstSession ostSession) {
-        insert(ostSession, new OstTaskCallback() {});
-        return ostSession;
-    }
-
-    @Override
-    public OstSession[] getTokenHolderSessionsByParentId(String id) {
+    public OstSession[] getEntitiesByParentId(String id) {
         return (OstSession[]) super.getByParentId(id);
     }
 
     @Override
-    OstBaseDao getModel() {
-        return mOstSessionDao;
+    public void deleteEntity(String id) {
+        super.delete(id, new OstTaskCallback() {});
+    }
+
+    @Override
+    public void deleteAllEntities() {
+        super.deleteAll(new OstTaskCallback() {});
     }
 }

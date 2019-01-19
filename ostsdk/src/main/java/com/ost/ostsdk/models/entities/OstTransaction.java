@@ -22,6 +22,10 @@ public class OstTransaction extends OstBaseEntity {
     public static final String RULE_NAME = "rule_name";
     public static final String TRANSFERS = "transfers";
 
+    public static String getIdentifier() {
+        return OstTransaction.TRANSACTION_HASH;
+    }
+
     public static class CONST_STATUS {
         public static final String CREATED = "CREATED";
         public static final String QUEUED = "QUEUED";
@@ -31,8 +35,12 @@ public class OstTransaction extends OstBaseEntity {
     }
 
     public static OstTransaction parse(JSONObject jsonObject) throws JSONException {
-        OstTransaction ostTransaction = new OstTransaction(jsonObject);
-        return OstModelFactory.getTransactionModel().insert(ostTransaction);
+        return (OstTransaction) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getTransactionModel(), getIdentifier(), new EntityFactory() {
+            @Override
+            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                return new OstTransaction(jsonObject);
+            }
+        });
     }
 
     public OstTransaction(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -64,39 +72,39 @@ public class OstTransaction extends OstBaseEntity {
     }
 
     public String getTransactionHash() {
-        return getData().optString(OstTransaction.TRANSACTION_HASH,null);
+        return getJSONData().optString(OstTransaction.TRANSACTION_HASH,null);
     }
 
     public String getGasPrice() {
-        return getData().optString(OstTransaction.GAS_PRICE,null);
+        return getJSONData().optString(OstTransaction.GAS_PRICE,null);
     }
 
     public String getGasUsed() {
-        return getData().optString(OstTransaction.GAS_USED,null);
+        return getJSONData().optString(OstTransaction.GAS_USED,null);
     }
 
     public String getTransactionFee() {
-        return getData().optString(OstTransaction.TRANSACTION_FEE,null);
+        return getJSONData().optString(OstTransaction.TRANSACTION_FEE,null);
     }
 
     public String getBlockTimestamp() {
-        return getData().optString(OstTransaction.BLOCK_TIMESTAMP,null);
+        return getJSONData().optString(OstTransaction.BLOCK_TIMESTAMP,null);
     }
 
     public String getBlockNumber() {
-        return getData().optString(OstTransaction.BLOCK_NUMBER,null);
+        return getJSONData().optString(OstTransaction.BLOCK_NUMBER,null);
     }
 
     public String getRuleName() {
-        return getData().optString(OstTransaction.RULE_NAME,null);
+        return getJSONData().optString(OstTransaction.RULE_NAME,null);
     }
 
     public String getTransfers() {
-        return getData().optString(OstTransaction.TRANSFERS,null);
+        return getJSONData().optString(OstTransaction.TRANSFERS,null);
     }
 
     @Override
     String getEntityIdKey() {
-        return OstTransaction.TRANSACTION_HASH;
+        return getIdentifier();
     }
 }

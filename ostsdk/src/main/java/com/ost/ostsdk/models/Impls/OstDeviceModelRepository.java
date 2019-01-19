@@ -5,10 +5,8 @@ import com.ost.ostsdk.database.daos.OstBaseDao;
 import com.ost.ostsdk.database.daos.OstDeviceDao;
 import com.ost.ostsdk.models.OstDeviceModel;
 import com.ost.ostsdk.models.OstTaskCallback;
+import com.ost.ostsdk.models.entities.OstBaseEntity;
 import com.ost.ostsdk.models.entities.OstDevice;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 class OstDeviceModelRepository extends OstBaseModelCacheRepository implements OstDeviceModel {
 
@@ -21,50 +19,33 @@ class OstDeviceModelRepository extends OstBaseModelCacheRepository implements Os
         mOstDeviceDao = db.multiSigWalletDao();
     }
 
-
     @Override
-    public void insertMultiSigWallet(final OstDevice ostDevice) {
-        super.insert(ostDevice, new OstTaskCallback() {});
+    OstBaseDao getModel() {
+        return mOstDeviceDao;
     }
 
     @Override
-    public void insertAllMultiSigWallets(final OstDevice[] ostDevice) {
-        super.insertAll(ostDevice, new OstTaskCallback() {});
+    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        super.insert(ostBaseEntity, new OstTaskCallback() {});
     }
 
     @Override
-    public void deleteMultiSigWallet(final String id) {
-        super.delete(id, new OstTaskCallback() {});
+    public OstDevice getEntityById(String id) {
+        return (OstDevice)super.getById(id);
     }
 
     @Override
-    public OstDevice[] getMultiSigWalletsByIds(String[] ids) {
-        return (OstDevice[]) super.getByIds(ids);
-    }
-
-    @Override
-    public OstDevice getMultiSigWalletById(String id) {
-        return (OstDevice) super.getById(id);
-    }
-
-    @Override
-    public void deleteAllMultiSigWallets() {
-        super.deleteAll(new OstTaskCallback() {});
-    }
-
-    @Override
-    public OstDevice insert(OstDevice ostDevice) {
-        insert(ostDevice, new OstTaskCallback() {});
-        return ostDevice;
-    }
-
-    @Override
-    public OstDevice[] getDevicesByParentId(String id) {
+    public OstDevice[] getEntitiesByParentId(String id) {
         return (OstDevice[]) super.getByParentId(id);
     }
 
     @Override
-    OstBaseDao getModel() {
-        return mOstDeviceDao;
+    public void deleteEntity(String id) {
+        super.delete(id, new OstTaskCallback() {});
+    }
+
+    @Override
+    public void deleteAllEntities() {
+        super.deleteAll(new OstTaskCallback() {});
     }
 }
