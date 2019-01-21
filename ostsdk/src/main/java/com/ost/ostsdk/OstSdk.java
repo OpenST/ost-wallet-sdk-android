@@ -21,6 +21,17 @@ import org.json.JSONObject;
  */
 public class OstSdk {
 
+    private static final String USER = "user";
+    private static final String TRANSACTION = "transaction";
+    private static final String TOKEN_HOLDER = "token_holder";
+    private static final String TOKEN = "token";
+    private static final String SESSION = "session";
+    private static final String RULE = "rule";
+    private static final String DEVICE_OPERATION = "device_operation";
+    private static final String DEVICE_MANAGER = "device_manager";
+    private static final String DEVICE = "device";
+    private static final String CREDITS = "credits";
+
     private static Context mApplicationContext;
 
     public static Context getContext() {
@@ -62,5 +73,38 @@ public class OstSdk {
 
     public static KitApi getKitNetworkClient() {
         return ApiClient.getClient().create(KitApi.class);
+    }
+
+    public static void parse(JSONObject jsonObject) throws JSONException {
+        if (jsonObject.has(OstSdk.USER)) {
+            OstUser.parse(jsonObject.getJSONObject(OstSdk.USER));
+        }
+        if (jsonObject.has(OstSdk.TRANSACTION)) {
+            OstUser.parse(jsonObject.getJSONObject(OstSdk.TRANSACTION));
+        }
+        if (jsonObject.has(OstSdk.TOKEN_HOLDER)) {
+            OstUser.parse(jsonObject.getJSONObject(OstSdk.TOKEN_HOLDER));
+        }
+        if (jsonObject.has(OstSdk.TOKEN)) {
+            OstUser.parse(jsonObject.getJSONObject(OstSdk.TOKEN));
+        }
+        if (jsonObject.has(OstSdk.SESSION)) {
+            OstUser.parse(jsonObject.getJSONObject(OstSdk.SESSION));
+        }
+        if (jsonObject.has(OstSdk.RULE)) {
+            OstUser.parse(jsonObject.getJSONObject(OstSdk.RULE));
+        }
+        if (jsonObject.has(OstSdk.DEVICE_OPERATION)) {
+            OstUser.parse(jsonObject.getJSONObject(OstSdk.DEVICE_OPERATION));
+        }
+        if (jsonObject.has(OstSdk.DEVICE_MANAGER)) {
+            OstUser.parse(jsonObject.getJSONObject(OstSdk.DEVICE_MANAGER));
+        }
+        if (jsonObject.has(OstSdk.DEVICE)) {
+            OstUser.parse(jsonObject.getJSONObject(OstSdk.DEVICE));
+        }
+        if (jsonObject.has(OstSdk.CREDITS)) {
+            OstUser.parse(jsonObject.getJSONObject(OstSdk.CREDITS));
+        }
     }
 }
