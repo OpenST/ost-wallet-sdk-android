@@ -26,7 +26,7 @@ public class OstTokenHolderTest {
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstTokenHolder.ADDRESS, "0x232");
-        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
+//        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
         testTokenHolderJsonException(jsonObject);
     }
 
@@ -40,18 +40,18 @@ public class OstTokenHolderTest {
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstTokenHolder.ADDRESS, "0x2901239");
-        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
+//        jsonObject.put(OstTokenHolder.REQUIREMENTS, 1);
         jsonObject.put(OstTokenHolder.USER_ID, "123");
         JSONArray jsonArray = new JSONArray();
         jsonArray.put("0x12345678");
-        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
+//        jsonObject.put(OstTokenHolder.EXECUTE_RULE_CALL_PREFIX, "callPrefix");
 
 
         OstTokenHolder ostTokenHolder = new OstTokenHolder(jsonObject);
         assertEquals("0x2901239", ostTokenHolder.getAddress());
-        assertEquals(1, ostTokenHolder.getRequirements());
+//        assertEquals(1, ostTokenHolder.getRequirements());
         assertEquals("123", ostTokenHolder.getUserId());
-        assertEquals("callPrefix", ostTokenHolder.getExecuteRuleCallPrefix());
+//        assertEquals("callPrefix", ostTokenHolder.getExecuteRuleCallPrefix());
         assertEquals("ID", ostTokenHolder.getId());
 
     }

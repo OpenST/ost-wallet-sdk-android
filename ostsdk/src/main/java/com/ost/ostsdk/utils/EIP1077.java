@@ -41,8 +41,6 @@ public class EIP1077 {
         mTxnHash.put(TXN_EXTRA_HASH, mTxnHash.optString(TXN_EXTRA_HASH, "0x0"));
         mTxnHash.put(TXN_CALL_PREFIX, mTxnHash.optString(TXN_CALL_PREFIX, "0x0"));
 
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("0x");
 
         String sha3Hash = new SoliditySha3().soliditySha3(
                 new JSONObject(String.format("{ t: 'bytes', v: '%s' }", "0x19")),
