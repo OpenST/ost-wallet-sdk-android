@@ -79,7 +79,7 @@ public class OstDevice extends OstBaseEntity {
     }
 
     public String signTransaction(RawTransaction rawTransaction, String userId) {
-        byte[] data = new OstSecureKeyModelRepository().getById(getAddress()).getData();
+        byte[] data = new OstSecureKeyModelRepository().getByKey(getAddress()).getData();
         byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, Credentials.create(Numeric.toHexString(OstAndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data))));
         return Numeric.toHexString(signedMessage);
     }

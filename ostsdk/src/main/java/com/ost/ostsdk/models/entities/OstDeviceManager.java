@@ -76,7 +76,7 @@ public class OstDeviceManager extends OstBaseEntity {
         OstDevice deviceWallet = null;
         OstDevice wallets[] = OstModelFactory.getDeviceModel().getEntitiesByParentId(getId());
         for (OstDevice wallet : wallets) {
-            if (null != new OstSecureKeyModelRepository().getById(wallet.getAddress())) {
+            if (null != new OstSecureKeyModelRepository().getByKey(wallet.getAddress())) {
                 deviceWallet = wallet;
                 break;
             }

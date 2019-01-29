@@ -71,7 +71,7 @@ public class OstTokenHolder extends OstBaseEntity {
         OstSession deviceSession = null;
         OstSession sessions[] = OstModelFactory.getSessionModel().getEntitiesByParentId(getId());
         for (OstSession session : sessions) {
-            if (null != new OstSecureKeyModelRepository().getById(session.getAddress())) {
+            if (null != new OstSecureKeyModelRepository().getByKey(session.getAddress())) {
                 deviceSession = session;
                 break;
             }

@@ -4,15 +4,9 @@ import com.ost.ostsdk.models.entities.OstSecureKey;
 
 public interface OstSecureKeyModel {
 
-    void insertSecureKey(OstSecureKey ostSecureKey, OstTaskCallback callback);
+    void insertSecureKey(OstSecureKey ostSecureKey);
 
-    void insertAllSecureKeys(OstSecureKey[] ostSecureKey, OstTaskCallback callback);
-
-    void deleteSecureKey(String id, OstTaskCallback callback);
-
-    OstSecureKey[] getSecureKeysByIds(String[] ids);
-
-    OstSecureKey getSecureKeyById(String id);
+    OstSecureKey getByKey(String id);
 
     void deleteAllSecureKeys(OstTaskCallback callback);
 

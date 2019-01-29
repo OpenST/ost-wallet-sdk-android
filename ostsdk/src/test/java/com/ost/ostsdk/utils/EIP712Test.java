@@ -42,7 +42,7 @@ public class EIP712Test {
     }
 
     @Test
-    public void testEIP712TransactionConversion() throws JSONException {
+    public void testEIP712TransactionConversion() {
 
         try {
             String eip1077Hash = new EIP712(TypedDataInput).toEIP712TransactionHash();

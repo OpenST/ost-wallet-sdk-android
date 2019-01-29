@@ -14,7 +14,34 @@ import java.util.List;
 
 public class EIP712 {
 
-
+//Schema as defined by EIP-712
+//private static final JSONObject TYPED_DATA_JSON_SCHEMA = new JSONObject("{\n" +
+//        "        type: 'object',\n" +
+//        "                properties: {\n" +
+//        "            types: {\n" +
+//        "                type: 'object',\n" +
+//        "                        properties: {\n" +
+//        "                    EIP712Domain: { type: 'array' }\n" +
+//        "                },\n" +
+//        "                additionalProperties: {\n" +
+//        "                    type: 'array',\n" +
+//        "                            items: {\n" +
+//        "                        type: 'object',\n" +
+//        "                                properties: {\n" +
+//        "                            name: { type: 'string' },\n" +
+//        "                            type: { type: 'string' }\n" +
+//        "                        },\n" +
+//        "                        required: ['name', 'type']\n" +
+//        "                    }\n" +
+//        "                },\n" +
+//        "                required: ['EIP712Domain']\n" +
+//        "            },\n" +
+//        "            primaryType: { type: 'string' },\n" +
+//        "            domain: { type: 'object' },\n" +
+//        "            message: { type: 'object' }\n" +
+//        "        },\n" +
+//        "        required: ['types', 'primaryType', 'domain', 'message']\n" +
+//        "    }");
     private static final String TYPES = "types";
     private static final String PRIMARY_TYPE = "primaryType";
     private static final String DOMAIN = "domain";

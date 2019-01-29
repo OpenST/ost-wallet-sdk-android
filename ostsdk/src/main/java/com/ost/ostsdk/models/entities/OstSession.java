@@ -81,7 +81,7 @@ public class OstSession extends OstBaseEntity {
     }
 
     public String signTransaction(JSONObject jsonObject, String userId) throws Exception {
-        byte[] data = new OstSecureKeyModelRepository().getById(getAddress()).getData();
+        byte[] data = new OstSecureKeyModelRepository().getByKey(getAddress()).getData();
         Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(jsonObject).toEIP1077TransactionHash()), ECKeyPair.create(OstAndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data)));
         String signedMessage = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + Integer.toHexString(signatureData.getV() & 0xFF);
         return signedMessage;
