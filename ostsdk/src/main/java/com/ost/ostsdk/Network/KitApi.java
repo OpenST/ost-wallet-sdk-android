@@ -2,15 +2,18 @@ package com.ost.ostsdk.Network;
 
 import org.json.JSONObject;
 
-import okhttp3.Response;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface KitApi {
     @GET("")
-    Call<Response> initAction(JSONObject payload, String signature);
+    Call<ResponseBody> initAction(JSONObject payload, String signature);
 
     @POST("")
-    Call<Response> postKey(byte[] encryptedKey, String signature);
+    Call<ResponseBody> postKey(byte[] encryptedKey, String signature);
+
+    @GET("bins/1bsqcn/")
+    Call<ResponseBody> getNoticeData();
 }

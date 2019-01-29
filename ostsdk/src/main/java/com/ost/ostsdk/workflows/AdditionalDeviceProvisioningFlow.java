@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 
-import okhttp3.Response;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -33,16 +33,16 @@ public class AdditionalDeviceProvisioningFlow {
 
         Log.d(TAG, "Kit api call");
         // Todo:: Kit api call for scyrptSalt and hkdfSalt
-        Call<Response> responseInitActionCall = OstSdk.getKitNetworkClient().initAction(payload, signature);
+        Call<ResponseBody> responseInitActionCall = OstSdk.getKitNetworkClient().initAction(payload, signature);
 
-        responseInitActionCall.enqueue(new Callback<Response>() {
+        responseInitActionCall.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
 
             }
 
             @Override
-            public void onFailure(Call<Response> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
 
             }
         });
@@ -86,16 +86,16 @@ public class AdditionalDeviceProvisioningFlow {
 
         Log.d(TAG, "Post encrypted keys to kit");
         // Todo:: post key
-        Call<Response> responsePostKeyCall = OstSdk.getKitNetworkClient().postKey(encryptedKey, signature);
+        Call<ResponseBody> responsePostKeyCall = OstSdk.getKitNetworkClient().postKey(encryptedKey, signature);
 
-        responsePostKeyCall.enqueue(new Callback<Response>() {
+        responsePostKeyCall.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<Response> call, retrofit2.Response<Response> response) {
+            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
 
             }
 
             @Override
-            public void onFailure(Call<Response> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
 
             }
         });

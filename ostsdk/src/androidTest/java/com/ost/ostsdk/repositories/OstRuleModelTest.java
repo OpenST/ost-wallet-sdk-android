@@ -45,7 +45,7 @@ public class OstRuleModelTest {
         OstSdk.init(appContext.getApplicationContext());
 
         OstRuleModel ostRuleModel = OstModelFactory.getRuleModel();
-        ostRuleModel.deleteAllRules();
+        ostRuleModel.deleteAllEntities();
     }
 
 

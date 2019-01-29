@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 
 import com.ost.ostsdk.database.KeySharedPreferences;
 import com.ost.ostsdk.models.OstSecureKeyModel;
-import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.entities.OstSecureKey;
 
 public class OstSecureKeyModelRepository implements OstSecureKeyModel {
@@ -33,7 +32,7 @@ public class OstSecureKeyModelRepository implements OstSecureKeyModel {
     }
 
     @Override
-    public void deleteAllSecureKeys(OstTaskCallback callback) {
+    public void deleteAllSecureKeys() {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.clear();
         editor.apply();

@@ -43,7 +43,7 @@ public class OstUserModelTest {
         OstSdk.init(appContext.getApplicationContext());
 
         OstUserModel ostUserModel = OstModelFactory.getUserModel();
-        ostUserModel.deleteAllUsers();
+        ostUserModel.deleteAllEntities();
     }
 
 
@@ -122,7 +122,7 @@ public class OstUserModelTest {
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstUser ostUser = OstSdk.initUser(userObj);
+        OstUser ostUser = OstUser.parse(userObj);
 
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 

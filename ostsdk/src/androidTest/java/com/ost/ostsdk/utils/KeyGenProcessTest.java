@@ -21,7 +21,7 @@ public class KeyGenProcessTest {
     public static void setUp() {
         mAppContext = InstrumentationRegistry.getTargetContext();
         OstSdk.init(mAppContext);
-        new OstSecureKeyModelRepository().deleteAll(null);
+        new OstSecureKeyModelRepository().deleteAllSecureKeys();
     }
 
     @Test

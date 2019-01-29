@@ -8,7 +8,7 @@ public interface OstSecureKeyModel {
 
     OstSecureKey getByKey(String id);
 
-    void deleteAllSecureKeys(OstTaskCallback callback);
+    void deleteAllSecureKeys();
 
     OstSecureKey initSecureKey(String key, byte[] data);
 }

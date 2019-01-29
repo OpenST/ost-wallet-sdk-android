@@ -7,7 +7,6 @@ import android.support.test.runner.AndroidJUnit4;
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
-import com.ost.ostsdk.models.OstTaskCallback;
 import com.ost.ostsdk.models.OstUserModel;
 import com.ost.ostsdk.utils.KeyGenProcess;
 
@@ -36,12 +35,12 @@ public class OstDeviceTest {
     }
 
     private static void cleanDB() {
-        new OstSecureKeyModelRepository().deleteAll(new OstTaskCallback() {});
-        OstModelFactory.getUserModel().deleteAllUsers();
-        OstModelFactory.getDeviceModel().deleteAllMultiSigWallets();
-        OstModelFactory.getDeviceManagerModel().deleteAllMultiSigs();
-        OstModelFactory.getTokenHolderModel().deleteAllTokenHolders();
-        OstModelFactory.getRuleModel().deleteAllRules();
+        new OstSecureKeyModelRepository().deleteAllSecureKeys();
+        OstModelFactory.getUserModel().deleteAllEntities();
+        OstModelFactory.getDeviceModel().deleteAllEntities();
+        OstModelFactory.getDeviceManagerModel().deleteAllEntities();
+        OstModelFactory.getTokenHolderModel().deleteAllEntities();
+        OstModelFactory.getRuleModel().deleteAllEntities();
     }
 
     @Test
@@ -81,7 +80,7 @@ public class OstDeviceTest {
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstModelFactory.getUserModel().update(ostUser);
+        OstModelFactory.getUserModel().insertOrUpdateEntity(ostUser);
 
 //        countDownLatch.await(5, TimeUnit.SECONDS);
         return ostUser;
@@ -135,7 +134,7 @@ public class OstDeviceTest {
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstUser ostUser = OstSdk.initUser(userObj);
+        OstUser ostUser = OstUser.parse(userObj);
 
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 
