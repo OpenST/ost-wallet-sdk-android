@@ -42,6 +42,7 @@ public class OstRuleTest {
         jsonObject.put(OstRule.NAME, "name");
         jsonObject.put(OstRule.ABI, "abi");
         jsonObject.put(OstRule.TOKEN_ID, "123");
+        jsonObject.put(OstRule.CALL_PREFIX, "0x0");
 
         OstRule ostRule = new OstRule(jsonObject);
         assertEquals("0x2901239", ostRule.getAddress());

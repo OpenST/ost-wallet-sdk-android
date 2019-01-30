@@ -47,17 +47,21 @@ public class OstTransactionTest {
         jsonObject.put(OstTransaction.STATUS, "status");
         jsonObject.put(OstTransaction.GAS_USED, "0x323W");
         jsonObject.put(OstTransaction.TRANSACTION_HASH, "123");
+        jsonObject.put(OstTransaction.RULE_NAME, "rule");
+        jsonObject.put(OstTransaction.TRANSFERS, "1");
         testMultiSigJsonWithNoException(jsonObject);
 
         //Test Id with partial OstTransaction attribute
         OstTransaction executableRule = new OstTransaction(jsonObject);
         assertEquals("methods", executableRule.getTransactionFee());
         assertEquals("params", executableRule.getBlockTimestamp());
-        assertEquals("2323", executableRule.getGasUsed());
+        assertEquals("0x323W", executableRule.getGasUsed());
         assertEquals("session", executableRule.getBlockNumber());
         assertEquals("status", executableRule.getStatus());
-        assertEquals("0x323W", executableRule.getGasPrice());
+        assertEquals("2323", executableRule.getGasPrice());
         assertEquals("123", executableRule.getTransactionHash());
+        assertEquals("rule", executableRule.getRuleName());
+        assertEquals("1", executableRule.getTransfers());
 
     }
 

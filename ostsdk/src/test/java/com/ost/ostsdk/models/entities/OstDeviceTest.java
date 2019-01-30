@@ -38,6 +38,10 @@ public class OstDeviceTest {
         //Test without any OstDevice  attribute
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstDevice.USER_ID, "1234");
+        jsonObject.put(OstDevice.DEVICE_NAME, "Device");
+        jsonObject.put(OstDevice.DEVICE_UUID, "221");
+        jsonObject.put(OstDevice.DEVICE_MODEL, "Nokia");
         jsonObject.put(OstDevice.ADDRESS, "0x2901239");
         jsonObject.put(OstDevice.DEVICE_MANAGER_ADDRESS, "123");
         jsonObject.put(OstDevice.STATUS, "status");
@@ -47,7 +51,11 @@ public class OstDeviceTest {
         assertEquals("0x2901239", ostDevice.getAddress());
         assertEquals("status", ostDevice.getStatus());
         assertEquals("123", ostDevice.getDeviceManagerAddress());
-        assertEquals("ID", ostDevice.getId());
+        assertEquals("0x2901239", ostDevice.getId());
+        assertEquals("1234", ostDevice.getUserId());
+        assertEquals("221", ostDevice.getDeviceUuid());
+        assertEquals("Device", ostDevice.getDeviceName());
+        assertEquals("Nokia", ostDevice.getDeviceModel());
 
     }
 

@@ -25,7 +25,7 @@ public class OstDeviceManager extends OstBaseEntity {
     }
 
     public static String getIdentifier() {
-        return OstDeviceManager.ID;
+        return OstDeviceManager.ADDRESS;
     }
 
     public static OstDeviceManager parse(JSONObject jsonObject) throws JSONException {
@@ -98,6 +98,6 @@ public class OstDeviceManager extends OstBaseEntity {
 
     @Override
     public String getParentIdKey() {
-        return OstDeviceManager.ADDRESS;
+        return OstDeviceManager.USER_ID;
     }
 }

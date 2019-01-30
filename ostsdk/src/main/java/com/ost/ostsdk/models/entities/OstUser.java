@@ -33,7 +33,7 @@ public class OstUser extends OstBaseEntity {
         public static final String ACTIVATED = "ACTIVATED";
     }
 
-    public static class TYPE {
+    public static class TYPE_VALUE {
         public static final String USER = "admin";
         public static final String ADMIN = "user";
     }
@@ -52,7 +52,7 @@ public class OstUser extends OstBaseEntity {
     }
 
     @Ignore
-    private OstUser(JSONObject jsonObject) throws JSONException {
+    public OstUser(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 

@@ -34,7 +34,7 @@ public class OstSession extends OstBaseEntity {
     public static final String NONCE = "nonce";
 
     public static String getIdentifier() {
-        return OstSession.ID;
+        return OstSession.ADDRESS;
     }
 
     public static class CONST_STATUS {

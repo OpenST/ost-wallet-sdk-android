@@ -75,6 +75,10 @@ public class OstTransaction extends OstBaseEntity {
         return getJSONData().optString(OstTransaction.TRANSACTION_HASH,null);
     }
 
+    public String getStatus() {
+        return getJSONData().optString(OstSession.STATUS, null);
+    }
+
     public String getGasPrice() {
         return getJSONData().optString(OstTransaction.GAS_PRICE,null);
     }

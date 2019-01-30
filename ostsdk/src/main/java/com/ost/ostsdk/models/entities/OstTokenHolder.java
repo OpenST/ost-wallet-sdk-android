@@ -18,7 +18,7 @@ public class OstTokenHolder extends OstBaseEntity {
     public static final String ADDRESS = "address";
 
     public static String getIdentifier() {
-        return OstTokenHolder.USER_ID;
+        return OstTokenHolder.ADDRESS;
     }
 
     public static class CONST_STATUS {
@@ -84,11 +84,11 @@ public class OstTokenHolder extends OstBaseEntity {
 
     @Override
     String getEntityIdKey() {
-        return OstTokenHolder.ID;
+        return getIdentifier();
     }
 
     @Override
     public String getParentIdKey() {
-        return getIdentifier();
+        return OstDevice.USER_ID;
     }
 }

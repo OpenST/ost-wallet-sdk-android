@@ -42,13 +42,15 @@ public class OstUserTest {
         jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "123");
         jsonObject.put(OstUser.NAME, "name");
         jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "1");
+        jsonObject.put(OstUser.TYPE, OstUser.TYPE_VALUE.ADMIN);
 
-        OstUser ostUser =  OstUser.parse(jsonObject);
+        OstUser ostUser =  new OstUser(jsonObject);
         assertEquals("0x2901239", ostUser.getTokenId());
         assertEquals("123", ostUser.getTokenHolderAddress());
         assertEquals("name", ostUser.getName());
         assertEquals("ID", ostUser.getId());
         assertEquals("1", ostUser.getDeviceManagerAddress());
+        assertEquals(OstUser.TYPE_VALUE.ADMIN, ostUser.getType());
     }
 
 

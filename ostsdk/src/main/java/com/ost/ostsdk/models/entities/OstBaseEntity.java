@@ -129,7 +129,7 @@ public class OstBaseEntity {
 
     public void processJson(JSONObject jsonObject) throws JSONException {
         String id = jsonObject.getString(getEntityIdKey());
-        if (id.length() > 1) {
+        if (id.length() <= 1) {
             throw new JSONException("Id should be more than 1 characters long");
         }
 

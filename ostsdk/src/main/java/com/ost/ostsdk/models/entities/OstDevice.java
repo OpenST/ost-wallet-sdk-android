@@ -110,6 +110,11 @@ public class OstDevice extends OstBaseEntity {
     }
 
     @Override
+    public String getStatus() {
+        return getJSONData().optString(OstDevice.STATUS, null);
+    }
+
+    @Override
     String getEntityIdKey() {
         return getIdentifier();
     }

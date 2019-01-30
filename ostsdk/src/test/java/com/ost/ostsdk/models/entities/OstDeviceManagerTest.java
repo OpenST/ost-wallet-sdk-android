@@ -25,7 +25,6 @@ public class OstDeviceManagerTest {
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstDeviceManager.ADDRESS, "0x2901239");
-//        jsonObject.put(OstDeviceManager.TOKEN_HOLDER_ID, "123");
         jsonObject.put(OstDeviceManager.REQUIREMENT, 1);
         testMultiSigJsonException(jsonObject);
     }
@@ -40,9 +39,7 @@ public class OstDeviceManagerTest {
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstDeviceManager.ADDRESS, "0x2901239");
-//        jsonObject.put(OstDeviceManager.TOKEN_HOLDER_ID, "123");
         jsonObject.put(OstDeviceManager.REQUIREMENT, 1);
-//        jsonObject.put(OstDeviceManager.AUTHORIZE_SESSION_CALL_PREFIX, "callPrefix");
         jsonObject.put(OstDeviceManager.USER_ID, "123");
         jsonObject.put(OstDeviceManager.NONCE, "1");
         testMultiSigJsonWithNoException(jsonObject);
@@ -50,13 +47,10 @@ public class OstDeviceManagerTest {
         //Test Id with partial OstTransaction attribute
         OstDeviceManager ostDeviceManager = new OstDeviceManager(jsonObject);
         assertEquals("0x2901239", ostDeviceManager.getAddress());
-//        assertEquals("123", ostDeviceManager.getTokenHolderId());
         assertEquals(1, ostDeviceManager.getRequirement());
-//        assertEquals("callPrefix", ostDeviceManager.getAuthorizeSessionCallPrefix());
         assertEquals("123", ostDeviceManager.getUserId());
         assertEquals("ID", ostDeviceManager.getId());
         assertEquals("1", ostDeviceManager.getNonce());
-
     }
 
 
