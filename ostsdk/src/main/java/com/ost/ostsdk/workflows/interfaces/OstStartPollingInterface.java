@@ -1,8 +1,8 @@
-package com.ost.ostsdk.workflows;
+package com.ost.ostsdk.workflows.interfaces;
 
 /**
  * Sub Interface of
- * @see com.ost.ostsdk.workflows.OstBaseInterface
+ * @see OstBaseInterface
  * It declares startPolling api of Workflows.
  */
 public interface OstStartPollingInterface extends OstBaseInterface {

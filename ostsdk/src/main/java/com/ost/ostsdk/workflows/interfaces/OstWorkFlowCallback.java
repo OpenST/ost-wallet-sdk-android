@@ -1,6 +1,10 @@
-package com.ost.ostsdk.workflows;
+package com.ost.ostsdk.workflows.interfaces;
 
 import android.graphics.Bitmap;
+
+import com.ost.ostsdk.workflows.OstContextEntity;
+import com.ost.ostsdk.workflows.OstError;
+import com.ost.ostsdk.workflows.OstWorkFlowFactory;
 
 import org.json.JSONObject;
 

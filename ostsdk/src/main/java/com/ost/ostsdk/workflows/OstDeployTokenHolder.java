@@ -9,6 +9,8 @@ import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.ostsdk.security.OstCrypto;
 import com.ost.ostsdk.security.impls.OstAndroidSecureStorage;
 import com.ost.ostsdk.security.impls.OstSdkCrypto;
+import com.ost.ostsdk.workflows.interfaces.OstDeviceRegisteredInterface;
+import com.ost.ostsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 import org.web3j.crypto.Credentials;
@@ -22,7 +24,7 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
     private static final String TAG = "IDPFlow";
 
     public OstDeployTokenHolder(String uPin, String password, Handler handler, OstWorkFlowCallback callback) {
-
+//        callback.registerDevice(new OstDevice(), this);
     }
 
     public void init(JSONObject payload, String signature) throws Exception {

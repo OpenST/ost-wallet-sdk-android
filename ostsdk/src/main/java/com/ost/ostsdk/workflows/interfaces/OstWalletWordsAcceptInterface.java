@@ -1,10 +1,10 @@
-package com.ost.ostsdk.workflows;
+package com.ost.ostsdk.workflows.interfaces;
 
 import java.util.List;
 
 /**
  * Sub Interface of
- * @see com.ost.ostsdk.workflows.OstBaseInterface
+ * @see OstBaseInterface
  * It declares walletWordsEntered api of Workflows.
  */
 

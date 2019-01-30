@@ -8,6 +8,9 @@ import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.ostsdk.security.OstCrypto;
 import com.ost.ostsdk.security.impls.OstAndroidSecureStorage;
 import com.ost.ostsdk.security.impls.OstSdkCrypto;
+import com.ost.ostsdk.workflows.interfaces.OstDeviceRegisteredInterface;
+import com.ost.ostsdk.workflows.interfaces.OstPinAcceptInterface;
+import com.ost.ostsdk.workflows.interfaces.OstStartPollingInterface;
 
 import org.json.JSONObject;
 import org.web3j.crypto.Credentials;

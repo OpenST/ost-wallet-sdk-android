@@ -1,4 +1,4 @@
-package com.ost.ostsdk.workflows;
+package com.ost.ostsdk.workflows.interfaces;
 
 /**
  * Base Interface having SDK's flows common methods

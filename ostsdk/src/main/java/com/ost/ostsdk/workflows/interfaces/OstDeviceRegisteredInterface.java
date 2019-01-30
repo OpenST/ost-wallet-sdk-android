@@ -1,10 +1,10 @@
-package com.ost.ostsdk.workflows;
+package com.ost.ostsdk.workflows.interfaces;
 
 import org.json.JSONObject;
 
 /**
  * Sub Interface of
- * @see com.ost.ostsdk.workflows.OstBaseInterface
+ * @see OstBaseInterface
  * It declares deviceRegistered api of Workflows.
  */
 public interface OstDeviceRegisteredInterface extends OstBaseInterface {
