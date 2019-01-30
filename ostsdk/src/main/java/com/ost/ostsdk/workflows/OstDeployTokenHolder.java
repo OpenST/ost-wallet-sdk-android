@@ -1,5 +1,6 @@
 package com.ost.ostsdk.workflows;
 
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
@@ -15,13 +16,12 @@ import org.web3j.crypto.ECKeyPair;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 
-public class AdditionalDeviceProvisioningFlow {
+public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
 
-    private static final String TAG = "ADPFlow";
+    private static final String TAG = "IDPFlow";
 
-    public AdditionalDeviceProvisioningFlow() {
+    public OstDeployTokenHolder(String uPin, String password, Handler handler, OstWorkFlowCallback callback) {
 
     }
 
@@ -35,17 +35,17 @@ public class AdditionalDeviceProvisioningFlow {
         // Todo:: Kit api call for scyrptSalt and hkdfSalt
         Call<ResponseBody> responseInitActionCall = OstSdk.getKitNetworkClient().initAction(payload, signature);
 
-        responseInitActionCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+//        responseInitActionCall.enqueue(new retrofit2.Callback() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//            }
+//        });
 
         String userId = "", passPhrase = "", scyrptSalt = "", hkdfSalt = "";
 
@@ -88,19 +88,34 @@ public class AdditionalDeviceProvisioningFlow {
         // Todo:: post key
         Call<ResponseBody> responsePostKeyCall = OstSdk.getKitNetworkClient().postKey(encryptedKey, signature);
 
-        responsePostKeyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+//        responsePostKeyCall.enqueue(new retrofit2.Callback() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//            }
+//        });
 
         Log.d(TAG, "Parsing kit response");
+
+    }
+
+    public void perform() {
+
+    }
+
+
+    @Override
+    public void cancelFlow(String cancelReason) {
+
+    }
+
+    @Override
+    public void deviceRegistered(JSONObject apiResponse) {
 
     }
 }

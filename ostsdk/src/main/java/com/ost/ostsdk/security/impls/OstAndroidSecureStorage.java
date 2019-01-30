@@ -99,7 +99,8 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
     private KeyGenParameterSpec initGeneratorWithKeyGenParameterSpec() {
         KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(mKeyAlias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                 .setBlockModes(KeyProperties.BLOCK_MODE_ECB)
-                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1);
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+                .setUserAuthenticationRequired(false);
 
         return builder.build();
     }

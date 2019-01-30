@@ -15,13 +15,12 @@ import org.web3j.crypto.ECKeyPair;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
 
-public class InitialDeviceProvisioningFlow {
+public class OstDeviceLogin implements OstPinAcceptInterface, OstDeviceRegisteredInterface, OstStartPollingInterface {
 
-    private static final String TAG = "IDPFlow";
+    private static final String TAG = "ADPFlow";
 
-    public InitialDeviceProvisioningFlow() {
+    public OstDeviceLogin() {
 
     }
 
@@ -35,17 +34,17 @@ public class InitialDeviceProvisioningFlow {
         // Todo:: Kit api call for scyrptSalt and hkdfSalt
         Call<ResponseBody> responseInitActionCall = OstSdk.getKitNetworkClient().initAction(payload, signature);
 
-        responseInitActionCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+//        responseInitActionCall.enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//            }
+//        });
 
         String userId = "", passPhrase = "", scyrptSalt = "", hkdfSalt = "";
 
@@ -88,19 +87,39 @@ public class InitialDeviceProvisioningFlow {
         // Todo:: post key
         Call<ResponseBody> responsePostKeyCall = OstSdk.getKitNetworkClient().postKey(encryptedKey, signature);
 
-        responsePostKeyCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
+//        responsePostKeyCall.enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//            }
+//        });
 
         Log.d(TAG, "Parsing kit response");
+
+    }
+
+    @Override
+    public void startPolling() {
+
+    }
+
+    @Override
+    public void cancelFlow(String cancelReason) {
+
+    }
+
+    @Override
+    public void deviceRegistered(JSONObject apiResponse) {
+
+    }
+
+    @Override
+    public void pinEntered(String uPin, String appUserPassword) {
 
     }
 }
