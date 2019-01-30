@@ -50,9 +50,9 @@ public interface OstWorkFlowCallback {
     /**
      * Inform SDK user that flow is interrupted with errorCode
      * Developers should dismiss pin dialog (if open) on this callback
-     * @param ostException reason of interruption
+     * @param ostError reason of interruption
      */
-    void flowInterrupt(OstException ostException);
+    void flowInterrupt(OstError ostError);
 
     /**
      * Ask SDK user to determine workflow how to add device
