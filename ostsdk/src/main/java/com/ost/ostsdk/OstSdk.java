@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.ost.ostsdk.Network.ApiClient;
 import com.ost.ostsdk.Network.KitApi;
-import com.ost.ostsdk.database.KeySharedPreferences;
+import com.ost.ostsdk.database.ConfigSharedPreferences;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.entities.OstToken;
@@ -41,7 +41,7 @@ public class OstSdk {
     public static void init(Context context) {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
-        KeySharedPreferences.init(mApplicationContext);
+        ConfigSharedPreferences.init(mApplicationContext);
     }
 
     public static OstToken registerToken(JSONObject jsonObject) throws JSONException {

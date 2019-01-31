@@ -39,9 +39,8 @@ public class OstDeviceManagerOperationTest {
         //Test without any DeviceOperation  attribute
         jsonObject = new JSONObject();
         jsonObject.put(OstBaseEntity.ID, "ID");
-        jsonObject.put(OstDeviceManagerOperation.KIND, "0x2901239");
-        jsonObject.put(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS, "kind");
-        jsonObject.put(OstDeviceManagerOperation.STATUS, "status");
+        jsonObject.put(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS, "0x2901239");
+        jsonObject.put(OstDeviceManagerOperation.KIND, "kind");
         jsonObject.put(OstDeviceManagerOperation.DEVICE_MANAGER_ID, "0x9923232");
 
         JSONObject rawData = new JSONObject();
@@ -51,7 +50,10 @@ public class OstDeviceManagerOperationTest {
         signatures.put("0x123", "0x456");
         jsonObject.put(OstDeviceManagerOperation.SIGNATURES, signatures);
 
+        jsonObject.put(OstDeviceManagerOperation.SAFE_TXN_GAS, "0x123");
         jsonObject.put(OstDeviceManagerOperation.USER_ID, "123");
+        jsonObject.put(OstDeviceManagerOperation.CALL_DATA, "123");
+        jsonObject.put(OstDeviceManagerOperation.RAW_CALL_DATA, "123");
 
         testMultiSigOperationJsonWithNoException(jsonObject);
 
@@ -59,10 +61,9 @@ public class OstDeviceManagerOperationTest {
         OstDeviceManagerOperation ostDeviceManagerOperation = new OstDeviceManagerOperation(jsonObject);
         assertEquals("0x2901239", ostDeviceManagerOperation.getDeviceManagerAddress());
         assertEquals("kind", ostDeviceManagerOperation.getKind());
-        assertEquals("status", ostDeviceManagerOperation.getStatus());
         assertEquals("0x9923232", ostDeviceManagerOperation.getDeviceManagerId());
 
-        assertEquals(rawData, ostDeviceManagerOperation.getSafeTxnGas());
+        assertEquals("0x123", ostDeviceManagerOperation.getSafeTxnGas());
         assertEquals(signatures, ostDeviceManagerOperation.getSignatures());
 
         assertEquals("123", ostDeviceManagerOperation.getUserId());

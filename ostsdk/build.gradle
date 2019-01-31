@@ -37,6 +37,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -74,3 +78,16 @@ dependencies {
     // https://mvnrepository.com/artifact/org.json/json
     testImplementation 'org.json:json:20160810'
 }
+
+task deleteJar(type: Delete) {
+    delete 'libs/jars/ostsdk.jar'
+}
+
+task createJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('libs/jars/')
+    include('classes.jar')
+    rename('classes.jar', 'ostsdk.jar')
+}
+
+createJar.dependsOn(deleteJar, build)

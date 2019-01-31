@@ -49,7 +49,7 @@ public class OstDeviceManagerTest {
         assertEquals("0x2901239", ostDeviceManager.getAddress());
         assertEquals(1, ostDeviceManager.getRequirement());
         assertEquals("123", ostDeviceManager.getUserId());
-        assertEquals("ID", ostDeviceManager.getId());
+        assertEquals("0x2901239", ostDeviceManager.getId());
         assertEquals("1", ostDeviceManager.getNonce());
     }
 

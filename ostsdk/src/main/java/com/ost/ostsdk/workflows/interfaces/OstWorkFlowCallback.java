@@ -86,4 +86,10 @@ public interface OstWorkFlowCallback {
      * Inform SDK user that entered 12 wallet words is validated
      */
     void walletWordsValidated();
+
+    /**
+     * Device SDK is no more functional with corrupted data.
+     * And it need to be reinitialized with new wallet key.
+     */
+    void deviceUnauthorized();
 }
