@@ -51,13 +51,23 @@ public class OstSdkCrypto implements OstCrypto {
     }
 
     @Override
-    public ECKeyPair genECKey(String seed) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
+    public String genMnemonics(String passPhrase) {
         byte[] initialEntropy = new byte[16];
-        SecureRandom secureRandom = new SecureRandom(seed.getBytes());
+        SecureRandom secureRandom = new SecureRandom(passPhrase.getBytes());
         secureRandom.nextBytes(initialEntropy);
 
-        String mnemonic = MnemonicUtils.generateMnemonic(initialEntropy);
-        byte[] mnemonicSeed = MnemonicUtils.generateSeed(mnemonic, seed);
+        return MnemonicUtils.generateMnemonic(initialEntropy);
+    }
+
+    @Override
+    public ECKeyPair genECKey(String passPhrase) {
+        String mnemonics = genMnemonics(passPhrase);
+        return  genECKeyFromMnemonics(mnemonics, passPhrase);
+    }
+
+    @Override
+    public ECKeyPair genECKeyFromMnemonics(String mnemonics, String passPhrase) {
+        byte[] mnemonicSeed = MnemonicUtils.generateSeed(mnemonics, passPhrase);
         return ECKeyPair.create(sha256(mnemonicSeed));
     }
 

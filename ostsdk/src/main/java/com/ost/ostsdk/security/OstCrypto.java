@@ -2,10 +2,6 @@ package com.ost.ostsdk.security;
 
 import org.web3j.crypto.ECKeyPair;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-
 public interface OstCrypto {
     byte[] genSCryptKey(byte[] feed, byte[] salt);
 
@@ -13,7 +9,11 @@ public interface OstCrypto {
 
     byte[] genDigest(byte[] feed);
 
-    ECKeyPair genECKey(String seed) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException;
+    String genMnemonics(String passPhrase);
+
+    ECKeyPair genECKey(String passPhrase);
+
+    ECKeyPair genECKeyFromMnemonics(String mnemonics, String passPhrase);
 
     byte[] aesEncryption(byte[] key, byte[] textToEncrypt, byte[] associatedData) throws Exception;
 

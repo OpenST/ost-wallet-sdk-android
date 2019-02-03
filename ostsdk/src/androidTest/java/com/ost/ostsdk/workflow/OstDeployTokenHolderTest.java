@@ -4,7 +4,10 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 
 import com.ost.ostsdk.OstSdk;
+import com.ost.ostsdk.workflows.OstWorkFlowFactory;
+import com.ost.ostsdk.workflows.interfaces.OstDeviceRegisteredInterface;
 
+import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -22,6 +25,13 @@ public class OstDeployTokenHolderTest {
         // Context of the app under test.
         String uPin = "123456";
         String password = "password";
+
+        OstWorkFlowFactory.deployTokenHolder(uPin, password, new AbsWorkFlowCallback() {
+            @Override
+            public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
+
+            }
+        });
 
     }
 }

@@ -107,7 +107,12 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
     }
 
     public void perform() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
+            }
+        }).start();
     }
 
 

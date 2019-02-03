@@ -5,7 +5,7 @@ import android.content.Context;
 public class OstBiometricAuthentication {
     private final Context mContext;
 
-    OstBiometricAuthentication(Context context, Callback callback) {
+    public OstBiometricAuthentication(Context context, Callback callback) {
         this.mContext = context;
         FingerprintAuthenticationDialogFragment fragment = new FingerprintAuthenticationDialogFragment();
         fragment.setCallbacks(callback);

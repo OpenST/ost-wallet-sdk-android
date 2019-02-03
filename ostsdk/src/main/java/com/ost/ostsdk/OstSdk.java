@@ -6,6 +6,7 @@ import com.ost.ostsdk.Network.ApiClient;
 import com.ost.ostsdk.Network.KitApi;
 import com.ost.ostsdk.database.ConfigSharedPreferences;
 import com.ost.ostsdk.database.OstSdkDatabase;
+import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.entities.OstToken;
 import com.ost.ostsdk.models.entities.OstUser;
@@ -41,6 +42,7 @@ public class OstSdk {
     public static void init(Context context) {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
+        OstSdkKeyDatabase.initDatabase(mApplicationContext);
         ConfigSharedPreferences.init(mApplicationContext);
     }
 
