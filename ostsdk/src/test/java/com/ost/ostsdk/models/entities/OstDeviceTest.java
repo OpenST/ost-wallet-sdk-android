@@ -41,7 +41,7 @@ public class OstDeviceTest {
         jsonObject.put(OstDevice.USER_ID, "1234");
         jsonObject.put(OstDevice.DEVICE_NAME, "Device");
         jsonObject.put(OstDevice.DEVICE_UUID, "221");
-        jsonObject.put(OstDevice.DEVICE_MODEL, "Nokia");
+        jsonObject.put(OstDevice.PERSONAL_SIGN_ADDRESS, "0x12345567");
         jsonObject.put(OstDevice.ADDRESS, "0x2901239");
         jsonObject.put(OstDevice.DEVICE_MANAGER_ADDRESS, "123");
         jsonObject.put(OstDevice.STATUS, "status");
@@ -55,7 +55,7 @@ public class OstDeviceTest {
         assertEquals("1234", ostDevice.getUserId());
         assertEquals("221", ostDevice.getDeviceUuid());
         assertEquals("Device", ostDevice.getDeviceName());
-        assertEquals("Nokia", ostDevice.getDeviceModel());
+        assertEquals("0x12345567", ostDevice.getPersonalSignAddress());
 
     }
 

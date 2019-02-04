@@ -4,14 +4,13 @@ import android.graphics.Bitmap;
 
 import com.ost.ostsdk.workflows.OstContextEntity;
 import com.ost.ostsdk.workflows.OstError;
-import com.ost.ostsdk.workflows.OstWorkFlowFactory;
 
 import org.json.JSONObject;
 
 /**
  * OstWorkFlowCallback implemented by SDK user to perform prerequisites task.
  * These tasks are assigned by SDK workflows with help of callbacks.
- * @see OstWorkFlowFactory
+ * @see com.ost.ostsdk.OstSdk
  */
 public interface OstWorkFlowCallback {
     /**

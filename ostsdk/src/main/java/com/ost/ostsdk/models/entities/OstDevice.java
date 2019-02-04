@@ -1,12 +1,18 @@
 package com.ost.ostsdk.models.entities;
 
 
+import android.Manifest;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.telephony.TelephonyManager;
 
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
+import com.ost.ostsdk.models.OstDeviceModel;
 import com.ost.ostsdk.security.impls.OstAndroidSecureStorage;
 
 import org.json.JSONException;
@@ -29,7 +35,8 @@ public class OstDevice extends OstBaseEntity {
     public static final String DEVICE_MANAGER_ADDRESS = "device_manager_address";
     public static final String DEVICE_NAME = "device_name";
     public static final String DEVICE_UUID = "device_uuid";
-    public static final String DEVICE_MODEL = "device_model";
+    public static final String PERSONAL_SIGN_ADDRESS = "personal_sign_address";
+
 
     public static class CONST_STATUS {
         public static final String CREATED = "CREATED";
@@ -38,6 +45,36 @@ public class OstDevice extends OstBaseEntity {
         public static final String AUTHORIZED = "AUTHORIZED";
         public static final String REVOKING = "REVOKING";
         public static final String REVOKED = "REVOKED";
+    }
+
+    public static OstDevice init(String address, String apiAddress, String mUserId) {
+        TelephonyManager tManager = (TelephonyManager) OstSdk.getContext().getSystemService(Context.TELEPHONY_SERVICE);
+        String uuid = "";
+        if (ActivityCompat.checkSelfPermission(OstSdk.getContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+            uuid = tManager.getDeviceId();
+        }
+
+        String deviceName = android.os.Build.MANUFACTURER + android.os.Build.PRODUCT;
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(OstDevice.ADDRESS, address);
+            jsonObject.put(OstDevice.PERSONAL_SIGN_ADDRESS, apiAddress);
+            jsonObject.put(OstDevice.USER_ID, mUserId);
+            jsonObject.put(OstDevice.DEVICE_NAME, deviceName);
+            jsonObject.put(OstDevice.DEVICE_UUID, uuid);
+            jsonObject.put(OstDevice.DEVICE_MANAGER_ADDRESS, "");
+            return OstDevice.parse(jsonObject);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static OstDevice[] getDevicesByParentId(String mUserId) {
+        OstDeviceModel ostDeviceModel = OstModelFactory.getDeviceModel();
+        return ostDeviceModel.getEntitiesByParentId(mUserId);
     }
 
     public static String getIdentifier() {
@@ -68,7 +105,7 @@ public class OstDevice extends OstBaseEntity {
                 jsonObject.has(OstDevice.ADDRESS) &&
                 jsonObject.has(OstDevice.STATUS) &&
                 jsonObject.has(OstDevice.DEVICE_NAME) &&
-                jsonObject.has(OstDevice.DEVICE_MODEL) &&
+                jsonObject.has(OstDevice.PERSONAL_SIGN_ADDRESS) &&
                 jsonObject.has(OstDevice.DEVICE_UUID) &&
                 jsonObject.has(OstDevice.DEVICE_MANAGER_ADDRESS);
     }
@@ -93,8 +130,8 @@ public class OstDevice extends OstBaseEntity {
         return getJSONData().optString(OstDevice.DEVICE_NAME, null);
     }
 
-    public String getDeviceModel() {
-        return getJSONData().optString(OstDevice.DEVICE_MODEL, null);
+    public String getPersonalSignAddress() {
+        return getJSONData().optString(OstDevice.PERSONAL_SIGN_ADDRESS, null);
     }
 
     public String getDeviceUuid() {
@@ -122,6 +159,11 @@ public class OstDevice extends OstBaseEntity {
     @Override
     public String getParentIdKey() {
         return OstDevice.USER_ID;
+    }
+
+    @Override
+    public String getDefaultStatus() {
+        return CONST_STATUS.CREATED;
     }
 
     public static class Transaction extends RawTransaction {

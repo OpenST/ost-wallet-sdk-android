@@ -1,4 +1,4 @@
-package com.ost.ostsdk.Network;
+package com.ost.ostsdk.network;
 
 import android.util.Log;
 

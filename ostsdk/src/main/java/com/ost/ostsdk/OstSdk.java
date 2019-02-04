@@ -1,15 +1,19 @@
 package com.ost.ostsdk;
 
 import android.content.Context;
+import android.os.Handler;
 
-import com.ost.ostsdk.Network.ApiClient;
-import com.ost.ostsdk.Network.KitApi;
+import com.ost.ostsdk.network.ApiClient;
+import com.ost.ostsdk.network.KitApi;
 import com.ost.ostsdk.database.ConfigSharedPreferences;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.entities.OstToken;
 import com.ost.ostsdk.models.entities.OstUser;
+import com.ost.ostsdk.workflows.OstDeployTokenHolder;
+import com.ost.ostsdk.workflows.OstRegisterDevice;
+import com.ost.ostsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,16 +26,16 @@ import org.json.JSONObject;
  */
 public class OstSdk {
 
-    private static final String USER = "user";
-    private static final String TRANSACTION = "transaction";
-    private static final String TOKEN_HOLDER = "token_holder";
-    private static final String TOKEN = "token";
-    private static final String SESSION = "session";
-    private static final String RULE = "rule";
-    private static final String DEVICE_OPERATION = "device_operation";
-    private static final String DEVICE_MANAGER = "device_manager";
-    private static final String DEVICE = "device";
-    private static final String CREDITS = "credits";
+    public static final String USER = "user";
+    public static final String TRANSACTION = "transaction";
+    public static final String TOKEN_HOLDER = "token_holder";
+    public static final String TOKEN = "token";
+    public static final String SESSION = "session";
+    public static final String RULE = "rule";
+    public static final String DEVICE_OPERATION = "device_operation";
+    public static final String DEVICE_MANAGER = "device_manager";
+    public static final String DEVICE = "device";
+    public static final String CREDITS = "credits";
 
     private static Context mApplicationContext;
 
@@ -75,6 +79,23 @@ public class OstSdk {
 
     public static KitApi getKitNetworkClient() {
         return ApiClient.getClient().create(KitApi.class);
+    }
+
+    public static void deployTokenHolder(String uPin, String password, OstWorkFlowCallback callback) {
+        Handler handler = new Handler();
+        final OstDeployTokenHolder ostDeployTokenHolder = new OstDeployTokenHolder(uPin,password, handler, callback);
+        ostDeployTokenHolder.perform();
+    }
+
+    public static void registerDevice(String userId, OstWorkFlowCallback callback) {
+        Handler handler = new Handler();
+        final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, handler, callback);
+        ostRegisterDevice.perform();
+    }
+
+    OstDeployTokenHolder QRCodeInput() {
+        OstDeployTokenHolder  ostDeployTokenHolder = null;
+        return ostDeployTokenHolder;
     }
 
     public static void parse(JSONObject jsonObject) throws JSONException {

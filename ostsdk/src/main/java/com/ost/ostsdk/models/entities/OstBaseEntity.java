@@ -140,7 +140,12 @@ public class OstBaseEntity {
         String parentId = jsonObject.optString(getParentIdKey(), OstBaseEntity.DEFAULT_PARENT_ID);
         setParentId(parentId);
 
+        setStatus(jsonObject.optString(OstBaseEntity.STATUS, getDefaultStatus()));
         setData(jsonObject);
+    }
+
+    public String getDefaultStatus() {
+        return "";
     }
 
     String getEntityIdKey() {

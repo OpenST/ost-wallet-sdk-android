@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 
 import com.ost.ostsdk.OstSdk;
-import com.ost.ostsdk.workflows.OstWorkFlowFactory;
 import com.ost.ostsdk.workflows.interfaces.OstDeviceRegisteredInterface;
 
 import org.json.JSONObject;
@@ -26,7 +25,7 @@ public class OstDeployTokenHolderTest {
         String uPin = "123456";
         String password = "password";
 
-        OstWorkFlowFactory.deployTokenHolder(uPin, password, new AbsWorkFlowCallback() {
+        OstSdk.deployTokenHolder(uPin, password, new AbsWorkFlowCallback() {
             @Override
             public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
 
