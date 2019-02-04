@@ -20,7 +20,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +38,8 @@ public class OstKeyManager {
         OstSecureKey ostSecureKey = mOstSecureKeyModel.getByKey(USER_DEVICE_INFO_FOR + userId);
         if (null == ostSecureKey) {
             String address = genAndStoreKey(mUserId);
-            mKeyMetaStruct = new KeyMetaStruct(address);
+            OstSecureKey osk = mOstSecureKeyModel.getByKey(ETHEREUM_KEY_FOR_ + address);
+            mKeyMetaStruct = new KeyMetaStruct(address, osk.getData());
             mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address, mUserId);
             mOstSecureKeyModel.initSecureKey(USER_DEVICE_INFO_FOR + userId, createBytesFromObject(mKeyMetaStruct));
         } else {
@@ -69,8 +69,8 @@ public class OstKeyManager {
     }
 
 
-    public String createHDKey(String seed) {
-        String mnemonics = MnemonicUtils.generateMnemonic(seed.getBytes());
+    public String createHDKey(byte[] seed) {
+        String mnemonics = MnemonicUtils.generateMnemonic(seed);
 
         ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics, mUserId);
         String address = Credentials.create(ecKeyPair).getAddress();
@@ -80,7 +80,10 @@ public class OstKeyManager {
     }
 
     public Sign.SignatureData sign(byte[] data) {
-        return sign(mKeyMetaStruct.getApiAddress() , data);
+        byte[] decryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(mKeyMetaStruct.getEncryptedApiKey());
+        ECKeyPair ecKeyPair = ECKeyPair.create(decryptedKey);
+
+        return Sign.signMessage(data, ecKeyPair, false);
     }
 
     public Sign.SignatureData sign(String address, byte[] data) {
@@ -214,14 +217,16 @@ public class OstKeyManager {
 
     public static class KeyMetaStruct implements Serializable {
         private final String apiAddress;
+        private final byte[] encryptedApiKey;
         private HashMap<String, String> ethKeyMetaMapping = new HashMap<>();
         private HashMap<String, String> ethKeyMnemonicsMetaMapping = new HashMap<>();
 
-        KeyMetaStruct(String apiAddress) {
+        KeyMetaStruct(String apiAddress, byte[] encryptedApiKey) {
             this.apiAddress = apiAddress;
+            this.encryptedApiKey = encryptedApiKey;
         }
 
-        public String getApiAddress() {
+        String getApiAddress() {
             return apiAddress;
         }
 
@@ -239,6 +244,10 @@ public class OstKeyManager {
 
         void addEthKeyMnemonicsIdentifier(String address, String identifier) {
             ethKeyMnemonicsMetaMapping.put(address, identifier);
+        }
+
+        byte[] getEncryptedApiKey() {
+            return encryptedApiKey;
         }
     }
 }

@@ -21,8 +21,7 @@ public class OstKeyManagerTest {
     public static void setUp() {
         mAppContext = InstrumentationRegistry.getTargetContext();
         OstSdk.init(mAppContext);
-        new OstSecureKeyModelRepository().deleteAllSecureKeys(new OstTaskCallback() {
-        });
+        new OstSecureKeyModelRepository().deleteAllSecureKeys(new OstTaskCallback() {});
     }
 
 
@@ -30,7 +29,7 @@ public class OstKeyManagerTest {
     public void testKeyMetaStruct() {
         String userId = "1";
         OstKeyManager ostKeyManager = new OstKeyManager(userId);
-        OstKeyManager.KeyMetaStruct keyMetaStruct = new OstKeyManager.KeyMetaStruct("abc");
+        OstKeyManager.KeyMetaStruct keyMetaStruct = new OstKeyManager.KeyMetaStruct("abc","".getBytes());
         keyMetaStruct.addEthKeyIdentifier("abc", "iden");
 
         byte[] bytes = ostKeyManager.createBytesFromObject(keyMetaStruct);
@@ -66,12 +65,12 @@ public class OstKeyManagerTest {
         String userId = "1";
         String seed = "12345678901234567890123456789012";
         OstKeyManager ostKeyManager1 = new OstKeyManager(userId);
-        String address1 = ostKeyManager1.createHDKey(seed);
+        String address1 = ostKeyManager1.createHDKey(seed.getBytes());
         Assert.assertTrue(ostKeyManager1.hasAddress(address1));
 
 
         OstKeyManager ostKeyManager2 = new OstKeyManager(userId);
-        String address2 = ostKeyManager2.createHDKey(seed);
+        String address2 = ostKeyManager2.createHDKey(seed.getBytes());
         Assert.assertTrue(ostKeyManager2.hasAddress(address2));
 
         Assert.assertEquals(address1, address2);

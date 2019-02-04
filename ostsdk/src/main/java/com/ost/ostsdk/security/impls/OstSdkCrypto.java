@@ -51,6 +51,17 @@ public class OstSdkCrypto implements OstCrypto {
     }
 
     @Override
+    public byte[] genDigest(byte[] feed, int times) {
+        byte[] inputFeed;
+        byte[] outputFeed = feed;
+        for (int i =0; i<times;i++) {
+           inputFeed = outputFeed;
+           outputFeed = genDigest(inputFeed);
+        }
+        return outputFeed;
+    }
+
+    @Override
     public String genMnemonics(String passPhrase) {
         byte[] initialEntropy = new byte[16];
         SecureRandom secureRandom = new SecureRandom(passPhrase.getBytes());

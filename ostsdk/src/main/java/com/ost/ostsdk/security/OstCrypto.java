@@ -9,6 +9,8 @@ public interface OstCrypto {
 
     byte[] genDigest(byte[] feed);
 
+    byte[] genDigest(byte[] feed, int times);
+
     String genMnemonics(String passPhrase);
 
     ECKeyPair genECKey(String passPhrase);

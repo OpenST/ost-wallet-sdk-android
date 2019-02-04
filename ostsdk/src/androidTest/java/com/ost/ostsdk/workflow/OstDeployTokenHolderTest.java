@@ -4,9 +4,11 @@ import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 
 import com.ost.ostsdk.OstSdk;
-import com.ost.ostsdk.workflows.interfaces.OstDeviceRegisteredInterface;
+import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
+import com.ost.ostsdk.models.OstTaskCallback;
+import com.ost.ostsdk.workflows.OstContextEntity;
+import com.ost.ostsdk.workflows.OstError;
 
-import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,6 +19,7 @@ public class OstDeployTokenHolderTest {
     public static void setUp() {
         mAppContext = InstrumentationRegistry.getTargetContext();
         OstSdk.init(mAppContext);
+        new OstSecureKeyModelRepository().deleteAllSecureKeys(new OstTaskCallback() {});
     }
 
     @Test
@@ -24,11 +27,19 @@ public class OstDeployTokenHolderTest {
         // Context of the app under test.
         String uPin = "123456";
         String password = "password";
+        boolean isBiometricNeeded = false;
+        String userId = "1";
+        String tokenId = "1";
 
-        OstSdk.deployTokenHolder(uPin, password, new AbsWorkFlowCallback() {
+        OstSdk.deployTokenHolder(userId, tokenId, uPin, password, isBiometricNeeded ,new AbsWorkFlowCallback() {
             @Override
-            public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
+            public void flowComplete(OstContextEntity ostContextEntity) {
+                super.flowComplete(ostContextEntity);
+            }
 
+            @Override
+            public void flowInterrupt(OstError ostError) {
+                super.flowInterrupt(ostError);
             }
         });
 

@@ -1,14 +1,16 @@
 package com.ost.ostsdk.workflows;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import com.ost.ostsdk.OstSdk;
 import com.ost.ostsdk.models.Impls.OstSecureKeyModelRepository;
+import com.ost.ostsdk.models.entities.OstDevice;
 import com.ost.ostsdk.security.OstCrypto;
+import com.ost.ostsdk.security.OstKeyManager;
 import com.ost.ostsdk.security.impls.OstAndroidSecureStorage;
 import com.ost.ostsdk.security.impls.OstSdkCrypto;
+import com.ost.ostsdk.utils.DispatchAsync;
 import com.ost.ostsdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.ostsdk.workflows.interfaces.OstWorkFlowCallback;
 
@@ -16,39 +18,29 @@ import org.json.JSONObject;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-
 public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
 
     private static final String TAG = "IDPFlow";
+    private static final int THREE_TIMES = 3;
+    private final String mUserId;
+    private final String mTokenId;
+    private final String mPassWord;
+    private final boolean mIsBiometricNeeded;
+    private final Handler mHandler;
+    private final OstWorkFlowCallback mCallback;
+    private final String mUPin;
 
-    public OstDeployTokenHolder(String uPin, String password, Handler handler, OstWorkFlowCallback callback) {
-//        callback.registerDevice(new OstDevice(), this);
+    public OstDeployTokenHolder(String userId, String tokenId, String uPin, String password, boolean isBiometricNeeded, Handler handler, OstWorkFlowCallback callback) {
+        mUserId = userId;
+        mTokenId = tokenId;
+        mUPin = uPin;
+        mPassWord = password;
+        mIsBiometricNeeded = isBiometricNeeded;
+        mHandler = handler;
+        mCallback = callback;
     }
 
     public void init(JSONObject payload, String signature) throws Exception {
-        //Todo:: Condition check:: should not be on Main Thread
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            throw new Exception("FLow call should not be on Main thread");
-        }
-
-        Log.d(TAG, "Kit api call");
-        // Todo:: Kit api call for scyrptSalt and hkdfSalt
-        Call<ResponseBody> responseInitActionCall = OstSdk.getKitNetworkClient().initAction(payload, signature);
-
-//        responseInitActionCall.enqueue(new retrofit2.Callback() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//
-//            }
-//        });
-
         String userId = "", passPhrase = "", scyrptSalt = "", hkdfSalt = "";
 
         Log.d(TAG, "Generate encrypted keys");
@@ -88,31 +80,50 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
 
         Log.d(TAG, "Post encrypted keys to kit");
         // Todo:: post key
-        Call<ResponseBody> responsePostKeyCall = OstSdk.getKitNetworkClient().postKey(encryptedKey, signature);
-
-//        responsePostKeyCall.enqueue(new retrofit2.Callback() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//
-//            }
-//        });
-
         Log.d(TAG, "Parsing kit response");
 
     }
 
     public void perform() {
-        new Thread(new Runnable() {
+        DispatchAsync.dispatch(new DispatchAsync.Executor() {
             @Override
-            public void run() {
-
+            public void execute() {
+                if (hasAuthorizedDevice()) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCallback.flowComplete(new OstContextEntity());
+                        }
+                    });
+                } else {
+                    //Todo :: get salt from Kit
+                    String salt = "";
+                    String recoveryAddress = createRecoveryKey(salt);
+                }
             }
-        }).start();
+        });
+    }
+
+    private String createRecoveryKey(String salt) {
+        byte[] hashPassword = OstSdkCrypto.getInstance().genDigest(mPassWord.getBytes(), THREE_TIMES);
+        byte[] scryptInput = ((new String(hashPassword)) + mUPin + mUserId).getBytes();
+        byte[] seed = OstSdkCrypto.getInstance().genSCryptKey(scryptInput, salt.getBytes());
+
+        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
+        String address = ostKeyManager.createHDKey(seed);
+        return address;
+    }
+
+    private boolean hasAuthorizedDevice() {
+        OstDevice[] ostDevices = OstDevice.getDevicesByParentId(mUserId);
+        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
+        for (OstDevice device : ostDevices) {
+            if (ostKeyManager.getApiKeyAddress().equalsIgnoreCase(device.getPersonalSignAddress())
+                    && OstDevice.CONST_STATUS.AUTHORIZED.equals(device.getStatus())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

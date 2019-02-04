@@ -81,9 +81,9 @@ public class OstSdk {
         return ApiClient.getClient().create(KitApi.class);
     }
 
-    public static void deployTokenHolder(String uPin, String password, OstWorkFlowCallback callback) {
+    public static void deployTokenHolder(String userId, String tokenId, String uPin, String password, boolean isBiometricNeeded, OstWorkFlowCallback callback) {
         Handler handler = new Handler();
-        final OstDeployTokenHolder ostDeployTokenHolder = new OstDeployTokenHolder(uPin,password, handler, callback);
+        final OstDeployTokenHolder ostDeployTokenHolder = new OstDeployTokenHolder(userId, tokenId, uPin, password, isBiometricNeeded ,handler, callback);
         ostDeployTokenHolder.perform();
     }
 
