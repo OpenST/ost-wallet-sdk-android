@@ -96,9 +96,15 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
                         }
                     });
                 } else {
-                    //Todo :: get salt from Kit
+                    //Todo :: get salt from Kit /users/{user_id}/recovery-keys
+
                     String salt = "";
                     String recoveryAddress = createRecoveryKey(salt);
+
+                    //Todo :: backup  recoveryAddress on kit. calls endpoint /devices/back-up
+
+                    //Todo :: if Device Manager already exists, add recovery key to Device Manager.
+                    //Todo :: If not deploy Device Manager and add recovery key to Device Manager
                 }
             }
         });

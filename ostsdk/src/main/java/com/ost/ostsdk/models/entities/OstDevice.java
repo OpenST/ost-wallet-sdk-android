@@ -64,6 +64,7 @@ public class OstDevice extends OstBaseEntity {
             jsonObject.put(OstDevice.DEVICE_NAME, deviceName);
             jsonObject.put(OstDevice.DEVICE_UUID, uuid);
             jsonObject.put(OstDevice.DEVICE_MANAGER_ADDRESS, "");
+            jsonObject.put(OstDevice.UPDATED_TIMESTAMP, System.currentTimeMillis());
             return OstDevice.parse(jsonObject);
         } catch (JSONException e) {
             e.printStackTrace();

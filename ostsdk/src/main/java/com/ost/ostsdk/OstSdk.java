@@ -3,14 +3,14 @@ package com.ost.ostsdk;
 import android.content.Context;
 import android.os.Handler;
 
-import com.ost.ostsdk.network.ApiClient;
-import com.ost.ostsdk.network.KitApi;
 import com.ost.ostsdk.database.ConfigSharedPreferences;
 import com.ost.ostsdk.database.OstSdkDatabase;
 import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.entities.OstToken;
 import com.ost.ostsdk.models.entities.OstUser;
+import com.ost.ostsdk.network.ApiClient;
+import com.ost.ostsdk.network.KitApi;
 import com.ost.ostsdk.workflows.OstDeployTokenHolder;
 import com.ost.ostsdk.workflows.OstRegisterDevice;
 import com.ost.ostsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -38,6 +38,8 @@ public class OstSdk {
     public static final String CREDITS = "credits";
 
     private static Context mApplicationContext;
+    private static String mTokenId;
+    private static String mUserId;
 
     public static Context getContext() {
         return mApplicationContext;
@@ -91,6 +93,19 @@ public class OstSdk {
         Handler handler = new Handler();
         final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, handler, callback);
         ostRegisterDevice.perform();
+    }
+
+    public static String getCurrentTokenId() {
+        return mTokenId;
+    }
+
+    public static String getCurrentUserId() {
+        return mUserId;
+    }
+
+    public static void setUserInfo(String userId, String tokenId) {
+        mUserId = userId;
+        mTokenId = tokenId;
     }
 
     OstDeployTokenHolder QRCodeInput() {

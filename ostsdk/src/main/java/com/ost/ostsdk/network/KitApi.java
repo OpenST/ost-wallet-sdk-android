@@ -14,6 +14,6 @@ public interface KitApi {
     @POST("")
     Call<ResponseBody> postKey(byte[] encryptedKey, String signature);
 
-    @GET("bins/1bsqcn/")
-    Call<ResponseBody> getNoticeData();
+    @GET("tokens/")
+    Call<ResponseBody> getTokens();
 }

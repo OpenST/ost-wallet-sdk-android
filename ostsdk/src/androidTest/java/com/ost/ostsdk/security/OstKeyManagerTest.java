@@ -29,7 +29,7 @@ public class OstKeyManagerTest {
     public void testKeyMetaStruct() {
         String userId = "1";
         OstKeyManager ostKeyManager = new OstKeyManager(userId);
-        OstKeyManager.KeyMetaStruct keyMetaStruct = new OstKeyManager.KeyMetaStruct("abc","".getBytes());
+        OstKeyManager.KeyMetaStruct keyMetaStruct = new OstKeyManager.KeyMetaStruct("abc");
         keyMetaStruct.addEthKeyIdentifier("abc", "iden");
 
         byte[] bytes = ostKeyManager.createBytesFromObject(keyMetaStruct);

@@ -38,8 +38,7 @@ public class OstKeyManager {
         OstSecureKey ostSecureKey = mOstSecureKeyModel.getByKey(USER_DEVICE_INFO_FOR + userId);
         if (null == ostSecureKey) {
             String address = genAndStoreKey(mUserId);
-            OstSecureKey osk = mOstSecureKeyModel.getByKey(ETHEREUM_KEY_FOR_ + address);
-            mKeyMetaStruct = new KeyMetaStruct(address, osk.getData());
+            mKeyMetaStruct = new KeyMetaStruct(address);
             mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address, mUserId);
             mOstSecureKeyModel.initSecureKey(USER_DEVICE_INFO_FOR + userId, createBytesFromObject(mKeyMetaStruct));
         } else {
@@ -58,7 +57,7 @@ public class OstKeyManager {
         return mKeyMetaStruct.getApiAddress();
     }
 
-    public String createKeyWithMnemonic() {
+    String createKeyWithMnemonic() {
         String mnemonics = OstSdkCrypto.getInstance().genMnemonics(mUserId);
 
         ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics, mUserId);
@@ -79,8 +78,8 @@ public class OstKeyManager {
         return address;
     }
 
-    public Sign.SignatureData sign(byte[] data) {
-        byte[] decryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(mKeyMetaStruct.getEncryptedApiKey());
+    public static Sign.SignatureData sign(byte[] apiKey, byte[] data, String identifier) {
+        byte[] decryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), identifier).decrypt(apiKey);
         ECKeyPair ecKeyPair = ECKeyPair.create(decryptedKey);
 
         return Sign.signMessage(data, ecKeyPair, false);
@@ -96,7 +95,7 @@ public class OstKeyManager {
         return Sign.signMessage(data, ecKeyPair, false);
     }
 
-    public String[] getMnemonics(String address) {
+    String[] getMnemonics(String address) {
         String identifier = mKeyMetaStruct.getEthKeyMnemonicsIdentifier(address);
         OstSecureKey ostSecureKey = mOstSecureKeyModel.getByKey(ETHEREUM_KEY_MNEMONICS_FOR_ + address);
         if (null == ostSecureKey) {
@@ -107,8 +106,13 @@ public class OstKeyManager {
         return mnemonics.split(" ");
     }
 
+    public OstApiSigner getApiSigner() {
+        OstSecureKey osk = mOstSecureKeyModel.getByKey(ETHEREUM_KEY_FOR_ + getApiKeyAddress());
+        byte[] key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
+        return new OstApiSigner(key);
+    }
 
-    public byte[] createBytesFromObject(KeyMetaStruct object) {
+    byte[] createBytesFromObject(KeyMetaStruct object) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out = null;
         try {
@@ -129,7 +133,7 @@ public class OstKeyManager {
         return null;
     }
 
-    public KeyMetaStruct createObjectFromBytes(byte[] bytes) {
+    KeyMetaStruct createObjectFromBytes(byte[] bytes) {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         ObjectInput in = null;
         try {
@@ -152,7 +156,7 @@ public class OstKeyManager {
         return null;
     }
 
-    public boolean hasAddress(String address) {
+    boolean hasAddress(String address) {
         return mKeyMetaStruct.getEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address) != null;
     }
 
@@ -215,15 +219,13 @@ public class OstKeyManager {
         }
     }
 
-    public static class KeyMetaStruct implements Serializable {
+    static class KeyMetaStruct implements Serializable {
         private final String apiAddress;
-        private final byte[] encryptedApiKey;
         private HashMap<String, String> ethKeyMetaMapping = new HashMap<>();
         private HashMap<String, String> ethKeyMnemonicsMetaMapping = new HashMap<>();
 
-        KeyMetaStruct(String apiAddress, byte[] encryptedApiKey) {
+        KeyMetaStruct(String apiAddress) {
             this.apiAddress = apiAddress;
-            this.encryptedApiKey = encryptedApiKey;
         }
 
         String getApiAddress() {
@@ -244,10 +246,6 @@ public class OstKeyManager {
 
         void addEthKeyMnemonicsIdentifier(String address, String identifier) {
             ethKeyMnemonicsMetaMapping.put(address, identifier);
-        }
-
-        byte[] getEncryptedApiKey() {
-            return encryptedApiKey;
         }
     }
 }
