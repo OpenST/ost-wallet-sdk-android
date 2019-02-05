@@ -156,7 +156,7 @@ public class OstKeyManager {
         return null;
     }
 
-    boolean hasAddress(String address) {
+    public boolean hasAddress(String address) {
         return mKeyMetaStruct.getEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address) != null;
     }
 

@@ -4,6 +4,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 
 import com.ost.ostsdk.models.Impls.OstModelFactory;
+import com.ost.ostsdk.security.OstKeyManager;
 import com.ost.ostsdk.utils.KeyGenProcess;
 
 import org.json.JSONException;
@@ -25,6 +26,27 @@ public class OstUser extends OstBaseEntity {
 
     public static String getIdentifier() {
         return OstUser.ID;
+    }
+
+    @Ignore
+    private OstDevice currentDevice = null;
+
+    public OstDevice getCurrentDevice() {
+        if (null == currentDevice) {
+            String currentDeiceAddress = null;
+            OstDevice[] ostDevices = OstDevice.getDevicesByParentId(getId());
+            OstKeyManager ostKeyManager = new OstKeyManager(getId());
+            for (OstDevice device : ostDevices) {
+                if (ostKeyManager.hasAddress(device.getAddress())) {
+                    currentDeiceAddress = device.getAddress();
+                }
+            }
+            if (null == currentDeiceAddress) {
+                throw new RuntimeException("Unexpected Error");
+            }
+            currentDevice = OstDevice.getById(currentDeiceAddress);
+        }
+        return currentDevice;
     }
 
     public static class CONST_STATUS {

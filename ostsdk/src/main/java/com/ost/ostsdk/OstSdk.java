@@ -9,7 +9,6 @@ import com.ost.ostsdk.database.OstSdkKeyDatabase;
 import com.ost.ostsdk.models.Impls.OstModelFactory;
 import com.ost.ostsdk.models.entities.OstToken;
 import com.ost.ostsdk.models.entities.OstUser;
-import com.ost.ostsdk.network.ApiClient;
 import com.ost.ostsdk.network.KitApi;
 import com.ost.ostsdk.workflows.OstDeployTokenHolder;
 import com.ost.ostsdk.workflows.OstRegisterDevice;
@@ -18,12 +17,6 @@ import com.ost.ostsdk.workflows.interfaces.OstWorkFlowCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Work Flows
- * 1. Key Recovery (Work flow, key Rotation)
- * 2. Additional Key Provisioning (Work Flow)
- * 3. QR code scanning (Work Flow)
- */
 public class OstSdk {
 
     public static final String USER = "user";
@@ -36,9 +29,9 @@ public class OstSdk {
     public static final String DEVICE_MANAGER = "device_manager";
     public static final String DEVICE = "device";
     public static final String CREDITS = "credits";
+    private static volatile OstSdk INSTANCE;
 
     private static Context mApplicationContext;
-    private static String mTokenId;
     private static String mUserId;
 
     public static Context getContext() {
@@ -46,6 +39,23 @@ public class OstSdk {
     }
 
     public static void init(Context context) {
+        if (INSTANCE == null) {
+            synchronized (OstSdk.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new OstSdk(context);
+                }
+            }
+        }
+    }
+
+    public static OstSdk get() {
+        if (null == INSTANCE) {
+            throw new RuntimeException("OstSdk.init() should be call before get");
+        }
+        return INSTANCE;
+    }
+
+    private OstSdk(Context context) {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
@@ -80,7 +90,7 @@ public class OstSdk {
     }
 
     public static KitApi getKitNetworkClient() {
-        return ApiClient.getClient().create(KitApi.class);
+        return null;
     }
 
     public static void deployTokenHolder(String userId, String tokenId, String uPin, String password, boolean isBiometricNeeded, OstWorkFlowCallback callback) {
@@ -95,17 +105,16 @@ public class OstSdk {
         ostRegisterDevice.perform();
     }
 
-    public static String getCurrentTokenId() {
-        return mTokenId;
-    }
-
     public static String getCurrentUserId() {
         return mUserId;
     }
 
-    public static void setUserInfo(String userId, String tokenId) {
+    public static void setCurrentUserId(String userId) {
         mUserId = userId;
-        mTokenId = tokenId;
+    }
+
+    public static OstUser getCurrentUser() {
+        return getUser(getCurrentUserId());
     }
 
     OstDeployTokenHolder QRCodeInput() {

@@ -37,6 +37,11 @@ public class OstDevice extends OstBaseEntity {
     public static final String DEVICE_UUID = "device_uuid";
     public static final String PERSONAL_SIGN_ADDRESS = "personal_sign_address";
 
+    public static OstDevice getById(String id) {
+        OstDeviceModel ostDeviceModel = OstModelFactory.getDeviceModel();
+        return ostDeviceModel.getEntityById(id);
+    }
+
 
     public static class CONST_STATUS {
         public static final String CREATED = "CREATED";
