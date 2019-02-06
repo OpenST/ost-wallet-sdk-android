@@ -1,0 +1,52 @@
+package com.ost.mobilesdk.models.Impls;
+
+import com.ost.mobilesdk.database.OstSdkDatabase;
+import com.ost.mobilesdk.database.daos.OstBaseDao;
+import com.ost.mobilesdk.database.daos.OstTokenHolderDao;
+import com.ost.mobilesdk.models.OstTaskCallback;
+import com.ost.mobilesdk.models.OstTokenHolderModel;
+import com.ost.mobilesdk.models.entities.OstBaseEntity;
+import com.ost.mobilesdk.models.entities.OstTokenHolder;
+
+class OstTokenHolderModelRepository extends OstBaseModelCacheRepository implements OstTokenHolderModel {
+
+    private static final int LRU_CACHE_SIZE = 5;
+    private OstTokenHolderDao mOstTokenHolderDao;
+
+    OstTokenHolderModelRepository() {
+        super(LRU_CACHE_SIZE);
+        OstSdkDatabase db = OstSdkDatabase.getDatabase();
+        mOstTokenHolderDao = db.tokenHolderDao();
+    }
+
+    @Override
+    OstBaseDao getModel() {
+        return mOstTokenHolderDao;
+    }
+
+
+    @Override
+    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        super.insert(ostBaseEntity, new OstTaskCallback() {});
+    }
+
+    @Override
+    public OstTokenHolder getEntityById(String id) {
+        return (OstTokenHolder)super.getById(id);
+    }
+
+    @Override
+    public OstTokenHolder[] getEntitiesByParentId(String id) {
+        return (OstTokenHolder[]) super.getByParentId(id);
+    }
+
+    @Override
+    public void deleteEntity(String id) {
+        super.delete(id, new OstTaskCallback() {});
+    }
+
+    @Override
+    public void deleteAllEntities() {
+        super.deleteAll(new OstTaskCallback() {});
+    }
+}
