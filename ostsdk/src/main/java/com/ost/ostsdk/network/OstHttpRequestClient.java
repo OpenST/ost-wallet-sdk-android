@@ -39,6 +39,11 @@ public class OstHttpRequestClient {
     private static final Charset UTF_8 = Charset.forName("UTF-8");
     private static Boolean DEBUG = ("true").equalsIgnoreCase( System.getenv("OST_KYC_SDK_DEBUG") );
     private static Boolean VERBOSE = false;
+    private OstApiSigner mOstApiSigner;
+
+    public void setOstApiSigner(OstApiSigner ostApiSigner) {
+        mOstApiSigner = ostApiSigner;
+    }
 
     static class HttpParam {
         private String paramName;
@@ -74,7 +79,7 @@ public class OstHttpRequestClient {
     public OstHttpRequestClient(String baseUrl) {
         this.apiEndpoint = baseUrl;
         this.timeout = 30;
-
+        mOstApiSigner = new OstKeyManager(OstSdk.getCurrentUserId()).getApiSigner();
 
         //To-Do: Discuss Dispatcher config with Team.
         Dispatcher dispatcher = new Dispatcher();
@@ -225,9 +230,7 @@ public class OstHttpRequestClient {
         if (DEBUG) System.out.println("bytes to sign: " + new String(bytes, UTF_8));
         // Encryption of bytes
 
-        OstApiSigner ostApiSigner = new OstKeyManager(OstSdk.getCurrentUserId()).getApiSigner();
-
-        String signature = ostApiSigner.sign(bytes);
+        String signature = mOstApiSigner.sign(bytes);
         if (DEBUG) System.out.println("signature: " + signature);
         return signature;
     }

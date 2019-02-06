@@ -1,13 +1,9 @@
 package com.ost.ostsdk.network;
 
 import com.ost.ostsdk.OstSdk;
-import com.ost.ostsdk.models.entities.OstDevice;
 import com.ost.ostsdk.models.entities.OstUser;
-import com.ost.ostsdk.security.OstApiSigner;
 
 import org.json.JSONObject;
-import org.web3j.crypto.Sign;
-import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -26,9 +22,10 @@ public class OstApiClient {
     private static final String SIG_TYPE = "OST1-PS";
     private final OstHttpRequestClient mOstHttpRequestClient;
     private final String mUserId;
-
+    private final OstUser mOstUser;
 
     public OstApiClient(String userId, String baseUrl) {
+        mOstUser = OstSdk.getUser(userId);
         mUserId = userId;
         mOstHttpRequestClient = new OstHttpRequestClient(baseUrl);
     }
@@ -37,23 +34,29 @@ public class OstApiClient {
         this(userId, BASE_URL);
     }
 
+    public OstHttpRequestClient getOstHttpRequestClient() {
+        return mOstHttpRequestClient;
+    }
+
     public OstApiClient() {
         this(OstSdk.getCurrentUserId(), BASE_URL);
     }
 
     public JSONObject getToken() throws IOException {
+
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get("/tokens/", requestMap);
+    }
+
+    private Map<String, Object> getPrerequisiteMap() {
         Map<String, Object> map = new HashMap<>();
 
-        OstUser ostUser = OstSdk.getCurrentUser();
-        OstDevice ostDevice = ostUser.getCurrentDevice();
-
-        map.put(API_SIGNER_ADDRESS, ostDevice.getPersonalSignAddress());
+        map.put(API_SIGNER_ADDRESS, mOstUser.getCurrentDevice().getPersonalSignAddress());
         map.put(REQUEST_TIMESTAMP, String.valueOf((int)(System.currentTimeMillis()/1000)));
         map.put(SIGNATURE_KIND, SIG_TYPE);
-        map.put(TOKEN_ID, ostUser.getTokenId());
+        map.put(TOKEN_ID, mOstUser.getTokenId());
         map.put(USER_ID, mUserId);
-        map.put(WALLET_ADDRESS, ostDevice.getAddress());
-
-        return mOstHttpRequestClient.get("/tokens/", map);
+        map.put(WALLET_ADDRESS, mOstUser.getCurrentDevice().getAddress());
+        return map;
     }
 }
