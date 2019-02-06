@@ -108,6 +108,31 @@ public class KitApiTest {
     }
 
     @Test
+    public void testPostTokenApiCall() {
+        // Context of the app under test.
+        /*  Create handle for the RetrofitInstance interface*/
+        try {
+            OstApiClient ostApiClient = new OstApiClient();
+            OstApiSigner ostApiSigner = new OstApiSigner(Numeric.hexStringToByteArray("0x6edc3804eb9f70b26731447b4e43955c5532f2195a6fe77cbed287dbd3c762ce"));
+            ostApiClient.getOstHttpRequestClient().setOstApiSigner(ostApiSigner);
+            try {
+                Field field = ostApiClient.getClass().getDeclaredField("mOstUser");
+                field.setAccessible(true);
+                field.set(ostApiClient, createUser(USER_ID, TOKEN_ID));
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            JSONObject jsonObject = ostApiClient.postTokenDeployment();
+            boolean success = jsonObject.optBoolean("success");
+            Assert.assertTrue(success);
+        } catch (IOException e) {
+            Assert.fail("Exception");
+        }
+    }
+
+    @Test
     public void testPostApiCall() throws JSONException {
         // Context of the app under test.
         /*  Create handle for the RetrofitInstance interface*/
