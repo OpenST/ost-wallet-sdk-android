@@ -9,7 +9,6 @@ import com.ost.mobilesdk.database.OstSdkKeyDatabase;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.network.KitApi;
 import com.ost.mobilesdk.workflows.OstDeployTokenHolder;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
@@ -89,9 +88,6 @@ public class OstSdk {
         OstModelFactory.getUserModel().deleteEntity(userId);
     }
 
-    public static KitApi getKitNetworkClient() {
-        return null;
-    }
 
     public static void deployTokenHolder(String userId, String tokenId, String uPin, String password, boolean isBiometricNeeded, OstWorkFlowCallback callback) {
         Handler handler = new Handler();

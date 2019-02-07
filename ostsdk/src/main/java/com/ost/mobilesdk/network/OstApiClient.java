@@ -6,6 +6,8 @@ import android.net.NetworkInfo;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.security.OstApiSigner;
+import com.ost.mobilesdk.security.OstKeyManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +40,8 @@ public class OstApiClient {
         mOstUser = OstSdk.getUser(userId);
         mUserId = userId;
         mOstHttpRequestClient = new OstHttpRequestClient(baseUrl);
+        OstApiSigner ostApiSigner = new OstKeyManager(userId).getApiSigner();
+        mOstHttpRequestClient.setOstApiSigner(ostApiSigner);
     }
 
     public OstApiClient(String userId) {
@@ -70,8 +74,8 @@ public class OstApiClient {
         requestMap.put(USER_ID, mUserId);
         requestMap.put(DEVICE_ADDRESSES, Arrays.asList(mOstUser.getCurrentDevice().getAddress()));
         requestMap.put(SESSION_ADDRESSES, Arrays.asList(mOstUser.getCurrentDevice().getAddress()));
-        requestMap.put(EXPIRATION_HEIGHT, "10000000");
-        requestMap.put(SPENDING_LIMIT, "1000");
+        requestMap.put(EXPIRATION_HEIGHT, "123453241");
+        requestMap.put(SPENDING_LIMIT, "12431");
         return mOstHttpRequestClient.post(String.format("/users/%s/token-holders/", mUserId), requestMap);
     }
 

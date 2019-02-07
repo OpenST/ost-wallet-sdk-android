@@ -16,9 +16,6 @@ import org.json.JSONObject;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-
 public class OstDeviceLogin implements OstPinAcceptInterface, OstDeviceRegisteredInterface, OstStartPollingInterface {
 
     private static final String TAG = "ADPFlow";
@@ -35,19 +32,6 @@ public class OstDeviceLogin implements OstPinAcceptInterface, OstDeviceRegistere
 
         Log.d(TAG, "Kit api call");
         // Todo:: Kit api call for scyrptSalt and hkdfSalt
-        Call<ResponseBody> responseInitActionCall = OstSdk.getKitNetworkClient().initAction(payload, signature);
-
-//        responseInitActionCall.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//
-//            }
-//        });
 
         String userId = "", passPhrase = "", scyrptSalt = "", hkdfSalt = "";
 
@@ -88,19 +72,6 @@ public class OstDeviceLogin implements OstPinAcceptInterface, OstDeviceRegistere
 
         Log.d(TAG, "Post encrypted keys to kit");
         // Todo:: post key
-        Call<ResponseBody> responsePostKeyCall = OstSdk.getKitNetworkClient().postKey(encryptedKey, signature);
-
-//        responsePostKeyCall.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//
-//            }
-//        });
 
         Log.d(TAG, "Parsing kit response");
 

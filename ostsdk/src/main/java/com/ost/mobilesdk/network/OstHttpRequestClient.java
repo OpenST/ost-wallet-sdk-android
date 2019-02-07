@@ -2,10 +2,7 @@ package com.ost.mobilesdk.network;
 
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
-import com.google.gson.Gson;
-import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.security.OstApiSigner;
-import com.ost.mobilesdk.security.OstKeyManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,11 +30,10 @@ import okio.Buffer;
 public class OstHttpRequestClient {
     private String apiEndpoint;
     private long timeout;
-    private static final Gson gson = new Gson();
     private OkHttpClient client;
     private static final Escaper FormParameterEscaper = UrlEscapers.urlFormParameterEscaper();
     private static final Charset UTF_8 = Charset.forName("UTF-8");
-    private static Boolean DEBUG = ("true").equalsIgnoreCase( System.getenv("OST_KYC_SDK_DEBUG") );
+    private static Boolean DEBUG = ("true").equalsIgnoreCase(System.getenv("OST_KYC_SDK_DEBUG"));
     private static Boolean VERBOSE = false;
     private OstApiSigner mOstApiSigner;
 
@@ -79,7 +75,6 @@ public class OstHttpRequestClient {
     public OstHttpRequestClient(String baseUrl) {
         this.apiEndpoint = baseUrl;
         this.timeout = 30;
-        mOstApiSigner = new OstKeyManager(OstSdk.getCurrentUserId()).getApiSigner();
 
         //To-Do: Discuss Dispatcher config with Team.
         Dispatcher dispatcher = new Dispatcher();
@@ -99,6 +94,7 @@ public class OstHttpRequestClient {
     private static String GET_REQUEST = "GET";
     private static String POST_REQUEST = "POST";
     private static String SocketTimeoutExceptionString = "{'success':'false','err':{'code':'GATEWAY_TIMEOUT','internal_id':'TIMEOUT_ERROR','msg':'','error_data':[]}}";
+    private static String IOExceptionString = "{'success':'false','err':{'code':'IOException','internal_id':'IO_EXCEPTION','msg':'','error_data':[]}}";
 
 
     public JSONObject get(String resource, Map<String, Object> queryParams) throws IOException {
@@ -140,7 +136,6 @@ public class OstHttpRequestClient {
         //Reset urlBuilder.
         urlBuilder = baseUrl.newBuilder();
 
-        mapParams.put("request_timestamp", String.valueOf(System.currentTimeMillis() / 1000));
         ArrayList<HttpParam> params = new ArrayList<HttpParam>();
         String paramKey;
         String paramVal;
@@ -156,8 +151,8 @@ public class OstHttpRequestClient {
             paramKey = pair.getParamName();
             paramVal = pair.getParamValue();
 
-            paramKey = specialCharacterEscape(paramKey);
-            paramVal = specialCharacterEscape(paramVal);
+//            paramKey = specialCharacterEscape(paramKey);
+//            paramVal = specialCharacterEscape(paramVal);
 
             if (!firstParam) {
                 hmacInputBuffer.writeByte('&');
@@ -176,15 +171,16 @@ public class OstHttpRequestClient {
             }
         }
 
-        // Add signature to Params.
-        paramKey = "signature";
-        paramVal = signQueryParams(hmacInputBuffer);
-        if (GET_REQUEST.equalsIgnoreCase(requestType)) {
-            urlBuilder.addEncodedQueryParameter(paramKey, paramVal);
-        } else {
-            formBodyBuilder.addEncoded(paramKey, paramVal);
+        if (null != mOstApiSigner) {
+            // Add signature to Params.
+            paramKey = "signature";
+            paramVal = signQueryParams(hmacInputBuffer);
+            if (GET_REQUEST.equalsIgnoreCase(requestType)) {
+                urlBuilder.addEncodedQueryParameter(paramKey, paramVal);
+            } else {
+                formBodyBuilder.addEncoded(paramKey, paramVal);
+            }
         }
-
         // Build the url.
         url = urlBuilder.build();
         if (DEBUG) System.out.println("url = " + url.toString());
@@ -244,7 +240,8 @@ public class OstHttpRequestClient {
             try {
                 responseBody = response.body().string();
                 if (responseBody.length() > 0) {
-                    if (DEBUG) System.out.println("responseCode: "+response.code()+"\nresponseBody:\n" + responseBody + "\n");
+                    if (DEBUG)
+                        System.out.println("responseCode: " + response.code() + "\nresponseBody:\n" + responseBody + "\n");
                     return responseBody;
                 }
             } catch (IOException e) {
@@ -292,9 +289,9 @@ public class OstHttpRequestClient {
                 String key = (String) pair.getKey();
                 Object value = pair.getValue();
                 String prefix = "";
-                if (paramKeyPrefix.isEmpty()){
+                if (paramKeyPrefix.isEmpty()) {
                     prefix = key;
-                }else{
+                } else {
                     prefix = paramKeyPrefix + "[" + key + "]";
                 }
 
@@ -310,9 +307,9 @@ public class OstHttpRequestClient {
                 params = buildNestedQuery(params, prefix, value);
             }
         } else {
-            if(paramValObj != null){
+            if (paramValObj != null) {
                 params.add(new HttpParam(paramKeyPrefix, paramValObj.toString()));
-            }else{
+            } else {
                 params.add(new HttpParam(paramKeyPrefix, ""));
             }
 
@@ -320,7 +317,7 @@ public class OstHttpRequestClient {
         return params;
     }
 
-    private static String specialCharacterEscape(String stringToEscape){
+    private static String specialCharacterEscape(String stringToEscape) {
         stringToEscape = FormParameterEscaper.escape(stringToEscape);
         stringToEscape = stringToEscape.replace("*", "%26");
         return stringToEscape;

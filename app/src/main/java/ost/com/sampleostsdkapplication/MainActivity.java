@@ -10,11 +10,15 @@ import android.widget.Toast;
 
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String BIO_AUTH = "Bio-auth";
     private static final String PIN_AUTH = "Pin-auth";
     private static final String REGISTERED_DEVICE = "RegisterDevice";
+    private static final String CREATE_USER = "CreateUser";
+    private static final String GET_USER = "GetUser";
     private Spinner mDropdown;
 
     @Override
@@ -32,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initDropDownSpinner() {
         mDropdown = findViewById(R.id.action_bar_spinner);
-        String[] items = new String[]{BIO_AUTH, PIN_AUTH, REGISTERED_DEVICE};
+        String[] items = new String[]{CREATE_USER, GET_USER, BIO_AUTH, PIN_AUTH, REGISTERED_DEVICE};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         mDropdown.setAdapter(adapter);
     }
@@ -41,6 +45,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         String item = (String) mDropdown.getSelectedItem();
         switch (item) {
+            case CREATE_USER:
+                Toast.makeText(this, CREATE_USER, Toast.LENGTH_SHORT).show();
+                String name = "Name" + System.currentTimeMillis();
+                String mobileNumber = String.valueOf(System.currentTimeMillis() / 1000);
+                new MappyApiClient().createUser(name, mobileNumber, new MappyApiClient.Callback() {
+                    @Override
+                    public void onResponse(boolean success, JSONObject response) {
+                        Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
+            case GET_USER:
+                Toast.makeText(this, CREATE_USER, Toast.LENGTH_SHORT).show();
+                String userId = "5c5accde25639ea7012a98e5";
+                new MappyApiClient().getUser(userId, new MappyApiClient.Callback() {
+                    @Override
+                    public void onResponse(boolean success, JSONObject response) {
+                            Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
             case BIO_AUTH:
                 Toast.makeText(this, BIO_AUTH, Toast.LENGTH_SHORT).show();
                 new OstBiometricAuthentication(getApplicationContext(), new OstBiometricAuthentication.Callback() {
