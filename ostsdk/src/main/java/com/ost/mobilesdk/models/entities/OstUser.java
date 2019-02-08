@@ -2,6 +2,7 @@ package com.ost.mobilesdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.util.Log;
 
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.security.OstKeyManager;
@@ -33,18 +34,20 @@ public class OstUser extends OstBaseEntity {
 
     public OstDevice getCurrentDevice() {
         if (null == currentDevice) {
-            String currentDeiceAddress = null;
+            Log.d(TAG, "currentDevice is null");
+            String currentDeviceAddress = null;
             OstDevice[] ostDevices = OstDevice.getDevicesByParentId(getId());
             OstKeyManager ostKeyManager = new OstKeyManager(getId());
             for (OstDevice device : ostDevices) {
                 if (ostKeyManager.hasAddress(device.getAddress())) {
-                    currentDeiceAddress = device.getAddress();
+                    currentDeviceAddress = device.getAddress();
                 }
             }
-            if (null == currentDeiceAddress) {
+            if (null == currentDeviceAddress) {
                 throw new RuntimeException("Unexpected Error");
             }
-            currentDevice = OstDevice.getById(currentDeiceAddress);
+            currentDevice = OstDevice.getById(currentDeviceAddress);
+            Log.d(TAG, String.format("currentDeviceAddress: %s", currentDeviceAddress));
         }
         return currentDevice;
     }

@@ -109,7 +109,7 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
                     String spendingLimit = "100000";
                     JSONObject response;
                     try {
-                        response = new OstApiClient().postTokenDeployment(sessionAddress, expirationHeight,spendingLimit, recoveryAddress);
+                        response = new OstApiClient(mUserId).postTokenDeployment(sessionAddress, expirationHeight, spendingLimit);
                     } catch (IOException e) {
                         mHandler.post(new Runnable() {
                             @Override

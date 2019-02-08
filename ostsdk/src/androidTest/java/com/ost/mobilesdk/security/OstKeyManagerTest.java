@@ -20,12 +20,12 @@ import java.util.concurrent.TimeUnit;
 
 @RunWith(AndroidJUnit4.class)
 public class OstKeyManagerTest {
-    private static Context mAppContext;
+
 
     @BeforeClass
     public static void setUp() throws InterruptedException {
-        mAppContext = InstrumentationRegistry.getTargetContext();
-        OstSdk.init(mAppContext);
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        OstSdk.init(appContext);
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
         new OstSecureKeyModelRepository().deleteAllSecureKeys(new OstTaskCallback() {
@@ -37,7 +37,6 @@ public class OstKeyManagerTest {
         });
         countDownLatch.await(10, TimeUnit.SECONDS);
     }
-
 
     @Test
     public void testKeyMetaStruct() {

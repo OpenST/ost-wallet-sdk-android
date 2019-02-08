@@ -27,6 +27,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okio.Buffer;
 
+/**
+ * HttpRequestClient to supports get and post requests with api signing.
+ */
 public class OstHttpRequestClient {
     private String apiEndpoint;
     private long timeout;

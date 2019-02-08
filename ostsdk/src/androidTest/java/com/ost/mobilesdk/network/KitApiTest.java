@@ -3,6 +3,7 @@ package com.ost.mobilesdk.network;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
@@ -24,6 +25,7 @@ import java.net.URLEncoder;
 
 @RunWith(AndroidJUnit4.class)
 public class KitApiTest {
+    private static final String TAG = "KitApiTest";
     private static final String USER_ID = "6c6ea645-d86d-4449-8efa-3b54743f83de";
     private static final String TOKEN_ID = "58";
     private static Context mAppContext;
@@ -32,7 +34,6 @@ public class KitApiTest {
     public static void setUp() {
         mAppContext = InstrumentationRegistry.getTargetContext();
         OstSdk.init(mAppContext);
-        OstSdk.setCurrentUserId(USER_ID);
     }
 
 
@@ -74,8 +75,10 @@ public class KitApiTest {
                 jsonObject.put(OstDevice.DEVICE_MANAGER_ADDRESS, "");
                 jsonObject.put(OstDevice.UPDATED_TIMESTAMP, System.currentTimeMillis());
                 jsonObject.put(OstDevice.STATUS, OstDevice.CONST_STATUS.CREATED);
+                Log.i(TAG, String.format("Ost Device JSON Object %s", jsonObject.toString()));
                 return new OstDevice(jsonObject);
             } catch (JSONException e) {
+                Log.i(TAG, String.format("Exception in OstDevice creation %s", e.getMessage()));
                 e.printStackTrace();
             }
             return null;
@@ -87,7 +90,7 @@ public class KitApiTest {
         // Context of the app under test.
         /*  Create handle for the RetrofitInstance interface*/
         try {
-            OstApiClient ostApiClient = new OstApiClient();
+            OstApiClient ostApiClient = new OstApiClient(USER_ID);
             OstApiSigner ostApiSigner = new OstApiSigner(Numeric.hexStringToByteArray("0x6edc3804eb9f70b26731447b4e43955c5532f2195a6fe77cbed287dbd3c762ce"));
             ostApiClient.getOstHttpRequestClient().setOstApiSigner(ostApiSigner);
             try {
@@ -112,7 +115,7 @@ public class KitApiTest {
         // Context of the app under test.
         /*  Create handle for the RetrofitInstance interface*/
         try {
-            OstApiClient ostApiClient = new OstApiClient();
+            OstApiClient ostApiClient = new OstApiClient(USER_ID);
             OstApiSigner ostApiSigner = new OstApiSigner(Numeric.hexStringToByteArray("0x6edc3804eb9f70b26731447b4e43955c5532f2195a6fe77cbed287dbd3c762ce"));
             ostApiClient.getOstHttpRequestClient().setOstApiSigner(ostApiSigner);
             try {
@@ -124,7 +127,7 @@ public class KitApiTest {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            JSONObject jsonObject = ostApiClient.postTokenDeployment("0x60A20Cdf6a21a73Fb89475221D252865C695e302","1","1","0x60A20Cdf6a21a73Fb89475221D252865C695e302");
+            JSONObject jsonObject = ostApiClient.postTokenDeployment("0x60A20Cdf6a21a73Fb89475221D252865C695e302","1","1");
             boolean success = jsonObject.optBoolean("success");
             Assert.assertTrue(success);
         } catch (IOException e) {

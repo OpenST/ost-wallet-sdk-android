@@ -31,7 +31,6 @@ public class OstSdk {
     private static volatile OstSdk INSTANCE;
 
     private static Context mApplicationContext;
-    private static String mUserId;
 
     public static Context getContext() {
         return mApplicationContext;
@@ -99,18 +98,6 @@ public class OstSdk {
         Handler handler = new Handler();
         final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, handler, callback);
         ostRegisterDevice.perform();
-    }
-
-    public static String getCurrentUserId() {
-        return mUserId;
-    }
-
-    public static void setCurrentUserId(String userId) {
-        mUserId = userId;
-    }
-
-    public static OstUser getCurrentUser() {
-        return getUser(getCurrentUserId());
     }
 
     OstDeployTokenHolder QRCodeInput() {

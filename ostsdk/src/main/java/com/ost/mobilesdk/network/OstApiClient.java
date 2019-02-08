@@ -17,10 +17,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Http api client over
+ * @see OstHttpRequestClient
+ * specific for Kit calls
+ */
 public class OstApiClient {
+    private static final String TAG = "OstApiClient";
 
-    public static final String BASE_URL = "https://s4-api.stagingost.com/testnet/v2";
-
+    private static final String BASE_URL = "https://s4-api.stagingost.com/testnet/v2";
     private static final String API_SIGNER_ADDRESS = "api_signer_address";
     private static final String REQUEST_TIMESTAMP = "request_timestamp";
     private static final String SIGNATURE_KIND = "signature_kind";
@@ -38,8 +43,9 @@ public class OstApiClient {
     private final OstUser mOstUser;
 
     public OstApiClient(String userId, String baseUrl) {
-        mOstUser = OstSdk.getUser(userId);
         mUserId = userId;
+        mOstUser = OstSdk.getUser(userId);
+
         mOstHttpRequestClient = new OstHttpRequestClient(baseUrl);
         OstApiSigner ostApiSigner = new OstKeyManager(userId).getApiSigner();
         mOstHttpRequestClient.setOstApiSigner(ostApiSigner);
@@ -51,10 +57,6 @@ public class OstApiClient {
 
     public OstHttpRequestClient getOstHttpRequestClient() {
         return mOstHttpRequestClient;
-    }
-
-    public OstApiClient() {
-        this(OstSdk.getCurrentUserId(), BASE_URL);
     }
 
     public JSONObject getToken() throws IOException {
@@ -69,15 +71,14 @@ public class OstApiClient {
         return mOstHttpRequestClient.get("/tokens/", requestMap);
     }
 
-    public JSONObject postTokenDeployment(String sessionAddress, String expirationHeight, String spendingLimit ,String recoveryAddress) throws IOException {
-
+    public JSONObject postTokenDeployment(String sessionAddress, String expirationHeight, String spendingLimit) throws IOException {
         Map<String, Object> requestMap = new HashMap<>();
+
         requestMap.put(USER_ID, mUserId);
         requestMap.put(DEVICE_ADDRESSES, Arrays.asList(mOstUser.getCurrentDevice().getAddress()));
         requestMap.put(SESSION_ADDRESSES, Arrays.asList(sessionAddress));
         requestMap.put(EXPIRATION_HEIGHT, expirationHeight);
         requestMap.put(SPENDING_LIMIT, spendingLimit);
-        requestMap.put(RECOVERY_ADDRESS, recoveryAddress);
         return postTokenDeployment(requestMap);
     }
 
@@ -105,5 +106,4 @@ public class OstApiClient {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
 }

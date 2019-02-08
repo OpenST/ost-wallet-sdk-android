@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String CREATE_USER = "CreateUser";
     private static final String GET_USER = "GetUser";
     private Spinner mDropdown;
+    private String mCurrentUserId = "5c5accde25639ea7012a98e5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             try {
                                 String uId = response.getString("_id");
                                 OstSdk.initUser(uId);
+                                mCurrentUserId = uId;
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -68,8 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case GET_USER:
                 Toast.makeText(this, CREATE_USER, Toast.LENGTH_SHORT).show();
-                String userId = "5c5accde25639ea7012a98e5";
-                new MappyApiClient().getUser(userId, new MappyApiClient.Callback() {
+                new MappyApiClient().getUser(mCurrentUserId, new MappyApiClient.Callback() {
                     @Override
                     public void onResponse(boolean success, JSONObject response) {
                         Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case REGISTERED_DEVICE:
                 Toast.makeText(this, REGISTERED_DEVICE, Toast.LENGTH_SHORT).show();
-                OstSdk.registerDevice(OstSdk.getCurrentUserId(), new WorkFlowHelper());
+                OstSdk.registerDevice(mCurrentUserId, new WorkFlowHelper());
                 break;
             default:
                 Toast.makeText(this, "Unknown item", Toast.LENGTH_SHORT).show();
