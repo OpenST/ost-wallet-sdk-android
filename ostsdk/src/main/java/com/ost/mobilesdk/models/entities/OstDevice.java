@@ -54,7 +54,7 @@ public class OstDevice extends OstBaseEntity {
 
     public static OstDevice init(String address, String apiAddress, String mUserId) {
         TelephonyManager tManager = (TelephonyManager) OstSdk.getContext().getSystemService(Context.TELEPHONY_SERVICE);
-        String uuid = "";
+        String uuid = "uuid";
         if (ActivityCompat.checkSelfPermission(OstSdk.getContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
             uuid = tManager.getDeviceId();
         }

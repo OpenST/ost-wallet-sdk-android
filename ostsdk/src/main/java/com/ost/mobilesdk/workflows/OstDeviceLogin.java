@@ -42,7 +42,7 @@ public class OstDeviceLogin implements OstPinAcceptInterface, OstDeviceRegistere
         try {
 
             Log.d(TAG, "Generating Ethereum Keys");
-            ECKeyPair ecKeyPair = ostSdkOstCrypto.genECKey(passPhrase/* Todo:: Seed Need to be identified*/);
+            ECKeyPair ecKeyPair = ostSdkOstCrypto.genECKey();
             Credentials credentials = Credentials.create(ecKeyPair);
 
             Log.d(TAG, "Extracting Wallet Key");

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.OstCrypto;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
@@ -17,6 +18,8 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import org.json.JSONObject;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
+
+import java.io.IOException;
 
 public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
 
@@ -50,7 +53,7 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
         try {
 
             Log.d(TAG, "Generating Ethereum Keys");
-            ECKeyPair ecKeyPair = ostSdkOstCrypto.genECKey(passPhrase/* Todo:: Seed Need to be identified*/);
+            ECKeyPair ecKeyPair = ostSdkOstCrypto.genECKey();
             Credentials credentials = Credentials.create(ecKeyPair);
 
             Log.d(TAG, "Extracting Wallet Key");
@@ -101,6 +104,23 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
                     String salt = "";
                     String recoveryAddress = createRecoveryKey(salt);
 
+                    String sessionAddress = new OstKeyManager(mUserId).createSessionKey();
+                    String expirationHeight = "100000";
+                    String spendingLimit = "100000";
+                    JSONObject response;
+                    try {
+                        response = new OstApiClient().postTokenDeployment(sessionAddress, expirationHeight,spendingLimit, recoveryAddress);
+                    } catch (IOException e) {
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                mCallback.flowInterrupt(new OstError("IOException"));
+                            }
+                        });
+                    }
+
+
+
                     //Todo :: backup  recoveryAddress on kit. calls endpoint /devices/back-up
 
                     //Todo :: if Device Manager already exists, add recovery key to Device Manager.
@@ -116,6 +136,7 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
         byte[] seed = OstSdkCrypto.getInstance().genSCryptKey(scryptInput, salt.getBytes());
 
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
+        //Don't store key of recovery key
         String address = ostKeyManager.createHDKey(seed);
         return address;
     }

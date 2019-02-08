@@ -11,11 +11,13 @@ public interface OstCrypto {
 
     byte[] genDigest(byte[] feed, int times);
 
-    String genMnemonics(String passPhrase);
+    String genMnemonics();
 
-    ECKeyPair genECKey(String passPhrase);
+    ECKeyPair genECKey();
 
-    ECKeyPair genECKeyFromMnemonics(String mnemonics, String passPhrase);
+    ECKeyPair genHDKey(byte[] seed);
+
+    ECKeyPair genECKeyFromMnemonics(String mnemonics);
 
     byte[] aesEncryption(byte[] key, byte[] textToEncrypt, byte[] associatedData) throws Exception;
 

@@ -152,7 +152,7 @@ public class OstHttpRequestClient {
             paramVal = pair.getParamValue();
 
 //            paramKey = specialCharacterEscape(paramKey);
-//            paramVal = specialCharacterEscape(paramVal);
+            paramVal = specialCharacterEscape(paramVal);
 
             if (!firstParam) {
                 hmacInputBuffer.writeByte('&');

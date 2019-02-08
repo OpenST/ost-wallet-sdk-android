@@ -7,6 +7,7 @@ import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.crypto.generators.HKDFBytesGenerator;
 import org.spongycastle.crypto.generators.SCrypt;
 import org.spongycastle.crypto.params.HKDFParameters;
+import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.MnemonicUtils;
 
@@ -59,24 +60,28 @@ public class OstSdkCrypto implements OstCrypto {
     }
 
     @Override
-    public String genMnemonics(String passPhrase) {
+    public String genMnemonics() {
         byte[] initialEntropy = new byte[16];
-        SecureRandom secureRandom = new SecureRandom(passPhrase.getBytes());
+        SecureRandom secureRandom = new SecureRandom();
         secureRandom.nextBytes(initialEntropy);
 
         return MnemonicUtils.generateMnemonic(initialEntropy);
     }
 
     @Override
-    public ECKeyPair genECKey(String passPhrase) {
-        String mnemonics = genMnemonics(passPhrase);
-        return  genECKeyFromMnemonics(mnemonics, passPhrase);
+    public ECKeyPair genECKey() {
+        String mnemonics = genMnemonics();
+        return  genECKeyFromMnemonics(mnemonics);
     }
 
     @Override
-    public ECKeyPair genECKeyFromMnemonics(String mnemonics, String passPhrase) {
-        byte[] mnemonicSeed = MnemonicUtils.generateSeed(mnemonics, passPhrase);
-        return ECKeyPair.create(sha256(mnemonicSeed));
+    public ECKeyPair genHDKey(byte[] seed) {
+        return Bip32ECKeyPair.generateKeyPair(seed);
+    }
+
+    @Override
+    public ECKeyPair genECKeyFromMnemonics(String mnemonics) {
+        return genHDKey(MnemonicUtils.generateSeed(mnemonics,null));
     }
 
     @Override

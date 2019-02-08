@@ -2,8 +2,11 @@ package ost.com.sampleostsdkapplication;
 
 import android.os.Handler;
 
+import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.network.OstHttpRequestClient;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -28,7 +31,7 @@ class MappyApiClient {
             public void run() {
                 try {
                     JSONObject response = mOstHttpRequestClient.get(String.format("users/%s/", userId), map);
-                    runOnUI(callback, response.optBoolean("success", false), response);
+                    runOnUI(callback, true, response);
                 } catch (IOException e) {
                     e.printStackTrace();
                     runOnUI(callback, false, null);
@@ -46,7 +49,7 @@ class MappyApiClient {
             public void run() {
                 try {
                     JSONObject response = mOstHttpRequestClient.post("users", map);
-                    runOnUI(callback, response.optBoolean("success", false), response);
+                    runOnUI(callback, true, response);
                 } catch (IOException e) {
                     e.printStackTrace();
                     runOnUI(callback, false, null);
@@ -54,6 +57,32 @@ class MappyApiClient {
             }
         }).start();
 
+    }
+
+    public void registerDevice(String userId, JSONObject jsonObject, Callback callback) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            JSONObject deviceObject = jsonObject.getJSONObject(OstSdk.DEVICE);
+            map.put("address", deviceObject.getString(OstDevice.ADDRESS));
+            map.put("api_signer_address", deviceObject.getString(OstDevice.PERSONAL_SIGN_ADDRESS));
+            map.put("device_name", deviceObject.getString(OstDevice.DEVICE_NAME));
+            map.put("device_uuid", deviceObject.getString(OstDevice.DEVICE_UUID));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            runOnUI(callback, false, null);
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject response = mOstHttpRequestClient.post(String.format("users/%s/devices/", userId), map);
+                    runOnUI(callback, true, response);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    runOnUI(callback, false, null);
+                }
+            }
+        }).start();
     }
 
     private void runOnUI(Callback callback, boolean success, JSONObject response) {
@@ -64,6 +93,8 @@ class MappyApiClient {
             }
         });
     }
+
+
 
     public interface Callback {
         void onResponse(boolean success, JSONObject response);

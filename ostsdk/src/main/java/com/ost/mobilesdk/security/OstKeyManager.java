@@ -1,15 +1,18 @@
 package com.ost.mobilesdk.security;
 
+import android.util.Log;
+
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
+import com.ost.mobilesdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.entities.OstSecureKey;
+import com.ost.mobilesdk.models.entities.OstSessionKey;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.MnemonicUtils;
 import org.web3j.crypto.Sign;
 
 import java.io.ByteArrayInputStream;
@@ -25,6 +28,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class OstKeyManager {
+    private static final String TAG = "OstKeyManager";
+
     private static final String USER_DEVICE_INFO_FOR = "user_device_info_for_";
     private static final String ETHEREUM_KEY_FOR_ = "ethereum_key_for_";
     private static final String ETHEREUM_KEY_MNEMONICS_FOR_ = "ethereum_key_mnemonics_for_";
@@ -37,19 +42,25 @@ public class OstKeyManager {
         mOstSecureKeyModel = new OstSecureKeyModelRepository();
         OstSecureKey ostSecureKey = mOstSecureKeyModel.getByKey(USER_DEVICE_INFO_FOR + userId);
         if (null == ostSecureKey) {
-            String address = genAndStoreKey(mUserId);
+
+            Log.d(TAG, String.format("Creating new Ost Secure key for userId : %s", userId));
+
+            String address = genAndStoreKey();
             mKeyMetaStruct = new KeyMetaStruct(address);
             mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address, mUserId);
-            mOstSecureKeyModel.initSecureKey(USER_DEVICE_INFO_FOR + userId, createBytesFromObject(mKeyMetaStruct));
+            storeKeyMetaStruct();
         } else {
+
+            Log.d(TAG, String.format("Got existing secure key meta struct for userId : %s", userId));
+
             mKeyMetaStruct = createObjectFromBytes(ostSecureKey.getData());
         }
     }
 
     public String createKey() {
-        String address = genAndStoreKey(mUserId);
+        String address = genAndStoreKey();
         mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address, mUserId);
-        mOstSecureKeyModel.initSecureKey(USER_DEVICE_INFO_FOR + mUserId, createBytesFromObject(mKeyMetaStruct));
+        storeKeyMetaStruct();
         return address;
     }
 
@@ -58,23 +69,21 @@ public class OstKeyManager {
     }
 
     String createKeyWithMnemonic() {
-        String mnemonics = OstSdkCrypto.getInstance().genMnemonics(mUserId);
+        String mnemonics = OstSdkCrypto.getInstance().genMnemonics();
 
-        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics, mUserId);
+        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics);
         String address = Credentials.create(ecKeyPair).getAddress();
 
-        storeKeyAndMnemonics(ecKeyPair ,address, mnemonics);
+        storeKeyAndMnemonics(ecKeyPair, address, mnemonics);
         return address;
     }
 
 
     public String createHDKey(byte[] seed) {
-        String mnemonics = MnemonicUtils.generateMnemonic(seed);
 
-        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics, mUserId);
+        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genHDKey(seed);
         String address = Credentials.create(ecKeyPair).getAddress();
 
-        storeKeyAndMnemonics(ecKeyPair, address, mnemonics);
         return address;
     }
 
@@ -156,12 +165,37 @@ public class OstKeyManager {
         return null;
     }
 
+    public String createSessionKey() {
+        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKey();
+        String address = Credentials.create(ecKeyPair).getAddress();
+        byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
+        byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
+
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        new OstSessionKeyModelRepository().insertSessionKey(new OstSessionKey(address, encryptedKey), new OstTaskCallback() {
+            @Override
+            public void onSuccess() {
+                super.onSuccess();
+                countDownLatch.countDown();
+            }
+        });
+
+        try {
+            countDownLatch.await(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
+            return null;
+        }
+
+        return address;
+    }
+
     public boolean hasAddress(String address) {
         return mKeyMetaStruct.getEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address) != null;
     }
 
-    private String genAndStoreKey(String identifier) {
-        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKey(identifier);
+    private String genAndStoreKey() {
+        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKey();
         String address = Credentials.create(ecKeyPair).getAddress();
         byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
         byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
@@ -179,13 +213,14 @@ public class OstKeyManager {
         try {
             countDownLatch.await(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
+            return null;
         }
 
         return address;
     }
 
-    private void storeKeyAndMnemonics(ECKeyPair ecKeyPair, String address , String mnemonics) {
+    private void storeKeyAndMnemonics(ECKeyPair ecKeyPair, String address, String mnemonics) {
 
         byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
         byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
@@ -210,8 +245,18 @@ public class OstKeyManager {
         mKeyMetaStruct.addEthKeyMnemonicsIdentifier(ETHEREUM_KEY_MNEMONICS_FOR_ + address, mUserId);
         mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address, mUserId);
 
-        mOstSecureKeyModel.initSecureKey(USER_DEVICE_INFO_FOR + mUserId, createBytesFromObject(mKeyMetaStruct));
+        storeKeyMetaStruct();
+    }
 
+    private void storeKeyMetaStruct() {
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        mOstSecureKeyModel.insertSecureKey(new OstSecureKey(USER_DEVICE_INFO_FOR + mUserId, createBytesFromObject(mKeyMetaStruct)), new OstTaskCallback() {
+            @Override
+            public void onSuccess() {
+                super.onSuccess();
+                countDownLatch.countDown();
+            }
+        });
         try {
             countDownLatch.await(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {

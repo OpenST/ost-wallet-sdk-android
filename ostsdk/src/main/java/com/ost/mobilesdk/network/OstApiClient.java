@@ -32,6 +32,7 @@ public class OstApiClient {
     private static final String SESSION_ADDRESSES = "session_addresses";
     private static final String EXPIRATION_HEIGHT = "expiration_height";
     private static final String SPENDING_LIMIT = "spending_limit";
+    private static final String RECOVERY_ADDRESS = "recovery_address";
     private final OstHttpRequestClient mOstHttpRequestClient;
     private final String mUserId;
     private final OstUser mOstUser;
@@ -68,14 +69,21 @@ public class OstApiClient {
         return mOstHttpRequestClient.get("/tokens/", requestMap);
     }
 
-    public JSONObject postTokenDeployment() throws IOException {
+    public JSONObject postTokenDeployment(String sessionAddress, String expirationHeight, String spendingLimit ,String recoveryAddress) throws IOException {
 
-        Map<String, Object> requestMap = getPrerequisiteMap();
+        Map<String, Object> requestMap = new HashMap<>();
         requestMap.put(USER_ID, mUserId);
         requestMap.put(DEVICE_ADDRESSES, Arrays.asList(mOstUser.getCurrentDevice().getAddress()));
-        requestMap.put(SESSION_ADDRESSES, Arrays.asList(mOstUser.getCurrentDevice().getAddress()));
-        requestMap.put(EXPIRATION_HEIGHT, "123453241");
-        requestMap.put(SPENDING_LIMIT, "12431");
+        requestMap.put(SESSION_ADDRESSES, Arrays.asList(sessionAddress));
+        requestMap.put(EXPIRATION_HEIGHT, expirationHeight);
+        requestMap.put(SPENDING_LIMIT, spendingLimit);
+        requestMap.put(RECOVERY_ADDRESS, recoveryAddress);
+        return postTokenDeployment(requestMap);
+    }
+
+    public JSONObject postTokenDeployment(Map<String,Object> map) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/token-holders/", mUserId), requestMap);
     }
 

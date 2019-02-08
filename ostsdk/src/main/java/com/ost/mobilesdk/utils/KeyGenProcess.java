@@ -25,7 +25,7 @@ public class KeyGenProcess {
         try {
 
             Log.d(TAG, "Generating Ethereum Keys");
-            ECKeyPair ecKeyPair = ostSdkOstCrypto.genECKey(userId);
+            ECKeyPair ecKeyPair = ostSdkOstCrypto.genECKey();
             Credentials credentials = Credentials.create(ecKeyPair);
 
             Log.d(TAG, "Extracting Wallet Key");

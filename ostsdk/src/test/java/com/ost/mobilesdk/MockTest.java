@@ -1,5 +1,7 @@
 package com.ost.mobilesdk;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Test;
@@ -14,6 +16,7 @@ import org.web3j.protocol.core.methods.response.AbiDefinition;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +46,25 @@ public class MockTest {
 
             String encodeFunction = FunctionEncoder.encode(function);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void testGnosisSafe() {
+
+        try {
+            File abiFile = new File("src/test/resources/GnosisSafe.abi");
+            List<AbiDefinition> functionDefinitions = loadContractDefinition(abiFile);
+            List<String> functionNames = new ArrayList<>();
+            AbiDefinition func = null;
+            for (AbiDefinition abiDefinition: functionDefinitions) {
+                System.out.println("MockTest :: Function Name :" + abiDefinition.getName());
+                functionNames.add(abiDefinition.getName());
+            }
+            System.out.print("MockTest :" + functionNames);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -4,7 +4,7 @@ import com.ost.mobilesdk.models.entities.OstSessionKey;
 
 public interface OstSessionKeyModel {
 
-    void insertSessionKey(OstSessionKey ostSessionKey);
+    void insertSessionKey(OstSessionKey ostSessionKey, OstTaskCallback ostTaskCallback);
 
     OstSessionKey getByKey(String key);
 

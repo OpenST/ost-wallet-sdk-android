@@ -8,8 +8,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -53,6 +55,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onResponse(boolean success, JSONObject response) {
                         Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                        if (success) {
+                            try {
+                                String uId = response.getString("_id");
+                                OstSdk.initUser(uId);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 });
                 break;
@@ -62,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new MappyApiClient().getUser(userId, new MappyApiClient.Callback() {
                     @Override
                     public void onResponse(boolean success, JSONObject response) {
-                            Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
                     }
                 });
                 break;
@@ -85,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case REGISTERED_DEVICE:
                 Toast.makeText(this, REGISTERED_DEVICE, Toast.LENGTH_SHORT).show();
+                OstSdk.registerDevice(OstSdk.getCurrentUserId(), new WorkFlowHelper());
                 break;
             default:
                 Toast.makeText(this, "Unknown item", Toast.LENGTH_SHORT).show();
