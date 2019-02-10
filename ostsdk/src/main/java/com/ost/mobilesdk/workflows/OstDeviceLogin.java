@@ -8,6 +8,7 @@ import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.security.OstCrypto;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
+import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
@@ -83,7 +84,7 @@ public class OstDeviceLogin implements OstPinAcceptInterface, OstDeviceRegistere
     }
 
     @Override
-    public void cancelFlow(String cancelReason) {
+    public void cancelFlow(OstError ostError) {
 
     }
 

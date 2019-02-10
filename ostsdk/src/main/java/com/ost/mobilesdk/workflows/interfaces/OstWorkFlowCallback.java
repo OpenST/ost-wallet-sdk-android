@@ -3,7 +3,7 @@ package com.ost.mobilesdk.workflows.interfaces;
 import android.graphics.Bitmap;
 
 import com.ost.mobilesdk.workflows.OstContextEntity;
-import com.ost.mobilesdk.workflows.OstError;
+import com.ost.mobilesdk.workflows.errors.OstError;
 
 import org.json.JSONObject;
 

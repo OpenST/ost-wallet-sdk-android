@@ -63,14 +63,15 @@ abstract class OstBaseModelRepository {
 
     public OstBaseEntity getById(String id) {
         OstBaseEntity baseEntity = getModel().getById(id);
-        try {
-            baseEntity.processJson(baseEntity.getData());
-        } catch (Exception exception) {
-            Log.e(TAG, "Exception in OstBaseModelRepository::getById for parsing data");
+        if (null != baseEntity) {
+            try {
+                baseEntity.processJson(baseEntity.getData());
+            } catch (Exception exception) {
+                Log.e(TAG, "Exception in OstBaseModelRepository::getById for parsing data");
+            }
         }
         return baseEntity;
     }
-
 
     public void deleteAll(final OstTaskCallback callback) {
         getModel().deleteAll();

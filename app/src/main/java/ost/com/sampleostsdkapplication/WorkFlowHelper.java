@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.workflows.OstContextEntity;
-import com.ost.mobilesdk.workflows.OstError;
+import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
@@ -35,7 +35,7 @@ class WorkFlowHelper implements OstWorkFlowCallback {
             mUserId = apiParams.getJSONObject(OstSdk.DEVICE).getString(OstDevice.USER_ID);
         } catch (JSONException e) {
             Log.e(TAG, String.format("Error While getting param %s", OstDevice.USER_ID));
-            ostDeviceRegisteredInterface.cancelFlow(String.format("Error While getting param %s", OstDevice.USER_ID));
+            ostDeviceRegisteredInterface.cancelFlow(new OstError(String.format("Error While getting param %s", OstDevice.USER_ID)));
         }
         new MappyApiClient().registerDevice(mUserId, apiParams, new MappyApiClient.Callback() {
             @Override
@@ -43,7 +43,7 @@ class WorkFlowHelper implements OstWorkFlowCallback {
                 if (success) {
                     ostDeviceRegisteredInterface.deviceRegistered(response);
                 } else {
-                    ostDeviceRegisteredInterface.cancelFlow(response.toString());
+                    ostDeviceRegisteredInterface.cancelFlow(new OstError(response.toString()));
                 }
             }
         });
@@ -71,7 +71,7 @@ class WorkFlowHelper implements OstWorkFlowCallback {
 
     @Override
     public void flowInterrupt(OstError ostError) {
-        Toast.makeText(OstSdk.getContext(), "Work Flow Error", Toast.LENGTH_SHORT).show();
+        Toast.makeText(OstSdk.getContext(), "Work Flow Error:" + ostError.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override

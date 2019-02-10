@@ -7,7 +7,15 @@ import com.ost.mobilesdk.database.ConfigSharedPreferences;
 import com.ost.mobilesdk.database.OstSdkDatabase;
 import com.ost.mobilesdk.database.OstSdkKeyDatabase;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
+import com.ost.mobilesdk.models.entities.OstCredits;
+import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstDeviceManager;
+import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
+import com.ost.mobilesdk.models.entities.OstRule;
+import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstToken;
+import com.ost.mobilesdk.models.entities.OstTokenHolder;
+import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.workflows.OstDeployTokenHolder;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
@@ -24,7 +32,7 @@ public class OstSdk {
     public static final String TOKEN = "token";
     public static final String SESSION = "session";
     public static final String RULE = "rule";
-    public static final String DEVICE_OPERATION = "device_operation";
+    public static final String DEVICE_OPERATION = "device_manager_operation";
     public static final String DEVICE_MANAGER = "device_manager";
     public static final String DEVICE = "device";
     public static final String CREDITS = "credits";
@@ -88,9 +96,9 @@ public class OstSdk {
     }
 
 
-    public static void deployTokenHolder(String userId, String tokenId, String uPin, String password, boolean isBiometricNeeded, OstWorkFlowCallback callback) {
+    public static void deployTokenHolder(String userId, String uPin, String password, boolean isBiometricNeeded, String expirationHeight, String spendingLimit, OstWorkFlowCallback callback) {
         Handler handler = new Handler();
-        final OstDeployTokenHolder ostDeployTokenHolder = new OstDeployTokenHolder(userId, tokenId, uPin, password, isBiometricNeeded ,handler, callback);
+        final OstDeployTokenHolder ostDeployTokenHolder = new OstDeployTokenHolder(userId, uPin, password, isBiometricNeeded, expirationHeight, spendingLimit, handler, callback);
         ostDeployTokenHolder.perform();
     }
 
@@ -100,8 +108,12 @@ public class OstSdk {
         ostRegisterDevice.perform();
     }
 
+    public static void setupDevice(String userId, OstWorkFlowCallback workFlowCallback) {
+        registerDevice(userId, workFlowCallback);
+    }
+
     OstDeployTokenHolder QRCodeInput() {
-        OstDeployTokenHolder  ostDeployTokenHolder = null;
+        OstDeployTokenHolder ostDeployTokenHolder = null;
         return ostDeployTokenHolder;
     }
 
@@ -110,31 +122,31 @@ public class OstSdk {
             OstUser.parse(jsonObject.getJSONObject(OstSdk.USER));
         }
         if (jsonObject.has(OstSdk.TRANSACTION)) {
-            OstUser.parse(jsonObject.getJSONObject(OstSdk.TRANSACTION));
+            OstTransaction.parse(jsonObject.getJSONObject(OstSdk.TRANSACTION));
         }
         if (jsonObject.has(OstSdk.TOKEN_HOLDER)) {
-            OstUser.parse(jsonObject.getJSONObject(OstSdk.TOKEN_HOLDER));
+            OstTokenHolder.parse(jsonObject.getJSONObject(OstSdk.TOKEN_HOLDER));
         }
         if (jsonObject.has(OstSdk.TOKEN)) {
-            OstUser.parse(jsonObject.getJSONObject(OstSdk.TOKEN));
+            OstToken.parse(jsonObject.getJSONObject(OstSdk.TOKEN));
         }
         if (jsonObject.has(OstSdk.SESSION)) {
-            OstUser.parse(jsonObject.getJSONObject(OstSdk.SESSION));
+            OstSession.parse(jsonObject.getJSONObject(OstSdk.SESSION));
         }
         if (jsonObject.has(OstSdk.RULE)) {
-            OstUser.parse(jsonObject.getJSONObject(OstSdk.RULE));
+            OstRule.parse(jsonObject.getJSONObject(OstSdk.RULE));
         }
         if (jsonObject.has(OstSdk.DEVICE_OPERATION)) {
-            OstUser.parse(jsonObject.getJSONObject(OstSdk.DEVICE_OPERATION));
+            OstDeviceManagerOperation.parse(jsonObject.getJSONObject(OstSdk.DEVICE_OPERATION));
         }
         if (jsonObject.has(OstSdk.DEVICE_MANAGER)) {
-            OstUser.parse(jsonObject.getJSONObject(OstSdk.DEVICE_MANAGER));
+            OstDeviceManager.parse(jsonObject.getJSONObject(OstSdk.DEVICE_MANAGER));
         }
         if (jsonObject.has(OstSdk.DEVICE)) {
-            OstUser.parse(jsonObject.getJSONObject(OstSdk.DEVICE));
+            OstDevice.parse(jsonObject.getJSONObject(OstSdk.DEVICE));
         }
         if (jsonObject.has(OstSdk.CREDITS)) {
-            OstUser.parse(jsonObject.getJSONObject(OstSdk.CREDITS));
+            OstCredits.parse(jsonObject.getJSONObject(OstSdk.CREDITS));
         }
     }
 }

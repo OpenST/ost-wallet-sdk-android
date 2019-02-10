@@ -1,6 +1,7 @@
 package ost.com.sampleostsdkapplication;
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
@@ -16,6 +17,7 @@ import java.util.Map;
 class MappyApiClient {
 
     private static final String BASE_URL = "http://10.0.2.2:4040/api/";
+    private static final String TAG = "MappyApiCLient";
     private final OstHttpRequestClient mOstHttpRequestClient;
     private final Handler mHandler;
 
@@ -41,22 +43,36 @@ class MappyApiClient {
     }
 
     public void createUser(String name, String mobileNumber, Callback callback) {
+        createUser(name,mobileNumber,"", callback);
+    }
+
+    public void createUser(String name, String mobileNumber, String description, Callback callback) {
         Map<String, Object> map = new HashMap<>();
-        map.put("username", name);
-        map.put("mobile_number", mobileNumber);
+        map.put(Constants.USER_NAME, name);
+        map.put(Constants.MOBILE_NUMBER, mobileNumber);
+        map.put(Constants.DESCRIPTION, description);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     JSONObject response = mOstHttpRequestClient.post("users", map);
-                    runOnUI(callback, true, response);
+                    String id = response.optString("_id", null);
+                    if(null == id) {
+                        Log.e(TAG, response.toString());
+                        runOnUI(callback, false, null);
+                    } else {
+                        map.clear();
+
+                        JSONObject responseOstUser = mOstHttpRequestClient.post(String.format("users/%s/ost-users/", id), map);
+
+                        runOnUI(callback, true, responseOstUser);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                     runOnUI(callback, false, null);
                 }
             }
         }).start();
-
     }
 
     public void registerDevice(String userId, JSONObject jsonObject, Callback callback) {
@@ -69,16 +85,68 @@ class MappyApiClient {
             map.put("device_uuid", deviceObject.getString(OstDevice.DEVICE_UUID));
         } catch (JSONException e) {
             e.printStackTrace();
-            runOnUI(callback, false, null);
+            runOnUI(callback, false, new JSONObject());
         }
+        //Todo:: to be removed
+//        final String userIdtemp = "5c5d93f15faa82ec55b6f9fc";
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     JSONObject response = mOstHttpRequestClient.post(String.format("users/%s/devices/", userId), map);
+//                    response.put(OstDevice.STATUS, OstDevice.CONST_STATUS.REGISTERED);
+//                    JSONObject res = new JSONObject();
+//                    res.put(OstSdk.DEVICE, response);
                     runOnUI(callback, true, response);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    runOnUI(callback, false, null);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void getUserList(Callback callback) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Map<String, Object> map = new HashMap<>();
+                    JSONObject response = mOstHttpRequestClient.get("users", map);
+                    runOnUI(callback, true, response);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    runOnUI(callback, false, null);
+                }
+            }
+        }).start();
+    }
+
+    public void loginUser(String name, String mobileNumber, Callback callback) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(Constants.USER_NAME, name);
+        map.put(Constants.MOBILE_NUMBER, mobileNumber);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject response = mOstHttpRequestClient.post("users/validate/", map);
+                    String id = response.optString("_id", null);
+                    if(null == id) {
+                        Log.e(TAG, response.toString());
+                        runOnUI(callback, false, null);
+                    } else {
+                        map.clear();
+
+                        JSONObject responseOstUser = mOstHttpRequestClient.post(String.format("users/%s/ost-users/", id), map);
+
+                        runOnUI(callback, true, responseOstUser);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.toString());
                     runOnUI(callback, false, null);
                 }
             }

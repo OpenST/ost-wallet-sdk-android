@@ -43,11 +43,10 @@ public class OstUser extends OstBaseEntity {
                     currentDeviceAddress = device.getAddress();
                 }
             }
-            if (null == currentDeviceAddress) {
-                throw new RuntimeException("Unexpected Error");
+            if (null != currentDeviceAddress) {
+                currentDevice = OstDevice.getById(currentDeviceAddress);
+                Log.d(TAG, String.format("currentDeviceAddress: %s", currentDeviceAddress));
             }
-            currentDevice = OstDevice.getById(currentDeviceAddress);
-            Log.d(TAG, String.format("currentDeviceAddress: %s", currentDeviceAddress));
         }
         return currentDevice;
     }
@@ -101,8 +100,12 @@ public class OstUser extends OstBaseEntity {
         return getJSONData().optString(OstUser.TYPE,null);
     }
 
-    public String createDevice() {
-        return new KeyGenProcess().execute(getId());
+    public OstDevice createDevice() {
+        OstKeyManager ostKeyManager = new OstKeyManager(getId());
+        String apiAddress = ostKeyManager.getApiKeyAddress();
+        String address = ostKeyManager.createKey();
+        OstDevice ostDevice = OstDevice.init(address, apiAddress, getId());
+        return ostDevice;
     }
 
     @Override

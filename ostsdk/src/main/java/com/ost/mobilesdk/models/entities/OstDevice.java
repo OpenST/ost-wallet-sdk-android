@@ -35,7 +35,7 @@ public class OstDevice extends OstBaseEntity {
     public static final String DEVICE_MANAGER_ADDRESS = "device_manager_address";
     public static final String DEVICE_NAME = "device_name";
     public static final String DEVICE_UUID = "device_uuid";
-    public static final String PERSONAL_SIGN_ADDRESS = "personal_sign_address";
+    public static final String PERSONAL_SIGN_ADDRESS = "api_signer_address";
 
     public static OstDevice getById(String id) {
         OstDeviceModel ostDeviceModel = OstModelFactory.getDeviceModel();

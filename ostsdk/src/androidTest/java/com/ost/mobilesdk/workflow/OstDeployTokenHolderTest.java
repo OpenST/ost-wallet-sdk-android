@@ -7,7 +7,7 @@ import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.workflows.OstContextEntity;
-import com.ost.mobilesdk.workflows.OstError;
+import com.ost.mobilesdk.workflows.errors.OstError;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,7 +31,9 @@ public class OstDeployTokenHolderTest {
         String userId = "1";
         String tokenId = "1";
 
-        OstSdk.deployTokenHolder(userId, tokenId, uPin, password, isBiometricNeeded ,new AbsWorkFlowCallback() {
+        String expirationHeight = "100000";
+        String spendingLimit = "100000";
+        OstSdk.deployTokenHolder(userId, uPin, password ,isBiometricNeeded, expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
             @Override
             public void flowComplete(OstContextEntity ostContextEntity) {
                 super.flowComplete(ostContextEntity);
