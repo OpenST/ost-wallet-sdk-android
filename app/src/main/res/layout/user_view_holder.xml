@@ -21,30 +21,33 @@
             card_view:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/mobile_number"
             android:layout_width="155dp"
-            android:layout_height="28dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="7dp"
-            android:text="@string/user_name"
-            android:maxLines="2"
+            android:text="@string/mobile_number"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="15sp"
             card_view:layout_constraintBottom_toTopOf="@+id/description"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toEndOf="@+id/profile"
-            card_view:layout_constraintTop_toBottomOf="@+id/mobile_number" />
+            card_view:layout_constraintTop_toBottomOf="@+id/name" />
 
         <TextView
-            android:id="@+id/mobile_number"
+            android:id="@+id/name"
             android:layout_width="155dp"
-            android:layout_height="28dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:text="@string/mobile_number"
-            card_view:layout_constraintBottom_toTopOf="@+id/name"
+            android:text="@string/user_name"
+            android:textSize="15sp"
+            android:fontFamily="sans-serif-condensed"
+            card_view:layout_constraintBottom_toTopOf="@+id/mobile_number"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toEndOf="@+id/profile"
             card_view:layout_constraintTop_toTopOf="parent" />
@@ -52,18 +55,19 @@
         <TextView
             android:id="@+id/description"
             android:layout_width="152dp"
-            android:layout_height="54dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="11dp"
             android:text="@string/description"
+            android:textSize="15sp"
             android:maxLines="10"
+            android:fontFamily="sans-serif-condensed"
             card_view:layout_constraintBottom_toBottomOf="parent"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toEndOf="@+id/profile"
-            card_view:layout_constraintTop_toBottomOf="@+id/name" />
-
+            card_view:layout_constraintTop_toBottomOf="@+id/mobile_number" />
 
     </android.support.constraint.ConstraintLayout>
 

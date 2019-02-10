@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsersListActivity extends AppCompatActivity {
+public class UsersListActivity extends MappyBaseActivity {
 
     private static final String TAG = "UsersListActivity";
     private RecyclerView mRecyclerView;
