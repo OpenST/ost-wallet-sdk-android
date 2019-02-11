@@ -35,10 +35,11 @@ public class OstRegisterDeviceTest {
     public void testRegisterDeviceVanillaFlow() {
         // Context of the app under test.
         String userId = "1";
+        String tokenId = "58";
         final String[] address = new String[1];
         Looper.prepare();
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.registerDevice(userId, new AbsWorkFlowCallback() {
+        OstSdk.registerDevice(userId, tokenId, false, new AbsWorkFlowCallback() {
             @Override
             public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
                 try {

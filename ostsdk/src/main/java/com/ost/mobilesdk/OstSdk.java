@@ -103,7 +103,7 @@ public class OstSdk {
         ostDeployTokenHolder.perform();
     }
 
-    public static void registerDevice(String userId,String tokenId ,boolean forceSync ,OstWorkFlowCallback callback) {
+    public static void registerDevice(String userId, String tokenId ,boolean forceSync ,OstWorkFlowCallback callback) {
         Handler handler = new Handler();
         final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, tokenId ,forceSync ,handler, callback);
         ostRegisterDevice.perform();

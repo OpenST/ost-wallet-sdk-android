@@ -104,6 +104,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
         if (mForceSync) {
             new OstSdkSync(mUserId).perform();
         } else {
+            //Check data before sync
             new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.TOKEN, OstSdkSync.SYNC_ENTITY.DEVICE).perform();
         }
     }

@@ -43,14 +43,14 @@ public class OstKeyManagerTest {
         String userId = "1";
 
         OstKeyManager ostKeyManager = new OstKeyManager(userId);
-        OstKeyManager.KeyMetaStruct keyMetaStruct = new OstKeyManager.KeyMetaStruct("abc");
-        keyMetaStruct.addEthKeyIdentifier("abc", "iden");
+        OstKeyManager.KeyMetaStruct keyMetaStruct = new OstKeyManager.KeyMetaStruct("0xFd23B74B89a825E633AC2B51168674A2EC769f2b", "0xFd23B74B89a825E633AC2B51168674A2EC769f2b");
+        keyMetaStruct.addEthKeyIdentifier("0xFd23B74B89a825E633AC2B51168674A2EC769f2b", "iden");
 
         byte[] bytes = ostKeyManager.createBytesFromObject(keyMetaStruct);
         OstKeyManager.KeyMetaStruct keyMetaStruct1 = ostKeyManager.createObjectFromBytes(bytes);
 
-        Assert.assertEquals("abc", keyMetaStruct1.getApiAddress());
-        Assert.assertEquals("iden", keyMetaStruct1.getEthKeyIdentifier("abc"));
+        Assert.assertEquals("0xFd23B74B89a825E633AC2B51168674A2EC769f2b", keyMetaStruct1.getApiAddress());
+        Assert.assertEquals("iden", keyMetaStruct1.getEthKeyIdentifier("0xFd23B74B89a825E633AC2B51168674A2EC769f2b"));
     }
 
     @Test
@@ -64,17 +64,12 @@ public class OstKeyManagerTest {
     }
 
     @Test
-    public void testKeyCreationWithMnemonics() {
+    public void testKeyGetDeviceAddress() {
         String userId = "1";
 
         OstKeyManager ostKeyManager = new OstKeyManager(userId);
-        String address = ostKeyManager.createKeyWithMnemonic();
 
-        Assert.assertTrue(ostKeyManager.hasAddress(address));
-
-        String[] mnemonics = ostKeyManager.getMnemonics(address);
-
-        Assert.assertNotNull(mnemonics);
+        Assert.assertNotNull(ostKeyManager.getDeviceAddress());
     }
 
     @Test

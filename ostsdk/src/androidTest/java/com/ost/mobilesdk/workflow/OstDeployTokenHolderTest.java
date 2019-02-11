@@ -33,7 +33,7 @@ public class OstDeployTokenHolderTest {
 
         String expirationHeight = "100000";
         String spendingLimit = "100000";
-        OstSdk.deployTokenHolder(userId, uPin, password ,isBiometricNeeded, expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
+        OstSdk.deployTokenHolder(userId, uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
             @Override
             public void flowComplete(OstContextEntity ostContextEntity) {
                 super.flowComplete(ostContextEntity);

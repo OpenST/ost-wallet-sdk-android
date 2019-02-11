@@ -34,14 +34,8 @@ public class OstUser extends OstBaseEntity {
     public OstDevice getCurrentDevice() {
         if (null == currentDevice) {
             Log.d(TAG, "currentDevice is null");
-            String currentDeviceAddress = null;
-            OstDevice[] ostDevices = OstDevice.getDevicesByParentId(getId());
             OstKeyManager ostKeyManager = new OstKeyManager(getId());
-            for (OstDevice device : ostDevices) {
-                if (ostKeyManager.hasAddress(device.getAddress())) {
-                    currentDeviceAddress = device.getAddress();
-                }
-            }
+            String currentDeviceAddress = ostKeyManager.getDeviceAddress();
             if (null != currentDeviceAddress) {
                 currentDevice = OstDevice.getById(currentDeviceAddress);
                 Log.d(TAG, String.format("currentDeviceAddress: %s", currentDeviceAddress));

@@ -45,9 +45,17 @@ public class OstKeyManager {
 
             Log.d(TAG, String.format("Creating new Ost Secure key for userId : %s", userId));
 
-            String address = genAndStoreKey();
-            mKeyMetaStruct = new KeyMetaStruct(address);
-            mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address, mUserId);
+            String apiAddress = genAndStoreKey();
+
+            String mnemonics = OstSdkCrypto.getInstance().genMnemonics();
+
+            ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics);
+            String deviceAddress = Credentials.create(ecKeyPair).getAddress();
+
+            mKeyMetaStruct = new KeyMetaStruct(apiAddress, deviceAddress);
+
+            storeKeyAndMnemonics(ecKeyPair, apiAddress ,deviceAddress, mnemonics);
+
             storeKeyMetaStruct();
         } else {
 
@@ -68,17 +76,6 @@ public class OstKeyManager {
     public String getApiKeyAddress() {
         return mKeyMetaStruct.getApiAddress();
     }
-
-    String createKeyWithMnemonic() {
-        String mnemonics = OstSdkCrypto.getInstance().genMnemonics();
-
-        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics);
-        String address = Credentials.create(ecKeyPair).getAddress();
-
-        storeKeyAndMnemonics(ecKeyPair, address, mnemonics);
-        return address;
-    }
-
 
     public String createHDKey(byte[] seed) {
 
@@ -221,7 +218,7 @@ public class OstKeyManager {
         return address;
     }
 
-    private void storeKeyAndMnemonics(ECKeyPair ecKeyPair, String address, String mnemonics) {
+    private void storeKeyAndMnemonics(ECKeyPair ecKeyPair, String apiAddress ,String address, String mnemonics) {
 
         byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
         byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
@@ -245,8 +242,7 @@ public class OstKeyManager {
 
         mKeyMetaStruct.addEthKeyMnemonicsIdentifier(ETHEREUM_KEY_MNEMONICS_FOR_ + address, mUserId);
         mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address, mUserId);
-
-        storeKeyMetaStruct();
+        mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + apiAddress, mUserId);
     }
 
     private void storeKeyMetaStruct() {
@@ -265,14 +261,20 @@ public class OstKeyManager {
         }
     }
 
+    public String getDeviceAddress() {
+        return mKeyMetaStruct.getDeviceAddress();
+    }
+
     static class KeyMetaStruct implements Serializable {
         private static final long serialVersionUID = 129348938L;
         private final String apiAddress;
+        private final String deviceAddress;
         private HashMap<String, String> ethKeyMetaMapping = new HashMap<>();
         private HashMap<String, String> ethKeyMnemonicsMetaMapping = new HashMap<>();
 
-        KeyMetaStruct(String apiAddress) {
+        KeyMetaStruct(String apiAddress, String deviceAddress) {
             this.apiAddress = apiAddress;
+            this.deviceAddress = deviceAddress;
         }
 
         String getApiAddress() {
@@ -293,6 +295,10 @@ public class OstKeyManager {
 
         void addEthKeyMnemonicsIdentifier(String address, String identifier) {
             ethKeyMnemonicsMetaMapping.put(address, identifier);
+        }
+
+        public String getDeviceAddress() {
+            return deviceAddress;
         }
     }
 }
