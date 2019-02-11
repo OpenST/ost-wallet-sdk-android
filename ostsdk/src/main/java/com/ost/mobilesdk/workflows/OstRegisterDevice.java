@@ -26,12 +26,12 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
     private final String mTokenId;
 
     private enum STATES {
-        INIT,
+        INITIAL,
         ERROR,
         REGISTERED,
     }
 
-    private STATES mCurrentState = STATES.INIT;
+    private STATES mCurrentState = STATES.INITIAL;
     private Object mStateObject = null;
 
     private void setFlowState(STATES currentState, Object stateObject) {
@@ -52,7 +52,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
             @Override
             public void execute() {
                 switch (mCurrentState) {
-                    case INIT:
+                    case INITIAL:
                         Log.d(TAG, String.format("Workflow for userId: %s started", mUserId));
 
                         Log.i(TAG, "Validating user Id");
@@ -78,7 +78,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
                         }
 
                         Log.i(TAG, "Check is device registered");
-                        if (!hasRegisteredDevice(ostDevice)) {
+                        if (isUnRegisteredDevice(ostDevice)) {
                             Log.i(TAG, "Registering device");
                             registerDevice(ostDevice);
                             return;
@@ -152,12 +152,10 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
         return !TextUtils.isEmpty(mUserId) && !TextUtils.isEmpty(mTokenId);
     }
 
-    private boolean hasRegisteredDevice(OstDevice ostDevice) {
+    private boolean isUnRegisteredDevice(OstDevice ostDevice) {
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
         return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress())
-                && (OstDevice.CONST_STATUS.AUTHORIZED.equals(ostDevice.getStatus()) ||
-                OstDevice.CONST_STATUS.AUTHORIZING.equals(ostDevice.getStatus()) ||
-                OstDevice.CONST_STATUS.REGISTERED.equals(ostDevice.getStatus()));
+                && (OstDevice.CONST_STATUS.CREATED.equals(ostDevice.getStatus()));
 
     }
 
