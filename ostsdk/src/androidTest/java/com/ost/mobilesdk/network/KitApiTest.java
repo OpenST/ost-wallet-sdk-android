@@ -41,7 +41,6 @@ public class KitApiTest {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(OstUser.ID, userId);
-            jsonObject.put(OstUser.NAME, "");
             jsonObject.put(OstUser.TOKEN_ID, tokenId);
             jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "");
             jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "");

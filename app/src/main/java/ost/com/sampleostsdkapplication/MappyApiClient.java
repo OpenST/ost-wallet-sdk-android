@@ -87,22 +87,15 @@ class MappyApiClient {
             e.printStackTrace();
             runOnUI(callback, false, new JSONObject());
         }
-        //Todo:: to be removed
-//        final String userIdtemp = "5c5d93f15faa82ec55b6f9fc";
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     JSONObject response = mOstHttpRequestClient.post(String.format("users/%s/devices/", userId), map);
-//                    response.put(OstDevice.STATUS, OstDevice.CONST_STATUS.REGISTERED);
-//                    JSONObject res = new JSONObject();
-//                    res.put(OstSdk.DEVICE, response);
                     runOnUI(callback, true, response);
                 } catch (IOException e) {
                     e.printStackTrace();
                     runOnUI(callback, false, null);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
                 }
             }
         }).start();

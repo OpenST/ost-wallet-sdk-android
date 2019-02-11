@@ -18,12 +18,12 @@ public class OstDeviceManagerOperationTest {
 
         //Test without any OstDeviceManager  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstDeviceManagerOperation.ID, "ID");
         testMultiSigOperationJsonException(jsonObject);
 
         //Test Id with partial OstDeviceManager attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstDeviceManagerOperation.ID, "ID");
         jsonObject.put(OstDeviceManagerOperation.KIND, "encodedData");
         jsonObject.put(OstDeviceManagerOperation.OPERATION, new JSONObject());
         jsonObject.put(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS, "kind");
@@ -38,7 +38,7 @@ public class OstDeviceManagerOperationTest {
 
         //Test without any DeviceOperation  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstDeviceManagerOperation.ID, "ID");
         jsonObject.put(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS, "0x2901239");
         jsonObject.put(OstDeviceManagerOperation.KIND, "kind");
         jsonObject.put(OstDeviceManagerOperation.DEVICE_MANAGER_ID, "0x9923232");

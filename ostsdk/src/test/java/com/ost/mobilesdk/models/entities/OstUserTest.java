@@ -18,14 +18,14 @@ public class OstUserTest {
 
         //Test without any OstUser  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstUser.ID, "ID");
         testUserJsonException(jsonObject);
 
         //Test Id with partial OstUser attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstUser.ID, "ID");
         jsonObject.put(OstUser.TOKEN_ID, "123");
-        jsonObject.put(OstUser.NAME, "status");
+        jsonObject.put(OstUser.TYPE, OstUser.TYPE_VALUE.USER);
         testUserJsonException(jsonObject);
     }
 
@@ -37,20 +37,18 @@ public class OstUserTest {
 
         //Test without any OstUser  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstUser.ID, "ID");
         jsonObject.put(OstUser.TOKEN_ID, "0x2901239");
         jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "123");
-        jsonObject.put(OstUser.NAME, "name");
         jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "1");
-        jsonObject.put(OstUser.TYPE, OstUser.TYPE_VALUE.ADMIN);
+        jsonObject.put(OstUser.TYPE, OstUser.TYPE_VALUE.USER);
 
         OstUser ostUser =  new OstUser(jsonObject);
         assertEquals("0x2901239", ostUser.getTokenId());
         assertEquals("123", ostUser.getTokenHolderAddress());
-        assertEquals("name", ostUser.getName());
         assertEquals("ID", ostUser.getId());
         assertEquals("1", ostUser.getDeviceManagerAddress());
-        assertEquals(OstUser.TYPE_VALUE.ADMIN, ostUser.getType());
+        assertEquals(OstUser.TYPE_VALUE.USER, ostUser.getType());
     }
 
 

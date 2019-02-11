@@ -44,7 +44,7 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
     }
 
     public static String getIdentifier() {
-        return OstUser.ID;
+        return OstDeviceManagerOperation.ID;
     }
 
     public static OstDeviceManagerOperation parse(JSONObject jsonObject) throws JSONException {

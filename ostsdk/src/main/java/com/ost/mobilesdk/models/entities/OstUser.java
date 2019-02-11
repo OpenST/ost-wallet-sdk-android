@@ -21,7 +21,6 @@ public class OstUser extends OstBaseEntity {
 
     public static final String TOKEN_ID = "token_id";
     public static final String TOKEN_HOLDER_ADDRESS = "token_holder_address";
-    public static final String NAME = "name";
     public static final String DEVICE_MANAGER_ADDRESS = "device_manager_address";
     public static final String TYPE = "type";
 
@@ -88,9 +87,6 @@ public class OstUser extends OstBaseEntity {
         return getJSONData().optString(OstUser.TOKEN_HOLDER_ADDRESS,null);
     }
 
-    public String getName() {
-        return getJSONData().optString(OstUser.NAME,null);
-    }
 
     public String getDeviceManagerAddress() {
         return getJSONData().optString(OstUser.DEVICE_MANAGER_ADDRESS,null);
@@ -116,11 +112,9 @@ public class OstUser extends OstBaseEntity {
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
+                jsonObject.has(OstUser.ID) &&
                 jsonObject.has(OstUser.TOKEN_ID) &&
-                jsonObject.has(OstUser.TOKEN_HOLDER_ADDRESS) &&
-                jsonObject.has(OstUser.NAME) &&
-                jsonObject.has(OstUser.TYPE) &&
-                jsonObject.has(OstUser.DEVICE_MANAGER_ADDRESS);
+                jsonObject.has(OstUser.TYPE);
     }
 
     public OstTokenHolder getTokenHolder() {

@@ -39,7 +39,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
         this.mStateObject = stateObject;
     }
 
-    public OstRegisterDevice(String userId, String tokenId ,boolean forceSync ,Handler handler, OstWorkFlowCallback callback) {
+    public OstRegisterDevice(String userId, String tokenId, boolean forceSync, Handler handler, OstWorkFlowCallback callback) {
         mUserId = userId;
         mTokenId = tokenId;
         mForceSync = forceSync;
@@ -61,8 +61,17 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
                             return;
                         }
 
+                        OstUser ostUser = null;
+                        try {
+                            Log.i(TAG, "Initializing User and Token");
+                            ostUser = OstSdk.initUser(mUserId, mTokenId);
+                            OstSdk.initToken(mTokenId);
+                        } catch (JSONException e) {
+                            postError("Parsing error of user or token");
+                        }
+
                         Log.i(TAG, "Creating current device if does not exist");
-                        OstDevice ostDevice = createCurrentDevice();
+                        OstDevice ostDevice = createOrGetCurrentDevice(ostUser);
                         if (null == ostDevice) {
                             postError(String.format("Ost device creation error for user Id: %s", mUserId));
                             return;
@@ -79,13 +88,6 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
                         break;
                     case REGISTERED:
                         Log.i(TAG, "Device registered");
-                        JSONObject apiResponse = (JSONObject) mStateObject;
-                        try {
-                            OstSdk.parse(apiResponse);
-                        } catch (JSONException e) {
-                            postError(String.format("Register device api response parsing error: %s", mUserId));
-                            return;
-                        }
                         sync();
                         postFlowComplete();
                         break;
@@ -98,9 +100,11 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
     }
 
     private void sync() {
-        Log.i(TAG, String.format("Syncing sdk: %b",mForceSync));
+        Log.i(TAG, String.format("Syncing sdk: %b", mForceSync));
         if (mForceSync) {
             new OstSdkSync(mUserId).perform();
+        } else {
+            new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.TOKEN, OstSdkSync.SYNC_ENTITY.DEVICE).perform();
         }
     }
 
@@ -134,28 +138,25 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
         });
     }
 
-    private OstDevice createCurrentDevice() {
-        OstDevice ostDevice = null;
-        try {
-            OstUser ostUser = OstSdk.initUser(mUserId, mTokenId);
-            ostDevice = ostUser.getCurrentDevice();
-            if (null == ostDevice) {
-                ostDevice = ostUser.createDevice();
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "Ost User init exception");
+    private OstDevice createOrGetCurrentDevice(OstUser ostUser) {
+        OstDevice ostDevice;
+        ostDevice = ostUser.getCurrentDevice();
+        if (null == ostDevice) {
+            ostDevice = ostUser.createDevice();
         }
         return ostDevice;
     }
 
     private boolean hasValidParams() {
-        return !TextUtils.isEmpty(mUserId) && !TextUtils.isEmpty(mTokenId) ;
+        return !TextUtils.isEmpty(mUserId) && !TextUtils.isEmpty(mTokenId);
     }
 
     private boolean hasRegisteredDevice(OstDevice ostDevice) {
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
         return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress())
-                && OstDevice.CONST_STATUS.REGISTERED.equals(ostDevice.getStatus());
+                && (OstDevice.CONST_STATUS.AUTHORIZED.equals(ostDevice.getStatus()) ||
+                OstDevice.CONST_STATUS.AUTHORIZING.equals(ostDevice.getStatus()) ||
+                OstDevice.CONST_STATUS.REGISTERED.equals(ostDevice.getStatus()));
 
     }
 

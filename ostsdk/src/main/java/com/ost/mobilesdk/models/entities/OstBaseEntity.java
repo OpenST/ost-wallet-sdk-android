@@ -125,7 +125,6 @@ public class OstBaseEntity {
 
     boolean validate(JSONObject jsonObject) {
         return true;
-//        return jsonObject.has(OstBaseEntity.ID);
     }
 
     public void processJson(JSONObject jsonObject) throws JSONException {

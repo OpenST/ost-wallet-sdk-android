@@ -54,6 +54,7 @@ public class OstKeyManager {
             Log.d(TAG, String.format("Got existing secure key meta struct for userId : %s", userId));
 
             mKeyMetaStruct = createObjectFromBytes(ostSecureKey.getData());
+            Log.d(TAG, "List" + mKeyMetaStruct.ethKeyMetaMapping.keySet());
         }
     }
 
@@ -150,9 +151,9 @@ public class OstKeyManager {
             Object o = in.readObject();
             return (KeyMetaStruct) o;
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "IOException " + e.getMessage());
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Class not found exception "+e.getMessage());
         } finally {
             try {
                 if (in != null) {
@@ -265,6 +266,7 @@ public class OstKeyManager {
     }
 
     static class KeyMetaStruct implements Serializable {
+        private static final long serialVersionUID = 129348938L;
         private final String apiAddress;
         private HashMap<String, String> ethKeyMetaMapping = new HashMap<>();
         private HashMap<String, String> ethKeyMnemonicsMetaMapping = new HashMap<>();

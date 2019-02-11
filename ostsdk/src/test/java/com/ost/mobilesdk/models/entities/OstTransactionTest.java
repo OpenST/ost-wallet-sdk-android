@@ -18,12 +18,12 @@ public class OstTransactionTest {
 
         //Test without any OstTransaction  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstTransaction.TRANSACTION_HASH, "ID");
         testExecutableRuleJsonException(jsonObject);
 
         //Test Id with partial OstTransaction attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstTransaction.TRANSACTION_HASH, "ID");
         jsonObject.put(OstTransaction.TRANSFERS, "{}");
         jsonObject.put(OstTransaction.TRANSACTION_FEE, "methods");
         jsonObject.put(OstTransaction.BLOCK_TIMESTAMP, "params");
@@ -38,7 +38,6 @@ public class OstTransactionTest {
 
         //Test without any OstTransaction  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstTransaction.TRANSFERS, new JSONObject());
         jsonObject.put(OstTransaction.TRANSACTION_FEE, "methods");
         jsonObject.put(OstTransaction.BLOCK_TIMESTAMP, "params");

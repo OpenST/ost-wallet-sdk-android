@@ -21,7 +21,7 @@ public class OstToken extends OstBaseEntity {
 
 
     public static String getIdentifier() {
-        return OstUser.ID;
+        return OstToken.ID;
     }
 
     public static OstToken parse(JSONObject jsonObject) throws JSONException {
@@ -48,9 +48,7 @@ public class OstToken extends OstBaseEntity {
                 jsonObject.has(OstToken.NAME) &&
                 jsonObject.has(OstToken.SYMBOL) &&
                 jsonObject.has(OstToken.CONVERSION_FACTOR) &&
-                jsonObject.has(OstToken.TOTAL_SUPPLY) &&
-                jsonObject.has(OstToken.ORIGIN_CHAIN) &&
-                jsonObject.has(OstToken.AUXILIARY_CHAIN);
+                jsonObject.has(OstToken.TOTAL_SUPPLY);
     }
 
     @Override
@@ -96,6 +94,6 @@ public class OstToken extends OstBaseEntity {
 
     @Override
     String getEntityIdKey() {
-        return OstUser.ID;
+        return getIdentifier();
     }
 }

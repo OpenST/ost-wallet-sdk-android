@@ -18,12 +18,12 @@ public class OstRuleTest {
 
         //Test without any OstRule  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstRule.ID, "ID");
         testRuleJsonException(jsonObject);
 
         //Test Id with partial OstRule attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstRule.ID, "ID");
         jsonObject.put(OstRule.ADDRESS, "0x232");
         jsonObject.put(OstRule.ABI, "abi");
         testRuleJsonException(jsonObject);
@@ -37,7 +37,7 @@ public class OstRuleTest {
 
         //Test without any OstRule  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstRule.ID, "ID");
         jsonObject.put(OstRule.ADDRESS, "0x2901239");
         jsonObject.put(OstRule.NAME, "name");
         jsonObject.put(OstRule.ABI, "abi");

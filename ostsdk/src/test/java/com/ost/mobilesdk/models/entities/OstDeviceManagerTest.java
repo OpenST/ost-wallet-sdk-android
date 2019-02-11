@@ -18,12 +18,11 @@ public class OstDeviceManagerTest {
 
         //Test without any OstDeviceManager  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstDeviceManager.ADDRESS, "ID");
         testMultiSigJsonException(jsonObject);
 
         //Test Id with partial OstDeviceManager attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstDeviceManager.ADDRESS, "0x2901239");
         jsonObject.put(OstDeviceManager.REQUIREMENT, 1);
         testMultiSigJsonException(jsonObject);
@@ -37,7 +36,6 @@ public class OstDeviceManagerTest {
 
         //Test without any OstTransaction  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstDeviceManager.ADDRESS, "0x2901239");
         jsonObject.put(OstDeviceManager.REQUIREMENT, 1);
         jsonObject.put(OstDeviceManager.USER_ID, "123");

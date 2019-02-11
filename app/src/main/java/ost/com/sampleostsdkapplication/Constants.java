@@ -8,4 +8,6 @@ public interface Constants {
     String DESCRIPTION = "description";
     String USER_ID = "user_id";
     String TOKEN_ID = "token_id";
+    String ID = "_id";
+    String APP_USER_ID = "app_user_id";
 }

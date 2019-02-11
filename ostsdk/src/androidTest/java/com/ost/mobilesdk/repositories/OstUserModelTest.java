@@ -54,7 +54,7 @@ public class OstUserModelTest {
 
         OstUser ostUser = OstSdk.getUser("1");
         assertNotNull(ostUser);
-        assertEquals("ostUser", ostUser.getName());
+        assertEquals(OstUser.TYPE_VALUE.USER, ostUser.getType());
         assertEquals("1", ostUser.getId());
     }
 
@@ -70,6 +70,7 @@ public class OstUserModelTest {
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 
         ostUser = OstSdk.getUser("1");
+        assertEquals(OstUser.TYPE_VALUE.USER, ostUser.getType());
         assertNull(ostUser);
     }
 
@@ -81,7 +82,7 @@ public class OstUserModelTest {
         OstSdkDatabase.getDatabase().userDao().delete(ostUser.getId());
         ostUser = OstSdk.getUser("1");
         assertNotNull(ostUser);
-        assertEquals("ostUser", ostUser.getName());
+        assertEquals(OstUser.TYPE_VALUE.USER, ostUser.getType());
         assertEquals("1", ostUser.getId());
     }
 
@@ -96,7 +97,7 @@ public class OstUserModelTest {
 
         ostUser = OstSdk.getUser("1");
         assertNotNull(ostUser);
-        assertEquals("ostUser", ostUser.getName());
+        assertEquals(OstUser.TYPE_VALUE.USER, ostUser.getType());
         assertEquals("1", ostUser.getId());
     }
 
@@ -116,7 +117,7 @@ public class OstUserModelTest {
 
         userObj.put(OstUser.ID, String.valueOf(param));
         userObj.put(OstUser.TOKEN_ID, "1");
-        userObj.put(OstUser.NAME, "ostUser");
+        userObj.put(OstUser.TYPE, OstUser.TYPE_VALUE.USER);
         userObj.put(OstUser.TOKEN_HOLDER_ADDRESS, "1");
         userObj.put(OstUser.DEVICE_MANAGER_ADDRESS, "1");
 

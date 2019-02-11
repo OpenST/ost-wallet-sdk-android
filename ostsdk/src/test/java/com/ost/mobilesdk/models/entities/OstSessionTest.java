@@ -18,12 +18,12 @@ public class OstSessionTest {
 
         //Test without any OstSession  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstSession.ADDRESS, "ID");
         testTokenHolderSessionJsonException(jsonObject);
 
         //Test Id with partial OstSession attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstSession.ADDRESS, "ID");
         jsonObject.put(OstSession.ADDRESS, "0x232");
         jsonObject.put(OstSession.STATUS, "status");
         testTokenHolderSessionJsonException(jsonObject);
@@ -37,7 +37,6 @@ public class OstSessionTest {
 
         //Test without any OstSession  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstSession.ADDRESS, "0x2901239");
         jsonObject.put(OstSession.USER_ID, "1234");
         jsonObject.put(OstSession.STATUS, "status");

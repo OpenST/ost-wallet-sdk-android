@@ -18,12 +18,11 @@ public class OstDeviceTest {
 
         //Test without any OstDevice  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
+        jsonObject.put(OstDevice.ADDRESS, "ID");
         testMultiSigWalletJsonException(jsonObject);
 
         //Test Id with partial OstDevice attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstDevice.ADDRESS, "0x232");
         jsonObject.put(OstDevice.STATUS, "status");
         testMultiSigWalletJsonException(jsonObject);
@@ -37,7 +36,6 @@ public class OstDeviceTest {
 
         //Test without any OstDevice  attribute
         jsonObject = new JSONObject();
-        jsonObject.put(OstBaseEntity.ID, "ID");
         jsonObject.put(OstDevice.USER_ID, "1234");
         jsonObject.put(OstDevice.DEVICE_NAME, "Device");
         jsonObject.put(OstDevice.DEVICE_UUID, "221");

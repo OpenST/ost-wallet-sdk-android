@@ -164,10 +164,12 @@ public class LoginSignUpActivity extends MappyBaseActivity {
 
             Log.i(TAG, String.format("JSON Response : %s", response.toString()));
 
-            String userId = response.optString(Constants.USER_ID, null);
-            String tokenId = response.optString(Constants.TOKEN_ID, null);
+            LogInUser logInUser = new LogInUser(response);
+            ((App)getApplicationContext()).setLoggedUser(logInUser);
+            String userId = logInUser.getOstUserId();
+            String tokenId = logInUser.getTokenId();
             if (null != userId) {
-                OstSdk.setupDevice(userId, tokenId ,new WorkFlowHelper());
+                OstSdk.setupDevice(userId, tokenId ,new WorkFlowHelper(getApplicationContext()));
                 userListIntent.putExtra(OST_USER_ID, userId);
                 startActivity(userListIntent);
                 showProgress(false);
@@ -175,6 +177,7 @@ public class LoginSignUpActivity extends MappyBaseActivity {
             }
             Log.i(TAG, "UserId is null");
         }
+        showProgress(false);
         mMobileNumber.setError(getString(R.string.error_incorrect_login));
         mMobileNumber.requestFocus();
     }
@@ -188,7 +191,7 @@ public class LoginSignUpActivity extends MappyBaseActivity {
     }
 
     private boolean isNameValid(String name) {
-        return true;
+        return name.matches("[A-Za-z0-9]+");
     }
 
     private boolean isMobileNumberValid(String password) {

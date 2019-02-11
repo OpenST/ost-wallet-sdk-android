@@ -2,6 +2,7 @@ package com.ost.mobilesdk;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import com.ost.mobilesdk.database.ConfigSharedPreferences;
 import com.ost.mobilesdk.database.OstSdkDatabase;
@@ -36,6 +37,7 @@ public class OstSdk {
     public static final String DEVICE_MANAGER = "device_manager";
     public static final String DEVICE = "device";
     public static final String CREDITS = "credits";
+    private static final String TAG = "OstSdk";
     private static volatile OstSdk INSTANCE;
 
     private static Context mApplicationContext;
@@ -79,7 +81,6 @@ public class OstSdk {
     public static OstUser initUser(String id, String mTokenId) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(OstUser.ID, id);
-        jsonObject.put(OstUser.NAME, "");
         jsonObject.put(OstUser.TOKEN_ID, mTokenId);
         jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "");
         jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "");
@@ -116,41 +117,59 @@ public class OstSdk {
         registerDevice(userId, tokenId ,forceSync ,workFlowCallback);
     }
 
+    public static OstToken initToken(String tokenId) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(OstToken.ID, tokenId);
+        jsonObject.put(OstToken.NAME, "");
+        jsonObject.put(OstToken.SYMBOL, "");
+        jsonObject.put(OstToken.CONVERSION_FACTOR, "");
+        jsonObject.put(OstToken.TOTAL_SUPPLY, "");
+        jsonObject.put(OstToken.ORIGIN_CHAIN, "");
+        jsonObject.put(OstToken.AUXILIARY_CHAIN, "");
+        return OstToken.parse(jsonObject);
+    }
+
     OstDeployTokenHolder QRCodeInput() {
         OstDeployTokenHolder ostDeployTokenHolder = null;
         return ostDeployTokenHolder;
     }
 
     public static void parse(JSONObject jsonObject) throws JSONException {
-        if (jsonObject.has(OstSdk.USER)) {
-            OstUser.parse(jsonObject.getJSONObject(OstSdk.USER));
+        if (!jsonObject.getBoolean(OstConstants.RESPONSE_SUCCESS)) {
+            Log.e(TAG, "JSON response false");
+            return;
         }
-        if (jsonObject.has(OstSdk.TRANSACTION)) {
-            OstTransaction.parse(jsonObject.getJSONObject(OstSdk.TRANSACTION));
+        JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
+
+        if (jsonData.has(OstSdk.USER)) {
+            OstUser.parse(jsonData.getJSONObject(OstSdk.USER));
         }
-        if (jsonObject.has(OstSdk.TOKEN_HOLDER)) {
-            OstTokenHolder.parse(jsonObject.getJSONObject(OstSdk.TOKEN_HOLDER));
+        if (jsonData.has(OstSdk.TRANSACTION)) {
+            OstTransaction.parse(jsonData.getJSONObject(OstSdk.TRANSACTION));
         }
-        if (jsonObject.has(OstSdk.TOKEN)) {
-            OstToken.parse(jsonObject.getJSONObject(OstSdk.TOKEN));
+        if (jsonData.has(OstSdk.TOKEN_HOLDER)) {
+            OstTokenHolder.parse(jsonData.getJSONObject(OstSdk.TOKEN_HOLDER));
         }
-        if (jsonObject.has(OstSdk.SESSION)) {
-            OstSession.parse(jsonObject.getJSONObject(OstSdk.SESSION));
+        if (jsonData.has(OstSdk.TOKEN)) {
+            OstToken.parse(jsonData.getJSONObject(OstSdk.TOKEN));
         }
-        if (jsonObject.has(OstSdk.RULE)) {
-            OstRule.parse(jsonObject.getJSONObject(OstSdk.RULE));
+        if (jsonData.has(OstSdk.SESSION)) {
+            OstSession.parse(jsonData.getJSONObject(OstSdk.SESSION));
         }
-        if (jsonObject.has(OstSdk.DEVICE_OPERATION)) {
-            OstDeviceManagerOperation.parse(jsonObject.getJSONObject(OstSdk.DEVICE_OPERATION));
+        if (jsonData.has(OstSdk.RULE)) {
+            OstRule.parse(jsonData.getJSONObject(OstSdk.RULE));
         }
-        if (jsonObject.has(OstSdk.DEVICE_MANAGER)) {
-            OstDeviceManager.parse(jsonObject.getJSONObject(OstSdk.DEVICE_MANAGER));
+        if (jsonData.has(OstSdk.DEVICE_OPERATION)) {
+            OstDeviceManagerOperation.parse(jsonData.getJSONObject(OstSdk.DEVICE_OPERATION));
         }
-        if (jsonObject.has(OstSdk.DEVICE)) {
-            OstDevice.parse(jsonObject.getJSONObject(OstSdk.DEVICE));
+        if (jsonData.has(OstSdk.DEVICE_MANAGER)) {
+            OstDeviceManager.parse(jsonData.getJSONObject(OstSdk.DEVICE_MANAGER));
         }
-        if (jsonObject.has(OstSdk.CREDITS)) {
-            OstCredits.parse(jsonObject.getJSONObject(OstSdk.CREDITS));
+        if (jsonData.has(OstSdk.DEVICE)) {
+            OstDevice.parse(jsonData.getJSONObject(OstSdk.DEVICE));
+        }
+        if (jsonData.has(OstSdk.CREDITS)) {
+            OstCredits.parse(jsonData.getJSONObject(OstSdk.CREDITS));
         }
     }
 }

@@ -1,11 +1,11 @@
 package ost.com.sampleostsdkapplication;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
@@ -15,28 +15,22 @@ import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWalletWordsAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 class WorkFlowHelper implements OstWorkFlowCallback {
 
 
     private static final String TAG = "WorkFlowHelper";
+    private final App mApp;
 
-    WorkFlowHelper() {
-
+    WorkFlowHelper(Context context) {
+        mApp = ((App) context.getApplicationContext());
     }
 
     @Override
     public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
         Log.i(TAG, String.format("Device Object %s ", apiParams.toString()));
-        String mUserId = null;
-        try {
-            mUserId = apiParams.getJSONObject(OstSdk.DEVICE).getString(OstDevice.USER_ID);
-        } catch (JSONException e) {
-            Log.e(TAG, String.format("Error While getting param %s", OstDevice.USER_ID));
-            ostDeviceRegisteredInterface.cancelFlow(new OstError(String.format("Error While getting param %s", OstDevice.USER_ID)));
-        }
+        String mUserId = mApp.getLoggedUser().getId();
         new MappyApiClient().registerDevice(mUserId, apiParams, new MappyApiClient.Callback() {
             @Override
             public void onResponse(boolean success, JSONObject response) {
