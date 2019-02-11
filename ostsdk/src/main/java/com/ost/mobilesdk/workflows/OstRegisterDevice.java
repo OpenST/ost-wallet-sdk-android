@@ -34,7 +34,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
     private STATES mCurrentState = STATES.INIT;
     private Object mStateObject = null;
 
-    private void setCurrentState(STATES currentState, Object stateObject) {
+    private void setFlowState(STATES currentState, Object stateObject) {
         this.mCurrentState = currentState;
         this.mStateObject = stateObject;
     }
@@ -56,8 +56,8 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
                         Log.d(TAG, String.format("Workflow for userId: %s started", mUserId));
 
                         Log.i(TAG, "Validating user Id");
-                        if (!isValidUserId()) {
-                            postError(String.format("Invalid UserId: %s", mUserId));
+                        if (!hasValidParams()) {
+                            postError(String.format("Invalid params for userId : %s", mUserId));
                             return;
                         }
 
@@ -148,8 +148,8 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
         return ostDevice;
     }
 
-    private boolean isValidUserId() {
-        return !TextUtils.isEmpty(mUserId);
+    private boolean hasValidParams() {
+        return !TextUtils.isEmpty(mUserId) && !TextUtils.isEmpty(mTokenId) ;
     }
 
     private boolean hasRegisteredDevice(OstDevice ostDevice) {
@@ -176,13 +176,13 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
 
     @Override
     public void cancelFlow(OstError ostError) {
-        setCurrentState(STATES.ERROR, ostError);
+        setFlowState(STATES.ERROR, ostError);
         perform();
     }
 
     @Override
     public void deviceRegistered(JSONObject apiResponse) {
-        setCurrentState(STATES.REGISTERED,apiResponse);
+        setFlowState(STATES.REGISTERED, apiResponse);
         perform();
     }
 }

@@ -88,6 +88,16 @@ public class OstApiClient {
         return mOstHttpRequestClient.post(String.format("/users/%s/token-holders/", mUserId), requestMap);
     }
 
+    public JSONObject getDevices() throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get(String.format("/users/%s/devices/", mUserId), requestMap);
+    }
+
+    public JSONObject getUser() throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get(String.format("/users/%s", mUserId), requestMap);
+    }
+
     private Map<String, Object> getPrerequisiteMap() {
         Map<String, Object> map = new HashMap<>();
 
