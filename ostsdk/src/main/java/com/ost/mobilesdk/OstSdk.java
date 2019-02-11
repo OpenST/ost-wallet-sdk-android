@@ -76,11 +76,11 @@ public class OstSdk {
         return OstModelFactory.getTokenModel().getEntityById(tokenId);
     }
 
-    public static OstUser initUser(String id) throws JSONException {
+    public static OstUser initUser(String id, String mTokenId) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(OstUser.ID, id);
         jsonObject.put(OstUser.NAME, "");
-        jsonObject.put(OstUser.TOKEN_ID, "");
+        jsonObject.put(OstUser.TOKEN_ID, mTokenId);
         jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "");
         jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "");
         jsonObject.put(OstUser.TYPE, "");
@@ -96,20 +96,24 @@ public class OstSdk {
     }
 
 
-    public static void deployTokenHolder(String userId, String uPin, String password, boolean isBiometricNeeded, String expirationHeight, String spendingLimit, OstWorkFlowCallback callback) {
+    public static void deployTokenHolder(String userId, String uPin, String password, String expirationHeight, String spendingLimit, OstWorkFlowCallback callback) {
         Handler handler = new Handler();
-        final OstDeployTokenHolder ostDeployTokenHolder = new OstDeployTokenHolder(userId, uPin, password, isBiometricNeeded, expirationHeight, spendingLimit, handler, callback);
+        final OstDeployTokenHolder ostDeployTokenHolder = new OstDeployTokenHolder(userId, uPin, password, expirationHeight, spendingLimit, handler, callback);
         ostDeployTokenHolder.perform();
     }
 
-    public static void registerDevice(String userId, OstWorkFlowCallback callback) {
+    public static void registerDevice(String userId,String tokenId ,boolean forceSync ,OstWorkFlowCallback callback) {
         Handler handler = new Handler();
-        final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, handler, callback);
+        final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, tokenId ,forceSync ,handler, callback);
         ostRegisterDevice.perform();
     }
 
-    public static void setupDevice(String userId, OstWorkFlowCallback workFlowCallback) {
-        registerDevice(userId, workFlowCallback);
+    public static void setupDevice(String userId, String tokenId, OstWorkFlowCallback workFlowCallback) {
+        registerDevice(userId, tokenId ,false ,workFlowCallback);
+    }
+
+    public static void setupDevice(String userId, String tokenId ,boolean forceSync ,OstWorkFlowCallback workFlowCallback) {
+        registerDevice(userId, tokenId ,forceSync ,workFlowCallback);
     }
 
     OstDeployTokenHolder QRCodeInput() {

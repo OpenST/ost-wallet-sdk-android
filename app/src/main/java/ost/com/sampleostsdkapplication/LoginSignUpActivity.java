@@ -183,9 +183,10 @@ public class LoginSignUpActivity extends MappyBaseActivity {
 
             Log.i(TAG, String.format("JSON Response : %s", response.toString()));
 
-            String userId = response.optString("user_id", null);
+            String userId = response.optString(Constants.USER_ID, null);
+            String tokenId = response.optString(Constants.TOKEN_ID, null);
             if (null != userId) {
-                OstSdk.setupDevice(userId, new WorkFlowHelper());
+                OstSdk.setupDevice(userId, tokenId ,new WorkFlowHelper());
                 userListIntent.putExtra(OST_USER_ID, userId);
                 startActivity(userListIntent);
                 showProgress(false);

@@ -22,6 +22,8 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
     private final String mUserId;
     private final Handler mHandler;
     private final OstWorkFlowCallback mCallback;
+    private final boolean mForceSync;
+    private final String mTokenId;
 
     private enum STATES {
         INIT,
@@ -37,8 +39,10 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
         this.mStateObject = stateObject;
     }
 
-    public OstRegisterDevice(String userId, Handler handler, OstWorkFlowCallback callback) {
+    public OstRegisterDevice(String userId, String tokenId ,boolean forceSync ,Handler handler, OstWorkFlowCallback callback) {
         mUserId = userId;
+        mTokenId = tokenId;
+        mForceSync = forceSync;
         mHandler = handler;
         mCallback = callback;
     }
@@ -70,6 +74,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
                             registerDevice(ostDevice);
                             return;
                         }
+                        sync();
                         postFlowComplete();
                         break;
                     case REGISTERED:
@@ -81,6 +86,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
                             postError(String.format("Register device api response parsing error: %s", mUserId));
                             return;
                         }
+                        sync();
                         postFlowComplete();
                         break;
                     case ERROR:
@@ -89,6 +95,13 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
                 }
             }
         });
+    }
+
+    private void sync() {
+        Log.i(TAG, String.format("Syncing sdk: %b",mForceSync));
+        if (mForceSync) {
+            new OstSdkSync(mUserId).perform();
+        }
     }
 
     private void postFlowComplete() {
@@ -124,7 +137,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
     private OstDevice createCurrentDevice() {
         OstDevice ostDevice = null;
         try {
-            OstUser ostUser = OstSdk.initUser(mUserId);
+            OstUser ostUser = OstSdk.initUser(mUserId, mTokenId);
             ostDevice = ostUser.getCurrentDevice();
             if (null == ostDevice) {
                 ostDevice = ostUser.createDevice();
@@ -140,7 +153,6 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
     }
 
     private boolean hasRegisteredDevice(OstDevice ostDevice) {
-        OstUser ostUser = OstSdk.getUser(mUserId);
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
         return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress())
                 && OstDevice.CONST_STATUS.REGISTERED.equals(ostDevice.getStatus());

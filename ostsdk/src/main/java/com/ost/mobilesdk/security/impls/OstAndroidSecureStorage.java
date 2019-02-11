@@ -64,8 +64,8 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION_ASYMMETRIC);
             cipher.init(Cipher.ENCRYPT_MODE, Objects.requireNonNull(getKey()).getPublic());
             return cipher.doFinal(data);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.e(TAG, "Exception faced while encryption " + ex.getMessage(), ex.getCause());
         }
         return null;
     }
@@ -76,8 +76,8 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION_ASYMMETRIC);
             cipher.init(Cipher.DECRYPT_MODE, Objects.requireNonNull(getKey()).getPrivate());
             return cipher.doFinal(data);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.e(TAG, "Exception faced while decryption " + ex.getMessage(), ex.getCause());
         }
         return null;
     }
@@ -121,16 +121,15 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
     }
 
     private KeyPair getKey() {
-        PrivateKey privateKey = null;
         try {
-            privateKey = (PrivateKey) mKeyStore.getKey(mKeyAlias, null);
-            PublicKey publicKey = mKeyStore.getCertificate(mKeyAlias).getPublicKey();
+            PrivateKey privateKey = (PrivateKey) mKeyStore.getKey(mKeyAlias, null);
+            PublicKey publicKey = (null == mKeyStore.getCertificate(mKeyAlias) ? null : mKeyStore.getCertificate(mKeyAlias).getPublicKey());
             if (null == privateKey || null == publicKey) {
                 return null;
             }
             return new KeyPair(publicKey, privateKey);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Log.e(TAG, "Exception faced in getKey " + ex.getMessage(), ex.getCause());
         }
         return null;
     }

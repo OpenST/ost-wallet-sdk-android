@@ -22,18 +22,16 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
     private static final int THREE_TIMES = 3;
     private final String mUserId;
     private final String mPassWord;
-    private final boolean mIsBiometricNeeded;
     private final Handler mHandler;
     private final OstWorkFlowCallback mCallback;
     private final String mUPin;
     private final String mExpirationHeight;
     private final String mSpendingLimit;
 
-    public OstDeployTokenHolder(String userId, String uPin, String password, boolean isBiometricNeeded, String expirationHeight, String spendingLimit, Handler handler, OstWorkFlowCallback callback) {
+    public OstDeployTokenHolder(String userId, String uPin, String password, String expirationHeight, String spendingLimit, Handler handler, OstWorkFlowCallback callback) {
         mUserId = userId;
         mUPin = uPin;
         mPassWord = password;
-        mIsBiometricNeeded = isBiometricNeeded;
         mExpirationHeight = expirationHeight;
         mSpendingLimit = spendingLimit;
         mHandler = handler;

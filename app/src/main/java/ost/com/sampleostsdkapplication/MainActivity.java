@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if (success) {
                             try {
                                 String uId = response.getString("_id");
-                                OstSdk.initUser(uId);
+                                // Todo ::
                                 mCurrentUserId = uId;
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case REGISTERED_DEVICE:
                 Toast.makeText(this, REGISTERED_DEVICE, Toast.LENGTH_SHORT).show();
-                OstSdk.registerDevice(mCurrentUserId, new WorkFlowHelper());
                 break;
             default:
                 Toast.makeText(this, "Unknown item", Toast.LENGTH_SHORT).show();
