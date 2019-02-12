@@ -1,14 +1,17 @@
 package com.ost.mobilesdk.models;
 
 import com.ost.mobilesdk.models.entities.OstSecureKey;
+import com.ost.mobilesdk.utils.AsyncStatus;
+
+import java.util.concurrent.Future;
 
 public interface OstSecureKeyModel {
 
-    void insertSecureKey(OstSecureKey ostSecureKey, OstTaskCallback callback);
+    Future<AsyncStatus> insertSecureKey(OstSecureKey ostSecureKey);
 
     OstSecureKey getByKey(String id);
 
-    void deleteAllSecureKeys(OstTaskCallback callback);
+    Future<AsyncStatus> deleteAllSecureKeys();
 
     OstSecureKey initSecureKey(String key, byte[] data);
 }

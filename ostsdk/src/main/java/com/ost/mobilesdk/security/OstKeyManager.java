@@ -5,11 +5,11 @@ import android.util.Log;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.Impls.OstSessionKeyModelRepository;
-import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.entities.OstSecureKey;
 import com.ost.mobilesdk.models.entities.OstSessionKey;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
+import com.ost.mobilesdk.utils.AsyncStatus;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -24,7 +24,7 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class OstKeyManager {
@@ -169,18 +169,11 @@ public class OstKeyManager {
         byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
         byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
 
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        new OstSessionKeyModelRepository().insertSessionKey(new OstSessionKey(address, encryptedKey), new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                super.onSuccess();
-                countDownLatch.countDown();
-            }
-        });
+        Future<AsyncStatus> future =new OstSessionKeyModelRepository().insertSessionKey(new OstSessionKey(address, encryptedKey));
 
         try {
-            countDownLatch.await(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
+            future.get(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
             Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
             return null;
         }
@@ -198,19 +191,11 @@ public class OstKeyManager {
         byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
         byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
 
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-
-        mOstSecureKeyModel.insertSecureKey(new OstSecureKey(ETHEREUM_KEY_FOR_ + address, encryptedKey), new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                super.onSuccess();
-                countDownLatch.countDown();
-            }
-        });
+        Future<AsyncStatus> future = mOstSecureKeyModel.insertSecureKey(new OstSecureKey(ETHEREUM_KEY_FOR_ + address, encryptedKey));
 
         try {
-            countDownLatch.await(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
+            future.get(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
             Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
             return null;
         }
@@ -224,21 +209,8 @@ public class OstKeyManager {
         byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
         byte[] encryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(mnemonics.getBytes());
 
-        CountDownLatch countDownLatch = new CountDownLatch(2);
-        mOstSecureKeyModel.insertSecureKey(new OstSecureKey(ETHEREUM_KEY_MNEMONICS_FOR_ + address, encryptedMnemonics), new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                super.onSuccess();
-                countDownLatch.countDown();
-            }
-        });
-        mOstSecureKeyModel.insertSecureKey(new OstSecureKey(ETHEREUM_KEY_FOR_ + address, encryptedKey), new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                super.onSuccess();
-                countDownLatch.countDown();
-            }
-        });
+        Future<AsyncStatus> future1 = mOstSecureKeyModel.insertSecureKey(new OstSecureKey(ETHEREUM_KEY_MNEMONICS_FOR_ + address, encryptedMnemonics));
+        Future<AsyncStatus> future2 = mOstSecureKeyModel.insertSecureKey(new OstSecureKey(ETHEREUM_KEY_FOR_ + address, encryptedKey));
 
         mKeyMetaStruct.addEthKeyMnemonicsIdentifier(ETHEREUM_KEY_MNEMONICS_FOR_ + address, mUserId);
         mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address, mUserId);
@@ -246,17 +218,10 @@ public class OstKeyManager {
     }
 
     private void storeKeyMetaStruct() {
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        mOstSecureKeyModel.insertSecureKey(new OstSecureKey(USER_DEVICE_INFO_FOR + mUserId, createBytesFromObject(mKeyMetaStruct)), new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                super.onSuccess();
-                countDownLatch.countDown();
-            }
-        });
+        Future<AsyncStatus> future =mOstSecureKeyModel.insertSecureKey(new OstSecureKey(USER_DEVICE_INFO_FOR + mUserId, createBytesFromObject(mKeyMetaStruct)));
         try {
-            countDownLatch.await(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
+            future.get(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

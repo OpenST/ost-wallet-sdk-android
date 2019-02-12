@@ -7,6 +7,7 @@ import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
+import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
@@ -41,7 +42,7 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
     public void perform() {
         DispatchAsync.dispatch(new DispatchAsync.Executor() {
             @Override
-            public void execute() {
+            public AsyncStatus call() {
                 if (hasAuthorizedDevice()) {
                     Log.d(TAG, "Device is authorized");
                     mHandler.post(new Runnable() {
@@ -75,6 +76,7 @@ public class OstDeployTokenHolder implements OstDeviceRegisteredInterface {
                     //Todo:: parse response and wait for activation
 
                 }
+                return new AsyncStatus(true);
             }
         });
     }

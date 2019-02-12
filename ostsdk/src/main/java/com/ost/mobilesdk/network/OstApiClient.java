@@ -90,7 +90,7 @@ public class OstApiClient {
 
     public JSONObject getDevices() throws IOException {
         Map<String, Object> requestMap = getPrerequisiteMap();
-        return mOstHttpRequestClient.get(String.format("/users/%s/devices/", mUserId), requestMap);
+        return mOstHttpRequestClient.get(String.format("/users/%s/devices/%s/", mUserId, mOstUser.getCurrentDevice().getAddress()), requestMap);
     }
 
     public JSONObject getUser() throws IOException {

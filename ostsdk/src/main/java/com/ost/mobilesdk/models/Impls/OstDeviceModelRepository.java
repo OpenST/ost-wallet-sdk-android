@@ -4,9 +4,12 @@ import com.ost.mobilesdk.database.OstSdkDatabase;
 import com.ost.mobilesdk.database.daos.OstBaseDao;
 import com.ost.mobilesdk.database.daos.OstDeviceDao;
 import com.ost.mobilesdk.models.OstDeviceModel;
-import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.entities.OstBaseEntity;
 import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.utils.DispatchAsync;
+
+import java.util.concurrent.Future;
 
 class OstDeviceModelRepository extends OstBaseModelCacheRepository implements OstDeviceModel {
 
@@ -25,8 +28,14 @@ class OstDeviceModelRepository extends OstBaseModelCacheRepository implements Os
     }
 
     @Override
-    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
-        super.insert(ostBaseEntity, new OstTaskCallback() {});
+    public Future<AsyncStatus> insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstDeviceModelRepository.this.insert(ostBaseEntity);
+                return new AsyncStatus(true);
+            }
+        });
     }
 
     @Override
@@ -40,12 +49,24 @@ class OstDeviceModelRepository extends OstBaseModelCacheRepository implements Os
     }
 
     @Override
-    public void deleteEntity(String id) {
-        super.delete(id, new OstTaskCallback() {});
+    public Future<AsyncStatus> deleteEntity(String id) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstDeviceModelRepository.this.delete(id);
+                return new AsyncStatus(true);
+            }
+        });
     }
 
     @Override
-    public void deleteAllEntities() {
-        super.deleteAll(new OstTaskCallback() {});
+    public Future<AsyncStatus> deleteAllEntities() {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstDeviceModelRepository.this.deleteAll();
+                return new AsyncStatus(true);
+            }
+        });
     }
 }

@@ -8,6 +8,7 @@ import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.OstKeyManager;
+import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
@@ -50,7 +51,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
     synchronized public void perform() {
         DispatchAsync.dispatch(new DispatchAsync.Executor() {
             @Override
-            public void execute() {
+            public AsyncStatus call() {
                 switch (mCurrentState) {
                     case INITIAL:
                         Log.d(TAG, String.format("Workflow for userId: %s started", mUserId));
@@ -58,7 +59,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
                         Log.i(TAG, "Validating user Id");
                         if (!hasValidParams()) {
                             postError(String.format("Invalid params for userId : %s", mUserId));
-                            return;
+                            return new AsyncStatus(false);
                         }
 
                         OstUser ostUser = null;
@@ -74,14 +75,14 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
                         OstDevice ostDevice = createOrGetCurrentDevice(ostUser);
                         if (null == ostDevice) {
                             postError(String.format("Ost device creation error for user Id: %s", mUserId));
-                            return;
+                            return new AsyncStatus(false);
                         }
 
                         Log.i(TAG, "Check is device registered");
                         if (isUnRegisteredDevice(ostDevice)) {
                             Log.i(TAG, "Registering device");
                             registerDevice(ostDevice);
-                            return;
+                            return new AsyncStatus(false);
                         }
                         sync();
                         postFlowComplete();
@@ -95,6 +96,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
                         postError(String.format("Error in Registration flow: %s", mUserId));
                         break;
                 }
+                return new AsyncStatus(true);
             }
         });
     }

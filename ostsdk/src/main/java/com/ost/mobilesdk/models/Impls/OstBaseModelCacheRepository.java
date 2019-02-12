@@ -2,7 +2,6 @@ package com.ost.mobilesdk.models.Impls;
 
 import android.util.LruCache;
 
-import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.entities.OstBaseEntity;
 
 import java.util.ArrayList;
@@ -20,31 +19,22 @@ abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
         this.mInMemoryMap = new HashMap<>();
     }
 
-    public void insert(final OstBaseEntity ostBaseEntity, final OstTaskCallback callback) {
+    public void insert(final OstBaseEntity ostBaseEntity) {
 
-        //check in cache for for entity with same uts
         insertInCacheAndMemory(ostBaseEntity);
 
-        super.insert(ostBaseEntity, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                callback.onSuccess();
-                removeInMemory(ostBaseEntity);
-            }
-        });
+        super.insert(ostBaseEntity);
+
+        removeInMemory(ostBaseEntity);
     }
 
-    public void insertAll(final OstBaseEntity[] baseEntities, final OstTaskCallback callback) {
+    public void insertAll(final OstBaseEntity[] baseEntities) {
 
         insertInCacheAndMemory(baseEntities);
-        super.insertAll(baseEntities, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                callback.onSuccess();
-                removeInMemory(baseEntities);
-            }
-        });
 
+        super.insertAll(baseEntities);
+
+        removeInMemory(baseEntities);
     }
 
     public OstBaseEntity getById(String id) {
@@ -63,23 +53,13 @@ abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
         return buildResultSet(ids, baseEntities);
     }
 
-    public void delete(final String id, final OstTaskCallback callback) {
-        super.delete(id, new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                removeFromCache(id);
-                callback.onSuccess();
-            }
-        });
+    public void delete(final String id) {
+        super.delete(id);
+        removeFromCache(id);
     }
 
-    public void deleteAll(final OstTaskCallback callback) {
-        super.deleteAll(new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                callback.onSuccess();
-            }
-        });
+    public void deleteAll() {
+        super.deleteAll();
         mLruCache.evictAll();
         mInMemoryMap = new HashMap<>();
     }

@@ -5,7 +5,6 @@ import android.util.Log;
 import com.ost.mobilesdk.database.daos.OstBaseDao;
 import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.entities.OstBaseEntity;
-import com.ost.mobilesdk.utils.DispatchAsync;
 
 abstract class OstBaseModelRepository {
 
@@ -14,46 +13,16 @@ abstract class OstBaseModelRepository {
     OstBaseModelRepository() {
     }
 
-    public void insert(final OstBaseEntity baseEntity, final OstTaskCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                getModel().insert(baseEntity);
-            }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onSuccess();
-            }
-        }));
+    public void insert(final OstBaseEntity baseEntity) {
+        getModel().insert(baseEntity);
     }
 
-    public void insertAll(final OstBaseEntity[] baseEntities, final OstTaskCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                getModel().insertAll(baseEntities);
-            }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onSuccess();
-            }
-        }));
+    public void insertAll(final OstBaseEntity[] baseEntities) {
+        getModel().insertAll(baseEntities);
     }
 
-    public void delete(final String id, final OstTaskCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
-            @Override
-            public void execute() {
-                getModel().delete(id);
-            }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onSuccess();
-            }
-        }));
+    public void delete(final String id) {
+        getModel().delete(id);
     }
 
     public OstBaseEntity[] getByIds(String[] ids) {
@@ -73,7 +42,7 @@ abstract class OstBaseModelRepository {
         return baseEntity;
     }
 
-    public void deleteAll(final OstTaskCallback callback) {
+    public void deleteAll() {
         getModel().deleteAll();
     }
 

@@ -1,14 +1,17 @@
 package com.ost.mobilesdk.models;
 
 import com.ost.mobilesdk.models.entities.OstSessionKey;
+import com.ost.mobilesdk.utils.AsyncStatus;
+
+import java.util.concurrent.Future;
 
 public interface OstSessionKeyModel {
 
-    void insertSessionKey(OstSessionKey ostSessionKey, OstTaskCallback ostTaskCallback);
+    Future<AsyncStatus> insertSessionKey(OstSessionKey ostSessionKey);
 
     OstSessionKey getByKey(String key);
 
-    void deleteAllSessionKeys();
+    Future<AsyncStatus> deleteAllSessionKeys();
 
     OstSessionKey initSessionKey(String key, byte[] data);
 }

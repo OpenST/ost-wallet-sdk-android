@@ -3,10 +3,13 @@ package com.ost.mobilesdk.models.Impls;
 import com.ost.mobilesdk.database.OstSdkDatabase;
 import com.ost.mobilesdk.database.daos.OstBaseDao;
 import com.ost.mobilesdk.database.daos.OstUserDao;
-import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.OstUserModel;
 import com.ost.mobilesdk.models.entities.OstBaseEntity;
 import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.utils.DispatchAsync;
+
+import java.util.concurrent.Future;
 
 class OstUserModelRepository extends OstBaseModelCacheRepository implements OstUserModel {
 
@@ -26,13 +29,19 @@ class OstUserModelRepository extends OstBaseModelCacheRepository implements OstU
 
 
     @Override
-    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
-        super.insert(ostBaseEntity, new OstTaskCallback() {});
+    public Future<AsyncStatus> insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstUserModelRepository.this.insert(ostBaseEntity);
+                return new AsyncStatus(true);
+            }
+        });
     }
 
     @Override
     public OstUser getEntityById(String id) {
-        return (OstUser)super.getById(id);
+        return (OstUser) super.getById(id);
     }
 
     @Override
@@ -41,12 +50,24 @@ class OstUserModelRepository extends OstBaseModelCacheRepository implements OstU
     }
 
     @Override
-    public void deleteEntity(String id) {
-        super.delete(id, new OstTaskCallback() {});
+    public Future<AsyncStatus> deleteEntity(String id) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstUserModelRepository.this.delete(id);
+                return new AsyncStatus(true);
+            }
+        });
     }
 
     @Override
-    public void deleteAllEntities() {
-        super.deleteAll(new OstTaskCallback() {});
+    public Future<AsyncStatus> deleteAllEntities() {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstUserModelRepository.this.deleteAll();
+                return new AsyncStatus(true);
+            }
+        });
     }
 }

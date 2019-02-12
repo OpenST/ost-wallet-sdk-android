@@ -135,6 +135,7 @@ public class OstSdk {
     }
 
     public static void parse(JSONObject jsonObject) throws JSONException {
+        Log.d(TAG, String.format("Response: %s",jsonObject.toString()));
         if (!jsonObject.getBoolean(OstConstants.RESPONSE_SUCCESS)) {
             Log.e(TAG, "JSON response false");
             return;

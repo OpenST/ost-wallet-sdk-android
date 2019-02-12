@@ -4,9 +4,12 @@ import com.ost.mobilesdk.database.OstSdkDatabase;
 import com.ost.mobilesdk.database.daos.OstBaseDao;
 import com.ost.mobilesdk.database.daos.OstTokenDao;
 import com.ost.mobilesdk.models.OstCreditsModel;
-import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.entities.OstBaseEntity;
 import com.ost.mobilesdk.models.entities.OstCredits;
+import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.utils.DispatchAsync;
+
+import java.util.concurrent.Future;
 
 class OstCreditsModelRepository extends OstBaseModelCacheRepository implements OstCreditsModel {
 
@@ -24,8 +27,14 @@ class OstCreditsModelRepository extends OstBaseModelCacheRepository implements O
     }
 
     @Override
-    public void insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
-        super.insert(ostBaseEntity, new OstTaskCallback() {});
+    public Future<AsyncStatus> insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstCreditsModelRepository.this.insert(ostBaseEntity);
+                return new AsyncStatus(true);
+            }
+        });
     }
 
     @Override
@@ -39,12 +48,25 @@ class OstCreditsModelRepository extends OstBaseModelCacheRepository implements O
     }
 
     @Override
-    public void deleteEntity(String id) {
-        super.delete(id, new OstTaskCallback() {});
+    public Future<AsyncStatus> deleteEntity(String id) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstCreditsModelRepository.this.delete(id);
+                return new AsyncStatus(true);
+            }
+        });
+
     }
 
     @Override
-    public void deleteAllEntities() {
-        super.deleteAll(new OstTaskCallback() {});
+    public Future<AsyncStatus> deleteAllEntities() {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstCreditsModelRepository.this.deleteAll();
+                return new AsyncStatus(true);
+            }
+        });
     }
 }

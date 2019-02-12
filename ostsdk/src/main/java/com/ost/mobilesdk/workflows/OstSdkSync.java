@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.network.OstApiClient;
+import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 
 import org.json.JSONException;
@@ -71,7 +72,7 @@ class OstSdkSync {
     private void sync(SYNC_ENTITY entity) {
         DispatchAsync.dispatch(new DispatchAsync.Executor() {
             @Override
-            public void execute() {
+            public AsyncStatus call() {
                 try {
                     JSONObject response = null;
                     OstApiClient ostApiClient = new OstApiClient(mUserId);
@@ -98,6 +99,7 @@ class OstSdkSync {
                 } finally {
                     mCountDownLatch.countDown();
                 }
+                return new AsyncStatus(true);
             }
         });
     }

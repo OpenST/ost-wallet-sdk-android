@@ -1,40 +1,19 @@
 package com.ost.mobilesdk.utils;
 
-import android.os.AsyncTask;
+import com.ost.mobilesdk.OstConstants;
 
-import java.lang.ref.WeakReference;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
-public class DispatchAsync extends AsyncTask<Void, Void, Void> {
-    private WeakReference<Executor> mExecutor;
+public class DispatchAsync {
+    private final static ThreadPoolExecutor THREAD_POOL_EXECUTOR = (ThreadPoolExecutor) Executors.newFixedThreadPool(OstConstants.THREAD_POOL_SIZE);
 
-    public static void dispatch(Executor executor) {
-        new DispatchAsync(executor).execute();
+    public static Future<AsyncStatus> dispatch(Executor executor) {
+        return THREAD_POOL_EXECUTOR.submit(executor);
     }
 
-    private DispatchAsync(Executor executor) {
-        mExecutor = new WeakReference<>(executor);
-    }
-
-    @Override
-    protected Void doInBackground(final Void... params) {
-        if (null != mExecutor.get()) {
-            mExecutor.get().execute();
-        }
-        return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-        if (null != mExecutor.get()) {
-            mExecutor.get().onExecuteComplete();
-        }
-        super.onPostExecute(aVoid);
-    }
-
-    public abstract static class Executor {
-        public abstract void execute();
-
-        public void onExecuteComplete() {
-        }
+    public abstract static class Executor implements Callable<AsyncStatus> {
     }
 }

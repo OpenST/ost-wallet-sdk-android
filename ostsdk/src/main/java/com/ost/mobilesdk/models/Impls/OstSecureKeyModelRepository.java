@@ -3,9 +3,11 @@ package com.ost.mobilesdk.models.Impls;
 import com.ost.mobilesdk.database.OstSdkKeyDatabase;
 import com.ost.mobilesdk.database.daos.OstSecureKeyDao;
 import com.ost.mobilesdk.models.OstSecureKeyModel;
-import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.entities.OstSecureKey;
+import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
+
+import java.util.concurrent.Future;
 
 public class OstSecureKeyModelRepository implements OstSecureKeyModel {
 
@@ -18,18 +20,14 @@ public class OstSecureKeyModelRepository implements OstSecureKeyModel {
     }
 
     @Override
-    public void insertSecureKey(OstSecureKey ostSecureKey, OstTaskCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
+    public Future<AsyncStatus> insertSecureKey(OstSecureKey ostSecureKey) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
             @Override
-            public void execute() {
+            public AsyncStatus call() {
                 getModel().insert(ostSecureKey);
+                return new AsyncStatus(true);
             }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onSuccess();
-            }
-        }));
+        });
     }
 
     @Override
@@ -38,25 +36,20 @@ public class OstSecureKeyModelRepository implements OstSecureKeyModel {
     }
 
     @Override
-    public void deleteAllSecureKeys(final OstTaskCallback callback) {
-        DispatchAsync.dispatch((new DispatchAsync.Executor() {
+    public Future<AsyncStatus> deleteAllSecureKeys() {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
             @Override
-            public void execute() {
+            public AsyncStatus call() {
                 getModel().deleteAll();
+                return new AsyncStatus(true);
             }
-
-            @Override
-            public void onExecuteComplete() {
-                callback.onSuccess();
-            }
-        }));
+        });
     }
 
     @Override
     public OstSecureKey initSecureKey(String key, byte[] data) {
         OstSecureKey ostSecureKey = new OstSecureKey(key, data);
-        insertSecureKey(ostSecureKey, new OstTaskCallback() {
-        });
+        insertSecureKey(ostSecureKey);
         return ostSecureKey;
     }
 
