@@ -75,6 +75,7 @@ class OstSdkSync {
                 try {
                     JSONObject response = null;
                     OstApiClient ostApiClient = new OstApiClient(mUserId);
+                    Log.i(TAG, String.format("Sync request for %s", entity.toString()));
                     if (SYNC_ENTITY.TOKEN == entity) {
                         response = ostApiClient.getToken();
                     } else if (SYNC_ENTITY.USER == entity) {
@@ -88,6 +89,7 @@ class OstSdkSync {
                     } else if (SYNC_ENTITY.TOKEN_HOLDER == entity) {
                         response = ostApiClient.getDevices();
                     }
+                    Log.i(TAG, String.format("Sync response for %s", entity.toString()));
                     OstSdk.parse(response);
                 } catch (IOException e) {
                     Log.e(TAG, String.format("IOException: %s", e.getCause()));

@@ -33,7 +33,6 @@ public class OstUser extends OstBaseEntity {
 
     public OstDevice getCurrentDevice() {
         if (null == currentDevice) {
-            Log.d(TAG, "currentDevice is null");
             OstKeyManager ostKeyManager = new OstKeyManager(getId());
             String currentDeviceAddress = ostKeyManager.getDeviceAddress();
             if (null != currentDeviceAddress) {
@@ -93,7 +92,7 @@ public class OstUser extends OstBaseEntity {
     public OstDevice createDevice() {
         OstKeyManager ostKeyManager = new OstKeyManager(getId());
         String apiAddress = ostKeyManager.getApiKeyAddress();
-        String address = ostKeyManager.createKey();
+        String address = ostKeyManager.getDeviceAddress();
         OstDevice ostDevice = OstDevice.init(address, apiAddress, getId());
         return ostDevice;
     }

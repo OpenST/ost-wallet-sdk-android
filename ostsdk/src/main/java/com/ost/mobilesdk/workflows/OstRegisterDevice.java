@@ -143,6 +143,7 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
         OstDevice ostDevice;
         ostDevice = ostUser.getCurrentDevice();
         if (null == ostDevice) {
+            Log.d(TAG, "currentDevice is null");
             ostDevice = ostUser.createDevice();
         }
         return ostDevice;
