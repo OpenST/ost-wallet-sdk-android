@@ -130,12 +130,8 @@ public class LoginSignUpActivity extends MappyBaseActivity {
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
             showProgress(true);
             if (mIsRegister) {
                 new MappyApiClient().createUser(name, mobileNumber, description, new MappyApiClient.Callback() {
@@ -178,7 +174,8 @@ public class LoginSignUpActivity extends MappyBaseActivity {
             Log.i(TAG, "UserId is null");
         }
         showProgress(false);
-        mMobileNumber.setError(getString(R.string.error_incorrect_login));
+        mName.setError(getString(R.string.error_incorrect_name));
+        mMobileNumber.setError(getString(R.string.error_incorrect_mobilenumber));
         mMobileNumber.requestFocus();
     }
 

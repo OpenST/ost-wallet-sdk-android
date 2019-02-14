@@ -1,25 +1,28 @@
 package com.ost.mobilesdk.workflow;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.test.InstrumentationRegistry;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
-import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.errors.OstError;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class OstDeployTokenHolderTest {
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+public class OstActivateUserTest {
     private static Context mAppContext;
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUp() throws ExecutionException, InterruptedException {
         mAppContext = InstrumentationRegistry.getTargetContext();
         OstSdk.init(mAppContext);
-        new OstSecureKeyModelRepository().deleteAllSecureKeys(new OstTaskCallback() {});
+        new OstSecureKeyModelRepository().deleteAllSecureKeys().get();
     }
 
     @Test

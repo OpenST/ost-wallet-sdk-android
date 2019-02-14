@@ -6,10 +6,11 @@ import android.util.Log;
 
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.security.OstKeyManager;
-import com.ost.mobilesdk.utils.KeyGenProcess;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
 
 /**
  * Manage transaction signing
@@ -31,6 +32,10 @@ public class OstUser extends OstBaseEntity {
     @Ignore
     private OstDevice currentDevice = null;
 
+    public static OstUser getById(String id) {
+        return OstModelFactory.getUserModel().getEntityById(id);
+    }
+
     public OstDevice getCurrentDevice() {
         if (null == currentDevice) {
             OstKeyManager ostKeyManager = new OstKeyManager(getId());
@@ -47,6 +52,10 @@ public class OstUser extends OstBaseEntity {
         public static final String CREATED = "CREATED";
         public static final String ACTIVATING = "ACTIVATING";
         public static final String ACTIVATED = "ACTIVATED";
+    }
+
+    public static boolean isValidStatus(String status) {
+        return Arrays.asList(CONST_STATUS.CREATED, CONST_STATUS.ACTIVATING, CONST_STATUS.ACTIVATED).contains(status);
     }
 
     public static class TYPE_VALUE {

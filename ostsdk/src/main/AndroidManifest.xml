@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ost.mobilesdk">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -10,7 +11,13 @@
     <application>
         <activity
             android:name=".biometric.FingerprintAuthenticationDialogActivity"
-            android:theme="@android:style/Theme.Dialog"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:theme="@android:style/Theme.Dialog" />
+
+        <service
+            android:name=".workflows.services.OstUserPollingService"
+            android:enabled="true"
+            android:exported="false"></service>
     </application>
+
 </manifest>

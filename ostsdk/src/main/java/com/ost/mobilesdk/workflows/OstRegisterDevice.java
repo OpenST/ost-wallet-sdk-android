@@ -9,7 +9,6 @@ import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
@@ -17,12 +16,12 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OstRegisterDevice implements OstDeviceRegisteredInterface {
+/**
+ * To Register device on kit through App
+ */
+public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegisteredInterface {
 
     private static final String TAG = "OstRegisterDevice";
-    private final String mUserId;
-    private final Handler mHandler;
-    private final OstWorkFlowCallback mCallback;
     private final boolean mForceSync;
     private final String mTokenId;
 
@@ -41,85 +40,75 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
     }
 
     public OstRegisterDevice(String userId, String tokenId, boolean forceSync, Handler handler, OstWorkFlowCallback callback) {
-        mUserId = userId;
+        super(userId, handler, callback);
+
         mTokenId = tokenId;
         mForceSync = forceSync;
-        mHandler = handler;
-        mCallback = callback;
     }
 
-    synchronized public void perform() {
-        DispatchAsync.dispatch(new DispatchAsync.Executor() {
-            @Override
-            public AsyncStatus call() {
-                switch (mCurrentState) {
-                    case INITIAL:
-                        Log.d(TAG, String.format("Workflow for userId: %s started", mUserId));
+    synchronized public AsyncStatus process() {
+        switch (mCurrentState) {
+            case INITIAL:
+                Log.d(TAG, String.format("Workflow for userId: %s started", mUserId));
 
-                        Log.i(TAG, "Validating user Id");
-                        if (!hasValidParams()) {
-                            postError(String.format("Invalid params for userId : %s", mUserId));
-                            return new AsyncStatus(false);
-                        }
-
-                        OstUser ostUser = null;
-                        try {
-                            Log.i(TAG, "Initializing User and Token");
-                            ostUser = OstSdk.initUser(mUserId, mTokenId);
-                            OstSdk.initToken(mTokenId);
-                        } catch (JSONException e) {
-                            postError("Parsing error of user or token");
-                        }
-
-                        Log.i(TAG, "Creating current device if does not exist");
-                        OstDevice ostDevice = createOrGetCurrentDevice(ostUser);
-                        if (null == ostDevice) {
-                            postError(String.format("Ost device creation error for user Id: %s", mUserId));
-                            return new AsyncStatus(false);
-                        }
-
-                        Log.i(TAG, "Check is device registered");
-                        if (isUnRegisteredDevice(ostDevice)) {
-                            Log.i(TAG, "Registering device");
-                            registerDevice(ostDevice);
-                            return new AsyncStatus(false);
-                        }
-                        sync();
-                        postFlowComplete();
-                        break;
-                    case REGISTERED:
-                        Log.i(TAG, "Device registered");
-                        sync();
-                        postFlowComplete();
-                        break;
-                    case ERROR:
-                        postError(String.format("Error in Registration flow: %s", mUserId));
-                        break;
+                Log.i(TAG, "Validating user Id");
+                if (!hasValidParams()) {
+                    postError(String.format("Invalid params for userId : %s", mUserId));
+                    return new AsyncStatus(false);
                 }
-                return new AsyncStatus(true);
-            }
-        });
+
+                Log.i(TAG, "Initializing User and Token");
+                OstUser ostUser;
+                try {
+                    ostUser = OstSdk.initUser(mUserId, mTokenId);
+                    OstSdk.initToken(mTokenId);
+                } catch (JSONException e) {
+                    postError("Parsing error of user or token");
+                    return new AsyncStatus(false);
+                }
+
+                Log.i(TAG, "Creating current device if does not exist");
+                OstDevice ostDevice = createOrGetCurrentDevice(ostUser);
+                if (null == ostDevice) {
+                    postError(String.format("Ost device creation error for user Id: %s", mUserId));
+                    return new AsyncStatus(false);
+                }
+
+                Log.i(TAG, "Check is device registered");
+                if (isUnRegisteredDevice(ostDevice)) {
+                    Log.i(TAG, "Registering device");
+                    registerDevice(ostDevice);
+                    return new AsyncStatus(false);
+                }
+                sync();
+                postFlowComplete();
+                break;
+
+            case REGISTERED:
+                Log.i(TAG, "Device registered");
+                syncRegisteredEntities();
+                postFlowComplete();
+                break;
+
+            case ERROR:
+                postError(String.format("Error in Registration flow: %s", mUserId));
+                break;
+        }
+        return new AsyncStatus(true);
+    }
+
+    private void syncRegisteredEntities() {
+        Log.i(TAG, "Syncing registered entities.");
+        new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.DEVICE).perform();
     }
 
     private void sync() {
         Log.i(TAG, String.format("Syncing sdk: %b", mForceSync));
         if (mForceSync) {
             new OstSdkSync(mUserId).perform();
-        } else {
-            //Check data before sync
-            new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.TOKEN, OstSdkSync.SYNC_ENTITY.DEVICE).perform();
         }
     }
 
-    private void postFlowComplete() {
-        Log.i(TAG, "Flow complete");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.flowComplete(new OstContextEntity());
-            }
-        });
-    }
 
     private void registerDevice(OstDevice ostDevice) {
         final JSONObject apiResponse = buildApiResponse(ostDevice);
@@ -127,16 +116,6 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
             @Override
             public void run() {
                 mCallback.registerDevice(apiResponse, OstRegisterDevice.this);
-            }
-        });
-    }
-
-    private void postError(String msg) {
-        Log.i(TAG, "Flow Error");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.flowInterrupt(new OstError(msg));
             }
         });
     }
@@ -178,14 +157,14 @@ public class OstRegisterDevice implements OstDeviceRegisteredInterface {
     }
 
     @Override
-    public void cancelFlow(OstError ostError) {
-        setFlowState(STATES.ERROR, ostError);
+    public void deviceRegistered(JSONObject apiResponse) {
+        setFlowState(STATES.REGISTERED, apiResponse);
         perform();
     }
 
     @Override
-    public void deviceRegistered(JSONObject apiResponse) {
-        setFlowState(STATES.REGISTERED, apiResponse);
+    public void cancelFlow(OstError ostError) {
+        setFlowState(OstRegisterDevice.STATES.ERROR, ostError);
         perform();
     }
 }

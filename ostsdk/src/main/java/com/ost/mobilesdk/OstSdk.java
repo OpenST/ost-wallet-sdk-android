@@ -18,7 +18,7 @@ import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstTokenHolder;
 import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.workflows.OstDeployTokenHolder;
+import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
@@ -99,8 +99,8 @@ public class OstSdk {
 
     public static void deployTokenHolder(String userId, String uPin, String password, String expirationHeight, String spendingLimit, OstWorkFlowCallback callback) {
         Handler handler = new Handler();
-        final OstDeployTokenHolder ostDeployTokenHolder = new OstDeployTokenHolder(userId, uPin, password, expirationHeight, spendingLimit, handler, callback);
-        ostDeployTokenHolder.perform();
+        final OstActivateUser ostActivateUser = new OstActivateUser(userId, uPin, password, expirationHeight, spendingLimit, handler, callback);
+        ostActivateUser.perform();
     }
 
     public static void registerDevice(String userId, String tokenId ,boolean forceSync ,OstWorkFlowCallback callback) {
@@ -129,9 +129,9 @@ public class OstSdk {
         return OstToken.parse(jsonObject);
     }
 
-    OstDeployTokenHolder QRCodeInput() {
-        OstDeployTokenHolder ostDeployTokenHolder = null;
-        return ostDeployTokenHolder;
+    OstActivateUser QRCodeInput() {
+        OstActivateUser ostActivateUser = null;
+        return ostActivateUser;
     }
 
     public static void parse(JSONObject jsonObject) throws JSONException {
