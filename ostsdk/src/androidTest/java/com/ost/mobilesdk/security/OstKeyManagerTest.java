@@ -7,7 +7,6 @@ import android.support.test.runner.AndroidJUnit4;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.Impls.OstSessionKeyModelRepository;
-import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.entities.OstSessionKey;
 
 import org.junit.Assert;
@@ -16,26 +15,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
 
 @RunWith(AndroidJUnit4.class)
 public class OstKeyManagerTest {
 
 
     @BeforeClass
-    public static void setUp() throws InterruptedException {
+    public static void setUp() throws InterruptedException, ExecutionException {
         Context appContext = InstrumentationRegistry.getTargetContext();
         OstSdk.init(appContext);
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        new OstSecureKeyModelRepository().deleteAllSecureKeys(new OstTaskCallback() {
-            @Override
-            public void onSuccess() {
-                super.onSuccess();
-                countDownLatch.countDown();
-            }
-        });
-        countDownLatch.await(10, TimeUnit.SECONDS);
+        new OstSecureKeyModelRepository().deleteAllSecureKeys().get();
     }
 
     @Test

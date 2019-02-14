@@ -1,8 +1,12 @@
 package com.ost.mobilesdk.workflows;
 
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -23,6 +27,9 @@ abstract class OstBaseWorkFlow {
         mCallback = callback;
     }
 
+    boolean hasValidParams() {
+        return !TextUtils.isEmpty(mUserId) && null != mHandler && null != mCallback;
+    }
     public Future<AsyncStatus> perform() {
         return DispatchAsync.dispatch(new DispatchAsync.Executor() {
             @Override
@@ -53,5 +60,16 @@ abstract class OstBaseWorkFlow {
                 mCallback.flowInterrupt(new OstError(msg));
             }
         });
+    }
+
+    boolean hasUnRegisteredDevice() {
+        OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
+        return  hasUnRegisteredDevice(ostDevice);
+    }
+
+    boolean hasUnRegisteredDevice(OstDevice ostDevice) {
+        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
+        return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress())
+                && (OstDevice.CONST_STATUS.CREATED.equals(ostDevice.getStatus()));
     }
 }

@@ -1,19 +1,26 @@
 package com.ost.mobilesdk.workflow;
 
 import android.content.Context;
-import android.os.AsyncTask;
+import android.os.Looper;
 import android.support.test.InstrumentationRegistry;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
+import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.errors.OstError;
 
+import org.json.JSONException;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.lang.reflect.Field;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class OstActivateUserTest {
     private static Context mAppContext;
@@ -26,16 +33,64 @@ public class OstActivateUserTest {
     }
 
     @Test
-    public void testDeployTokenHolder() {
-        // Context of the app under test.
+    public void testActivateUserInvalidParams() {
         String uPin = "123456";
         String password = "password";
-        boolean isBiometricNeeded = false;
         String userId = "1";
-        String tokenId = "1";
 
         String expirationHeight = "100000";
         String spendingLimit = "100000";
+        Looper.prepare();
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        OstSdk.deployTokenHolder("", uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
+            @Override
+            public void flowComplete(OstContextEntity ostContextEntity) {
+                super.flowComplete(ostContextEntity);
+            }
+
+            @Override
+            public void flowInterrupt(OstError ostError) {
+                super.flowInterrupt(ostError);
+                countDownLatch.countDown();
+            }
+        });
+
+        try {
+            countDownLatch.await(20, TimeUnit.SECONDS);
+            Assert.assertTrue(true);
+        } catch (InterruptedException e) {
+            Assert.fail();
+        }
+        Looper.myLooper().quit();
+
+    }
+
+    @Test
+    public void testActivateUserDeviceUnRegisted() throws JSONException {
+        String uPin = "123456";
+        String password = "password";
+        String userId = "qweqw-2132-sdfsdf-323";
+
+        String expirationHeight = "100000";
+        String spendingLimit = "100000";
+        Looper.prepare();
+
+        OstUser ostUser = OstSdk.initUser(userId, userId);
+
+        OstKeyManager ostKeyManager = new OstKeyManager(userId);
+        ostKeyManager.getApiKeyAddress();
+        OstDevice ostDevice = OstDevice.init(ostKeyManager.getDeviceAddress(), ostKeyManager.getApiKeyAddress(), userId);
+        try {
+            Field field = ostUser.getClass().getDeclaredField("currentDevice");
+            field.setAccessible(true);
+            field.set(ostUser, ostDevice);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        CountDownLatch countDownLatch = new CountDownLatch(1);
         OstSdk.deployTokenHolder(userId, uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
             @Override
             public void flowComplete(OstContextEntity ostContextEntity) {
@@ -45,8 +100,16 @@ public class OstActivateUserTest {
             @Override
             public void flowInterrupt(OstError ostError) {
                 super.flowInterrupt(ostError);
+                countDownLatch.countDown();
             }
         });
 
+        try {
+            countDownLatch.await(20, TimeUnit.SECONDS);
+            Assert.assertTrue(true);
+        } catch (InterruptedException e) {
+            Assert.fail();
+        }
+        Looper.myLooper().quit();
     }
 }

@@ -1,19 +1,28 @@
 package com.ost.mobilesdk.workflows;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
+import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstUserPollingService;
 
 import org.json.JSONObject;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public class OstActivateUser extends OstBaseWorkFlow {
 
@@ -35,12 +44,17 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
     @Override
     protected AsyncStatus process() {
-
-        if (!hasAuthorizedDevice()) {
-            Log.i(TAG, "Device is not authorized");
-            postError("Device is not authorized");
+        if (!hasValidParams()) {
+            Log.i(TAG, "Work flow has invalid params");
+            postError("Work flow has invalid params");
             return new AsyncStatus(false);
-        } else if (hasActivatedUser()) {
+        }
+        if (hasUnRegisteredDevice()) {
+            Log.i(TAG, "Device is not registered");
+            postError("Device is not registered");
+            return new AsyncStatus(false);
+        }
+        if (hasActivatedUser()) {
             Log.i(TAG, "User is already activated");
             postFlowComplete();
         } else {
@@ -68,16 +82,63 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 return new AsyncStatus(false);
             }
 
-            Log.i(TAG, "Response received for post Token deployment");
-            postFlowComplete();
-
             Log.i(TAG, "Starting user polling service");
             OstUserPollingService.startPolling(mUserId, mUserId, OstUser.CONST_STATUS.ACTIVATING,
                     OstUser.CONST_STATUS.ACTIVATED);
 
+            Log.i(TAG, "Waiting for update");
+            boolean isTimeOut = waitForUpdate();
+            if (isTimeOut) {
+                Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
+                postError("Polling Time out");
+                return new AsyncStatus(false);
+            }
+
+            Log.i(TAG, "Response received for post Token deployment");
+            postFlowComplete();
 
         }
         return new AsyncStatus(true);
+    }
+
+    private boolean waitForUpdate() {
+        final boolean[] isTimeout = new boolean[1];
+        isTimeout[0] = false;
+
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Get extra data included in the Intent
+                Log.d(TAG, "Intent received");
+                String userId = intent.getStringExtra(OstPollingService.EXTRA_USER_ID);
+                String entityType = intent.getStringExtra(OstPollingService.EXTRA_ENTITY_TYPE);
+                boolean isPollingTimeOut = intent.getBooleanExtra(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
+                if (mUserId.equals(userId) && OstSdk.USER.equals(entityType)) {
+                    Log.d(TAG, String.format("Got update message from polling service for user id:%s", userId));
+                    if (isPollingTimeOut) {
+                        Log.w(TAG, "Polling timeout reached");
+                        isTimeout[0] = true;
+                    }
+                    countDownLatch.countDown();
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(OstSdk.getContext()).registerReceiver(updateReceiver,
+                new IntentFilter(OstPollingService.ENTITY_UPDATE_MESSAGE));
+        try {
+            countDownLatch.await(Integer.MAX_VALUE, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        LocalBroadcastManager.getInstance(OstSdk.getContext()).unregisterReceiver(updateReceiver);
+        return isTimeout[0];
+    }
+
+    @Override
+    boolean hasValidParams() {
+        return super.hasValidParams() && !TextUtils.isEmpty(mUPin) && !TextUtils.isEmpty(mPassWord)
+                && !TextUtils.isEmpty(mExpirationHeight) && !TextUtils.isEmpty(mSpendingLimit);
     }
 
     private boolean hasActivatedUser() {
@@ -94,12 +155,5 @@ public class OstActivateUser extends OstBaseWorkFlow {
         //Don't store key of recovery key
         String address = ostKeyManager.createHDKey(seed);
         return address;
-    }
-
-    private boolean hasAuthorizedDevice() {
-        OstDevice ostDevice = OstSdk.getUser(mUserId).getCurrentDevice();
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress())
-                && (OstDevice.CONST_STATUS.AUTHORIZED.equals(ostDevice.getStatus()));
     }
 }

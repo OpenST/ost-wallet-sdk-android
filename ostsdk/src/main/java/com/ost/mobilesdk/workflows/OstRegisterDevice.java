@@ -75,10 +75,10 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                 }
 
                 Log.i(TAG, "Check is device registered");
-                if (isUnRegisteredDevice(ostDevice)) {
+                if (hasUnRegisteredDevice(ostDevice)) {
                     Log.i(TAG, "Registering device");
                     registerDevice(ostDevice);
-                    return new AsyncStatus(false);
+                    return new AsyncStatus(true);
                 }
                 sync();
                 postFlowComplete();
@@ -130,15 +130,8 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
         return ostDevice;
     }
 
-    private boolean hasValidParams() {
-        return !TextUtils.isEmpty(mUserId) && !TextUtils.isEmpty(mTokenId);
-    }
-
-    private boolean isUnRegisteredDevice(OstDevice ostDevice) {
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress())
-                && (OstDevice.CONST_STATUS.CREATED.equals(ostDevice.getStatus()));
-
+    boolean hasValidParams() {
+        return super.hasValidParams() && !TextUtils.isEmpty(mTokenId);
     }
 
     private JSONObject buildApiResponse(OstDevice ostDevice) {

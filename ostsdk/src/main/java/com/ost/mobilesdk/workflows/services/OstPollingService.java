@@ -5,6 +5,7 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
@@ -30,6 +31,10 @@ public abstract class OstPollingService extends IntentService {
     public static final String EXTRA_ENTITY_TO_STATUS = "com.ost.mobilesdk.workflows.extra.ENTITY_TO_STATUS";
     public static final String EXTRA_ENTITY_FROM_STATUS = "com.ost.mobilesdk.workflows.extra.ENTITY_FROM_STATUS";
     public static final String EXTRA_POLL_COUNT = "com.ost.mobilesdk.workflows.extra.POLL_COUNT";
+    public static final String ENTITY_UPDATE_MESSAGE = "com.ost.mobilesdk.workflows.extra.ENTITY_UPDATE";
+    public static final String EXTRA_ENTITY_TYPE = "com.ost.mobilesdk.workflows.extra.ENTITY_TYPE";
+    public static final String EXTRA_IS_POLLING_TIMEOUT = "com.ost.mobilesdk.workflows.extra.IS_POLLING_TIMEOUT";;
+
     private static final int POLL_MAX_COUNT = 10;
 
     private static final String TAG = "OstPollingService";
@@ -58,7 +63,7 @@ public abstract class OstPollingService extends IntentService {
             final String entityId = intent.getStringExtra(EXTRA_ENTITY_ID);
             final String entityFromStatus = intent.getStringExtra(EXTRA_ENTITY_FROM_STATUS);
             final String entityToStatus = intent.getStringExtra(EXTRA_ENTITY_TO_STATUS);
-            final int pollCount = intent.getIntExtra(EXTRA_ENTITY_TO_STATUS, POLL_MAX_COUNT);
+            final int pollCount = intent.getIntExtra(EXTRA_POLL_COUNT, POLL_MAX_COUNT);
 
             if (!isValidUserId(userId)) {
                 Log.e(TAG, String.format("Invalid User Id: %s", userId));
@@ -92,12 +97,31 @@ public abstract class OstPollingService extends IntentService {
             Log.i(TAG, String.format("Checking %s entity update status", getEntityName()));
             boolean isUpdated = isStatusUpdated(response, entityFromStatus, entityToStatus);
             Log.d(TAG, String.format("Is %s entity updated: %b", getEntityName(), isUpdated));
-            if (!isUpdated) {
-                setAlarm(userId, entityId, entityFromStatus, entityToStatus, pollCount);
+            if (isUpdated) {
+                sendUpdateMessage(userId, entityId, false);
                 return;
             }
 
+            int newPollCount = pollCount - 1;
+            if (newPollCount <= 0) {
+                Log.d(TAG, String.format("Poll count reach to zero for %s", getEntityName()));
+                sendUpdateMessage(userId, entityId, true);
+            } else {
+                Log.d(TAG, String.format("New Alarm set for %s", getEntityName()));
+                setAlarm(userId, entityId, entityFromStatus, entityToStatus, newPollCount);
+            }
         }
+    }
+
+    private void sendUpdateMessage(String userId, String entityId, boolean pollingTimeout) {
+        Intent updateIntent = new Intent(ENTITY_UPDATE_MESSAGE);
+        // You can also include some extra data.
+        updateIntent.putExtra(EXTRA_USER_ID, userId);
+        updateIntent.putExtra(EXTRA_ENTITY_ID, entityId);
+        updateIntent.putExtra(EXTRA_ENTITY_TYPE, getEntityName());
+        updateIntent.putExtra(EXTRA_IS_POLLING_TIMEOUT, pollingTimeout);
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(updateIntent);
     }
 
     private boolean isValidUserId(String userId) {
@@ -141,18 +165,13 @@ public abstract class OstPollingService extends IntentService {
     }
 
     private void setAlarm(String userId, String entityId, String fromStatus, String toStatus, int pollCount) {
-        pollCount = pollCount - 1;
-
-        if (pollCount <= 0) {
-            Log.d(TAG, String.format("Poll count reach to zero for %s", getEntityName()));
-            return;
-        }
 
         Intent intent = getServiceIntent(this);
         intent.putExtra(EXTRA_USER_ID, userId);
         intent.putExtra(EXTRA_ENTITY_ID, entityId);
         intent.putExtra(EXTRA_ENTITY_FROM_STATUS, fromStatus);
         intent.putExtra(EXTRA_ENTITY_TO_STATUS, toStatus);
+        intent.putExtra(EXTRA_POLL_COUNT, pollCount);
 
         Calendar calendar = Calendar.getInstance();
         PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
