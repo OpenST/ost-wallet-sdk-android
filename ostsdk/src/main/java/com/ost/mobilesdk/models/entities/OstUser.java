@@ -115,8 +115,7 @@ public class OstUser extends OstBaseEntity {
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
                 jsonObject.has(OstUser.ID) &&
-                jsonObject.has(OstUser.TOKEN_ID) &&
-                jsonObject.has(OstUser.TYPE);
+                jsonObject.has(OstUser.TOKEN_ID);
     }
 
     public OstTokenHolder getTokenHolder() {

@@ -2,6 +2,7 @@ package com.ost.mobilesdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.util.Log;
 
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 
@@ -18,6 +19,8 @@ public class OstToken extends OstBaseEntity {
     public static final String TOTAL_SUPPLY = "total_supply";
     public static final String ORIGIN_CHAIN = "origin_chain";
     public static final String AUXILIARY_CHAIN = "auxiliary_chain";
+    private static final String CHAIN_ID = "chain_id";
+    private static final String TAG = "OstToken";
 
 
     public static String getIdentifier() {
@@ -25,7 +28,7 @@ public class OstToken extends OstBaseEntity {
     }
 
     public static OstToken parse(JSONObject jsonObject) throws JSONException {
-        return (OstToken) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getTokenModel(), getIdentifier(), new EntityFactory() {
+        return (OstToken) OstBaseEntity.insertOrUpdate(jsonObject, OstModelFactory.getTokenModel(), getIdentifier(), new EntityFactory() {
             @Override
             public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
                 return new OstToken(jsonObject);
@@ -40,6 +43,10 @@ public class OstToken extends OstBaseEntity {
     @Ignore
     public OstToken(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
+    }
+
+    public static OstToken getById(String tokenId) {
+        return OstModelFactory.getTokenModel().getEntityById(tokenId);
     }
 
     @Override
@@ -95,5 +102,17 @@ public class OstToken extends OstBaseEntity {
     @Override
     String getEntityIdKey() {
         return getIdentifier();
+    }
+
+    public String getChainId() {
+        try {
+            JSONArray jsonArray = getAuxiliaryChain();
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            String chainId = jsonObject.getString(CHAIN_ID);
+            return chainId;
+        } catch (Exception e) {
+            Log.e(TAG, "Exception while getting chainId", e);
+            return "200";
+        }
     }
 }

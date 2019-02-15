@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
@@ -21,12 +22,14 @@ import com.ost.mobilesdk.workflows.services.OstUserPollingService;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.math.BigInteger;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class OstActivateUser extends OstBaseWorkFlow {
 
-    private static final String TAG = "IDPFlow";
+    private static final String TAG = "OstActivateUser";
     private static final int THREE_TIMES = 3;
     private final String mPassWord;
     private final String mUPin;
@@ -66,24 +69,42 @@ public class OstActivateUser extends OstBaseWorkFlow {
         } else if (hasActivatingUser()) {
             Log.i(TAG, "User is activating... start polling");
         } else {
-            //Todo :: get salt from Kit /users/{user_id}/recovery-keys
-            /****************Deferred code*****************/
-            String salt = "salt";
+            OstApiClient ostApiClient = new OstApiClient(mUserId);
+
+            Log.i(TAG, "Getting salt");
+            String salt = getSalt(ostApiClient);
+            if (null == salt) {
+                Log.e(TAG, "Salt is null");
+                postError("Salt is null");
+            }
+
             Log.i(TAG, "Creating recovery key");
             String recoveryAddress = createRecoveryKey(salt);
-            /*********************************************/
 
             Log.i(TAG, "Creating session key");
             String sessionAddress = new OstKeyManager(mUserId).createSessionKey();
 
+            Log.i(TAG, "Getting current block number");
+            String blockNumber = getCurrentBlockNumber(ostApiClient);
+            if (null == blockNumber) {
+                Log.e(TAG, "BlockNumber is null");
+                postError("BlockNumber is null");
+            }
+
+            String absoluteExpirationHeight = (new BigInteger(mExpirationHeight).add(new BigInteger(blockNumber))).toString();
+
             Log.i(TAG, "Activate user");
             Log.d(TAG, String.format("Deploying token with SessionAddress: %s, ExpirationHeight: %s," +
                             " SpendingLimit: %s, RecoveryAddress: %s", sessionAddress,
-                    mExpirationHeight, mSpendingLimit, recoveryAddress));
+                    absoluteExpirationHeight, mSpendingLimit, recoveryAddress));
             JSONObject response;
             try {
-                response = new OstApiClient(mUserId).postTokenDeployment(sessionAddress,
+                response = ostApiClient.postUserActivate(sessionAddress,
                         mExpirationHeight, mSpendingLimit, recoveryAddress);
+                if (!isValidResponse(response)) {
+                    Log.e(TAG, String.format("Invalid response for User activate call %s", response.toString()));
+                    return new AsyncStatus(false);
+                }
                 OstSdk.parse(response);
             } catch (Exception e) {
                 postError("Exception in post token deployment");
@@ -107,6 +128,30 @@ public class OstActivateUser extends OstBaseWorkFlow {
         postFlowComplete();
 
         return new AsyncStatus(true);
+    }
+
+    private String getCurrentBlockNumber(OstApiClient ostApiClient) {
+        String blockNumber = null;
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = ostApiClient.getCurrentBlockNumber();
+        } catch (IOException e) {
+            Log.e(TAG, "IOException");
+        }
+        blockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
+        return blockNumber;
+    }
+
+    private String getSalt(OstApiClient ostApiClient) {
+        String salt = null;
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = ostApiClient.getSalt();
+        } catch (IOException e) {
+            Log.e(TAG, "IOException");
+        }
+        salt = parseResponseForKey(jsonObject, OstConstants.SCRYPT_SALT);
+        return salt;
     }
 
     private boolean hasActivatingUser() {

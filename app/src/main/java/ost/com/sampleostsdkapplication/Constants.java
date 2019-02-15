@@ -10,4 +10,5 @@ public interface Constants {
     String TOKEN_ID = "token_id";
     String ID = "_id";
     String APP_USER_ID = "app_user_id";
+    String USER_PIN_SALT = "user_pin_salt";
 }

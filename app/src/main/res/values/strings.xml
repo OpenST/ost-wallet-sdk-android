@@ -17,7 +17,7 @@
         completions."
     </string>
     <string name="login_form">Login form</string>
-    <string name="action_settings">Settings</string>
+    <string name="user_status">User Status</string>
     <string name="user_name">Name</string>
     <string name="title_activity_users_list">User List</string>
     <string name="error_incorrect_name">\"Name might be wrong\"</string>

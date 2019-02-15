@@ -2,7 +2,7 @@
 
 <resources>
     <string name="application_name">FingerprintDialog</string>
-    <string name="action_settings">Settings</string>
+    <string name="user_status">Settings</string>
     <string name="cancel">Cancel</string>
     <string name="use_password">Use password</string>
     <string name="sign_in">Sign in</string>

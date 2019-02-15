@@ -10,12 +10,14 @@ class LogInUser {
     private String id;
     private String ostUserId;
     private String tokenId;
+    private String password;
 
     LogInUser(JSONObject jsonObject) {
         try {
             id = jsonObject.getString(Constants.APP_USER_ID);
             ostUserId = jsonObject.getString(Constants.USER_ID);
             tokenId = jsonObject.getString(Constants.TOKEN_ID);
+            password = jsonObject.getString(Constants.USER_PIN_SALT);
         } catch (JSONException e) {
             Log.e(TAG, "JSON exception", e.getCause());
         }
@@ -31,5 +33,9 @@ class LogInUser {
 
     public String getTokenId() {
         return tokenId;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

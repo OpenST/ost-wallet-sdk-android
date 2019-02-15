@@ -126,7 +126,7 @@ public class KitApiTest {
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            JSONObject jsonObject = ostApiClient.postTokenDeployment("0x60A20Cdf6a21a73Fb89475221D252865C695e302","1","1","0x60A20Cdf6a21a73Fb89475221D252865C695e302");
+            JSONObject jsonObject = ostApiClient.postUserActivate("0x60A20Cdf6a21a73Fb89475221D252865C695e302","1","1","0x60A20Cdf6a21a73Fb89475221D252865C695e302");
             boolean success = jsonObject.optBoolean("success");
             Assert.assertTrue(success);
         } catch (IOException e) {

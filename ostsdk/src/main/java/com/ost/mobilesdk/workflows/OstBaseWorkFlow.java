@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.OstKeyManager;
@@ -11,6 +12,9 @@ import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.concurrent.Future;
 
@@ -71,5 +75,34 @@ abstract class OstBaseWorkFlow {
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
         return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress())
                 && (OstDevice.CONST_STATUS.CREATED.equals(ostDevice.getStatus()));
+    }
+
+    String parseResponseForKey(JSONObject jsonObject, String key) {
+        String value = null;
+        try {
+            if (!jsonObject.getBoolean(OstConstants.RESPONSE_SUCCESS)) {
+                Log.e(TAG, "JSON response false");
+                return null;
+            }
+            JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
+
+            JSONObject resultTypeObject = jsonData.getJSONObject(jsonData.getString(OstConstants.RESULT_TYPE));
+
+            value = resultTypeObject.getString(key);
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON Exception");
+        }
+        return value;
+    }
+
+    boolean isValidResponse(JSONObject jsonObject) {
+        try {
+            if (jsonObject.getBoolean(OstConstants.RESPONSE_SUCCESS)) {
+                return true;
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON Exception");
+        }
+        return false;
     }
 }

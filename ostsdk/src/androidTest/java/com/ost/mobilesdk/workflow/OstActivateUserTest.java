@@ -42,7 +42,7 @@ public class OstActivateUserTest {
         String spendingLimit = "100000";
         Looper.prepare();
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.deployTokenHolder("", uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
+        OstSdk.activateUser("", uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
             @Override
             public void flowComplete(OstContextEntity ostContextEntity) {
                 super.flowComplete(ostContextEntity);
@@ -91,7 +91,7 @@ public class OstActivateUserTest {
         }
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.deployTokenHolder(userId, uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
+        OstSdk.activateUser(userId, uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
             @Override
             public void flowComplete(OstContextEntity ostContextEntity) {
                 super.flowComplete(ostContextEntity);

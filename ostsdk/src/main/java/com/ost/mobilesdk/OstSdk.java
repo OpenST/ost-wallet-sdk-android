@@ -97,7 +97,7 @@ public class OstSdk {
     }
 
 
-    public static void deployTokenHolder(String userId, String uPin, String password, String expirationHeight, String spendingLimit, OstWorkFlowCallback callback) {
+    public static void activateUser(String userId, String uPin, String password, String expirationHeight, String spendingLimit, OstWorkFlowCallback callback) {
         Handler handler = new Handler();
         final OstActivateUser ostActivateUser = new OstActivateUser(userId, uPin, password, expirationHeight, spendingLimit, handler, callback);
         ostActivateUser.perform();

@@ -110,11 +110,7 @@ public class OstDevice extends OstBaseEntity {
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
                 jsonObject.has(OstDevice.ADDRESS) &&
-                jsonObject.has(OstDevice.STATUS) &&
-                jsonObject.has(OstDevice.DEVICE_NAME) &&
-                jsonObject.has(OstDevice.PERSONAL_SIGN_ADDRESS) &&
-                jsonObject.has(OstDevice.DEVICE_UUID) &&
-                jsonObject.has(OstDevice.DEVICE_MANAGER_ADDRESS);
+                jsonObject.has(OstDevice.PERSONAL_SIGN_ADDRESS);
     }
 
     @Override
