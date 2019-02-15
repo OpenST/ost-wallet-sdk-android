@@ -55,8 +55,7 @@ public class OstUserPollingService extends OstPollingService {
     }
 
     @Override
-    protected boolean validateParams(String entityId, String userId, String entityName) {
-        //Todo:: check status
-        return false;
+    protected boolean validateParams(String entityId, String fromStatus, String toStatus) {
+        return null != OstUser.getById(entityId) && OstUser.isValidStatus(fromStatus) && OstUser.isValidStatus(toStatus);
     }
 }

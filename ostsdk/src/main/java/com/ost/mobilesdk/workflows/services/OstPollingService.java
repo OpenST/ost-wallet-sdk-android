@@ -187,5 +187,5 @@ public abstract class OstPollingService extends IntentService {
 
     protected abstract JSONObject poll(String userId, String entityId) throws IOException;
 
-    protected abstract boolean validateParams(String entityId, String userId, String entityName);
+    protected abstract boolean validateParams(String entityId, String fromStatus, String toStatus);
 }
