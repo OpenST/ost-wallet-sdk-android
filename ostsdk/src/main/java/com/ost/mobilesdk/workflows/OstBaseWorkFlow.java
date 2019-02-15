@@ -62,12 +62,12 @@ abstract class OstBaseWorkFlow {
         });
     }
 
-    boolean hasUnRegisteredDevice() {
+    boolean hasCreatedDevice() {
         OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
-        return  hasUnRegisteredDevice(ostDevice);
+        return hasCreatedDevice(ostDevice);
     }
 
-    boolean hasUnRegisteredDevice(OstDevice ostDevice) {
+    boolean hasCreatedDevice(OstDevice ostDevice) {
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
         return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress())
                 && (OstDevice.CONST_STATUS.CREATED.equals(ostDevice.getStatus()));

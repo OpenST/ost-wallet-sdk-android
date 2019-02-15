@@ -1,7 +1,12 @@
 package com.ost.mobilesdk.network;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
+import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.security.OstApiSigner;
 
 import org.json.JSONException;
@@ -98,7 +103,7 @@ public class OstHttpRequestClient {
     private static String POST_REQUEST = "POST";
     private static String SocketTimeoutExceptionString = "{'success':'false','err':{'code':'GATEWAY_TIMEOUT','internal_id':'TIMEOUT_ERROR','msg':'','error_data':[]}}";
     private static String IOExceptionString = "{'success':'false','err':{'code':'IOException','internal_id':'IO_EXCEPTION','msg':'','error_data':[]}}";
-
+    private static String NetworkExceptionString = "{'success':'false','err':{'code':'NO_NETWORK','internal_id':'NO_NETWORK','msg':'','error_data':[]}}";
 
     public JSONObject get(String resource, Map<String, Object> queryParams) throws IOException {
         return send(GET_REQUEST, resource, queryParams);
@@ -110,6 +115,14 @@ public class OstHttpRequestClient {
 
     private JSONObject send(String requestType, String resource, Map<String, Object> mapParams) throws IOException {
         // Basic Sanity.
+        if (!isNetworkAvailable()) {
+            try {
+                return new JSONObject(NetworkExceptionString);
+            } catch (JSONException e) {
+                //Not expected
+            }
+        }
+
         if (!requestType.equalsIgnoreCase(POST_REQUEST) && !requestType.equalsIgnoreCase(GET_REQUEST)) {
             throw new IOException("Invalid requestType");
         }
@@ -324,5 +337,12 @@ public class OstHttpRequestClient {
         stringToEscape = FormParameterEscaper.escape(stringToEscape);
         stringToEscape = stringToEscape.replace("*", "%26");
         return stringToEscape;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) OstSdk.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

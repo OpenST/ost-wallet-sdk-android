@@ -7,7 +7,6 @@ import android.util.Log;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
@@ -75,7 +74,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                 }
 
                 Log.i(TAG, "Check is device registered");
-                if (hasUnRegisteredDevice(ostDevice)) {
+                if (hasCreatedDevice(ostDevice)) {
                     Log.i(TAG, "Registering device");
                     registerDevice(ostDevice);
                     return new AsyncStatus(true);

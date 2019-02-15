@@ -1,15 +1,10 @@
 package com.ost.mobilesdk.network;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.OstApiSigner;
 import com.ost.mobilesdk.security.OstKeyManager;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -60,13 +55,6 @@ public class OstApiClient {
     }
 
     public JSONObject getToken() throws IOException {
-        if (!isNetworkAvailable()) {
-            try {
-                return new JSONObject("{error:'network not available'}");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get("/tokens/", requestMap);
     }
@@ -107,12 +95,5 @@ public class OstApiClient {
         map.put(USER_ID, mUserId);
         map.put(WALLET_ADDRESS, mOstUser.getCurrentDevice().getAddress());
         return map;
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) OstSdk.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

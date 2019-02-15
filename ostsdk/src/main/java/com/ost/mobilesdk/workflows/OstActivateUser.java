@@ -43,13 +43,18 @@ public class OstActivateUser extends OstBaseWorkFlow {
     }
 
     @Override
-    protected AsyncStatus process() {
+    synchronized protected AsyncStatus process() {
         if (!hasValidParams()) {
             Log.i(TAG, "Work flow has invalid params");
             postError("Work flow has invalid params");
             return new AsyncStatus(false);
         }
-        if (hasUnRegisteredDevice()) {
+        if (null == OstUser.getById(mUserId)) {
+            Log.i(TAG, "User does not exist");
+            postError("User does not exist");
+            return new AsyncStatus(false);
+        }
+        if (hasCreatedDevice()) {
             Log.i(TAG, "Device is not registered");
             postError("Device is not registered");
             return new AsyncStatus(false);
@@ -57,18 +62,21 @@ public class OstActivateUser extends OstBaseWorkFlow {
         if (hasActivatedUser()) {
             Log.i(TAG, "User is already activated");
             postFlowComplete();
+            return new AsyncStatus(true);
+        } else if (hasActivatingUser()) {
+            Log.i(TAG, "User is activating... start polling");
         } else {
             //Todo :: get salt from Kit /users/{user_id}/recovery-keys
-            //Todo :: backup  recoveryAddress on kit. calls endpoint /devices/back-up
             /****************Deferred code*****************/
             String salt = "salt";
+            Log.i(TAG, "Creating recovery key");
             String recoveryAddress = createRecoveryKey(salt);
             /*********************************************/
 
             Log.i(TAG, "Creating session key");
             String sessionAddress = new OstKeyManager(mUserId).createSessionKey();
 
-            Log.i(TAG, "Deploying token holder");
+            Log.i(TAG, "Activate user");
             Log.d(TAG, String.format("Deploying token with SessionAddress: %s, ExpirationHeight: %s," +
                             " SpendingLimit: %s, RecoveryAddress: %s", sessionAddress,
                     mExpirationHeight, mSpendingLimit, recoveryAddress));
@@ -81,24 +89,28 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 postError("Exception in post token deployment");
                 return new AsyncStatus(false);
             }
-
-            Log.i(TAG, "Starting user polling service");
-            OstUserPollingService.startPolling(mUserId, mUserId, OstUser.CONST_STATUS.ACTIVATING,
-                    OstUser.CONST_STATUS.ACTIVATED);
-
-            Log.i(TAG, "Waiting for update");
-            boolean isTimeOut = waitForUpdate();
-            if (isTimeOut) {
-                Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
-                postError("Polling Time out");
-                return new AsyncStatus(false);
-            }
-
-            Log.i(TAG, "Response received for post Token deployment");
-            postFlowComplete();
-
         }
+
+        Log.i(TAG, "Starting user polling service");
+        OstUserPollingService.startPolling(mUserId, mUserId, OstUser.CONST_STATUS.ACTIVATING,
+                OstUser.CONST_STATUS.ACTIVATED);
+
+        Log.i(TAG, "Waiting for update");
+        boolean isTimeOut = waitForUpdate();
+        if (isTimeOut) {
+            Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
+            postError("Polling Time out");
+            return new AsyncStatus(false);
+        }
+
+        Log.i(TAG, "Response received for post Token deployment");
+        postFlowComplete();
+
         return new AsyncStatus(true);
+    }
+
+    private boolean hasActivatingUser() {
+        return OstUser.CONST_STATUS.ACTIVATING.equals(OstSdk.getUser(mUserId).getStatus());
     }
 
     private boolean waitForUpdate() {

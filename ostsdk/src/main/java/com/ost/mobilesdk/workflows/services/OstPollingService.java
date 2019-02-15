@@ -38,6 +38,8 @@ public abstract class OstPollingService extends IntentService {
     private static final int POLL_MAX_COUNT = 10;
 
     private static final String TAG = "OstPollingService";
+    private static final long POLLING_INTERVAL = 5 * 1000;
+    private static final long INITIAL_POLLING_INTERVAL = 6 * 5 * 1000;
 
     public OstPollingService() {
         super(TAG);
@@ -53,7 +55,7 @@ public abstract class OstPollingService extends IntentService {
         Calendar calendar = Calendar.getInstance();
         PendingIntent pendingIntent = PendingIntent.getService(context.getApplicationContext(), 0, intent, 0);
         AlarmManager alarm = (AlarmManager)context.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        alarm.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + 6*5*1000, pendingIntent);
+        alarm.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + INITIAL_POLLING_INTERVAL, pendingIntent);
     }
 
     @Override
@@ -103,7 +105,7 @@ public abstract class OstPollingService extends IntentService {
             }
 
             int newPollCount = pollCount - 1;
-            if (newPollCount <= 0) {
+            if (newPollCount < 0) {
                 Log.d(TAG, String.format("Poll count reach to zero for %s", getEntityName()));
                 sendUpdateMessage(userId, entityId, true);
             } else {
@@ -176,7 +178,7 @@ public abstract class OstPollingService extends IntentService {
         Calendar calendar = Calendar.getInstance();
         PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
         AlarmManager alarm = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        alarm.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + 5*1000, pendingIntent);
+        alarm.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + POLLING_INTERVAL, pendingIntent);
     }
 
     protected abstract Intent getServiceIntent(Context context);
