@@ -27,11 +27,11 @@ public class OstTransaction extends OstBaseEntity {
     }
 
     public static class CONST_STATUS {
-        public static final String CREATED = "CREATED";
-        public static final String QUEUED = "QUEUED";
-        public static final String SUBMITTED = "SUBMITTED";
-        public static final String SUCCESS = "SUCCESS";
-        public static final String FAIL = "FAIL";
+        public static final String CREATED = "created";
+        public static final String QUEUED = "queued";
+        public static final String SUBMITTED = "submitted";
+        public static final String SUCCESS = "success";
+        public static final String FAIL = "fail";
     }
 
     public static OstTransaction parse(JSONObject jsonObject) throws JSONException {

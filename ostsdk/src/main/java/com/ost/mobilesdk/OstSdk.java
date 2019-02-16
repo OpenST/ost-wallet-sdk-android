@@ -129,9 +129,8 @@ public class OstSdk {
         return OstToken.parse(jsonObject);
     }
 
-    OstActivateUser QRCodeInput() {
-        OstActivateUser ostActivateUser = null;
-        return ostActivateUser;
+    public static void scanQRCode() {
+
     }
 
     public static void parse(JSONObject jsonObject) throws JSONException {

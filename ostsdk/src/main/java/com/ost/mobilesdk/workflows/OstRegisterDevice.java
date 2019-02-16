@@ -98,7 +98,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
 
     private void syncRegisteredEntities() {
         Log.i(TAG, "Syncing registered entities.");
-        new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.DEVICE).perform();
+        new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.DEVICE, OstSdkSync.SYNC_ENTITY.TOKEN).perform();
     }
 
     private void sync() {

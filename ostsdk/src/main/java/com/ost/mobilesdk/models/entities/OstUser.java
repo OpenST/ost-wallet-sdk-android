@@ -49,9 +49,9 @@ public class OstUser extends OstBaseEntity {
     }
 
     public static class CONST_STATUS {
-        public static final String CREATED = "CREATED";
-        public static final String ACTIVATING = "ACTIVATING";
-        public static final String ACTIVATED = "ACTIVATED";
+        public static final String CREATED = "created";
+        public static final String ACTIVATING = "activating";
+        public static final String ACTIVATED = "activated";
     }
 
     public static boolean isValidStatus(String status) {

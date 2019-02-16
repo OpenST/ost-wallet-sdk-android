@@ -8,4 +8,5 @@ public interface OstConstants {
     String RESULT_TYPE = "result_type";
     String SCRYPT_SALT = "scrypt_salt";
     String BLOCK_HEIGHT = "block_height";
+    int HASH_RATE = 3;
 }

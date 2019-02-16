@@ -38,8 +38,8 @@ public abstract class OstPollingService extends IntentService {
     private static final int POLL_MAX_COUNT = 10;
 
     private static final String TAG = "OstPollingService";
-    private static final long POLLING_INTERVAL = 5 * 1000;
-    private static final long INITIAL_POLLING_INTERVAL = 6 * 5 * 1000;
+    private static final long POLLING_INTERVAL = OstConstants.HASH_RATE * 1000;
+    private static final long INITIAL_POLLING_INTERVAL = 6 * OstConstants.HASH_RATE * 1000;
 
     public OstPollingService() {
         super(TAG);
@@ -136,10 +136,13 @@ public abstract class OstPollingService extends IntentService {
         String currentStatus;
         try {
             OstBaseEntity ostBaseEntity = parseEntity(entityObject);
-            currentStatus = ostBaseEntity.getStatus();
+            currentStatus = ostBaseEntity.getStatus().toLowerCase();
         } catch (JSONException e) {
             return false;
         }
+        Log.d(TAG, String.format("Entity from status: %s, Entity to status %s, entity status %s",
+                entityFromStatus, entityToStatus, currentStatus));
+
         if (entityFromStatus.equals(currentStatus)) {
             return false;
         }

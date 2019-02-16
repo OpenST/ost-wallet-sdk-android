@@ -74,7 +74,7 @@ abstract class OstBaseWorkFlow {
     boolean hasCreatedDevice(OstDevice ostDevice) {
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
         return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress())
-                && (OstDevice.CONST_STATUS.CREATED.equals(ostDevice.getStatus()));
+                && (OstDevice.CONST_STATUS.CREATED.equals(ostDevice.getStatus().toLowerCase()));
     }
 
     String parseResponseForKey(JSONObject jsonObject, String key) {

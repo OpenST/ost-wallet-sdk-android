@@ -24,23 +24,23 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
     public static final String SIGNATURES = "signatures";
 
     public static class CONST_STATUS {
-        public static final String CREATED = "CREATED";
-        public static final String RELAYING = "RELAYING";
-        public static final String QUEUED = "QUEUED";
-        public static final String SUBMITTED = "SUBMITTED";
-        public static final String SUCCESS = "SUCCESS";
-        public static final String FAIL = "FAIL";
+        public static final String CREATED = "created";
+        public static final String RELAYING = "relaying";
+        public static final String QUEUED = "queued";
+        public static final String SUBMITTED = "submitted";
+        public static final String SUCCESS = "success";
+        public static final String FAIL = "fail";
     }
 
     public static class KIND {
-        public static final String AUTHORIZE_DEVICE = "AUTHORIZE_DEVICE";
-        public static final String REVOKE_DEVICE = "REVOKE_DEVICE";
-        public static final String SWAP_DEVICE = "SWAP_DEVICE";
-        public static final String AUTHORIZE_RECOVERY_KEY = "AUTHORIZE_RECOVERY_KEY";
-        public static final String REVOKE_RECOVERY_KEY = "REVOKE_RECOVERY_KEY";
-        public static final String SWAP_RECOVERY_KEY = "SWAP_RECOVERY_KEY";
-        public static final String AUTHORIZE_TOKEN_HOLDER_SESSION = "AUTHORIZE_TOKEN_HOLDER_SESSION";
-        public static final String REVOKE_TOKEN_HOLDER_SESSION = "REVOKE_TOKEN_HOLDER_SESSION";
+        public static final String AUTHORIZE_DEVICE = "authorize_device";
+        public static final String REVOKE_DEVICE = "revode_device";
+        public static final String SWAP_DEVICE = "swap_device";
+        public static final String AUTHORIZE_RECOVERY_KEY = "authorize_recovery_key";
+        public static final String REVOKE_RECOVERY_KEY = "revoke_recovery_key";
+        public static final String SWAP_RECOVERY_KEY = "swap_recovery_key";
+        public static final String AUTHORIZE_TOKEN_HOLDER_SESSION = "authorize_token_holder_session";
+        public static final String REVOKE_TOKEN_HOLDER_SESSION = "revoke_token_holder_session";
     }
 
     public static String getIdentifier() {

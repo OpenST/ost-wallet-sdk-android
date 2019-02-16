@@ -165,7 +165,7 @@ public class LoginSignUpActivity extends MappyBaseActivity {
             String userId = logInUser.getOstUserId();
             String tokenId = logInUser.getTokenId();
             if (null != userId) {
-                OstSdk.setupDevice(userId, tokenId ,new WorkFlowHelper(getApplicationContext()));
+                OstSdk.setupDevice(userId, tokenId , new WorkFlowHelper(getApplicationContext()));
                 userListIntent.putExtra(OST_USER_ID, userId);
                 startActivity(userListIntent);
                 showProgress(false);

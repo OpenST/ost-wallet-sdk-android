@@ -38,11 +38,11 @@ public class OstSession extends OstBaseEntity {
     }
 
     public static class CONST_STATUS {
-        public static final String INITIALIZING = "INITIALIZING";
-        public static final String AUTHORISED = "AUTHORISED";
-        public static final String EXPIRED = "EXPIRED";
-        public static final String REVOKING = "REVOKING";
-        public static final String FAIL = "FAIL";
+        public static final String INITIALIZING = "initializing";
+        public static final String AUTHORISED = "authorized";
+        public static final String EXPIRED = "expired";
+        public static final String REVOKING = "revoking";
+        public static final String FAIL = "fail";
     }
 
     public static OstSession parse(JSONObject jsonObject) throws JSONException {

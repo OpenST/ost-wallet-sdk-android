@@ -50,7 +50,7 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
     }
 
     @Override
-    public void showQR(OstStartPollingInterface startPollingInterface, Bitmap qrImage) {
+    public void showQR(Bitmap qrImage, OstStartPollingInterface startPollingInterface) {
 
     }
 

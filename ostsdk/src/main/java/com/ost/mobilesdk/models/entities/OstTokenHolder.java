@@ -22,8 +22,8 @@ public class OstTokenHolder extends OstBaseEntity {
     }
 
     public static class CONST_STATUS {
-        public static final String INITIALIZING = "INITIALIZING";
-        public static final String ACTIVATED = "ACTIVATED";
+        public static final String INITIALIZING = "initializing";
+        public static final String ACTIVATED = "activated";
     }
 
     public static OstTokenHolder parse(JSONObject jsonObject) throws JSONException {

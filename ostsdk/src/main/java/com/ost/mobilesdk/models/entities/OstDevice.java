@@ -44,12 +44,12 @@ public class OstDevice extends OstBaseEntity {
 
 
     public static class CONST_STATUS {
-        public static final String CREATED = "CREATED";
-        public static final String REGISTERED = "REGISTERED";
-        public static final String AUTHORIZING = "AUTHORIZING";
-        public static final String AUTHORIZED = "AUTHORIZED";
-        public static final String REVOKING = "REVOKING";
-        public static final String REVOKED = "REVOKED";
+        public static final String CREATED = "created";
+        public static final String REGISTERED = "registered";
+        public static final String AUTHORIZING = "authorizing";
+        public static final String AUTHORIZED = "authorized";
+        public static final String REVOKING = "revoking";
+        public static final String REVOKED = "revoked";
     }
 
     public static OstDevice init(String address, String apiAddress, String mUserId) {

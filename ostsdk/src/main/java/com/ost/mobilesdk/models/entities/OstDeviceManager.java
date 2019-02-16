@@ -20,8 +20,8 @@ public class OstDeviceManager extends OstBaseEntity {
     public static final String NONCE = "nonce";
 
     public static class CONST_STATUS {
-        public static final String INITIALIZING = "INITIALIZING";
-        public static final String ACTIVATED = "ACTIVATED";
+        public static final String INITIALIZING = "initializing";
+        public static final String ACTIVATED = "activated";
     }
 
     public static String getIdentifier() {
