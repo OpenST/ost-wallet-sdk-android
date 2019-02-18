@@ -36,6 +36,21 @@ public class OstUser extends OstBaseEntity {
         return OstModelFactory.getUserModel().getEntityById(id);
     }
 
+    public static OstUser initUser(String id, String tokenId) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(OstUser.ID, id);
+            jsonObject.put(OstUser.TOKEN_ID, tokenId);
+            jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "");
+            jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "");
+            jsonObject.put(OstUser.TYPE, "");
+            return OstUser.parse(jsonObject);
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected error: OstUser json parse exception");
+        }
+        return null;
+    }
+
     public OstDevice getCurrentDevice() {
         if (null == currentDevice) {
             OstKeyManager ostKeyManager = new OstKeyManager(getId());
@@ -64,7 +79,7 @@ public class OstUser extends OstBaseEntity {
     }
 
     public static OstUser parse(JSONObject jsonObject) throws JSONException {
-        return (OstUser) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getUserModel(), getIdentifier(), new EntityFactory() {
+        return (OstUser) OstBaseEntity.insertOrUpdate(jsonObject, OstModelFactory.getUserModel(), getIdentifier(), new EntityFactory() {
             @Override
             public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
                 return new OstUser(jsonObject);
@@ -82,20 +97,20 @@ public class OstUser extends OstBaseEntity {
     }
 
     public String getTokenId() {
-        return getJSONData().optString(OstUser.TOKEN_ID,null);
+        return getJSONData().optString(OstUser.TOKEN_ID, null);
     }
 
     public String getTokenHolderAddress() {
-        return getJSONData().optString(OstUser.TOKEN_HOLDER_ADDRESS,null);
+        return getJSONData().optString(OstUser.TOKEN_HOLDER_ADDRESS, null);
     }
 
 
     public String getDeviceManagerAddress() {
-        return getJSONData().optString(OstUser.DEVICE_MANAGER_ADDRESS,null);
+        return getJSONData().optString(OstUser.DEVICE_MANAGER_ADDRESS, null);
     }
 
     public String getType() {
-        return getJSONData().optString(OstUser.TYPE,null);
+        return getJSONData().optString(OstUser.TYPE, null);
     }
 
     public OstDevice createDevice() {

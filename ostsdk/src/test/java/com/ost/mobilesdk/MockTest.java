@@ -1,7 +1,5 @@
 package com.ost.mobilesdk;
 
-import android.util.Log;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.Test;

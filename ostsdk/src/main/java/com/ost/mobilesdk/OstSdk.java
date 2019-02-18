@@ -78,14 +78,8 @@ public class OstSdk {
         return OstModelFactory.getTokenModel().getEntityById(tokenId);
     }
 
-    public static OstUser initUser(String id, String mTokenId) throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(OstUser.ID, id);
-        jsonObject.put(OstUser.TOKEN_ID, mTokenId);
-        jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "");
-        jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "");
-        jsonObject.put(OstUser.TYPE, "");
-        return OstUser.parse(jsonObject);
+    public static OstUser initUser(String id, String tokenId) {
+        return OstUser.initUser(id, tokenId);
     }
 
     public static OstUser getUser(String id) {
@@ -117,16 +111,8 @@ public class OstSdk {
         registerDevice(userId, tokenId ,forceSync ,workFlowCallback);
     }
 
-    public static OstToken initToken(String tokenId) throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(OstToken.ID, tokenId);
-        jsonObject.put(OstToken.NAME, "");
-        jsonObject.put(OstToken.SYMBOL, "");
-        jsonObject.put(OstToken.CONVERSION_FACTOR, "");
-        jsonObject.put(OstToken.TOTAL_SUPPLY, "");
-        jsonObject.put(OstToken.ORIGIN_CHAIN, "");
-        jsonObject.put(OstToken.AUXILIARY_CHAIN, "");
-        return OstToken.parse(jsonObject);
+    public static OstToken initToken(String tokenId) {
+        return OstToken.init(tokenId);
     }
 
     public static void scanQRCode() {

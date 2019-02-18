@@ -58,13 +58,8 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
 
                 Log.i(TAG, "Initializing User and Token");
                 OstUser ostUser;
-                try {
-                    ostUser = OstSdk.initUser(mUserId, mTokenId);
-                    OstSdk.initToken(mTokenId);
-                } catch (JSONException e) {
-                    postError("Parsing error of user or token");
-                    return new AsyncStatus(false);
-                }
+                ostUser = OstSdk.initUser(mUserId, mTokenId);
+                OstSdk.initToken(mTokenId);
 
                 Log.i(TAG, "Creating current device if does not exist");
                 OstDevice ostDevice = createOrGetCurrentDevice(ostUser);

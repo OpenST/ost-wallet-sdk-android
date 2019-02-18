@@ -49,6 +49,23 @@ public class OstToken extends OstBaseEntity {
         return OstModelFactory.getTokenModel().getEntityById(tokenId);
     }
 
+    public static OstToken init(String tokenId) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(OstToken.ID, tokenId);
+            jsonObject.put(OstToken.NAME, "");
+            jsonObject.put(OstToken.SYMBOL, "");
+            jsonObject.put(OstToken.CONVERSION_FACTOR, "");
+            jsonObject.put(OstToken.TOTAL_SUPPLY, "");
+            jsonObject.put(OstToken.ORIGIN_CHAIN, "");
+            jsonObject.put(OstToken.AUXILIARY_CHAIN, "");
+            return OstToken.parse(jsonObject);
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected error: OstToken json parse exception");
+        }
+        return null;
+    }
+
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
