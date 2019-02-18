@@ -36,6 +36,7 @@ import okio.Buffer;
  * HttpRequestClient to supports get and post requests with api signing.
  */
 public class OstHttpRequestClient {
+    private static final String API_SIGNATURE = "api_signature";
     private String apiEndpoint;
     private long timeout;
     private OkHttpClient client;
@@ -167,7 +168,7 @@ public class OstHttpRequestClient {
             paramKey = pair.getParamName();
             paramVal = pair.getParamValue();
 
-//            paramKey = specialCharacterEscape(paramKey);
+            paramKey = specialCharacterEscape(paramKey);
             paramVal = specialCharacterEscape(paramVal);
 
             if (!firstParam) {
@@ -189,7 +190,7 @@ public class OstHttpRequestClient {
 
         if (null != mOstApiSigner) {
             // Add signature to Params.
-            paramKey = "signature";
+            paramKey = API_SIGNATURE;
             paramVal = signQueryParams(hmacInputBuffer);
             if (GET_REQUEST.equalsIgnoreCase(requestType)) {
                 urlBuilder.addEncodedQueryParameter(paramKey, paramVal);

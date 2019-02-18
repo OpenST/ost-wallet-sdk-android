@@ -22,11 +22,10 @@ public class OstApiClient {
     private static final String TAG = "OstApiClient";
 
     private static final String BASE_URL = "https://s5-api.stagingost.com/testnet/v2";
-    private static final String API_SIGNER_ADDRESS = "api_signer_address";
-    private static final String REQUEST_TIMESTAMP = "request_timestamp";
-    private static final String SIGNATURE_KIND = "signature_kind";
+    private static final String API_KEY = "api_key";
+    private static final String API_REQUEST_TIMESTAMP = "api_request_timestamp";
+    private static final String API_SIGNATURE_KIND = "api_signature_kind";
     private static final String TOKEN_ID = "token_id";
-    private static final String WALLET_ADDRESS = "wallet_address";
     private static final String USER_ID = "user_id";
     private static final String SIG_TYPE = "OST1-PS";
     private static final String SESSION_ADDRESSES = "session_addresses";
@@ -90,12 +89,13 @@ public class OstApiClient {
     private Map<String, Object> getPrerequisiteMap() {
         Map<String, Object> map = new HashMap<>();
 
-        map.put(API_SIGNER_ADDRESS, mOstUser.getCurrentDevice().getPersonalSignAddress());
-        map.put(REQUEST_TIMESTAMP, String.valueOf((int)(System.currentTimeMillis()/1000)));
-        map.put(SIGNATURE_KIND, SIG_TYPE);
+        // api key as “deviceAddress.apiSignerAddress”
+        map.put(API_KEY, String.format("%s.%s",mOstUser.getCurrentDevice().getAddress(),
+                mOstUser.getCurrentDevice().getPersonalSignAddress()));
+        map.put(API_REQUEST_TIMESTAMP, String.valueOf((int)(System.currentTimeMillis()/1000)));
+        map.put(API_SIGNATURE_KIND, SIG_TYPE);
         map.put(TOKEN_ID, mOstUser.getTokenId());
         map.put(USER_ID, mUserId);
-        map.put(WALLET_ADDRESS, mOstUser.getCurrentDevice().getAddress());
         return map;
     }
 
@@ -110,5 +110,11 @@ public class OstApiClient {
         String chainId = ostToken.getChainId();
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/chains/%s", chainId), requestMap);
+    }
+
+    public JSONObject postAddDevice(Map<String,Object> map) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        requestMap.putAll(map);
+        return mOstHttpRequestClient.post(String.format("/users/%s/devices/authorize", mUserId), requestMap);
     }
 }
