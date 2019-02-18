@@ -45,15 +45,6 @@ public class OstKeyManagerTest {
         Assert.assertEquals("iden", keyMetaStruct1.getEthKeyIdentifier("0xFd23B74B89a825E633AC2B51168674A2EC769f2b"));
     }
 
-    @Test
-    public void testKeyCreation() {
-        String userId = "1";
-
-        OstKeyManager ostKeyManager = new OstKeyManager(userId);
-        String address = ostKeyManager.createKey();
-
-        Assert.assertTrue(ostKeyManager.hasAddress(address));
-    }
 
     @Test
     public void testKeyGetDeviceAddress() {

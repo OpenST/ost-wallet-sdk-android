@@ -66,13 +66,6 @@ public class OstKeyManager {
         }
     }
 
-    public String createKey() {
-        String address = genAndStoreKey();
-        mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + address, mUserId);
-        storeKeyMetaStruct();
-        return address;
-    }
-
     public String getApiKeyAddress() {
         return mKeyMetaStruct.getApiAddress();
     }
