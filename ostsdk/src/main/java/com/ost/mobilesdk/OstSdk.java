@@ -86,7 +86,7 @@ public class OstSdk {
         return OstModelFactory.getUserModel().getEntityById(id);
     }
 
-    public static void delUser(String userId) {
+    private static void delUser(String userId) {
         OstModelFactory.getUserModel().deleteEntity(userId);
     }
 
