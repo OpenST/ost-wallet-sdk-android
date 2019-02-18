@@ -198,7 +198,11 @@ public class EIP712 {
             String fieldType = field.getString("type");
             Object value = data.get(fieldName);
             if ("string".equals(fieldType) || "bytes".equals(fieldType)) {
-                value = Hash.sha3String(((String) value));
+                if (Numeric.containsHexPrefix((String)value)) {
+                    value = Numeric.toHexString(Hash.sha3(Numeric.hexStringToByteArray((String)value)));
+                } else {
+                    value = Hash.sha3String(((String) value));
+                }
                 fieldType = "bytes32";
             } else if (null != getDataType(fieldType)) {
                 value = Hash.sha3(this.encodeData(fieldType, (JSONObject) value));
