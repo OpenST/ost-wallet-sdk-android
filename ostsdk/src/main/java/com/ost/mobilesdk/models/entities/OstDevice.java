@@ -23,6 +23,7 @@ import org.web3j.crypto.TransactionEncoder;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 /**
  * Transaction Signing
@@ -40,6 +41,12 @@ public class OstDevice extends OstBaseEntity {
     public static OstDevice getById(String id) {
         OstDeviceModel ostDeviceModel = OstModelFactory.getDeviceModel();
         return ostDeviceModel.getEntityById(id);
+    }
+
+    public static boolean isValidStatus(String status) {
+        return Arrays.asList(OstDevice.CONST_STATUS.CREATED, OstDevice.CONST_STATUS.REGISTERED,
+                CONST_STATUS.AUTHORIZING, CONST_STATUS.AUTHORIZED, CONST_STATUS.REVOKING,
+                CONST_STATUS.REVOKED).contains(status);
     }
 
 

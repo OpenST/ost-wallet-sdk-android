@@ -4,6 +4,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
@@ -76,19 +77,20 @@ class OstSdkSync {
                 try {
                     JSONObject response = null;
                     OstApiClient ostApiClient = new OstApiClient(mUserId);
+                    OstUser ostUser = OstUser.getById(mUserId);
                     Log.i(TAG, String.format("Sync request for %s", entity.toString()));
                     if (SYNC_ENTITY.TOKEN == entity) {
                         response = ostApiClient.getToken();
                     } else if (SYNC_ENTITY.USER == entity) {
                         response = ostApiClient.getUser();
                     } else if (SYNC_ENTITY.DEVICE == entity) {
-                        response = ostApiClient.getDevices();
+                        response = ostApiClient.getDevices(ostUser.getCurrentDevice().getAddress());
                     } else if (SYNC_ENTITY.SESSION == entity) {
-                        response = ostApiClient.getDevices();
+                        response = ostApiClient.getUser();
                     } else if (SYNC_ENTITY.DEVICE_MANAGER == entity) {
-                        response = ostApiClient.getDevices();
+                        response = ostApiClient.getDeviceManager();
                     } else if (SYNC_ENTITY.TOKEN_HOLDER == entity) {
-                        response = ostApiClient.getDevices();
+                        response = ostApiClient.getTokenHolder();
                     }
                     Log.i(TAG, String.format("Sync response for %s", entity.toString()));
                     OstSdk.parse(response);
