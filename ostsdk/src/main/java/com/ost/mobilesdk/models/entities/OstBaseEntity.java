@@ -59,7 +59,7 @@ public class OstBaseEntity {
     public static OstBaseEntity insertOrUpdate(JSONObject jsonObject, OstBaseModel ostBaseModel, String identifier, EntityFactory entityFactory) throws JSONException {
         OstBaseEntity dbEntity = ostBaseModel.getEntityById(identifier);
         if (null != dbEntity) {
-            if (dbEntity.getUpdatedTimestamp() >= OstBaseEntity.getUpdatedTimestamp(jsonObject)) {
+            if (dbEntity.getUpdatedTimestamp() != OstBaseEntity.getUpdatedTimestamp(jsonObject)) {
                 return (OstUser) dbEntity;
             }
             dbEntity.processJson(jsonObject);

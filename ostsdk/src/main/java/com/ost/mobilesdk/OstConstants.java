@@ -9,4 +9,7 @@ public interface OstConstants {
     String SCRYPT_SALT = "scrypt_salt";
     String BLOCK_HEIGHT = "block_height";
     int HASH_RATE = 3;
+    String DATA_DEFINATION = "data_defination";
+    String USER_ID = "user_id";
+    String DEVICE_ADDRESS = "device_address";
 }

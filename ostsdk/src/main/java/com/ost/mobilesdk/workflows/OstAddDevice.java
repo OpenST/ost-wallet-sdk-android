@@ -5,20 +5,19 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
-import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.utils.GnosisSafe;
-import com.ost.mobilesdk.utils.OstPayloadBuilder;
 import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -98,7 +97,6 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 Bitmap bitmap = createQRBitMap(payload);
                 Log.i(TAG, "showing QR code");
                 showPayload(bitmap);
-
                 break;
             case PIN:
                 break;
@@ -124,17 +122,15 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
         OstUser ostUser = OstUser.getById(mUserId);
         OstDevice ostDevice = ostUser.getCurrentDevice();
         String ownerAddress = ostDevice.getAddress();
-        String deviceManagerAddress = ostUser.getDeviceManagerAddress();
-        OstDeviceManager ostDeviceManager = OstDeviceManager.getById(deviceManagerAddress);
-        String callData = new GnosisSafe().getAddOwnerWithThresholdExecutableData(ownerAddress);
-        JSONObject rawCallData = new GnosisSafe().getJSONAddOwnerWithThresholdData(ownerAddress);
 
-        JSONObject jsonObject = new OstPayloadBuilder()
-                .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
-                .setCallData(callData)
-                .setRawCalldata(rawCallData)
-                .setTo(deviceManagerAddress)
-                .build();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(OstConstants.DATA_DEFINATION, OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE);
+            jsonObject.put(OstConstants.USER_ID, mUserId);
+            jsonObject.put(OstConstants.DEVICE_ADDRESS, ownerAddress);
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected exception in createPayload");
+        }
 
         return jsonObject.toString();
     }

@@ -35,30 +35,6 @@ public class OstPayloadBuilder {
     private String dataDefination = OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase();
     private String to = NULL_ADDRESS;
 
-    public static Map<String, Object> getPayloadMap(JSONObject payload) throws JSONException {
-
-        Map<String, Object> map = new HashMap<>();
-        map.put(DATA_DEFINATION, payload.getString(DATA_DEFINATION));
-        map.put(TO, payload.getString(TO));
-        map.put(VALUE, payload.getString(VALUE));
-        map.put(CALL_DATA, payload.getString(CALL_DATA));
-
-        JSONObject rawCallData = payload.getJSONObject(RAW_CALL_DATA);
-        JSONArray jsonArray = rawCallData.getJSONArray("parameters");
-
-        map.put(RAW_CALL_DATA, new GnosisSafe().getAddOwnerWithThresholdData(jsonArray.getString(0), jsonArray.getString(1)));
-        map.put(OPERATION, payload.getString(OPERATION));
-        map.put(SAFE_TXN_GAS, payload.getString(SAFE_TXN_GAS));
-        map.put(DATA_GAS, payload.getString(DATA_GAS));
-        map.put(GAS_TOKEN, payload.getString(GAS_TOKEN));
-        map.put(GAS_PRICE, payload.getString(GAS_PRICE));
-        map.put(REFUND_RECEIVER, payload.getString(REFUND_RECEIVER));
-        map.put(SIGNATURES, payload.getString(SIGNATURES));
-        map.put(SIGNER, payload.getString(SIGNER));
-
-        return map;
-    }
-
     public OstPayloadBuilder setDataDefination(String dataDefination) {
         this.dataDefination = dataDefination;
         return this;
@@ -79,7 +55,7 @@ public class OstPayloadBuilder {
         return this;
     }
 
-    public OstPayloadBuilder setRawCalldata(JSONObject rawCalldata) {
+    public OstPayloadBuilder setRawCalldata(Map<String,Object> rawCalldata) {
         this.rawCalldata = rawCalldata;
         return this;
     }
@@ -126,7 +102,7 @@ public class OstPayloadBuilder {
 
     private String value = "0";
     private String callData = "0x0";
-    private JSONObject rawCalldata = new JSONObject();
+    private Map<String, Object> rawCalldata = new HashMap<>();
     private String operation = "0";
     private String safeTxnGas = "0";
     private String dataGas = "0";
@@ -137,59 +113,26 @@ public class OstPayloadBuilder {
     private String signer = "0x0";
     private String nonce = "0";
 
-    public JSONObject build() {
-        JSONObject payLoad = new JSONObject();
-        try {
-            payLoad.put(DATA_DEFINATION, dataDefination);
-            payLoad.put(TO, to);
-            payLoad.put(VALUE, value);
-            payLoad.put(CALL_DATA, callData);
-            payLoad.put(RAW_CALL_DATA, rawCalldata);
-            payLoad.put(OPERATION, operation);
-            payLoad.put(SAFE_TXN_GAS, safeTxnGas);
-            payLoad.put(DATA_GAS, dataGas);
-            payLoad.put(GAS_PRICE, gasPrice);
-            payLoad.put(GAS_TOKEN, gasToken);
-            payLoad.put(REFUND_RECEIVER, refundReceiver);
-            payLoad.put(SIGNATURES, signatures);
-            payLoad.put(SIGNER, signer);
-        } catch (JSONException e) {
-            Log.e(TAG, "Unexpected JSON Exception");
-        }
-        return payLoad;
+    public Map<String, Object> build() {
+        Map<String, Object> map = new HashMap<>();
+        map.put(DATA_DEFINATION, dataDefination);
+        map.put(TO, to);
+        map.put(VALUE, value);
+        map.put(CALL_DATA, callData);
+        map.put(RAW_CALL_DATA, rawCalldata);
+        map.put(OPERATION, operation);
+        map.put(SAFE_TXN_GAS, safeTxnGas);
+        map.put(DATA_GAS, dataGas);
+        map.put(GAS_PRICE, gasPrice);
+        map.put(GAS_TOKEN, gasToken);
+        map.put(REFUND_RECEIVER, refundReceiver);
+        map.put(SIGNATURES, signatures);
+        map.put(SIGNER, signer);
+        return map;
     }
 
     public OstPayloadBuilder setNonce(String nonce) {
         this.nonce = nonce;
         return this;
-    }
-
-    public static Map<String, Object> toMap(JSONObject jsonobj)  throws JSONException {
-        Map<String, Object> map = new HashMap<String, Object>();
-        Iterator<String> keys = jsonobj.keys();
-        while(keys.hasNext()) {
-            String key = keys.next();
-            Object value = jsonobj.get(key);
-            if (value instanceof JSONArray) {
-                value = toList((JSONArray) value);
-            } else if (value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
-            }
-            map.put(key, String.valueOf(value));
-        }   return map;
-    }
-
-    public static List<Object> toList(JSONArray array) throws JSONException {
-        List<Object> list = new ArrayList<Object>();
-        for(int i = 0; i < array.length(); i++) {
-            Object value = array.get(i);
-            if (value instanceof JSONArray) {
-                value = toList((JSONArray) value);
-            }
-            else if (value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
-            }
-            list.add(String.valueOf(value));
-        }   return list;
     }
 }
