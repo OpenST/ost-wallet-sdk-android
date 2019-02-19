@@ -25,6 +25,8 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 public class OstSdk {
 
     public static final String USER = "user";
@@ -91,9 +93,8 @@ public class OstSdk {
     }
 
 
-    public static void activateUser(String userId, String uPin, String password, String expirationHeight, String spendingLimit, OstWorkFlowCallback callback) {
-        Handler handler = new Handler();
-        final OstActivateUser ostActivateUser = new OstActivateUser(userId, uPin, password, expirationHeight, spendingLimit, handler, callback);
+    public static void activateUser(String userId, String uPin, String password, long expiresAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback callback) {
+        final OstActivateUser ostActivateUser = new OstActivateUser(userId, uPin, password, expiresAfterInSecs, spendingLimitInWei, callback);
         ostActivateUser.perform();
     }
 
@@ -157,5 +158,8 @@ public class OstSdk {
         if (jsonData.has(OstSdk.CREDITS)) {
             OstCredits.parse(jsonData.getJSONObject(OstSdk.CREDITS));
         }
+        //Process Array?
     }
+
+
 }

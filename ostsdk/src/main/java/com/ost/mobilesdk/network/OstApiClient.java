@@ -90,7 +90,7 @@ public class OstApiClient {
         Map<String, Object> map = new HashMap<>();
 
         // api key as “deviceAddress.apiSignerAddress”
-        map.put(API_KEY, String.format("%s.%s",mOstUser.getCurrentDevice().getAddress(),
+        map.put(API_KEY, String.format("%s.%s.%s.%s",mOstUser.getTokenId(), mUserId, mOstUser.getCurrentDevice().getAddress(),
                 mOstUser.getCurrentDevice().getPersonalSignAddress()));
         map.put(API_REQUEST_TIMESTAMP, String.valueOf((int)(System.currentTimeMillis()/1000)));
         map.put(API_SIGNATURE_KIND, SIG_TYPE);

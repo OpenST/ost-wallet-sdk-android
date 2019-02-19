@@ -86,9 +86,9 @@ public class UsersListActivity extends MappyBaseActivity {
             String userId = logInUser.getOstUserId();
             String password = logInUser.getPassword();
             String uPin = "123456";
-            String expirationHeight = "1000000";
+            long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
             String spendingLimit = "1000000000000";
-            OstSdk.activateUser(userId, uPin, password, expirationHeight, spendingLimit, new WorkFlowHelper(getApplicationContext()));
+            OstSdk.activateUser(userId, uPin, password, expiresAfterInSecs, spendingLimit, new WorkFlowHelper(getApplicationContext()));
         }
         return super.onOptionsItemSelected(item);
     }

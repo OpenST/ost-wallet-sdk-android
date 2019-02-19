@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,6 +15,7 @@ import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.workflows.errors.OstErrorTexts;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstUserPollingService;
@@ -33,49 +33,67 @@ public class OstActivateUser extends OstBaseWorkFlow {
     private static final int THREE_TIMES = 3;
     private final String mPassWord;
     private final String mUPin;
-    private final String mExpirationHeight;
+    private String mExpirationHeight;
     private final String mSpendingLimit;
+    private final long mExpiresAfterInSecs;
 
-    public OstActivateUser(String userId, String uPin, String password, String expirationHeight,
-                           String spendingLimit, Handler handler, OstWorkFlowCallback callback) {
-        super(userId, handler, callback);
+    public OstActivateUser(String userId, String uPin, String password, long expiresAfterInSecs,
+                           String spendingLimitInWei, OstWorkFlowCallback callback) {
+        super(userId, callback);
         mUPin = uPin;
         mPassWord = password;
-        mExpirationHeight = expirationHeight;
-        mSpendingLimit = spendingLimit;
+        mExpiresAfterInSecs = expiresAfterInSecs;
+        mSpendingLimit = spendingLimitInWei;
+    }
+
+    @Override
+    public OstConstants.WORKFLOW_TYPE getWorkflowType() {
+        return OstConstants.WORKFLOW_TYPE.ACTIVATE_USER;
     }
 
     @Override
     synchronized protected AsyncStatus process() {
         if (!hasValidParams()) {
             Log.i(TAG, "Work flow has invalid params");
-            postError("Work flow has invalid params");
-            return new AsyncStatus(false);
+            return postErrorInterrupt("wf_au_pr_1", OstErrorTexts.INVALID_WORKFLOW_PARAMS);
         }
-        if (null == OstUser.getById(mUserId)) {
-            Log.i(TAG, "User does not exist");
-            postError("User does not exist");
-            return new AsyncStatus(false);
-        }
-        if (hasCreatedDevice()) {
-            Log.i(TAG, "Device is not registered");
-            postError("Device is not registered");
-            return new AsyncStatus(false);
-        }
+
+        //Load Current Device.
+        AsyncStatus status = super.loadCurrentDevice();
+
+        //Load Current User Information.
+        status = status.isSuccess() ? super.loadUser() : status;
+
+        //Check if user is already activating.
         if (hasActivatedUser()) {
+            //Exit flow if user already activated.
             Log.i(TAG, "User is already activated");
             postFlowComplete();
             return new AsyncStatus(true);
-        } else if (hasActivatingUser()) {
+        }
+        //Check if user is already activating.
+        else if (hasActivatingUser()) {
             Log.i(TAG, "User is activating... start polling");
-        } else {
-            OstApiClient ostApiClient = new OstApiClient(mUserId);
+        }
+        //Activate the user if otherwise.
+        else {
+            //Load Token Information.
+            status = status.isSuccess() ? super.loadToken() : status;
+
+            //Calculate Expiration Height
+            status = status.isSuccess() ? this.calculateExpirationHeight() : status;
+
+            if (!status.isSuccess() ) {
+                return status;
+            }
+
+            OstApiClient ostApiClient = this.mOstApiClient;
 
             Log.i(TAG, "Getting salt");
-            String salt = getSalt(ostApiClient);
+            String salt = super.getSalt();
             if (null == salt) {
                 Log.e(TAG, "Salt is null");
-                postError("Salt is null");
+                return postErrorInterrupt("wf_au_pr_2", OstErrorTexts.SALT_API_FAILED);
             }
 
             Log.i(TAG, "Creating recovery key");
@@ -84,31 +102,25 @@ public class OstActivateUser extends OstBaseWorkFlow {
             Log.i(TAG, "Creating session key");
             String sessionAddress = new OstKeyManager(mUserId).createSessionKey();
 
-            Log.i(TAG, "Getting current block number");
-            String blockNumber = getCurrentBlockNumber(ostApiClient);
-            if (null == blockNumber) {
-                Log.e(TAG, "BlockNumber is null");
-                postError("BlockNumber is null");
-            }
-
-            String absoluteExpirationHeight = (new BigInteger(mExpirationHeight).add(new BigInteger(blockNumber))).toString();
-
             Log.i(TAG, "Activate user");
             Log.d(TAG, String.format("Deploying token with SessionAddress: %s, ExpirationHeight: %s," +
                             " SpendingLimit: %s, RecoveryAddress: %s", sessionAddress,
-                    absoluteExpirationHeight, mSpendingLimit, recoveryAddress));
+                    mExpirationHeight, mSpendingLimit, recoveryAddress));
             JSONObject response;
             try {
                 response = ostApiClient.postUserActivate(sessionAddress,
                         mExpirationHeight, mSpendingLimit, recoveryAddress);
-                if (!isValidResponse(response)) {
+                if ( isValidResponse(response) ) {
+                    //Parse the api response and update the data locally.
+                    OstSdk.parse(response);
+                } else {
+                    //Return with error.
                     Log.e(TAG, String.format("Invalid response for User activate call %s", response.toString()));
-                    return new AsyncStatus(false);
+                    return postErrorInterrupt("wf_au_pr_3" , OstErrorTexts.ACTIVATE_USER_API_FAILED);
                 }
-                OstSdk.parse(response);
             } catch (Exception e) {
-                postError("Exception in post token deployment");
-                return new AsyncStatus(false);
+                Log.e(TAG, "Something went wrong while activating user.", e);
+                return postErrorInterrupt("wf_au_pr_4" , OstErrorTexts.ACTIVATE_USER_API_FAILED);
             }
         }
 
@@ -120,38 +132,13 @@ public class OstActivateUser extends OstBaseWorkFlow {
         boolean isTimeOut = waitForUpdate();
         if (isTimeOut) {
             Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
-            postError("Polling Time out");
-            return new AsyncStatus(false);
+            return postErrorInterrupt("wf_au_pr_5" , OstErrorTexts.ACTIVATE_USER_API_POLLING_FAILED);
         }
 
         Log.i(TAG, "Response received for post Token deployment");
         postFlowComplete();
 
         return new AsyncStatus(true);
-    }
-
-    private String getCurrentBlockNumber(OstApiClient ostApiClient) {
-        String blockNumber = null;
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = ostApiClient.getCurrentBlockNumber();
-        } catch (IOException e) {
-            Log.e(TAG, "IOException");
-        }
-        blockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
-        return blockNumber;
-    }
-
-    private String getSalt(OstApiClient ostApiClient) {
-        String salt = null;
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = ostApiClient.getSalt();
-        } catch (IOException e) {
-            Log.e(TAG, "IOException");
-        }
-        salt = parseResponseForKey(jsonObject, OstConstants.SCRYPT_SALT);
-        return salt;
     }
 
     private boolean hasActivatingUser() {
@@ -195,7 +182,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
     @Override
     boolean hasValidParams() {
         return super.hasValidParams() && !TextUtils.isEmpty(mUPin) && !TextUtils.isEmpty(mPassWord)
-                && !TextUtils.isEmpty(mExpirationHeight) && !TextUtils.isEmpty(mSpendingLimit);
+                && (mExpiresAfterInSecs > 0) && !TextUtils.isEmpty(mSpendingLimit);
     }
 
     private boolean hasActivatedUser() {
@@ -210,7 +197,41 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
         //Don't store key of recovery key
-        String address = ostKeyManager.createHDKey(seed);
+        String address = ostKeyManager.createHDKeyAddress(seed);
         return address;
+    }
+
+    private AsyncStatus calculateExpirationHeight() {
+        if ( null == mOstToken ) {
+            AsyncStatus loadTokenStatus = super.loadToken();
+            if ( !loadTokenStatus.isSuccess() ) {
+                return loadTokenStatus;
+            }
+        }
+
+        JSONObject jsonObject = null;
+        long currentBlockNumber, blockGenerationTime;
+        try {
+            jsonObject = mOstApiClient.getCurrentBlockNumber();
+            String strCurrentBlockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
+            String strBlockGenerationTime = parseResponseForKey(jsonObject, OstConstants.BLOCK_TIME);
+            currentBlockNumber = Long.parseLong( strCurrentBlockNumber );
+            blockGenerationTime = Long.parseLong( strBlockGenerationTime );
+
+        } catch (IOException e) {
+
+            Log.e(TAG, "Encountered IOException while fetching current block number.", e);
+            return postErrorInterrupt("wp_au_ceh_1" , OstErrorTexts.CHAIN_API_FAILED);
+        } catch (Exception e) {
+            Log.e(TAG, "Encountered Exception while fetching current block number.", e);
+            return postErrorInterrupt("wp_au_ceh_2" , OstErrorTexts.CHAIN_API_FAILED);
+        }
+
+        long bufferBlocks = OstConstants.SESSION_BUFFER_TIME / blockGenerationTime;
+        long expiresAfterBlocks = mExpiresAfterInSecs / blockGenerationTime;
+        long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
+
+        mExpirationHeight = String.valueOf( expirationHeight );
+        return new AsyncStatus(true);
     }
 }

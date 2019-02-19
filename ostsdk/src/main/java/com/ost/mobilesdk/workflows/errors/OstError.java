@@ -1,41 +1,39 @@
 package com.ost.mobilesdk.workflows.errors;
+import com.ost.mobilesdk.OstConstants;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class OstError extends Error {
 
-    enum FLOW_TYPE {
-        UNKNOWN,
-        LOGIN,
-        TRANSACTION,
-        CREATE_SESSION,
-        REGISTER_DEVICE,
-        TOKEN_HOLDER_DEPLOYMENT,
-    }
 
-    enum SUB_TYPE {
-        UNKNOWN,
-        ID_ERROR
-    }
-
-    private FLOW_TYPE mFlowType;
-    private SUB_TYPE mSubType;
+    private final OstConstants.WORKFLOW_TYPE mFlowType;
+    private final String mErrorCode;
 
     public OstError(String errorMsg) {
         super(errorMsg);
-        mFlowType = FLOW_TYPE.UNKNOWN;
-        mSubType = SUB_TYPE.UNKNOWN;
+        mFlowType = OstConstants.WORKFLOW_TYPE.UNKNOWN;
+        mErrorCode = "";
     }
 
-    public OstError(String errorMsg, FLOW_TYPE flowType, SUB_TYPE subType) {
+    public OstError(String errorMsg, OstConstants.WORKFLOW_TYPE flowType) {
         super(errorMsg);
         mFlowType = flowType;
-        mSubType = subType;
+        mErrorCode = "";
     }
 
-    public FLOW_TYPE getFlowType() {
+    public OstError(String errorCode, String errorMsg, OstConstants.WORKFLOW_TYPE flowType) {
+        super(errorMsg);
+        mFlowType = flowType;
+        mErrorCode = errorCode;
+    }
+
+    public OstConstants.WORKFLOW_TYPE getFlowType() {
         return mFlowType;
     }
 
-    public SUB_TYPE getSubType() {
-        return mSubType;
+
+    public String getErrorCode() {
+        return mErrorCode;
     }
 }

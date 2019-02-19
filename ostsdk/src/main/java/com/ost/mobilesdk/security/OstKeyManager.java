@@ -70,7 +70,7 @@ public class OstKeyManager {
         return mKeyMetaStruct.getApiAddress();
     }
 
-    public String createHDKey(byte[] seed) {
+    public String createHDKeyAddress(byte[] seed) {
 
         ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genHDKey(seed);
         String address = Credentials.create(ecKeyPair).getAddress();

@@ -60,10 +60,10 @@ public class OstKeyManagerTest {
         String userId = "1";
         String seed = "123456789012345789012";
         OstKeyManager ostKeyManager1 = new OstKeyManager(userId);
-        String address1 = ostKeyManager1.createHDKey(seed.getBytes());
+        String address1 = ostKeyManager1.createHDKeyAddress(seed.getBytes());
 
         OstKeyManager ostKeyManager2 = new OstKeyManager(userId);
-        String address2 = ostKeyManager2.createHDKey(seed.getBytes());
+        String address2 = ostKeyManager2.createHDKeyAddress(seed.getBytes());
 
         Assert.assertEquals(address1, address2);
     }
