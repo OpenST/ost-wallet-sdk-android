@@ -7,4 +7,14 @@
         android:orderInCategory="100"
         android:title="@string/user_status"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/add_device"
+        android:orderInCategory="100"
+        android:title="@string/add_device"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/scan_qr"
+        android:orderInCategory="100"
+        android:title="@string/scan_qr"
+        app:showAsAction="never" />
 </menu>

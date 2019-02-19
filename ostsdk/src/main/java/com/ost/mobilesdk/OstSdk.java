@@ -19,6 +19,8 @@ import com.ost.mobilesdk.models.entities.OstTokenHolder;
 import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.workflows.OstActivateUser;
+import com.ost.mobilesdk.workflows.OstAddDevice;
+import com.ost.mobilesdk.workflows.OstPerform;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
@@ -98,30 +100,40 @@ public class OstSdk {
         ostActivateUser.perform();
     }
 
-    public static void registerDevice(String userId, String tokenId ,boolean forceSync ,OstWorkFlowCallback callback) {
+    public static void registerDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback callback) {
         Handler handler = new Handler();
-        final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, tokenId ,forceSync ,handler, callback);
+        final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, tokenId, forceSync, handler, callback);
         ostRegisterDevice.perform();
     }
 
     public static void setupDevice(String userId, String tokenId, OstWorkFlowCallback workFlowCallback) {
-        registerDevice(userId, tokenId ,false ,workFlowCallback);
+        registerDevice(userId, tokenId, false, workFlowCallback);
     }
 
-    public static void setupDevice(String userId, String tokenId ,boolean forceSync ,OstWorkFlowCallback workFlowCallback) {
-        registerDevice(userId, tokenId ,forceSync ,workFlowCallback);
+    public static void setupDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback workFlowCallback) {
+        registerDevice(userId, tokenId, forceSync, workFlowCallback);
+    }
+
+    public static void addDevice(String userId, OstWorkFlowCallback workFlowCallback) {
+        Handler handler = new Handler();
+        final OstAddDevice ostAddDevice = new OstAddDevice(userId, handler, workFlowCallback);
+        ostAddDevice.perform();
     }
 
     public static OstToken initToken(String tokenId) {
         return OstToken.init(tokenId);
     }
 
-    public static void scanQRCode() {
-
+    public static void scanQRCode(String userId, String data, OstWorkFlowCallback workFlowCallback) throws JSONException {
+        Log.i(TAG, String.format("Scanned text: %s", data));
+        JSONObject payload = new JSONObject(data);
+        Handler handler = new Handler();
+        final OstPerform ostPerform = new OstPerform(userId, payload ,handler, workFlowCallback);
+        ostPerform.perform();
     }
 
     public static void parse(JSONObject jsonObject) throws JSONException {
-        Log.d(TAG, String.format("Response: %s",jsonObject.toString()));
+        Log.d(TAG, String.format("Response: %s", jsonObject.toString()));
         if (!jsonObject.getBoolean(OstConstants.RESPONSE_SUCCESS)) {
             Log.e(TAG, "JSON response false");
             return;

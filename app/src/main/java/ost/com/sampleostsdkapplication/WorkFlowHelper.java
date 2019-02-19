@@ -1,6 +1,7 @@
 package ost.com.sampleostsdkapplication;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,6 +17,8 @@ import com.ost.mobilesdk.workflows.interfaces.OstWalletWordsAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 
 class WorkFlowHelper implements OstWorkFlowCallback {
 
@@ -70,12 +73,19 @@ class WorkFlowHelper implements OstWorkFlowCallback {
 
     @Override
     public void determineAddDeviceWorkFlow(OstAddDeviceFlowInterface addDeviceFlowInterface) {
-
+        addDeviceFlowInterface.QRCodeFlow();
     }
 
     @Override
     public void showQR(Bitmap qrImage, OstStartPollingInterface startPollingInterface) {
+        Log.i(TAG, "showing QR code");
+        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+        qrImage.compress(Bitmap.CompressFormat.PNG, 100, bStream);
+        byte[] byteArray = bStream.toByteArray();
 
+        Intent anotherIntent = new Intent(mApp, QR_view.class);
+        anotherIntent.putExtra("image", byteArray);
+        mApp.startActivity(anotherIntent);
     }
 
     @Override

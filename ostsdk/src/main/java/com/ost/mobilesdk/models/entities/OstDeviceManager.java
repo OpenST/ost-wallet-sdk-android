@@ -19,6 +19,10 @@ public class OstDeviceManager extends OstBaseEntity {
     public static final String REQUIREMENT = "requirement";
     public static final String NONCE = "nonce";
 
+    public static OstDeviceManager getById(String deviceManagerAddress) {
+        return OstModelFactory.getDeviceManagerModel().getEntityById(deviceManagerAddress);
+    }
+
     public static class CONST_STATUS {
         public static final String INITIALIZING = "initializing";
         public static final String ACTIVATED = "activated";

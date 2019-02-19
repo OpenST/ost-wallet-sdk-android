@@ -9,6 +9,7 @@ import com.ost.mobilesdk.security.OstKeyManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
 
@@ -61,6 +62,11 @@ public class OstUser extends OstBaseEntity {
             }
         }
         return currentDevice;
+    }
+
+    public String sign(String messageToSign) {
+        OstKeyManager ostKeyManager = new OstKeyManager(getId());
+        return ostKeyManager.sign(getCurrentDevice().getAddress(), Numeric.hexStringToByteArray(messageToSign));
     }
 
     public static class CONST_STATUS {

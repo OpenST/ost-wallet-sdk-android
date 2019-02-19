@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * Http api client over
+ *
  * @see OstHttpRequestClient
  * specific for Kit calls
  */
@@ -70,15 +71,15 @@ public class OstApiClient {
         return postUserActivate(requestMap);
     }
 
-    public JSONObject postUserActivate(Map<String,Object> map) throws IOException {
+    public JSONObject postUserActivate(Map<String, Object> map) throws IOException {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/activate-user/", mUserId), requestMap);
     }
 
-    public JSONObject getDevices() throws IOException {
+    public JSONObject getDevices(String address) throws IOException {
         Map<String, Object> requestMap = getPrerequisiteMap();
-        return mOstHttpRequestClient.get(String.format("/users/%s/devices/%s/", mUserId, mOstUser.getCurrentDevice().getAddress()), requestMap);
+        return mOstHttpRequestClient.get(String.format("/users/%s/devices/%s/", mUserId, address), requestMap);
     }
 
     public JSONObject getUser() throws IOException {
@@ -89,13 +90,12 @@ public class OstApiClient {
     private Map<String, Object> getPrerequisiteMap() {
         Map<String, Object> map = new HashMap<>();
 
-        // api key as “deviceAddress.apiSignerAddress”
-        map.put(API_KEY, String.format("%s.%s.%s.%s",mOstUser.getTokenId(), mUserId, mOstUser.getCurrentDevice().getAddress(),
+        // api token_id.user_id.device_address.personal_sign_address
+        map.put(API_KEY, String.format("%s.%s.%s.%s", mOstUser.getTokenId(), mUserId,
+                mOstUser.getCurrentDevice().getAddress(),
                 mOstUser.getCurrentDevice().getPersonalSignAddress()));
-        map.put(API_REQUEST_TIMESTAMP, String.valueOf((int)(System.currentTimeMillis()/1000)));
+        map.put(API_REQUEST_TIMESTAMP, String.valueOf((int) (System.currentTimeMillis() / 1000)));
         map.put(API_SIGNATURE_KIND, SIG_TYPE);
-        map.put(TOKEN_ID, mOstUser.getTokenId());
-        map.put(USER_ID, mUserId);
         return map;
     }
 
@@ -112,9 +112,21 @@ public class OstApiClient {
         return mOstHttpRequestClient.get(String.format("/chains/%s", chainId), requestMap);
     }
 
-    public JSONObject postAddDevice(Map<String,Object> map) throws IOException {
+    public JSONObject postAddDevice(Map<String, Object> map) throws IOException {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/devices/authorize", mUserId), requestMap);
+    }
+
+    public JSONObject getSession(String address) {
+        return null;
+    }
+
+    public JSONObject getDeviceManager() {
+        return null;
+    }
+
+    public JSONObject getTokenHolder() {
+        return null;
     }
 }

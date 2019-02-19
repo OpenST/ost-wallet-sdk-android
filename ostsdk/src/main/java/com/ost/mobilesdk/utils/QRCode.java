@@ -139,7 +139,7 @@ public class QRCode {
                     if (bitMatrix.get(j, i)) {
                         pixels[i * mWidth + j] = 0xFFFFFFFF;
                     } else {
-                        pixels[i * mWidth + j] = 0x282946;
+                        pixels[i * mWidth + j] = 0x00000000;
                     }
                 }
             }
