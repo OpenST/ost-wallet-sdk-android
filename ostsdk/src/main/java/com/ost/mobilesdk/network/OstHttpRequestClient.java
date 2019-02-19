@@ -144,11 +144,11 @@ public class OstHttpRequestClient {
         // Evaluate the url generated so far.
         HttpUrl url = urlBuilder.build();
 
-        // Start Building HMAC Input Buffer by parsing the url.
-        Buffer hmacInputBuffer = new Buffer();
+        // Start Building Query-String Input Buffer by parsing the url.
+        Buffer qsInputBuffer = new Buffer();
 
-        hmacInputBuffer.writeUtf8(resource);
-        hmacInputBuffer.writeByte('?');
+        qsInputBuffer.writeUtf8(resource);
+        qsInputBuffer.writeByte('?');
 
         //Reset urlBuilder.
         urlBuilder = baseUrl.newBuilder();
@@ -159,7 +159,7 @@ public class OstHttpRequestClient {
 
         params = buildNestedQuery(params, "", mapParams);
 
-        // Add params to url/form-body & hmacInputBuffer.
+        // Add params to url/form-body & qsInputBuffer.
         Iterator it = params.iterator();
         boolean firstParam = true;
         while (it.hasNext()) {
@@ -172,13 +172,13 @@ public class OstHttpRequestClient {
             paramVal = specialCharacterEscape(paramVal);
 
             if (!firstParam) {
-                hmacInputBuffer.writeByte('&');
+                qsInputBuffer.writeByte('&');
             }
             firstParam = false;
 
-            hmacInputBuffer.writeUtf8(paramKey);
-            hmacInputBuffer.writeByte('=');
-            hmacInputBuffer.writeUtf8(paramVal);
+            qsInputBuffer.writeUtf8(paramKey);
+            qsInputBuffer.writeByte('=');
+            qsInputBuffer.writeUtf8(paramVal);
             if (DEBUG) System.out.println("paramKey " + paramKey + " paramVal " + paramVal);
 
             if (GET_REQUEST.equalsIgnoreCase(requestType)) {
@@ -191,7 +191,7 @@ public class OstHttpRequestClient {
         if (null != mOstApiSigner) {
             // Add signature to Params.
             paramKey = API_SIGNATURE;
-            paramVal = signQueryParams(hmacInputBuffer);
+            paramVal = signQueryParams(qsInputBuffer);
             if (GET_REQUEST.equalsIgnoreCase(requestType)) {
                 urlBuilder.addEncodedQueryParameter(paramKey, paramVal);
             } else {
@@ -237,9 +237,9 @@ public class OstHttpRequestClient {
     }
 
 
-    private String signQueryParams(Buffer hmacInputBuffer) {
+    private String signQueryParams(Buffer qsInputBuffer) {
         // Generate Signature for Params.
-        byte[] bytes = hmacInputBuffer.readByteArray();
+        byte[] bytes = qsInputBuffer.readByteArray();
         if (DEBUG) System.out.println("bytes to sign: " + new String(bytes, UTF_8));
         // Encryption of bytes
 
