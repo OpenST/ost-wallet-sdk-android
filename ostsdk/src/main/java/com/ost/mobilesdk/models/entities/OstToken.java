@@ -129,7 +129,8 @@ public class OstToken extends OstBaseEntity {
             return chainId;
         } catch (Exception e) {
             Log.e(TAG, "Exception while getting chainId", e);
-            return null;
+            //To-Do: Return null here.
+            return "200";
         }
     }
 }

@@ -1,4 +1,6 @@
 package com.ost.mobilesdk.workflows.errors;
+import android.util.Log;
+
 import com.ost.mobilesdk.OstConstants;
 
 import java.util.HashMap;
@@ -6,9 +8,10 @@ import java.util.Map;
 
 public class OstError extends Error {
 
-
+    private static String Tag = "OstError";
     private final OstConstants.WORKFLOW_TYPE mFlowType;
     private final String mErrorCode;
+
 
     public OstError(String errorMsg) {
         super(errorMsg);
@@ -26,6 +29,7 @@ public class OstError extends Error {
         super(errorMsg);
         mFlowType = flowType;
         mErrorCode = errorCode;
+        Log.e(Tag, "\n\n\nError Code" + errorCode + " \n\n\n");
     }
 
     public OstConstants.WORKFLOW_TYPE getFlowType() {

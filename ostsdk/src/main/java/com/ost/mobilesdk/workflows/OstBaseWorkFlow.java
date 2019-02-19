@@ -114,7 +114,7 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt( new OstError(msg, getWorkflowType() ) );
+                mCallback.flowInterrupt( new OstError(errCode, msg, getWorkflowType() ) );
             }
         });
         return new AsyncStatus(false);
@@ -237,13 +237,15 @@ abstract class OstBaseWorkFlow {
                 mOstToken = OstToken.parse(mOstApiClient.getToken());
             } catch (JSONException e) {
                 Log.i(TAG, "Encountered JSONException while fetching token.");
+                mOstToken = null;
             } catch (IOException e) {
                 Log.i(TAG, "Encountered IOException while fetching token.");
+                mOstToken = null;
             }
         }
 
-        if (null == mOstToken) {
-            Log.i(TAG, "User does not exist");
+        if (null == mOstToken || null == mOstToken.getChainId() ) {
+            Log.e(TAG, "Token is null or does not contain chainId");
             return postErrorInterrupt("wp_base_ltkn_1" , OstErrorTexts.TOKEN_API_FAILED);
         }
         return new AsyncStatus(true);
