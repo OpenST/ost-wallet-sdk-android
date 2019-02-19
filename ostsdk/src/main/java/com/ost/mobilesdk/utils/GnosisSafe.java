@@ -1,5 +1,8 @@
 package com.ost.mobilesdk.utils;
 
+import android.util.Log;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.abi.FunctionEncoder;
@@ -16,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public class GnosisSafe {
-
+    private static final String TAG = "OstGnosisSafe";
     public GnosisSafe() {
 
     }
@@ -80,8 +83,8 @@ public class GnosisSafe {
                     "        safeTxGas: " + safeTxGas + ",\n" +
                     "        dataGas: " + dataGas + ",\n" +
                     "        gasPrice: " + gasPrice + ",\n" +
-                    "        gasToken: " + gasToken + ",\n" +
-                    "        refundReceiver: " + refundReceiver + ",\n" +
+                    "        gasToken: '" + gasToken + "',\n" +
+                    "        refundReceiver: '" + refundReceiver + "',\n" +
                     "        nonce: " + nonce + "\n" +
                     "      }\n" +
                     "    }");
@@ -92,11 +95,105 @@ public class GnosisSafe {
         return null;
     }
 
+    public JSONObject getJSONAddOwnerWithThresholdData(String ownerAddress) {
+        return getJSONAddOwnerWithThresholdData(ownerAddress, "1");
+    }
+
+    public static class SafeTxnBuilder {
+        private static final String NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+        private String addOwnerExecutableData = "0x0";
+        private String deviceManagerAddress = "0x0";
+        private String value = "0";
+        private String operation = "0";
+        private String safeTxnGas = "0";
+        private String dataGas = "0";
+        private String gasPrice = "0";
+        private String refundAddress = NULL_ADDRESS;
+        private String gasToken = NULL_ADDRESS;
+        private String nonce = "0";
+
+        public SafeTxnBuilder setAddOwnerExecutableData(String addOwnerExecutableData) {
+            this.addOwnerExecutableData = addOwnerExecutableData;
+            return this;
+        }
+
+        public SafeTxnBuilder setDeviceManagerAddress(String deviceManagerAddress) {
+            this.deviceManagerAddress = deviceManagerAddress;
+            return this;
+        }
+
+        public SafeTxnBuilder setValue(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public SafeTxnBuilder setOperation(String operation) {
+            this.operation = operation;
+            return this;
+        }
+
+        public SafeTxnBuilder setSafeTxnGas(String safeTxnGas) {
+            this.safeTxnGas = safeTxnGas;
+            return this;
+        }
+
+        public SafeTxnBuilder setDataGas(String dataGas) {
+            this.dataGas = dataGas;
+            return this;
+        }
+
+        public SafeTxnBuilder setGasPrice(String gasPrice) {
+            this.gasPrice = gasPrice;
+            return this;
+        }
+
+        public SafeTxnBuilder setRefundAddress(String refundAddress) {
+            this.refundAddress = refundAddress;
+            return this;
+        }
+
+        public SafeTxnBuilder setGasToken(String gasToken) {
+            this.gasToken = gasToken;
+            return this;
+        }
+
+        public SafeTxnBuilder setNonce(String nonce) {
+            this.nonce = nonce;
+            return this;
+        }
+
+        public JSONObject build() {
+            return new GnosisSafe().getSafeTxData(deviceManagerAddress,
+                    value, addOwnerExecutableData, operation, safeTxnGas, dataGas, gasPrice,
+                    gasToken, refundAddress, nonce);
+        }
+    }
+
     public Map<String, Object> getAddOwnerWithThresholdData(String ownerAddress, String threshHold) {
         Map<String,Object> map = new HashMap<>();
         map.put("method", "addOwnerWithThreshold");
         List<String> paramList = Arrays.asList(ownerAddress, threshHold);
         map.put("parameters", paramList);
         return map;
+    }
+
+    public JSONObject getJSONAddOwnerWithThresholdData(String ownerAddress, String threshHold) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("method", "addOwnerWithThreshold");
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(ownerAddress);
+            jsonArray.put(threshHold);
+            jsonObject.put("parameters", jsonArray);
+
+            return jsonObject;
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected exception while parsing json");
+        }
+        return null;
+    }
+
+    public String getAddOwnerWithThresholdExecutableData(String ownerAddress) {
+       return getAddOwnerWithThresholdExecutableData(ownerAddress, "1");
     }
 }

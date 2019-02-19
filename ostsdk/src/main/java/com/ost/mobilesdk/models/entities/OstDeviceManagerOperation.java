@@ -32,7 +32,7 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
         public static final String FAIL = "fail";
     }
 
-    public static class KIND {
+    public static class KIND_TYPE {
         public static final String AUTHORIZE_DEVICE = "authorize_device";
         public static final String REVOKE_DEVICE = "revode_device";
         public static final String SWAP_DEVICE = "swap_device";

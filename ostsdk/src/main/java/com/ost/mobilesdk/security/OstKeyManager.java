@@ -14,6 +14,7 @@ import com.ost.mobilesdk.utils.AsyncStatus;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Sign;
+import org.web3j.utils.Numeric;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -85,14 +86,15 @@ public class OstKeyManager {
         return Sign.signMessage(data, ecKeyPair, false);
     }
 
-    public Sign.SignatureData sign(String address, byte[] data) {
+    public String sign(String address, byte[] data) {
         OstSecureKey ostSecureKey = mOstSecureKeyModel.getByKey(ETHEREUM_KEY_FOR_ + address);
         if (null == ostSecureKey) {
             return null;
         }
         byte[] decryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSecureKey.getData());
         ECKeyPair ecKeyPair = ECKeyPair.create(decryptedKey);
-        return Sign.signMessage(data, ecKeyPair, false);
+        Sign.SignatureData signatureData =  Sign.signMessage(data, ecKeyPair, false);
+        return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x",(signatureData.getV()));
     }
 
     String[] getMnemonics(String address) {

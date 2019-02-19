@@ -1,15 +1,25 @@
 package com.ost.mobilesdk.workflows;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.util.Log;
 
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstDeviceManager;
+import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.utils.GnosisSafe;
+import com.ost.mobilesdk.utils.OstPayloadBuilder;
+import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -39,10 +49,9 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
     private enum STATES {
         INITIAL,
         QR_CODE,
-        REGISTERED,
-        ERROR,
         PIN,
-        WORDS
+        WORDS,
+        ERROR
     }
 
     private STATES mCurrentState = STATES.INITIAL;
@@ -82,9 +91,14 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 determineAddDeviceFlow();
                 break;
             case QR_CODE:
+
                 Log.d(TAG, String.format("QR Code add device flow for userId: %s started", mUserId));
                 //Create payload
-                showPayload();
+                String payload = createPayload();
+                Bitmap bitmap = createQRBitMap(payload);
+                Log.i(TAG, "showing QR code");
+                showPayload(bitmap);
+
                 break;
             case PIN:
                 break;
@@ -97,11 +111,39 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
         return new AsyncStatus(true);
     }
 
-    private void showPayload() {
+    private Bitmap createQRBitMap(String payload) {
+        return QRCode.newInstance(OstSdk.getContext())
+                .setContent(payload)
+                .setErrorCorrectionLevel(ErrorCorrectionLevel.M)
+                .setMargin(2)
+                .getQRCOde();
+    }
+
+
+    private String createPayload() {
+        OstUser ostUser = OstUser.getById(mUserId);
+        OstDevice ostDevice = ostUser.getCurrentDevice();
+        String ownerAddress = ostDevice.getAddress();
+        String deviceManagerAddress = ostUser.getDeviceManagerAddress();
+        OstDeviceManager ostDeviceManager = OstDeviceManager.getById(deviceManagerAddress);
+        String callData = new GnosisSafe().getAddOwnerWithThresholdExecutableData(ownerAddress);
+        JSONObject rawCallData = new GnosisSafe().getJSONAddOwnerWithThresholdData(ownerAddress);
+
+        JSONObject jsonObject = new OstPayloadBuilder()
+                .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
+                .setCallData(callData)
+                .setRawCalldata(rawCallData)
+                .setTo(deviceManagerAddress)
+                .build();
+
+        return jsonObject.toString();
+    }
+
+    private void showPayload(final Bitmap qrPayLoad) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.showQR( null, OstAddDevice.this);
+                mCallback.showQR( qrPayLoad, OstAddDevice.this);
             }
         });
     }

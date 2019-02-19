@@ -1,6 +1,10 @@
 package ost.com.sampleostsdkapplication;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +24,8 @@ import java.util.List;
 public class UsersListActivity extends MappyBaseActivity {
 
     private static final String TAG = "UsersListActivity";
+    private static final int QR_REQUEST_CODE = 2;
+    private int PICK_IMAGE_REQUEST = 1;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private UserAdapter mAdapter;
@@ -61,7 +67,7 @@ public class UsersListActivity extends MappyBaseActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    mDataList.add(new UserData("","Network Error", "",""));
+                    mDataList.add(new UserData("", "Network Error", "", ""));
                 }
                 mAdapter.notifyDataSetChanged();
             }
@@ -82,14 +88,48 @@ public class UsersListActivity extends MappyBaseActivity {
 
         if (id == R.id.user_status) {
             Log.i(TAG, "User satus clicked");
-            LogInUser logInUser = ((App)getApplication()).getLoggedUser();
+            LogInUser logInUser = ((App) getApplication()).getLoggedUser();
             String userId = logInUser.getOstUserId();
             String password = logInUser.getPassword();
             String uPin = "123456";
             String expirationHeight = "1000000";
             String spendingLimit = "1000000000000";
             OstSdk.activateUser(userId, uPin, password, expirationHeight, spendingLimit, new WorkFlowHelper(getApplicationContext()));
+        } else if (id == R.id.add_device) {
+            Log.i(TAG, "Add device clicked");
+            LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+
+            String userId = logInUser.getOstUserId();
+            OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()));
+        } else if (id == R.id.scan_qr) {
+            Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
+            startActivityForResult(intent, QR_REQUEST_CODE);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            Uri uri = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                Log.d(TAG, String.valueOf(bitmap));
+            } catch (Exception e) {
+                Log.e(TAG, "IOException in on Activity result");
+            }
+        }
+        if (requestCode == QR_REQUEST_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            String userId = ((App)getApplicationContext()).getLoggedUser().getOstUserId();
+            String returnedResult = data.getData().toString();
+            try {
+                OstSdk.scanQRCode(userId, returnedResult, new WorkFlowHelper(getApplicationContext()));
+            } catch (JSONException e) {
+                Log.e(TAG,"JSONException while parsing");
+            }
+        }
     }
 }

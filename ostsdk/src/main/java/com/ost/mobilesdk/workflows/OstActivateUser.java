@@ -76,6 +76,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
             if (null == salt) {
                 Log.e(TAG, "Salt is null");
                 postError("Salt is null");
+                return new AsyncStatus(false);
             }
 
             Log.i(TAG, "Creating recovery key");
