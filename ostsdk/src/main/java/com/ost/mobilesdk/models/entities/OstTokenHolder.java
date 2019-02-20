@@ -74,11 +74,11 @@ public class OstTokenHolder extends OstBaseEntity {
     }
 
     public String getUserId() {
-        return getJSONData().optString(OstTokenHolder.USER_ID, null);
+        return this.getParentId();
     }
 
     public String getAddress() {
-        return getJSONData().optString(OstTokenHolder.ADDRESS, null);
+        return this.getId();
     }
 
 

@@ -19,6 +19,9 @@ import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * EIP1077 Transaction Signing
@@ -144,31 +147,30 @@ public class OstSession extends OstBaseEntity {
     }
 
     public String getAddress() {
-        return getJSONData().optString(OstSession.ADDRESS, null);
+        return this.getId();
     }
 
 
     public String getStatus() {
-        return getJSONData().optString(OstSession.STATUS, null);
+        return this.getJsonDataPropertyAsString(OstSession.STATUS);
     }
 
 
     public String getTokenHolderAddress() {
-        return getJSONData().optString(OstSession.TOKEN_HOLDER_ADDRESS, null);
+        return this.getJsonDataPropertyAsString(OstSession.TOKEN_HOLDER_ADDRESS);
     }
 
 
     public String getExpirationBlockHeight() {
-        return getJSONData().optString(OstSession.EXPIRATION_BLOCK_HEIGHT, null);
+        return this.getJsonDataPropertyAsString(OstSession.EXPIRATION_BLOCK_HEIGHT);
     }
 
-
     public String getSpendingLimit() {
-        return getJSONData().optString(OstSession.SPENDING_LIMIT, null);
+        return this.getJsonDataPropertyAsString(OstSession.SPENDING_LIMIT);
     }
 
     public String getNonce() {
-        return getJSONData().optString(OstSession.NONCE, null);
+        return this.getJsonDataPropertyAsString(OstSession.NONCE);
     }
 
     @Override

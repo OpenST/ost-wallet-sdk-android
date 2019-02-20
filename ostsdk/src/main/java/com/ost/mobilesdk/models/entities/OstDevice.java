@@ -136,30 +136,15 @@ public class OstDevice extends OstBaseEntity {
     }
 
     public String getDeviceName() {
-        JSONObject jsonObject = this.getJSONData();
-        if ( null == jsonObject ) {
-            Log.e(TAG, "getDeviceName: jsonObject is null");
-            return null;
-        }
-        return jsonObject.optString(OstDevice.DEVICE_NAME,null);
+        return this.getJsonDataPropertyAsString(OstDevice.DEVICE_NAME);
     }
 
-    public String getPersonalSignAddress() {
-        JSONObject jsonObject = this.getJSONData();
-        if ( null == jsonObject ) {
-            Log.e(TAG, "getPersonalSignAddress: jsonObject is null");
-            return null;
-        }
-        return jsonObject.optString(OstDevice.API_SIGNER_ADDRESS,null);
+    public String getApiSignerAddress() {
+        return this.getJsonDataPropertyAsString(OstDevice.API_SIGNER_ADDRESS);
     }
 
     public String getDeviceUuid() {
-        JSONObject jsonObject = this.getJSONData();
-        if ( null == jsonObject ) {
-            Log.e(TAG, "getDeviceUuid: jsonObject is null");
-            return null;
-        }
-        return jsonObject.optString(OstDevice.DEVICE_UUID,null);
+        return this.getJsonDataPropertyAsString(OstDevice.DEVICE_UUID);
     }
 
     public String getUserId() {
@@ -167,12 +152,7 @@ public class OstDevice extends OstBaseEntity {
     }
 
     public String getDeviceManagerAddress() {
-        JSONObject jsonObject = this.getJSONData();
-        if ( null == jsonObject ) {
-            Log.e(TAG, "getDeviceManagerAddress: jsonObject is null");
-            return null;
-        }
-        return jsonObject.optString(OstDevice.DEVICE_MANAGER_ADDRESS, null);
+        return this.getJsonDataPropertyAsString(OstDevice.DEVICE_MANAGER_ADDRESS);
     }
 
     @Override

@@ -211,6 +211,14 @@ public abstract class OstBaseEntity {
         this.updateWithJsonObject(jsonObjectCopy);
     }
 
+    protected String getJsonDataPropertyAsString(String key) {
+        JSONObject jsonObject = this.getJSONData();
+        if ( null == jsonObject ) {
+            Log.e(TAG, "getJsonDataPropertyAsString: jsonObject is null. key = " + key + ". Entity = " + this.getClass().toString() );
+            return null;
+        }
+        return jsonObject.optString(key,null);
+    }
 
     interface EntityFactory {
         OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException;

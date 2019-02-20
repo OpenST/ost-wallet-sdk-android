@@ -53,7 +53,7 @@ public class OstDeviceTest {
         assertEquals("1234", ostDevice.getUserId());
         assertEquals("221", ostDevice.getDeviceUuid());
         assertEquals("Device", ostDevice.getDeviceName());
-        assertEquals("0x12345567", ostDevice.getPersonalSignAddress());
+        assertEquals("0x12345567", ostDevice.getApiSignerAddress());
 
     }
 

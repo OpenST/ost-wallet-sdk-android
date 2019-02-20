@@ -121,22 +121,15 @@ abstract class OstBaseWorkFlow {
         return new AsyncStatus(false);
     }
 
-    boolean hasCreatedDevice() {
-        OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
-        return hasCreatedDevice(ostDevice);
-    }
 
-    boolean hasCreatedDevice(OstDevice ostDevice) {
+    boolean hasDeviceApiKey(OstDevice ostDevice) {
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress())
-                && (OstDevice.CONST_STATUS.CREATED.equals(ostDevice.getStatus().toLowerCase()));
+        return ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getApiSignerAddress());
     }
 
     boolean canDeviceMakeApiCall(OstDevice ostDevice) {
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        boolean isRegistered = ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress());
-        isRegistered = isRegistered && ostDevice.canMakeApiCall();
-        return isRegistered;
+        //Must have Device Api Key which should have been registered.
+        return hasDeviceApiKey(ostDevice) && ostDevice.canMakeApiCall();
     }
 
     String parseResponseForKey(JSONObject jsonObject, String key) {

@@ -87,40 +87,61 @@ public class OstTransaction extends OstBaseEntity {
     }
 
     public String getTransactionHash() {
-        return getJSONData().optString(OstTransaction.TRANSACTION_HASH,null);
+        return this.getId();
     }
 
     public String getStatus() {
-        return getJSONData().optString(OstSession.STATUS, null);
+        return this.getJsonDataPropertyAsString(OstTransaction.STATUS);
     }
 
     public String getGasPrice() {
-        return getJSONData().optString(OstTransaction.GAS_PRICE,null);
+        return this.getJsonDataPropertyAsString(OstTransaction.GAS_PRICE);
     }
 
     public String getGasUsed() {
-        return getJSONData().optString(OstTransaction.GAS_USED,null);
+        return this.getJsonDataPropertyAsString(OstTransaction.GAS_USED);
     }
 
     public String getTransactionFee() {
-        return getJSONData().optString(OstTransaction.TRANSACTION_FEE,null);
+        return this.getJsonDataPropertyAsString(OstTransaction.TRANSACTION_FEE);
     }
 
     public String getBlockTimestamp() {
-        return getJSONData().optString(OstTransaction.BLOCK_TIMESTAMP,null);
+        return this.getJsonDataPropertyAsString(OstTransaction.BLOCK_TIMESTAMP);
     }
 
     public String getBlockNumber() {
-        return getJSONData().optString(OstTransaction.BLOCK_NUMBER,null);
+        return this.getJsonDataPropertyAsString(OstTransaction.BLOCK_NUMBER);
     }
 
     public String getRuleName() {
-        return getJSONData().optString(OstTransaction.RULE_NAME,null);
+        return this.getJsonDataPropertyAsString(OstTransaction.RULE_NAME);
     }
 
     public String getTransfers() {
-        return getJSONData().optString(OstTransaction.TRANSFERS,null);
+        //To-Do: Transfers is an array. Create Transfer Entity?
+        return this.getJsonDataPropertyAsString(OstTransaction.TRANSFERS);
     }
+
+    // Transactions can not have token-id or user-id as parent.
+    // They represent actual block-chain transactions.
+    // chain-id can be the only parent.
+    public String getParentId() {
+        return "";
+    }
+
+    /**
+     * To-Do: Do If Time:
+     * - Problem Statement:
+     *   - SDK should provide an ability to show user ledger in offline mode.
+     *
+     * - Possible Solution:
+     *   -  We need to create another entity OstTransactionContext
+     *   - It shall have 2 columns:
+     *   - user-id, transaction-hash
+     *   - When ever we insert into Transactions, we also create a transaction context.
+     *   - user-id shall be user-id of the device using which the api call was made.
+     */
 
     @Override
     String getEntityIdKey() {

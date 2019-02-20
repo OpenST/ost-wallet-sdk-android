@@ -73,12 +73,18 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                     return postErrorInterrupt("wf_rd_pr_2" , ErrorCode.CREATE_DEVICE_FAILED);
                 }
 
-                Log.i(TAG, "Check is device registered");
-                if (hasCreatedDevice(ostDevice)) {
+                Log.i(TAG, "Check we are able to access device keys");
+                if (!hasDeviceApiKey(ostDevice)) {
+                    return postErrorInterrupt("wf_rd_pr_3", ErrorCode.CREATE_DEVICE_FAILED);
+                }
+
+                Log.i(TAG, "Check if device has been registered.");
+                if (OstDevice.CONST_STATUS.CREATED.equalsIgnoreCase( ostDevice.getStatus() )  ) {
                     Log.i(TAG, "Registering device");
                     registerDevice(ostDevice);
                     return new AsyncStatus(true);
                 }
+                Log.i(TAG, "Device is already registered. ostDevice.status:" + ostDevice.getStatus() );
                 sync();
                 postFlowComplete();
                 break;

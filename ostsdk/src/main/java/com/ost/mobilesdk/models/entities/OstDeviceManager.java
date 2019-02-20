@@ -92,14 +92,19 @@ public class OstDeviceManager extends OstBaseEntity {
         JSONObject jsonObject = this.getJSONData();
         if ( null == jsonObject ) {
             Log.e(TAG, "getRequirement: jsonObject is null");
-            return 0;
+            return -1;
         }
-        return jsonObject.optInt(OstDeviceManager.REQUIREMENT, 0);
+        return jsonObject.optInt(OstDeviceManager.REQUIREMENT, -1);
     }
 
 
-    public String getNonce() {
-        return getJSONData().optString(OstDeviceManager.NONCE, null);
+    public int getNonce() {
+        JSONObject jsonObject = this.getJSONData();
+        if ( null == jsonObject ) {
+            Log.e(TAG, "getRequirement: jsonObject is null");
+            return -1;
+        }
+        return jsonObject.optInt(OstDeviceManager.NONCE, -1);
     }
 
 

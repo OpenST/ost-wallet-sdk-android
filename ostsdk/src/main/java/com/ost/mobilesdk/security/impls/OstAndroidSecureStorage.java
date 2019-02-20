@@ -20,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.Certificate;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.Calendar;
 import java.util.Objects;
@@ -123,7 +124,8 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
     private KeyPair getKey() {
         try {
             PrivateKey privateKey = (PrivateKey) mKeyStore.getKey(mKeyAlias, null);
-            PublicKey publicKey = (null == mKeyStore.getCertificate(mKeyAlias) ? null : mKeyStore.getCertificate(mKeyAlias).getPublicKey());
+            Certificate keyStoreCertificate = mKeyStore.getCertificate(mKeyAlias);
+            PublicKey publicKey = (null == keyStoreCertificate ? null : keyStoreCertificate.getPublicKey());
             if (null == privateKey || null == publicKey) {
                 return null;
             }

@@ -54,23 +54,25 @@ public class OstRule extends OstBaseEntity {
     }
 
     public String getTokenId() {
-        return getJSONData().optString(OstRule.TOKEN_ID, null);
+        return this.getJsonDataPropertyAsString(OstRule.TOKEN_ID);
     }
 
     public String getAddress() {
-        return getJSONData().optString(OstRule.ADDRESS, null);
+        return this.getJsonDataPropertyAsString(OstRule.ADDRESS);
     }
 
     public String getAbi() {
-        return getJSONData().optString(OstRule.ABI, null);
+        return this.getJsonDataPropertyAsString(OstRule.ABI);
     }
 
     public String getName() {
-        return getJSONData().optString(OstRule.NAME, null);
+        return this.getJsonDataPropertyAsString(OstRule.NAME);
     }
 
     public String getCallPrefix() {
-        return getJSONData().optString(OstRule.CALL_PREFIX, null);
+        //To-Do: Call Prefix is an array.
+        //But, do we really need it.
+        return this.getJsonDataPropertyAsString(OstRule.CALL_PREFIX);
     }
 
 

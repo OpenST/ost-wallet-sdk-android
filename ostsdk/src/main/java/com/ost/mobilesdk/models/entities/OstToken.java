@@ -106,26 +106,28 @@ public class OstToken extends OstBaseEntity {
     }
 
     public String getName() {
-        return getJSONData().optString(OstToken.NAME, null);
+        return this.getJsonDataPropertyAsString(OstToken.NAME);
     }
 
     public String getSymbol() {
-        return getJSONData().optString(OstToken.SYMBOL, null);
+        return this.getJsonDataPropertyAsString(OstToken.SYMBOL);
     }
 
     public String getConversionFactor() {
-        return getJSONData().optString(OstToken.CONVERSION_FACTOR, null);
+        return this.getJsonDataPropertyAsString(OstToken.CONVERSION_FACTOR);
     }
 
     public String getTotalSupply() {
-        return getJSONData().optString(OstToken.TOTAL_SUPPLY, null);
+        return this.getJsonDataPropertyAsString(OstToken.TOTAL_SUPPLY);
     }
 
     public JSONObject getOriginChain() {
+        //To-Do: Make it safe.
         return getJSONData().optJSONObject(OstToken.ORIGIN_CHAIN);
     }
 
     public JSONArray getAuxiliaryChain() {
+        //To-Do: Make it safe.
         return getJSONData().optJSONArray(OstToken.AUXILIARY_CHAINS);
     }
 

@@ -100,40 +100,42 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
     }
 
     public String getUserId() {
-        return getJSONData().optString(OstDeviceManagerOperation.USER_ID, null);
+        return this.getParentId();
     }
 
     public String getDeviceManagerId() {
-        return getJSONData().optString(OstDeviceManagerOperation.DEVICE_MANAGER_ID, null);
+        return this.getJsonDataPropertyAsString(OstDeviceManagerOperation.DEVICE_MANAGER_ID);
     }
 
 
     public String getKind() {
-        return getJSONData().optString(OstDeviceManagerOperation.KIND, null);
+        return this.getJsonDataPropertyAsString(OstDeviceManagerOperation.KIND);
     }
 
     public String getDeviceManagerAddress() {
-        return getJSONData().optString(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS, null);
+        return this.getJsonDataPropertyAsString(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS);
     }
 
     public String getSafeTxnGas() {
-        return getJSONData().optString(OstDeviceManagerOperation.SAFE_TXN_GAS, null);
+        return this.getJsonDataPropertyAsString(OstDeviceManagerOperation.SAFE_TXN_GAS);
     }
 
     public JSONObject getSignatures() {
+        //TO-DO: Make it safe.
         return getJSONData().optJSONObject(OstDeviceManagerOperation.SIGNATURES);
     }
 
     public String getCallData() {
-        return getJSONData().optString(OstDeviceManagerOperation.CALL_DATA, null);
+        return this.getJsonDataPropertyAsString(OstDeviceManagerOperation.CALL_DATA);
     }
 
     public JSONObject getRawCallData() {
+        //TO-DO: Make it safe.
         return getJSONData().optJSONObject(OstDeviceManagerOperation.RAW_CALL_DATA);
     }
 
     public String getOperation() {
-        return getJSONData().optString(OstDeviceManagerOperation.OPERATION, null);
+        return this.getJsonDataPropertyAsString(OstDeviceManagerOperation.OPERATION);
     }
 
     @Override

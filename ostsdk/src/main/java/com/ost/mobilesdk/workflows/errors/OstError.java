@@ -30,7 +30,7 @@ public class OstError extends Error {
         mFlowType = flowType;
         mErrorCode = errorCode;
         mInternalErrorCode = internalErrorCode;
-        Log.e(Tag, "\n\n\nError Code" + internalErrorCode + " \n\n\n");
+        Log.d(Tag, "Error Code: '" + internalErrorCode + "'. Error Message:" + OstErrors.getMessage(errorCode));
     }
 
     public OstConstants.WORKFLOW_TYPE getFlowType() {

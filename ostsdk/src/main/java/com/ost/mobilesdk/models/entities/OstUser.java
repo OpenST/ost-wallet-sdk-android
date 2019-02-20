@@ -126,27 +126,31 @@ public class OstUser extends OstBaseEntity {
     }
 
     public String getTokenId() {
-        return getJSONData().optString(OstUser.TOKEN_ID, null);
+        return this.getParentId();
     }
 
     public String getTokenHolderAddress() {
-        return getJSONData().optString(OstUser.TOKEN_HOLDER_ADDRESS, null);
+        return this.getJsonDataPropertyAsString(OstUser.TOKEN_HOLDER_ADDRESS);
     }
 
 
     public String getDeviceManagerAddress() {
-        return getJSONData().optString(OstUser.DEVICE_MANAGER_ADDRESS, null);
+        return this.getJsonDataPropertyAsString(OstUser.DEVICE_MANAGER_ADDRESS);
     }
 
     public String getType() {
-        return getJSONData().optString(OstUser.TYPE, null);
+        return this.getJsonDataPropertyAsString(OstUser.TYPE);
     }
 
     public OstDevice createDevice() {
         OstKeyManager ostKeyManager = new OstKeyManager(getId());
         String apiAddress = ostKeyManager.getApiKeyAddress();
         String address = ostKeyManager.getDeviceAddress();
+        Log.d(TAG, "Create new device.");
         OstDevice ostDevice = OstDevice.init(address, apiAddress, getId());
+        Log.d(TAG, "- address: " + address);
+        Log.d(TAG, "- apiAddress: " + apiAddress);
+        Log.d(TAG, "- getId: " + getId());
         return ostDevice;
     }
 
