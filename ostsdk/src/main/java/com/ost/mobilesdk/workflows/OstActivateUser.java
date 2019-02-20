@@ -23,14 +23,12 @@ import com.ost.mobilesdk.workflows.services.OstUserPollingService;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class OstActivateUser extends OstBaseWorkFlow {
 
     private static final String TAG = "OstActivateUser";
-    private static final int THREE_TIMES = 3;
     private final String mPassWord;
     private final String mUPin;
     private String mExpirationHeight;
@@ -83,7 +81,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
             //Calculate Expiration Height
             status = status.isSuccess() ? this.calculateExpirationHeight() : status;
 
-            if (!status.isSuccess() ) {
+            if (!status.isSuccess()) {
                 return status;
             }
 
@@ -110,17 +108,17 @@ public class OstActivateUser extends OstBaseWorkFlow {
             try {
                 response = ostApiClient.postUserActivate(sessionAddress,
                         mExpirationHeight, mSpendingLimit, recoveryAddress);
-                if ( isValidResponse(response) ) {
+                if (isValidResponse(response)) {
                     //Parse the api response and update the data locally.
                     OstSdk.parse(response);
                 } else {
                     //Return with error.
                     Log.e(TAG, String.format("Invalid response for User activate call %s", response.toString()));
-                    return postErrorInterrupt("wf_au_pr_3" , OstErrorTexts.ACTIVATE_USER_API_FAILED);
+                    return postErrorInterrupt("wf_au_pr_3", OstErrorTexts.ACTIVATE_USER_API_FAILED);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Something went wrong while activating user.", e);
-                return postErrorInterrupt("wf_au_pr_4" , OstErrorTexts.ACTIVATE_USER_API_FAILED);
+                return postErrorInterrupt("wf_au_pr_4", OstErrorTexts.ACTIVATE_USER_API_FAILED);
             }
         }
 
@@ -132,8 +130,11 @@ public class OstActivateUser extends OstBaseWorkFlow {
         boolean isTimeOut = waitForUpdate();
         if (isTimeOut) {
             Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
-            return postErrorInterrupt("wf_au_pr_5" , OstErrorTexts.ACTIVATE_USER_API_POLLING_FAILED);
+            return postErrorInterrupt("wf_au_pr_5", OstErrorTexts.ACTIVATE_USER_API_POLLING_FAILED);
         }
+        Log.i(TAG, "Syncing Entities: User, Device, Sessions");
+        new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.DEVICE,
+                OstSdkSync.SYNC_ENTITY.SESSION).perform();
 
         Log.i(TAG, "Response received for post Token deployment");
         postFlowComplete();
@@ -191,20 +192,20 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
 
     private String createRecoveryKey(String salt) {
-        byte[] hashPassword = OstSdkCrypto.getInstance().genDigest(mPassWord.getBytes(), THREE_TIMES);
-        byte[] scryptInput = ((new String(hashPassword)) + mUPin + mUserId).getBytes();
-        byte[] seed = OstSdkCrypto.getInstance().genSCryptKey(scryptInput, salt.getBytes());
+        String stringToCalculate = String.format("%s%s%s", mPassWord, mUPin, mUserId);
+        byte[] seed = OstSdkCrypto.getInstance().genSCryptKey(stringToCalculate.getBytes(), salt.getBytes());
 
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
         //Don't store key of recovery key
         String address = ostKeyManager.createHDKeyAddress(seed);
+
         return address;
     }
 
     private AsyncStatus calculateExpirationHeight() {
-        if ( null == mOstToken ) {
+        if (null == mOstToken) {
             AsyncStatus loadTokenStatus = super.loadToken();
-            if ( !loadTokenStatus.isSuccess() ) {
+            if (!loadTokenStatus.isSuccess()) {
                 return loadTokenStatus;
             }
         }
@@ -215,23 +216,23 @@ public class OstActivateUser extends OstBaseWorkFlow {
             jsonObject = mOstApiClient.getCurrentBlockNumber();
             String strCurrentBlockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
             String strBlockGenerationTime = parseResponseForKey(jsonObject, OstConstants.BLOCK_TIME);
-            currentBlockNumber = Long.parseLong( strCurrentBlockNumber );
-            blockGenerationTime = Long.parseLong( strBlockGenerationTime );
+            currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
+            blockGenerationTime = Long.parseLong(strBlockGenerationTime);
 
         } catch (IOException e) {
 
             Log.e(TAG, "Encountered IOException while fetching current block number.", e);
-            return postErrorInterrupt("wp_au_ceh_1" , OstErrorTexts.CHAIN_API_FAILED);
+            return postErrorInterrupt("wp_au_ceh_1", OstErrorTexts.CHAIN_API_FAILED);
         } catch (Exception e) {
             Log.e(TAG, "Encountered Exception while fetching current block number.", e);
-            return postErrorInterrupt("wp_au_ceh_2" , OstErrorTexts.CHAIN_API_FAILED);
+            return postErrorInterrupt("wp_au_ceh_2", OstErrorTexts.CHAIN_API_FAILED);
         }
 
         long bufferBlocks = OstConstants.SESSION_BUFFER_TIME / blockGenerationTime;
         long expiresAfterBlocks = mExpiresAfterInSecs / blockGenerationTime;
         long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
 
-        mExpirationHeight = String.valueOf( expirationHeight );
+        mExpirationHeight = String.valueOf(expirationHeight);
         return new AsyncStatus(true);
     }
 }
