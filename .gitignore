@@ -61,3 +61,6 @@ fastlane/test_output
 fastlane/readme.md
 ostsdk/ostsdk.iml
 .DS_Store
+
+#db schema files
+ostsdk/schemas/
