@@ -18,7 +18,7 @@ public class OstToken extends OstBaseEntity {
     public static final String CONVERSION_FACTOR = "conversion_factor";
     public static final String TOTAL_SUPPLY = "total_supply";
     public static final String ORIGIN_CHAIN = "origin_chain";
-    public static final String AUXILIARY_CHAIN = "auxiliary_chain";
+    public static final String AUXILIARY_CHAINS = "auxiliary_chains";
     private static final String CHAIN_ID = "chain_id";
     private static final String TAG = "OstToken";
 
@@ -58,7 +58,7 @@ public class OstToken extends OstBaseEntity {
             jsonObject.put(OstToken.CONVERSION_FACTOR, "");
             jsonObject.put(OstToken.TOTAL_SUPPLY, "");
             jsonObject.put(OstToken.ORIGIN_CHAIN, "");
-            jsonObject.put(OstToken.AUXILIARY_CHAIN, "");
+            jsonObject.put(OstToken.AUXILIARY_CHAINS, "");
             return OstToken.parse(jsonObject);
         } catch (JSONException e) {
             Log.e(TAG, "Unexpected error: OstToken json parse exception");
@@ -113,7 +113,7 @@ public class OstToken extends OstBaseEntity {
     }
 
     public JSONArray getAuxiliaryChain() {
-        return getJSONData().optJSONArray(OstToken.AUXILIARY_CHAIN);
+        return getJSONData().optJSONArray(OstToken.AUXILIARY_CHAINS);
     }
 
     @Override
@@ -129,8 +129,7 @@ public class OstToken extends OstBaseEntity {
             return chainId;
         } catch (Exception e) {
             Log.e(TAG, "Exception while getting chainId", e);
-            //To-Do: Return null here.
-            return "200";
+            return null;
         }
     }
 }

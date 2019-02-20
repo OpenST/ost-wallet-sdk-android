@@ -33,7 +33,7 @@ public abstract class OstPollingService extends IntentService {
     public static final String EXTRA_POLL_COUNT = "com.ost.mobilesdk.workflows.extra.POLL_COUNT";
     public static final String ENTITY_UPDATE_MESSAGE = "com.ost.mobilesdk.workflows.extra.ENTITY_UPDATE";
     public static final String EXTRA_ENTITY_TYPE = "com.ost.mobilesdk.workflows.extra.ENTITY_TYPE";
-    public static final String EXTRA_IS_POLLING_TIMEOUT = "com.ost.mobilesdk.workflows.extra.IS_POLLING_TIMEOUT";;
+    public static final String EXTRA_IS_POLLING_TIMEOUT = "com.ost.mobilesdk.workflows.extra.IS_POLLING_TIMEOUT";
 
     private static final int POLL_MAX_COUNT = 10;
 
@@ -54,7 +54,7 @@ public abstract class OstPollingService extends IntentService {
 
         Calendar calendar = Calendar.getInstance();
         PendingIntent pendingIntent = PendingIntent.getService(context.getApplicationContext(), 0, intent, 0);
-        AlarmManager alarm = (AlarmManager)context.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarm = (AlarmManager) context.getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         alarm.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + INITIAL_POLLING_INTERVAL, pendingIntent);
     }
 
@@ -94,6 +94,13 @@ public abstract class OstPollingService extends IntentService {
             if (!isValidResponse) {
                 setAlarm(userId, entityId, entityFromStatus, entityToStatus, pollCount);
                 return;
+            }
+
+            Log.i(TAG, "parse Response");
+            try {
+                OstSdk.parse(response);
+            } catch (JSONException e) {
+                Log.e(TAG, "Unexpected JSON Excpetion");
             }
 
             Log.i(TAG, String.format("Checking %s entity update status", getEntityName()));
@@ -180,7 +187,7 @@ public abstract class OstPollingService extends IntentService {
 
         Calendar calendar = Calendar.getInstance();
         PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
-        AlarmManager alarm = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarm = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         alarm.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis() + POLLING_INTERVAL, pendingIntent);
     }
 
