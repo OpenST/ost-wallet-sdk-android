@@ -3,7 +3,6 @@ package com.ost.mobilesdk.models.Impls;
 import android.util.Log;
 
 import com.ost.mobilesdk.database.daos.OstBaseDao;
-import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.entities.OstBaseEntity;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
@@ -72,6 +71,27 @@ abstract class OstBaseModelRepository {
             @Override
             public AsyncStatus call() {
                 OstBaseModelRepository.this.insert(ostBaseEntity);
+                return new AsyncStatus(true);
+            }
+        });
+    }
+
+
+    public Future<AsyncStatus> deleteEntity(String id) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstBaseModelRepository.this.delete(id);
+                return new AsyncStatus(true);
+            }
+        });
+    }
+
+    public Future<AsyncStatus> deleteAllEntities() {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstBaseModelRepository.this.deleteAll();
                 return new AsyncStatus(true);
             }
         });
