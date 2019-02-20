@@ -34,13 +34,28 @@ public class OstTransaction extends OstBaseEntity {
         public static final String FAIL = "fail";
     }
 
+
+    private static EntityFactory entityFactory;
+    private static EntityFactory getEntityFactory() {
+        if ( null == entityFactory ) {
+            entityFactory = new EntityFactory() {
+                @Override
+                public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                    return new OstTransaction(jsonObject);
+                }
+            };
+        }
+        return entityFactory;
+    }
+
     public static OstTransaction parse(JSONObject jsonObject) throws JSONException {
-        return (OstTransaction) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getTransactionModel(), getIdentifier(), new EntityFactory() {
-            @Override
-            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
-                return new OstTransaction(jsonObject);
-            }
-        });
+        return (OstTransaction) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getTransactionModel(), getIdentifier(), getEntityFactory());
+    }
+
+
+    @Override
+    protected OstTransaction updateWithJsonObject(JSONObject jsonObject) throws JSONException {
+        return OstTransaction.parse(jsonObject);
     }
 
     public OstTransaction(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {

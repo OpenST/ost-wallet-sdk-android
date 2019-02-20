@@ -47,13 +47,26 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
         return OstDeviceManagerOperation.ID;
     }
 
+    private static EntityFactory entityFactory;
+    private static EntityFactory getEntityFactory() {
+        if ( null == entityFactory ) {
+            entityFactory = new EntityFactory() {
+                @Override
+                public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                    return new OstDeviceManagerOperation(jsonObject);
+                }
+            };
+        }
+        return entityFactory;
+    }
+
     public static OstDeviceManagerOperation parse(JSONObject jsonObject) throws JSONException {
-        return (OstDeviceManagerOperation) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getDeviceManagerOperationModel(), getIdentifier(), new EntityFactory() {
-            @Override
-            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
-                return new OstDeviceManagerOperation(jsonObject);
-            }
-        });
+        return (OstDeviceManagerOperation) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getDeviceManagerOperationModel(), getIdentifier(), getEntityFactory());
+    }
+
+    @Override
+    protected OstDeviceManagerOperation updateWithJsonObject(JSONObject jsonObject) throws JSONException {
+        return OstDeviceManagerOperation.parse(jsonObject);
     }
 
     public OstDeviceManagerOperation(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {

@@ -45,14 +45,28 @@ public class OstSession extends OstBaseEntity {
         public static final String FAIL = "fail";
     }
 
-    public static OstSession parse(JSONObject jsonObject) throws JSONException {
-        return (OstSession) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getSessionModel(), getIdentifier(), new EntityFactory() {
-            @Override
-            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
-                return new OstSession(jsonObject);
-            }
-        });
+    private static EntityFactory entityFactory;
+    private static EntityFactory getEntityFactory() {
+        if ( null == entityFactory ) {
+            entityFactory = new EntityFactory() {
+                @Override
+                public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                    return new OstSession(jsonObject);
+                }
+            };
+        }
+        return entityFactory;
     }
+
+    public static OstSession parse(JSONObject jsonObject) throws JSONException {
+        return (OstSession) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getSessionModel(), getIdentifier(), getEntityFactory());
+    }
+
+    @Override
+    protected OstSession updateWithJsonObject(JSONObject jsonObject) throws JSONException {
+        return OstSession.parse(jsonObject);
+    }
+
 
     public OstSession(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
         super(id, parentId, data, status, updatedTimestamp);

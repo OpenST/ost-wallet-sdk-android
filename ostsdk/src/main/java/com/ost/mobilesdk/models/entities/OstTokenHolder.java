@@ -26,13 +26,28 @@ public class OstTokenHolder extends OstBaseEntity {
         public static final String ACTIVATED = "activated";
     }
 
+
+    private static EntityFactory entityFactory;
+    private static EntityFactory getEntityFactory() {
+        if ( null == entityFactory ) {
+            entityFactory = new EntityFactory() {
+                @Override
+                public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                    return new OstTokenHolder(jsonObject);
+                }
+            };
+        }
+        return entityFactory;
+    }
+
     public static OstTokenHolder parse(JSONObject jsonObject) throws JSONException {
-        return (OstTokenHolder) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getTokenHolderModel(), getIdentifier(), new EntityFactory() {
-            @Override
-            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
-                return new OstTokenHolder(jsonObject);
-            }
-        });
+        return (OstTokenHolder) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getTokenHolderModel(), getIdentifier(), getEntityFactory());
+    }
+
+
+    @Override
+    protected OstTokenHolder updateWithJsonObject(JSONObject jsonObject) throws JSONException {
+        return OstTokenHolder.parse(jsonObject);
     }
 
     public OstTokenHolder(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {

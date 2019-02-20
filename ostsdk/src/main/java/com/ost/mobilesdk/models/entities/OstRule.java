@@ -21,14 +21,28 @@ public class OstRule extends OstBaseEntity {
         return OstRule.ID;
     }
 
-    public static OstRule parse(JSONObject jsonObject) throws JSONException {
-        return (OstRule) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getRuleModel(), getIdentifier(), new EntityFactory() {
-            @Override
-            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
-                return new OstRule(jsonObject);
-            }
-        });
+    private static EntityFactory entityFactory;
+    private static EntityFactory getEntityFactory() {
+        if ( null == entityFactory ) {
+            entityFactory = new EntityFactory() {
+                @Override
+                public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                    return new OstRule(jsonObject);
+                }
+            };
+        }
+        return entityFactory;
     }
+
+    public static OstRule parse(JSONObject jsonObject) throws JSONException {
+        return (OstRule) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getRuleModel(), getIdentifier(), getEntityFactory());
+    }
+
+    @Override
+    protected OstRule updateWithJsonObject(JSONObject jsonObject) throws JSONException {
+        return OstRule.parse(jsonObject);
+    }
+
 
     public OstRule(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
         super(id, parentId, data, status, updatedTimestamp);

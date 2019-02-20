@@ -120,9 +120,16 @@ public class OstDevice extends OstBaseEntity {
         }
         return entityFactory;
     }
+
     public static OstDevice parse(JSONObject jsonObject) throws JSONException {
         return (OstDevice) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getDeviceModel(), getIdentifier(), getEntityFactory());
     }
+
+    @Override
+    protected OstDevice updateWithJsonObject(JSONObject jsonObject) throws JSONException {
+        return OstDevice.parse(jsonObject);
+    }
+
 
     public OstDevice(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
         super(id, parentId, data, status, updatedTimestamp);

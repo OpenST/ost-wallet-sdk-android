@@ -11,7 +11,7 @@ import com.ost.mobilesdk.models.OstBaseModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OstBaseEntity {
+public abstract class OstBaseEntity {
 
     public static final String ID = "id";
     public static final String PARENT_ID = "parent_id";
@@ -60,7 +60,7 @@ public class OstBaseEntity {
         OstBaseEntity dbEntity = ostBaseModel.getEntityById(identifier);
         if (null != dbEntity) {
             if (dbEntity.getUpdatedTimestamp() != OstBaseEntity.getUpdatedTimestamp(jsonObject)) {
-                return (OstUser) dbEntity;
+                return dbEntity;
             }
             dbEntity.processJson(jsonObject);
         } else {
@@ -189,6 +189,28 @@ public class OstBaseEntity {
     String getParentIdKey() {
         return OstBaseEntity.PARENT_ID;
     }
+
+
+    abstract protected  OstBaseEntity updateWithJsonObject(JSONObject jsonObject) throws JSONException;
+
+    protected void setJsonDataProperty(String key, Object obj) throws JSONException {
+        //Create a copy of JSON Data.
+        JSONObject jsonObjectCopy = this.getData();
+        if ( null == jsonObjectCopy ) {
+            //Make sure jsonObject Copy is present.
+            throw new JSONException("The entity does not have jsonObject");
+        }
+
+        //Now set the key/value
+        jsonObjectCopy.put(key, obj.toString() );
+
+        //Update the timestamp
+        jsonObjectCopy.put(OstBaseEntity.UPDATED_TIMESTAMP, -1 * System.currentTimeMillis());
+
+        //Schedule DB Update.
+        this.updateWithJsonObject(jsonObjectCopy);
+    }
+
 
     interface EntityFactory {
         OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException;

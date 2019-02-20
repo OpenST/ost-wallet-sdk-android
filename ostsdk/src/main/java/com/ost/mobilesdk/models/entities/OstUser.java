@@ -84,14 +84,30 @@ public class OstUser extends OstBaseEntity {
         public static final String ADMIN = "user";
     }
 
-    public static OstUser parse(JSONObject jsonObject) throws JSONException {
-        return (OstUser) OstBaseEntity.insertOrUpdate(jsonObject, OstModelFactory.getUserModel(), getIdentifier(), new EntityFactory() {
-            @Override
-            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
-                return new OstUser(jsonObject);
-            }
-        });
+
+    private static EntityFactory entityFactory;
+    private static EntityFactory getEntityFactory() {
+        if ( null == entityFactory ) {
+            entityFactory = new EntityFactory() {
+                @Override
+                public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                    return new OstUser(jsonObject);
+                }
+            };
+        }
+        return entityFactory;
     }
+
+
+    public static OstUser parse(JSONObject jsonObject) throws JSONException {
+        return (OstUser) OstBaseEntity.insertOrUpdate(jsonObject, OstModelFactory.getUserModel(), getIdentifier(), getEntityFactory());
+    }
+
+    @Override
+    protected OstUser updateWithJsonObject(JSONObject jsonObject) throws JSONException {
+        return OstUser.parse(jsonObject);
+    }
+
 
     public OstUser(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
         super(id, parentId, data, status, updatedTimestamp);
