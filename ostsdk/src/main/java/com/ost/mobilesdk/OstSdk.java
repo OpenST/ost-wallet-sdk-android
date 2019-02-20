@@ -8,7 +8,6 @@ import com.ost.mobilesdk.database.ConfigSharedPreferences;
 import com.ost.mobilesdk.database.OstSdkDatabase;
 import com.ost.mobilesdk.database.OstSdkKeyDatabase;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
-import com.ost.mobilesdk.models.entities.OstCredits;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
@@ -26,8 +25,6 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Date;
 
 public class OstSdk {
 
@@ -166,9 +163,6 @@ public class OstSdk {
         }
         if (jsonData.has(OstSdk.DEVICE)) {
             OstDevice.parse(jsonData.getJSONObject(OstSdk.DEVICE));
-        }
-        if (jsonData.has(OstSdk.CREDITS)) {
-            OstCredits.parse(jsonData.getJSONObject(OstSdk.CREDITS));
         }
         //Process Array?
     }

@@ -6,7 +6,6 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-import com.ost.mobilesdk.database.daos.OstCreditsDao;
 import com.ost.mobilesdk.database.daos.OstDeviceOperationDao;
 import com.ost.mobilesdk.database.daos.OstSessionKeyDao;
 import com.ost.mobilesdk.database.daos.OstTransactionDao;
@@ -17,7 +16,6 @@ import com.ost.mobilesdk.database.daos.OstTokenDao;
 import com.ost.mobilesdk.database.daos.OstTokenHolderDao;
 import com.ost.mobilesdk.database.daos.OstSessionDao;
 import com.ost.mobilesdk.database.daos.OstUserDao;
-import com.ost.mobilesdk.models.entities.OstCredits;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
@@ -31,7 +29,7 @@ import com.ost.mobilesdk.models.entities.OstUser;
 
 @Database(entities = {OstUser.class, OstRule.class, OstToken.class, OstTransaction.class,
         OstDeviceManagerOperation.class, OstTokenHolder.class, OstSession.class,
-        OstDevice.class, OstDeviceManager.class, OstCredits.class, OstSessionKey.class}, version = 1)
+        OstDevice.class, OstDeviceManager.class, OstSessionKey.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class OstSdkDatabase extends RoomDatabase {
 
@@ -57,7 +55,6 @@ public abstract class OstSdkDatabase extends RoomDatabase {
 
     public abstract OstSessionKeyDao sessionKeyDao();
 
-    public abstract OstCreditsDao ostCreditsDao();
 
     private static volatile OstSdkDatabase INSTANCE;
 
