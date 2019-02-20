@@ -140,11 +140,6 @@ public class OstDevice extends OstBaseEntity {
                 jsonObject.has(OstDevice.API_SIGNER_ADDRESS);
     }
 
-    @Override
-    public void processJson(JSONObject jsonObject) throws JSONException {
-        super.processJson(jsonObject);
-    }
-
     public String getAddress() {
         return this.getId();
     }
@@ -181,7 +176,12 @@ public class OstDevice extends OstBaseEntity {
     }
 
     public String getDeviceManagerAddress() {
-        return getJSONData().optString(OstDevice.DEVICE_MANAGER_ADDRESS, null);
+        JSONObject jsonObject = this.getJSONData();
+        if ( null == jsonObject ) {
+            Log.e(TAG, "getDeviceManagerAddress: jsonObject is null");
+            return null;
+        }
+        return jsonObject.optString(OstDevice.DEVICE_MANAGER_ADDRESS, null);
     }
 
     @Override
