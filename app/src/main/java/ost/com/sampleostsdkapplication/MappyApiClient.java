@@ -80,7 +80,7 @@ class MappyApiClient {
         try {
             JSONObject deviceObject = jsonObject.getJSONObject(OstSdk.DEVICE);
             map.put("address", deviceObject.getString(OstDevice.ADDRESS));
-            map.put("api_signer_address", deviceObject.getString(OstDevice.PERSONAL_SIGN_ADDRESS));
+            map.put("api_signer_address", deviceObject.getString(OstDevice.API_SIGNER_ADDRESS));
             map.put("device_name", deviceObject.getString(OstDevice.DEVICE_NAME));
             map.put("device_uuid", deviceObject.getString(OstDevice.DEVICE_UUID));
         } catch (JSONException e) {

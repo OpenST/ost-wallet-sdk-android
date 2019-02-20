@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
@@ -22,6 +24,7 @@ import org.web3j.crypto.RawTransaction;
 import org.web3j.crypto.TransactionEncoder;
 import org.web3j.utils.Numeric;
 
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.util.Arrays;
 
@@ -31,12 +34,13 @@ import java.util.Arrays;
 @Entity(tableName = "device")
 public class OstDevice extends OstBaseEntity {
 
+    public static final String TAG = "OstDeviceEntity";
     public static final String USER_ID = "user_id";
     public static final String ADDRESS = "address";
     public static final String DEVICE_MANAGER_ADDRESS = "device_manager_address";
     public static final String DEVICE_NAME = "device_name";
     public static final String DEVICE_UUID = "device_uuid";
-    public static final String PERSONAL_SIGN_ADDRESS = "api_signer_address";
+    public static final String API_SIGNER_ADDRESS = "api_signer_address";
 
     public static OstDevice getById(String id) {
         OstDeviceModel ostDeviceModel = OstModelFactory.getDeviceModel();
@@ -71,7 +75,7 @@ public class OstDevice extends OstBaseEntity {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(OstDevice.ADDRESS, address);
-            jsonObject.put(OstDevice.PERSONAL_SIGN_ADDRESS, apiAddress);
+            jsonObject.put(OstDevice.API_SIGNER_ADDRESS, apiAddress);
             jsonObject.put(OstDevice.USER_ID, mUserId);
             jsonObject.put(OstDevice.DEVICE_NAME, deviceName);
             jsonObject.put(OstDevice.DEVICE_UUID, uuid);
@@ -86,22 +90,38 @@ public class OstDevice extends OstBaseEntity {
         return null;
     }
 
-    public static OstDevice[] getDevicesByParentId(String mUserId) {
+    public static OstDevice[] getDevicesByParentId(String userId) {
+        if (TextUtils.isEmpty(userId) ) {
+            return (OstDevice[]) Arrays.asList().toArray();
+        }
+
         OstDeviceModel ostDeviceModel = OstModelFactory.getDeviceModel();
-        return ostDeviceModel.getEntitiesByParentId(mUserId);
+        return ostDeviceModel.getEntitiesByParentId(userId);
     }
 
     public static String getIdentifier() {
         return OstDevice.ADDRESS;
     }
 
+    @Override
+    String getEntityIdKey() {
+        return getIdentifier();
+    }
+
+    private static EntityFactory entityFactory;
+    private static EntityFactory getEntityFactory() {
+        if ( null == entityFactory ) {
+            entityFactory = new EntityFactory() {
+                @Override
+                public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
+                    return new OstDevice(jsonObject);
+                }
+            };
+        }
+        return entityFactory;
+    }
     public static OstDevice parse(JSONObject jsonObject) throws JSONException {
-        return (OstDevice) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getDeviceModel(), getIdentifier(), new EntityFactory() {
-            @Override
-            public OstBaseEntity createEntity(JSONObject jsonObject) throws JSONException {
-                return new OstDevice(jsonObject);
-            }
-        });
+        return (OstDevice) OstBaseEntity.insertOrUpdate( jsonObject, OstModelFactory.getDeviceModel(), getIdentifier(), getEntityFactory());
     }
 
     public OstDevice(String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
@@ -117,7 +137,7 @@ public class OstDevice extends OstBaseEntity {
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
                 jsonObject.has(OstDevice.ADDRESS) &&
-                jsonObject.has(OstDevice.PERSONAL_SIGN_ADDRESS);
+                jsonObject.has(OstDevice.API_SIGNER_ADDRESS);
     }
 
     @Override
@@ -125,45 +145,43 @@ public class OstDevice extends OstBaseEntity {
         super.processJson(jsonObject);
     }
 
-    public String signTransaction(RawTransaction rawTransaction, String userId) {
-        byte[] data = new OstSecureKeyModelRepository().getByKey(getAddress()).getData();
-        byte[] signedMessage = TransactionEncoder.signMessage(rawTransaction, Credentials.create(Numeric.toHexString(OstAndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data))));
-        return Numeric.toHexString(signedMessage);
-    }
-
-
     public String getAddress() {
-        return getJSONData().optString(OstDevice.ADDRESS, null);
+        return this.getId();
     }
 
     public String getDeviceName() {
-        return getJSONData().optString(OstDevice.DEVICE_NAME, null);
+        JSONObject jsonObject = this.getJSONData();
+        if ( null == jsonObject ) {
+            Log.e(TAG, "getDeviceName: jsonObject is null");
+            return null;
+        }
+        return jsonObject.optString(OstDevice.DEVICE_NAME,null);
     }
 
     public String getPersonalSignAddress() {
-        return getJSONData().optString(OstDevice.PERSONAL_SIGN_ADDRESS, null);
+        JSONObject jsonObject = this.getJSONData();
+        if ( null == jsonObject ) {
+            Log.e(TAG, "getPersonalSignAddress: jsonObject is null");
+            return null;
+        }
+        return jsonObject.optString(OstDevice.API_SIGNER_ADDRESS,null);
     }
 
     public String getDeviceUuid() {
-        return getJSONData().optString(OstDevice.DEVICE_UUID, null);
+        JSONObject jsonObject = this.getJSONData();
+        if ( null == jsonObject ) {
+            Log.e(TAG, "getDeviceUuid: jsonObject is null");
+            return null;
+        }
+        return jsonObject.optString(OstDevice.DEVICE_UUID,null);
     }
 
     public String getUserId() {
-        return getJSONData().optString(OstDevice.USER_ID, null);
+        return this.getParentId();
     }
 
     public String getDeviceManagerAddress() {
         return getJSONData().optString(OstDevice.DEVICE_MANAGER_ADDRESS, null);
-    }
-
-    @Override
-    public String getStatus() {
-        return getJSONData().optString(OstDevice.STATUS, null);
-    }
-
-    @Override
-    String getEntityIdKey() {
-        return getIdentifier();
     }
 
     @Override
@@ -174,13 +192,6 @@ public class OstDevice extends OstBaseEntity {
     @Override
     public String getDefaultStatus() {
         return CONST_STATUS.CREATED;
-    }
-
-    public static class Transaction extends RawTransaction {
-
-        public Transaction(BigInteger nonce, BigInteger gasPrice, BigInteger gasLimit, String to, BigInteger value, String data) {
-            super(nonce, gasPrice, gasLimit, to, value, data);
-        }
     }
 
     public boolean canMakeApiCall() {
