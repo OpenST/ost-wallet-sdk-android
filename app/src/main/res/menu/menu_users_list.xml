@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ost.com.sampleostsdkapplication.UsersListActivity">
     <item
-        android:id="@+id/user_status"
+        android:id="@+id/activate_user"
         android:orderInCategory="100"
-        android:title="@string/user_status"
+        android:title="@string/activate_user"
         app:showAsAction="never" />
     <item
         android:id="@+id/add_device"

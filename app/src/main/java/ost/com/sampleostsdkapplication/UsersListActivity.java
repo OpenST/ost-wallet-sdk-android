@@ -86,8 +86,8 @@ public class UsersListActivity extends MappyBaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.user_status) {
-            Log.i(TAG, "User satus clicked");
+        if (id == R.id.activate_user) {
+            Log.d(TAG, "Activate User Clicked");
             LogInUser logInUser = ((App) getApplication()).getLoggedUser();
             String userId = logInUser.getOstUserId();
             String password = logInUser.getPassword();
@@ -96,7 +96,7 @@ public class UsersListActivity extends MappyBaseActivity {
             String spendingLimit = "1000000000000";
             OstSdk.activateUser(userId, uPin, password, expiresAfterInSecs, spendingLimit, new WorkFlowHelper(getApplicationContext()));
         } else if (id == R.id.add_device) {
-            Log.i(TAG, "Add device clicked");
+            Log.d(TAG, "Add device clicked");
             LogInUser logInUser = ((App) getApplication()).getLoggedUser();
 
             String userId = logInUser.getOstUserId();
