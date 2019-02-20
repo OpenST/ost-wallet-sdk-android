@@ -15,7 +15,7 @@ import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.workflows.errors.OstErrorTexts;
+import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstUserPollingService;
@@ -53,7 +53,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
     synchronized protected AsyncStatus process() {
         if (!hasValidParams()) {
             Log.i(TAG, "Work flow has invalid params");
-            return postErrorInterrupt("wf_au_pr_1", OstErrorTexts.INVALID_WORKFLOW_PARAMS);
+            return postErrorInterrupt("wf_au_pr_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
         }
 
         //Load Current Device.
@@ -91,7 +91,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
             String salt = super.getSalt();
             if (null == salt) {
                 Log.e(TAG, "Salt is null");
-                return postErrorInterrupt("wf_au_pr_2", OstErrorTexts.SALT_API_FAILED);
+                return postErrorInterrupt("wf_au_pr_2", ErrorCode.SALT_API_FAILED);
             }
 
             Log.i(TAG, "Creating recovery key");
@@ -114,11 +114,11 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 } else {
                     //Return with error.
                     Log.e(TAG, String.format("Invalid response for User activate call %s", response.toString()));
-                    return postErrorInterrupt("wf_au_pr_3", OstErrorTexts.ACTIVATE_USER_API_FAILED);
+                    return postErrorInterrupt("wf_au_pr_3", ErrorCode.ACTIVATE_USER_API_FAILED);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Something went wrong while activating user.", e);
-                return postErrorInterrupt("wf_au_pr_4", OstErrorTexts.ACTIVATE_USER_API_FAILED);
+                return postErrorInterrupt("wf_au_pr_4", ErrorCode.ACTIVATE_USER_API_FAILED);
             }
         }
 
@@ -130,7 +130,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
         boolean isTimeOut = waitForUpdate();
         if (isTimeOut) {
             Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
-            return postErrorInterrupt("wf_au_pr_5", OstErrorTexts.ACTIVATE_USER_API_POLLING_FAILED);
+            return postErrorInterrupt("wf_au_pr_5", ErrorCode.ACTIVATE_USER_API_POLLING_FAILED);
         }
         Log.i(TAG, "Syncing Entities: User, Device, Sessions");
         new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.DEVICE,
@@ -222,10 +222,10 @@ public class OstActivateUser extends OstBaseWorkFlow {
         } catch (IOException e) {
 
             Log.e(TAG, "Encountered IOException while fetching current block number.", e);
-            return postErrorInterrupt("wp_au_ceh_1", OstErrorTexts.CHAIN_API_FAILED);
+            return postErrorInterrupt("wp_au_ceh_1", ErrorCode.CHAIN_API_FAILED);
         } catch (Exception e) {
             Log.e(TAG, "Encountered Exception while fetching current block number.", e);
-            return postErrorInterrupt("wp_au_ceh_2", OstErrorTexts.CHAIN_API_FAILED);
+            return postErrorInterrupt("wp_au_ceh_2", ErrorCode.CHAIN_API_FAILED);
         }
 
         long bufferBlocks = OstConstants.SESSION_BUFFER_TIME / blockGenerationTime;

@@ -1,7 +1,6 @@
 package com.ost.mobilesdk.workflows;
 
 import android.os.Handler;
-import android.system.Os;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -15,16 +14,16 @@ import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.errors.OstErrorTexts;
+import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
-import java.sql.Struct;
 import java.util.concurrent.Future;
+
+import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 
 abstract class OstBaseWorkFlow {
     private static final String TAG = "OstBaseWorkFlow";
@@ -111,12 +110,12 @@ abstract class OstBaseWorkFlow {
     }
 
 
-    AsyncStatus postErrorInterrupt(String errCode, String msg) {
+    AsyncStatus postErrorInterrupt(String internalErrCode, OstErrors.ErrorCode errorCode) {
         Log.i(TAG, "Flow Error");
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt( new OstError(errCode, msg, getWorkflowType() ) );
+                mCallback.flowInterrupt( new OstError(internalErrCode, errorCode, getWorkflowType() ) );
             }
         });
         return new AsyncStatus(false);
@@ -190,7 +189,7 @@ abstract class OstBaseWorkFlow {
             return new AsyncStatus(true);
         }
         Log.i(TAG, "Device is not registered");
-        return postErrorInterrupt("wp_base_lcd_1" , OstErrorTexts.DEVICE_UNREGISTERED);
+        return postErrorInterrupt("wp_base_lcd_1" , ErrorCode.DEVICE_UNREGISTERED);
     }
 
     OstUser mOstUser;
@@ -212,7 +211,7 @@ abstract class OstBaseWorkFlow {
 
         if (null == mOstUser) {
             Log.i(TAG, "User does not exist");
-            return postErrorInterrupt("wp_base_lusr_1" , OstErrorTexts.USER_API_FAILED);
+            return postErrorInterrupt("wp_base_lusr_1" , ErrorCode.USER_API_FAILED);
         }
         return new AsyncStatus(true);
     }
@@ -245,7 +244,7 @@ abstract class OstBaseWorkFlow {
 
         if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId()) ) {
             Log.e(TAG, "Token is null or does not contain chainId");
-            return postErrorInterrupt("wp_base_ltkn_1" , OstErrorTexts.TOKEN_API_FAILED);
+            return postErrorInterrupt("wp_base_ltkn_1" , ErrorCode.TOKEN_API_FAILED);
         }
         return new AsyncStatus(true);
     }

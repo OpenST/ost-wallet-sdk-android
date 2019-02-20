@@ -10,7 +10,7 @@ import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.errors.OstErrorTexts;
+import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
@@ -59,7 +59,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
 
                 Log.i(TAG, "Validating user Id");
                 if (!hasValidParams()) {
-                    return postErrorInterrupt("wf_rd_pr_1" , OstErrorTexts.INVALID_WORKFLOW_PARAMS);
+                    return postErrorInterrupt("wf_rd_pr_1" , ErrorCode.INVALID_WORKFLOW_PARAMS);
                 }
 
                 Log.i(TAG, "Initializing User and Token");
@@ -70,7 +70,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                 Log.i(TAG, "Creating current device if does not exist");
                 OstDevice ostDevice = createOrGetCurrentDevice(ostUser);
                 if (null == ostDevice) {
-                    return postErrorInterrupt("wf_rd_pr_2" , OstErrorTexts.CREATE_DEVICE_FAILED);
+                    return postErrorInterrupt("wf_rd_pr_2" , ErrorCode.CREATE_DEVICE_FAILED);
                 }
 
                 Log.i(TAG, "Check is device registered");
@@ -90,7 +90,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                 break;
 
             case CANCELED:
-                return postErrorInterrupt("wf_rd_pr_3" , OstErrorTexts.WORKFLOW_CANCELED);
+                return postErrorInterrupt("wf_rd_pr_3" , ErrorCode.WORKFLOW_CANCELED);
         }
         return new AsyncStatus(true);
     }
