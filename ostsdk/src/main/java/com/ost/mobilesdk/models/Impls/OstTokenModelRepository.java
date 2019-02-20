@@ -27,17 +27,6 @@ class OstTokenModelRepository extends OstBaseModelCacheRepository implements Ost
     }
 
     @Override
-    public Future<AsyncStatus> insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
-        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
-            @Override
-            public AsyncStatus call() {
-                OstTokenModelRepository.this.insert(ostBaseEntity);
-                return new AsyncStatus(true);
-            }
-        });
-    }
-
-    @Override
     public OstToken getEntityById(String id) {
         return (OstToken) super.getById(id);
     }

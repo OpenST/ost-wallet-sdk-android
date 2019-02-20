@@ -28,7 +28,6 @@ public class OstSessionKeyModelRepository implements OstSessionKeyModel {
                 return new AsyncStatus(true);
             }
         });
-
     }
 
     private OstSessionKeyDao getModel() {

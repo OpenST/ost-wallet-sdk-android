@@ -28,17 +28,6 @@ class OstSessionModelRepository extends OstBaseModelCacheRepository implements O
     }
 
     @Override
-    public Future<AsyncStatus> insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
-        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
-            @Override
-            public AsyncStatus call() {
-                OstSessionModelRepository.this.insert(ostBaseEntity);
-                return new AsyncStatus(true);
-            }
-        });
-    }
-
-    @Override
     public OstSession getEntityById(String id) {
         return (OstSession)super.getById(id);
     }

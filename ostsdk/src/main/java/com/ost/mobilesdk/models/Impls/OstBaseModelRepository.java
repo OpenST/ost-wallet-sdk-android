@@ -5,6 +5,10 @@ import android.util.Log;
 import com.ost.mobilesdk.database.daos.OstBaseDao;
 import com.ost.mobilesdk.models.OstTaskCallback;
 import com.ost.mobilesdk.models.entities.OstBaseEntity;
+import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.utils.DispatchAsync;
+
+import java.util.concurrent.Future;
 
 abstract class OstBaseModelRepository {
 
@@ -62,4 +66,15 @@ abstract class OstBaseModelRepository {
         }
         return baseEntities;
     }
+
+    public Future<AsyncStatus> insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstBaseModelRepository.this.insert(ostBaseEntity);
+                return new AsyncStatus(true);
+            }
+        });
+    }
+
 }

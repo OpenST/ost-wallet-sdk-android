@@ -19,7 +19,7 @@ public class OstBaseEntity {
     public static final String STATUS = "status";
     public static final String UPDATED_TIMESTAMP = "updated_timestamp";
 
-    private static final String DEFAULT_PARENT_ID = "";
+    static final String DEFAULT_PARENT_ID_KEY = "";
     private static final String TAG = "OstBaseEntity";
 
     @PrimaryKey()
@@ -28,7 +28,7 @@ public class OstBaseEntity {
     private String id = "";
 
     @ColumnInfo(name = "parent_id")
-    private String parentId = DEFAULT_PARENT_ID;
+    private String parentId = DEFAULT_PARENT_ID_KEY;
 
     @ColumnInfo(name = "data")
     private JSONObject data;
@@ -41,11 +41,11 @@ public class OstBaseEntity {
 
 
     public OstBaseEntity(@NonNull String id, String parentId, JSONObject data, String status, double updatedTimestamp) {
-        this.id = id;
-        this.parentId = parentId;
-        this.data = data;
-        this.status = status;
-        this.updatedTimestamp = updatedTimestamp;
+        try {
+            this.processJson(data);
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to parse JSON fetched from DB");
+        }
     }
 
     @Ignore
@@ -74,13 +74,9 @@ public class OstBaseEntity {
         return jsonObject.optDouble(OstBaseEntity.UPDATED_TIMESTAMP, Double.MIN_VALUE);
     }
 
-    public String getParentId() {
-        return parentId;
-    }
 
-    public String getId() {
-        return id;
-    }
+
+
 
     public JSONObject getData() {
         try {
@@ -95,54 +91,92 @@ public class OstBaseEntity {
         return data;
     }
 
-    public String getStatus() {
-        return status;
-    }
 
-    public double getUpdatedTimestamp() {
-        return this.updatedTimestamp;
-    }
 
-    private void setId(@NonNull String id) {
-        this.id = id;
-    }
 
-    private void setData(JSONObject data) {
-        this.data = data;
-    }
-
-    private void setStatus(String status) {
-        this.status = status;
-    }
-
-    private void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
-    private void setUpdatedTimestamp(double updatedTimestamp) {
-        this.updatedTimestamp = updatedTimestamp;
-    }
 
     boolean validate(JSONObject jsonObject) {
         return true;
     }
 
     public void processJson(JSONObject jsonObject) throws JSONException {
-        String id = jsonObject.getString(getEntityIdKey());
-        if (id.length() <= 1) {
-            throw new JSONException("Id should be more than 1 characters long");
+        //Update Timestamp if needed.
+        if ( !jsonObject.has(OstBaseEntity.UPDATED_TIMESTAMP) ) {
+            jsonObject.put(OstBaseEntity.UPDATED_TIMESTAMP, -1 * System.currentTimeMillis());
         }
 
-        setId(id);
-
-        setUpdatedTimestamp(jsonObject.optDouble(OstBaseEntity.UPDATED_TIMESTAMP, -1 * System.currentTimeMillis()));
-
-        String parentId = jsonObject.optString(getParentIdKey(), OstBaseEntity.DEFAULT_PARENT_ID);
-        setParentId(parentId);
-
-        setStatus(jsonObject.optString(OstBaseEntity.STATUS, getDefaultStatus()));
-        setData(jsonObject);
+        //Set Data.
+        this.data = jsonObject;
     }
+
+    public String getId() {
+        JSONObject jsonObject = this.getJSONData();
+        if ( null == jsonObject ) {
+            Log.e(TAG, "jsonObject is null");
+            return null;
+        }
+        try {
+            return jsonObject.getString(getEntityIdKey());
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to read id from jsonObject");
+            return null;
+        }
+    }
+
+    public double getUpdatedTimestamp() {
+        JSONObject jsonObject = this.getJSONData();
+        if ( null == jsonObject ) {
+            Log.e(TAG, "jsonObject is null");
+            return -1 * System.currentTimeMillis();
+        }
+
+        try {
+            return jsonObject.getDouble(OstBaseEntity.UPDATED_TIMESTAMP);
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to read timestamp from jsonObject");
+            return -1 * System.currentTimeMillis();
+        }
+    }
+
+    public void updateTimestamp() {
+        JSONObject jsonObject = this.getJSONData();
+        try {
+            jsonObject.put(OstBaseEntity.UPDATED_TIMESTAMP, -1 * System.currentTimeMillis());
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to update timestamp in jsonObject");
+        }
+    }
+
+    public String getParentId() {
+        JSONObject jsonObject = this.getJSONData();
+        if ( null == jsonObject ) {
+            Log.e(TAG, "jsonObject is null");
+            return null;
+        }
+        String parentIdKey = getParentIdKey();
+        try {
+            return jsonObject.getString(parentIdKey);
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to read parent-id from jsonObject. parentIdKey = " + parentIdKey);
+            return null;
+        }
+    }
+
+    public String getStatus() {
+        JSONObject jsonObject = this.getJSONData();
+        if ( null == jsonObject ) {
+            Log.e(TAG, "jsonObject is null");
+            return null;
+        }
+
+        try {
+            return jsonObject.getString(OstBaseEntity.STATUS);
+        } catch (JSONException e) {
+            Log.e(TAG, "Failed to read status from jsonObject.");
+            return null;
+        }
+    }
+
 
     public String getDefaultStatus() {
         return "";

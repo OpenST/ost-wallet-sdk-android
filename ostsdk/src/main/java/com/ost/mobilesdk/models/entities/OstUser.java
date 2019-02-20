@@ -42,9 +42,9 @@ public class OstUser extends OstBaseEntity {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put(OstUser.ID, id);
             jsonObject.put(OstUser.TOKEN_ID, tokenId);
-            jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "");
-            jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "");
-            jsonObject.put(OstUser.TYPE, "");
+//            jsonObject.put(OstUser.TOKEN_HOLDER_ADDRESS, "");
+//            jsonObject.put(OstUser.DEVICE_MANAGER_ADDRESS, "");
+//            jsonObject.put(OstUser.TYPE, "");
             return OstUser.parse(jsonObject);
         } catch (JSONException e) {
             Log.e(TAG, "Unexpected error: OstUser json parse exception");
@@ -140,7 +140,11 @@ public class OstUser extends OstBaseEntity {
     }
 
     public OstTokenHolder getTokenHolder() {
-        return OstModelFactory.getTokenHolderModel().getEntityById(getTokenHolderAddress());
+        String tokenHolderAddress = getTokenHolderAddress();
+        if ( null == tokenHolderAddress ) {
+            return null;
+        }
+        return OstModelFactory.getTokenHolderModel().getEntityById(tokenHolderAddress);
     }
 
     public void delTokenHolder(String id) {

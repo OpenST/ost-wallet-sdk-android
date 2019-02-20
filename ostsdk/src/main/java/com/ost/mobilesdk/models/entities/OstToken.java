@@ -132,4 +132,14 @@ public class OstToken extends OstBaseEntity {
             return null;
         }
     }
+
+    @Override
+    public String getParentId() {
+        return "";
+    }
+
+    @Override
+    public String getStatus() {
+        return "";
+    }
 }

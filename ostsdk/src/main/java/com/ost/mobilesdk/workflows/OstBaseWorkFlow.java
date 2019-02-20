@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
+import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
@@ -19,6 +20,7 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.sql.Struct;
@@ -203,13 +205,16 @@ abstract class OstBaseWorkFlow {
     AsyncStatus loadUser() {
         //Check if we have user information.
         mOstUser = OstUser.getById(mUserId);
-        if ( null == mOstUser || null == mOstUser.getTokenHolder()) {
+        if ( null == mOstUser || TextUtils.isEmpty( mOstUser.getTokenHolderAddress() ) ) {
             try {
-                mOstUser = OstUser.parse(mOstApiClient.getUser());
+                OstSdk.parse(mOstApiClient.getUser());
+                mOstUser = OstUser.getById(mUserId);
             } catch (JSONException e) {
                 Log.i(TAG, "Encountered JSONException while fetching user.");
+                mOstUser = null;
             } catch (IOException e) {
                 Log.i(TAG, "Encountered IOException while fetching user.");
+                mOstUser = null;
             }
         }
 
@@ -230,11 +235,13 @@ abstract class OstBaseWorkFlow {
         }
 
         //Check if we have user information.
-        mOstToken = OstToken.getById(mOstUser.getTokenId());
-        if ( null == mOstToken || null == mOstToken.getChainId() ) {
+        String tokenId = mOstUser.getTokenId();
+        mOstToken = OstToken.getById(tokenId);
+        if ( null == mOstToken || TextUtils.isEmpty( mOstToken.getChainId() ) ) {
             //Make API Call.
             try {
-                mOstToken = OstToken.parse(mOstApiClient.getToken());
+                OstSdk.parse(mOstApiClient.getToken());
+                mOstToken = OstToken.getById(tokenId);
             } catch (JSONException e) {
                 Log.i(TAG, "Encountered JSONException while fetching token.");
                 mOstToken = null;
@@ -244,7 +251,7 @@ abstract class OstBaseWorkFlow {
             }
         }
 
-        if (null == mOstToken || null == mOstToken.getChainId() ) {
+        if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId()) ) {
             Log.e(TAG, "Token is null or does not contain chainId");
             return postErrorInterrupt("wp_base_ltkn_1" , OstErrorTexts.TOKEN_API_FAILED);
         }

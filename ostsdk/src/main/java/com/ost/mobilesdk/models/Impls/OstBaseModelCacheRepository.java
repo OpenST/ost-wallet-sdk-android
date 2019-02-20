@@ -3,10 +3,13 @@ package com.ost.mobilesdk.models.Impls;
 import android.util.LruCache;
 
 import com.ost.mobilesdk.models.entities.OstBaseEntity;
+import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.utils.DispatchAsync;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Future;
 
 abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
 
@@ -129,5 +132,17 @@ abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
         for (OstBaseEntity baseEntity : baseEntities) {
             this.mInMemoryMap.remove(baseEntity.getId());
         }
+    }
+
+    public Future<AsyncStatus> insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
+        insertInCacheAndMemory(ostBaseEntity);
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstBaseModelCacheRepository.this.insert(ostBaseEntity);
+                removeInMemory(ostBaseEntity);
+                return new AsyncStatus(true);
+            }
+        });
     }
 }

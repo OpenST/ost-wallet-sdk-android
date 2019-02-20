@@ -19,6 +19,7 @@ public interface OstConstants {
     //ToDo: Move this to OstWorkflows.java (Create one)
     enum WORKFLOW_TYPE {
         UNKNOWN,
-        ACTIVATE_USER
+        REGISTER_DEVICE,
+        ACTIVATE_USER,
     }
 }

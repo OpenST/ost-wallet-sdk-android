@@ -27,16 +27,6 @@ class OstDeviceModelRepository extends OstBaseModelCacheRepository implements Os
         return mOstDeviceDao;
     }
 
-    @Override
-    public Future<AsyncStatus> insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
-        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
-            @Override
-            public AsyncStatus call() {
-                OstDeviceModelRepository.this.insert(ostBaseEntity);
-                return new AsyncStatus(true);
-            }
-        });
-    }
 
     @Override
     public OstDevice getEntityById(String id) {

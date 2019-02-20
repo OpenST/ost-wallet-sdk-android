@@ -3,6 +3,7 @@ package com.ost.mobilesdk.network;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
@@ -36,6 +37,7 @@ import okio.Buffer;
  * HttpRequestClient to supports get and post requests with api signing.
  */
 public class OstHttpRequestClient {
+    private static final String TAG = "OstHttp";
     private static final String API_SIGNATURE = "api_signature";
     private String apiEndpoint;
     private long timeout;
@@ -138,7 +140,7 @@ public class OstHttpRequestClient {
 
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         if (null == urlBuilder) {
-            throw new IOException("Failed to instanciate HttpUrl.Builder. resource or Api Endpoint is incorrect.");
+            throw new IOException("Failed to instantiate HttpUrl.Builder. resource or Api Endpoint is incorrect.");
         }
 
         // Evaluate the url generated so far.
@@ -179,7 +181,7 @@ public class OstHttpRequestClient {
             qsInputBuffer.writeUtf8(paramKey);
             qsInputBuffer.writeByte('=');
             qsInputBuffer.writeUtf8(paramVal);
-            if (DEBUG) System.out.println("paramKey " + paramKey + " paramVal " + paramVal);
+            Log.d(TAG, "paramKey " + paramKey + " paramVal " + paramVal);
 
             if (GET_REQUEST.equalsIgnoreCase(requestType)) {
                 urlBuilder.addEncodedQueryParameter(paramKey, paramVal);
@@ -200,7 +202,7 @@ public class OstHttpRequestClient {
         }
         // Build the url.
         url = urlBuilder.build();
-        if (DEBUG) System.out.println("url = " + url.toString());
+        Log.i(TAG, "url = " + url.toString());
 
         // Set url in requestBuilder.
         requestBuilder.url(url);
@@ -214,7 +216,7 @@ public class OstHttpRequestClient {
             FormBody formBody = formBodyBuilder.build();
             if (DEBUG && VERBOSE) {
                 for (int i = 0; i < formBody.size(); i++) {
-                    System.out.println(formBody.name(i) + "\t\t" + formBody.value(i));
+                    Log.d(TAG, formBody.name(i) + "\t\t" + formBody.value(i));
                 }
             }
 
@@ -230,7 +232,7 @@ public class OstHttpRequestClient {
             responseBody = getResponseBodyAsString(response);
         }catch (SocketTimeoutException e)
         {
-            System.out.println("SocketTimeoutException occured");
+            Log.e(TAG, "SocketTimeoutException occurred.");
             responseBody =  SocketTimeoutExceptionString;
         }
         return buildApiResponse(responseBody);
@@ -240,11 +242,11 @@ public class OstHttpRequestClient {
     private String signQueryParams(Buffer qsInputBuffer) {
         // Generate Signature for Params.
         byte[] bytes = qsInputBuffer.readByteArray();
-        if (DEBUG) System.out.println("bytes to sign: " + new String(bytes, UTF_8));
+        Log.d(TAG,"bytes to sign: " + new String(bytes, UTF_8));
         // Encryption of bytes
 
         String signature = mOstApiSigner.sign(bytes);
-        if (DEBUG) System.out.println("signature: " + signature);
+        Log.d(TAG,"signature:" + signature);
         return signature;
     }
 
@@ -257,8 +259,7 @@ public class OstHttpRequestClient {
             try {
                 responseBody = response.body().string();
                 if (responseBody.length() > 0) {
-                    if (DEBUG)
-                        System.out.println("responseCode: " + response.code() + "\nresponseBody:\n" + responseBody + "\n");
+                    Log.d(TAG,"responseCode:" + response.code()+ "\nresponseBody:\n" + responseBody + "\n");
                     return responseBody;
                 }
             } catch (IOException e) {
@@ -282,7 +283,7 @@ public class OstHttpRequestClient {
                 responseBody = SOMETHING_WRONG_RESPONSE;
         }
 
-        if (DEBUG) System.out.println("local responseBody:\n" + responseBody + "\n");
+        Log.d(TAG, "local responseBody:\n" + responseBody + "\n");
         return responseBody;
     }
 

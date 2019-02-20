@@ -27,17 +27,7 @@ class OstUserModelRepository extends OstBaseModelCacheRepository implements OstU
         return mOstUserDao;
     }
 
-
-    @Override
-    public Future<AsyncStatus> insertOrUpdateEntity(OstBaseEntity ostBaseEntity) {
-        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
-            @Override
-            public AsyncStatus call() {
-                OstUserModelRepository.this.insert(ostBaseEntity);
-                return new AsyncStatus(true);
-            }
-        });
-    }
+    
 
     @Override
     public OstUser getEntityById(String id) {
