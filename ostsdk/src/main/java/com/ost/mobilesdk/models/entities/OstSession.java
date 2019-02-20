@@ -8,6 +8,7 @@ import android.util.Log;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
+import com.ost.mobilesdk.models.OstSessionModel;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.utils.EIP1077;
 
@@ -37,12 +38,49 @@ public class OstSession extends OstBaseEntity {
         return OstSession.ADDRESS;
     }
 
+    public static OstSession getById(String entityId) {
+        return OstModelFactory.getSessionModel().getEntityById(entityId);
+    }
+
+    public static boolean isValidStatus(String status) {
+        return Arrays.asList(CONST_STATUS.INITIALIZING, CONST_STATUS.AUTHORISED,CONST_STATUS.EXPIRED,
+                CONST_STATUS.REVOKED, CONST_STATUS.REVOKING).contains(status);
+    }
+
+    public static List<OstSession> getSessionsToSync(String parentId) {
+        return getSessions(parentId, CONST_STATUS.AUTHORISED, CONST_STATUS.INITIALIZING);
+    }
+
+    public static List<OstSession> getActiveSessions(String parentId) {
+        return getSessions(parentId, CONST_STATUS.AUTHORISED);
+    }
+    private static List<OstSession> getSessions(String parentId, String ...statuses) {
+        OstSession[] ostSessions = getSessionsByParentId(parentId);
+        List<OstSession> activeSessionList = new ArrayList<>();
+        for (OstSession ostSession: ostSessions) {
+            for (String status : statuses) {
+                if (status.equalsIgnoreCase(ostSession.getStatus())) {
+                    activeSessionList.add(ostSession);
+                    break;
+                }
+            }
+
+        }
+        return activeSessionList;
+    }
+
+    public static OstSession[] getSessionsByParentId(String parentId) {
+        OstSessionModel ostSessionModel = OstModelFactory.getSessionModel();
+        return ostSessionModel.getEntitiesByParentId(parentId);
+    }
+
     public static class CONST_STATUS {
+        public static final String CREATED = "created";
         public static final String INITIALIZING = "initializing";
         public static final String AUTHORISED = "authorized";
         public static final String EXPIRED = "expired";
         public static final String REVOKING = "revoking";
-        public static final String FAIL = "fail";
+        public static final String REVOKED = "revoked";
     }
 
     public static OstSession parse(JSONObject jsonObject) throws JSONException {
