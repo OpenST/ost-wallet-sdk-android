@@ -1,31 +1,19 @@
 package com.ost.mobilesdk.models.entities;
 
 
-import android.Manifest;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.telephony.TelephonyManager;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
-import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.OstDeviceModel;
-import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.RawTransaction;
-import org.web3j.crypto.TransactionEncoder;
-import org.web3j.utils.Numeric;
 
-import java.lang.reflect.Array;
-import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
@@ -64,11 +52,7 @@ public class OstDevice extends OstBaseEntity {
     }
 
     public static OstDevice init(String address, String apiAddress, String mUserId) {
-        TelephonyManager tManager = (TelephonyManager) OstSdk.getContext().getSystemService(Context.TELEPHONY_SERVICE);
-        String uuid = "uuid";
-        if (ActivityCompat.checkSelfPermission(OstSdk.getContext(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
-            uuid = tManager.getDeviceId();
-        }
+        String uuid = Settings.Secure.getString(OstSdk.getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         String deviceName = android.os.Build.MANUFACTURER + android.os.Build.PRODUCT;
 
