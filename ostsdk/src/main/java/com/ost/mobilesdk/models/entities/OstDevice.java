@@ -182,4 +182,11 @@ public class OstDevice extends OstBaseEntity {
             super(nonce, gasPrice, gasLimit, to, value, data);
         }
     }
+
+    public boolean canMakeApiCall() {
+        String status = this.getStatus();
+        return OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
+                || OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(status)
+                || OstDevice.CONST_STATUS.AUTHORIZING.equalsIgnoreCase(status);
+    }
 }

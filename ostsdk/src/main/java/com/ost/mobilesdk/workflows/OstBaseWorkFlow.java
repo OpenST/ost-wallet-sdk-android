@@ -133,18 +133,10 @@ abstract class OstBaseWorkFlow {
                 && (OstDevice.CONST_STATUS.CREATED.equals(ostDevice.getStatus().toLowerCase()));
     }
 
-    boolean canDeviceMakeApiCall() {
-        OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
-        return canDeviceMakeApiCall(ostDevice);
-    }
-
     boolean canDeviceMakeApiCall(OstDevice ostDevice) {
-        boolean isRegistered = true;
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        isRegistered = isRegistered && ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress());
-        isRegistered = OstDevice.CONST_STATUS.REGISTERED.equals(ostDevice.getStatus().toLowerCase())
-                || OstDevice.CONST_STATUS.AUTHORIZING.equals(ostDevice.getStatus().toLowerCase())
-                || OstDevice.CONST_STATUS.AUTHORIZED.equals(ostDevice.getStatus().toLowerCase());
+        boolean isRegistered = ostKeyManager.getApiKeyAddress().equalsIgnoreCase(ostDevice.getPersonalSignAddress());
+        isRegistered = isRegistered && ostDevice.canMakeApiCall();
         return isRegistered;
     }
 
