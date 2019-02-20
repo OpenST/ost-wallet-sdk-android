@@ -12,9 +12,10 @@ import org.json.JSONObject;
 import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
- * Manage transaction signing
+ * To store user entity
  */
 @Entity(tableName = "user")
 public class OstUser extends OstBaseEntity {
@@ -62,6 +63,12 @@ public class OstUser extends OstBaseEntity {
             }
         }
         return currentDevice;
+    }
+
+    public static OstSession getActiveSession(String userId) {
+        List<OstSession> ostActiveSessionList = OstSession.getActiveSessions(userId);
+        // Todo: Logic to filter most appropriate session.
+        return ostActiveSessionList.get(0);
     }
 
     public String sign(String messageToSign) {

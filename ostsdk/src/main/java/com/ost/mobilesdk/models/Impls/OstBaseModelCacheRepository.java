@@ -145,4 +145,27 @@ abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
             }
         });
     }
+
+    public Future<AsyncStatus> deleteEntity(String id) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstBaseModelCacheRepository.this.delete(id);
+                removeFromCache(id);
+                return new AsyncStatus(true);
+            }
+        });
+    }
+
+    public Future<AsyncStatus> deleteAllEntities() {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                OstBaseModelCacheRepository.this.deleteAll();
+                mLruCache.evictAll();
+                mInMemoryMap = new HashMap<>();
+                return new AsyncStatus(true);
+            }
+        });
+    }
 }

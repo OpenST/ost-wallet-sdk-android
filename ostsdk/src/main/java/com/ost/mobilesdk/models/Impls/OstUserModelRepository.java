@@ -4,12 +4,7 @@ import com.ost.mobilesdk.database.OstSdkDatabase;
 import com.ost.mobilesdk.database.daos.OstBaseDao;
 import com.ost.mobilesdk.database.daos.OstUserDao;
 import com.ost.mobilesdk.models.OstUserModel;
-import com.ost.mobilesdk.models.entities.OstBaseEntity;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.utils.DispatchAsync;
-
-import java.util.concurrent.Future;
 
 class OstUserModelRepository extends OstBaseModelCacheRepository implements OstUserModel {
 
@@ -37,27 +32,5 @@ class OstUserModelRepository extends OstBaseModelCacheRepository implements OstU
     @Override
     public OstUser[] getEntitiesByParentId(String id) {
         return (OstUser[]) super.getByParentId(id);
-    }
-
-    @Override
-    public Future<AsyncStatus> deleteEntity(String id) {
-        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
-            @Override
-            public AsyncStatus call() {
-                OstUserModelRepository.this.delete(id);
-                return new AsyncStatus(true);
-            }
-        });
-    }
-
-    @Override
-    public Future<AsyncStatus> deleteAllEntities() {
-        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
-            @Override
-            public AsyncStatus call() {
-                OstUserModelRepository.this.deleteAll();
-                return new AsyncStatus(true);
-            }
-        });
     }
 }

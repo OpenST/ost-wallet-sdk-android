@@ -4,6 +4,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.utils.AsyncStatus;
@@ -14,6 +15,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -86,7 +88,11 @@ class OstSdkSync {
                     } else if (SYNC_ENTITY.DEVICE == entity) {
                         response = ostApiClient.getDevices(ostUser.getCurrentDevice().getAddress());
                     } else if (SYNC_ENTITY.SESSION == entity) {
-                        response = ostApiClient.getUser();
+                        List<OstSession> ostSessionList = OstSession.getSessionsToSync(mUserId);
+                        for (OstSession ostSession: ostSessionList) {
+                            response = ostApiClient.getSession(ostSession.getAddress());
+                            OstSdk.parse(response);
+                        }
                     } else if (SYNC_ENTITY.DEVICE_MANAGER == entity) {
                         response = ostApiClient.getDeviceManager();
                     } else if (SYNC_ENTITY.TOKEN_HOLDER == entity) {

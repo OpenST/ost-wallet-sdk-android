@@ -118,8 +118,9 @@ public class OstApiClient {
         return mOstHttpRequestClient.post(String.format("/users/%s/devices/authorize", mUserId), requestMap);
     }
 
-    public JSONObject getSession(String address) {
-        return null;
+    public JSONObject getSession(String address) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.post(String.format("/users/%s/sessions/%s", mUserId, address), requestMap);
     }
 
     public JSONObject getDeviceManager() {
