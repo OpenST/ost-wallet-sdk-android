@@ -131,7 +131,7 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
             }
             return new KeyPair(publicKey, privateKey);
         } catch (Exception ex) {
-            Log.e(TAG, "Exception faced in getKey " + ex.getMessage(), ex.getCause());
+            Log.d(TAG, "Exception faced in getKey ");
         }
         return null;
     }
