@@ -25,6 +25,7 @@ public class OstPayloadBuilder {
     public static final String REFUND_RECEIVER = "refund_receiver";
     public static final String SIGNATURES = "signatures";
     public static final String SIGNERS = "signers";
+    private static final String NONCE = "nonce";
     private String dataDefination = OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase();
     private String to = NULL_ADDRESS;
 
@@ -121,6 +122,7 @@ public class OstPayloadBuilder {
         map.put(REFUND_RECEIVER, refundReceiver);
         map.put(SIGNATURES, signatures);
         map.put(SIGNERS, signers);
+        map.put(NONCE, nonce);
         return map;
     }
 

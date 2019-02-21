@@ -181,7 +181,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
 
         JSONObject responseObject = null;
         try {
-            responseObject = ostApiClient.postAddDevice(map);
+            responseObject = ostApiClient.postAddSession(map);
             Log.i(TAG, String.format("Response %s", responseObject.toString()));
         } catch (IOException e) {
             Log.e(TAG, "IOException");

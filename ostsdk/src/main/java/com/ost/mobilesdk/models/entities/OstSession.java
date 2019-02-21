@@ -46,7 +46,7 @@ public class OstSession extends OstBaseEntity {
     }
 
     public static boolean isValidStatus(String status) {
-        return Arrays.asList(CONST_STATUS.INITIALIZING, CONST_STATUS.AUTHORISED,CONST_STATUS.EXPIRED,
+        return Arrays.asList(CONST_STATUS.CREATED, CONST_STATUS.INITIALIZING, CONST_STATUS.AUTHORISED,CONST_STATUS.EXPIRED,
                 CONST_STATUS.REVOKED, CONST_STATUS.REVOKING).contains(status);
     }
 

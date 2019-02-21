@@ -56,6 +56,6 @@ public class OstSessionPollingService extends OstPollingService {
 
     @Override
     protected boolean validateParams(String entityId, String fromStatus, String toStatus) {
-        return null != OstSession.getById(entityId) && OstSession.isValidStatus(fromStatus) && OstSession.isValidStatus(toStatus);
+        return OstSession.isValidStatus(fromStatus) && OstSession.isValidStatus(toStatus);
     }
 }
