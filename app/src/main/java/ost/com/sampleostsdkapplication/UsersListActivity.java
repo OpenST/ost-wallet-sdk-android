@@ -1,16 +1,23 @@
 package ost.com.sampleostsdkapplication;
 
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.ost.mobilesdk.OstSdk;
 
@@ -91,10 +98,19 @@ public class UsersListActivity extends MappyBaseActivity {
             LogInUser logInUser = ((App) getApplication()).getLoggedUser();
             String userId = logInUser.getOstUserId();
             String password = logInUser.getPassword();
-            String uPin = "123456";
             long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
             String spendingLimit = "1000000000000";
-            OstSdk.activateUser(userId, uPin, password, expiresAfterInSecs, spendingLimit, new WorkFlowHelper(getApplicationContext()));
+            getPin(new DialogCallback() {
+                @Override
+                public void onSubmit(String pin) {
+                    OstSdk.activateUser(userId, pin, password, expiresAfterInSecs, spendingLimit, new WorkFlowHelper(getApplicationContext()));
+                }
+
+                @Override
+                public void onCancel() {
+                    // Dialog cancelled;
+                }
+            });
         } else if (id == R.id.add_device) {
             Log.d(TAG, "Add device clicked");
             LogInUser logInUser = ((App) getApplication()).getLoggedUser();
@@ -107,9 +123,59 @@ public class UsersListActivity extends MappyBaseActivity {
         } else if (id == R.id.add_session) {
             LogInUser logInUser = ((App) getApplication()).getLoggedUser();
             String userId = logInUser.getOstUserId();
-            OstSdk.addSession(userId, "1000000000", System.currentTimeMillis()/1000, new WorkFlowHelper(getApplicationContext()));
+            OstSdk.addSession(userId, "1000000000", System.currentTimeMillis() / 1000, new WorkFlowHelper(getApplicationContext()));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getPin(final DialogCallback callback, String message) {
+        LayoutInflater li = LayoutInflater.from(UsersListActivity.this);
+        View promptsView = li.inflate(R.layout.pin_prompt, null);
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UsersListActivity.this);
+        alertDialogBuilder.setView(promptsView);
+
+        final TextView label = (TextView) promptsView
+                .findViewById(R.id.textView);
+
+        label.setText(message);
+        final EditText userInput = (EditText) promptsView
+                .findViewById(R.id.editTextDialogUserInput);
+
+        boolean errorFlag = false;
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                callback.onCancel();
+                            }
+                        })
+                .setPositiveButton("Done",
+                        new DialogInterface.OnClickListener() {
+                            @SuppressLint("SetTextI18n")
+                            public void onClick(DialogInterface dialog, int id) {
+                                String pin = userInput.getText().toString();
+                                if (pin.length() < 6) {
+                                    Log.w(TAG, "Pin length to small");
+                                    getPin( callback,  "Pin size less than 6 char enter again:");
+                                } else {
+                                    dialog.dismiss();
+                                    callback.onSubmit(pin);
+                                }
+                            }
+                        }
+                );
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+    }
+    private void getPin(final DialogCallback callback) {
+        getPin(callback, "Enter Pin : ");
     }
 
     @Override
@@ -127,13 +193,19 @@ public class UsersListActivity extends MappyBaseActivity {
             }
         }
         if (requestCode == QR_REQUEST_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            String userId = ((App)getApplicationContext()).getLoggedUser().getOstUserId();
+            String userId = ((App) getApplicationContext()).getLoggedUser().getOstUserId();
             String returnedResult = data.getData().toString();
             try {
                 OstSdk.scanQRCode(userId, returnedResult, new WorkFlowHelper(getApplicationContext()));
             } catch (JSONException e) {
-                Log.e(TAG,"JSONException while parsing");
+                Log.e(TAG, "JSONException while parsing");
             }
         }
+    }
+
+    interface DialogCallback {
+        void onSubmit(String pin);
+
+        void onCancel();
     }
 }
