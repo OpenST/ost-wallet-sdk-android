@@ -1,16 +1,9 @@
 package com.ost.mobilesdk.utils;
 
-import android.util.Log;
-
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +24,7 @@ public class OstPayloadBuilder {
     public static final String GAS_TOKEN = "gas_token";
     public static final String REFUND_RECEIVER = "refund_receiver";
     public static final String SIGNATURES = "signatures";
-    public static final String SIGNER = "signer";
+    public static final String SIGNERS = "signers";
     private String dataDefination = OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase();
     private String to = NULL_ADDRESS;
 
@@ -95,8 +88,8 @@ public class OstPayloadBuilder {
         return this;
     }
 
-    public OstPayloadBuilder setSigner(String signer) {
-        this.signer = signer;
+    public OstPayloadBuilder setSigners(List<String> signers) {
+        this.signers = signers;
         return this;
     }
 
@@ -110,7 +103,7 @@ public class OstPayloadBuilder {
     private String gasToken = NULL_ADDRESS;
     private String refundReceiver = NULL_ADDRESS;
     private String signatures = "0x0";
-    private String signer = "0x0";
+    private List<String> signers = new ArrayList<>();
     private String nonce = "0";
 
     public Map<String, Object> build() {
@@ -127,7 +120,7 @@ public class OstPayloadBuilder {
         map.put(GAS_TOKEN, gasToken);
         map.put(REFUND_RECEIVER, refundReceiver);
         map.put(SIGNATURES, signatures);
-        map.put(SIGNER, signer);
+        map.put(SIGNERS, signers);
         return map;
     }
 

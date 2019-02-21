@@ -26,6 +26,7 @@ import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -175,7 +176,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                 .setCallData(new GnosisSafe().getAuthorizeSessionExecutableData(sessionAddress, mSpendingLimit, expiryHeight))
                 .setTo(tokenHolderAddress)
                 .setSignatures(signature)
-                .setSigner(signerAddress)
+                .setSigners(Arrays.asList(signerAddress))
                 .build();
 
         JSONObject responseObject = null;

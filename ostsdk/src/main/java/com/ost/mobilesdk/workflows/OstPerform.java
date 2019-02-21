@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -143,7 +144,7 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
                     .setCallData(getCallData())
                     .setTo(getDeviceManagerAddress())
                     .setSignatures(signature)
-                    .setSigner(signerAddress)
+                    .setSigners(Arrays.asList(signerAddress))
                     .build();
             OstApiClient ostApiClient = new OstApiClient(mUserId);
             JSONObject jsonObject = ostApiClient.postAddDevice(map);
