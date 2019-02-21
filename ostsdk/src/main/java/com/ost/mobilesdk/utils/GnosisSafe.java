@@ -18,10 +18,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * authorizeSession params :_sessionKey address params :_spendingLimit uint256 params :_expirationHeight uint256
+ */
 public class GnosisSafe {
     private static final String TAG = "OstGnosisSafe";
     public GnosisSafe() {
 
+    }
+
+    public String getAuthorizeSessionExecutableData(String sessionAddress, String spendingLimit, String expirationHeight) {
+        Function function = new Function(
+                "authorizeSession",  // function we're calling
+                Arrays.asList(new Address(sessionAddress), new Uint256(new BigInteger(spendingLimit)), new Uint256(new BigInteger(expirationHeight))),  // Parameters to pass as Solidity Types
+                Collections.<TypeReference<?>>emptyList());
+
+        return FunctionEncoder.encode(function);
+    }
+
+    public Map<String, Object> getAuthorizeSessionData(String sessionAddress, String spendingLimit, String expirationHeight) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("method", "authorizeSession");
+        List<String> paramList = Arrays.asList(sessionAddress, spendingLimit, expirationHeight);
+        map.put("parameters", paramList);
+        return map;
     }
 
     public String getAddOwnerWithThresholdExecutableData(String ownerAddress, String threshHold) {
@@ -102,7 +122,7 @@ public class GnosisSafe {
     public static class SafeTxnBuilder {
         private static final String NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
         private String addOwnerExecutableData = "0x0";
-        private String deviceManagerAddress = "0x0";
+        private String toAddress = "0x0";
         private String value = "0";
         private String operation = "0";
         private String safeTxnGas = "0";
@@ -117,8 +137,8 @@ public class GnosisSafe {
             return this;
         }
 
-        public SafeTxnBuilder setDeviceManagerAddress(String deviceManagerAddress) {
-            this.deviceManagerAddress = deviceManagerAddress;
+        public SafeTxnBuilder setToAddress(String deviceManagerAddress) {
+            this.toAddress = deviceManagerAddress;
             return this;
         }
 
@@ -163,7 +183,7 @@ public class GnosisSafe {
         }
 
         public JSONObject build() {
-            return new GnosisSafe().getSafeTxData(deviceManagerAddress,
+            return new GnosisSafe().getSafeTxData(toAddress,
                     value, addOwnerExecutableData, operation, safeTxnGas, dataGas, gasPrice,
                     gasToken, refundAddress, nonce);
         }

@@ -104,6 +104,10 @@ public class UsersListActivity extends MappyBaseActivity {
         } else if (id == R.id.scan_qr) {
             Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
             startActivityForResult(intent, QR_REQUEST_CODE);
+        } else if (id == R.id.add_session) {
+            LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+            String userId = logInUser.getOstUserId();
+            OstSdk.addSession(userId, "1000000000", System.currentTimeMillis()/1000, new WorkFlowHelper(getApplicationContext()));
         }
         return super.onOptionsItemSelected(item);
     }

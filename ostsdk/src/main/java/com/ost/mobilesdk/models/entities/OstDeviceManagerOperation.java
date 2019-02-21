@@ -39,7 +39,7 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
         public static final String AUTHORIZE_RECOVERY_KEY = "authorize_recovery_key";
         public static final String REVOKE_RECOVERY_KEY = "revoke_recovery_key";
         public static final String SWAP_RECOVERY_KEY = "swap_recovery_key";
-        public static final String AUTHORIZE_TOKEN_HOLDER_SESSION = "authorize_token_holder_session";
+        public static final String AUTHORIZE_SESSION = "authorize_session";
         public static final String REVOKE_TOKEN_HOLDER_SESSION = "revoke_token_holder_session";
     }
 

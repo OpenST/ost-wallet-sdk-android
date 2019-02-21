@@ -54,12 +54,16 @@ public class MockTest {
     public void testGnosisSafe() {
 
         try {
-            File abiFile = new File("src/test/resources/GnosisSafe.abi");
+            File abiFile = new File("src/test/resources/TokenHolder.abi");
             List<AbiDefinition> functionDefinitions = loadContractDefinition(abiFile);
             List<String> functionNames = new ArrayList<>();
             AbiDefinition func = null;
             for (AbiDefinition abiDefinition: functionDefinitions) {
-                System.out.println("MockTest :: Function Name :" + abiDefinition.getName());
+                System.out.print("MockTest :: Function Name :" + abiDefinition.getName());
+                for (AbiDefinition.NamedType type : abiDefinition.getInputs()) {
+                    System.out.print(" params :" + type.getName() + " " + type.getType());
+                }
+                System.out.println();
                 functionNames.add(abiDefinition.getName());
             }
             System.out.print("MockTest :" + functionNames);

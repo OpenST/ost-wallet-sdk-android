@@ -21,7 +21,8 @@
     <string name="user_name">Name</string>
     <string name="title_activity_users_list">User List</string>
     <string name="error_incorrect_name">\"Name might be wrong\"</string>
-    <string name="activate_user">Activate User</string>
     <string name="add_device">Add Device</string>
     <string name="scan_qr">Scan QR</string>
+    <string name="add_session">Add Session</string>
+    <string name="activate_user">Activate User</string>
 </resources>

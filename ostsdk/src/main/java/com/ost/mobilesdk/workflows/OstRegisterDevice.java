@@ -45,8 +45,8 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
         this.mStateObject = stateObject;
     }
 
-    public OstRegisterDevice(String userId, String tokenId, boolean forceSync, Handler handler, OstWorkFlowCallback callback) {
-        super(userId, handler, callback);
+    public OstRegisterDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback callback) {
+        super(userId, callback);
 
         mTokenId = tokenId;
         mForceSync = forceSync;

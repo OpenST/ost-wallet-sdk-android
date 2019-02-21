@@ -17,4 +17,9 @@
         android:orderInCategory="100"
         android:title="@string/scan_qr"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/add_session"
+        android:orderInCategory="100"
+        android:title="@string/add_session"
+        app:showAsAction="never" />
 </menu>

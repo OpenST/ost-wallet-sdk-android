@@ -19,6 +19,7 @@ import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddDevice;
+import com.ost.mobilesdk.workflows.OstAddSession;
 import com.ost.mobilesdk.workflows.OstPerform;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
@@ -98,8 +99,7 @@ public class OstSdk {
     }
 
     public static void registerDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback callback) {
-        Handler handler = new Handler();
-        final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, tokenId, forceSync, handler, callback);
+        final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, tokenId, forceSync, callback);
         ostRegisterDevice.perform();
     }
 
@@ -124,9 +124,13 @@ public class OstSdk {
     public static void scanQRCode(String userId, String data, OstWorkFlowCallback workFlowCallback) throws JSONException {
         Log.i(TAG, String.format("Scanned text: %s", data));
         JSONObject payload = new JSONObject(data);
-        Handler handler = new Handler();
-        final OstPerform ostPerform = new OstPerform(userId, payload ,handler, workFlowCallback);
+        final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
         ostPerform.perform();
+    }
+
+    public static void addSession(String userId, String spendingLimit, long expireAfterInSecs, OstWorkFlowCallback workFlowCallback) {
+        final OstAddSession ostAddSession = new OstAddSession(userId, spendingLimit, expireAfterInSecs, workFlowCallback);
+        ostAddSession.perform();
     }
 
     public static void parse(JSONObject jsonObject) throws JSONException {

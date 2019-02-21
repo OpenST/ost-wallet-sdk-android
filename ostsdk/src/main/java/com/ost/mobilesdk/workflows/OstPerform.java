@@ -47,8 +47,8 @@ public class OstPerform extends OstBaseWorkFlow {
         this.mStateObject = stateObject;
     }
 
-    public OstPerform(String userId, JSONObject payload, Handler handler, OstWorkFlowCallback callback) {
-        super(userId, handler, callback);
+    public OstPerform(String userId, JSONObject payload, OstWorkFlowCallback callback) {
+        super(userId, callback);
         mPayload = payload;
     }
 
@@ -84,7 +84,7 @@ public class OstPerform extends OstBaseWorkFlow {
     private AsyncStatus authorizeDevice() {
         JSONObject safeTxn = new GnosisSafe.SafeTxnBuilder()
                 .setAddOwnerExecutableData(getCallData())
-                .setDeviceManagerAddress(getDeviceManagerAddress())
+                .setToAddress(getDeviceManagerAddress())
                 .build();
 
         //EIP-712
