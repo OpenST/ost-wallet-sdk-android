@@ -86,6 +86,8 @@ class WorkFlowHelper implements OstWorkFlowCallback {
         Intent anotherIntent = new Intent(mApp, QR_view.class);
         anotherIntent.putExtra("image", byteArray);
         mApp.startActivity(anotherIntent);
+        //Need to be on click of button "start polling"
+        startPollingInterface.startPolling();
     }
 
     @Override

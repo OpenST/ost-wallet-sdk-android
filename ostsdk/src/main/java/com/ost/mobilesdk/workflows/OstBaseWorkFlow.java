@@ -1,11 +1,19 @@
 package com.ost.mobilesdk.workflows;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
@@ -15,15 +23,19 @@ import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
+import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
+import com.ost.mobilesdk.workflows.services.OstPollingService;
 
 abstract class OstBaseWorkFlow {
     private static final String TAG = "OstBaseWorkFlow";
@@ -32,12 +44,13 @@ abstract class OstBaseWorkFlow {
     final Handler mHandler;
     final OstWorkFlowCallback mCallback;
     final OstApiClient mOstApiClient;
+    private OstBiometricAuthentication.Callback mBioMetricCallBack;
 
     /**
-     * @Depricated
      * @param userId
      * @param handler
      * @param callback
+     * @Depricated
      */
     @Deprecated
     OstBaseWorkFlow(String userId, Handler handler, OstWorkFlowCallback callback) {
@@ -54,6 +67,7 @@ abstract class OstBaseWorkFlow {
     boolean hasValidParams() {
         return !TextUtils.isEmpty(mUserId) && null != mHandler && null != mCallback;
     }
+
     public Future<AsyncStatus> perform() {
         return DispatchAsync.dispatch(new DispatchAsync.Executor() {
             @Override
@@ -69,7 +83,7 @@ abstract class OstBaseWorkFlow {
         return OstConstants.WORKFLOW_TYPE.UNKNOWN;
     }
 
-    void postFlowComplete() {
+    AsyncStatus postFlowComplete() {
         Log.i(TAG, "Flow complete");
         mHandler.post(new Runnable() {
             @Override
@@ -77,11 +91,12 @@ abstract class OstBaseWorkFlow {
                 mCallback.flowComplete(new OstContextEntity());
             }
         });
+        return new AsyncStatus(true);
     }
 
     /**
-     * @Deprecated: Use postErrorInterrupt instead.
      * @param msg
+     * @Deprecated: Use postErrorInterrupt instead.
      */
     @Deprecated
     void postError(String msg) {
@@ -94,8 +109,42 @@ abstract class OstBaseWorkFlow {
         });
     }
 
+    AsyncStatus postGetPin(OstPinAcceptInterface pinAcceptInterface) {
+        Log.i(TAG, "get Pin");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mCallback.getPin(mUserId, pinAcceptInterface);
+            }
+        });
+        return new AsyncStatus(true);
+    }
+
+    AsyncStatus postInvalidPin(OstPinAcceptInterface pinAcceptInterface) {
+        Log.i(TAG, "Invalid Pin");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mCallback.invalidPin(mUserId, pinAcceptInterface);
+            }
+        });
+        return new AsyncStatus(true);
+    }
+
+    AsyncStatus postPinValidated() {
+        Log.i(TAG, "Pin validated");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mCallback.pinValidated(mUserId);
+            }
+        });
+        return new AsyncStatus(true);
+    }
+
     /**
      * calls flowInterrupt with error message.
+     *
      * @param msg: Error Message.
      */
     AsyncStatus postErrorInterrupt(String msg) {
@@ -103,7 +152,7 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt( new OstError(msg, getWorkflowType() ) );
+                mCallback.flowInterrupt(new OstError(msg, getWorkflowType()));
             }
         });
         return new AsyncStatus(false);
@@ -115,12 +164,36 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt( new OstError(internalErrCode, errorCode, getWorkflowType() ) );
+                mCallback.flowInterrupt(new OstError(internalErrCode, errorCode, getWorkflowType()));
             }
         });
         return new AsyncStatus(false);
     }
 
+
+    OstBiometricAuthentication.Callback getBioMetricCallBack() {
+        if (null == mBioMetricCallBack) {
+            mBioMetricCallBack = new OstBiometricAuthentication.Callback() {
+                @Override
+                public void onAuthenticated() {
+                    Log.d(TAG, "Biometric authentication success");
+                    onBioMetricAuthenticationSuccess();
+                }
+
+                @Override
+                public void onError() {
+                    Log.d(TAG, "Biometric authentication fail");
+                    onBioMetricAuthenticationFail();
+                }
+            };
+        }
+        return mBioMetricCallBack;
+    }
+
+    void onBioMetricAuthenticationFail() {
+    }
+    void onBioMetricAuthenticationSuccess() {
+    }
 
     boolean hasDeviceApiKey(OstDevice ostDevice) {
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
@@ -175,21 +248,23 @@ abstract class OstBaseWorkFlow {
     }
 
     OstDevice mCurrentDevice;
+
     AsyncStatus loadCurrentDevice() {
         OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
-        if ( canDeviceMakeApiCall(ostDevice) ) {
+        if (canDeviceMakeApiCall(ostDevice)) {
             mCurrentDevice = ostDevice;
             return new AsyncStatus(true);
         }
         Log.i(TAG, "Device is not registered");
-        return postErrorInterrupt("wp_base_lcd_1" , ErrorCode.DEVICE_UNREGISTERED);
+        return postErrorInterrupt("wp_base_lcd_1", ErrorCode.DEVICE_UNREGISTERED);
     }
 
     OstUser mOstUser;
+
     AsyncStatus loadUser() {
         //Check if we have user information.
         mOstUser = OstUser.getById(mUserId);
-        if ( null == mOstUser || TextUtils.isEmpty( mOstUser.getTokenHolderAddress() ) ) {
+        if (null == mOstUser || TextUtils.isEmpty(mOstUser.getTokenHolderAddress())) {
             try {
                 OstSdk.parse(mOstApiClient.getUser());
                 mOstUser = OstUser.getById(mUserId);
@@ -204,16 +279,17 @@ abstract class OstBaseWorkFlow {
 
         if (null == mOstUser) {
             Log.i(TAG, "User does not exist");
-            return postErrorInterrupt("wp_base_lusr_1" , ErrorCode.USER_API_FAILED);
+            return postErrorInterrupt("wp_base_lusr_1", ErrorCode.USER_API_FAILED);
         }
         return new AsyncStatus(true);
     }
 
     OstToken mOstToken;
-    AsyncStatus loadToken(){
-        if ( null == mOstUser ) {
+
+    AsyncStatus loadToken() {
+        if (null == mOstUser) {
             AsyncStatus loadUserStatus = this.loadUser();
-            if ( !loadUserStatus.isSuccess() ) {
+            if (!loadUserStatus.isSuccess()) {
                 return loadUserStatus;
             }
         }
@@ -221,7 +297,7 @@ abstract class OstBaseWorkFlow {
         //Check if we have user information.
         String tokenId = mOstUser.getTokenId();
         mOstToken = OstToken.getById(tokenId);
-        if ( null == mOstToken || TextUtils.isEmpty( mOstToken.getChainId() ) ) {
+        if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId())) {
             //Make API Call.
             try {
                 OstSdk.parse(mOstApiClient.getToken());
@@ -235,12 +311,59 @@ abstract class OstBaseWorkFlow {
             }
         }
 
-        if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId()) ) {
+        if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId())) {
             Log.e(TAG, "Token is null or does not contain chainId");
-            return postErrorInterrupt("wp_base_ltkn_1" , ErrorCode.TOKEN_API_FAILED);
+            return postErrorInterrupt("wp_base_ltkn_1", ErrorCode.TOKEN_API_FAILED);
         }
         return new AsyncStatus(true);
     }
 
+    boolean waitForUpdate(final String pEntityType, final String pEntityId) {
+        final boolean[] isTimeout = new boolean[1];
+        isTimeout[0] = false;
+
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        BroadcastReceiver updateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Get extra data included in the Intent
+                Log.d(TAG, "Intent received");
+                String userId = intent.getStringExtra(OstPollingService.EXTRA_USER_ID);
+                String entityId = intent.getStringExtra(OstPollingService.EXTRA_ENTITY_ID);
+                String entityType = intent.getStringExtra(OstPollingService.EXTRA_ENTITY_TYPE);
+                boolean isPollingTimeOut = intent.getBooleanExtra(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
+                if (mUserId.equals(userId) && pEntityType.equalsIgnoreCase(entityType) && pEntityId.equals(entityId)) {
+                    Log.d(TAG, String.format("Got update message from polling service for device id:%s", entityId));
+                    if (isPollingTimeOut) {
+                        Log.w(TAG, "Polling timeout reached");
+                        isTimeout[0] = true;
+                    }
+                    countDownLatch.countDown();
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(OstSdk.getContext()).registerReceiver(updateReceiver,
+                new IntentFilter(OstPollingService.ENTITY_UPDATE_MESSAGE));
+        try {
+            countDownLatch.await(Integer.MAX_VALUE, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        LocalBroadcastManager.getInstance(OstSdk.getContext()).unregisterReceiver(updateReceiver);
+        return isTimeout[0];
+    }
+
+    boolean shouldAskForBioMetric() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //Fingerprint API only available on from Android 6.0 (M)
+            FingerprintManager fingerprintManager = (FingerprintManager) OstSdk.getContext()
+                    .getSystemService(Context.FINGERPRINT_SERVICE);
+            if (null != fingerprintManager && fingerprintManager.isHardwareDetected()
+                    && fingerprintManager.hasEnrolledFingerprints()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

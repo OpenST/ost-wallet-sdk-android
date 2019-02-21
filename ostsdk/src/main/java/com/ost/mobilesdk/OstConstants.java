@@ -14,6 +14,7 @@ public interface OstConstants {
     String DATA_DEFINATION = "data_defination";
     String USER_ID = "user_id";
     String DEVICE_ADDRESS = "device_address";
+    int MAX_PIN_LIMIT = 3;
 
 
     //ToDo: Move this to OstWorkflows.java (Create one)

@@ -28,10 +28,10 @@ public class OstDevicePollingService extends OstPollingService {
      *
      * @see IntentService
      */
-    public static void startPolling(String deviceId, String entityId, String fromStatus, String toStatus) {
+    public static void startPolling(String userId, String entityId, String fromStatus, String toStatus) {
         Context context = OstSdk.getContext();
         Intent intent = new Intent(context, OstDevicePollingService.class);
-        OstPollingService.startPolling(context, intent, deviceId, entityId, fromStatus, toStatus);
+        OstPollingService.startPolling(context, intent, userId, entityId, fromStatus, toStatus);
     }
 
     @Override

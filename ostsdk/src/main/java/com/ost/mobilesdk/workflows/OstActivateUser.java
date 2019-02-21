@@ -1,10 +1,5 @@
 package com.ost.mobilesdk.workflows;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -17,14 +12,11 @@ import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
-import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstUserPollingService;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 public class OstActivateUser extends OstBaseWorkFlow {
 
@@ -127,7 +119,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 OstUser.CONST_STATUS.ACTIVATED);
 
         Log.i(TAG, "Waiting for update");
-        boolean isTimeOut = waitForUpdate();
+        boolean isTimeOut = waitForUpdate(OstSdk.USER, mUserId);
         if (isTimeOut) {
             Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
             return postErrorInterrupt("wf_au_pr_5", ErrorCode.ACTIVATE_USER_API_POLLING_FAILED);
@@ -144,40 +136,6 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
     private boolean hasActivatingUser() {
         return OstUser.CONST_STATUS.ACTIVATING.equals(OstSdk.getUser(mUserId).getStatus());
-    }
-
-    private boolean waitForUpdate() {
-        final boolean[] isTimeout = new boolean[1];
-        isTimeout[0] = false;
-
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        BroadcastReceiver updateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // Get extra data included in the Intent
-                Log.d(TAG, "Intent received");
-                String userId = intent.getStringExtra(OstPollingService.EXTRA_USER_ID);
-                String entityType = intent.getStringExtra(OstPollingService.EXTRA_ENTITY_TYPE);
-                boolean isPollingTimeOut = intent.getBooleanExtra(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
-                if (mUserId.equals(userId) && OstSdk.USER.equals(entityType)) {
-                    Log.d(TAG, String.format("Got update message from polling service for user id:%s", userId));
-                    if (isPollingTimeOut) {
-                        Log.w(TAG, "Polling timeout reached");
-                        isTimeout[0] = true;
-                    }
-                    countDownLatch.countDown();
-                }
-            }
-        };
-        LocalBroadcastManager.getInstance(OstSdk.getContext()).registerReceiver(updateReceiver,
-                new IntentFilter(OstPollingService.ENTITY_UPDATE_MESSAGE));
-        try {
-            countDownLatch.await(Integer.MAX_VALUE, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        LocalBroadcastManager.getInstance(OstSdk.getContext()).unregisterReceiver(updateReceiver);
-        return isTimeout[0];
     }
 
     @Override

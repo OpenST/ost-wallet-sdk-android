@@ -3,7 +3,9 @@ package com.ost.mobilesdk.biometric;
 import android.app.Activity;
 import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,6 +20,7 @@ import com.ost.mobilesdk.R;
 public class FingerprintAuthenticationDialogActivity extends Activity
         implements FingerprintUiHelper.Callback {
 
+    private static final String TAG = "BiometricDailog";
     private Button mCancelButton;
     private View mFingerprintContent;
 
@@ -41,13 +44,16 @@ public class FingerprintAuthenticationDialogActivity extends Activity
         });
 
         mFingerprintContent = findViewById(R.id.fingerprint_container);
-
-        mFingerprintUiHelper = new FingerprintUiHelper(
-                getSystemService(FingerprintManager.class),
-                (ImageView) findViewById(R.id.fingerprint_icon),
-                (TextView) findViewById(R.id.fingerprint_status), this);
-        updateStage();
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            mFingerprintUiHelper = new FingerprintUiHelper(
+                    getSystemService(FingerprintManager.class),
+                    (ImageView) findViewById(R.id.fingerprint_icon),
+                    (TextView) findViewById(R.id.fingerprint_status), this);
+            updateStage();
+        } else {
+            Log.e(TAG, "Bio metric is not supported for api less than 23");
+            finish();
+        }
     }
 
 
@@ -94,6 +100,12 @@ public class FingerprintAuthenticationDialogActivity extends Activity
         intent.putExtra(OstBiometricAuthentication.IS_AUTHENTICATED, false);
         sendBroadcast(intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        onError();
+        super.onBackPressed();
     }
 
     /**

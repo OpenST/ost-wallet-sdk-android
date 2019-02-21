@@ -16,6 +16,9 @@ public class OstErrors {
         ACTIVATE_USER_API_POLLING_FAILED,
         DEVICE_UNREGISTERED,
         WORKFLOW_CANCELED,
+        USER_NOT_ACTIVATED,
+        POLLING_TIMEOUT,
+        MAX_PIN_LIMIT_REACHED
     }
 
     public static String getMessage(ErrorCode code) {
@@ -40,7 +43,11 @@ public class OstErrors {
 
             case WORKFLOW_CANCELED: return "Workflow canceled by application";
 
+            case USER_NOT_ACTIVATED: return "User not activated";
 
+            case POLLING_TIMEOUT: return "Polling timeout";
+
+            case MAX_PIN_LIMIT_REACHED: return "Max pin ask limit reached";
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:

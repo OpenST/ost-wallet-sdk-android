@@ -112,8 +112,7 @@ public class OstSdk {
     }
 
     public static void addDevice(String userId, OstWorkFlowCallback workFlowCallback) {
-        Handler handler = new Handler();
-        final OstAddDevice ostAddDevice = new OstAddDevice(userId, handler, workFlowCallback);
+        final OstAddDevice ostAddDevice = new OstAddDevice(userId, workFlowCallback);
         ostAddDevice.perform();
     }
 

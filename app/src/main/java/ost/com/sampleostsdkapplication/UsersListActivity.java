@@ -1,13 +1,17 @@
 package ost.com.sampleostsdkapplication;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.app.AlertDialog;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +20,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ost.mobilesdk.OstSdk;
@@ -117,6 +124,16 @@ public class UsersListActivity extends MappyBaseActivity {
 
             String userId = logInUser.getOstUserId();
             OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()));
+//            OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()){
+//                @Override
+//                public void showQR(Bitmap qrImage, OstStartPollingInterface startPollingInterface) {
+//                    Log.i(TAG, "showing QR code");
+//                    ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+//                    qrImage.compress(Bitmap.CompressFormat.PNG, 100, bStream);
+//                    byte[] byteArray = bStream.toByteArray();
+//                    showQRFragment(qrImage);
+//                }
+//            });
         } else if (id == R.id.scan_qr) {
             Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
             startActivityForResult(intent, QR_REQUEST_CODE);
@@ -126,6 +143,15 @@ public class UsersListActivity extends MappyBaseActivity {
             OstSdk.addSession(userId, "1000000000", System.currentTimeMillis() / 1000, new WorkFlowHelper(getApplicationContext()));
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showQRFragment(Bitmap qrImage) {
+        Context context = UsersListActivity.this;
+        FragmentManager fragmentManager = ((UsersListActivity) context).getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        android.support.v4.app.Fragment fragment = new QRFragment();
+        ((QRFragment) fragment).setQRImage(qrImage);
+        transaction.add(R.id.user_recycler_view, fragment).commit();
     }
 
     private void getPin(final DialogCallback callback, String message) {
@@ -207,5 +233,38 @@ public class UsersListActivity extends MappyBaseActivity {
         void onSubmit(String pin);
 
         void onCancel();
+    }
+
+    public static class QRFragment extends android.support.v4.app.Fragment {
+
+        private ImageView mImageView;
+        private Button mBtnDone;
+        private Bitmap mBitMap;
+        private Activity mActivity;
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View v = inflater.inflate(R.layout.activity_qr_view, container, false);
+            mImageView = v.findViewById(R.id.imageDisplay);
+            mBtnDone = v.findViewById(R.id.btnDone);
+            mActivity = getActivity();
+            mBtnDone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //OnClick start polling
+                }
+            });
+            return v;
+        }
+
+        void setQRImage(Bitmap bitmap) {
+            mBitMap = bitmap;
+        }
+        @Override
+        public void onResume() {
+            super.onResume();
+            mImageView.setImageBitmap(mBitMap);
+        }
     }
 }

@@ -16,7 +16,15 @@
         <service
             android:name=".workflows.services.OstUserPollingService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false"/>
+        <service
+            android:name=".workflows.services.OstDevicePollingService"
+            android:enabled="true"
+            android:exported="false"/>
+        <service
+            android:name=".workflows.services.OstSessionPollingService"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 
 </manifest>

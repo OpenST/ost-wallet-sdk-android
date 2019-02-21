@@ -1,12 +1,6 @@
 package com.ost.mobilesdk.workflows;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.Handler;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
@@ -18,18 +12,16 @@ import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.errors.OstError;
+import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstDevicePollingService;
-import com.ost.mobilesdk.workflows.services.OstPollingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * To Add device using QR
@@ -60,7 +52,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
         PIN,
         WORDS,
         POLLING,
-        ERROR
+        CANCELLED
     }
 
     private STATES mCurrentState = STATES.INITIAL;
@@ -71,8 +63,8 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
         this.mStateObject = stateObject;
     }
 
-    public OstAddDevice(String userId, Handler handler, OstWorkFlowCallback callback) {
-        super(userId, handler, callback);
+    public OstAddDevice(String userId, OstWorkFlowCallback callback) {
+        super(userId, callback);
     }
 
     synchronized public AsyncStatus process() {
@@ -82,25 +74,33 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
 
                 Log.i(TAG, "Validating user Id");
                 if (!hasValidParams()) {
-                    postError(String.format("Invalid params for userId : %s", mUserId));
-                    return new AsyncStatus(false);
+                    Log.e(TAG, String.format("Invalid params for userId : %s", mUserId));
+                    return postErrorInterrupt("wf_ad_pr_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+                }
+
+                Log.i(TAG, "Loading device and user entities");
+                AsyncStatus status = super.loadCurrentDevice();
+                status = status.isSuccess() ? super.loadUser() : status;
+
+                if (!status.isSuccess()) {
+                    Log.e(TAG, String.format("Fetching of basic entities failed for user id: %s", mUserId));
+                    return status;
                 }
 
                 Log.i(TAG, "Validate states");
                 if (!hasActivatedUser()) {
-                    postError(String.format("User state is not activated for user Id: %s", mUserId));
-                    return new AsyncStatus(false);
+                    Log.e(TAG, String.format("User is not activated of user id: %s", mUserId));
+                    return postErrorInterrupt("wf_ad_pr_2", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
                 }
                 if (!hasRegisteredDevice()) {
-                    postError("Does not has registered device");
-                    return new AsyncStatus(false);
+                    Log.e(TAG, String.format("Device is not registered of user id: %s", mUserId));
+                    return postErrorInterrupt("wf_ad_pr_3", OstErrors.ErrorCode.DEVICE_UNREGISTERED);
                 }
 
                 Log.i(TAG,"Determine Add device flow");
                 determineAddDeviceFlow();
                 break;
             case QR_CODE:
-
                 Log.d(TAG, String.format("QR Code add device flow for userId: %s started", mUserId));
                 //Create payload
                 String payload = createPayload();
@@ -120,18 +120,21 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                         OstDevice.CONST_STATUS.AUTHORIZED);
 
                 Log.i(TAG, "Waiting for update");
-                boolean isTimeOut = waitForUpdate();
+                boolean isTimeOut = waitForUpdate(OstSdk.DEVICE, deviceAddress);
                 if (isTimeOut) {
                     Log.d(TAG, String.format("Polling time out for device Id: %s", deviceAddress));
-                    postError("Polling Time out");
-                    return new AsyncStatus(false);
+                    return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.POLLING_TIMEOUT);
                 }
+
+                Log.i(TAG, "Syncing Entity: Device");
+                new OstSdkSync(mUserId,OstSdkSync.SYNC_ENTITY.DEVICE).perform();
 
                 Log.i(TAG, "Response received for Add device");
                 postFlowComplete();
                 break;
-            case ERROR:
-                postError(String.format("Error in Add device flow: %s", mUserId));
+            case CANCELLED:
+                Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
+                postErrorInterrupt("wf_ad_pr_5",OstErrors.ErrorCode.WORKFLOW_CANCELED);
                 break;
         }
         return new AsyncStatus(true);
@@ -184,46 +187,12 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
 
     private boolean hasRegisteredDevice() {
         OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
-        return ostDevice.getStatus().toLowerCase().equals(OstDevice.CONST_STATUS.REGISTERED);
+        return ostDevice.getStatus().equalsIgnoreCase(OstDevice.CONST_STATUS.REGISTERED);
     }
 
     private boolean hasActivatedUser() {
         OstUser ostUser = OstUser.getById(mUserId);
-        return ostUser.getStatus().toLowerCase().equals(OstUser.CONST_STATUS.ACTIVATED);
-    }
-
-    private boolean waitForUpdate() {
-        final boolean[] isTimeout = new boolean[1];
-        isTimeout[0] = false;
-
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        BroadcastReceiver updateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // Get extra data included in the Intent
-                Log.d(TAG, "Intent received");
-                String userId = intent.getStringExtra(OstPollingService.EXTRA_USER_ID);
-                String entityType = intent.getStringExtra(OstPollingService.EXTRA_ENTITY_TYPE);
-                boolean isPollingTimeOut = intent.getBooleanExtra(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
-                if (mUserId.equals(userId) && OstSdk.USER.equals(entityType)) {
-                    Log.d(TAG, String.format("Got update message from polling service for device id:%s", userId));
-                    if (isPollingTimeOut) {
-                        Log.w(TAG, "Polling timeout reached");
-                        isTimeout[0] = true;
-                    }
-                    countDownLatch.countDown();
-                }
-            }
-        };
-        LocalBroadcastManager.getInstance(OstSdk.getContext()).registerReceiver(updateReceiver,
-                new IntentFilter(OstPollingService.ENTITY_UPDATE_MESSAGE));
-        try {
-            countDownLatch.await(Integer.MAX_VALUE, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        LocalBroadcastManager.getInstance(OstSdk.getContext()).unregisterReceiver(updateReceiver);
-        return isTimeout[0];
+        return ostUser.getStatus().equalsIgnoreCase(OstUser.CONST_STATUS.ACTIVATED);
     }
 
     @Override
@@ -246,7 +215,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
 
     @Override
     public void cancelFlow(OstError ostError) {
-        setFlowState(OstAddDevice.STATES.ERROR, ostError);
+        setFlowState(OstAddDevice.STATES.CANCELLED, ostError);
         perform();
     }
 
