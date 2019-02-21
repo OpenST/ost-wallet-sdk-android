@@ -27,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.workflows.errors.OstError;
+import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -107,7 +109,7 @@ public class UsersListActivity extends MappyBaseActivity {
             String password = logInUser.getPassword();
             long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
             String spendingLimit = "1000000000000";
-            getPin(new DialogCallback() {
+            getPinDialog(new DialogCallback() {
                 @Override
                 public void onSubmit(String pin) {
                     OstSdk.activateUser(userId, pin, password, expiresAfterInSecs, spendingLimit, new WorkFlowHelper(getApplicationContext()));
@@ -140,7 +142,24 @@ public class UsersListActivity extends MappyBaseActivity {
         } else if (id == R.id.add_session) {
             LogInUser logInUser = ((App) getApplication()).getLoggedUser();
             String userId = logInUser.getOstUserId();
-            OstSdk.addSession(userId, "1000000000", System.currentTimeMillis() / 1000, new WorkFlowHelper(getApplicationContext()));
+            OstSdk.addSession(userId, "1000000000",
+                    System.currentTimeMillis() / 1000, new WorkFlowHelper(getApplicationContext()) {
+                        @Override
+                        public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+                            super.getPin(userId, ostPinAcceptInterface);
+                            getPinDialog(new DialogCallback() {
+                                @Override
+                                public void onSubmit(String pin) {
+                                    ostPinAcceptInterface.pinEntered(pin, logInUser.getPassword());
+                                }
+
+                                @Override
+                                public void onCancel() {
+                                    ostPinAcceptInterface.cancelFlow(new OstError("Don't know pin"));
+                                }
+                            });
+                        }
+                    });
         }
         return super.onOptionsItemSelected(item);
     }
@@ -154,7 +173,7 @@ public class UsersListActivity extends MappyBaseActivity {
         transaction.add(R.id.user_recycler_view, fragment).commit();
     }
 
-    private void getPin(final DialogCallback callback, String message) {
+    private void getPinDialog(final DialogCallback callback, String message) {
         LayoutInflater li = LayoutInflater.from(UsersListActivity.this);
         View promptsView = li.inflate(R.layout.pin_prompt, null);
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UsersListActivity.this);
@@ -185,7 +204,7 @@ public class UsersListActivity extends MappyBaseActivity {
                                 String pin = userInput.getText().toString();
                                 if (pin.length() < 6) {
                                     Log.w(TAG, "Pin length to small");
-                                    getPin( callback,  "Pin size less than 6 char enter again:");
+                                    getPinDialog( callback,  "Pin size less than 6 char enter again:");
                                 } else {
                                     dialog.dismiss();
                                     callback.onSubmit(pin);
@@ -200,8 +219,8 @@ public class UsersListActivity extends MappyBaseActivity {
         // show it
         alertDialog.show();
     }
-    private void getPin(final DialogCallback callback) {
-        getPin(callback, "Enter Pin : ");
+    private void getPinDialog(final DialogCallback callback) {
+        getPinDialog(callback, "Enter Pin : ");
     }
 
     @Override

@@ -18,7 +18,10 @@ public class OstErrors {
         WORKFLOW_CANCELED,
         USER_NOT_ACTIVATED,
         POLLING_TIMEOUT,
-        MAX_PIN_LIMIT_REACHED
+        MAX_PIN_LIMIT_REACHED,
+        BLOCK_NUMBER_API_FAILED,
+        ADD_DEVICE_API_FAILED,
+        EIP712_FAILED;
     }
 
     public static String getMessage(ErrorCode code) {
@@ -48,6 +51,13 @@ public class OstErrors {
             case POLLING_TIMEOUT: return "Polling timeout";
 
             case MAX_PIN_LIMIT_REACHED: return "Max pin ask limit reached";
+
+            case ADD_DEVICE_API_FAILED: return "Add device api failed";
+
+            case BLOCK_NUMBER_API_FAILED: return "Block number api failed";
+
+            case EIP712_FAILED: return "EIP712 failed";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:

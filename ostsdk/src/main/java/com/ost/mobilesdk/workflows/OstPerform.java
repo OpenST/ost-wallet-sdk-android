@@ -112,10 +112,6 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
         return new AsyncStatus(true);
     }
 
-    private boolean validatePin(String uPin, String appSalt) {
-        return true;
-    }
-
     private AsyncStatus authorizeDevice() {
         JSONObject safeTxn = new GnosisSafe.SafeTxnBuilder()
                 .setAddOwnerExecutableData(getCallData())
@@ -152,8 +148,11 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
             OstApiClient ostApiClient = new OstApiClient(mUserId);
             JSONObject jsonObject = ostApiClient.postAddDevice(map);
             Log.d(TAG, String.format("JSON Object response: %s", jsonObject.toString()));
-
-            postFlowComplete();
+            if(isValidResponse(jsonObject)) {
+                return postFlowComplete();
+            } else {
+                return postErrorInterrupt("Not a valid response");
+            }
         } catch (JSONException e) {
             Log.e(TAG, "JSON Exception");
             return new AsyncStatus(false);
@@ -161,7 +160,6 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
             Log.e(TAG, "IO Exception");
             return new AsyncStatus(false);
         }
-        return new AsyncStatus(true);
     }
 
     private String getDeviceManagerAddress() {

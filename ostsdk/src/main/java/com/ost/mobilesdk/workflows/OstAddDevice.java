@@ -96,6 +96,11 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                     Log.e(TAG, String.format("Device is not registered of user id: %s", mUserId));
                     return postErrorInterrupt("wf_ad_pr_3", OstErrors.ErrorCode.DEVICE_UNREGISTERED);
                 }
+                if (hasAuthorizingDevice()) {
+                    Log.v(TAG, String.format("Device is authorizing of user id: %s  start polling", mUserId));
+                    startPolling();
+                    return new AsyncStatus(true);
+                }
 
                 Log.i(TAG,"Determine Add device flow");
                 determineAddDeviceFlow();
@@ -138,6 +143,11 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 break;
         }
         return new AsyncStatus(true);
+    }
+
+    private boolean hasAuthorizingDevice() {
+        OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
+        return ostDevice.getStatus().equalsIgnoreCase(OstDevice.CONST_STATUS.AUTHORIZING);
     }
 
     private Bitmap createQRBitMap(String payload) {

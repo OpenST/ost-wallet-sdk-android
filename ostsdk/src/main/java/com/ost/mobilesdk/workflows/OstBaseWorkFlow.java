@@ -366,4 +366,8 @@ abstract class OstBaseWorkFlow {
         return false;
     }
 
+    boolean validatePin(String uPin, String appSalt) {
+        return true;
+    }
+
 }

@@ -1,16 +1,13 @@
 package com.ost.mobilesdk.workflows;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
+import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.OstKeyManager;
@@ -19,9 +16,10 @@ import com.ost.mobilesdk.utils.EIP712;
 import com.ost.mobilesdk.utils.GnosisSafe;
 import com.ost.mobilesdk.utils.OstPayloadBuilder;
 import com.ost.mobilesdk.workflows.errors.OstError;
+import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
-import com.ost.mobilesdk.workflows.services.OstPollingService;
+import com.ost.mobilesdk.workflows.services.OstSessionPollingService;
 
 import org.json.JSONObject;
 import org.web3j.utils.Numeric;
@@ -29,8 +27,6 @@ import org.web3j.utils.Numeric;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 /**
  * To Add Session
@@ -46,11 +42,13 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
     private static final String TAG = "OstAddDevice";
     private final String mSpendingLimit;
     private final long mExpiresAfterInSecs;
+    private int mPinAskCount = 0;
 
     private enum STATES {
         INITIAL,
-        PIN,
-        ERROR
+        PIN_ENTERED,
+        CANCELLED,
+        AUTHENTICATED
     }
 
     private STATES mCurrentState = STATES.INITIAL;
@@ -70,31 +68,65 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
     synchronized public AsyncStatus process() {
         switch (mCurrentState) {
             case INITIAL:
+
                 Log.d(TAG, String.format("Add Session workflow for userId: %s started", mUserId));
 
                 Log.i(TAG, "Validating user Id");
                 if (!hasValidParams()) {
-                    postError(String.format("Invalid params for userId : %s", mUserId));
-                    return new AsyncStatus(false);
+                    Log.e(TAG, String.format("Invalid params for userId : %s", mUserId));
+                    return postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+                }
+
+                Log.i(TAG, "Loading device and user entities");
+                AsyncStatus status = super.loadCurrentDevice();
+                status = status.isSuccess() ? super.loadUser() : status;
+
+                if (!status.isSuccess()) {
+                    Log.e(TAG, String.format("Fetching of basic entities failed for user id: %s", mUserId));
+                    return status;
                 }
 
                 Log.i(TAG, "Validate states");
                 if (!hasActivatedUser()) {
-                    postError(String.format("User state is not activated for user Id: %s", mUserId));
-                    return new AsyncStatus(false);
+                    Log.e(TAG, String.format("User is not activated of user id: %s", mUserId));
+                    return postErrorInterrupt("wf_as_pr_2", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
                 }
                 if (!hasAuthorizedDevice()) {
-                    postError("Does not has authorized device");
-                    return new AsyncStatus(false);
+                    Log.e(TAG, String.format("Device is not authorized of user id: %s", mUserId));
+                    return postErrorInterrupt("wf_as_pr_3", OstErrors.ErrorCode.DEVICE_UNREGISTERED);
                 }
 
-                //Todo:: Ask for authentication
 
-            case PIN:
+                Log.i(TAG, "Ask for authentication");
+                if (shouldAskForBioMetric()) {
+                    new OstBiometricAuthentication(OstSdk.getContext(), getBioMetricCallBack());
+                } else {
+                    postGetPin(OstAddSession.this);
+                }
+                break;
+            case PIN_ENTERED:
+                Log.i(TAG, "Pin Entered");
+                String[] strings = ((String) mStateObject).split(" ");
+                String uPin = strings[0];
+                String appSalt = strings[0];
+                if (validatePin(uPin, appSalt)) {
+                    Log.d(TAG, "Pin Validated");
+                    postPinValidated();
+                } else {
+                    mPinAskCount = mPinAskCount + 1;
+                    if (mPinAskCount > OstConstants.MAX_PIN_LIMIT) {
+                        Log.d(TAG, "Max pin ask limit reached");
+                        return postErrorInterrupt("ef_pe_pr_2", OstErrors.ErrorCode.MAX_PIN_LIMIT_REACHED);
+                    }
+                    Log.d(TAG, "Pin InValidated ask for pin again");
+                    return postInvalidPin(OstAddSession.this);
+                }
+            case AUTHENTICATED:
                 return authorizeSession();
 
-            case ERROR:
-                postError(String.format("Error in Add device flow: %s", mUserId));
+            case CANCELLED:
+                Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
+                postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.WORKFLOW_CANCELED);
                 break;
         }
         return new AsyncStatus(true);
@@ -110,8 +142,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         String blockNumber = getCurrentBlockNumber(ostApiClient);
         if (null == blockNumber) {
             Log.e(TAG, "BlockNumber is null");
-            postError("BlockNumber is null");
-            return new AsyncStatus(false);
+            return postErrorInterrupt("wf_as_pr_as_1", OstErrors.ErrorCode.BLOCK_NUMBER_API_FAILED);
         }
 
         OstUser ostUser = OstUser.getById(mUserId);
@@ -135,8 +166,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                     Numeric.hexStringToByteArray(messageHash));
         } catch (Exception e) {
             Log.e(TAG, "Exception in toEIP712TransactionHash");
-            postError("Exception in toEIP712TransactionHash");
-            return new AsyncStatus(false);
+            return postErrorInterrupt("wf_as_pr_as_2", OstErrors.ErrorCode.EIP712_FAILED);
         }
 
         Map<String, Object> map = new OstPayloadBuilder()
@@ -154,11 +184,29 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
             Log.i(TAG, String.format("Response %s", responseObject.toString()));
         } catch (IOException e) {
             Log.e(TAG, "IOException");
-            postError("IOException");
-            return new AsyncStatus(false);
+            return postErrorInterrupt("wf_as_pr_as_3", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }
-        postFlowComplete();
-        return new AsyncStatus(true);
+        if (!isValidResponse(responseObject)) {
+            return postErrorInterrupt("Not a valid response");
+        }
+
+        Log.i(TAG, "Starting Session polling service");
+
+        OstSessionPollingService.startPolling(mUserId, sessionAddress, OstSession.CONST_STATUS.INITIALIZING,
+                OstSession.CONST_STATUS.AUTHORISED);
+
+        Log.i(TAG, "Waiting for update");
+        boolean isTimeOut = waitForUpdate(OstSdk.DEVICE, sessionAddress);
+        if (isTimeOut) {
+            Log.d(TAG, String.format("Polling time out for session Id: %s", sessionAddress));
+            return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.POLLING_TIMEOUT);
+        }
+
+        Log.i(TAG, "Syncing Entity: Sessions");
+        new OstSdkSync(mUserId,OstSdkSync.SYNC_ENTITY.SESSION).perform();
+
+        Log.i(TAG, "Response received for Add device");
+        return postFlowComplete();
     }
 
     private String getCurrentBlockNumber(OstApiClient ostApiClient) {
@@ -184,51 +232,31 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         return ostUser.getStatus().toLowerCase().equals(OstUser.CONST_STATUS.ACTIVATED);
     }
 
-    private boolean waitForUpdate() {
-        final boolean[] isTimeout = new boolean[1];
-        isTimeout[0] = false;
-
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        BroadcastReceiver updateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // Get extra data included in the Intent
-                Log.d(TAG, "Intent received");
-                String userId = intent.getStringExtra(OstPollingService.EXTRA_USER_ID);
-                String entityType = intent.getStringExtra(OstPollingService.EXTRA_ENTITY_TYPE);
-                boolean isPollingTimeOut = intent.getBooleanExtra(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
-                if (mUserId.equals(userId) && OstSdk.USER.equals(entityType)) {
-                    Log.d(TAG, String.format("Got update message from polling service for device id:%s", userId));
-                    if (isPollingTimeOut) {
-                        Log.w(TAG, "Polling timeout reached");
-                        isTimeout[0] = true;
-                    }
-                    countDownLatch.countDown();
-                }
-            }
-        };
-        LocalBroadcastManager.getInstance(OstSdk.getContext()).registerReceiver(updateReceiver,
-                new IntentFilter(OstPollingService.ENTITY_UPDATE_MESSAGE));
-        try {
-            countDownLatch.await(Integer.MAX_VALUE, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        LocalBroadcastManager.getInstance(OstSdk.getContext()).unregisterReceiver(updateReceiver);
-        return isTimeout[0];
-    }
-
-
     @Override
     public void pinEntered(String uPin, String appUserPassword) {
-        setFlowState(STATES.PIN, null);
+        setFlowState(STATES.PIN_ENTERED, null);
         perform();
     }
 
 
     @Override
     public void cancelFlow(OstError ostError) {
-        setFlowState(OstAddSession.STATES.ERROR, ostError);
+        setFlowState(OstAddSession.STATES.CANCELLED, ostError);
+        perform();
+    }
+
+    @Override
+    void onBioMetricAuthenticationSuccess() {
+        super.onBioMetricAuthenticationSuccess();
+        setFlowState(OstAddSession.STATES.AUTHENTICATED, null);
+        perform();
+    }
+
+    @Override
+    void onBioMetricAuthenticationFail() {
+        super.onBioMetricAuthenticationFail();
+        super.onBioMetricAuthenticationFail();
+        setFlowState(OstAddSession.STATES.CANCELLED, null);
         perform();
     }
 }
