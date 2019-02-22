@@ -22,5 +22,9 @@ public interface OstConstants {
         UNKNOWN,
         REGISTER_DEVICE,
         ACTIVATE_USER,
+        ADD_DEVICE,
+        PERFORM,
+        GET_PAPER_WALLET,
+        ADD_SESSION
     }
 }
