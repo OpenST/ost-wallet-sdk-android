@@ -157,7 +157,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 }
                 if (null != OstDevice.getById(signerAddress)) {
                     postWordsValidated();
-                    AsyncStatus apiCallStatus = makeApiCall(signature, signerAddress, wordsDeviceManagerAddress, wordsDeviceAddress);
+                    AsyncStatus apiCallStatus = makeAddDeviceCall(signature, signerAddress, wordsDeviceManagerAddress, wordsDeviceAddress);
                     if (apiCallStatus.isSuccess()) {
                         startPolling();
                     } else {

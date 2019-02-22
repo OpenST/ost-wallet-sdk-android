@@ -8,9 +8,7 @@ import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.utils.EIP712;
 import com.ost.mobilesdk.utils.GnosisSafe;
 import com.ost.mobilesdk.utils.OstPayloadBuilder;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -22,8 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
 
 /**
  * Device A which will add
@@ -79,10 +75,10 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
                 break;
             case PIN_ENTERED:
                 Log.i(TAG, "Pin Entered");
-                String[] strings = ((String)mStateObject).split(" ");
+                String[] strings = ((String) mStateObject).split(" ");
                 String uPin = strings[0];
                 String appSalt = strings[0];
-                if(validatePin(uPin, appSalt)) {
+                if (validatePin(uPin, appSalt)) {
                     Log.d(TAG, "Pin Validated");
                     postPinValidated();
                 } else {
@@ -107,60 +103,48 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
                 break;
             case CANCELLED:
                 Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
-                postErrorInterrupt("wf_pe_pr_5",OstErrors.ErrorCode.WORKFLOW_CANCELED);
+                postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.WORKFLOW_CANCELED);
                 break;
         }
         return new AsyncStatus(true);
     }
 
     private AsyncStatus authorizeDevice() {
-        JSONObject safeTxn = new GnosisSafe.SafeTxnBuilder()
-                .setAddOwnerExecutableData(getCallData())
-                .setToAddress(getDeviceManagerAddress())
-                .build();
-
-        //EIP-712
-        Log.i(TAG, "Performing EIP712 encoding ");
-        Log.d(TAG, String.format("String to be encoded  %s", safeTxn.toString()));
-        String safeTxnEIP712Hash = null;
         try {
-            safeTxnEIP712Hash = new EIP712(safeTxn).toEIP712TransactionHash();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e(TAG, "EIP-712 error while parsing json object of sageTxn");
-            return new AsyncStatus(false);
+            JSONObject response = mOstApiClient.getDeviceManager();
+            OstSdk.parse(response);
+        } catch (IOException e) {
+            return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
+        } catch (JSONException e) {
+            return postErrorInterrupt("wf_ad_pr_5", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }
 
-        Log.i(TAG, "Updating payload");
-        String signature = OstUser.getById(mUserId).sign(safeTxnEIP712Hash);
+        String deviceAddress = getDeviceAddress();
+        String deviceManagerAddress = getDeviceManagerAddress();
+
+        String eip712Hash = getEIP712Hash(deviceAddress, deviceManagerAddress);
+
+        Log.i(TAG, "Sign eip712Hash");
+        String signature = OstUser.getById(mUserId).sign(eip712Hash);
         String signerAddress = OstUser.getById(mUserId).getCurrentDevice().getAddress();
 
         Log.i(TAG, "Api Call payload");
-        try {
-
-            Map<String, Object> map = new OstPayloadBuilder()
-                    .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
-                    .setRawCalldata(new GnosisSafe().getAddOwnerWithThresholdData(mPayload.getString(OstConstants.DEVICE_ADDRESS), "1"))
-                    .setCallData(getCallData())
-                    .setTo(getDeviceManagerAddress())
-                    .setSignatures(signature)
-                    .setSigners(Arrays.asList(signerAddress))
-                    .build();
-            OstApiClient ostApiClient = new OstApiClient(mUserId);
-            JSONObject jsonObject = ostApiClient.postAddDevice(map);
-            Log.d(TAG, String.format("JSON Object response: %s", jsonObject.toString()));
-            if(isValidResponse(jsonObject)) {
-                return postFlowComplete();
-            } else {
-                return postErrorInterrupt("Not a valid response");
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "JSON Exception");
-            return new AsyncStatus(false);
-        } catch (IOException e) {
-            Log.e(TAG, "IO Exception");
-            return new AsyncStatus(false);
+        AsyncStatus apiCallStatus = makeAddDeviceCall(signature, signerAddress, deviceManagerAddress, deviceAddress);
+        if (apiCallStatus.isSuccess()) {
+            return postFlowComplete();
+        } else {
+            return postErrorInterrupt("wf_ad_pr_6", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }
+    }
+
+    private String getDeviceAddress() {
+        try {
+            return mPayload.getString(OstConstants.DEVICE_ADDRESS);
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected JSONException");
+        }
+        return null;
+
     }
 
     private String getDeviceManagerAddress() {

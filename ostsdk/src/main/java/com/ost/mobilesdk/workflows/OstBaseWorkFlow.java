@@ -404,7 +404,7 @@ abstract class OstBaseWorkFlow {
         return safeTxnEIP712Hash;
     }
 
-    AsyncStatus makeApiCall(String signature, String signerAddress, String deviceManagerAddress, String deviceAddress) {
+    AsyncStatus makeAddDeviceCall(String signature, String signerAddress, String deviceManagerAddress, String deviceAddress) {
         String callData = new GnosisSafe().getAddOwnerWithThresholdExecutableData(deviceAddress);
         int nonce = OstDeviceManager.getById(deviceManagerAddress).getNonce();
         Log.i(TAG, "Api Call payload");
