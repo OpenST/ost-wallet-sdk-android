@@ -123,6 +123,10 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
         String deviceManagerAddress = getDeviceManagerAddress();
 
         String eip712Hash = getEIP712Hash(deviceAddress, deviceManagerAddress);
+        if (null == eip712Hash) {
+            Log.e(TAG, "EIP-712 error while parsing json object of sageTxn");
+            return postErrorInterrupt("wf_ad_pr_6", OstErrors.ErrorCode.EIP712_FAILED);
+        }
 
         Log.i(TAG, "Sign eip712Hash");
         String signature = OstUser.getById(mUserId).sign(eip712Hash);
@@ -133,7 +137,7 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
         if (apiCallStatus.isSuccess()) {
             return postFlowComplete();
         } else {
-            return postErrorInterrupt("wf_ad_pr_6", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
+            return postErrorInterrupt("wf_ad_pr_7", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }
     }
 
