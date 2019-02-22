@@ -7,7 +7,6 @@ import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstSecureKey;
 import com.ost.mobilesdk.models.entities.OstSessionKey;
-import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
@@ -162,6 +161,16 @@ public class OstKeyManager {
             }
         }
         return null;
+    }
+
+    public String signUsingSessionKey(String sessionAddress, String hashToSign) {
+        OstSessionKey ostSessionKey = new OstSessionKeyModelRepository().getByKey(sessionAddress);
+        if (null == ostSessionKey) {
+            return null;
+        }
+        byte[] sessionKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSessionKey.getData());
+        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(hashToSign), ECKeyPair.create(sessionKey), false);
+        return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
     }
 
     public String createSessionKey() {

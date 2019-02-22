@@ -22,7 +22,7 @@ import java.util.Map;
 public class OstApiClient {
     private static final String TAG = "OstApiClient";
 
-//    private static final String BASE_URL = "http://172.16.0.194:7001/testnet/v2";
+    //    private static final String BASE_URL = "http://172.16.0.194:7001/testnet/v2";
     private static final String BASE_URL = "https://s5-api.stagingost.com/testnet/v2";
     private static final String API_KEY = "api_key";
     private static final String API_REQUEST_TIMESTAMP = "api_request_timestamp";
@@ -133,6 +133,22 @@ public class OstApiClient {
     public JSONObject getDeviceManager() throws IOException {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/device-managers", mUserId), requestMap);
+    }
+
+    public JSONObject postExecuteTransaction(Map<String, Object> map) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        requestMap.putAll(map);
+        return mOstHttpRequestClient.post(String.format("/users/%s/transactions", mUserId), requestMap);
+    }
+
+    public JSONObject getTransaction(String transactionId) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get(String.format("/users/%s/transactions/%s", mUserId, transactionId), requestMap);
+    }
+
+    public JSONObject getAllTransactions() throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get(String.format("/users/%s/transactions", mUserId), requestMap);
     }
 
     public JSONObject getTokenHolder() {

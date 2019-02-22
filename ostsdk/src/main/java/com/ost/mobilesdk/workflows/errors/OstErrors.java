@@ -21,7 +21,9 @@ public class OstErrors {
         MAX_PIN_LIMIT_REACHED,
         BLOCK_NUMBER_API_FAILED,
         ADD_DEVICE_API_FAILED,
-        EIP712_FAILED;
+        EIP712_FAILED,
+        NO_SESSION_FOUND,
+        TRANSACTION_API_FAILED;
     }
 
     public static String getMessage(ErrorCode code) {
@@ -57,6 +59,10 @@ public class OstErrors {
             case BLOCK_NUMBER_API_FAILED: return "Block number api failed";
 
             case EIP712_FAILED: return "EIP712 failed";
+
+            case NO_SESSION_FOUND: return "No Session found";
+
+            case TRANSACTION_API_FAILED: return "Transaction api failed";
 
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:

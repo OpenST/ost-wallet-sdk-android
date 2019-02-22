@@ -27,4 +27,6 @@
     <string name="activate_user">Activate User</string>
     <string name="show_paper_wallet">Show paper wallet</string>
     <string name="add_device_words">Add Device Words</string>
+    <string name="execute_txn">Execute Transaction</string>
+    <string name="qr_execute_txn">QR exectute transaction</string>
 </resources>

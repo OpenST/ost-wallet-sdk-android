@@ -274,10 +274,6 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 ostDevice.getStatus().equalsIgnoreCase(OstDevice.CONST_STATUS.AUTHORIZING);
     }
 
-    private boolean hasActivatedUser() {
-        OstUser ostUser = OstUser.getById(mUserId);
-        return ostUser.getStatus().equalsIgnoreCase(OstUser.CONST_STATUS.ACTIVATED);
-    }
 
     @Override
     public void QRCodeFlow() {

@@ -144,10 +144,6 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 && (mExpiresAfterInSecs > 0) && !TextUtils.isEmpty(mSpendingLimit);
     }
 
-    private boolean hasActivatedUser() {
-        return OstUser.CONST_STATUS.ACTIVATED.equals(OstSdk.getUser(mUserId).getStatus());
-    }
-
 
     private String createRecoveryKey(String salt) {
         String stringToCalculate = String.format("%s%s%s", mPassWord, mUPin, mUserId);

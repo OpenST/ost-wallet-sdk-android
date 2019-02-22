@@ -20,6 +20,7 @@ import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddDevice;
 import com.ost.mobilesdk.workflows.OstAddSession;
+import com.ost.mobilesdk.workflows.OstExecuteTransaction;
 import com.ost.mobilesdk.workflows.OstGetPaperWallet;
 import com.ost.mobilesdk.workflows.OstPerform;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
@@ -27,6 +28,8 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class OstSdk {
 
@@ -138,6 +141,11 @@ public class OstSdk {
         ostGetPaperWallet.perform();
     }
 
+    public static void executeTransaction(String userId, List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback workFlowCallback) {
+        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenHolderAddresses, amounts, transactionType, workFlowCallback);
+        ostExecuteTransaction.perform();
+    }
+
     public static void parse(JSONObject jsonObject) throws JSONException {
         Log.d(TAG, String.format("Response: %s", jsonObject.toString()));
         if (!jsonObject.getBoolean(OstConstants.RESPONSE_SUCCESS)) {
@@ -175,6 +183,4 @@ public class OstSdk {
         }
         //Process Array?
     }
-
-
 }

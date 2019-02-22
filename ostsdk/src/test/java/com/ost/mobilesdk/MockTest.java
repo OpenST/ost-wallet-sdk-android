@@ -54,7 +54,7 @@ public class MockTest {
     public void testGnosisSafe() {
 
         try {
-            File abiFile = new File("src/test/resources/TokenHolder.abi");
+            File abiFile = new File("src/test/resources/TokenRules.abi");
             List<AbiDefinition> functionDefinitions = loadContractDefinition(abiFile);
             List<String> functionNames = new ArrayList<>();
             AbiDefinition func = null;

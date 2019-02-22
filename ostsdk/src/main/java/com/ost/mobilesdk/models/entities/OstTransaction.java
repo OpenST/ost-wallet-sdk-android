@@ -9,6 +9,13 @@ import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
+import static com.ost.mobilesdk.models.entities.OstTransaction.CONST_STATUS.CREATED;
+import static com.ost.mobilesdk.models.entities.OstTransaction.CONST_STATUS.FAIL;
+import static com.ost.mobilesdk.models.entities.OstTransaction.CONST_STATUS.SUBMITTED;
+import static com.ost.mobilesdk.models.entities.OstTransaction.CONST_STATUS.SUCCESS;
+
 
 @Entity(tableName = "transaction")
 public class OstTransaction extends OstBaseEntity {
@@ -26,9 +33,12 @@ public class OstTransaction extends OstBaseEntity {
         return OstTransaction.TRANSACTION_HASH;
     }
 
+    public static boolean isValidStatus(String status) {
+        return Arrays.asList(CREATED, SUBMITTED, SUCCESS, FAIL).contains(status);
+    }
+
     public static class CONST_STATUS {
         public static final String CREATED = "created";
-        public static final String QUEUED = "queued";
         public static final String SUBMITTED = "submitted";
         public static final String SUCCESS = "success";
         public static final String FAIL = "fail";

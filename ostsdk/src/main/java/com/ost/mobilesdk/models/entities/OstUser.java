@@ -65,9 +65,13 @@ public class OstUser extends OstBaseEntity {
         return currentDevice;
     }
 
-    public static OstSession getActiveSession(String userId) {
-        List<OstSession> ostActiveSessionList = OstSession.getActiveSessions(userId);
+    public OstSession getActiveSession() {
+        List<OstSession> ostActiveSessionList = OstSession.getActiveSessions(getId());
         // Todo: Logic to filter most appropriate session.
+        if (ostActiveSessionList.size() < 1) {
+            Log.e(TAG, "No Active sesion key available");
+            return null;
+        }
         return ostActiveSessionList.get(0);
     }
 

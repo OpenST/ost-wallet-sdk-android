@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstBaseEntity;
-import com.ost.mobilesdk.models.entities.OstSession;
+import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.network.OstApiClient;
 
 import org.json.JSONException;
@@ -14,11 +14,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class OstSessionPollingService extends OstPollingService {
+public class OstTransactionPollingService extends OstPollingService {
 
-    private static final String TAG = "OstSessionPollingService";
+    private static final String TAG = "OstTransactionPollingService";
 
-    public OstSessionPollingService() {
+    public OstTransactionPollingService() {
         super();
     }
 
@@ -30,32 +30,32 @@ public class OstSessionPollingService extends OstPollingService {
      */
     public static void startPolling(String userId, String entityId, String fromStatus, String toStatus) {
         Context context = OstSdk.getContext();
-        Intent intent = new Intent(context, OstSessionPollingService.class);
+        Intent intent = new Intent(context, OstTransactionPollingService.class);
         OstPollingService.startPolling(context, intent, userId, entityId, fromStatus, toStatus);
     }
 
     @Override
     protected OstBaseEntity parseEntity(JSONObject entityObject) throws JSONException {
-        return OstSession.parse(entityObject);
+        return OstTransaction.parse(entityObject);
     }
 
     @Override
     protected Intent getServiceIntent(Context context) {
-        return new Intent(context, OstSessionPollingService.class);
+        return new Intent(context, OstTransactionPollingService.class);
     }
 
     @Override
     protected String getEntityName() {
-        return OstSdk.SESSION;
+        return OstSdk.TRANSACTION;
     }
 
     @Override
-    protected JSONObject poll(String sessionId, String entityId) throws IOException {
-        return new OstApiClient(sessionId).getSession(entityId);
+    protected JSONObject poll(String transactionId, String entityId) throws IOException {
+        return new OstApiClient(transactionId).getTransaction(entityId);
     }
 
     @Override
     protected boolean validateParams(String entityId, String fromStatus, String toStatus) {
-        return OstSession.isValidStatus(fromStatus) && OstSession.isValidStatus(toStatus);
+        return OstTransaction.isValidStatus(fromStatus) && OstTransaction.isValidStatus(toStatus);
     }
 }

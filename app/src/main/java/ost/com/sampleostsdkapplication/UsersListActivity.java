@@ -161,21 +161,21 @@ public class UsersListActivity extends MappyBaseActivity {
                     });
         } else if (id == R.id.show_paper_wallet) {
             OstSdk.getPaperWallet(userId, new WorkFlowHelper(getApplicationContext()) {
+                @Override
+                public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+                    super.getPin(userId, ostPinAcceptInterface);
+                    getPinDialog(new DialogCallback() {
                         @Override
-                        public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-                            super.getPin(userId, ostPinAcceptInterface);
-                            getPinDialog(new DialogCallback() {
-                                @Override
-                                public void onSubmit(String pin) {
-                                    ostPinAcceptInterface.pinEntered(pin, logInUser.getPassword());
-                                }
-
-                                @Override
-                                public void onCancel() {
-                                    ostPinAcceptInterface.cancelFlow(new OstError("Don't know pin"));
-                                }
-                            });
+                        public void onSubmit(String pin) {
+                            ostPinAcceptInterface.pinEntered(pin, logInUser.getPassword());
                         }
+
+                        @Override
+                        public void onCancel() {
+                            ostPinAcceptInterface.cancelFlow(new OstError("Don't know pin"));
+                        }
+                    });
+                }
 
                 @Override
                 public void showPaperWallet(String[] mnemonicsArray) {
@@ -185,7 +185,7 @@ public class UsersListActivity extends MappyBaseActivity {
             });
         } else if (id == R.id.device_words) {
             Log.d(TAG, "Add device clicked");
-            OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()){
+            OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()) {
                 @Override
                 public void determineAddDeviceWorkFlow(OstAddDeviceFlowInterface addDeviceFlowInterface) {
                     addDeviceFlowInterface.walletWordsEntered(Arrays.asList("satisfy", "fish", "surround", "foster", "funny", "sword", "wisdom", "forward", "father", "pull", "lens", "joy"));
@@ -201,7 +201,14 @@ public class UsersListActivity extends MappyBaseActivity {
                     ostWalletWordsAcceptInterface.walletWordsEntered(Arrays.asList("satisfy", "fish", "surround", "foster", "funny", "sword", "wisdom", "forward", "father", "pull", "lens", "joy"));
                 }
             });
-    }
+        } else if (id == R.id.transactions) {
+            Log.d(TAG, "Execute Transaction Clicked");
+            String tokenHolderAddress = "";
+            String amount = "";
+            String transactionType = "";
+            OstSdk.executeTransaction(userId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), transactionType, new WorkFlowHelper(getApplicationContext()) {
+            });
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -245,7 +252,7 @@ public class UsersListActivity extends MappyBaseActivity {
                                 String pin = userInput.getText().toString();
                                 if (pin.length() < 6) {
                                     Log.w(TAG, "Pin length to small");
-                                    getPinDialog( callback,  "Pin size less than 6 char enter again:");
+                                    getPinDialog(callback, "Pin size less than 6 char enter again:");
                                 } else {
                                     dialog.dismiss();
                                     callback.onSubmit(pin);
@@ -260,6 +267,7 @@ public class UsersListActivity extends MappyBaseActivity {
         // show it
         alertDialog.show();
     }
+
     private void getPinDialog(final DialogCallback callback) {
         getPinDialog(callback, "Enter Pin : ");
     }
@@ -321,6 +329,7 @@ public class UsersListActivity extends MappyBaseActivity {
         void setQRImage(Bitmap bitmap) {
             mBitMap = bitmap;
         }
+
         @Override
         public void onResume() {
             super.onResume();

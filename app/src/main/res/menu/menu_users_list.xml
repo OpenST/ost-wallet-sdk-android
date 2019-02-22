@@ -32,4 +32,14 @@
         android:orderInCategory="100"
         android:title="@string/add_device_words"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/transactions"
+        android:orderInCategory="100"
+        android:title="@string/execute_txn"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/scan_qr_txn"
+        android:orderInCategory="100"
+        android:title="@string/qr_execute_txn"
+        app:showAsAction="never" />
 </menu>

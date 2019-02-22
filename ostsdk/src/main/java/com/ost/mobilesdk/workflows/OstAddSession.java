@@ -244,17 +244,6 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         return blockNumber;
     }
 
-
-    private boolean hasAuthorizedDevice() {
-        OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
-        return ostDevice.getStatus().toLowerCase().equals(OstDevice.CONST_STATUS.AUTHORIZED);
-    }
-
-    private boolean hasActivatedUser() {
-        OstUser ostUser = OstUser.getById(mUserId);
-        return ostUser.getStatus().toLowerCase().equals(OstUser.CONST_STATUS.ACTIVATED);
-    }
-
     @Override
     public void pinEntered(String uPin, String appUserPassword) {
         setFlowState(STATES.PIN_ENTERED, null);

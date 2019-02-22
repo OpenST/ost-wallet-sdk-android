@@ -373,6 +373,16 @@ abstract class OstBaseWorkFlow {
         return false;
     }
 
+    boolean hasActivatedUser() {
+        OstUser ostUser = OstUser.getById(mUserId);
+        return ostUser.getStatus().equalsIgnoreCase(OstUser.CONST_STATUS.ACTIVATED);
+    }
+
+    boolean hasAuthorizedDevice() {
+        OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
+        return ostDevice.getStatus().toLowerCase().equals(OstDevice.CONST_STATUS.AUTHORIZED);
+    }
+
     boolean validatePin(String uPin, String appSalt) {
         //Todo:: validation
         return true;
