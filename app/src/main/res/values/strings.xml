@@ -26,4 +26,5 @@
     <string name="add_session">Add Session</string>
     <string name="activate_user">Activate User</string>
     <string name="show_paper_wallet">Show paper wallet</string>
+    <string name="add_device_words">Add Device Words</string>
 </resources>

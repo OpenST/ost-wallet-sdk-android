@@ -56,7 +56,7 @@ public class OstKeyManager {
 
             mKeyMetaStruct = new KeyMetaStruct(apiAddress, deviceAddress);
 
-            storeKeyAndMnemonics(ecKeyPair, apiAddress ,deviceAddress, mnemonics);
+            storeKeyAndMnemonics(ecKeyPair, apiAddress, deviceAddress, mnemonics);
 
             storeKeyMetaStruct();
         } else {
@@ -66,6 +66,11 @@ public class OstKeyManager {
             mKeyMetaStruct = createObjectFromBytes(ostSecureKey.getData());
             Log.d(TAG, "List" + mKeyMetaStruct.ethKeyMetaMapping.keySet());
         }
+    }
+
+    public static String sign(String eip712Hash, ECKeyPair ecKeyPair) {
+        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(eip712Hash), ecKeyPair, false);
+        return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
     }
 
     public String getApiKeyAddress() {
@@ -94,8 +99,8 @@ public class OstKeyManager {
         }
         byte[] decryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSecureKey.getData());
         ECKeyPair ecKeyPair = ECKeyPair.create(decryptedKey);
-        Sign.SignatureData signatureData =  Sign.signMessage(data, ecKeyPair, false);
-        return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x",(signatureData.getV()));
+        Sign.SignatureData signatureData = Sign.signMessage(data, ecKeyPair, false);
+        return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
     }
 
     String[] getMnemonics(String address) {
@@ -146,7 +151,7 @@ public class OstKeyManager {
         } catch (IOException e) {
             Log.e(TAG, "IOException " + e.getMessage());
         } catch (ClassNotFoundException e) {
-            Log.e(TAG, "Class not found exception "+e.getMessage());
+            Log.e(TAG, "Class not found exception " + e.getMessage());
         } finally {
             try {
                 if (in != null) {
@@ -165,7 +170,7 @@ public class OstKeyManager {
         byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
         byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
 
-        Future<AsyncStatus> future =new OstSessionKeyModelRepository().insertSessionKey(new OstSessionKey(address, encryptedKey));
+        Future<AsyncStatus> future = new OstSessionKeyModelRepository().insertSessionKey(new OstSessionKey(address, encryptedKey));
 
         try {
             future.get(10, TimeUnit.SECONDS);
@@ -199,7 +204,7 @@ public class OstKeyManager {
         return address;
     }
 
-    private void storeKeyAndMnemonics(ECKeyPair ecKeyPair, String apiAddress ,String address, String mnemonics) {
+    private void storeKeyAndMnemonics(ECKeyPair ecKeyPair, String apiAddress, String address, String mnemonics) {
 
         byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
         byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
@@ -214,7 +219,7 @@ public class OstKeyManager {
     }
 
     private void storeKeyMetaStruct() {
-        Future<AsyncStatus> future =mOstSecureKeyModel.insertSecureKey(new OstSecureKey(USER_DEVICE_INFO_FOR + mUserId, createBytesFromObject(mKeyMetaStruct)));
+        Future<AsyncStatus> future = mOstSecureKeyModel.insertSecureKey(new OstSecureKey(USER_DEVICE_INFO_FOR + mUserId, createBytesFromObject(mKeyMetaStruct)));
         try {
             future.get(10, TimeUnit.SECONDS);
         } catch (Exception e) {

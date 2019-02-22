@@ -3,12 +3,15 @@ package com.ost.mobilesdk.workflows;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.google.common.base.Joiner;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
 import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.security.OstKeyManager;
+import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -20,23 +23,26 @@ import com.ost.mobilesdk.workflows.services.OstDevicePollingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
  * To Add device using QR
  * Device B to be added
  * 1.Validations
- *  1.1 Device should be registered
- *  1.2 User should be Activated.
+ * 1.1 Device should be registered
+ * 1.2 User should be Activated.
  * 2. Ask App for flow
- *  2.1 QR Code
- *      2.1.1 generate multi sig code
- *      2.1.2 start polling
- *  2.2 Pin(Recovery address)
- *  2.3 12 Words
- *
- *
+ * 2.1 QR Code
+ * 2.1.1 generate multi sig code
+ * 2.1.2 start polling
+ * 2.2 Pin(Recovery address)
+ * 2.3 12 Words
+ * <p>
+ * <p>
  * Device A which will add
  * 1. Scan QR code
  * 2. Sign with wallet key
@@ -102,7 +108,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                     return new AsyncStatus(true);
                 }
 
-                Log.i(TAG,"Determine Add device flow");
+                Log.i(TAG, "Determine Add device flow");
                 determineAddDeviceFlow();
                 break;
             case QR_CODE:
@@ -116,6 +122,50 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
             case PIN:
                 break;
             case WORDS:
+                Log.d(TAG, String.format("words flow for userId: %s started", mUserId));
+                List<String> wordsList = (List<String>) mStateObject;
+                String mnemonics = Joiner.on(" ").join(wordsList);
+                ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics);
+
+                try {
+                    JSONObject response = mOstApiClient.getDeviceManager();
+                    OstSdk.parse(response);
+                } catch (IOException e) {
+                    Log.e(TAG, "IO Exception ");
+                } catch (JSONException e) {
+                    Log.e(TAG, "JSONException ");
+                }
+
+                OstUser wordsOstUser = OstUser.getById(mUserId);
+                String wordsDeviceAddress = wordsOstUser.getCurrentDevice().getAddress();
+                String wordsDeviceManagerAddress = wordsOstUser.getDeviceManagerAddress();
+
+                String eip712Hash = getEIP712Hash(wordsDeviceAddress, wordsDeviceManagerAddress);
+                if (null == eip712Hash) {
+                    Log.e(TAG, "EIP-712 error while parsing json object of sageTxn");
+                    return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.EIP712_FAILED);
+                }
+
+                Log.i(TAG, "Signing  txnHash");
+                String signature = OstKeyManager.sign(eip712Hash, ecKeyPair);
+                String signerAddress = Credentials.create(ecKeyPair).getAddress();
+                try {
+                    JSONObject jsonObject = mOstApiClient.getDevices(signerAddress);
+                    OstSdk.parse(jsonObject);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (null != OstDevice.getById(signerAddress)) {
+                    postWordsValidated();
+                    AsyncStatus apiCallStatus = makeApiCall(signature, signerAddress, wordsDeviceManagerAddress, wordsDeviceAddress);
+                    if (apiCallStatus.isSuccess()) {
+                        startPolling();
+                    } else {
+                        return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
+                    }
+                } else {
+                    postInvalidWords();
+                }
                 break;
             case POLLING:
                 Log.i(TAG, "Starting Device polling service");
@@ -132,16 +182,38 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 }
 
                 Log.i(TAG, "Syncing Entity: Device");
-                new OstSdkSync(mUserId,OstSdkSync.SYNC_ENTITY.DEVICE).perform();
+                new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.DEVICE).perform();
 
                 Log.i(TAG, "Response received for Add device");
                 postFlowComplete();
                 break;
             case CANCELLED:
                 Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
-                postErrorInterrupt("wf_ad_pr_5",OstErrors.ErrorCode.WORKFLOW_CANCELED);
+                postErrorInterrupt("wf_ad_pr_5", OstErrors.ErrorCode.WORKFLOW_CANCELED);
                 break;
         }
+        return new AsyncStatus(true);
+    }
+
+    private AsyncStatus postInvalidWords() {
+        Log.i(TAG, "post Invalid words");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mCallback.invalidWalletWords(OstAddDevice.this);
+            }
+        });
+        return new AsyncStatus(true);
+    }
+
+    private AsyncStatus postWordsValidated() {
+        Log.i(TAG, "post Words validated");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mCallback.walletWordsValidated();
+            }
+        });
         return new AsyncStatus(true);
     }
 
@@ -180,7 +252,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.showQR( qrPayLoad, OstAddDevice.this);
+                mCallback.showQR(qrPayLoad, OstAddDevice.this);
             }
         });
     }
@@ -197,7 +269,9 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
 
     private boolean hasRegisteredDevice() {
         OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
-        return ostDevice.getStatus().equalsIgnoreCase(OstDevice.CONST_STATUS.REGISTERED);
+        return ostDevice.getStatus().equalsIgnoreCase(OstDevice.CONST_STATUS.REGISTERED) ||
+                ostDevice.getStatus().equalsIgnoreCase(OstDevice.CONST_STATUS.AUTHORIZED) ||
+                ostDevice.getStatus().equalsIgnoreCase(OstDevice.CONST_STATUS.AUTHORIZING);
     }
 
     private boolean hasActivatedUser() {
@@ -207,7 +281,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
 
     @Override
     public void QRCodeFlow() {
-        setFlowState(STATES.QR_CODE,null);
+        setFlowState(STATES.QR_CODE, null);
         perform();
     }
 
@@ -219,7 +293,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
 
     @Override
     public void walletWordsEntered(List<String> wordList) {
-        setFlowState(STATES.WORDS, null);
+        setFlowState(STATES.WORDS, wordList);
         perform();
     }
 

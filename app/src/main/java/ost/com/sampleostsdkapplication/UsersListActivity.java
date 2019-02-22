@@ -28,7 +28,9 @@ import android.widget.TextView;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.workflows.errors.OstError;
+import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
+import com.ost.mobilesdk.workflows.interfaces.OstWalletWordsAcceptInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -181,7 +183,25 @@ public class UsersListActivity extends MappyBaseActivity {
                     Log.d(TAG, "Paper wallet " + Arrays.asList(mnemonicsArray));
                 }
             });
-        }
+        } else if (id == R.id.device_words) {
+            Log.d(TAG, "Add device clicked");
+            OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()){
+                @Override
+                public void determineAddDeviceWorkFlow(OstAddDeviceFlowInterface addDeviceFlowInterface) {
+                    addDeviceFlowInterface.walletWordsEntered(Arrays.asList("satisfy", "fish", "surround", "foster", "funny", "sword", "wisdom", "forward", "father", "pull", "lens", "joy"));
+                }
+
+                @Override
+                public void walletWordsValidated() {
+                    Log.i(TAG, "Wallet words validated");
+                }
+
+                @Override
+                public void invalidWalletWords(OstWalletWordsAcceptInterface ostWalletWordsAcceptInterface) {
+                    ostWalletWordsAcceptInterface.walletWordsEntered(Arrays.asList("satisfy", "fish", "surround", "foster", "funny", "sword", "wisdom", "forward", "father", "pull", "lens", "joy"));
+                }
+            });
+    }
         return super.onOptionsItemSelected(item);
     }
 

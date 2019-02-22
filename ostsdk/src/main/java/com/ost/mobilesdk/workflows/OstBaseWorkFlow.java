@@ -15,12 +15,17 @@ import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstDeviceManager;
+import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
+import com.ost.mobilesdk.utils.EIP712;
+import com.ost.mobilesdk.utils.GnosisSafe;
+import com.ost.mobilesdk.utils.OstPayloadBuilder;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
@@ -30,6 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -367,7 +374,62 @@ abstract class OstBaseWorkFlow {
     }
 
     boolean validatePin(String uPin, String appSalt) {
+        //Todo:: validation
         return true;
     }
 
+    String getEIP712Hash(String deviceAddress, String deviceManagerAddress) {
+        String callData = new GnosisSafe().getAddOwnerWithThresholdExecutableData(deviceAddress);
+
+        int nonce = OstDeviceManager.getById(deviceManagerAddress).getNonce();
+
+        JSONObject safeTxn = new GnosisSafe.SafeTxnBuilder()
+                .setAddOwnerExecutableData(callData)
+                .setVerifyingContract(deviceManagerAddress)
+                .setToAddress(deviceManagerAddress)
+                .setNonce(String.valueOf(nonce))
+                .build();
+
+        //EIP-712
+        Log.i(TAG, "Performing EIP712 encoding ");
+        Log.d(TAG, String.format("String to be encoded  %s", safeTxn.toString()));
+        String safeTxnEIP712Hash = null;
+        try {
+            safeTxnEIP712Hash = new EIP712(safeTxn).toEIP712TransactionHash();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e(TAG, "EIP-712 error while parsing json object of sageTxn");
+            return null;
+        }
+        return safeTxnEIP712Hash;
+    }
+
+    AsyncStatus makeApiCall(String signature, String signerAddress, String deviceManagerAddress, String deviceAddress) {
+        String callData = new GnosisSafe().getAddOwnerWithThresholdExecutableData(deviceAddress);
+        int nonce = OstDeviceManager.getById(deviceManagerAddress).getNonce();
+        Log.i(TAG, "Api Call payload");
+        try {
+
+            Map<String, Object> map = new OstPayloadBuilder()
+                    .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
+                    .setRawCalldata(new GnosisSafe().getAddOwnerWithThresholdData(deviceAddress, "1"))
+                    .setCallData(callData)
+                    .setTo(deviceManagerAddress)
+                    .setSignatures(signature)
+                    .setSigners(Arrays.asList(signerAddress))
+                    .setNonce(String.valueOf(nonce))
+                    .build();
+            OstApiClient ostApiClient = new OstApiClient(mUserId);
+            JSONObject jsonObject = ostApiClient.postAddDevice(map);
+            Log.d(TAG, String.format("JSON Object response: %s", jsonObject.toString()));
+            if (isValidResponse(jsonObject)) {
+                return new AsyncStatus(true);
+            } else {
+                return new AsyncStatus(false);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "IO Exception");
+            return new AsyncStatus(false);
+        }
+    }
 }
