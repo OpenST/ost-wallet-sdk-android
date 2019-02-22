@@ -1,6 +1,5 @@
 package com.ost.mobilesdk.workflows;
 
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 

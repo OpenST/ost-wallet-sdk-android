@@ -54,7 +54,7 @@ public class GnosisSafe {
     }
 
     public String transactionHash(String deviceManagerAddress, String data, String nonce) throws Exception {
-        JSONObject transactionObject = getSafeTxData(deviceManagerAddress, "0", data, "0", "0", "0", "0", "0x0000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000", nonce);
+        JSONObject transactionObject = getSafeTxData(deviceManagerAddress, deviceManagerAddress ,"0", data, "0", "0", "0", "0", "0x0000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000", nonce);
         return new EIP712(transactionObject).toEIP712TransactionHash();
     }
 
@@ -73,7 +73,7 @@ public class GnosisSafe {
      * @param nonce          Transaction nonce.
      * @returns {TypedData}
      */
-    public JSONObject getSafeTxData(String to, String value, String data, String operation, String safeTxGas, String dataGas, String gasPrice, String gasToken, String refundReceiver, String nonce) {
+    public JSONObject getSafeTxData(String to, String verifyingContract ,String value, String data, String operation, String safeTxGas, String dataGas, String gasPrice, String gasToken, String refundReceiver, String nonce) {
         try {
             JSONObject typedDataInput = new JSONObject("{\n" +
                     "      types: {\n" +
@@ -93,7 +93,7 @@ public class GnosisSafe {
                     "      },\n" +
                     "      primaryType: 'SafeTx',\n" +
                     "      domain: {\n" +
-                    "        verifyingContract: "+ to +"\n" +
+                    "        verifyingContract: "+ verifyingContract +"\n" +
                     "      },\n" +
                     "      message: {\n" +
                     "        to: " + to + ",\n" +
@@ -131,6 +131,7 @@ public class GnosisSafe {
         private String refundAddress = NULL_ADDRESS;
         private String gasToken = NULL_ADDRESS;
         private String nonce = "0";
+        private String verifyingContract = "0x0";
 
         public SafeTxnBuilder setAddOwnerExecutableData(String addOwnerExecutableData) {
             this.addOwnerExecutableData = addOwnerExecutableData;
@@ -182,8 +183,13 @@ public class GnosisSafe {
             return this;
         }
 
+        public SafeTxnBuilder setVerifyingContract(String address) {
+            this.verifyingContract = address;
+            return this;
+        }
+
         public JSONObject build() {
-            return new GnosisSafe().getSafeTxData(toAddress,
+            return new GnosisSafe().getSafeTxData(toAddress, verifyingContract,
                     value, addOwnerExecutableData, operation, safeTxnGas, dataGas, gasPrice,
                     gasToken, refundAddress, nonce);
         }

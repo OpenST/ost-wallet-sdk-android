@@ -7,6 +7,7 @@ import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstSecureKey;
 import com.ost.mobilesdk.models.entities.OstSessionKey;
+import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
@@ -223,6 +224,11 @@ public class OstKeyManager {
 
     public String getDeviceAddress() {
         return mKeyMetaStruct.getDeviceAddress();
+    }
+
+    public String[] getMnemonics() {
+        String deviceAddress = getDeviceAddress();
+        return getMnemonics(deviceAddress);
     }
 
     static class KeyMetaStruct implements Serializable {

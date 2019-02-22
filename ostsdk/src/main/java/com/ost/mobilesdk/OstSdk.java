@@ -20,6 +20,7 @@ import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddDevice;
 import com.ost.mobilesdk.workflows.OstAddSession;
+import com.ost.mobilesdk.workflows.OstGetPaperWallet;
 import com.ost.mobilesdk.workflows.OstPerform;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
@@ -130,6 +131,11 @@ public class OstSdk {
     public static void addSession(String userId, String spendingLimit, long expireAfterInSecs, OstWorkFlowCallback workFlowCallback) {
         final OstAddSession ostAddSession = new OstAddSession(userId, spendingLimit, expireAfterInSecs, workFlowCallback);
         ostAddSession.perform();
+    }
+
+    public static void getPaperWallet(String userId, OstWorkFlowCallback workFlowCallback) {
+        final OstGetPaperWallet ostGetPaperWallet = new OstGetPaperWallet(userId, workFlowCallback);
+        ostGetPaperWallet.perform();
     }
 
     public static void parse(JSONObject jsonObject) throws JSONException {

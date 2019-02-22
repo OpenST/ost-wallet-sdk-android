@@ -35,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class UsersListActivity extends MappyBaseActivity {
@@ -102,10 +103,11 @@ public class UsersListActivity extends MappyBaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+        String userId = logInUser.getOstUserId();
+
         if (id == R.id.activate_user) {
             Log.d(TAG, "Activate User Clicked");
-            LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-            String userId = logInUser.getOstUserId();
             String password = logInUser.getPassword();
             long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
             String spendingLimit = "1000000000000";
@@ -122,9 +124,6 @@ public class UsersListActivity extends MappyBaseActivity {
             });
         } else if (id == R.id.add_device) {
             Log.d(TAG, "Add device clicked");
-            LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-
-            String userId = logInUser.getOstUserId();
             OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()));
 //            OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()){
 //                @Override
@@ -140,8 +139,6 @@ public class UsersListActivity extends MappyBaseActivity {
             Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
             startActivityForResult(intent, QR_REQUEST_CODE);
         } else if (id == R.id.add_session) {
-            LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-            String userId = logInUser.getOstUserId();
             OstSdk.addSession(userId, "1000000000",
                     System.currentTimeMillis() / 1000, new WorkFlowHelper(getApplicationContext()) {
                         @Override
@@ -160,6 +157,30 @@ public class UsersListActivity extends MappyBaseActivity {
                             });
                         }
                     });
+        } else if (id == R.id.show_paper_wallet) {
+            OstSdk.getPaperWallet(userId, new WorkFlowHelper(getApplicationContext()) {
+                        @Override
+                        public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+                            super.getPin(userId, ostPinAcceptInterface);
+                            getPinDialog(new DialogCallback() {
+                                @Override
+                                public void onSubmit(String pin) {
+                                    ostPinAcceptInterface.pinEntered(pin, logInUser.getPassword());
+                                }
+
+                                @Override
+                                public void onCancel() {
+                                    ostPinAcceptInterface.cancelFlow(new OstError("Don't know pin"));
+                                }
+                            });
+                        }
+
+                @Override
+                public void showPaperWallet(String[] mnemonicsArray) {
+                    super.showPaperWallet(mnemonicsArray);
+                    Log.d(TAG, "Paper wallet " + Arrays.asList(mnemonicsArray));
+                }
+            });
         }
         return super.onOptionsItemSelected(item);
     }

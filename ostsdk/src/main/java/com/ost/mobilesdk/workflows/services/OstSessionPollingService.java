@@ -46,7 +46,7 @@ public class OstSessionPollingService extends OstPollingService {
 
     @Override
     protected String getEntityName() {
-        return OstSdk.DEVICE;
+        return OstSdk.SESSION;
     }
 
     @Override

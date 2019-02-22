@@ -109,4 +109,9 @@ class WorkFlowHelper implements OstWorkFlowCallback {
     public void deviceUnauthorized() {
 
     }
+
+    @Override
+    public void showPaperWallet(String[] mnemonicsArray) {
+
+    }
 }

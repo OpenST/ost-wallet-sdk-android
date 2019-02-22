@@ -6,6 +6,7 @@ import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
 import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstUser;
@@ -21,8 +22,9 @@ import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstSessionPollingService;
 
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.web3j.utils.Numeric;
+import org.web3j.crypto.Keys;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -81,6 +83,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                 Log.i(TAG, "Loading device and user entities");
                 AsyncStatus status = super.loadCurrentDevice();
                 status = status.isSuccess() ? super.loadUser() : status;
+                status = status.isSuccess() ? super.loadToken() : status;
 
                 if (!status.isSuccess()) {
                     Log.e(TAG, String.format("Fetching of basic entities failed for user id: %s", mUserId));
@@ -148,23 +151,41 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
 
         OstUser ostUser = OstUser.getById(mUserId);
         String tokenHolderAddress = ostUser.getTokenHolderAddress();
+        String deviceManagerAddress = ostUser.getDeviceManagerAddress();
+
+        sessionAddress = Keys.toChecksumAddress(sessionAddress);
+        tokenHolderAddress = Keys.toChecksumAddress(tokenHolderAddress);
+        deviceManagerAddress = Keys.toChecksumAddress(deviceManagerAddress);
 
         String expiryHeight = new BigInteger(blockNumber).add(new BigInteger(String
                 .valueOf(mExpiresAfterInSecs))).toString();
+
+        try {
+            JSONObject response = ostApiClient.getDeviceManager();
+            OstSdk.parse(response);
+        } catch (IOException e) {
+            Log.e(TAG, "IO Exception ");
+        } catch (JSONException e) {
+            Log.e(TAG, "JSONException ");
+        }
+
+        int nonce = OstDeviceManager.getById(ostUser.getDeviceManagerAddress()).getNonce();
+        Log.i(TAG, String.format("Device Manager  nonce %d", nonce));
+        String stringNonce = String.valueOf(nonce);
 
         JSONObject jsonObject = new GnosisSafe.SafeTxnBuilder()
                 .setAddOwnerExecutableData(new GnosisSafe().getAuthorizeSessionExecutableData
                         (sessionAddress, mSpendingLimit, expiryHeight))
                 .setToAddress(tokenHolderAddress)
+                .setVerifyingContract(deviceManagerAddress)
+                .setNonce(stringNonce)
                 .build();
 
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
         String signature = null;
         String signerAddress = ostUser.getCurrentDevice().getAddress();
         try {
             String messageHash = new EIP712(jsonObject).toEIP712TransactionHash();
-            signature = ostKeyManager.sign(signerAddress,
-                    Numeric.hexStringToByteArray(messageHash));
+            signature = OstUser.getById(mUserId).sign(messageHash);
         } catch (Exception e) {
             Log.e(TAG, "Exception in toEIP712TransactionHash");
             return postErrorInterrupt("wf_as_pr_as_2", OstErrors.ErrorCode.EIP712_FAILED);
@@ -177,6 +198,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                 .setTo(tokenHolderAddress)
                 .setSignatures(signature)
                 .setSigners(Arrays.asList(signerAddress))
+                .setNonce(stringNonce)
                 .build();
 
         JSONObject responseObject = null;

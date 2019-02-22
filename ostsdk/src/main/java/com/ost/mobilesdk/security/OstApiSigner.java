@@ -28,4 +28,8 @@ public class OstApiSigner {
     private String createStringSignature(Sign.SignatureData signatureData) {
         return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x",(signatureData.getV()));
     }
+
+    public String signMessage(byte[] bytes) {
+        return createStringSignature(Sign.signMessage(bytes, mECKeyPair, false));
+    }
 }

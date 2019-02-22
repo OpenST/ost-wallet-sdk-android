@@ -73,4 +73,9 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
     public void deviceUnauthorized() {
 
     }
+
+    @Override
+    public void showPaperWallet(String[] mnemonicsArray) {
+
+    }
 }

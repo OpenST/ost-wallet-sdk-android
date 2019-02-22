@@ -1,7 +1,10 @@
 package com.ost.mobilesdk.utils;
 
+import com.ost.mobilesdk.security.OstApiSigner;
+
 import org.json.JSONObject;
 import org.junit.Test;
+import org.web3j.utils.Numeric;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,11 +30,39 @@ public class GnosisSafeTest {
                 "1db32d7b1a949a0000000000000000000000000000000000000000000000000000000000000001";
         String NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
         JSONObject safeTxData = new GnosisSafe().getSafeTxData("0x98443bA43e5a55fF9c0EbeDdfd1db32d7b1A949A",
+                "0x98443bA43e5a55fF9c0EbeDdfd1db32d7b1A949A"
+                ,
                 "0", addOwnerExecutableData, "0", "0", "0", "0",
                 NULL_ADDRESS,  NULL_ADDRESS, "0");
         String hashString = null;
         try {
              hashString = new EIP712(safeTxData).toEIP712TransactionHash();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(expectedOutput, hashString);
+    }
+
+    @Test
+    public void testAddSessionHash() {
+        String expectedOutput = "0x204e19fb7d8f765c487d67f0e77460a24804ef10a12d0fbfa668bb9dc036d83b";
+        String addOwnerExecutableData = "0x028c979d00000000000000000000000099dbad5becad9eb32eb12a709aaf" +
+                "831d1be3b25500000000000000000000000000000000000000000000000000000000000f424000000000" +
+                "0000000000000000000000000000000000000000000000174876e800";
+        String tokenHolder = "0x59aAF1528a3538752B165EB2D6e0293C86bbCa4F";
+        String deviceManager = "0xA5936b94619E1f76349B27879c8B54A118c15A82";
+        JSONObject safeTxData = new GnosisSafe.SafeTxnBuilder()
+                .setAddOwnerExecutableData(addOwnerExecutableData)
+                .setNonce("4")
+                .setToAddress(tokenHolder)
+                .setVerifyingContract(deviceManager)
+                .build();
+        String hashString = null;
+        String signature = null;
+        try {
+            hashString = new EIP712(safeTxData).toEIP712TransactionHash();
+            signature = new OstApiSigner(Numeric.hexStringToByteArray("0x0099cb31ed6a0f634cee503d97fab53dcd5702fb6e3e4630dc9679917e548ccf59")).signMessage(Numeric.hexStringToByteArray(hashString));
         } catch (Exception e) {
             e.printStackTrace();
         }

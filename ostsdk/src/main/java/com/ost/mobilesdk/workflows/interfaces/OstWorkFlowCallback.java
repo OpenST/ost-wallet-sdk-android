@@ -103,4 +103,9 @@ public interface OstWorkFlowCallback {
      * And it need to be reinitialized with new wallet key.
      */
     void deviceUnauthorized();
+
+    /**
+     * Show Sdk user mnemonicsArray of the device address
+     */
+    void showPaperWallet(String[] mnemonicsArray);
 }

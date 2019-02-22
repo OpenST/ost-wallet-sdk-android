@@ -121,11 +121,7 @@ public class OstSession extends OstBaseEntity {
     @Override
     boolean validate(JSONObject jsonObject) {
         return super.validate(jsonObject) &&
-                jsonObject.has(OstSession.STATUS) &&
                 jsonObject.has(OstSession.ADDRESS) &&
-                jsonObject.has(OstSession.TOKEN_HOLDER_ADDRESS) &&
-                jsonObject.has(OstSession.EXPIRATION_BLOCK_HEIGHT) &&
-                jsonObject.has(OstSession.SPENDING_LIMIT) &&
                 jsonObject.has(OstSession.USER_ID) &&
                 jsonObject.has(OstSession.NONCE);
     }
