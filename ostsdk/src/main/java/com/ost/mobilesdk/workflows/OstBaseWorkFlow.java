@@ -95,7 +95,7 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowComplete(new OstContextEntity());
+                mCallback.flowComplete(null);
             }
         });
         return new AsyncStatus(true);
