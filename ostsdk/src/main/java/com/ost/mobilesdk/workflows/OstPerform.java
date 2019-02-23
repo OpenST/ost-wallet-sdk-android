@@ -112,7 +112,7 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
     private AsyncStatus authorizeDevice() {
         try {
             JSONObject response = mOstApiClient.getDeviceManager();
-            OstSdk.parse(response);
+            OstSdk.updateWithApiResponse(response);
         } catch (IOException e) {
             return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         } catch (JSONException e) {

@@ -273,7 +273,7 @@ abstract class OstBaseWorkFlow {
         mOstUser = OstUser.getById(mUserId);
         if (null == mOstUser || TextUtils.isEmpty(mOstUser.getTokenHolderAddress())) {
             try {
-                OstSdk.parse(mOstApiClient.getUser());
+                OstSdk.updateWithApiResponse(mOstApiClient.getUser());
                 mOstUser = OstUser.getById(mUserId);
             } catch (JSONException e) {
                 Log.i(TAG, "Encountered JSONException while fetching user.");
@@ -307,7 +307,7 @@ abstract class OstBaseWorkFlow {
         if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId())) {
             //Make API Call.
             try {
-                OstSdk.parse(mOstApiClient.getToken());
+                OstSdk.updateWithApiResponse(mOstApiClient.getToken());
                 mOstToken = OstToken.getById(tokenId);
             } catch (JSONException e) {
                 Log.i(TAG, "Encountered JSONException while fetching token.");
@@ -339,7 +339,7 @@ abstract class OstBaseWorkFlow {
         mOstRules = ostToken.getAllRules();
         if (null == mOstRules || mOstRules.length == 0) {
             try {
-                OstSdk.parse(mOstApiClient.getAllRules());
+                OstSdk.updateWithApiResponse(mOstApiClient.getAllRules());
                 mOstRules = ostToken.getAllRules();
             } catch (JSONException e) {
                 Log.i(TAG, "Encountered JSONException while fetching rules.");

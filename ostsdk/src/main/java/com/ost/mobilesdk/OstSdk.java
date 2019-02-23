@@ -1,7 +1,6 @@
 package com.ost.mobilesdk;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 
 import com.ost.mobilesdk.database.ConfigSharedPreferences;
@@ -130,8 +129,14 @@ public class OstSdk {
     public static void scanQRCode(String userId, String data, OstWorkFlowCallback workFlowCallback) throws JSONException {
         Log.i(TAG, String.format("Scanned text: %s", data));
         JSONObject payload = new JSONObject(data);
-        final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
-        ostPerform.perform();
+        if (payload.has(OstConstants.DATA_DEFINATION)) {
+            if (TRANSACTION.equals(payload.getString(OstConstants.DATA_DEFINATION))) {
+                //start transaction;
+            }
+        } else {
+            final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
+            ostPerform.perform();
+        }
     }
 
     public static void addSession(String userId, String spendingLimit, long expireAfterInSecs, OstWorkFlowCallback workFlowCallback) {
@@ -149,7 +154,7 @@ public class OstSdk {
         ostExecuteTransaction.perform();
     }
 
-    public static void parse(JSONObject jsonObject) throws JSONException {
+    public static void updateWithApiResponse(JSONObject jsonObject) throws JSONException {
         Log.d(TAG, String.format("Response: %s", jsonObject.toString()));
         if (!jsonObject.getBoolean(OstConstants.RESPONSE_SUCCESS)) {
             Log.e(TAG, "JSON response false");

@@ -129,7 +129,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
 
                 try {
                     JSONObject response = mOstApiClient.getDeviceManager();
-                    OstSdk.parse(response);
+                    OstSdk.updateWithApiResponse(response);
                 } catch (IOException e) {
                     Log.e(TAG, "IO Exception ");
                 } catch (JSONException e) {
@@ -151,7 +151,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 String signerAddress = Credentials.create(ecKeyPair).getAddress();
                 try {
                     JSONObject jsonObject = mOstApiClient.getDevices(signerAddress);
-                    OstSdk.parse(jsonObject);
+                    OstSdk.updateWithApiResponse(jsonObject);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

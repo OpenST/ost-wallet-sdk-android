@@ -74,7 +74,7 @@ public class OstToken extends OstBaseEntity {
             jsonObject.put(OstToken.AUXILIARY_CHAINS, "");
             return OstToken.parse(jsonObject);
         } catch (JSONException e) {
-            Log.e(TAG, "Unexpected error: OstToken json parse exception");
+            Log.e(TAG, "Unexpected error: OstToken json updateWithApiResponse exception");
         }
         return null;
     }

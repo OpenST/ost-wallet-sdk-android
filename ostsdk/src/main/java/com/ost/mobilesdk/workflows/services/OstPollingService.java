@@ -96,9 +96,9 @@ public abstract class OstPollingService extends IntentService {
                 return;
             }
 
-            Log.i(TAG, "parse Response");
+            Log.i(TAG, "updateWithApiResponse Response");
             try {
-                OstSdk.parse(response);
+                OstSdk.updateWithApiResponse(response);
             } catch (JSONException e) {
                 Log.e(TAG, "Unexpected JSON Excpetion");
             }

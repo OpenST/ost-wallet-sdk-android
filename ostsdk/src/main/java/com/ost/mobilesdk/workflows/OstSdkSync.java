@@ -91,7 +91,7 @@ class OstSdkSync {
                         List<OstSession> ostSessionList = OstSession.getSessionsToSync(mUserId);
                         for (OstSession ostSession: ostSessionList) {
                             response = ostApiClient.getSession(ostSession.getAddress());
-                            OstSdk.parse(response);
+                            OstSdk.updateWithApiResponse(response);
                         }
                     } else if (SYNC_ENTITY.DEVICE_MANAGER == entity) {
                         response = ostApiClient.getDeviceManager();
@@ -99,7 +99,7 @@ class OstSdkSync {
                         response = ostApiClient.getTokenHolder();
                     }
                     Log.i(TAG, String.format("Sync response for %s", entity.toString()));
-                    OstSdk.parse(response);
+                    OstSdk.updateWithApiResponse(response);
                 } catch (IOException e) {
                     Log.e(TAG, String.format("IOException: %s", e.getCause()));
                 } catch (JSONException e) {

@@ -44,7 +44,7 @@ public abstract class OstBaseEntity {
         try {
             this.processJson(data);
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to parse JSON fetched from DB");
+            Log.e(TAG, "Failed to updateWithApiResponse JSON fetched from DB");
         }
     }
 

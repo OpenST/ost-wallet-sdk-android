@@ -160,7 +160,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
 
         try {
             JSONObject response = ostApiClient.getDeviceManager();
-            OstSdk.parse(response);
+            OstSdk.updateWithApiResponse(response);
         } catch (IOException e) {
             Log.e(TAG, "IO Exception ");
         } catch (JSONException e) {

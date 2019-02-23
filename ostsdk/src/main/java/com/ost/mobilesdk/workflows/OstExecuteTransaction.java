@@ -145,7 +145,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
         JSONObject jsonObject = null;
         try {
             jsonObject = mOstApiClient.postExecuteTransaction(map);
-            OstSdk.parse(jsonObject);
+            OstSdk.updateWithApiResponse(jsonObject);
         } catch (IOException e) {
             Log.e(TAG, "IO exception in post Transaction");
             return null;

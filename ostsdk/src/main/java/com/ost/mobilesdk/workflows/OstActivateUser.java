@@ -102,7 +102,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
                         mExpirationHeight, mSpendingLimit, recoveryAddress);
                 if (isValidResponse(response)) {
                     //Parse the api response and update the data locally.
-                    OstSdk.parse(response);
+                    OstSdk.updateWithApiResponse(response);
                 } else {
                     //Return with error.
                     Log.e(TAG, String.format("Invalid response for User activate call %s", response.toString()));
