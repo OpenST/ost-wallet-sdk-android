@@ -20,6 +20,8 @@ public interface OstConstants {
     String RULE_PARAMETERS = "rule_parameters";
     String AMOUNTS = "amounts";
     String ADDRESSES = "addresses";
+    String METHOD = "method";
+    String PARAMETERS = "parameters";
 
 
     //ToDo: Move this to OstWorkflows.java (Create one)

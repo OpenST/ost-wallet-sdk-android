@@ -16,6 +16,7 @@ import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstTokenHolder;
 import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddDevice;
 import com.ost.mobilesdk.workflows.OstAddSession;
@@ -135,16 +136,13 @@ public class OstSdk {
                 String tokenId = payload.getString(OstConstants.TOKEN_ID);
                 String ruleName = payload.getString(OstConstants.RULE_NAME);
                 JSONObject ruleParametersObj = payload.getJSONObject(OstConstants.RULE_PARAMETERS);
+
                 JSONArray amountsObj = ruleParametersObj.getJSONArray(OstConstants.AMOUNTS);
-                List<String> amounts = new ArrayList<String>();
-                for (int i = 0; i < amountsObj.length(); i++) {
-                    amounts.add(amountsObj.getString(i));
-                }
+                List<String> amounts = new CommonUtils().jsonArrayToList(amountsObj);
+
                 JSONArray addressesObj = ruleParametersObj.getJSONArray(OstConstants.ADDRESSES);
-                List<String> addresses = new ArrayList<String>();
-                for (int i = 0; i < addressesObj.length(); i++) {
-                    addresses.add(addressesObj.getString(i));
-                }
+                List<String> addresses = new CommonUtils().jsonArrayToList(addressesObj);
+
                 executeTransaction(userId, tokenId ,addresses, amounts, ruleName, workFlowCallback);
             }
         } else {

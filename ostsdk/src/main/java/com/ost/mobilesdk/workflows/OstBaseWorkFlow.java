@@ -455,7 +455,7 @@ abstract class OstBaseWorkFlow {
 
             Map<String, Object> map = new OstPayloadBuilder()
                     .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
-                    .setRawCalldata(new GnosisSafe().getAddOwnerWithThresholdData(deviceAddress, "1"))
+                    .setRawCalldata(new GnosisSafe().getAddOwnerWithThresholdCallData(deviceAddress))
                     .setCallData(callData)
                     .setTo(deviceManagerAddress)
                     .setSignatures(signature)

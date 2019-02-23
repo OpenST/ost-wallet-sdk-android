@@ -49,7 +49,7 @@ public class OstPayloadBuilder {
         return this;
     }
 
-    public OstPayloadBuilder setRawCalldata(Map<String,Object> rawCalldata) {
+    public OstPayloadBuilder setRawCalldata(String rawCalldata) {
         this.rawCalldata = rawCalldata;
         return this;
     }
@@ -96,7 +96,7 @@ public class OstPayloadBuilder {
 
     private String value = "0";
     private String callData = "0x0";
-    private Map<String, Object> rawCalldata = new HashMap<>();
+    private String rawCalldata = new String();
     private String operation = "0";
     private String safeTxnGas = "0";
     private String dataGas = "0";

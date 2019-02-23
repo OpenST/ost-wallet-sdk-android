@@ -24,7 +24,8 @@ public class OstErrors {
         EIP712_FAILED,
         NO_SESSION_FOUND,
         TRANSACTION_API_FAILED,
-        RULE_NOT_FOUND;
+        RULE_NOT_FOUND,
+        DIFFERENT_ECONOMY;
     }
 
     public static String getMessage(ErrorCode code) {
@@ -66,6 +67,8 @@ public class OstErrors {
             case TRANSACTION_API_FAILED: return "Transaction api failed";
 
             case RULE_NOT_FOUND: return "Rule not found";
+
+            case DIFFERENT_ECONOMY: return "Token Id is different";
 
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:

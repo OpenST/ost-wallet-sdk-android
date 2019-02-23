@@ -2,6 +2,8 @@ package com.ost.mobilesdk.utils;
 
 import android.util.Log;
 
+import com.ost.mobilesdk.OstConstants;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,15 +16,15 @@ import org.web3j.abi.datatypes.generated.Uint256;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * authorizeSession params :_sessionKey address params :_spendingLimit uint256 params :_expirationHeight uint256
  */
 public class GnosisSafe {
     private static final String TAG = "OstGnosisSafe";
+    private static final String ADD_OWNER_WITH_THRESHHOLD = "addOwnerWithThreshold";
+    private static final String AUTHORIZED_SESSION = "authorizeSession";
+
     public GnosisSafe() {
 
     }
@@ -36,12 +38,22 @@ public class GnosisSafe {
         return FunctionEncoder.encode(function);
     }
 
-    public Map<String, Object> getAuthorizeSessionData(String sessionAddress, String spendingLimit, String expirationHeight) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("method", "authorizeSession");
-        List<String> paramList = Arrays.asList(sessionAddress, spendingLimit, expirationHeight);
-        map.put("parameters", paramList);
-        return map;
+    public String getAuthorizeSessionData(String sessionAddress, String spendingLimit, String expirationHeight) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(OstConstants.METHOD, AUTHORIZED_SESSION);
+
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(sessionAddress);
+            jsonArray.put(spendingLimit);
+            jsonArray.put(expirationHeight);
+
+            jsonObject.put(OstConstants.PARAMETERS, jsonArray);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected exception while parsing json");
+        }
+        return null;
     }
 
     public String getAddOwnerWithThresholdExecutableData(String ownerAddress, String threshHold) {
@@ -113,10 +125,6 @@ public class GnosisSafe {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public JSONObject getJSONAddOwnerWithThresholdData(String ownerAddress) {
-        return getJSONAddOwnerWithThresholdData(ownerAddress, "1");
     }
 
     public static class SafeTxnBuilder {
@@ -195,24 +203,20 @@ public class GnosisSafe {
         }
     }
 
-    public Map<String, Object> getAddOwnerWithThresholdData(String ownerAddress, String threshHold) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("method", "addOwnerWithThreshold");
-        List<String> paramList = Arrays.asList(ownerAddress, threshHold);
-        map.put("parameters", paramList);
-        return map;
+    public String getAddOwnerWithThresholdCallData(String ownerAddress) {
+        return getAddOwnerWithThresholdCallData(ownerAddress, "1");
     }
 
-    public JSONObject getJSONAddOwnerWithThresholdData(String ownerAddress, String threshHold) {
+    public String getAddOwnerWithThresholdCallData(String ownerAddress, String threshHold) {
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("method", "addOwnerWithThreshold");
+            jsonObject.put(OstConstants.METHOD, ADD_OWNER_WITH_THRESHHOLD);
             JSONArray jsonArray = new JSONArray();
             jsonArray.put(ownerAddress);
             jsonArray.put(threshHold);
-            jsonObject.put("parameters", jsonArray);
+            jsonObject.put(OstConstants.PARAMETERS, jsonArray);
 
-            return jsonObject;
+            return jsonObject.toString();
         } catch (JSONException e) {
             Log.e(TAG, "Unexpected exception while parsing json");
         }

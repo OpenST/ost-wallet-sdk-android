@@ -23,13 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * To Add Session
- * 1. param validation
- * 2. user activated and device authorized
- * 3. create session keys
- * 4. create payload
- * 5. api post call
- * 6. polling
+ * Execute Transaction
  */
 public class OstExecuteTransaction extends OstBaseWorkFlow {
 
@@ -37,7 +31,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
     private static final String DIRECT_TRANSFER = "Direct Transfer";
     private final List<String> mTokenHolderAddresses;
     private final List<String> mAmounts;
-    private final String mTransactionType;
+    private final String mRuleName;
     private final String mTokenId;
 
     private enum STATES {
@@ -48,12 +42,12 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
     private STATES mCurrentState = STATES.INITIAL;
     private Object mStateObject = null;
 
-    public OstExecuteTransaction(String userId, String tokenId ,List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback callback) {
+    public OstExecuteTransaction(String userId, String tokenId ,List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback callback) {
         super(userId, callback);
         mTokenId = tokenId;
         mTokenHolderAddresses = tokenHolderAddresses;
         mAmounts = amounts;
-        mTransactionType = transactionType;
+        mRuleName = ruleName;
     }
 
     private void setFlowState(STATES currentState, Object stateObject) {
@@ -78,26 +72,30 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
                 status = status.isSuccess() ? super.loadRules() : status;
                 if (!status.isSuccess()) return status;
 
+                if (!mOstUser.getTokenId().equalsIgnoreCase(mTokenId)) {
+                    return postErrorInterrupt("wf_et_pr_2", OstErrors.ErrorCode.DIFFERENT_ECONOMY);
+                }
+
                 Log.i(TAG, "Validate states");
                 if (!hasActivatedUser()) {
-                    return postErrorInterrupt("wf_et_pr_2", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
+                    return postErrorInterrupt("wf_et_pr_3", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
                 }
 
                 if (!hasAuthorizedDevice()) {
-                    return postErrorInterrupt("wf_et_pr_3", OstErrors.ErrorCode.DEVICE_UNREGISTERED);
+                    return postErrorInterrupt("wf_et_pr_4", OstErrors.ErrorCode.DEVICE_UNREGISTERED);
                 }
 
                 Log.i(TAG, "Building call data");
-                String callData = createCallData(DIRECT_TRANSFER);
+                String callData = createCallData(mRuleName);
 
-                String ruleAddress = getRuleAddressFor(DIRECT_TRANSFER);
+                String ruleAddress = getRuleAddressFor(mRuleName);
                 if (null == ruleAddress) {
-                    return postErrorInterrupt("wf_et_pr_4", OstErrors.ErrorCode.RULE_NOT_FOUND);
+                    return postErrorInterrupt("wf_et_pr_5", OstErrors.ErrorCode.RULE_NOT_FOUND);
                 }
 
                 OstSession session = mOstUser.getActiveSession();
                 if (null == session) {
-                    return postErrorInterrupt("wf_et_pr_5", OstErrors.ErrorCode.NO_SESSION_FOUND);
+                    return postErrorInterrupt("wf_et_pr_6", OstErrors.ErrorCode.NO_SESSION_FOUND);
                 }
 
                 Log.i(TAG, "Creating transaction hash to sign");
@@ -165,7 +163,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
     private Map<String, Object> buildTransactionRequest(String contractAddress, String nonce ,String signature, String signer, String ruleName) {
 
         String callData = createCallData(ruleName);
-        Map<String, Object> rawCallData = createRawCallData(ruleName);
+        String rawCallData = createRawCallData(ruleName);
         return new ExecuteRuleRequestBuilder()
                 .setToAddress(contractAddress)
                 .setCallData(callData)
@@ -176,7 +174,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
                 .build();
     }
 
-    private Map<String, Object> createRawCallData(String ruleName) {
+    private String createRawCallData(String ruleName) {
         if (ruleName.equalsIgnoreCase(DIRECT_TRANSFER)) {
             return new TokenRules().getTransactionRawCallData(mTokenHolderAddresses, mAmounts);
         }
@@ -244,7 +242,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
             return this;
         }
 
-        public ExecuteRuleRequestBuilder setRawCallData(Map<String, Object> rawCallData) {
+        public ExecuteRuleRequestBuilder setRawCallData(String rawCallData) {
             this.rawCallData = rawCallData;
             return this;
         }
@@ -274,7 +272,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
             return this;
         }
 
-        private Map<String, Object> rawCallData = new HashMap<>();
+        private String rawCallData = new String();
         private String nonce = "0";
         private String callData = "0x0";
         private String signature = "0x0";

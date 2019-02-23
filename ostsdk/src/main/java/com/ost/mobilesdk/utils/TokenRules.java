@@ -1,5 +1,10 @@
 package com.ost.mobilesdk.utils;
 
+import com.ost.mobilesdk.OstConstants;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
@@ -11,12 +16,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TokenRules {
     private static final String TAG = "OstTokenRules";
+    private static final String DIRECT_TRANSFERS = "directTransfers";
 
     public TokenRules() {
     }
@@ -39,11 +43,22 @@ public class TokenRules {
         return FunctionEncoder.encode(function);
     }
 
-    public Map<String, Object> getTransactionRawCallData(List<String> tokenHolderAddresses, List<String> amounts) {
-        Map<String,Object> map = new HashMap<>();
-        map.put("method", "directTransfers");
-        List<List<String>> paramList = Arrays.asList(tokenHolderAddresses, amounts);
-        map.put("parameters", paramList);
-        return map;
+    public String getTransactionRawCallData(List<String> tokenHolderAddresses, List<String> amounts) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(OstConstants.METHOD, DIRECT_TRANSFERS);
+            CommonUtils commonUtils = new CommonUtils();
+            JSONArray addressesArray = commonUtils.listToJSONArray(tokenHolderAddresses);
+            JSONArray amountsArray = commonUtils.listToJSONArray(amounts);
+
+            JSONArray parameters = new JSONArray();
+            parameters.put(addressesArray);
+            parameters.put(amountsArray);
+
+            jsonObject.put(OstConstants.PARAMETERS, parameters);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return jsonObject.toString();
     }
 }
