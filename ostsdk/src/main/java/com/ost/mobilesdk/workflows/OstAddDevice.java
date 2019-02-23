@@ -1,6 +1,7 @@
 package com.ost.mobilesdk.workflows;
 
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.common.base.Joiner;
@@ -20,6 +21,7 @@ import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstDevicePollingService;
+import com.ost.mobilesdk.workflows.services.OstPollingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -175,8 +177,8 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                         OstDevice.CONST_STATUS.AUTHORIZED);
 
                 Log.i(TAG, "Waiting for update");
-                boolean isTimeOut = waitForUpdate(OstSdk.DEVICE, deviceAddress);
-                if (isTimeOut) {
+                Bundle bundle = waitForUpdate(OstSdk.DEVICE, deviceAddress);
+                if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
                     Log.d(TAG, String.format("Polling time out for device Id: %s", deviceAddress));
                     return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.POLLING_TIMEOUT);
                 }

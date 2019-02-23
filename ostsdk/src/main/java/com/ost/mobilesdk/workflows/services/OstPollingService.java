@@ -34,6 +34,7 @@ public abstract class OstPollingService extends IntentService {
     public static final String ENTITY_UPDATE_MESSAGE = "com.ost.mobilesdk.workflows.extra.ENTITY_UPDATE";
     public static final String EXTRA_ENTITY_TYPE = "com.ost.mobilesdk.workflows.extra.ENTITY_TYPE";
     public static final String EXTRA_IS_POLLING_TIMEOUT = "com.ost.mobilesdk.workflows.extra.IS_POLLING_TIMEOUT";
+    public static final String EXTRA_IS_VALID_RESPONSE = "com.ost.mobilesdk.workflows.extra.IS_VALID_RESPONSE";;
 
     private static final int POLL_MAX_COUNT = 20;
 
@@ -92,7 +93,7 @@ public abstract class OstPollingService extends IntentService {
             boolean isValidResponse = isResponseValid(response);
             Log.d(TAG, String.format("Response of %s entity validity: %b", getEntityName(), isValidResponse));
             if (!isValidResponse) {
-                setAlarm(userId, entityId, entityFromStatus, entityToStatus, pollCount);
+                sendUpdateMessage(userId, entityId, false, false);
                 return;
             }
 
@@ -123,12 +124,17 @@ public abstract class OstPollingService extends IntentService {
     }
 
     private void sendUpdateMessage(String userId, String entityId, boolean pollingTimeout) {
+        sendUpdateMessage(userId, entityId, pollingTimeout, true);
+    }
+
+    private void sendUpdateMessage(String userId, String entityId, boolean pollingTimeout,boolean validResponse) {
         Intent updateIntent = new Intent(ENTITY_UPDATE_MESSAGE);
         // You can also include some extra data.
         updateIntent.putExtra(EXTRA_USER_ID, userId);
         updateIntent.putExtra(EXTRA_ENTITY_ID, entityId);
         updateIntent.putExtra(EXTRA_ENTITY_TYPE, getEntityName());
         updateIntent.putExtra(EXTRA_IS_POLLING_TIMEOUT, pollingTimeout);
+        updateIntent.putExtra(EXTRA_IS_VALID_RESPONSE, validResponse);
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(updateIntent);
     }

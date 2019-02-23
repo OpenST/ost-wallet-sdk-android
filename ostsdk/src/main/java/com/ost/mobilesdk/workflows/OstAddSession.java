@@ -1,5 +1,6 @@
 package com.ost.mobilesdk.workflows;
 
+import android.os.Bundle;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
@@ -19,6 +20,7 @@ import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
+import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstSessionPollingService;
 
 import org.json.JSONException;
@@ -41,7 +43,7 @@ import java.util.Map;
  */
 public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterface {
 
-    private static final String TAG = "OstAddDevice";
+    private static final String TAG = "OstAddSession";
     private final String mSpendingLimit;
     private final long mExpiresAfterInSecs;
     private int mPinAskCount = 0;
@@ -127,7 +129,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                 return authorizeSession();
 
             case CANCELLED:
-                Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
+                Log.d(TAG, String.format("Error in Add session flow: %s", mUserId));
                 postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.WORKFLOW_CANCELED);
                 break;
         }
@@ -217,8 +219,8 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                 OstSession.CONST_STATUS.AUTHORISED);
 
         Log.i(TAG, "Waiting for update");
-        boolean isTimeOut = waitForUpdate(OstSdk.DEVICE, sessionAddress);
-        if (isTimeOut) {
+        Bundle bundle = waitForUpdate(OstSdk.SESSION, sessionAddress);
+        if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             Log.d(TAG, String.format("Polling time out for session Id: %s", sessionAddress));
             return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.POLLING_TIMEOUT);
         }
@@ -226,7 +228,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         Log.i(TAG, "Syncing Entity: Sessions");
         new OstSdkSync(mUserId,OstSdkSync.SYNC_ENTITY.SESSION).perform();
 
-        Log.i(TAG, "Response received for Add device");
+        Log.i(TAG, "Response received for Add session");
         return postFlowComplete();
     }
 

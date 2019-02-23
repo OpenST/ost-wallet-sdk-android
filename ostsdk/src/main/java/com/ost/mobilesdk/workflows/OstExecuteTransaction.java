@@ -1,5 +1,7 @@
 package com.ost.mobilesdk.workflows;
 
+import android.os.Bundle;
+import android.se.omapi.Session;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
@@ -12,6 +14,7 @@ import com.ost.mobilesdk.utils.TokenHolder;
 import com.ost.mobilesdk.utils.TokenRules;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
+import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstTransactionPollingService;
 
 import org.json.JSONException;
@@ -40,7 +43,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
     }
 
     private STATES mCurrentState = STATES.INITIAL;
-    private Object mStateObject = null;
+    private Object mStateObject = false;
 
     public OstExecuteTransaction(String userId, String tokenId ,List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback callback) {
         super(userId, callback);
@@ -118,12 +121,22 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
                 OstTransactionPollingService.startPolling(mUserId, entityId,
                         OstTransaction.CONST_STATUS.SUBMITTED, OstTransaction.CONST_STATUS.SUCCESS);
 
-                boolean timeout = waitForUpdate(OstSdk.TRANSACTION, entityId);
-
-                if (timeout) {
+                Bundle bundle = waitForUpdate(OstSdk.TRANSACTION, entityId);
+                if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
                     return postErrorInterrupt("wf_et_pr_7", OstErrors.ErrorCode.POLLING_TIMEOUT);
                 }
-                return postFlowComplete();
+                if (!bundle.getBoolean(OstPollingService.EXTRA_IS_VALID_RESPONSE, true) && !(Boolean) mStateObject) {
+                    Log.i(TAG, "Not a valid response retrying again");
+                    try {
+                        OstSdk.updateWithApiResponse(mOstApiClient.getSession(signer));
+                    } catch (Exception e) {
+                        Log.e(TAG, "update sessions error", e);
+                    }
+                    //setFlowState(STATES.INITIAL, true);
+                    //perform();
+                } else {
+                    return postFlowComplete();
+                }
             case CANCELLED:
                 Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
                 postErrorInterrupt("wf_pe_pr_8", OstErrors.ErrorCode.WORKFLOW_CANCELED);
@@ -154,7 +167,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
             return null;
         }
         if (isValidResponse(jsonObject)) {
-            return parseResponseForKey(jsonObject, OstTransaction.TRANSACTION_HASH);
+            return parseResponseForKey(jsonObject, OstTransaction.ID);
         } else {
             return null;
         }

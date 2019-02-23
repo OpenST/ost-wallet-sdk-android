@@ -25,6 +25,10 @@
             android:name=".workflows.services.OstSessionPollingService"
             android:enabled="true"
             android:exported="false"/>
+        <service
+            android:name=".workflows.services.OstTransactionPollingService"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 
 </manifest>

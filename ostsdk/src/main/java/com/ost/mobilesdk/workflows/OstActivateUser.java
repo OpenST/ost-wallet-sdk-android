@@ -1,5 +1,6 @@
 package com.ost.mobilesdk.workflows;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -12,6 +13,7 @@ import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
+import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstUserPollingService;
 
 import org.json.JSONObject;
@@ -119,8 +121,8 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 OstUser.CONST_STATUS.ACTIVATED);
 
         Log.i(TAG, "Waiting for update");
-        boolean isTimeOut = waitForUpdate(OstSdk.USER, mUserId);
-        if (isTimeOut) {
+        Bundle bundle = waitForUpdate(OstSdk.USER, mUserId);
+        if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
             return postErrorInterrupt("wf_au_pr_5", ErrorCode.ACTIVATE_USER_API_POLLING_FAILED);
         }

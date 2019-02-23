@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
@@ -358,9 +359,8 @@ abstract class OstBaseWorkFlow {
         return new AsyncStatus(true);
     }
 
-    boolean waitForUpdate(final String pEntityType, final String pEntityId) {
-        final boolean[] isTimeout = new boolean[1];
-        isTimeout[0] = false;
+    Bundle waitForUpdate(final String pEntityType, final String pEntityId) {
+        final Bundle bundle = new Bundle();
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
         BroadcastReceiver updateReceiver = new BroadcastReceiver() {
@@ -371,13 +371,17 @@ abstract class OstBaseWorkFlow {
                 String userId = intent.getStringExtra(OstPollingService.EXTRA_USER_ID);
                 String entityId = intent.getStringExtra(OstPollingService.EXTRA_ENTITY_ID);
                 String entityType = intent.getStringExtra(OstPollingService.EXTRA_ENTITY_TYPE);
+                boolean isValidResponse = intent.getBooleanExtra(OstPollingService.EXTRA_IS_VALID_RESPONSE, true);
                 boolean isPollingTimeOut = intent.getBooleanExtra(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
                 if (mUserId.equals(userId) && pEntityType.equalsIgnoreCase(entityType) && pEntityId.equals(entityId)) {
                     Log.d(TAG, String.format("Got update message from polling service for device id:%s", entityId));
                     if (isPollingTimeOut) {
                         Log.w(TAG, "Polling timeout reached");
-                        isTimeout[0] = true;
                     }
+                    if (!isValidResponse) {
+                        Log.w(TAG, "Not a valid response");
+                    }
+                    bundle.putAll(intent.getExtras());
                     countDownLatch.countDown();
                 }
             }
@@ -387,10 +391,10 @@ abstract class OstBaseWorkFlow {
         try {
             countDownLatch.await(Integer.MAX_VALUE, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Unexpected error while waiting for polling", e);
         }
         LocalBroadcastManager.getInstance(OstSdk.getContext()).unregisterReceiver(updateReceiver);
-        return isTimeout[0];
+        return bundle;
     }
 
     boolean shouldAskForBioMetric() {
