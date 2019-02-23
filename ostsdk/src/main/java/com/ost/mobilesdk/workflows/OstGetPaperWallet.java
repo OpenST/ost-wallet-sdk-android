@@ -139,4 +139,9 @@ public class OstGetPaperWallet extends OstBaseWorkFlow implements OstPinAcceptIn
         setFlowState(STATES.CANCELLED, null);
         perform();
     }
+
+    @Override
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.GET_PAPER_WALLET;
+    }
 }

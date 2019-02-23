@@ -206,7 +206,8 @@ public class UsersListActivity extends MappyBaseActivity {
             String tokenHolderAddress = "0xd8fa5a00a03275acf4ad3f7e410ed27ed495a854";
             String amount = "10000";
             String transactionType = "DirectTransfer";
-            OstSdk.executeTransaction(userId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), transactionType, new WorkFlowHelper(getApplicationContext()) {
+            String tokenId = logInUser.getTokenId();
+            OstSdk.executeTransaction(userId, tokenId ,Arrays.asList(tokenHolderAddress), Arrays.asList(amount), transactionType, new WorkFlowHelper(getApplicationContext()) {
             });
         }
         return super.onOptionsItemSelected(item);

@@ -15,6 +15,11 @@ public interface OstConstants {
     String USER_ID = "user_id";
     String DEVICE_ADDRESS = "device_address";
     int MAX_PIN_LIMIT = 3;
+    String RULE_NAME = "rule_name";
+    String TOKEN_ID = "token_id";
+    String RULE_PARAMETERS = "rule_parameters";
+    String AMOUNTS = "amounts";
+    String ADDRESSES = "addresses";
 
 
     //ToDo: Move this to OstWorkflows.java (Create one)
@@ -25,6 +30,7 @@ public interface OstConstants {
         ADD_DEVICE,
         PERFORM,
         GET_PAPER_WALLET,
-        ADD_SESSION
+        ADD_SESSION,
+        EXECUTE_TRANSACTION;
     }
 }

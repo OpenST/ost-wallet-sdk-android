@@ -207,4 +207,9 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
         setFlowState(STATES.CANCELLED, null);
         perform();
     }
+
+    @Override
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.PERFORM;
+    }
 }

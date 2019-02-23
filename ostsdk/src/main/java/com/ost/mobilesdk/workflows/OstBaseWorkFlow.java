@@ -86,8 +86,8 @@ abstract class OstBaseWorkFlow {
 
     protected abstract AsyncStatus process();
 
-    public OstConstants.WORKFLOW_TYPE getWorkflowType() {
-        return OstConstants.WORKFLOW_TYPE.UNKNOWN;
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.UNKNOWN;
     }
 
     AsyncStatus postFlowComplete() {
@@ -95,7 +95,7 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowComplete(null);
+                mCallback.flowComplete(new OstWorkflowContext(getWorkflowType()),null);
             }
         });
         return new AsyncStatus(true);
@@ -111,7 +111,7 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt(new OstError(msg));
+                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), new OstError(msg));
             }
         });
     }
@@ -159,7 +159,7 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt(new OstError(msg, getWorkflowType()));
+                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), new OstError(msg));
             }
         });
         return new AsyncStatus(false);
@@ -171,7 +171,7 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt(new OstError(internalErrCode, errorCode, getWorkflowType()));
+                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), new OstError(internalErrCode, errorCode));
             }
         });
         return new AsyncStatus(false);

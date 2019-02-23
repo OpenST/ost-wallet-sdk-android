@@ -5,13 +5,13 @@ public class OstContextEntity {
     private Object entity;
     private String entityType;
 
-    OstContextEntity(String message, Object entity, String entityType) {
+    public OstContextEntity(String message, Object entity, String entityType) {
         this.message = message;
         this.entity = entity;
         this.entityType = entityType;
     }
 
-    OstContextEntity(Object entity,String entityType) {
+    public OstContextEntity(Object entity, String entityType) {
         this.message = "";
         this.entity = entity;
         this.entityType = entityType;

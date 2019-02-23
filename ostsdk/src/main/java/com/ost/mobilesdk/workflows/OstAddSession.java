@@ -269,4 +269,9 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         setFlowState(OstAddSession.STATES.CANCELLED, null);
         perform();
     }
+
+    @Override
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION;
+    }
 }

@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OstSdk {
@@ -131,7 +132,20 @@ public class OstSdk {
         JSONObject payload = new JSONObject(data);
         if (payload.has(OstConstants.DATA_DEFINATION)) {
             if (TRANSACTION.equals(payload.getString(OstConstants.DATA_DEFINATION))) {
-                //start transaction;
+                String tokenId = payload.getString(OstConstants.TOKEN_ID);
+                String ruleName = payload.getString(OstConstants.RULE_NAME);
+                JSONObject ruleParametersObj = payload.getJSONObject(OstConstants.RULE_PARAMETERS);
+                JSONArray amountsObj = ruleParametersObj.getJSONArray(OstConstants.AMOUNTS);
+                List<String> amounts = new ArrayList<String>();
+                for (int i = 0; i < amountsObj.length(); i++) {
+                    amounts.add(amountsObj.getString(i));
+                }
+                JSONArray addressesObj = ruleParametersObj.getJSONArray(OstConstants.ADDRESSES);
+                List<String> addresses = new ArrayList<String>();
+                for (int i = 0; i < addressesObj.length(); i++) {
+                    addresses.add(addressesObj.getString(i));
+                }
+                executeTransaction(userId, tokenId ,addresses, amounts, ruleName, workFlowCallback);
             }
         } else {
             final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
@@ -149,8 +163,8 @@ public class OstSdk {
         ostGetPaperWallet.perform();
     }
 
-    public static void executeTransaction(String userId, List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback workFlowCallback) {
-        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenHolderAddresses, amounts, transactionType, workFlowCallback);
+    public static void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback workFlowCallback) {
+        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenId ,tokenHolderAddresses, amounts, transactionType, workFlowCallback);
         ostExecuteTransaction.perform();
     }
 
@@ -179,7 +193,7 @@ public class OstSdk {
         }
         if (jsonData.has(OstSdk.SESSIONS)) {
             JSONArray jsonArray = jsonData.getJSONArray(OstSdk.SESSIONS);
-            for (int i=0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 OstRule.parse(jsonArray.getJSONObject(i));
             }
         }
@@ -188,7 +202,7 @@ public class OstSdk {
         }
         if (jsonData.has(OstSdk.RULES)) {
             JSONArray jsonArray = jsonData.getJSONArray(OstSdk.RULES);
-            for (int i=0; i<jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 OstRule.parse(jsonArray.getJSONObject(i));
             }
         }

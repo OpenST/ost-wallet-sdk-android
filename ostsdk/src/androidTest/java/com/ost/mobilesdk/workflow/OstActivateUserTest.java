@@ -10,6 +10,7 @@ import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.workflows.OstContextEntity;
+import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
 
 import org.json.JSONException;
@@ -38,19 +39,19 @@ public class OstActivateUserTest {
         String password = "password";
         String userId = "1";
 
-        String expirationHeight = "100000";
+        long expirationHeight = System.currentTimeMillis();
         String spendingLimit = "100000";
         Looper.prepare();
         CountDownLatch countDownLatch = new CountDownLatch(1);
         OstSdk.activateUser("", uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
             @Override
-            public void flowComplete(OstContextEntity ostContextEntity) {
-                super.flowComplete(ostContextEntity);
+            public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+                super.flowComplete(ostWorkflowContext, ostContextEntity);
             }
 
             @Override
-            public void flowInterrupt(OstError ostError) {
-                super.flowInterrupt(ostError);
+            public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+                super.flowInterrupt(ostWorkflowContext, ostError);
                 countDownLatch.countDown();
             }
         });
@@ -71,7 +72,7 @@ public class OstActivateUserTest {
         String password = "password";
         String userId = "qweqw-2132-sdfsdf-323";
 
-        String expirationHeight = "100000";
+        long expirationHeight = System.currentTimeMillis();
         String spendingLimit = "100000";
         Looper.prepare();
 
@@ -93,13 +94,13 @@ public class OstActivateUserTest {
         CountDownLatch countDownLatch = new CountDownLatch(1);
         OstSdk.activateUser(userId, uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
             @Override
-            public void flowComplete(OstContextEntity ostContextEntity) {
-                super.flowComplete(ostContextEntity);
+            public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+                super.flowComplete(ostWorkflowContext, ostContextEntity);
             }
 
             @Override
-            public void flowInterrupt(OstError ostError) {
-                super.flowInterrupt(ostError);
+            public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+                super.flowInterrupt(ostWorkflowContext, ostError);
                 countDownLatch.countDown();
             }
         });

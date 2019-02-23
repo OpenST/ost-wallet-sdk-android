@@ -304,4 +304,9 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
         setFlowState(STATES.POLLING, null);
         perform();
     }
+
+    @Override
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.ADD_DEVICE;
+    }
 }

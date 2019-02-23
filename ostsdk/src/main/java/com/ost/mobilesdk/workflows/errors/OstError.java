@@ -25,6 +25,10 @@ public class OstError extends Error {
         mInternalErrorCode = "";
     }
 
+    public OstError(String internalErrorCode, OstErrors.ErrorCode errorCode) {
+        this(internalErrorCode, errorCode, OstConstants.WORKFLOW_TYPE.UNKNOWN);
+    }
+
     public OstError(String internalErrorCode, OstErrors.ErrorCode errorCode, OstConstants.WORKFLOW_TYPE flowType) {
         super(OstErrors.getMessage(errorCode));
         mFlowType = flowType;

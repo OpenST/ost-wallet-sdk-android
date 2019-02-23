@@ -3,6 +3,7 @@ package com.ost.mobilesdk.workflow;
 import android.graphics.Bitmap;
 
 import com.ost.mobilesdk.workflows.OstContextEntity;
+import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
@@ -35,12 +36,12 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
     }
 
     @Override
-    public void flowComplete(OstContextEntity ostContextEntity) {
+    public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
 
     }
 
     @Override
-    public void flowInterrupt(OstError ostError) {
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
 
     }
 
@@ -76,6 +77,11 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
 
     @Override
     public void showPaperWallet(String[] mnemonicsArray) {
+
+    }
+
+    @Override
+    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
 
     }
 }

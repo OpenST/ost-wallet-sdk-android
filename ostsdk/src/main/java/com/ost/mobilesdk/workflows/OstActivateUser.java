@@ -37,8 +37,8 @@ public class OstActivateUser extends OstBaseWorkFlow {
     }
 
     @Override
-    public OstConstants.WORKFLOW_TYPE getWorkflowType() {
-        return OstConstants.WORKFLOW_TYPE.ACTIVATE_USER;
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER;
     }
 
     @Override

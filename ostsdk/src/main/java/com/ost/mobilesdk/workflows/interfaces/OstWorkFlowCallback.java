@@ -3,6 +3,7 @@ package com.ost.mobilesdk.workflows.interfaces;
 import android.graphics.Bitmap;
 
 import com.ost.mobilesdk.workflows.OstContextEntity;
+import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
 
 import org.json.JSONObject;
@@ -51,18 +52,20 @@ public interface OstWorkFlowCallback {
     /**
      * Inform SDK user the the flow is complete
      *
+     * @param ostWorkflowContext workflow type
      * @param ostContextEntity status of the flow
      * @see OstContextEntity
      */
-    void flowComplete(OstContextEntity ostContextEntity);
+    void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
 
     /**
      * Inform SDK user that flow is interrupted with errorCode
      * Developers should dismiss pin dialog (if open) on this callback
      *
+     * @param ostWorkflowContext workflow type
      * @param ostError reason of interruption
      */
-    void flowInterrupt(OstError ostError);
+    void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError);
 
     /**
      * Ask SDK user to determine workflow how to add device
@@ -106,6 +109,14 @@ public interface OstWorkFlowCallback {
 
     /**
      * Show Sdk user mnemonicsArray of the device address
+     * @param wordsArray words array
      */
-    void showPaperWallet(String[] mnemonicsArray);
+    void showPaperWallet(String[] wordsArray);
+
+    /**
+     * Inform SDK user about workflow core api call
+     * @param ostWorkflowContext workflow type
+     * @param ostContextEntity about entity
+     */
+    void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
 }

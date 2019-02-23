@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.workflows.OstContextEntity;
+import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
@@ -62,13 +63,13 @@ class WorkFlowHelper implements OstWorkFlowCallback {
     }
 
     @Override
-    public void flowComplete(OstContextEntity ostContextEntity) {
+    public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Toast.makeText(OstSdk.getContext(), "Work Flow Successfull", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void flowInterrupt(OstError ostError) {
-        Toast.makeText(OstSdk.getContext(), "Work Flow Error:" + ostError.getMessage(), Toast.LENGTH_SHORT).show();
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        Toast.makeText(OstSdk.getContext(), String.format("Work Flow %s Error: %s", ostWorkflowContext.getWorkflow_type(), ostError.getMessage()), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -112,6 +113,11 @@ class WorkFlowHelper implements OstWorkFlowCallback {
 
     @Override
     public void showPaperWallet(String[] mnemonicsArray) {
+
+    }
+
+    @Override
+    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
 
     }
 }

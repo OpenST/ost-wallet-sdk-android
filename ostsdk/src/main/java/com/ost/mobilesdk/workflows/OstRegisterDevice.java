@@ -26,8 +26,8 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
     private final String mTokenId;
 
     @Override
-    public OstConstants.WORKFLOW_TYPE getWorkflowType() {
-        return OstConstants.WORKFLOW_TYPE.REGISTER_DEVICE;
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.REGISTER_DEVICE;
     }
 
     private enum STATES {

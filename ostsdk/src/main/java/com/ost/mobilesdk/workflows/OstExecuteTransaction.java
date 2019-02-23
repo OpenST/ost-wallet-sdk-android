@@ -33,11 +33,12 @@ import java.util.Map;
  */
 public class OstExecuteTransaction extends OstBaseWorkFlow {
 
-    private static final String TAG = "OstAddDevice";
+    private static final String TAG = "OstExecuteTransaction";
     private static final String DIRECT_TRANSFER = "Direct Transfer";
     private final List<String> mTokenHolderAddresses;
     private final List<String> mAmounts;
     private final String mTransactionType;
+    private final String mTokenId;
 
     private enum STATES {
         INITIAL,
@@ -47,8 +48,9 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
     private STATES mCurrentState = STATES.INITIAL;
     private Object mStateObject = null;
 
-    public OstExecuteTransaction(String userId, List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback callback) {
+    public OstExecuteTransaction(String userId, String tokenId ,List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback callback) {
         super(userId, callback);
+        mTokenId = tokenId;
         mTokenHolderAddresses = tokenHolderAddresses;
         mAmounts = amounts;
         mTransactionType = transactionType;
@@ -294,5 +296,10 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
             map.put(MATA_PROPERTY, metaProperty);
             return map;
         }
+    }
+
+    @Override
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.EXECUTE_TRANSACTION;
     }
 }
