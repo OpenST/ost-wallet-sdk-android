@@ -71,9 +71,9 @@ public class SoliditySha3 {
             }
         } else if (obj instanceof String) {
             if (Numeric.containsHexPrefix((String) obj)) {
-                return (String) obj;
+                return Numeric.cleanHexPrefix((String) obj);
             }
-            return Numeric.toHexString(((String) obj).getBytes());
+            return Numeric.cleanHexPrefix(Numeric.toHexString(((String) obj).getBytes()));
         } else {
             throw new Exception("Unknown obj type received");
         }

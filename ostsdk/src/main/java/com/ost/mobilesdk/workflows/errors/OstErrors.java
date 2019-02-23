@@ -23,7 +23,8 @@ public class OstErrors {
         ADD_DEVICE_API_FAILED,
         EIP712_FAILED,
         NO_SESSION_FOUND,
-        TRANSACTION_API_FAILED;
+        TRANSACTION_API_FAILED,
+        RULE_NOT_FOUND;
     }
 
     public static String getMessage(ErrorCode code) {
@@ -63,6 +64,8 @@ public class OstErrors {
             case NO_SESSION_FOUND: return "No Session found";
 
             case TRANSACTION_API_FAILED: return "Transaction api failed";
+
+            case RULE_NOT_FOUND: return "Rule not found";
 
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:

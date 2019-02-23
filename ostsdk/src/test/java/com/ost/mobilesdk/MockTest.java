@@ -1,7 +1,9 @@
 package com.ost.mobilesdk;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ost.mobilesdk.utils.SoliditySha3;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.web3j.abi.FunctionEncoder;
 import org.web3j.abi.TypeReference;
@@ -10,6 +12,7 @@ import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.protocol.ObjectMapperFactory;
 import org.web3j.protocol.core.methods.response.AbiDefinition;
+import org.web3j.utils.Numeric;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +30,8 @@ public class MockTest {
             File abiFile = new File("src/test/resources/MockToken.abi");
             List<AbiDefinition> functionDefinitions = loadContractDefinition(abiFile);
             AbiDefinition func = null;
-            for (AbiDefinition abiDefinition: functionDefinitions) {
-                if ( "approve".equals(abiDefinition.getName()) ) {
+            for (AbiDefinition abiDefinition : functionDefinitions) {
+                if ("approve".equals(abiDefinition.getName())) {
                     func = abiDefinition;
                 }
             }
@@ -51,14 +54,27 @@ public class MockTest {
     }
 
     @Test
+    public void testTokenHolderCALLPREFIX() {
+
+        try {
+            byte[] feed = "executeRule(address,bytes,uint256,uint8,bytes32,bytes32)".getBytes();
+            String hash = new SoliditySha3().soliditySha3(Numeric.toHexString(feed));
+            hash = hash.substring(0,10);
+            Assert.assertEquals(hash, "0x59793b00");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void testGnosisSafe() {
 
         try {
-            File abiFile = new File("src/test/resources/TokenRules.abi");
+            File abiFile = new File("src/test/resources/TokenHolder.abi");
             List<AbiDefinition> functionDefinitions = loadContractDefinition(abiFile);
             List<String> functionNames = new ArrayList<>();
             AbiDefinition func = null;
-            for (AbiDefinition abiDefinition: functionDefinitions) {
+            for (AbiDefinition abiDefinition : functionDefinitions) {
                 System.out.print("MockTest :: Function Name :" + abiDefinition.getName());
                 for (AbiDefinition.NamedType type : abiDefinition.getInputs()) {
                     System.out.print(" params :" + type.getName() + " " + type.getType());
@@ -70,7 +86,6 @@ public class MockTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     static List<AbiDefinition> loadContractDefinition(File absFile)

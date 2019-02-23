@@ -5,7 +5,6 @@ import android.util.Log;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
-import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
 import com.ost.mobilesdk.models.entities.OstSession;
@@ -99,7 +98,6 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                     Log.e(TAG, String.format("Device is not authorized of user id: %s", mUserId));
                     return postErrorInterrupt("wf_as_pr_3", OstErrors.ErrorCode.DEVICE_UNREGISTERED);
                 }
-
 
                 Log.i(TAG, "Ask for authentication");
                 if (shouldAskForBioMetric()) {

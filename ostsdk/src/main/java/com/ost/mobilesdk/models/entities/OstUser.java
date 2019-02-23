@@ -69,7 +69,7 @@ public class OstUser extends OstBaseEntity {
         List<OstSession> ostActiveSessionList = OstSession.getActiveSessions(getId());
         // Todo: Logic to filter most appropriate session.
         if (ostActiveSessionList.size() < 1) {
-            Log.e(TAG, "No Active sesion key available");
+            Log.e(TAG, "No Active session key available");
             return null;
         }
         return ostActiveSessionList.get(0);

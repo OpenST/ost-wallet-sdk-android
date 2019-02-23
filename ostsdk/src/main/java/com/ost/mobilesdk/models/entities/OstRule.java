@@ -86,8 +86,6 @@ public class OstRule extends OstBaseEntity {
         return super.validate(jsonObject) &&
                 jsonObject.has(OstRule.TOKEN_ID) &&
                 jsonObject.has(OstRule.NAME) &&
-                jsonObject.has(OstRule.ABI) &&
-                jsonObject.has(OstRule.CALL_PREFIX) &&
                 jsonObject.has(OstRule.ADDRESS);
     }
 

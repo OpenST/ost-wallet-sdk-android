@@ -17,6 +17,7 @@ import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
+import com.ost.mobilesdk.models.entities.OstRule;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
@@ -28,8 +29,10 @@ import com.ost.mobilesdk.utils.GnosisSafe;
 import com.ost.mobilesdk.utils.OstPayloadBuilder;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
+import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
+import com.ost.mobilesdk.workflows.services.OstPollingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,9 +43,6 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
-import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
-import com.ost.mobilesdk.workflows.services.OstPollingService;
 
 abstract class OstBaseWorkFlow {
     private static final String TAG = "OstBaseWorkFlow";
@@ -322,6 +322,39 @@ abstract class OstBaseWorkFlow {
             Log.e(TAG, "Token is null or does not contain chainId");
             return postErrorInterrupt("wp_base_ltkn_1", ErrorCode.TOKEN_API_FAILED);
         }
+        return new AsyncStatus(true);
+    }
+
+    OstRule[] mOstRules;
+
+    protected AsyncStatus loadRules() {
+        if (null == mOstUser) {
+            AsyncStatus loadUserStatus = this.loadUser();
+            AsyncStatus loadTokenStatus = this.loadToken();
+            if (!loadTokenStatus.isSuccess() || !loadUserStatus.isSuccess()) {
+                return loadUserStatus;
+            }
+        }
+        OstToken ostToken = OstToken.getById(mOstUser.getTokenId());
+        mOstRules = ostToken.getAllRules();
+        if (null == mOstRules || mOstRules.length == 0) {
+            try {
+                OstSdk.parse(mOstApiClient.getAllRules());
+                mOstRules = ostToken.getAllRules();
+            } catch (JSONException e) {
+                Log.i(TAG, "Encountered JSONException while fetching rules.");
+                mOstRules = null;
+            } catch (IOException e) {
+                Log.i(TAG, "Encountered IOException while fetching rules.");
+                mOstRules = null;
+            }
+        }
+
+        if (null == mOstRules) {
+            Log.e(TAG, "Rules is null ");
+            return postErrorInterrupt("wp_base_lrskn_1", ErrorCode.TOKEN_API_FAILED);
+        }
+
         return new AsyncStatus(true);
     }
 

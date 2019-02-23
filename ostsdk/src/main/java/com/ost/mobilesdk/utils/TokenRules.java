@@ -11,7 +11,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TokenRules {
     private static final String TAG = "OstTokenRules";
@@ -19,7 +21,7 @@ public class TokenRules {
     public TokenRules() {
     }
 
-    public String getAuthorizeSessionExecutableData(List<String> addressListArray, List<String> transferAmountArray) {
+    public String getTransactionExecutableData(List<String> addressListArray, List<String> transferAmountArray) {
         List<Address> addressList = new ArrayList<>();
         List<Uint256> transferAmountList = new ArrayList<>();
 
@@ -35,5 +37,13 @@ public class TokenRules {
                 Collections.<TypeReference<?>>emptyList());
 
         return FunctionEncoder.encode(function);
+    }
+
+    public Map<String, Object> getTransactionRawCallData(List<String> tokenHolderAddresses, List<String> amounts) {
+        Map<String,Object> map = new HashMap<>();
+        map.put("method", "directTransfers");
+        List<List<String>> paramList = Arrays.asList(tokenHolderAddresses, amounts);
+        map.put("parameters", paramList);
+        return map;
     }
 }

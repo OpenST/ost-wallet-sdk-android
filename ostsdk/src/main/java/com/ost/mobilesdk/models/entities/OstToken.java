@@ -157,4 +157,8 @@ public class OstToken extends OstBaseEntity {
     public String getStatus() {
         return "";
     }
+
+    public OstRule[] getAllRules() {
+        return OstModelFactory.getRuleModel().getEntitiesByParentId(getId());
+    }
 }

@@ -30,7 +30,7 @@ public class OstTransaction extends OstBaseEntity {
     public static final String TRANSFERS = "transfers";
 
     public static String getIdentifier() {
-        return OstTransaction.TRANSACTION_HASH;
+        return OstTransaction.ID;
     }
 
     public static boolean isValidStatus(String status) {
