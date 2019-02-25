@@ -1,5 +1,7 @@
 package ost.com.sampleostsdkapplication;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
@@ -10,17 +12,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 /**
  * Fragment representing the login screen for Shrine.
  */
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements LoginViewController.LoginFragmentInterface {
 
     private LoginViewController mLoginViewController;
     private TextInputLayout mMobileTextInput;
     private EditText mNumberEditText;
     private EditText mUserNameEditText;
     private TextInputLayout mUserNameTextInput;
+    private ProgressBar mProgressView;
+    private LinearLayout mLoginFormView;
 
     @Override
     public View onCreateView(
@@ -31,6 +37,9 @@ public class LoginFragment extends Fragment {
         mMobileTextInput = view.findViewById(R.id.mobile_number_input);
         mNumberEditText = view.findViewById(R.id.mobile_edit_number);
         mUserNameTextInput = view.findViewById(R.id.user_name_input);
+
+        mLoginFormView = view.findViewById(R.id.login_form);
+        mProgressView = view.findViewById(R.id.login_progress);
         MaterialButton createAccountButton = view.findViewById(R.id.create_account_button);
 
 
@@ -64,23 +73,52 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
-    public void setMobileNumberError() {
-        mMobileTextInput.setError(getString(R.string.shr_error_password));
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mLoginViewController.onDestroy();
     }
 
-    public void setUserNameError() {
-        mUserNameTextInput.setError(getString(R.string.shr_error_user_name));
+    @Override
+    public void setMobileNumberError(String errorText) {
+        mMobileTextInput.setError(errorText);
     }
 
+    @Override
+    public void setUserNameError(String errorText) {
+        mUserNameTextInput.setError(errorText);
+    }
+
+    @Override
     public void resetNumberError() {
         mMobileTextInput.setError(null);
     }
 
+    @Override
     public void resetUserNameError() {
         mUserNameTextInput.setError(null);
     }
 
-    public void showProgress(boolean b) {
+    @Override
+    public void showProgress(boolean show) {
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
+        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
+
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 }

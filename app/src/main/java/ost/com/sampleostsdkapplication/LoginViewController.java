@@ -12,24 +12,26 @@ import com.ost.mobilesdk.OstSdk;
 
 import org.json.JSONObject;
 
-import static ost.com.sampleostsdkapplication.Constants.OST_USER_ID;
-
 class LoginViewController {
     private static final String TAG = "LoginViewController";
-    private final LoginFragment mLoginFragment;
 
-    public LoginViewController(LoginFragment loginFragment) {
+    private static final String REGISTER_TYPE = "register_type";
+    private static final String OST_USER_ID = "ost_user_id";
+
+    private final LoginFragmentInterface mLoginFragment;
+
+    public LoginViewController(LoginFragmentInterface loginFragment) {
         mLoginFragment = loginFragment;
     }
 
     public void onButtonAction(Editable userName, Editable mobileNumber, boolean isRegister) {
         boolean success = true;
         if (!isPasswordValid(mobileNumber)) {
-            mLoginFragment.setMobileNumberError();
+            mLoginFragment.setMobileNumberError(getString(R.string.error_incorrect_mobilenumber));
             success = false;
         }
         if (!isUserNameValid(userName)) {
-            mLoginFragment.setUserNameError();
+            mLoginFragment.setUserNameError(getString(R.string.error_incorrect_name));
             success = false;
         }
         if (success) {
@@ -78,6 +80,12 @@ class LoginViewController {
             Log.i(TAG, "UserId is null");
         }
         mLoginFragment.showProgress(false);
+        mLoginFragment.setUserNameError(getString(R.string.error_incorrect_name));
+        mLoginFragment.setMobileNumberError(getString(R.string.error_incorrect_mobilenumber));
+    }
+
+    private String getString(int resId) {
+        return mLoginFragment.getString(resId);
     }
 
     private boolean isUserNameValid(Editable text) {
@@ -96,5 +104,25 @@ class LoginViewController {
         if (isPasswordValid(text)) {
             mLoginFragment.resetNumberError();
         }
+    }
+
+    public void onDestroy() {
+
+    }
+
+    interface LoginFragmentInterface {
+        void setMobileNumberError(String text);
+
+        void setUserNameError(String text);
+
+        void resetNumberError();
+
+        void resetUserNameError();
+
+        void showProgress(boolean show);
+
+        Activity getActivity();
+
+        String getString(int text);
     }
 }

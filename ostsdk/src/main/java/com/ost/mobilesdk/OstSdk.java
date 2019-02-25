@@ -30,7 +30,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OstSdk {
@@ -56,6 +55,7 @@ public class OstSdk {
         return mApplicationContext;
     }
 
+    //Todo:: pass base Url
     public static void init(Context context) {
         if (INSTANCE == null) {
             synchronized (OstSdk.class) {
