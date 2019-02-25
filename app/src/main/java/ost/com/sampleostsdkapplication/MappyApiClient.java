@@ -17,6 +17,7 @@ import java.util.Map;
 class MappyApiClient {
 
     private static final String BASE_URL = "http://10.0.2.2:4040/api/";
+    //    private static final String BASE_URL = "http://172.16.0.213:4040/api/";
     private static final String TAG = "MappyApiCLient";
     private final OstHttpRequestClient mOstHttpRequestClient;
     private final Handler mHandler;

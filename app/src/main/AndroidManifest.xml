@@ -17,9 +17,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoginSignUpActivity">
+        android:theme="@style/Theme.Shrine">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,7 +28,7 @@
         <activity
             android:name=".UsersListActivity"
             android:label="@string/title_activity_users_list"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/Theme.Shrine" />
         <activity android:name=".QR_view" />
         <activity android:name=".SimpleScannerActivity"></activity>
     </application>
