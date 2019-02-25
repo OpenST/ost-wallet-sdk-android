@@ -22,7 +22,7 @@ public class KeyGenProcessTest {
     @BeforeClass
     public static void setUp() throws ExecutionException, InterruptedException {
         mAppContext = InstrumentationRegistry.getTargetContext();
-        OstSdk.init(mAppContext);
+        OstSdk.init(mAppContext, "");
         new OstSecureKeyModelRepository().deleteAllSecureKeys().get();
     }
 

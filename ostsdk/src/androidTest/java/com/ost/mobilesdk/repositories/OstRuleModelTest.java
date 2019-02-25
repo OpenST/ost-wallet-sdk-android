@@ -42,7 +42,7 @@ public class OstRuleModelTest {
     public static void setUp() throws IOException {
         Context appContext = InstrumentationRegistry.getTargetContext();
         testHelper.createDatabase("ostsdk_db", 1);
-        OstSdk.init(appContext.getApplicationContext());
+        OstSdk.init(appContext.getApplicationContext(), "");
 
         OstRuleModel ostRuleModel = OstModelFactory.getRuleModel();
         ostRuleModel.deleteAllEntities();
@@ -98,7 +98,7 @@ public class OstRuleModelTest {
         return insertRuleData(1);
     }
 
-    private OstRule insertRuleData(int param) throws JSONException, InterruptedException {
+    private OstRule insertRuleData(int param) throws JSONException {
         JSONObject tokenJson = new JSONObject();
 
         tokenJson.put(OstUser.ID, String.valueOf(param));

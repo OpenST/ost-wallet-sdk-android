@@ -110,9 +110,9 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                 break;
             case PIN_ENTERED:
                 Log.i(TAG, "Pin Entered");
-                String[] strings = ((String) mStateObject).split(" ");
-                String uPin = strings[0];
-                String appSalt = strings[0];
+//                String[] strings = ((String) mStateObject).split(" ");
+                String uPin = "";//strings[0];
+                String appSalt = "";//strings[0];
                 if (validatePin(uPin, appSalt)) {
                     Log.d(TAG, "Pin Validated");
                     postPinValidated();

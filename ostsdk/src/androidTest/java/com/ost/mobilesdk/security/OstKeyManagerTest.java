@@ -24,7 +24,7 @@ public class OstKeyManagerTest {
     @BeforeClass
     public static void setUp() throws InterruptedException, ExecutionException {
         Context appContext = InstrumentationRegistry.getTargetContext();
-        OstSdk.init(appContext);
+        OstSdk.init(appContext, "");
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
         new OstSecureKeyModelRepository().deleteAllSecureKeys().get();
@@ -91,4 +91,18 @@ public class OstKeyManagerTest {
         Assert.assertNotNull(ostSessionKey.getData());
     }
 
+    @Test
+    public void testPinValidation() {
+        String userId = "1";
+        String pin = "959578";
+        String appSalt = "dfsad-1241-adsda-3232";
+        OstKeyManager ostKeyManager = new OstKeyManager(userId);
+        boolean isStored = ostKeyManager.storePinHash(pin, appSalt);
+        if (!isStored) {
+            Assert.fail("Storing if pin failed");
+        }
+
+        boolean isValidated = ostKeyManager.validatePin(pin, appSalt);
+        Assert.assertTrue("Pin is invalid", isValidated);
+    }
 }

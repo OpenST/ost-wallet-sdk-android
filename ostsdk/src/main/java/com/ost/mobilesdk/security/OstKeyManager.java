@@ -10,6 +10,7 @@ import com.ost.mobilesdk.models.entities.OstSessionKey;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.utils.SoliditySha3;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -34,6 +35,7 @@ public class OstKeyManager {
     private static final String USER_DEVICE_INFO_FOR = "user_device_info_for_";
     private static final String ETHEREUM_KEY_FOR_ = "ethereum_key_for_";
     private static final String ETHEREUM_KEY_MNEMONICS_FOR_ = "ethereum_key_mnemonics_for_";
+    private static final String PIN_HASH_FOR = "pin_hash_for_";
     private final OstSecureKeyModelRepository mOstSecureKeyModel;
     private final String mUserId;
     private KeyMetaStruct mKeyMetaStruct;
@@ -227,13 +229,16 @@ public class OstKeyManager {
         mKeyMetaStruct.addEthKeyIdentifier(ETHEREUM_KEY_FOR_ + apiAddress, mUserId);
     }
 
-    private void storeKeyMetaStruct() {
-        Future<AsyncStatus> future = mOstSecureKeyModel.insertSecureKey(new OstSecureKey(USER_DEVICE_INFO_FOR + mUserId, createBytesFromObject(mKeyMetaStruct)));
+    private boolean storeKeyMetaStruct() {
+        Future<AsyncStatus> future = mOstSecureKeyModel.insertSecureKey
+                (new OstSecureKey(USER_DEVICE_INFO_FOR + mUserId, createBytesFromObject(mKeyMetaStruct)));
         try {
             future.get(10, TimeUnit.SECONDS);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
+            return false;
         }
+        return true;
     }
 
     public String getDeviceAddress() {
@@ -243,6 +248,53 @@ public class OstKeyManager {
     public String[] getMnemonics() {
         String deviceAddress = getDeviceAddress();
         return getMnemonics(deviceAddress);
+    }
+
+    public boolean storePinHash(String pin, String appSalt) {
+
+        String pinString = String.format("%s%s%s", appSalt, pin, mUserId);
+
+        String pinHash = null;
+        try {
+            pinHash = new SoliditySha3().soliditySha3(pinString);
+        } catch (Exception e) {
+            Log.e(TAG, "Exception while hashing recovery key string", e);
+            return false;
+        }
+
+        byte[] encrypted = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(pinHash.getBytes());
+
+        Future<AsyncStatus> future = new OstSecureKeyModelRepository().insertSecureKey
+                (new OstSecureKey(PIN_HASH_FOR + mUserId, encrypted));
+        try {
+            future.get(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validatePin(String pin, String appSalt) {
+        String pinString = String.format("%s%s%s", appSalt, pin, mUserId);
+
+        String testPinHash = null;
+        try {
+            testPinHash = new SoliditySha3().soliditySha3(pinString);
+        } catch (Exception e) {
+            Log.e(TAG, "Exception while hashing recovery key string", e);
+            return false;
+        }
+
+        //get Hash from db
+        OstSecureKey ostSecureKey = new OstSecureKeyModelRepository().getByKey(PIN_HASH_FOR + mUserId);
+        byte[] encryptedData = ostSecureKey.getData();
+        byte[] decryptedData = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(encryptedData);
+        String expectedPinHash = new String(decryptedData);
+        //Compare
+        boolean isValid = testPinHash.equalsIgnoreCase(expectedPinHash);
+
+        return isValid;
     }
 
     static class KeyMetaStruct implements Serializable {

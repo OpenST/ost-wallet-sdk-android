@@ -13,7 +13,6 @@ import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
 
-import org.json.JSONException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,7 +28,7 @@ public class OstActivateUserTest {
     @BeforeClass
     public static void setUp() throws ExecutionException, InterruptedException {
         mAppContext = InstrumentationRegistry.getTargetContext();
-        OstSdk.init(mAppContext);
+        OstSdk.init(mAppContext, "");
         new OstSecureKeyModelRepository().deleteAllSecureKeys().get();
     }
 
@@ -67,7 +66,7 @@ public class OstActivateUserTest {
     }
 
     @Test
-    public void testActivateUserDeviceUnRegisted() throws JSONException {
+    public void testActivateUserDeviceUnRegisted() {
         String uPin = "123456";
         String password = "password";
         String userId = "qweqw-2132-sdfsdf-323";

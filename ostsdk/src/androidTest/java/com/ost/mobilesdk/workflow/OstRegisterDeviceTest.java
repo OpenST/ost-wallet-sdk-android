@@ -9,6 +9,7 @@ import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.workflows.OstContextEntity;
+import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 
 import org.json.JSONException;
@@ -27,7 +28,7 @@ public class OstRegisterDeviceTest {
     @BeforeClass
     public static void setUp() throws ExecutionException, InterruptedException {
         mAppContext = InstrumentationRegistry.getTargetContext();
-        OstSdk.init(mAppContext);
+        OstSdk.init(mAppContext, "");
         new OstSecureKeyModelRepository().deleteAllSecureKeys().get();
     }
 
@@ -53,7 +54,7 @@ public class OstRegisterDeviceTest {
             }
 
             @Override
-            public void flowComplete(OstContextEntity ostContextEntity) {
+            public void flowComplete(OstWorkflowContext workflowContext, OstContextEntity ostContextEntity) {
                 countDownLatch.countDown();
                 OstDevice ostDevice = OstModelFactory.getDeviceModel().getEntityById(address[0]);
                 Assert.assertEquals(OstDevice.CONST_STATUS.REGISTERED, ostDevice.getStatus());

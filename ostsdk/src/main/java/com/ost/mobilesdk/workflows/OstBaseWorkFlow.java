@@ -428,8 +428,9 @@ abstract class OstBaseWorkFlow {
     }
 
     boolean validatePin(String uPin, String appSalt) {
-        //Todo:: validation
-        return true;
+        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
+        boolean isValidated = ostKeyManager.validatePin(uPin, appSalt);
+        return isValidated;
     }
 
     String getEIP712Hash(String deviceAddress, String deviceManagerAddress) {

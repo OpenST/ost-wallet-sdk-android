@@ -152,6 +152,11 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
     private String createRecoveryKey(String salt) {
         String stringToCalculate = String.format("%s%s%s", mPassWord, mUPin, mUserId);
+
+        if (!storePinKeccek(mUPin, mPassWord)) {
+            return null;
+        }
+
         byte[] seed = OstSdkCrypto.getInstance().genSCryptKey(stringToCalculate.getBytes(), salt.getBytes());
 
         OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
@@ -159,6 +164,11 @@ public class OstActivateUser extends OstBaseWorkFlow {
         String address = ostKeyManager.createHDKeyAddress(seed);
 
         return address;
+    }
+
+    private boolean storePinKeccek(String pin, String appSalt) {
+        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
+        return ostKeyManager.storePinHash(pin, appSalt);
     }
 
     private AsyncStatus calculateExpirationHeight() {

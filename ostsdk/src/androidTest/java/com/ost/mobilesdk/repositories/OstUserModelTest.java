@@ -40,7 +40,7 @@ public class OstUserModelTest {
     public static void setUp() throws IOException {
         Context appContext = InstrumentationRegistry.getTargetContext();
         testHelper.createDatabase("ostsdk_db", 1);
-        OstSdk.init(appContext.getApplicationContext());
+        OstSdk.init(appContext.getApplicationContext(), "");
 
         OstUserModel ostUserModel = OstModelFactory.getUserModel();
         ostUserModel.deleteAllEntities();
@@ -65,8 +65,7 @@ public class OstUserModelTest {
         OstUser ostUser = insertUserData();
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.delUser(ostUser.getId());
-
+        OstModelFactory.getUserModel().deleteEntity(ostUser.getId());
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 
         ostUser = OstSdk.getUser("1");
@@ -112,7 +111,7 @@ public class OstUserModelTest {
         return insertUserData(1);
     }
 
-    private OstUser insertUserData(int param) throws JSONException, InterruptedException {
+    private OstUser insertUserData(int param) throws JSONException {
         JSONObject userObj = new JSONObject();
 
         userObj.put(OstUser.ID, String.valueOf(param));

@@ -41,7 +41,7 @@ public class OstTokenHolderModelTest {
     public static void setUp() throws IOException {
         Context appContext = InstrumentationRegistry.getTargetContext();
         testHelper.createDatabase("ostsdk_db", 1);
-        OstSdk.init(appContext.getApplicationContext());
+        OstSdk.init(appContext.getApplicationContext(), "");
 
         OstTokenHolderModel tokenHolderModel = OstModelFactory.getTokenHolderModel();
         tokenHolderModel.deleteAllEntities();
@@ -95,7 +95,7 @@ public class OstTokenHolderModelTest {
         return insertTokenHolderData(1);
     }
 
-    private OstTokenHolder insertTokenHolderData(int param) throws JSONException, InterruptedException {
+    private OstTokenHolder insertTokenHolderData(int param) throws JSONException {
         JSONObject userObj = new JSONObject();
 
         userObj.put(OstUser.ID, String.valueOf(param));

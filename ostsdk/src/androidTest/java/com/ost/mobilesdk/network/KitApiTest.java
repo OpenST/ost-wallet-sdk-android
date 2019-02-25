@@ -33,7 +33,7 @@ public class KitApiTest {
     @BeforeClass
     public static void setUp() {
         mAppContext = InstrumentationRegistry.getTargetContext();
-        OstSdk.init(mAppContext);
+        OstSdk.init(mAppContext, "");
     }
 
 

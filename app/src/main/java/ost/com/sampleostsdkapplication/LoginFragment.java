@@ -58,7 +58,7 @@ public class LoginFragment extends Fragment implements LoginViewController.Login
         createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLoginViewController.onButtonAction(mUserNameEditText.getText(), mNumberEditText.getText(), false);
+                mLoginViewController.onButtonAction(mUserNameEditText.getText(), mNumberEditText.getText(), true);
             }
         });
 
