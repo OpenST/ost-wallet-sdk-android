@@ -84,10 +84,6 @@ public class OstSdk {
         return OstModelFactory.getTokenModel().getEntityById(tokenId);
     }
 
-    public static OstUser initUser(String id, String tokenId) {
-        return OstUser.initUser(id, tokenId);
-    }
-
     public static OstUser getUser(String id) {
         return OstModelFactory.getUserModel().getEntityById(id);
     }

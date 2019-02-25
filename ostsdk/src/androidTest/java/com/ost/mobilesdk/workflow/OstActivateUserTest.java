@@ -75,7 +75,7 @@ public class OstActivateUserTest {
         String spendingLimit = "100000";
         Looper.prepare();
 
-        OstUser ostUser = OstSdk.initUser(userId, userId);
+        OstUser ostUser = OstUser.initUser(userId, userId);
 
         OstKeyManager ostKeyManager = new OstKeyManager(userId);
         ostKeyManager.getApiKeyAddress();
