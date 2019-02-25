@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -62,8 +63,8 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
 
                 Log.i(TAG, "Initializing User and Token");
                 OstUser ostUser;
-                ostUser = OstUser.initUser(mUserId, mTokenId);
-                OstSdk.initToken(mTokenId);
+                ostUser = OstUser.init(mUserId, mTokenId);
+                OstToken.init(mTokenId);
 
                 Log.i(TAG, "Creating current device if does not exist");
                 OstDevice ostDevice = createOrGetCurrentDevice(ostUser);

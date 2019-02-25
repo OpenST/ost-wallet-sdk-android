@@ -38,7 +38,13 @@ public class OstUser extends OstBaseEntity {
         return OstModelFactory.getUserModel().getEntityById(id);
     }
 
-    public static OstUser initUser(String id, String tokenId) {
+    public static OstUser init(String id, String tokenId) {
+        OstUser ostUser = OstUser.getById(id);
+        if (null != ostUser) {
+            Log.e(TAG, String.format("OstUser with id %s already exist", id));
+            return ostUser;
+        }
+
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put(OstUser.ID, id);

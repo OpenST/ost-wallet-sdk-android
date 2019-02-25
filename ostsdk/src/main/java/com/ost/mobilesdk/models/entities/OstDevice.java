@@ -52,6 +52,12 @@ public class OstDevice extends OstBaseEntity {
     }
 
     public static OstDevice init(String address, String apiAddress, String mUserId) {
+        OstDevice ostDevice = OstDevice.getById(address);
+        if (null != ostDevice) {
+            Log.e(TAG, String.format("OstDevice with address %s already exist", address));
+            return ostDevice;
+        }
+
         String uuid = Settings.Secure.getString(OstSdk.getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         String deviceName = android.os.Build.MANUFACTURER + android.os.Build.PRODUCT;

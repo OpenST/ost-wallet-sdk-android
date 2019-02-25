@@ -12,7 +12,6 @@ import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.OstRuleModel;
 import com.ost.mobilesdk.models.entities.OstRule;
 import com.ost.mobilesdk.models.entities.OstToken;
-import com.ost.mobilesdk.models.entities.OstUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,26 +86,22 @@ public class OstRuleModelTest {
         assertEquals("1", ostRule.getId());
     }
 
-    private void populateCache(int cacheSizeToPopulate) throws JSONException, InterruptedException {
+    private void populateCache(int cacheSizeToPopulate) throws JSONException {
 
         for (int i = 0; i < cacheSizeToPopulate; i++) {
             insertRuleData(i + 10);
         }
     }
 
-    private OstRule insertRuleData() throws JSONException, InterruptedException {
+    private OstRule insertRuleData() throws JSONException {
         return insertRuleData(1);
     }
 
     private OstRule insertRuleData(int param) throws JSONException {
-        JSONObject tokenJson = new JSONObject();
-
-        tokenJson.put(OstUser.ID, String.valueOf(param));
-
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        OstToken ostToken = OstSdk.registerToken(tokenJson);
+        OstToken ostToken = OstToken.init(String.valueOf(param));
 
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 

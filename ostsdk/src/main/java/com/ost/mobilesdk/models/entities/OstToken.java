@@ -63,6 +63,12 @@ public class OstToken extends OstBaseEntity {
     }
 
     public static OstToken init(String tokenId) {
+        OstToken ostToken = OstToken.getById(tokenId);
+        if (null != ostToken) {
+            Log.e(TAG, String.format("OstToken with Id %s already exists", tokenId));
+            return ostToken;
+        }
+
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put(OstToken.ID, tokenId);

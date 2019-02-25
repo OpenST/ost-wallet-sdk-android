@@ -76,10 +76,6 @@ public class OstSdk {
         return BASE_URL;
     }
 
-    public static OstToken registerToken(JSONObject jsonObject) throws JSONException {
-        return OstToken.parse(jsonObject);
-    }
-
     public static OstToken getToken(String tokenId) {
         return OstModelFactory.getTokenModel().getEntityById(tokenId);
     }
@@ -87,11 +83,6 @@ public class OstSdk {
     public static OstUser getUser(String id) {
         return OstModelFactory.getUserModel().getEntityById(id);
     }
-
-    private static void delUser(String userId) {
-        OstModelFactory.getUserModel().deleteEntity(userId);
-    }
-
 
     public static void activateUser(String userId, String uPin, String password, long expiresAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback callback) {
         final OstActivateUser ostActivateUser = new OstActivateUser(userId, uPin, password, expiresAfterInSecs, spendingLimitInWei, callback);
@@ -114,10 +105,6 @@ public class OstSdk {
     public static void addDevice(String userId, OstWorkFlowCallback workFlowCallback) {
         final OstAddDevice ostAddDevice = new OstAddDevice(userId, workFlowCallback);
         ostAddDevice.perform();
-    }
-
-    public static OstToken initToken(String tokenId) {
-        return OstToken.init(tokenId);
     }
 
     public static void scanQRCode(String userId, String data, OstWorkFlowCallback workFlowCallback) throws JSONException {
