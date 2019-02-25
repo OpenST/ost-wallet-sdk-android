@@ -1,7 +1,6 @@
 package com.ost.mobilesdk.workflows;
 
 import android.os.Bundle;
-import android.se.omapi.Session;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
@@ -116,6 +115,10 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
                 if (null == entityId) {
                     return postErrorInterrupt("wf_et_pr_6", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
                 }
+
+                //Request Acknowledge
+                postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+                        new OstContextEntity(OstTransaction.getById(entityId), OstSdk.TRANSACTION));
 
                 Log.i(TAG, "start polling");
                 OstTransactionPollingService.startPolling(mUserId, entityId,

@@ -205,13 +205,17 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         try {
             responseObject = ostApiClient.postAddSession(map);
             Log.i(TAG, String.format("Response %s", responseObject.toString()));
-        } catch (IOException e) {
-            Log.e(TAG, "IOException");
+            OstSdk.updateWithApiResponse(responseObject);
+        } catch (Exception e) {
+            Log.e(TAG, "Exception");
             return postErrorInterrupt("wf_as_pr_as_3", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }
         if (!isValidResponse(responseObject)) {
             return postErrorInterrupt("Not a valid response");
         }
+        //Request Acknowledge
+        postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+                new OstContextEntity(OstSession.getById(sessionAddress), OstSdk.SESSION));
 
         Log.i(TAG, "Starting Session polling service");
 

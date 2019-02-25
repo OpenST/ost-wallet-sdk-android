@@ -178,6 +178,15 @@ abstract class OstBaseWorkFlow {
         return new AsyncStatus(false);
     }
 
+    void postRequestAcknowledge(OstWorkflowContext workflowContext, OstContextEntity ostContextEntity) {
+        Log.i(TAG, "Request Acknowledge");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mCallback.requestAcknowledged(workflowContext, ostContextEntity);
+            }
+        });
+    }
 
     OstBiometricAuthentication.Callback getBioMetricCallBack() {
         if (null == mBioMetricCallBack) {
@@ -402,10 +411,8 @@ abstract class OstBaseWorkFlow {
             //Fingerprint API only available on from Android 6.0 (M)
             FingerprintManager fingerprintManager = (FingerprintManager) OstSdk.getContext()
                     .getSystemService(Context.FINGERPRINT_SERVICE);
-            if (null != fingerprintManager && fingerprintManager.isHardwareDetected()
-                    && fingerprintManager.hasEnrolledFingerprints()) {
-                return true;
-            }
+            return null != fingerprintManager && fingerprintManager.isHardwareDetected()
+                    && fingerprintManager.hasEnrolledFingerprints();
         }
         return false;
     }

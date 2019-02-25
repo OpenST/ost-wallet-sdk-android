@@ -37,6 +37,10 @@ public class OstTransaction extends OstBaseEntity {
         return Arrays.asList(CREATED, SUBMITTED, SUCCESS, FAIL).contains(status);
     }
 
+    public static OstTransaction getById(String entityId) {
+        return OstModelFactory.getTransactionModel().getEntityById(entityId);
+    }
+
     public static class CONST_STATUS {
         public static final String CREATED = "created";
         public static final String SUBMITTED = "submitted";

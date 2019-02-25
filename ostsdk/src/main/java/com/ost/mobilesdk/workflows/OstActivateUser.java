@@ -105,6 +105,9 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 if (isValidResponse(response)) {
                     //Parse the api response and update the data locally.
                     OstSdk.updateWithApiResponse(response);
+
+                    postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+                            new OstContextEntity(OstUser.getById(mUserId), OstSdk.USER));
                 } else {
                     //Return with error.
                     Log.e(TAG, String.format("Invalid response for User activate call %s", response.toString()));

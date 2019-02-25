@@ -161,6 +161,10 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                     postWordsValidated();
                     AsyncStatus apiCallStatus = makeAddDeviceCall(signature, signerAddress, wordsDeviceManagerAddress, wordsDeviceAddress);
                     if (apiCallStatus.isSuccess()) {
+                        //Request Acknowledge
+                        postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+                                new OstContextEntity(mOstUser.getCurrentDevice(), OstSdk.DEVICE));
+
                         startPolling();
                     } else {
                         return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
