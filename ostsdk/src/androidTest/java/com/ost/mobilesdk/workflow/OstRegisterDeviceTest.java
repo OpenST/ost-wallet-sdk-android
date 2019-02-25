@@ -10,6 +10,7 @@ import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
+import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 
 import org.json.JSONException;
@@ -58,6 +59,29 @@ public class OstRegisterDeviceTest {
                 countDownLatch.countDown();
                 OstDevice ostDevice = OstModelFactory.getDeviceModel().getEntityById(address[0]);
                 Assert.assertEquals(OstDevice.CONST_STATUS.REGISTERED, ostDevice.getStatus());
+            }
+        });
+
+        try {
+            countDownLatch.await(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Assert.fail();
+        }
+        Looper.myLooper().quit();
+        Assert.assertFalse(false);
+    }
+
+    @Test
+    public void testParamValidationFlow() {
+        // Context of the app under test.
+        String userId = "1";
+        String tokenId = "58";
+        Looper.prepare();
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        OstSdk.registerDevice(userId, tokenId, false, new AbsWorkFlowCallback() {
+            @Override
+            public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+                countDownLatch.countDown();
             }
         });
 

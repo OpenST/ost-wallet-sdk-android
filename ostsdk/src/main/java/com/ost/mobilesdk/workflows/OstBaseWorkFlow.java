@@ -283,11 +283,8 @@ abstract class OstBaseWorkFlow {
         mOstUser = OstUser.getById(mUserId);
         if (null == mOstUser || TextUtils.isEmpty(mOstUser.getTokenHolderAddress())) {
             try {
-                OstSdk.updateWithApiResponse(mOstApiClient.getUser());
+                mOstApiClient.getUser();
                 mOstUser = OstUser.getById(mUserId);
-            } catch (JSONException e) {
-                Log.i(TAG, "Encountered JSONException while fetching user.");
-                mOstUser = null;
             } catch (IOException e) {
                 Log.i(TAG, "Encountered IOException while fetching user.");
                 mOstUser = null;
@@ -317,11 +314,8 @@ abstract class OstBaseWorkFlow {
         if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId())) {
             //Make API Call.
             try {
-                OstSdk.updateWithApiResponse(mOstApiClient.getToken());
+                mOstApiClient.getToken();
                 mOstToken = OstToken.getById(tokenId);
-            } catch (JSONException e) {
-                Log.i(TAG, "Encountered JSONException while fetching token.");
-                mOstToken = null;
             } catch (IOException e) {
                 Log.i(TAG, "Encountered IOException while fetching token.");
                 mOstToken = null;
@@ -349,11 +343,8 @@ abstract class OstBaseWorkFlow {
         mOstRules = ostToken.getAllRules();
         if (null == mOstRules || mOstRules.length == 0) {
             try {
-                OstSdk.updateWithApiResponse(mOstApiClient.getAllRules());
+                mOstApiClient.getAllRules();
                 mOstRules = ostToken.getAllRules();
-            } catch (JSONException e) {
-                Log.i(TAG, "Encountered JSONException while fetching rules.");
-                mOstRules = null;
             } catch (IOException e) {
                 Log.i(TAG, "Encountered IOException while fetching rules.");
                 mOstRules = null;

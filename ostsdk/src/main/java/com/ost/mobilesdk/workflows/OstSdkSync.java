@@ -3,15 +3,11 @@ package com.ost.mobilesdk.workflows;
 import android.os.Looper;
 import android.util.Log;
 
-import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -77,33 +73,28 @@ class OstSdkSync {
             @Override
             public AsyncStatus call() {
                 try {
-                    JSONObject response = null;
                     OstApiClient ostApiClient = new OstApiClient(mUserId);
                     OstUser ostUser = OstUser.getById(mUserId);
                     Log.i(TAG, String.format("Sync request for %s", entity.toString()));
                     if (SYNC_ENTITY.TOKEN == entity) {
-                        response = ostApiClient.getToken();
+                        ostApiClient.getToken();
                     } else if (SYNC_ENTITY.USER == entity) {
-                        response = ostApiClient.getUser();
+                        ostApiClient.getUser();
                     } else if (SYNC_ENTITY.DEVICE == entity) {
-                        response = ostApiClient.getDevices(ostUser.getCurrentDevice().getAddress());
+                        ostApiClient.getDevices(ostUser.getCurrentDevice().getAddress());
                     } else if (SYNC_ENTITY.SESSION == entity) {
                         List<OstSession> ostSessionList = OstSession.getSessionsToSync(mUserId);
                         for (OstSession ostSession: ostSessionList) {
-                            response = ostApiClient.getSession(ostSession.getAddress());
-                            OstSdk.updateWithApiResponse(response);
+                            ostApiClient.getSession(ostSession.getAddress());
                         }
                     } else if (SYNC_ENTITY.DEVICE_MANAGER == entity) {
-                        response = ostApiClient.getDeviceManager();
+                        ostApiClient.getDeviceManager();
                     } else if (SYNC_ENTITY.TOKEN_HOLDER == entity) {
-                        response = ostApiClient.getTokenHolder();
+                        ostApiClient.getTokenHolder();
                     }
                     Log.i(TAG, String.format("Sync response for %s", entity.toString()));
-                    OstSdk.updateWithApiResponse(response);
                 } catch (IOException e) {
                     Log.e(TAG, String.format("IOException: %s", e.getCause()));
-                } catch (JSONException e) {
-                    Log.e(TAG, String.format("JSONException: %s", e.getCause()));
                 } finally {
                     mCountDownLatch.countDown();
                 }

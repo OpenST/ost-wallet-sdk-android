@@ -103,8 +103,6 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 response = ostApiClient.postUserActivate(sessionAddress,
                         mExpirationHeight, mSpendingLimit, recoveryAddress);
                 if (isValidResponse(response)) {
-                    //Parse the api response and update the data locally.
-                    OstSdk.updateWithApiResponse(response);
 
                     postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
                             new OstContextEntity(OstUser.getById(mUserId), OstSdk.USER));

@@ -23,7 +23,6 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstSessionPollingService;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
@@ -162,11 +161,9 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
 
         try {
             JSONObject response = ostApiClient.getDeviceManager();
-            OstSdk.updateWithApiResponse(response);
+//            OstSdk.updateWithApiResponse(response);
         } catch (IOException e) {
             Log.e(TAG, "IO Exception ");
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException ");
         }
 
         int nonce = OstDeviceManager.getById(ostUser.getDeviceManagerAddress()).getNonce();
@@ -205,8 +202,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         try {
             responseObject = ostApiClient.postAddSession(map);
             Log.i(TAG, String.format("Response %s", responseObject.toString()));
-            OstSdk.updateWithApiResponse(responseObject);
-        } catch (Exception e) {
+        } catch (IOException e) {
             Log.e(TAG, "Exception");
             return postErrorInterrupt("wf_as_pr_as_3", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }

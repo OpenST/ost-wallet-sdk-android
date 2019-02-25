@@ -36,14 +36,19 @@ public class OstApiClient {
     private final OstHttpRequestClient mOstHttpRequestClient;
     private final String mUserId;
     private final OstUser mOstUser;
+    private final OstHttpRequestClient.ResponseParser mResponseParser;
+    private final OstApiSigner mApiSigner;
 
     public OstApiClient(String userId, String baseUrl) {
         mUserId = userId;
         mOstUser = OstSdk.getUser(userId);
 
         mOstHttpRequestClient = new OstHttpRequestClient(baseUrl);
-        OstApiSigner ostApiSigner = new OstKeyManager(userId).getApiSigner();
-        mOstHttpRequestClient.setOstApiSigner(ostApiSigner);
+        mApiSigner = new OstKeyManager(userId).getApiSigner();
+        mOstHttpRequestClient.setOstApiSigner(mApiSigner);
+
+        mResponseParser = new OstApiHelper();
+        mOstHttpRequestClient.setResponseParser(mResponseParser);
     }
 
     public OstApiClient(String userId) {

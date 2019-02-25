@@ -130,12 +130,9 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics);
 
                 try {
-                    JSONObject response = mOstApiClient.getDeviceManager();
-                    OstSdk.updateWithApiResponse(response);
+                    mOstApiClient.getDeviceManager();
                 } catch (IOException e) {
                     Log.e(TAG, "IO Exception ");
-                } catch (JSONException e) {
-                    Log.e(TAG, "JSONException ");
                 }
 
                 OstUser wordsOstUser = OstUser.getById(mUserId);
@@ -152,9 +149,8 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 String signature = OstKeyManager.sign(eip712Hash, ecKeyPair);
                 String signerAddress = Credentials.create(ecKeyPair).getAddress();
                 try {
-                    JSONObject jsonObject = mOstApiClient.getDevices(signerAddress);
-                    OstSdk.updateWithApiResponse(jsonObject);
-                } catch (Exception e) {
+                    mOstApiClient.getDevices(signerAddress);
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 if (null != OstDevice.getById(signerAddress)) {

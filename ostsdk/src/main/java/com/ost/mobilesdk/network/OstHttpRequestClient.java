@@ -47,9 +47,14 @@ public class OstHttpRequestClient {
     private static Boolean DEBUG = ("true").equalsIgnoreCase(System.getenv("OST_KYC_SDK_DEBUG"));
     private static Boolean VERBOSE = false;
     private OstApiSigner mOstApiSigner;
+    private ResponseParser mResponseParser;
 
     public void setOstApiSigner(OstApiSigner ostApiSigner) {
         mOstApiSigner = ostApiSigner;
+    }
+
+    public void setResponseParser(ResponseParser mResponseParser) {
+        this.mResponseParser = mResponseParser;
     }
 
     static class HttpParam {
@@ -235,7 +240,12 @@ public class OstHttpRequestClient {
             Log.e(TAG, "SocketTimeoutException occurred.");
             responseBody =  SocketTimeoutExceptionString;
         }
-        return buildApiResponse(responseBody);
+
+        JSONObject jsonResponse = buildApiResponse(responseBody);
+
+        if (null != mResponseParser) mResponseParser.parse(jsonResponse);
+
+        return jsonResponse;
     }
 
 
@@ -346,5 +356,13 @@ public class OstHttpRequestClient {
                 = (ConnectivityManager) OstSdk.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public interface ResponseParser {
+        void parse(JSONObject jsonObject);
+    }
+
+    public interface ApiSigner {
+        String sign(byte[] bytes);
     }
 }

@@ -16,7 +16,6 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstTransactionPollingService;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -131,8 +130,8 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
                 if (!bundle.getBoolean(OstPollingService.EXTRA_IS_VALID_RESPONSE, true) && !(Boolean) mStateObject) {
                     Log.i(TAG, "Not a valid response retrying again");
                     try {
-                        OstSdk.updateWithApiResponse(mOstApiClient.getSession(signer));
-                    } catch (Exception e) {
+                        mOstApiClient.getSession(signer);
+                    } catch (IOException e) {
                         Log.e(TAG, "update sessions error", e);
                     }
                     //setFlowState(STATES.INITIAL, true);
@@ -161,12 +160,8 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
         JSONObject jsonObject = null;
         try {
             jsonObject = mOstApiClient.postExecuteTransaction(map);
-            OstSdk.updateWithApiResponse(jsonObject);
         } catch (IOException e) {
             Log.e(TAG, "IO exception in post Transaction");
-            return null;
-        } catch (JSONException e) {
-            Log.e(TAG, "JSONException in post Transaction");
             return null;
         }
         if (isValidResponse(jsonObject)) {

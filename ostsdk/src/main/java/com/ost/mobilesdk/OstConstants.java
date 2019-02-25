@@ -10,7 +10,7 @@ public interface OstConstants {
     String BLOCK_HEIGHT = "block_height";
     String BLOCK_TIME = "block_time";
     long SESSION_BUFFER_TIME = 60 * 60;
-    int HASH_RATE = 3;
+    int BLOCK_GENERATION_TIME = 3; //Todo:: Will come from config
     String DATA_DEFINATION = "data_defination";
     String USER_ID = "user_id";
     String DEVICE_ADDRESS = "device_address";
@@ -33,6 +33,6 @@ public interface OstConstants {
         PERFORM,
         GET_PAPER_WALLET,
         ADD_SESSION,
-        EXECUTE_TRANSACTION;
+        EXECUTE_TRANSACTION
     }
 }

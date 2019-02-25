@@ -1,11 +1,13 @@
 package com.ost.mobilesdk.security;
 
+import com.ost.mobilesdk.network.OstHttpRequestClient;
+
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
-public class OstApiSigner {
+public class OstApiSigner implements OstHttpRequestClient.ApiSigner {
     private final ECKeyPair mECKeyPair;
 
     public OstApiSigner(byte[] key) {
@@ -17,6 +19,7 @@ public class OstApiSigner {
      * @param dataToSign
      * @return
      */
+    @Override
     public String sign(byte[] dataToSign) {
         return createStringSignature(Sign.signPrefixedMessage(dataToSign, mECKeyPair));
     }

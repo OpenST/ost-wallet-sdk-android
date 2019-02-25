@@ -34,13 +34,13 @@ public abstract class OstPollingService extends IntentService {
     public static final String ENTITY_UPDATE_MESSAGE = "com.ost.mobilesdk.workflows.extra.ENTITY_UPDATE";
     public static final String EXTRA_ENTITY_TYPE = "com.ost.mobilesdk.workflows.extra.ENTITY_TYPE";
     public static final String EXTRA_IS_POLLING_TIMEOUT = "com.ost.mobilesdk.workflows.extra.IS_POLLING_TIMEOUT";
-    public static final String EXTRA_IS_VALID_RESPONSE = "com.ost.mobilesdk.workflows.extra.IS_VALID_RESPONSE";;
+    public static final String EXTRA_IS_VALID_RESPONSE = "com.ost.mobilesdk.workflows.extra.IS_VALID_RESPONSE";
 
     private static final int POLL_MAX_COUNT = 20;
 
     private static final String TAG = "OstPollingService";
-    private static final long POLLING_INTERVAL = OstConstants.HASH_RATE * 1000;
-    private static final long INITIAL_POLLING_INTERVAL = 6 * OstConstants.HASH_RATE * 1000;
+    private static final long POLLING_INTERVAL = OstConstants.BLOCK_GENERATION_TIME * 1000;
+    private static final long INITIAL_POLLING_INTERVAL = 6 * OstConstants.BLOCK_GENERATION_TIME * 1000;
 
     public OstPollingService() {
         super(TAG);
@@ -95,13 +95,6 @@ public abstract class OstPollingService extends IntentService {
             if (!isValidResponse) {
                 sendUpdateMessage(userId, entityId, false, false);
                 return;
-            }
-
-            Log.i(TAG, "updateWithApiResponse Response");
-            try {
-                OstSdk.updateWithApiResponse(response);
-            } catch (JSONException e) {
-                Log.e(TAG, "Unexpected JSON Excpetion");
             }
 
             Log.i(TAG, String.format("Checking %s entity update status", getEntityName()));
