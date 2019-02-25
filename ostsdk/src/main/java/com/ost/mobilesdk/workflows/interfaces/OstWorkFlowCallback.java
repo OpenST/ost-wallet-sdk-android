@@ -108,15 +108,24 @@ public interface OstWorkFlowCallback {
     void deviceUnauthorized();
 
     /**
-     * Show Sdk user mnemonicsArray of the device address
+     * Show SDK user mnemonicsArray of the device address
      * @param wordsArray words array
      */
     void showPaperWallet(String[] wordsArray);
 
     /**
      * Inform SDK user about workflow core api call
-     * @param ostWorkflowContext workflow type
-     * @param ostContextEntity about entity
+     * @param ostWorkflowContext info about workflow type
+     * @param ostContextEntity info about entity
      */
     void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
+
+    /**
+     * Ask SDK user to verify data to proceed
+     *
+     * @param ostWorkflowContext       info about workflow type
+     * @param ostContextEntity         info about entity
+     * @param ostValidateDataInterface to acknowledge workflow to proceed
+     */
+    void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstValidateDataInterface ostValidateDataInterface);
 }

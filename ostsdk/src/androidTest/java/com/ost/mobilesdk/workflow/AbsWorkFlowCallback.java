@@ -9,6 +9,7 @@ import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
+import com.ost.mobilesdk.workflows.interfaces.OstValidateDataInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWalletWordsAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
@@ -82,6 +83,11 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
 
     @Override
     public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+
+    }
+
+    @Override
+    public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstValidateDataInterface ostValidateDataInterface) {
 
     }
 }
