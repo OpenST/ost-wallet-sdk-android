@@ -33,7 +33,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class OstSdk {
-
+    public static final String RULES = "rules";
     public static final String USER = "user";
     public static final String TRANSACTION = "transaction";
     public static final String TOKEN_HOLDER = "token_holder";
@@ -43,27 +43,23 @@ public class OstSdk {
     public static final String DEVICE_OPERATION = "device_manager_operation";
     public static final String DEVICE_MANAGER = "device_manager";
     public static final String DEVICE = "device";
-    public static final String CREDITS = "credits";
+    public static final String SESSIONS = "sessions";
     private static final String TAG = "OstSdk";
-    private static final String RULES = "rules";
-    private static final String SESSIONS = "sessions";
     private static volatile OstSdk INSTANCE;
 
     private static Context mApplicationContext;
+    private final String BASE_URL;
 
     public static Context getContext() {
         return mApplicationContext;
     }
 
-    //Todo:: pass base Url
-    public static void init(Context context) {
-        if (INSTANCE == null) {
-            synchronized (OstSdk.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new OstSdk(context);
-                }
-            }
-        }
+    private OstSdk(Context context, String baseUrl) {
+        mApplicationContext = context.getApplicationContext();
+        OstSdkDatabase.initDatabase(mApplicationContext);
+        OstSdkKeyDatabase.initDatabase(mApplicationContext);
+        ConfigSharedPreferences.init(mApplicationContext);
+        BASE_URL = baseUrl;
     }
 
     public static OstSdk get() {
@@ -73,11 +69,18 @@ public class OstSdk {
         return INSTANCE;
     }
 
-    private OstSdk(Context context) {
-        mApplicationContext = context.getApplicationContext();
-        OstSdkDatabase.initDatabase(mApplicationContext);
-        OstSdkKeyDatabase.initDatabase(mApplicationContext);
-        ConfigSharedPreferences.init(mApplicationContext);
+    public static void init(Context context, String baseUrl) {
+        if (INSTANCE == null) {
+            synchronized (OstSdk.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new OstSdk(context, baseUrl);
+                }
+            }
+        }
+    }
+
+    public String get_BASE_URL() {
+        return BASE_URL;
     }
 
     public static OstToken registerToken(JSONObject jsonObject) throws JSONException {

@@ -22,8 +22,6 @@ import java.util.Map;
 public class OstApiClient {
     private static final String TAG = "OstApiClient";
 
-    //    private static final String BASE_URL = "http://172.16.0.194:7001/testnet/v2";
-    private static final String BASE_URL = "https://s5-api.stagingost.com/testnet/v2";
     private static final String API_KEY = "api_key";
     private static final String API_REQUEST_TIMESTAMP = "api_request_timestamp";
     private static final String API_SIGNATURE_KIND = "api_signature_kind";
@@ -49,7 +47,7 @@ public class OstApiClient {
     }
 
     public OstApiClient(String userId) {
-        this(userId, BASE_URL);
+        this(userId, OstSdk.get().get_BASE_URL());
     }
 
     public OstHttpRequestClient getOstHttpRequestClient() {
