@@ -11,7 +11,6 @@ public interface OstConstants {
     String BLOCK_TIME = "block_time";
     long SESSION_BUFFER_TIME = 60 * 60;
     int BLOCK_GENERATION_TIME = 3; //Todo:: Will come from config
-    String DATA_DEFINATION = "data_defination";
     String USER_ID = "user_id";
     String DEVICE_ADDRESS = "device_address";
     int MAX_PIN_LIMIT = 3;
@@ -22,6 +21,16 @@ public interface OstConstants {
     String ADDRESSES = "addresses";
     String METHOD = "method";
     String PARAMETERS = "parameters";
+    String QR_DATA = "d";
+    String QR_DATA_DEFINITION = "dd";
+    String QR_DATA_DEFINITION_VERSION = "ddv";
+    String QR_DEVICE_ADDRESS = "da";
+    String DATA_DEFINITION_TRANSACTION = "TRANSACTION";
+    String DATA_DEFINITION_AUTHORIZE_DEVICE = "AUTHORIZE_DEVICE";
+    String QR_RULE_NAME = "rn";
+    String QR_TOKEN_HOLDER_ADDRESSES = "ads";
+    String QR_AMOUNTS = "ams";
+    String QR_TOKEN_ID = "tid";
 
 
     //ToDo: Move this to OstWorkflows.java (Create one)

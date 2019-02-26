@@ -4,30 +4,6 @@ import android.util.Log;
 
 public class OstErrors {
     private static String TAG = "OstErrors";
-    public static enum ErrorCode {
-        UNKNOWN,
-        USER_API_FAILED,
-        TOKEN_API_FAILED,
-        CHAIN_API_FAILED,
-        SALT_API_FAILED,
-        INVALID_WORKFLOW_PARAMS,
-        CREATE_DEVICE_FAILED,
-        ACTIVATE_USER_API_FAILED,
-        ACTIVATE_USER_API_POLLING_FAILED,
-        DEVICE_UNREGISTERED,
-        WORKFLOW_CANCELED,
-        USER_NOT_ACTIVATED,
-        POLLING_TIMEOUT,
-        MAX_PIN_LIMIT_REACHED,
-        BLOCK_NUMBER_API_FAILED,
-        ADD_DEVICE_API_FAILED,
-        EIP712_FAILED,
-        NO_SESSION_FOUND,
-        TRANSACTION_API_FAILED,
-        RULE_NOT_FOUND,
-        DIFFERENT_ECONOMY;
-    }
-
     public static String getMessage(ErrorCode code) {
         switch (code) {
             case USER_API_FAILED: return "Failed to fetch user information";
@@ -70,6 +46,39 @@ public class OstErrors {
 
             case DIFFERENT_ECONOMY: return "Token Id is different";
 
+            case USER_NOT_FOUND:
+                return "User not found";
+
+            case CURRENT_DEVICE_NOT_FOUND:
+                return "Current device for user not found";
+
+            case POLLING_API_FAILED:
+                return "Polling api failed";
+
+            case UNKNOWN_ENTITY_TYPE:
+                return "Unknown entity type";
+
+            case INVALID_QR_DEVICE_OPERATION_DATA:
+                return "Invalid qr device operation data";
+
+            case INVALID_ADD_DEVICE_ADDRESS:
+                return "Invalid add device address";
+
+            case DEVICE_UNAUTHORIZED:
+                return "Device unauthorized";
+
+            case DEVICE_ALREADY_AUTHORIZED:
+                return "Device already authorized";
+
+            case USER_ALREADY_ACTIVATED:
+                return "User already activated";
+
+            case INVALID_MNEMONICS:
+                return "Mnemonics are invalid";
+
+            case INVALID_QR_TRANSACTION_DATA:
+                return "Invalid qr transaction data";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -78,5 +87,40 @@ public class OstErrors {
                 return "Unknown error";
             }
         }
+    }
+
+    public enum ErrorCode {
+        UNKNOWN,
+        USER_API_FAILED,
+        TOKEN_API_FAILED,
+        CHAIN_API_FAILED,
+        SALT_API_FAILED,
+        INVALID_WORKFLOW_PARAMS,
+        CREATE_DEVICE_FAILED,
+        ACTIVATE_USER_API_FAILED,
+        ACTIVATE_USER_API_POLLING_FAILED,
+        DEVICE_UNREGISTERED,
+        WORKFLOW_CANCELED,
+        USER_NOT_ACTIVATED,
+        POLLING_TIMEOUT,
+        MAX_PIN_LIMIT_REACHED,
+        BLOCK_NUMBER_API_FAILED,
+        ADD_DEVICE_API_FAILED,
+        EIP712_FAILED,
+        NO_SESSION_FOUND,
+        TRANSACTION_API_FAILED,
+        RULE_NOT_FOUND,
+        DIFFERENT_ECONOMY,
+        USER_NOT_FOUND,
+        CURRENT_DEVICE_NOT_FOUND,
+        POLLING_API_FAILED,
+        UNKNOWN_ENTITY_TYPE,
+        INVALID_QR_DEVICE_OPERATION_DATA,
+        INVALID_ADD_DEVICE_ADDRESS,
+        DEVICE_UNAUTHORIZED,
+        DEVICE_ALREADY_AUTHORIZED,
+        USER_ALREADY_ACTIVATED,
+        INVALID_MNEMONICS,
+        INVALID_QR_TRANSACTION_DATA
     }
 }

@@ -32,6 +32,7 @@ import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
+import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 
@@ -91,15 +92,19 @@ abstract class OstBaseWorkFlow {
         return OstWorkflowContext.WORKFLOW_TYPE.UNKNOWN;
     }
 
-    AsyncStatus postFlowComplete() {
+    AsyncStatus postFlowComplete(OstContextEntity ostContextEntity) {
         Log.i(TAG, "Flow complete");
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowComplete(new OstWorkflowContext(getWorkflowType()),null);
+                mCallback.flowComplete(new OstWorkflowContext(getWorkflowType()), ostContextEntity);
             }
         });
         return new AsyncStatus(true);
+    }
+
+    AsyncStatus postFlowComplete() {
+        return postFlowComplete(null);
     }
 
     /**
@@ -188,6 +193,16 @@ abstract class OstBaseWorkFlow {
         });
     }
 
+    void postVerifyData(OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+        Log.i(TAG, "Post Verify data");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mCallback.verifyData(new OstWorkflowContext(getWorkflowType()), ostContextEntity, ostVerifyDataInterface);
+            }
+        });
+    }
+
     OstBiometricAuthentication.Callback getBioMetricCallBack() {
         if (null == mBioMetricCallBack) {
             mBioMetricCallBack = new OstBiometricAuthentication.Callback() {
@@ -251,6 +266,17 @@ abstract class OstBaseWorkFlow {
         return false;
     }
 
+    boolean hasValidAddress(String address) {
+        OstDevice ostDevice = OstDevice.getById(address);
+        if (null != ostDevice) return true;
+        try {
+            mOstApiClient.getDevices(address);
+        } catch (IOException e) {
+            Log.e(TAG, "Exception while getting device");
+        }
+        ostDevice = OstDevice.getById(address);
+        return (null != ostDevice);
+    }
 
     protected String getSalt() {
         String salt = null;

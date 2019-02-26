@@ -10,12 +10,10 @@ import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstValidateDataInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstWalletWordsAcceptInterface;
+import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
@@ -74,11 +72,6 @@ class WorkFlowHelper implements OstWorkFlowCallback {
     }
 
     @Override
-    public void determineAddDeviceWorkFlow(OstAddDeviceFlowInterface addDeviceFlowInterface) {
-        addDeviceFlowInterface.QRCodeFlow();
-    }
-
-    @Override
     public void showQR(Bitmap qrImage, OstStartPollingInterface startPollingInterface) {
         Log.i(TAG, "showing QR code");
         ByteArrayOutputStream bStream = new ByteArrayOutputStream();
@@ -90,21 +83,6 @@ class WorkFlowHelper implements OstWorkFlowCallback {
         mApp.startActivity(anotherIntent);
         //Need to be on click of button "start polling"
         startPollingInterface.startPolling();
-    }
-
-    @Override
-    public void getWalletWords(OstWalletWordsAcceptInterface ostWalletWordsAcceptInterface) {
-
-    }
-
-    @Override
-    public void invalidWalletWords(OstWalletWordsAcceptInterface ostWalletWordsAcceptInterface) {
-
-    }
-
-    @Override
-    public void walletWordsValidated() {
-
     }
 
     @Override
@@ -123,7 +101,7 @@ class WorkFlowHelper implements OstWorkFlowCallback {
     }
 
     @Override
-    public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstValidateDataInterface ostValidateDataInterface) {
+    public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
 
     }
 }

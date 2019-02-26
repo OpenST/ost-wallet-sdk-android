@@ -119,7 +119,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                     mPinAskCount = mPinAskCount + 1;
                     if (mPinAskCount > OstConstants.MAX_PIN_LIMIT) {
                         Log.d(TAG, "Max pin ask limit reached");
-                        return postErrorInterrupt("ef_pe_pr_2", OstErrors.ErrorCode.MAX_PIN_LIMIT_REACHED);
+                        return postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.MAX_PIN_LIMIT_REACHED);
                     }
                     Log.d(TAG, "Pin InValidated ask for pin again");
                     return postInvalidPin(OstAddSession.this);
@@ -129,7 +129,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
 
             case CANCELLED:
                 Log.d(TAG, String.format("Error in Add session flow: %s", mUserId));
-                postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.WORKFLOW_CANCELED);
+                postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.WORKFLOW_CANCELED);
                 break;
         }
         return new AsyncStatus(true);
@@ -145,7 +145,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         String blockNumber = getCurrentBlockNumber(ostApiClient);
         if (null == blockNumber) {
             Log.e(TAG, "BlockNumber is null");
-            return postErrorInterrupt("wf_as_pr_as_1", OstErrors.ErrorCode.BLOCK_NUMBER_API_FAILED);
+            return postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.BLOCK_NUMBER_API_FAILED);
         }
 
         OstUser ostUser = OstUser.getById(mUserId);
@@ -222,7 +222,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         Bundle bundle = waitForUpdate(OstSdk.SESSION, sessionAddress);
         if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             Log.d(TAG, String.format("Polling time out for session Id: %s", sessionAddress));
-            return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.POLLING_TIMEOUT);
+            return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.POLLING_TIMEOUT);
         }
 
         Log.i(TAG, "Syncing Entity: Sessions");

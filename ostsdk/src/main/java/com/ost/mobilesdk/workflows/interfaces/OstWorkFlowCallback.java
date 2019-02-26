@@ -68,38 +68,12 @@ public interface OstWorkFlowCallback {
     void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError);
 
     /**
-     * Ask SDK user to determine workflow how to add device
-     *
-     * @param addDeviceFlowInterface To device type add device flow
-     */
-    void determineAddDeviceWorkFlow(OstAddDeviceFlowInterface addDeviceFlowInterface);
-
-    /**
      * Ask SDK user to show the provided QR code
      *
      * @param qrImage               QR code bitmap image
      * @param startPollingInterface To start polling
      */
     void showQR(Bitmap qrImage, OstStartPollingInterface startPollingInterface);
-
-    /**
-     * Wallet words needed to recover user wallet.
-     *
-     * @param ostWalletWordsAcceptInterface to pass 12 wallet words
-     */
-    void getWalletWords(OstWalletWordsAcceptInterface ostWalletWordsAcceptInterface);
-
-    /**
-     * Inform SDK user about invalid pin
-     *
-     * @param ostWalletWordsAcceptInterface to pass 12 wallet words
-     */
-    void invalidWalletWords(OstWalletWordsAcceptInterface ostWalletWordsAcceptInterface);
-
-    /**
-     * Inform SDK user that entered 12 wallet words is validated
-     */
-    void walletWordsValidated();
 
     /**
      * Device SDK is no more functional with corrupted data.
@@ -125,7 +99,7 @@ public interface OstWorkFlowCallback {
      *
      * @param ostWorkflowContext       info about workflow type
      * @param ostContextEntity         info about entity
-     * @param ostValidateDataInterface to acknowledge workflow to proceed
+     * @param ostVerifyDataInterface to acknowledge workflow to proceed
      */
-    void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstValidateDataInterface ostValidateDataInterface);
+    void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface);
 }

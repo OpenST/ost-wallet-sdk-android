@@ -5,12 +5,10 @@ import android.graphics.Bitmap;
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstValidateDataInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstWalletWordsAcceptInterface;
+import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
@@ -47,27 +45,7 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
     }
 
     @Override
-    public void determineAddDeviceWorkFlow(OstAddDeviceFlowInterface addDeviceFlowInterface) {
-
-    }
-
-    @Override
     public void showQR(Bitmap qrImage, OstStartPollingInterface startPollingInterface) {
-
-    }
-
-    @Override
-    public void getWalletWords(OstWalletWordsAcceptInterface ostWalletWordsAcceptInterface) {
-
-    }
-
-    @Override
-    public void invalidWalletWords(OstWalletWordsAcceptInterface ostWalletWordsAcceptInterface) {
-
-    }
-
-    @Override
-    public void walletWordsValidated() {
 
     }
 
@@ -87,7 +65,7 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
     }
 
     @Override
-    public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstValidateDataInterface ostValidateDataInterface) {
+    public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
 
     }
 }

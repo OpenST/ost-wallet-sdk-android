@@ -1,25 +1,30 @@
 package com.ost.mobilesdk;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.ost.mobilesdk.database.ConfigSharedPreferences;
 import com.ost.mobilesdk.database.OstSdkDatabase;
 import com.ost.mobilesdk.database.OstSdkKeyDatabase;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
+import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.utils.CommonUtils;
+import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddDevice;
+import com.ost.mobilesdk.workflows.OstAddDeviceWithMnemonics;
 import com.ost.mobilesdk.workflows.OstAddSession;
 import com.ost.mobilesdk.workflows.OstExecuteTransaction;
 import com.ost.mobilesdk.workflows.OstGetPaperWallet;
 import com.ost.mobilesdk.workflows.OstPerform;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
+import com.ost.mobilesdk.workflows.OstStartPolling;
+import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -102,32 +107,17 @@ public class OstSdk {
         registerDevice(userId, tokenId, forceSync, workFlowCallback);
     }
 
+    @Deprecated
     public static void addDevice(String userId, OstWorkFlowCallback workFlowCallback) {
         final OstAddDevice ostAddDevice = new OstAddDevice(userId, workFlowCallback);
         ostAddDevice.perform();
     }
 
-    public static void scanQRCode(String userId, String data, OstWorkFlowCallback workFlowCallback) throws JSONException {
+    public static void ostPerform(String userId, String data, OstWorkFlowCallback workFlowCallback) throws JSONException {
         Log.i(TAG, String.format("Scanned text: %s", data));
         JSONObject payload = new JSONObject(data);
-        if (payload.has(OstConstants.DATA_DEFINATION)) {
-            if (TRANSACTION.equals(payload.getString(OstConstants.DATA_DEFINATION))) {
-                String tokenId = payload.getString(OstConstants.TOKEN_ID);
-                String ruleName = payload.getString(OstConstants.RULE_NAME);
-                JSONObject ruleParametersObj = payload.getJSONObject(OstConstants.RULE_PARAMETERS);
-
-                JSONArray amountsObj = ruleParametersObj.getJSONArray(OstConstants.AMOUNTS);
-                List<String> amounts = new CommonUtils().jsonArrayToList(amountsObj);
-
-                JSONArray addressesObj = ruleParametersObj.getJSONArray(OstConstants.ADDRESSES);
-                List<String> addresses = new CommonUtils().jsonArrayToList(addressesObj);
-
-                executeTransaction(userId, tokenId ,addresses, amounts, ruleName, workFlowCallback);
-            }
-        } else {
-            final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
-            ostPerform.perform();
-        }
+        final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
+        ostPerform.process();
     }
 
     public static void addSession(String userId, String spendingLimit, long expireAfterInSecs, OstWorkFlowCallback workFlowCallback) {
@@ -141,7 +131,69 @@ public class OstSdk {
     }
 
     public static void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback workFlowCallback) {
-        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenId ,tokenHolderAddresses, amounts, transactionType, workFlowCallback);
+        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenId, tokenHolderAddresses, amounts, transactionType, workFlowCallback);
         ostExecuteTransaction.perform();
+    }
+
+    public static void addDeviceUsingMnemonics(String userId, String mMnemonics, OstWorkFlowCallback ostWorkFlowCallback) {
+        OstAddDeviceWithMnemonics ostAddDeviceWithMnemonics = new OstAddDeviceWithMnemonics(userId, mMnemonics, ostWorkFlowCallback);
+        ostAddDeviceWithMnemonics.perform();
+    }
+
+    /**
+     * Generates QR code, providing data of device for the given user Id
+     *
+     * @param userId id whose device qr to be generated
+     * @return Bitmap image type
+     */
+    public static Bitmap getAddDeviceQRCode(String userId) {
+        OstUser ostUser = OstUser.getById(userId);
+        if (null == ostUser) {
+            Log.e(TAG, String.format("gadqc_1 %s", OstErrors.getMessage(OstErrors.ErrorCode.USER_NOT_FOUND)));
+            return null;
+        }
+
+        OstDevice ostDevice = ostUser.getCurrentDevice();
+        if (null == ostDevice) {
+            Log.e(TAG, String.format("gadqc_2 %s", OstErrors.getMessage(OstErrors.ErrorCode.CURRENT_DEVICE_NOT_FOUND)));
+            return null;
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(OstConstants.QR_DATA_DEFINITION, OstConstants.DATA_DEFINITION_AUTHORIZE_DEVICE);
+            jsonObject.put(OstConstants.QR_DATA_DEFINITION_VERSION, "1.0");
+
+            JSONObject dataObject = new JSONObject();
+            dataObject.put(OstConstants.QR_DEVICE_ADDRESS, ostDevice.getAddress());
+
+            jsonObject.put(OstConstants.QR_DATA, dataObject);
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected exception in createPayload");
+            return null;
+        }
+
+        return QRCode.newInstance(OstSdk.getContext())
+                .setContent(jsonObject.toString())
+                .setErrorCorrectionLevel(ErrorCorrectionLevel.M)
+                .setMargin(2)
+                .getQRCOde();
+    }
+
+    /**
+     * To initiate polling for entity
+     *
+     * @param userId
+     * @param entityId
+     * @param entityType
+     * @param fromStatus
+     * @param toStatus
+     * @param workFlowCallback
+     */
+    public static void startPolling(String userId, String entityId, String entityType,
+                                    String fromStatus, String toStatus, OstWorkFlowCallback workFlowCallback) {
+        final OstStartPolling ostStartPolling = new OstStartPolling(userId, entityId,
+                entityType, fromStatus, toStatus, workFlowCallback);
+        ostStartPolling.perform();
     }
 }

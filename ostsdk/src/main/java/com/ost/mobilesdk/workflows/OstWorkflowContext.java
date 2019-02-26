@@ -9,7 +9,9 @@ public class OstWorkflowContext {
         PERFORM,
         GET_PAPER_WALLET,
         ADD_SESSION,
-        EXECUTE_TRANSACTION;
+        EXECUTE_TRANSACTION,
+        ADD_DEVICE_WITH_QR,
+        ADD_DEVICE_WITH_MNEMONICS
     }
     private WORKFLOW_TYPE workflow_type;
 

@@ -4,22 +4,18 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
-import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
-import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.utils.GnosisSafe;
-import com.ost.mobilesdk.utils.OstPayloadBuilder;
-import com.ost.mobilesdk.workflows.errors.OstError;
+import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
-import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Device A which will add
@@ -27,86 +23,70 @@ import java.io.IOException;
  * 2. Sign with wallet key
  * 3. approve
  */
-public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface {
+public class OstPerform extends OstBaseWorkFlow {
 
     private static final String TAG = "OstPerform";
     private final JSONObject mPayload;
-    private int mPinAskCount = 0;
-
-    private enum STATES {
-        INITIAL,
-        QR_CODE,
-        PIN,
-        WORDS,
-        CANCELLED,
-        AUTHENTICATED,
-        PIN_ENTERED,
-    }
-
-    private STATES mCurrentState = STATES.INITIAL;
-    private Object mStateObject = null;
-
-    private void setFlowState(STATES currentState, Object stateObject) {
-        this.mCurrentState = currentState;
-        this.mStateObject = stateObject;
-    }
 
     public OstPerform(String userId, JSONObject payload, OstWorkFlowCallback callback) {
         super(userId, callback);
         mPayload = payload;
     }
 
-    synchronized public AsyncStatus process() {
-        switch (mCurrentState) {
-            case INITIAL:
-                Log.d(TAG, String.format("Perform workflow for userId: %s started", mUserId));
+    public AsyncStatus process() {
 
-                Log.i(TAG, "Validating  payload");
-                if (!validatePayload()) {
-                    Log.e(TAG, String.format("payload validation failed for %s", mPayload.toString()));
-                    return postErrorInterrupt("wf_pe_pr_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
-                }
+        Log.d(TAG, String.format("Perform workflow for userId: %s started", mUserId));
 
-                if (shouldAskForBioMetric()) {
-                    new OstBiometricAuthentication(OstSdk.getContext(), getBioMetricCallBack());
-                } else {
-                    postGetPin(OstPerform.this);
-                }
-                break;
-            case PIN_ENTERED:
-                Log.i(TAG, "Pin Entered");
-                String[] strings = ((String) mStateObject).split(" ");
-                String uPin = strings[0];
-                String appSalt = strings[0];
-                if (validatePin(uPin, appSalt)) {
-                    Log.d(TAG, "Pin Validated");
-                    postPinValidated();
-                } else {
-                    mPinAskCount = mPinAskCount + 1;
-                    if (mPinAskCount > OstConstants.MAX_PIN_LIMIT) {
-                        Log.d(TAG, "Max pin ask limit reached");
-                        return postErrorInterrupt("ef_pe_pr_2", OstErrors.ErrorCode.MAX_PIN_LIMIT_REACHED);
-                    }
-                    Log.d(TAG, "Pin InValidated ask for pin again");
-                    return postInvalidPin(OstPerform.this);
-                }
-            case AUTHENTICATED:
-                Log.i(TAG, "Determining data definition");
-
-                String dataDefinition = getDataDefinition();
-                switch (dataDefinition) {
-                    case OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE:
-                        return authorizeDevice();
-                    default:
-                        Log.w(TAG, "Unknown data definition");
-                }
-                break;
-            case CANCELLED:
-                Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
-                postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.WORKFLOW_CANCELED);
-                break;
+        Log.i(TAG, "Validating  payload");
+        if (!validatePayload()) {
+            Log.e(TAG, String.format("payload validation failed for %s", mPayload.toString()));
+            return postErrorInterrupt("wf_pe_pr_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
         }
-        return new AsyncStatus(true);
+        String dataDefinition = getDataDefinition();
+        JSONObject dataObject = getDataObject();
+        if (OstConstants.DATA_DEFINITION_TRANSACTION.equalsIgnoreCase(dataDefinition)) {
+            if (!validateTransactionData(dataObject)) {
+                return postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.INVALID_QR_TRANSACTION_DATA);
+            }
+            String ruleName = dataObject.optString(OstConstants.QR_RULE_NAME);
+
+            JSONArray jsonArrayTokenHolderAddresses = dataObject.optJSONArray(OstConstants.QR_TOKEN_HOLDER_ADDRESSES);
+            List<String> tokenHolderAddresses = new CommonUtils().jsonArrayToList(jsonArrayTokenHolderAddresses);
+
+            JSONArray jsonArrayAmounts = dataObject.optJSONArray(OstConstants.QR_AMOUNTS);
+            List<String> amounts = new CommonUtils().jsonArrayToList(jsonArrayAmounts);
+
+            String tokenId = dataObject.optString(OstConstants.QR_TOKEN_ID);
+
+            OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(mUserId, tokenId,
+                    tokenHolderAddresses, amounts, ruleName, mCallback);
+            ostExecuteTransaction.perform();
+
+        } else if (OstConstants.DATA_DEFINITION_AUTHORIZE_DEVICE.equalsIgnoreCase(dataDefinition)) {
+            if (!validateDeviceOperationData(dataObject)) {
+                return postErrorInterrupt("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_QR_DEVICE_OPERATION_DATA);
+            }
+            String deviceAddress = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
+            OstAddDeviceWithQR ostAddDeviceWithQR = new OstAddDeviceWithQR(mUserId, deviceAddress, mCallback);
+            ostAddDeviceWithQR.perform();
+            return new AsyncStatus(true);
+        }
+
+        return new AsyncStatus(false);
+
+    }
+
+    private boolean validateTransactionData(JSONObject dataObject) {
+        boolean hasRuleName = dataObject.has(OstConstants.QR_RULE_NAME);
+        boolean hasTokenHolderAddresses = dataObject.has(OstConstants.QR_TOKEN_HOLDER_ADDRESSES);
+        boolean hasAmounts = dataObject.has(OstConstants.QR_AMOUNTS);
+        boolean hasTokenId = dataObject.has(OstConstants.QR_TOKEN_ID);
+        return hasRuleName && hasTokenHolderAddresses && hasAmounts && hasTokenId;
+    }
+
+    private boolean validateDeviceOperationData(JSONObject dataObject) {
+        boolean hasDeviceAddress = dataObject.has(OstConstants.QR_DEVICE_ADDRESS);
+        return hasDeviceAddress;
     }
 
     private AsyncStatus authorizeDevice() {
@@ -140,7 +120,8 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
 
     private String getDeviceAddress() {
         try {
-            return mPayload.getString(OstConstants.DEVICE_ADDRESS);
+            JSONObject data = mPayload.getJSONObject(OstConstants.QR_DATA);
+            return data.getString(OstConstants.QR_DEVICE_ADDRESS);
         } catch (JSONException e) {
             Log.e(TAG, "Unexpected JSONException");
         }
@@ -152,57 +133,30 @@ public class OstPerform extends OstBaseWorkFlow implements OstPinAcceptInterface
         return OstUser.getById(mUserId).getDeviceManagerAddress();
     }
 
-    private String getCallData() {
-        try {
-            return new GnosisSafe().getAddOwnerWithThresholdExecutableData(mPayload
-                    .getString(OstConstants.DEVICE_ADDRESS));
-        } catch (JSONException e) {
-            Log.e(TAG, "Unexpected JSONException");
-        }
-        return null;
-    }
-
     private boolean validatePayload() {
-        boolean hasDataDefinition = mPayload.has(OstConstants.DATA_DEFINATION);
-        boolean hasUserId = mPayload.has(OstConstants.USER_ID);
-        boolean hasDeviceAddress = mPayload.has(OstConstants.DEVICE_ADDRESS);
-        return hasDataDefinition && hasUserId && hasDeviceAddress;
+        boolean hasDataDefinition = mPayload.has(OstConstants.QR_DATA_DEFINITION);
+        boolean hasDataDefinitionVersion = mPayload.has(OstConstants.QR_DATA_DEFINITION_VERSION);
+        boolean data = mPayload.has(OstConstants.QR_DATA);
+        return hasDataDefinition && hasDataDefinitionVersion && data;
     }
 
     private @NonNull
     String getDataDefinition() {
         try {
-            return mPayload.getString(OstPayloadBuilder.DATA_DEFINATION);
+            return mPayload.getString(OstConstants.QR_DATA_DEFINITION);
         } catch (JSONException e) {
             Log.e(TAG, "Unexpected JSONException");
         }
         return "";
     }
 
-    @Override
-    public void pinEntered(String uPin, String appUserPassword) {
-        setFlowState(OstPerform.STATES.PIN_ENTERED, String.format("%s %s", uPin, appUserPassword));
-        perform();
-    }
-
-    @Override
-    public void cancelFlow(OstError ostError) {
-        setFlowState(OstPerform.STATES.CANCELLED, ostError);
-        perform();
-    }
-
-    @Override
-    void onBioMetricAuthenticationSuccess() {
-        super.onBioMetricAuthenticationSuccess();
-        setFlowState(STATES.AUTHENTICATED, null);
-        perform();
-    }
-
-    @Override
-    void onBioMetricAuthenticationFail() {
-        super.onBioMetricAuthenticationFail();
-        setFlowState(STATES.CANCELLED, null);
-        perform();
+    private JSONObject getDataObject() {
+        try {
+            return mPayload.getJSONObject(OstConstants.QR_DATA);
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected JSONException");
+        }
+        return null;
     }
 
     @Override

@@ -17,7 +17,7 @@ import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
-import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
+import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstDevicePollingService;
@@ -50,13 +50,13 @@ import java.util.List;
  * 2. Sign with wallet key
  * 3. approve
  */
-public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInterface, OstStartPollingInterface {
+@Deprecated
+public class OstAddDevice extends OstBaseWorkFlow implements OstPinAcceptInterface, OstStartPollingInterface {
 
     private static final String TAG = "OstAddDevice";
 
     private enum STATES {
         INITIAL,
-        QR_CODE,
         PIN,
         WORDS,
         POLLING,
@@ -111,15 +111,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 }
 
                 Log.i(TAG, "Determine Add device flow");
-                determineAddDeviceFlow();
-                break;
-            case QR_CODE:
-                Log.d(TAG, String.format("QR Code add device flow for userId: %s started", mUserId));
-                //Create payload
-                String payload = createPayload();
-                Bitmap bitmap = createQRBitMap(payload);
-                Log.i(TAG, "showing QR code");
-                showPayload(bitmap);
+//                determineAddDeviceFlow();
                 break;
             case PIN:
                 break;
@@ -154,7 +146,6 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                     e.printStackTrace();
                 }
                 if (null != OstDevice.getById(signerAddress)) {
-                    postWordsValidated();
                     AsyncStatus apiCallStatus = makeAddDeviceCall(signature, signerAddress, wordsDeviceManagerAddress, wordsDeviceAddress);
                     if (apiCallStatus.isSuccess()) {
                         //Request Acknowledge
@@ -166,7 +157,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                         return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
                     }
                 } else {
-                    postInvalidWords();
+                    return postErrorInterrupt("wf_ad_pr_5", OstErrors.ErrorCode.INVALID_MNEMONICS);
                 }
                 break;
             case POLLING:
@@ -197,27 +188,6 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
         return new AsyncStatus(true);
     }
 
-    private AsyncStatus postInvalidWords() {
-        Log.i(TAG, "post Invalid words");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.invalidWalletWords(OstAddDevice.this);
-            }
-        });
-        return new AsyncStatus(true);
-    }
-
-    private AsyncStatus postWordsValidated() {
-        Log.i(TAG, "post Words validated");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.walletWordsValidated();
-            }
-        });
-        return new AsyncStatus(true);
-    }
 
     private boolean hasAuthorizingDevice() {
         OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
@@ -240,9 +210,13 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(OstConstants.DATA_DEFINATION, OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE);
-            jsonObject.put(OstConstants.USER_ID, mUserId);
-            jsonObject.put(OstConstants.DEVICE_ADDRESS, ownerAddress);
+            jsonObject.put(OstConstants.QR_DATA_DEFINITION, OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE);
+            jsonObject.put(OstConstants.QR_DATA_DEFINITION_VERSION, "1.0");
+
+            JSONObject dataObject = new JSONObject();
+            dataObject.put(OstConstants.QR_DEVICE_ADDRESS, ownerAddress);
+
+            jsonObject.put(OstConstants.QR_DATA, dataObject);
         } catch (JSONException e) {
             Log.e(TAG, "Unexpected exception in createPayload");
         }
@@ -259,15 +233,6 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
         });
     }
 
-    private void determineAddDeviceFlow() {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.determineAddDeviceWorkFlow(OstAddDevice.this);
-            }
-        });
-    }
-
 
     private boolean hasRegisteredDevice() {
         OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
@@ -276,22 +241,9 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstAddDeviceFlowInt
                 ostDevice.getStatus().equalsIgnoreCase(OstDevice.CONST_STATUS.AUTHORIZING);
     }
 
-
-    @Override
-    public void QRCodeFlow() {
-        setFlowState(STATES.QR_CODE, null);
-        perform();
-    }
-
     @Override
     public void pinEntered(String uPin, String appUserPassword) {
         setFlowState(STATES.PIN, null);
-        perform();
-    }
-
-    @Override
-    public void walletWordsEntered(List<String> wordList) {
-        setFlowState(STATES.WORDS, wordList);
         perform();
     }
 

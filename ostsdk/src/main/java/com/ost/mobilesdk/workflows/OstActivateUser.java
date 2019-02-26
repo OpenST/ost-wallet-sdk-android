@@ -59,9 +59,8 @@ public class OstActivateUser extends OstBaseWorkFlow {
         //Check if user is already activating.
         if (hasActivatedUser()) {
             //Exit flow if user already activated.
-            Log.i(TAG, "User is already activated");
-            postFlowComplete();
-            return new AsyncStatus(true);
+            Log.e(TAG, "User is already activated");
+            return postErrorInterrupt("wf_au_pr_2", ErrorCode.USER_ALREADY_ACTIVATED);
         }
         //Check if user is already activating.
         else if (hasActivatingUser()) {

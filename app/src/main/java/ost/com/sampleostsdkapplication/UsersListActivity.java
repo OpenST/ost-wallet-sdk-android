@@ -25,17 +25,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.interfaces.OstAddDeviceFlowInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstWalletWordsAcceptInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,10 +55,10 @@ public class UsersListActivity extends MappyBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.user_recycler_view);
+        mRecyclerView = findViewById(R.id.user_recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -126,17 +127,23 @@ public class UsersListActivity extends MappyBaseActivity {
             });
         } else if (id == R.id.add_device) {
             Log.d(TAG, "Add device clicked");
-            OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()));
-//            OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()){
-//                @Override
-//                public void showQR(Bitmap qrImage, OstStartPollingInterface startPollingInterface) {
-//                    Log.i(TAG, "showing QR code");
-//                    ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-//                    qrImage.compress(Bitmap.CompressFormat.PNG, 100, bStream);
-//                    byte[] byteArray = bStream.toByteArray();
-//                    showQRFragment(qrImage);
-//                }
-//            });
+            Bitmap qrImage = OstSdk.getAddDeviceQRCode(userId);
+            if (null == qrImage) {
+                Toast.makeText(getApplicationContext(), "QR building issue... Please check Logs", Toast.LENGTH_SHORT);
+                return false;
+            }
+            Log.i(TAG, "showing QR code");
+            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+            qrImage.compress(Bitmap.CompressFormat.PNG, 100, bStream);
+            byte[] byteArray = bStream.toByteArray();
+
+            Intent anotherIntent = new Intent(getApplicationContext(), QR_view.class);
+            anotherIntent.putExtra("image", byteArray);
+            getApplicationContext().startActivity(anotherIntent);
+            //Need to be on click of button "start polling"
+            OstSdk.startPolling(userId, userId, OstSdk.USER, OstUser.CONST_STATUS.ACTIVATING,
+                    OstUser.CONST_STATUS.ACTIVATED, new WorkFlowHelper(getApplicationContext()));
+            //startPollingInterface.startPolling();
         } else if (id == R.id.scan_qr) {
             Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
             startActivityForResult(intent, QR_REQUEST_CODE);
@@ -185,29 +192,16 @@ public class UsersListActivity extends MappyBaseActivity {
             });
         } else if (id == R.id.device_words) {
             Log.d(TAG, "Add device clicked");
-            OstSdk.addDevice(userId, new WorkFlowHelper(getApplicationContext()) {
-                @Override
-                public void determineAddDeviceWorkFlow(OstAddDeviceFlowInterface addDeviceFlowInterface) {
-                    addDeviceFlowInterface.walletWordsEntered(Arrays.asList("satisfy", "fish", "surround", "foster", "funny", "sword", "wisdom", "forward", "father", "pull", "lens", "joy"));
-                }
-
-                @Override
-                public void walletWordsValidated() {
-                    Log.i(TAG, "Wallet words validated");
-                }
-
-                @Override
-                public void invalidWalletWords(OstWalletWordsAcceptInterface ostWalletWordsAcceptInterface) {
-                    ostWalletWordsAcceptInterface.walletWordsEntered(Arrays.asList("satisfy", "fish", "surround", "foster", "funny", "sword", "wisdom", "forward", "father", "pull", "lens", "joy"));
-                }
-            });
+            List<String> mMnemonicsList = Arrays.asList("satisfy", "fish", "surround", "foster", "funny", "sword", "wisdom", "forward", "father", "pull", "lens", "joy");
+            String mMnemonics = "satisfy fish surround foster funny sword wisdom forward father pull lens joy";
+            OstSdk.addDeviceUsingMnemonics(userId, mMnemonics, new WorkFlowHelper(getApplicationContext()));
         } else if (id == R.id.transactions) {
             Log.d(TAG, "Execute Transaction Clicked");
             String tokenHolderAddress = "0x30fa423c14625bb0bac6852d7b68f9d326ac1242";
             String amount = "5";
             String transactionType = "Direct Transfer";
             String tokenId = logInUser.getTokenId();
-            OstSdk.executeTransaction(userId, tokenId ,Arrays.asList(tokenHolderAddress), Arrays.asList(amount), transactionType, new WorkFlowHelper(getApplicationContext()) {
+            OstSdk.executeTransaction(userId, tokenId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), transactionType, new WorkFlowHelper(getApplicationContext()) {
             });
         }
         return super.onOptionsItemSelected(item);
@@ -228,11 +222,11 @@ public class UsersListActivity extends MappyBaseActivity {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UsersListActivity.this);
         alertDialogBuilder.setView(promptsView);
 
-        final TextView label = (TextView) promptsView
+        final TextView label = promptsView
                 .findViewById(R.id.textView);
 
         label.setText(message);
-        final EditText userInput = (EditText) promptsView
+        final EditText userInput = promptsView
                 .findViewById(R.id.editTextDialogUserInput);
 
         boolean errorFlag = false;
@@ -291,7 +285,7 @@ public class UsersListActivity extends MappyBaseActivity {
             String userId = ((App) getApplicationContext()).getLoggedUser().getOstUserId();
             String returnedResult = data.getData().toString();
             try {
-                OstSdk.scanQRCode(userId, returnedResult, new WorkFlowHelper(getApplicationContext()));
+                OstSdk.ostPerform(userId, returnedResult, new WorkFlowHelper(getApplicationContext()));
             } catch (JSONException e) {
                 Log.e(TAG, "JSONException while parsing");
             }
