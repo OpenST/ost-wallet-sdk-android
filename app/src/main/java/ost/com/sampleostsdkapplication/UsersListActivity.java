@@ -203,6 +203,13 @@ public class UsersListActivity extends MappyBaseActivity {
             String tokenId = logInUser.getTokenId();
             OstSdk.executeTransaction(userId, tokenId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), transactionType, new WorkFlowHelper(getApplicationContext()) {
             });
+        } else if (id == R.id.reset_pin) {
+            Log.d(TAG, "Reset pin");
+            String currentPin = "123456";
+            String newPin = "123458";
+            String appSalt = logInUser.getPassword();
+            OstSdk.resetPin(userId, appSalt, currentPin, newPin, new WorkFlowHelper(getApplicationContext()) {
+            });
         }
         return super.onOptionsItemSelected(item);
     }

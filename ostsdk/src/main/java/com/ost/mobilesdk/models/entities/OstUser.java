@@ -25,6 +25,8 @@ public class OstUser extends OstBaseEntity {
     public static final String TOKEN_ID = "token_id";
     public static final String TOKEN_HOLDER_ADDRESS = "token_holder_address";
     public static final String DEVICE_MANAGER_ADDRESS = "device_manager_address";
+    public static final String RECOVERY_ADDRESS = "recovery_address";
+    public static final String RECOVERY_OWNER_ADDRESS = "recovery_owner_address";
     public static final String TYPE = "type";
 
     public static String getIdentifier() {
@@ -145,6 +147,14 @@ public class OstUser extends OstBaseEntity {
         return this.getJsonDataPropertyAsString(OstUser.DEVICE_MANAGER_ADDRESS);
     }
 
+    public String getRecoveryOwnerAddress() {
+        return this.getJsonDataPropertyAsString(OstUser.RECOVERY_OWNER_ADDRESS);
+    }
+
+    public String getRecoveryAddress() {
+        return this.getJsonDataPropertyAsString(OstUser.RECOVERY_ADDRESS);
+    }
+
     public String getType() {
         return this.getJsonDataPropertyAsString(OstUser.TYPE);
     }
@@ -181,13 +191,6 @@ public class OstUser extends OstBaseEntity {
         return OstModelFactory.getTokenHolderModel().getEntityById(tokenHolderAddress);
     }
 
-    public void delTokenHolder(String id) {
-        OstModelFactory.getTokenHolderModel().deleteEntity(id);
-    }
-
-    public OstDeviceManager getMultiSig() {
-        return OstModelFactory.getDeviceManagerModel().getEntityById(getDeviceManagerAddress());
-    }
 
     @Override
     String getEntityIdKey() {

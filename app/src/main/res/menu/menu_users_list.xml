@@ -42,4 +42,9 @@
         android:orderInCategory="100"
         android:title="@string/qr_execute_txn"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/reset_pin"
+        android:orderInCategory="100"
+        android:title="@string/reset_pin"
+        app:showAsAction="never" />
 </menu>

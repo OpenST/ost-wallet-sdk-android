@@ -21,6 +21,7 @@ import com.ost.mobilesdk.workflows.OstExecuteTransaction;
 import com.ost.mobilesdk.workflows.OstGetPaperWallet;
 import com.ost.mobilesdk.workflows.OstPerform;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
+import com.ost.mobilesdk.workflows.OstResetPin;
 import com.ost.mobilesdk.workflows.OstStartPolling;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
@@ -42,6 +43,7 @@ public class OstSdk {
     public static final String DEVICE_MANAGER = "device_manager";
     public static final String DEVICE = "device";
     public static final String SESSIONS = "sessions";
+    public static final String RECOVERY_OWNER = "recovery_owner";
     private static final String TAG = "OstSdk";
     private static volatile OstSdk INSTANCE;
 
@@ -195,5 +197,10 @@ public class OstSdk {
         final OstStartPolling ostStartPolling = new OstStartPolling(userId, entityId,
                 entityType, fromStatus, toStatus, workFlowCallback);
         ostStartPolling.perform();
+    }
+
+    public static void resetPin(String userId, String appSalt, String currentPin, String newPin, OstWorkFlowCallback workFlowCallback) {
+        final OstResetPin ostResetPin = new OstResetPin(userId, appSalt, currentPin, newPin, workFlowCallback);
+        ostResetPin.perform();
     }
 }

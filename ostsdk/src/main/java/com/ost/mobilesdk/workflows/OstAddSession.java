@@ -109,9 +109,9 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                 break;
             case PIN_ENTERED:
                 Log.i(TAG, "Pin Entered");
-//                String[] strings = ((String) mStateObject).split(" ");
-                String uPin = "";//strings[0];
-                String appSalt = "";//strings[0];
+                String[] strings = ((String) mStateObject).split(" ");
+                String uPin = strings[0];
+                String appSalt = strings[0];
                 if (validatePin(uPin, appSalt)) {
                     Log.d(TAG, "Pin Validated");
                     postPinValidated();
@@ -160,8 +160,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                 .valueOf(mExpiresAfterInSecs))).toString();
 
         try {
-            JSONObject response = ostApiClient.getDeviceManager();
-//            OstSdk.updateWithApiResponse(response);
+            ostApiClient.getDeviceManager();
         } catch (IOException e) {
             Log.e(TAG, "IO Exception ");
         }
@@ -245,8 +244,8 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
     }
 
     @Override
-    public void pinEntered(String uPin, String appUserPassword) {
-        setFlowState(STATES.PIN_ENTERED, null);
+    public void pinEntered(String uPin, String appSalt) {
+        setFlowState(STATES.PIN_ENTERED, String.format("%s %s", uPin, appSalt));
         perform();
     }
 

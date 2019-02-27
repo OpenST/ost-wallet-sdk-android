@@ -297,6 +297,11 @@ public class OstKeyManager {
         return isValid;
     }
 
+    public String signUsingSeed(byte[] seed, String eip712Hash) {
+        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genHDKey(seed);
+        return sign(eip712Hash, ecKeyPair);
+    }
+
     static class KeyMetaStruct implements Serializable {
         private static final long serialVersionUID = 129348938L;
         private final String apiAddress;

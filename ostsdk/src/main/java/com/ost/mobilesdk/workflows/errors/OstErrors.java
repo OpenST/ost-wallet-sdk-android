@@ -4,47 +4,68 @@ import android.util.Log;
 
 public class OstErrors {
     private static String TAG = "OstErrors";
+
     public static String getMessage(ErrorCode code) {
         switch (code) {
-            case USER_API_FAILED: return "Failed to fetch user information";
+            case USER_API_FAILED:
+                return "Failed to fetch user information";
 
-            case SALT_API_FAILED: return "Failed to fetch user salt";
+            case SALT_API_FAILED:
+                return "Failed to fetch user salt";
 
-            case TOKEN_API_FAILED: return "Failed to fetch token information";
+            case TOKEN_API_FAILED:
+                return "Failed to fetch token information";
 
-            case CHAIN_API_FAILED: return "Failed to fetch block-chain information";
+            case CHAIN_API_FAILED:
+                return "Failed to fetch block-chain information";
 
-            case INVALID_WORKFLOW_PARAMS: return "Invalid workflow params";
+            case INVALID_WORKFLOW_PARAMS:
+                return "Invalid workflow params";
 
-            case CREATE_DEVICE_FAILED: return "Failed to create device.";
+            case CREATE_DEVICE_FAILED:
+                return "Failed to create device.";
 
-            case ACTIVATE_USER_API_FAILED: return "Something went wrong while activating user";
+            case ACTIVATE_USER_API_FAILED:
+                return "Something went wrong while activating user";
 
-            case ACTIVATE_USER_API_POLLING_FAILED: return "Something went wrong while activating user";
+            case ACTIVATE_USER_API_POLLING_FAILED:
+                return "Something went wrong while activating user";
 
-            case DEVICE_UNREGISTERED: return "Device not registered";
+            case DEVICE_UNREGISTERED:
+                return "Device not registered";
 
-            case WORKFLOW_CANCELED: return "Workflow canceled by application";
+            case WORKFLOW_CANCELED:
+                return "Workflow canceled by application";
 
-            case USER_NOT_ACTIVATED: return "User not activated";
+            case USER_NOT_ACTIVATED:
+                return "User not activated";
 
-            case POLLING_TIMEOUT: return "Polling timeout";
+            case POLLING_TIMEOUT:
+                return "Polling timeout";
 
-            case MAX_PIN_LIMIT_REACHED: return "Max pin ask limit reached";
+            case MAX_PIN_LIMIT_REACHED:
+                return "Max pin ask limit reached";
 
-            case ADD_DEVICE_API_FAILED: return "Add device api failed";
+            case ADD_DEVICE_API_FAILED:
+                return "Add device api failed";
 
-            case BLOCK_NUMBER_API_FAILED: return "Block number api failed";
+            case BLOCK_NUMBER_API_FAILED:
+                return "Block number api failed";
 
-            case EIP712_FAILED: return "EIP712 failed";
+            case EIP712_FAILED:
+                return "EIP712 failed";
 
-            case NO_SESSION_FOUND: return "No Session found";
+            case NO_SESSION_FOUND:
+                return "No Session found";
 
-            case TRANSACTION_API_FAILED: return "Transaction api failed";
+            case TRANSACTION_API_FAILED:
+                return "Transaction api failed";
 
-            case RULE_NOT_FOUND: return "Rule not found";
+            case RULE_NOT_FOUND:
+                return "Rule not found";
 
-            case DIFFERENT_ECONOMY: return "Token Id is different";
+            case DIFFERENT_ECONOMY:
+                return "Token Id is different";
 
             case USER_NOT_FOUND:
                 return "User not found";
@@ -79,11 +100,17 @@ public class OstErrors {
             case INVALID_QR_TRANSACTION_DATA:
                 return "Invalid qr transaction data";
 
+            case INVALID_PIN:
+                return "Pin is Invalid";
+
+            case POST_RECOVERY_API_FAILED:
+                return "Post recovery api failed";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
             default: {
-                Log.e(TAG, "Error message not defined for error code " + code.name() );
+                Log.e(TAG, "Error message not defined for error code " + code.name());
                 return "Unknown error";
             }
         }
@@ -121,6 +148,8 @@ public class OstErrors {
         DEVICE_ALREADY_AUTHORIZED,
         USER_ALREADY_ACTIVATED,
         INVALID_MNEMONICS,
-        INVALID_QR_TRANSACTION_DATA
+        INVALID_QR_TRANSACTION_DATA,
+        INVALID_PIN,
+        POST_RECOVERY_API_FAILED
     }
 }

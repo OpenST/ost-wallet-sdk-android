@@ -159,6 +159,17 @@ public class OstApiClient {
         return mOstHttpRequestClient.get("/rules", requestMap);
     }
 
+    public JSONObject postRecoveryOwners(Map<String, Object> map) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        requestMap.putAll(map);
+        return mOstHttpRequestClient.post(String.format("/users/%s/recovery-owners", mUserId), requestMap);
+    }
+
+    public JSONObject getRecoveryOwnerAddress(String recoveryAddress) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get(String.format("/users/%s/recovery-owners/%s", mUserId, recoveryAddress), requestMap);
+    }
+
     public JSONObject getTokenHolder() {
         return null;
     }

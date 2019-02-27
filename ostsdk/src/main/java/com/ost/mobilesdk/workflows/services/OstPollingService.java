@@ -36,7 +36,7 @@ public abstract class OstPollingService extends IntentService {
     public static final String EXTRA_IS_POLLING_TIMEOUT = "com.ost.mobilesdk.workflows.extra.IS_POLLING_TIMEOUT";
     public static final String EXTRA_IS_VALID_RESPONSE = "com.ost.mobilesdk.workflows.extra.IS_VALID_RESPONSE";
 
-    private static final int POLL_MAX_COUNT = 20;
+    private static final int POLL_MAX_COUNT = 10;
 
     private static final String TAG = "OstPollingService";
     private static final long POLLING_INTERVAL = OstConstants.BLOCK_GENERATION_TIME * 1000;

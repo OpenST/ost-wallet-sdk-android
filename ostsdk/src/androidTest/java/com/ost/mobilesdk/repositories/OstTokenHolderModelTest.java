@@ -65,8 +65,7 @@ public class OstTokenHolderModelTest {
         OstTokenHolder ostTokenHolder = insertTokenHolderData();
 
 //        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.getUser("1").delTokenHolder(ostTokenHolder.getId());
-
+        OstModelFactory.getTokenHolderModel().deleteEntity(ostTokenHolder.getId());
 //        countDownLatch.await(5, TimeUnit.SECONDS);
 
         ostTokenHolder = OstSdk.getUser("1").getTokenHolder();
@@ -84,14 +83,14 @@ public class OstTokenHolderModelTest {
         assertEquals("address", ostTokenHolder.getAddress());
     }
 
-    private void populateCache(int cacheSizeToPopulate) throws JSONException, InterruptedException {
+    private void populateCache(int cacheSizeToPopulate) throws JSONException {
 
         for (int i = 0; i < cacheSizeToPopulate; i++) {
             insertTokenHolderData(i + 10);
         }
     }
 
-    private OstTokenHolder insertTokenHolderData() throws JSONException, InterruptedException {
+    private OstTokenHolder insertTokenHolderData() throws JSONException {
         return insertTokenHolderData(1);
     }
 
@@ -100,7 +99,7 @@ public class OstTokenHolderModelTest {
 
         userObj.put(OstUser.ID, String.valueOf(param));
         userObj.put(OstUser.TOKEN_ID, "1");
-        userObj.put(OstUser.TYPE,OstUser.TYPE_VALUE.USER);
+        userObj.put(OstUser.TYPE, OstUser.TYPE_VALUE.USER);
         userObj.put(OstUser.TOKEN_HOLDER_ADDRESS, "1");
         userObj.put(OstUser.DEVICE_MANAGER_ADDRESS, "1");
 
