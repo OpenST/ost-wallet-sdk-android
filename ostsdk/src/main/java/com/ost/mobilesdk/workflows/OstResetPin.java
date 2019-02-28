@@ -3,6 +3,7 @@ package com.ost.mobilesdk.workflows;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstRecoveryOwner;
 import com.ost.mobilesdk.security.OstKeyManager;
@@ -15,6 +16,7 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstRecoveryPollingService;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -89,7 +91,7 @@ public class OstResetPin extends OstBaseWorkFlow {
                     return postErrorInterrupt("wf_rp_pr_3", OstErrors.ErrorCode.SALT_API_FAILED);
                 }
 
-                //Todo:: Set recovery hash after successfull revoking;
+                //Todo:: Set recovery hash after successfully revoking;
                 mNewRecoveryOwnerAddress = createRecoveryKey(mNewPin, mAppSalt, salt);
 
                 JSONObject jsonObject = new DelayedRecoveryModule().resetRecoveryOwnerData(recoveryOwnerAddress,
@@ -120,6 +122,17 @@ public class OstResetPin extends OstBaseWorkFlow {
                 if (!isValidResponse(postRecoveryAddresssResponse)) {
                     return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RECOVERY_API_FAILED);
                 }
+
+                JSONObject jsonData = jsonObject.optJSONObject(OstConstants.RESPONSE_DATA);
+                JSONObject resultTypeObject = jsonData.optJSONObject(jsonData.optString(OstConstants.RESULT_TYPE));
+                OstRecoveryOwner ostRecoveryOwner = null;
+                try {
+                    ostRecoveryOwner = OstRecoveryOwner.parse(resultTypeObject);
+                } catch (JSONException e) {
+                    return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RECOVERY_API_FAILED);
+                }
+
+                postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));
             case POLLING:
                 OstRecoveryPollingService.startPolling(mUserId, mNewRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZING,
                         OstRecoveryOwner.CONST_STATUS.AUTHORIZED);

@@ -140,8 +140,7 @@ public class UsersListActivity extends MappyBaseActivity {
             Intent anotherIntent = new Intent(getApplicationContext(), QR_view.class);
             anotherIntent.putExtra("image", byteArray);
             getApplicationContext().startActivity(anotherIntent);
-
-            //Todo:: Need to be on click of button "start polling"
+            //Need to be on click of button "start polling"
             OstSdk.startPolling(userId, userId, OstSdk.USER, OstUser.CONST_STATUS.ACTIVATING,
                     OstUser.CONST_STATUS.ACTIVATED, new WorkFlowHelper(getApplicationContext()));
             //startPollingInterface.startPolling();
@@ -207,9 +206,25 @@ public class UsersListActivity extends MappyBaseActivity {
         } else if (id == R.id.reset_pin) {
             Log.d(TAG, "Reset pin");
             String currentPin = "123456";
-            String newPin = "123458";
             String appSalt = logInUser.getPassword();
-            OstSdk.resetPin(userId, appSalt, currentPin, newPin, new WorkFlowHelper(getApplicationContext()) {
+            getPinDialog(new DialogCallback() {
+                @Override
+                public void onSubmit(String pin) {
+                    OstSdk.resetPin(userId, appSalt, currentPin, pin, new WorkFlowHelper(getApplicationContext()) {
+                    });
+                }
+
+                @Override
+                public void onCancel() {
+                    // Dialog cancelled;
+                }
+            });
+        } else if (id == R.id.device_recovery) {
+            Log.d(TAG, "Device Recovery");
+            String currentPin = "123456";
+            String appSalt = logInUser.getPassword();
+            String address = "0x30fa423c14625bb0bac6852d7b68f9d326ac1242";
+            OstSdk.initiateRecoverDevice(userId, appSalt, currentPin, address, new WorkFlowHelper(getApplicationContext()) {
             });
         }
         return super.onOptionsItemSelected(item);

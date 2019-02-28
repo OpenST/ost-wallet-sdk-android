@@ -288,6 +288,16 @@ public class OstKeyManager {
 
         //get Hash from db
         OstSecureKey ostSecureKey = new OstSecureKeyModelRepository().getByKey(PIN_HASH_FOR + mUserId);
+        if (null == ostSecureKey) {
+//            byte[] seed = OstSdkCrypto.getInstance().genSCryptKey(pinString.getBytes(), salt.getBytes());
+//            OstUser ostUser = OstUser.getById(mUserId);
+//            if (null == ostUser.getRecoveryOwnerAddress()) {
+//                Log.e(TAG, "No Recovery owner address present");
+            return false;
+//            }
+//            String address = createHDKeyAddress(seed);
+//            return ostUser.getRecoveryOwnerAddress().equalsIgnoreCase(address);
+        }
         byte[] encryptedData = ostSecureKey.getData();
         byte[] decryptedData = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(encryptedData);
         String expectedPinHash = new String(decryptedData);

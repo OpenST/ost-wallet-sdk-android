@@ -1,8 +1,6 @@
 package com.ost.mobilesdk.models.entities;
 
 
-import android.arch.persistence.room.Ignore;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,7 +24,6 @@ public class OstRecoveryOwner extends OstBaseEntity {
     }
 
 
-    @Ignore
     public OstRecoveryOwner(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }

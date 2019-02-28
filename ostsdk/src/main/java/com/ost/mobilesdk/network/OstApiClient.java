@@ -170,7 +170,21 @@ public class OstApiClient {
         return mOstHttpRequestClient.get(String.format("/users/%s/recovery-owners/%s", mUserId, recoveryAddress), requestMap);
     }
 
-    public JSONObject getTokenHolder() {
-        return null;
+    public JSONObject postRevokeDevice(Map<String, Object> map) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        requestMap.putAll(map);
+        return mOstHttpRequestClient.post(String.format("/users/%s/devices/revoke", mUserId), requestMap);
+    }
+
+    public JSONObject postInitiateRecovery(Map<String, Object> map) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        requestMap.putAll(map);
+        return mOstHttpRequestClient.post(String.format("/users/%s/devices/initiate-recovery", mUserId), requestMap);
+    }
+
+    public JSONObject postAbortRecovery(Map<String, Object> map) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        requestMap.putAll(map);
+        return mOstHttpRequestClient.post(String.format("/users/%s/devices/abort-recovery", mUserId), requestMap);
     }
 }

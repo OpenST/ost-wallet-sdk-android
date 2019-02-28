@@ -17,6 +17,7 @@ import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddDevice;
 import com.ost.mobilesdk.workflows.OstAddDeviceWithMnemonics;
 import com.ost.mobilesdk.workflows.OstAddSession;
+import com.ost.mobilesdk.workflows.OstDeviceRecovery;
 import com.ost.mobilesdk.workflows.OstExecuteTransaction;
 import com.ost.mobilesdk.workflows.OstGetPaperWallet;
 import com.ost.mobilesdk.workflows.OstPerform;
@@ -202,5 +203,17 @@ public class OstSdk {
     public static void resetPin(String userId, String appSalt, String currentPin, String newPin, OstWorkFlowCallback workFlowCallback) {
         final OstResetPin ostResetPin = new OstResetPin(userId, appSalt, currentPin, newPin, workFlowCallback);
         ostResetPin.perform();
+    }
+
+    public static void initiateRecoverDevice(String userId, String appSalt, String pin, String addressToReplace, OstWorkFlowCallback workFlowCallback) {
+        final OstDeviceRecovery ostDeviceRecovery = new OstDeviceRecovery(userId, appSalt, pin, addressToReplace,
+                OstDeviceRecovery.TYPE.INITIATE_DEVICE_RECOVERY, workFlowCallback);
+        ostDeviceRecovery.perform();
+    }
+
+    public static void revokeRecoverDevice(String userId, String appSalt, String pin, String addressToReplace, OstWorkFlowCallback workFlowCallback) {
+        final OstDeviceRecovery ostDeviceRecovery = new OstDeviceRecovery(userId, appSalt, pin, addressToReplace,
+                OstDeviceRecovery.TYPE.REVOKE_DEVICE_RECOVERY, workFlowCallback);
+        ostDeviceRecovery.perform();
     }
 }

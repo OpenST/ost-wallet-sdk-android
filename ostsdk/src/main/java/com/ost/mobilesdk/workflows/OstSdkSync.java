@@ -89,8 +89,6 @@ class OstSdkSync {
                         }
                     } else if (SYNC_ENTITY.DEVICE_MANAGER == entity) {
                         ostApiClient.getDeviceManager();
-                    } else if (SYNC_ENTITY.TOKEN_HOLDER == entity) {
-                        ostApiClient.getTokenHolder();
                     }
                     Log.i(TAG, String.format("Sync response for %s", entity.toString()));
                 } catch (IOException e) {
