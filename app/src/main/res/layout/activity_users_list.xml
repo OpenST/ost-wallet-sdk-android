@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/users_list_container"
     tools:context=".UsersListActivity">
 
     <android.support.design.widget.AppBarLayout

@@ -25,6 +25,7 @@
     <string name="scan_qr">Scan QR</string>
     <string name="add_session">Add Session</string>
     <string name="activate_user">Activate User</string>
+    <string name="show_user_details">Show Details</string>
     <string name="show_paper_wallet">Show paper wallet</string>
     <string name="add_device_words">Add Device Words</string>
     <string name="execute_txn">Execute Transaction</string>
@@ -42,6 +43,17 @@
     <string name="shr_search_title">Search</string>
     <string name="shr_product_title">Title</string>
     <string name="shr_product_description">Secondary text</string>
+
+    <string name="view_details">View Details</string>
+    <string name="ost_user_id">Ost-User-Id</string>
+    <string name="ost_user_status">User Status</string>
+    <string name="ost_token_id">Token Id</string>
+    <string name="ost_user_token_holder">Token Holder Address</string>
+    <string name="ost_user_device_manager">Device Manager Address</string>
+    <string name="ost_user_recovery_key">Recovery Key Address</string>
+    <string name="ost_user_device_address">Device Address</string>
+    <string name="device_name">Device Name</string>
+    <string name="device_status">Device Status</string>
 
     <!-- OstDemoApp backdrop menu labels -->
     <string name="shr_featured_label">Featured</string>

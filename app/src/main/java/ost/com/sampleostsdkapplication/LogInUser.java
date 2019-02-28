@@ -2,6 +2,10 @@ package ost.com.sampleostsdkapplication;
 
 import android.util.Log;
 
+import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstUser;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,6 +34,16 @@ class LogInUser {
     public String getOstUserId() {
         return ostUserId;
     }
+
+    public OstUser getOstUser() {
+        return OstSdk.getUser(ostUserId);
+    }
+
+    public OstDevice getOstDevice() {
+        OstUser user = getOstUser();
+        return user.getCurrentDevice();
+    }
+
 
     public String getTokenId() {
         return tokenId;

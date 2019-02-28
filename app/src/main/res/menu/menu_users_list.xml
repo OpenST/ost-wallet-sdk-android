@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="ost.com.sampleostsdkapplication.UsersListActivity">
     <item
+        android:id="@+id/user_detail"
+        android:orderInCategory="100"
+        android:title="@string/show_user_details"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/activate_user"
         android:orderInCategory="100"
         android:title="@string/activate_user"
