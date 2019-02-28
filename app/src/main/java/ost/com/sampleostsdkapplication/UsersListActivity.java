@@ -140,7 +140,8 @@ public class UsersListActivity extends MappyBaseActivity {
             Intent anotherIntent = new Intent(getApplicationContext(), QR_view.class);
             anotherIntent.putExtra("image", byteArray);
             getApplicationContext().startActivity(anotherIntent);
-            //Need to be on click of button "start polling"
+
+            //Todo:: Need to be on click of button "start polling"
             OstSdk.startPolling(userId, userId, OstSdk.USER, OstUser.CONST_STATUS.ACTIVATING,
                     OstUser.CONST_STATUS.ACTIVATED, new WorkFlowHelper(getApplicationContext()));
             //startPollingInterface.startPolling();
