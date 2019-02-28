@@ -34,9 +34,7 @@ public class OstDeviceManager extends OstBaseEntity {
     }
 
     public static String getIdentifier() {
-        String address = OstDeviceManager.ADDRESS;
-        address = Keys.toChecksumAddress(address);
-        return address;
+        return OstDeviceManager.ADDRESS;
     }
 
     @Override
@@ -92,6 +90,13 @@ public class OstDeviceManager extends OstBaseEntity {
         return this.getParentId();
     }
 
+    @Override
+    public String getId() {
+        String id = super.getId();
+        id = Keys.toChecksumAddress(id);
+        return id;
+    }
+
     public String getAddress() {
         return this.getId();
     }
@@ -115,6 +120,17 @@ public class OstDeviceManager extends OstBaseEntity {
         return jsonObject.optInt(OstDeviceManager.NONCE, -1);
     }
 
+    public int incrementNonce() {
+        int currentNonce = getNonce();
+        int newNonce = currentNonce + 1;
+        try {
+            setJsonDataProperty(NONCE, newNonce);
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected exception", e);
+            return currentNonce;
+        }
+        return newNonce;
+    }
 
     @Override
     public String getParentIdKey() {

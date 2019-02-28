@@ -267,7 +267,6 @@ abstract class OstBaseWorkFlow {
     }
 
     boolean hasValidAddress(String address) {
-        address = address.toLowerCase();
         OstDevice ostDevice = OstDevice.getById(address);
         if (null != ostDevice) return true;
         try {

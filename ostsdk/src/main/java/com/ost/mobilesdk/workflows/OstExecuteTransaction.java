@@ -172,14 +172,14 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
         }
     }
 
-    private Map<String, Object> buildTransactionRequest(String contractAddress, String nonce ,String signature, String signer, String ruleName) {
+    private Map<String, Object> buildTransactionRequest(String contractAddress, int nonce, String signature, String signer, String ruleName) {
 
         String callData = createCallData(ruleName);
         String rawCallData = createRawCallData(ruleName);
         return new ExecuteRuleRequestBuilder()
                 .setToAddress(contractAddress)
                 .setCallData(callData)
-                .setNonce(nonce)
+                .setNonce(String.valueOf(nonce))
                 .setRawCallData(rawCallData)
                 .setSignature(signature)
                 .setSigner(signer)
@@ -212,7 +212,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
      * @param keyNonce
      * @return
      */
-    private String createEIP1077TxnHash(String callData, String contractAddress, String keyNonce) {
+    private String createEIP1077TxnHash(String callData, String contractAddress, int keyNonce) {
         JSONObject jsonObject = null;
         String txnHash = null;
         try {
@@ -222,7 +222,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
                     .setFrom(tokenHolderAddress)
                     .setCallPrefix(new TokenHolder().get_EXECUTABLE_CALL_PREFIX())
                     .setData(callData)
-                    .setNonce(keyNonce)
+                    .setNonce(String.valueOf(keyNonce))
                     .build();
             txnHash = new EIP1077(jsonObject).toEIP1077TransactionHash();
         } catch (Exception e) {

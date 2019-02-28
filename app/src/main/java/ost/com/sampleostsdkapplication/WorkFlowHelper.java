@@ -102,6 +102,6 @@ class WorkFlowHelper implements OstWorkFlowCallback {
 
     @Override
     public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
-
+        ostVerifyDataInterface.dataVerified();
     }
 }

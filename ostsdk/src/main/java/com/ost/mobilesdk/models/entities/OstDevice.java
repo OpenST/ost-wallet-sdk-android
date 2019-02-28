@@ -57,7 +57,7 @@ public class OstDevice extends OstBaseEntity {
         public static final String REVOKED = "revoked";
     }
 
-    public static OstDevice init(String address, String apiAddress, String mUserId) {
+    public static OstDevice init(String address, String apiAddress, String userId) {
         OstDevice ostDevice = OstDevice.getById(address);
         if (null != ostDevice) {
             Log.e(TAG, String.format("OstDevice with address %s already exist", address));
@@ -72,7 +72,7 @@ public class OstDevice extends OstBaseEntity {
         try {
             jsonObject.put(OstDevice.ADDRESS, address);
             jsonObject.put(OstDevice.API_SIGNER_ADDRESS, apiAddress);
-            jsonObject.put(OstDevice.USER_ID, mUserId);
+            jsonObject.put(OstDevice.USER_ID, userId);
             jsonObject.put(OstDevice.DEVICE_NAME, deviceName);
             jsonObject.put(OstDevice.DEVICE_UUID, uuid);
             jsonObject.put(OstDevice.DEVICE_MANAGER_ADDRESS, "");

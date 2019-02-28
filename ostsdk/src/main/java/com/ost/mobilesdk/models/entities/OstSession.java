@@ -30,6 +30,7 @@ import java.util.List;
  */
 @Entity(tableName = "session")
 public class OstSession extends OstBaseEntity {
+    private static final String TAG = "OstSession";
 
     public static final String STATUS = "status";
     public static final String ADDRESS = "address";
@@ -182,8 +183,25 @@ public class OstSession extends OstBaseEntity {
         return this.getJsonDataPropertyAsString(OstSession.SPENDING_LIMIT);
     }
 
-    public String getNonce() {
-        return this.getJsonDataPropertyAsString(OstSession.NONCE);
+    public int getNonce() {
+        JSONObject jsonObject = this.getJSONData();
+        if (null == jsonObject) {
+            Log.e(TAG, "getRequirement: jsonObject is null");
+            return -1;
+        }
+        return jsonObject.optInt(OstDeviceManager.NONCE, -1);
+    }
+
+    public int incrementNonce() {
+        int currentNonce = getNonce();
+        int newNonce = currentNonce + 1;
+        try {
+            setJsonDataProperty(NONCE, newNonce);
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected exception", e);
+            return currentNonce;
+        }
+        return newNonce;
     }
 
     @Override
