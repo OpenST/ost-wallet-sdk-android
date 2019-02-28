@@ -164,8 +164,8 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstPinAcceptInterfa
                 Log.i(TAG, "Starting Device polling service");
                 OstUser ostUser = OstUser.getById(mUserId);
                 String deviceAddress = ostUser.getCurrentDevice().getAddress();
-                OstDevicePollingService.startPolling(mUserId, deviceAddress, OstDevice.CONST_STATUS.AUTHORIZING,
-                        OstDevice.CONST_STATUS.AUTHORIZED);
+                OstDevicePollingService.startPolling(mUserId, deviceAddress, OstDevice.CONST_STATUS.AUTHORIZED,
+                        OstDevice.CONST_STATUS.CREATED);
 
                 Log.i(TAG, "Waiting for update");
                 Bundle bundle = waitForUpdate(OstSdk.DEVICE, deviceAddress);

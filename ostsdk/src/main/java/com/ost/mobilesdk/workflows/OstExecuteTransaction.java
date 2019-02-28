@@ -121,13 +121,13 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
 
                 Log.i(TAG, "start polling");
                 OstTransactionPollingService.startPolling(mUserId, entityId,
-                        OstTransaction.CONST_STATUS.SUBMITTED, OstTransaction.CONST_STATUS.SUCCESS);
+                        OstTransaction.CONST_STATUS.SUCCESS, OstTransaction.CONST_STATUS.FAIL);
 
                 Bundle bundle = waitForUpdate(OstSdk.TRANSACTION, entityId);
                 if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
                     return postErrorInterrupt("wf_et_pr_7", OstErrors.ErrorCode.POLLING_TIMEOUT);
                 }
-                if (!bundle.getBoolean(OstPollingService.EXTRA_IS_VALID_RESPONSE, true) && !(Boolean) mStateObject) {
+                if (!bundle.getBoolean(OstPollingService.EXTRA_IS_VALID_RESPONSE, false) && !(Boolean) mStateObject) {
                     Log.i(TAG, "Not a valid response retrying again");
                     try {
                         mOstApiClient.getSession(signer);

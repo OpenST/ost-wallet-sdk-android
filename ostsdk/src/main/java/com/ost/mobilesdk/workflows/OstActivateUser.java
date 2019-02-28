@@ -117,8 +117,8 @@ public class OstActivateUser extends OstBaseWorkFlow {
         }
 
         Log.i(TAG, "Starting user polling service");
-        OstUserPollingService.startPolling(mUserId, mUserId, OstUser.CONST_STATUS.ACTIVATING,
-                OstUser.CONST_STATUS.ACTIVATED);
+        OstUserPollingService.startPolling(mUserId, mUserId, OstUser.CONST_STATUS.ACTIVATED,
+                OstUser.CONST_STATUS.CREATED);
 
         Log.i(TAG, "Waiting for update");
         Bundle bundle = waitForUpdate(OstSdk.USER, mUserId);

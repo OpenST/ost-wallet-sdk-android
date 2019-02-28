@@ -103,8 +103,8 @@ public class OstAddDeviceWithQR extends OstBaseWorkFlow implements OstVerifyData
                     return postErrorInterrupt("wf_adwq_pr_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
                 }
             case POLLING:
-                OstDevicePollingService.startPolling(mUserId, mDeviceAddress, OstDevice.CONST_STATUS.AUTHORIZING,
-                        OstDevice.CONST_STATUS.AUTHORIZED);
+                OstDevicePollingService.startPolling(mUserId, mDeviceAddress, OstDevice.CONST_STATUS.AUTHORIZED,
+                        OstDevice.CONST_STATUS.CREATED);
 
                 Log.i(TAG, "Waiting for update");
                 Bundle bundle = waitForUpdate(OstSdk.DEVICE, mDeviceAddress);

@@ -24,6 +24,7 @@ import org.json.JSONObject;
 /**
  * A login screen that offers login via email/password.
  */
+@Deprecated
 public class LoginSignUpActivity extends MappyBaseActivity {
 
     private static final String TAG = "LoginSignUpActivity";
@@ -65,7 +66,7 @@ public class LoginSignUpActivity extends MappyBaseActivity {
 
         mDescription.setVisibility(mIsRegister ? View.VISIBLE : View.GONE);
 
-        Button mSignInButton = (Button) findViewById(R.id.sign_in_button);
+        Button mSignInButton = findViewById(R.id.sign_in_button);
         mSignInButton.setText(mIsRegister ? R.string.action_register : R.string.sign_in);
         mSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -75,7 +76,7 @@ public class LoginSignUpActivity extends MappyBaseActivity {
             }
         });
 
-        Button mRegisterForm = (Button) findViewById(R.id.toggle_button);
+        Button mRegisterForm = findViewById(R.id.toggle_button);
         mRegisterForm.setText(mIsRegister ? R.string.login_form : R.string.register_form);
         mRegisterForm.setOnClickListener(new OnClickListener() {
             @Override

@@ -214,8 +214,8 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
 
         Log.i(TAG, "Starting Session polling service");
 
-        OstSessionPollingService.startPolling(mUserId, sessionAddress, OstSession.CONST_STATUS.INITIALIZING,
-                OstSession.CONST_STATUS.AUTHORISED);
+        OstSessionPollingService.startPolling(mUserId, sessionAddress, OstSession.CONST_STATUS.AUTHORISED,
+                OstSession.CONST_STATUS.CREATED);
 
         Log.i(TAG, "Waiting for update");
         Bundle bundle = waitForUpdate(OstSdk.SESSION, sessionAddress);

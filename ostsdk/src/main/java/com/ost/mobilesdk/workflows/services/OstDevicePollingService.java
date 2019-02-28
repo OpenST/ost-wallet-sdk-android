@@ -28,10 +28,10 @@ public class OstDevicePollingService extends OstPollingService {
      *
      * @see IntentService
      */
-    public static void startPolling(String userId, String entityId, String fromStatus, String toStatus) {
+    public static void startPolling(String userId, String entityId, String successStatus, String failedStatus) {
         Context context = OstSdk.getContext();
         Intent intent = new Intent(context, OstDevicePollingService.class);
-        OstPollingService.startPolling(context, intent, userId, entityId, fromStatus, toStatus);
+        OstPollingService.startPolling(context, intent, userId, entityId, successStatus, failedStatus);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class OstDevicePollingService extends OstPollingService {
     }
 
     @Override
-    protected boolean validateParams(String entityId, String fromStatus, String toStatus) {
-        return null != OstDevice.getById(entityId) && OstDevice.isValidStatus(fromStatus) && OstDevice.isValidStatus(toStatus);
+    protected boolean validateParams(String entityId, String successStatus, String failedStatus) {
+        return null != OstDevice.getById(entityId) && OstDevice.isValidStatus(successStatus) && OstDevice.isValidStatus(failedStatus);
     }
 }

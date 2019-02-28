@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 import static com.ost.mobilesdk.models.entities.OstTransaction.CONST_STATUS.CREATED;
 import static com.ost.mobilesdk.models.entities.OstTransaction.CONST_STATUS.FAIL;
+import static com.ost.mobilesdk.models.entities.OstTransaction.CONST_STATUS.MINED;
 import static com.ost.mobilesdk.models.entities.OstTransaction.CONST_STATUS.SUBMITTED;
 import static com.ost.mobilesdk.models.entities.OstTransaction.CONST_STATUS.SUCCESS;
 
@@ -34,7 +35,7 @@ public class OstTransaction extends OstBaseEntity {
     }
 
     public static boolean isValidStatus(String status) {
-        return Arrays.asList(CREATED, SUBMITTED, SUCCESS, FAIL).contains(status);
+        return Arrays.asList(CREATED, SUBMITTED, SUCCESS, FAIL, MINED).contains(status);
     }
 
     public static OstTransaction getById(String entityId) {
@@ -44,6 +45,7 @@ public class OstTransaction extends OstBaseEntity {
     public static class CONST_STATUS {
         public static final String CREATED = "created";
         public static final String SUBMITTED = "submitted";
+        public static final String MINED = "mined";
         public static final String SUCCESS = "success";
         public static final String FAIL = "fail";
     }

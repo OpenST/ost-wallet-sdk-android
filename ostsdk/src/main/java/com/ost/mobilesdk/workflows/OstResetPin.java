@@ -134,8 +134,8 @@ public class OstResetPin extends OstBaseWorkFlow {
 
                 postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));
             case POLLING:
-                OstRecoveryPollingService.startPolling(mUserId, mNewRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZING,
-                        OstRecoveryOwner.CONST_STATUS.AUTHORIZED);
+                OstRecoveryPollingService.startPolling(mUserId, mNewRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZED,
+                        OstRecoveryOwner.CONST_STATUS.AUTHORIZATION_FAILED);
 
                 Log.i(TAG, "Waiting for update");
                 Bundle bundle = waitForUpdate(OstSdk.RECOVERY_OWNER, mNewRecoveryOwnerAddress);

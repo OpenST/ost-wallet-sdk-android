@@ -105,8 +105,8 @@ public class OstAddDeviceWithMnemonics extends OstBaseWorkFlow implements OstPin
                     return postErrorInterrupt("wf_adwm_pr_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
                 }
             case POLLING:
-                OstDevicePollingService.startPolling(mUserId, mSigningAddress, OstDevice.CONST_STATUS.AUTHORIZING,
-                        OstDevice.CONST_STATUS.AUTHORIZED);
+                OstDevicePollingService.startPolling(mUserId, mSigningAddress, OstDevice.CONST_STATUS.AUTHORIZED,
+                        OstDevice.CONST_STATUS.CREATED);
 
                 Log.i(TAG, "Waiting for update");
                 Bundle bundle = waitForUpdate(OstSdk.DEVICE, mSigningAddress);

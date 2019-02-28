@@ -28,8 +28,8 @@ public abstract class OstPollingService extends IntentService {
 
     public static final String EXTRA_USER_ID = "com.ost.mobilesdk.workflows.extra.USER_ID";
     public static final String EXTRA_ENTITY_ID = "com.ost.mobilesdk.workflows.extra.ENTITY_ID";
-    public static final String EXTRA_ENTITY_TO_STATUS = "com.ost.mobilesdk.workflows.extra.ENTITY_TO_STATUS";
-    public static final String EXTRA_ENTITY_FROM_STATUS = "com.ost.mobilesdk.workflows.extra.ENTITY_FROM_STATUS";
+    public static final String EXTRA_ENTITY_FAILURE_STATUS = "com.ost.mobilesdk.workflows.extra.ENTITY_FAILURE_STATUS";
+    public static final String EXTRA_ENTITY_SUCCESS_STATUS = "com.ost.mobilesdk.workflows.extra.ENTITY_SUCCESS_STATUS";
     public static final String EXTRA_POLL_COUNT = "com.ost.mobilesdk.workflows.extra.POLL_COUNT";
     public static final String ENTITY_UPDATE_MESSAGE = "com.ost.mobilesdk.workflows.extra.ENTITY_UPDATE";
     public static final String EXTRA_ENTITY_TYPE = "com.ost.mobilesdk.workflows.extra.ENTITY_TYPE";
@@ -47,11 +47,11 @@ public abstract class OstPollingService extends IntentService {
     }
 
     static void startPolling(Context context, Intent intent, String userId, String entityId,
-                             String fromStatus, String toStatus) {
+                             String successStatus, String failureStatus) {
         intent.putExtra(EXTRA_USER_ID, userId);
         intent.putExtra(EXTRA_ENTITY_ID, entityId);
-        intent.putExtra(EXTRA_ENTITY_FROM_STATUS, fromStatus);
-        intent.putExtra(EXTRA_ENTITY_TO_STATUS, toStatus);
+        intent.putExtra(EXTRA_ENTITY_SUCCESS_STATUS, successStatus);
+        intent.putExtra(EXTRA_ENTITY_FAILURE_STATUS, failureStatus);
 
         Calendar calendar = Calendar.getInstance();
         PendingIntent pendingIntent = PendingIntent.getService(context.getApplicationContext(), 0, intent, 0);
@@ -64,8 +64,8 @@ public abstract class OstPollingService extends IntentService {
         if (intent != null) {
             final String userId = intent.getStringExtra(EXTRA_USER_ID);
             final String entityId = intent.getStringExtra(EXTRA_ENTITY_ID);
-            final String entityFromStatus = intent.getStringExtra(EXTRA_ENTITY_FROM_STATUS);
-            final String entityToStatus = intent.getStringExtra(EXTRA_ENTITY_TO_STATUS);
+            final String entitySuccessStatus = intent.getStringExtra(EXTRA_ENTITY_SUCCESS_STATUS);
+            final String entityFailureStatus = intent.getStringExtra(EXTRA_ENTITY_FAILURE_STATUS);
             final int pollCount = intent.getIntExtra(EXTRA_POLL_COUNT, POLL_MAX_COUNT);
 
             if (!isValidUserId(userId)) {
@@ -73,10 +73,10 @@ public abstract class OstPollingService extends IntentService {
                 return;
             }
 
-            if (!validateParams(entityId, entityFromStatus, entityToStatus)) {
+            if (!validateParams(entityId, entitySuccessStatus, entityFailureStatus)) {
                 Log.e(TAG, String.format("Invalid Entity Params for Entity: %s, EntityId: %s, " +
                                 "From Status: %s, To Status: %s", getEntityName(), entityId,
-                        entityFromStatus, entityToStatus));
+                        entitySuccessStatus, entityFailureStatus));
                 return;
             }
 
@@ -98,10 +98,10 @@ public abstract class OstPollingService extends IntentService {
             }
 
             Log.i(TAG, String.format("Checking %s entity update status", getEntityName()));
-            boolean isUpdated = isStatusUpdated(response, entityFromStatus, entityToStatus);
-            Log.d(TAG, String.format("Is %s entity updated: %b", getEntityName(), isUpdated));
-            if (isUpdated) {
-                sendUpdateMessage(userId, entityId, false);
+            String status = updatedGivenStatus(response, entitySuccessStatus, entityFailureStatus);
+            if (null != status) {
+                Log.d(TAG, String.format("Is %s entity updated status %s", getEntityName(), status));
+                sendUpdateMessage(userId, entityId, false, status.equalsIgnoreCase(entitySuccessStatus));
                 return;
             }
 
@@ -111,7 +111,7 @@ public abstract class OstPollingService extends IntentService {
                 sendUpdateMessage(userId, entityId, true);
             } else {
                 Log.d(TAG, String.format("New Alarm set for %s", getEntityName()));
-                setAlarm(userId, entityId, entityFromStatus, entityToStatus, newPollCount);
+                setAlarm(userId, entityId, entitySuccessStatus, entityFailureStatus, newPollCount);
             }
         }
     }
@@ -120,7 +120,7 @@ public abstract class OstPollingService extends IntentService {
         sendUpdateMessage(userId, entityId, pollingTimeout, true);
     }
 
-    private void sendUpdateMessage(String userId, String entityId, boolean pollingTimeout,boolean validResponse) {
+    private void sendUpdateMessage(String userId, String entityId, boolean pollingTimeout, boolean validResponse) {
         Intent updateIntent = new Intent(ENTITY_UPDATE_MESSAGE);
         // You can also include some extra data.
         updateIntent.putExtra(EXTRA_USER_ID, userId);
@@ -136,27 +136,28 @@ public abstract class OstPollingService extends IntentService {
         return null != OstSdk.getUser(userId);
     }
 
-    private boolean isStatusUpdated(JSONObject response, String entityFromStatus, String entityToStatus) {
+    private String updatedGivenStatus(JSONObject response, String entitySuccessStatus, String entityFailureStatus) {
         JSONObject jsonData = response.optJSONObject(OstConstants.RESPONSE_DATA);
         JSONObject entityObject = jsonData.optJSONObject(getEntityName());
         String currentStatus;
         try {
             OstBaseEntity ostBaseEntity = parseEntity(entityObject);
-            currentStatus = ostBaseEntity.getStatus().toLowerCase();
+            currentStatus = ostBaseEntity.getStatus();
         } catch (JSONException e) {
-            return false;
+            Log.d(TAG, "JSONException", e);
+            return null;
         }
         Log.d(TAG, String.format("Entity from status: %s, Entity to status %s, entity status %s",
-                entityFromStatus, entityToStatus, currentStatus));
+                entitySuccessStatus, entityFailureStatus, currentStatus));
 
-        if (entityFromStatus.equals(currentStatus)) {
-            return false;
+        if (entitySuccessStatus.equalsIgnoreCase(currentStatus)) {
+            return entitySuccessStatus;
         }
-        if (entityToStatus.equals(currentStatus)) {
-            return true;
+        if (entityFailureStatus.equalsIgnoreCase(currentStatus)) {
+            return entityFailureStatus;
         }
-        Log.w(TAG, String.format("Unexpected %s entity status change", getEntityName()));
-        return true;
+        Log.d(TAG, String.format("N update of entity %s entity ", getEntityName()));
+        return null;
     }
 
     protected abstract OstBaseEntity parseEntity(JSONObject entityObject) throws JSONException;
@@ -180,8 +181,8 @@ public abstract class OstPollingService extends IntentService {
         Intent intent = getServiceIntent(this);
         intent.putExtra(EXTRA_USER_ID, userId);
         intent.putExtra(EXTRA_ENTITY_ID, entityId);
-        intent.putExtra(EXTRA_ENTITY_FROM_STATUS, fromStatus);
-        intent.putExtra(EXTRA_ENTITY_TO_STATUS, toStatus);
+        intent.putExtra(EXTRA_ENTITY_SUCCESS_STATUS, fromStatus);
+        intent.putExtra(EXTRA_ENTITY_FAILURE_STATUS, toStatus);
         intent.putExtra(EXTRA_POLL_COUNT, pollCount);
 
         Calendar calendar = Calendar.getInstance();
