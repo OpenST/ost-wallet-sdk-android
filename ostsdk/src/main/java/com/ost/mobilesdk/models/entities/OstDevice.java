@@ -13,6 +13,7 @@ import com.ost.mobilesdk.models.OstDeviceModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Keys;
 
 import java.util.Arrays;
 
@@ -26,12 +27,17 @@ public class OstDevice extends OstBaseEntity {
     public static final String USER_ID = "user_id";
     public static final String ADDRESS = "address";
     public static final String DEVICE_MANAGER_ADDRESS = "device_manager_address";
+    public static final String LINKED_ADDRESS = "linked_address";
     public static final String DEVICE_NAME = "device_name";
     public static final String DEVICE_UUID = "device_uuid";
     public static final String API_SIGNER_ADDRESS = "api_signer_address";
 
     public static OstDevice getById(String id) {
         OstDeviceModel ostDeviceModel = OstModelFactory.getDeviceModel();
+        if (TextUtils.isEmpty(id)) {
+            return null;
+        }
+        id = Keys.toChecksumAddress(id);
         return ostDeviceModel.getEntityById(id);
     }
 
@@ -137,6 +143,13 @@ public class OstDevice extends OstBaseEntity {
                 jsonObject.has(OstDevice.API_SIGNER_ADDRESS);
     }
 
+    @Override
+    public String getId() {
+        String id = super.getId();
+        id = Keys.toChecksumAddress(id);
+        return id;
+    }
+
     public String getAddress() {
         return this.getId();
     }
@@ -146,11 +159,24 @@ public class OstDevice extends OstBaseEntity {
     }
 
     public String getApiSignerAddress() {
-        return this.getJsonDataPropertyAsString(OstDevice.API_SIGNER_ADDRESS);
+        String apiSignerAddress = this.getJsonDataPropertyAsString(OstDevice.API_SIGNER_ADDRESS);
+        if (null != apiSignerAddress) {
+            apiSignerAddress = Keys.toChecksumAddress(apiSignerAddress);
+        }
+        return apiSignerAddress;
+
     }
 
     public String getDeviceUuid() {
         return this.getJsonDataPropertyAsString(OstDevice.DEVICE_UUID);
+    }
+
+    public String getLinkedAddress() {
+        String linkedAddress = this.getJsonDataPropertyAsString(OstDevice.LINKED_ADDRESS);
+        if (null != linkedAddress) {
+            linkedAddress = Keys.toChecksumAddress(linkedAddress);
+        }
+        return linkedAddress;
     }
 
     public String getUserId() {
@@ -158,7 +184,11 @@ public class OstDevice extends OstBaseEntity {
     }
 
     public String getDeviceManagerAddress() {
-        return this.getJsonDataPropertyAsString(OstDevice.DEVICE_MANAGER_ADDRESS);
+        String deviceManagerAddress = this.getJsonDataPropertyAsString(OstDevice.DEVICE_MANAGER_ADDRESS);
+        if (null != deviceManagerAddress) {
+            deviceManagerAddress = Keys.toChecksumAddress(deviceManagerAddress);
+        }
+        return deviceManagerAddress;
     }
 
     @Override

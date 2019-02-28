@@ -3,6 +3,7 @@ package com.ost.mobilesdk.models.entities;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Keys;
 
 import java.util.Arrays;
 
@@ -73,6 +74,13 @@ public class OstRecoveryOwner extends OstBaseEntity {
 
     public String getUserId() {
         return this.getParentId();
+    }
+
+    @Override
+    public String getId() {
+        String id = super.getId();
+        id = Keys.toChecksumAddress(id);
+        return id;
     }
 
     public String getAddress() {

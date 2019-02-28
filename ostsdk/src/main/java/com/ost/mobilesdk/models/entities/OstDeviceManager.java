@@ -3,12 +3,14 @@ package com.ost.mobilesdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Keys;
 
 
 @Entity(tableName = "device_manager")
@@ -19,8 +21,12 @@ public class OstDeviceManager extends OstBaseEntity {
     public static final String REQUIREMENT = "requirement";
     public static final String NONCE = "nonce";
 
-    public static OstDeviceManager getById(String deviceManagerAddress) {
-        return OstModelFactory.getDeviceManagerModel().getEntityById(deviceManagerAddress);
+    public static OstDeviceManager getById(String id) {
+        if (TextUtils.isEmpty(id)) {
+            return null;
+        }
+        id = Keys.toChecksumAddress(id);
+        return OstModelFactory.getDeviceManagerModel().getEntityById(id);
     }
 
     public static class CONST_STATUS {
@@ -28,7 +34,9 @@ public class OstDeviceManager extends OstBaseEntity {
     }
 
     public static String getIdentifier() {
-        return OstDeviceManager.ADDRESS;
+        String address = OstDeviceManager.ADDRESS;
+        address = Keys.toChecksumAddress(address);
+        return address;
     }
 
     @Override

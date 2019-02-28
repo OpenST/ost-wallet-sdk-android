@@ -9,6 +9,7 @@ import com.ost.mobilesdk.security.OstKeyManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Keys;
 import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
@@ -139,20 +140,37 @@ public class OstUser extends OstBaseEntity {
     }
 
     public String getTokenHolderAddress() {
-        return this.getJsonDataPropertyAsString(OstUser.TOKEN_HOLDER_ADDRESS);
+        String tokenHolderAddress = this.getJsonDataPropertyAsString(OstUser.TOKEN_HOLDER_ADDRESS);
+        if (null != tokenHolderAddress) {
+            tokenHolderAddress = Keys.toChecksumAddress(tokenHolderAddress);
+        }
+        return tokenHolderAddress;
     }
 
 
     public String getDeviceManagerAddress() {
-        return this.getJsonDataPropertyAsString(OstUser.DEVICE_MANAGER_ADDRESS);
+        String deviceManagerAddress = this.getJsonDataPropertyAsString(OstUser.DEVICE_MANAGER_ADDRESS);
+        if (null != deviceManagerAddress) {
+            deviceManagerAddress = Keys.toChecksumAddress(deviceManagerAddress);
+        }
+        return deviceManagerAddress;
     }
 
     public String getRecoveryOwnerAddress() {
-        return this.getJsonDataPropertyAsString(OstUser.RECOVERY_OWNER_ADDRESS);
+        String recoveryOwnerAddress = this.getJsonDataPropertyAsString(OstUser.RECOVERY_OWNER_ADDRESS);
+        if (null != recoveryOwnerAddress) {
+            recoveryOwnerAddress = Keys.toChecksumAddress(recoveryOwnerAddress);
+        }
+        return recoveryOwnerAddress;
+
     }
 
     public String getRecoveryAddress() {
-        return this.getJsonDataPropertyAsString(OstUser.RECOVERY_ADDRESS);
+        String recoveryAddress = this.getJsonDataPropertyAsString(OstUser.RECOVERY_ADDRESS);
+        if (null != recoveryAddress) {
+            recoveryAddress = Keys.toChecksumAddress(recoveryAddress);
+        }
+        return recoveryAddress;
     }
 
     public String getType() {

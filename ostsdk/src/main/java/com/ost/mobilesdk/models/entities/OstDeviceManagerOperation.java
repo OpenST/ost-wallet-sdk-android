@@ -8,6 +8,7 @@ import com.ost.mobilesdk.models.Impls.OstModelFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Keys;
 
 
 @Entity(tableName = "device_operation")
@@ -91,7 +92,6 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
                 jsonObject.has(OstDeviceManagerOperation.RAW_CALL_DATA) &&
                 jsonObject.has(OstDeviceManagerOperation.OPERATION);
 
-
     }
 
     @Override
@@ -113,7 +113,11 @@ public class OstDeviceManagerOperation extends OstBaseEntity {
     }
 
     public String getDeviceManagerAddress() {
-        return this.getJsonDataPropertyAsString(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS);
+        String deviceManagerAddress = this.getJsonDataPropertyAsString(OstDeviceManagerOperation.DEVICE_MANAGER_ADDRESS);
+        if (null != deviceManagerAddress) {
+            deviceManagerAddress = Keys.toChecksumAddress(deviceManagerAddress);
+        }
+        return deviceManagerAddress;
     }
 
     public String getSafeTxnGas() {

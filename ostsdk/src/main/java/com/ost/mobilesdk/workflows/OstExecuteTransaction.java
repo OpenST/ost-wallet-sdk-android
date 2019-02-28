@@ -8,6 +8,7 @@ import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.utils.EIP1077;
 import com.ost.mobilesdk.utils.TokenHolder;
 import com.ost.mobilesdk.utils.TokenRules;
@@ -187,7 +188,8 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
 
     private String createRawCallData(String ruleName) {
         if (ruleName.equalsIgnoreCase(DIRECT_TRANSFER)) {
-            return new TokenRules().getTransactionRawCallData(mTokenHolderAddresses, mAmounts);
+            List<String> tokenHolderAddresses = new CommonUtils().toCheckSumAddresses(mTokenHolderAddresses);
+            return new TokenRules().getTransactionRawCallData(tokenHolderAddresses, mAmounts);
         }
         return null;
     }
@@ -232,7 +234,8 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
 
     private String createCallData(String ruleName) {
         if (ruleName.equalsIgnoreCase(DIRECT_TRANSFER)) {
-            return new TokenRules().getTransactionExecutableData(mTokenHolderAddresses, mAmounts);
+            List<String> tokenHolderAddresses = new CommonUtils().toCheckSumAddresses(mTokenHolderAddresses);
+            return new TokenRules().getTransactionExecutableData(tokenHolderAddresses, mAmounts);
         }
         return null;
     }

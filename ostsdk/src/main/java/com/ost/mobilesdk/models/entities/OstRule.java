@@ -7,6 +7,7 @@ import com.ost.mobilesdk.models.Impls.OstModelFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Keys;
 
 @Entity(tableName = "rule")
 public class OstRule extends OstBaseEntity {
@@ -18,7 +19,7 @@ public class OstRule extends OstBaseEntity {
     public static final String CALL_PREFIX = "call_prefix";
 
     public static String getIdentifier() {
-        return OstRule.ID;
+        return OstRule.NAME;
     }
 
     private static EntityFactory entityFactory;
@@ -58,7 +59,11 @@ public class OstRule extends OstBaseEntity {
     }
 
     public String getAddress() {
-        return this.getJsonDataPropertyAsString(OstRule.ADDRESS);
+        String address = this.getJsonDataPropertyAsString(OstRule.ADDRESS);
+        if (null != address) {
+            address = Keys.toChecksumAddress(address);
+        }
+        return address;
     }
 
     public String getAbi() {

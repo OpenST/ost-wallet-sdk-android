@@ -3,6 +3,8 @@ package com.ost.mobilesdk.workflows;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
+import org.web3j.crypto.Keys;
+
 public class OstDeviceRecovery extends OstBaseWorkFlow {
 
     private final String mAppSalt;
@@ -16,7 +18,7 @@ public class OstDeviceRecovery extends OstBaseWorkFlow {
         super(userId, callback);
         mAppSalt = appSalt;
         mPin = pin;
-        mAddressToReplace = addressToReplace;
+        mAddressToReplace = Keys.toChecksumAddress(addressToReplace);
         mRecoveryType = recoveryType;
     }
 

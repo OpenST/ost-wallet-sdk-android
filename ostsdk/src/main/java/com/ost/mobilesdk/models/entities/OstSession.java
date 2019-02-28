@@ -3,6 +3,7 @@ package com.ost.mobilesdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
@@ -15,6 +16,7 @@ import com.ost.mobilesdk.utils.EIP1077;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
@@ -41,8 +43,12 @@ public class OstSession extends OstBaseEntity {
         return OstSession.ADDRESS;
     }
 
-    public static OstSession getById(String entityId) {
-        return OstModelFactory.getSessionModel().getEntityById(entityId);
+    public static OstSession getById(String id) {
+        if (TextUtils.isEmpty(id)) {
+            return null;
+        }
+        id = Keys.toChecksumAddress(id);
+        return OstModelFactory.getSessionModel().getEntityById(id);
     }
 
     public static boolean isValidStatus(String status) {
@@ -142,6 +148,13 @@ public class OstSession extends OstBaseEntity {
         return signTransaction(transaction.toJSONObject(), userId);
     }
 
+    @Override
+    public String getId() {
+        String id = super.getId();
+        id = Keys.toChecksumAddress(id);
+        return id;
+    }
+
     public String getAddress() {
         return this.getId();
     }
@@ -153,7 +166,11 @@ public class OstSession extends OstBaseEntity {
 
 
     public String getTokenHolderAddress() {
-        return this.getJsonDataPropertyAsString(OstSession.TOKEN_HOLDER_ADDRESS);
+        String tokenHolderAddress = this.getJsonDataPropertyAsString(OstSession.TOKEN_HOLDER_ADDRESS);
+        if (null != tokenHolderAddress) {
+            tokenHolderAddress = Keys.toChecksumAddress(tokenHolderAddress);
+        }
+        return tokenHolderAddress;
     }
 
 

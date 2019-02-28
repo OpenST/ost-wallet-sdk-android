@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.web3j.crypto.Keys;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,5 +33,13 @@ public class CommonUtils {
             Log.e(TAG, "jsonArray to list exception", e);
         }
         return list;
+    }
+
+    public List<String> toCheckSumAddresses(List<String> addressList) {
+        for (int i = 0; i < addressList.size(); i++) {
+            String address = Keys.toChecksumAddress(addressList.get(i));
+            addressList.set(i, address);
+        }
+        return addressList;
     }
 }

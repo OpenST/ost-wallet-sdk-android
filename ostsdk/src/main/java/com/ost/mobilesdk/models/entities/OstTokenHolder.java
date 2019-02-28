@@ -3,12 +3,14 @@ package com.ost.mobilesdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.text.TextUtils;
 
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Keys;
 
 
 @Entity(tableName = "token_holder")
@@ -26,7 +28,13 @@ public class OstTokenHolder extends OstBaseEntity {
         public static final String ACTIVATED = "activated";
     }
 
-
+    public OstTokenHolder getById(String id) {
+        if (TextUtils.isEmpty(id)) {
+            return null;
+        }
+        id = Keys.toChecksumAddress(id);
+        return OstModelFactory.getTokenHolderModel().getEntityById(id);
+    }
     private static EntityFactory entityFactory;
     private static EntityFactory getEntityFactory() {
         if ( null == entityFactory ) {
@@ -75,6 +83,13 @@ public class OstTokenHolder extends OstBaseEntity {
 
     public String getUserId() {
         return this.getParentId();
+    }
+
+    @Override
+    public String getId() {
+        String id = super.getId();
+        id = Keys.toChecksumAddress(id);
+        return id;
     }
 
     public String getAddress() {
