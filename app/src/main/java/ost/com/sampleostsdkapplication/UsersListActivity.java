@@ -50,6 +50,7 @@ public class UsersListActivity extends MappyBaseActivity {
     private LinearLayoutManager mLayoutManager;
     private UserAdapter mAdapter;
     private List<UserData> mDataList = new ArrayList<>();
+    private UserDetailsFragment userDetailsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +110,10 @@ public class UsersListActivity extends MappyBaseActivity {
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         String userId = logInUser.getOstUserId();
 
-        if (id == R.id.activate_user) {
+        if (id == R.id.user_detail){
+            Log.d(TAG, "Show user details clicked");
+            loadUserDetailsFragment(logInUser.getTokenId(), userId);
+        } else if (id == R.id.activate_user) {
             Log.d(TAG, "Activate User Clicked");
             String password = logInUser.getPassword();
             long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
@@ -228,6 +232,14 @@ public class UsersListActivity extends MappyBaseActivity {
             });
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadUserDetailsFragment(String tokenId, String userId) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        userDetailsFragment = UserDetailsFragment.newInstance(tokenId, userId);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.users_list_container, userDetailsFragment, "user_details");
+        transaction.commit();
     }
 
     private void showQRFragment(Bitmap qrImage) {
