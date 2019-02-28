@@ -40,7 +40,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/user_name_input"
-                style="@style/Widget.Shrine.TextInputLayout"
+                style="@style/Widget.OstDemoApp.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/shr_hint_username">
@@ -55,7 +55,7 @@
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/mobile_number_input"
-                style="@style/Widget.Shrine.TextInputLayout"
+                style="@style/Widget.OstDemoApp.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -76,7 +76,7 @@
 
                 <android.support.design.button.MaterialButton
                     android:id="@+id/next_button"
-                    style="@style/Widget.Shrine.Button"
+                    style="@style/Widget.OstDemoApp.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
@@ -85,7 +85,7 @@
 
                 <android.support.design.button.MaterialButton
                     android:id="@+id/create_account_button"
-                    style="@style/Widget.Shrine.Button.TextButton"
+                    style="@style/Widget.OstDemoApp.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"

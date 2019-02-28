@@ -18,7 +18,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <!-- Base application theme. -->
-    <style name="Theme.Shrine" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.OstDemoApp" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -28,16 +28,17 @@
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
     </style>
 
-    <style name="Widget.Shrine.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="hintTextAppearance">@style/TextAppearance.Shrine.TextInputLayout.HintText</item>
+    <style name="Widget.OstDemoApp.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextAppearance">@style/TextAppearance.OstDemoApp.TextInputLayout.HintText
+        </item>
         <item name="android:paddingBottom">8dp</item>
     </style>
 
-    <style name="TextAppearance.Shrine.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
+    <style name="TextAppearance.OstDemoApp.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
-    <style name="Widget.Shrine.Button" parent="Widget.MaterialComponents.Button">
+    <style name="Widget.OstDemoApp.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="backgroundTint">?attr/colorPrimaryDark</item>
         <item name="android:stateListAnimator" tools:ignore="NewApi">
@@ -45,28 +46,28 @@
         </item>
     </style>
 
-    <style name="Widget.Shrine.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+    <style name="Widget.OstDemoApp.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
-    <style name="Widget.Shrine.Toolbar" parent="Widget.AppCompat.Toolbar">
+    <style name="Widget.OstDemoApp.Toolbar" parent="Widget.AppCompat.Toolbar">
         <item name="android:background">?attr/colorAccent</item>
-        <item name="android:theme">@style/Theme.Shrine</item>
+        <item name="android:theme">@style/Theme.OstDemoApp</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="titleTextAppearance">@style/TextAppearance.Shrine.Toolbar</item>
+        <item name="titleTextAppearance">@style/TextAppearance.OstDemoApp.Toolbar</item>
     </style>
 
-    <style name="TextAppearance.Shrine.Toolbar" parent="TextAppearance.MaterialComponents.Button">
+    <style name="TextAppearance.OstDemoApp.Toolbar" parent="TextAppearance.MaterialComponents.Button">
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="TextAppearance.Shrine.Title" parent="TextAppearance.MaterialComponents.Headline4">
+    <style name="TextAppearance.OstDemoApp.Title" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="textAllCaps">true</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
 
-    <style name="Widget.Shrine.Backdrop" parent="">
+    <style name="Widget.OstDemoApp.Backdrop" parent="">
         <item name="android:background">?attr/colorAccent</item>
     </style>
 

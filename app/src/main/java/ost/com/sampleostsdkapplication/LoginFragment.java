@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 /**
- * Fragment representing the login screen for Shrine.
+ * Fragment representing the login screen for OstDemoApp.
  */
 public class LoginFragment extends Fragment implements LoginViewController.LoginFragmentInterface {
 

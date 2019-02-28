@@ -31,7 +31,7 @@
     <string name="qr_execute_txn">QR exectute transaction</string>
     <string name="mappy_sign_text">Sign in to continue</string>
 
-    <string name="shr_app_name">Shrine</string>
+    <string name="shr_app_name">OstDemoApp</string>
     <string name="shr_hint_username">Username</string>
     <string name="shr_hint_mobile_number">Mobile Number</string>
     <string name="shr_button_next">Next</string>
@@ -43,7 +43,7 @@
     <string name="shr_product_title">Title</string>
     <string name="shr_product_description">Secondary text</string>
 
-    <!-- Shrine backdrop menu labels -->
+    <!-- OstDemoApp backdrop menu labels -->
     <string name="shr_featured_label">Featured</string>
     <string name="shr_apartment_label">Apartment</string>
     <string name="shr_accessories_label">Accessories</string>

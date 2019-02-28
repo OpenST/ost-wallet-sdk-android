@@ -11,4 +11,5 @@ public interface Constants {
     String ID = "_id";
     String APP_USER_ID = "app_user_id";
     String USER_PIN_SALT = "user_pin_salt";
+    String CREATE_OST_USER = "create_ost_user";
 }

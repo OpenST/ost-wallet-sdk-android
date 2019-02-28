@@ -15,16 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 class MappyApiClient {
-
-    private static final String BASE_URL = "http://10.0.2.2:4040/api/";
-    //    private static final String BASE_URL = "http://172.16.0.213:4040/api/";
     private static final String TAG = "MappyApiCLient";
     private final OstHttpRequestClient mOstHttpRequestClient;
     private final Handler mHandler;
 
     MappyApiClient() {
         mHandler = new Handler();
-        mOstHttpRequestClient = new OstHttpRequestClient(BASE_URL);
+        mOstHttpRequestClient = new OstHttpRequestClient(App.BASE_URL_MAPPY);
     }
 
     public void getUser(String userId, Callback callback) {
@@ -44,7 +41,7 @@ class MappyApiClient {
     }
 
     public void createUser(String name, String mobileNumber, Callback callback) {
-        createUser(name,mobileNumber,"", callback);
+        createUser(name, mobileNumber, "", callback);
     }
 
     public void createUser(String name, String mobileNumber, String description, Callback callback) {
@@ -52,21 +49,18 @@ class MappyApiClient {
         map.put(Constants.USER_NAME, name);
         map.put(Constants.MOBILE_NUMBER, mobileNumber);
         map.put(Constants.DESCRIPTION, description);
+        map.put(Constants.CREATE_OST_USER, true);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     JSONObject response = mOstHttpRequestClient.post("users", map);
                     String id = response.optString("_id", null);
-                    if(null == id) {
+                    if (null == id) {
                         Log.e(TAG, response.toString());
                         runOnUI(callback, false, null);
                     } else {
-                        map.clear();
-
-                        JSONObject responseOstUser = mOstHttpRequestClient.post(String.format("users/%s/ost-users/", id), map);
-
-                        runOnUI(callback, true, responseOstUser);
+                        runOnUI(callback, true, response);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -128,15 +122,11 @@ class MappyApiClient {
                 try {
                     JSONObject response = mOstHttpRequestClient.post("users/validate/", map);
                     String id = response.optString("_id", null);
-                    if(null == id) {
+                    if (null == id) {
                         Log.e(TAG, response.toString());
                         runOnUI(callback, false, null);
                     } else {
-                        map.clear();
-
-                        JSONObject responseOstUser = mOstHttpRequestClient.post(String.format("users/%s/ost-users/", id), map);
-
-                        runOnUI(callback, true, responseOstUser);
+                        runOnUI(callback, true, response);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -155,7 +145,6 @@ class MappyApiClient {
             }
         });
     }
-
 
 
     public interface Callback {
