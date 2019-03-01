@@ -4,45 +4,46 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import ost.com.sampleostsdkapplication.R;
 
 /**
  * Fragment representing the login screen for OstDemoApp.
  */
-public class SetUpUserFragment extends Fragment implements View.OnClickListener {
+public class PaperWalletFragment extends Fragment implements View.OnClickListener {
 
     private String mUserId;
     private String mTokenId;
     private MaterialButton nextButton;
     private MaterialButton cancelButton;
-    private TextInputLayout mPinTextInput;
-    private EditText mPinEditBox;
+    private EditText mPWEditBox;
     private RelativeLayout mActionButtons;
     private FrameLayout mActionLoaders;
-    private OnSetUpUserFragmentListener mListener;
+    private TextView mWalletInstructionText;
+    private OnPaperWalletFragmentListener mListener;
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.setup_user_fragment, container, false);
-        mPinTextInput = view.findViewById(R.id.user_setup_pin);
-        mPinEditBox = view.findViewById(R.id.user_setup_pin_edit);
+        View view = inflater.inflate(R.layout.paper_wallet_fragment, container, false);
+        mPWEditBox = view.findViewById(R.id.paper_wallet_edit_box);
         nextButton = view.findViewById(R.id.next_button);
         nextButton.setOnClickListener(this);
         cancelButton = view.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(this);
         mActionButtons = view.findViewById(R.id.action_buttons);
         mActionLoaders = view.findViewById(R.id.action_loader);
+        mWalletInstructionText = view.findViewById(R.id.wallet_instruction_text);
         return view;
     }
 
@@ -62,8 +63,8 @@ public class SetUpUserFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnSetUpUserFragmentListener) {
-            mListener = (OnSetUpUserFragmentListener) context;
+        if (context instanceof OnPaperWalletFragmentListener) {
+            mListener = (OnPaperWalletFragmentListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnChannelSelectionFragmentListener");
@@ -90,8 +91,8 @@ public class SetUpUserFragment extends Fragment implements View.OnClickListener 
      *
      * @return A new instance of fragment UserDetailsFragment.
      */
-    public static SetUpUserFragment newInstance(String tokenId, String userId) {
-        SetUpUserFragment fragment = new SetUpUserFragment();
+    public static PaperWalletFragment newInstance(String tokenId, String userId) {
+        PaperWalletFragment fragment = new PaperWalletFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         fragment.mTokenId = tokenId;
@@ -101,20 +102,30 @@ public class SetUpUserFragment extends Fragment implements View.OnClickListener 
 
     /**
      * Perform operation on clicking next
+     *
      * @param view
      */
     private void onNextClick(){
-        if (mPinEditBox.getText() == null || mPinEditBox.getText().length() != 6){
-            mPinTextInput.setError("Please enter 6 Digit Pin");
-            return;
-        }
         mActionButtons.setVisibility(View.GONE);
         mActionLoaders.setVisibility(View.VISIBLE);
-        mListener.onSetupUserSubmit(mPinEditBox.getText().toString());
+        mListener.onShowPaperWalletButton();
     }
 
-    public interface OnSetUpUserFragmentListener{
+    public void showWalletWords(String[] mnemonicsArray, String showText){
+        mActionButtons.setVisibility(View.VISIBLE);
+        mActionLoaders.setVisibility(View.GONE);
+        if(mnemonicsArray != null){
+            mPWEditBox.setText(TextUtils.join(",", mnemonicsArray));
+        }
+        if(showText != null){
+            mWalletInstructionText.setText(showText);
+            mWalletInstructionText.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public interface OnPaperWalletFragmentListener{
         void onBack();
-        void onSetupUserSubmit(String pin);
+        void onShowPaperWalletButton();
+        void paperWalletFetchingDone(String[] walletWords, String showText);
     }
 }

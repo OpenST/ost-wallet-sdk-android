@@ -35,17 +35,21 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
 import ost.com.sampleostsdkapplication.fragments.SetUpUserFragment;
 import ost.com.sampleostsdkapplication.fragments.UserDetailsFragment;
 import ost.com.sampleostsdkapplication.fragments.UserListFragment;
 
-public class UsersListActivity extends MappyBaseActivity implements SetUpUserFragment.OnSetUpUserFragmentListener {
+public class UsersListActivity extends MappyBaseActivity implements
+        SetUpUserFragment.OnSetUpUserFragmentListener,
+        PaperWalletFragment.OnPaperWalletFragmentListener {
 
     private static final String TAG = "UsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
     private int PICK_IMAGE_REQUEST = 1;
     private UserDetailsFragment userDetailsFragment;
     private SetUpUserFragment userSetupFragment;
+    private PaperWalletFragment paperWalletFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,29 +125,8 @@ public class UsersListActivity extends MappyBaseActivity implements SetUpUserFra
                         }
                     });
         } else if (id == R.id.show_paper_wallet) {
-            OstSdk.getPaperWallet(userId, new WorkFlowHelper(getApplicationContext()) {
-                @Override
-                public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-                    super.getPin(userId, ostPinAcceptInterface);
-                    getPinDialog(new DialogCallback() {
-                        @Override
-                        public void onSubmit(String pin) {
-                            ostPinAcceptInterface.pinEntered(pin, logInUser.getPassword());
-                        }
-
-                        @Override
-                        public void onCancel() {
-                            ostPinAcceptInterface.cancelFlow(new OstError("Don't know pin"));
-                        }
-                    });
-                }
-
-                @Override
-                public void showPaperWallet(String[] mnemonicsArray) {
-                    super.showPaperWallet(mnemonicsArray);
-                    Log.d(TAG, "Paper wallet " + Arrays.asList(mnemonicsArray));
-                }
-            });
+            Log.d(TAG, "Show Paper Wallet Clicked");
+            loadPaperWalletFragment(logInUser.getTokenId(), userId);
         } else if (id == R.id.device_words) {
             Log.d(TAG, "Add device clicked");
             List<String> mMnemonicsList = Arrays.asList("satisfy", "fish", "surround", "foster", "funny", "sword", "wisdom", "forward", "father", "pull", "lens", "joy");
@@ -198,6 +181,15 @@ public class UsersListActivity extends MappyBaseActivity implements SetUpUserFra
         userSetupFragment = SetUpUserFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, userSetupFragment, "user_setup");
+        transaction.addToBackStack("users_list");
+        transaction.commit();
+    }
+
+    private void loadPaperWalletFragment(String tokenId, String userId) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        paperWalletFragment = PaperWalletFragment.newInstance(tokenId, userId);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, paperWalletFragment, "paper_wallet");
         transaction.addToBackStack("users_list");
         transaction.commit();
     }
@@ -308,6 +300,48 @@ public class UsersListActivity extends MappyBaseActivity implements SetUpUserFra
         String spendingLimit = "1000000000000";
         OstSdk.activateUser(userId, pin, password, expiresAfterInSecs, spendingLimit,
                 new WorkFlowHelper(getApplicationContext()));
+    }
+
+    @Override
+    public void onShowPaperWalletButton(){
+        Log.d(TAG,"Ask for pin");
+        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+        OstSdk.getPaperWallet(logInUser.getOstUserId(), new WorkFlowHelper(getApplicationContext()) {
+            @Override
+            public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+                super.getPin(userId, ostPinAcceptInterface);
+                getPinDialog(new DialogCallback() {
+                    @Override
+                    public void onSubmit(String pin) {
+                        ostPinAcceptInterface.pinEntered(pin, logInUser.getPassword());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        ostPinAcceptInterface.cancelFlow(new OstError("Don't know pin"));
+                    }
+                });
+            }
+
+            @Override
+            public void showPaperWallet(String[] mnemonicsArray) {
+                super.showPaperWallet(mnemonicsArray);
+                Log.d(TAG, "Paper wallet " + Arrays.asList(mnemonicsArray));
+                paperWalletFetchingDone(mnemonicsArray, "Please Save these words carefully.");
+            }
+            @Override
+            public void invalidPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+                Log.d(TAG, "Invalid Pin");
+                paperWalletFetchingDone(null, "Invalid Pin.");
+            }
+        });
+    }
+
+    @Override
+    public void paperWalletFetchingDone(String[] mnemonicsArray, String showText){
+        if(paperWalletFragment != null){
+            paperWalletFragment.showWalletWords(mnemonicsArray, showText);
+        }
     }
 
 //    public static class QRFragment extends android.support.v4.app.Fragment {

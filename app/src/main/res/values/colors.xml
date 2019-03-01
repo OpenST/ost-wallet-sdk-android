@@ -8,4 +8,5 @@
     <color name="loginPageBackgroundColor">#FFFFFF</color>
     <color name="productGridBackgroundColor">#FFFBFA</color>
     <color name="colorControlActivated">#FBB8AC</color>
+    <color name="colorRed">#FF6347</color>
 </resources>

@@ -22,8 +22,8 @@
     <string name="title_activity_users_list">User List</string>
     <string name="error_incorrect_name">Name might be wrong</string>
     <string name="add_device">Add Device</string>
-    <string name="scan_qr">Scan QR</string>
-    <string name="add_session">Add Session</string>
+    <string name="scan_qr">Scan QR Code</string>
+    <string name="create_session">Create Session</string>
     <string name="activate_user">Activate User</string>
     <string name="show_user_details">Show Details</string>
     <string name="show_paper_wallet">Show paper wallet</string>
@@ -56,6 +56,7 @@
     <string name="device_status">Device Status</string>
 
     <string name="setup_wallet">Set Up Your Wallet</string>
+    <string name="paper_wallet">Paper Wallet</string>
     <string name="ost_welcome_text">Welcome To OST Powered Token Economy</string>
     <string name="let_setup_wallet">Lets Setup Your Wallet.</string>
     <string name="enter_pin">Enter 6 digits pin to secure your wallet. </string>
