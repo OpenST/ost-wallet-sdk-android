@@ -24,11 +24,13 @@ public class PaperWalletFragment extends Fragment implements View.OnClickListene
     private String mUserId;
     private String mTokenId;
     private MaterialButton nextButton;
+    private MaterialButton authorizeButton;
     private MaterialButton cancelButton;
     private EditText mPWEditBox;
     private RelativeLayout mActionButtons;
     private FrameLayout mActionLoaders;
     private TextView mWalletInstructionText;
+    private Boolean inAuthorizeDeviceMode;
     private OnPaperWalletFragmentListener mListener;
 
     @Override
@@ -37,8 +39,17 @@ public class PaperWalletFragment extends Fragment implements View.OnClickListene
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.paper_wallet_fragment, container, false);
         mPWEditBox = view.findViewById(R.id.paper_wallet_edit_box);
+        authorizeButton = view.findViewById(R.id.authorize_device);
         nextButton = view.findViewById(R.id.next_button);
-        nextButton.setOnClickListener(this);
+        if(inAuthorizeDeviceMode){
+            nextButton.setVisibility(View.GONE);
+            authorizeButton.setVisibility(View.VISIBLE);
+            authorizeButton.setOnClickListener(this);
+        } else {
+            authorizeButton.setVisibility(View.GONE);
+            nextButton.setVisibility(View.VISIBLE);
+            nextButton.setOnClickListener(this);
+        }
         cancelButton = view.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(this);
         mActionButtons = view.findViewById(R.id.action_buttons);
@@ -82,6 +93,10 @@ public class PaperWalletFragment extends Fragment implements View.OnClickListene
                 onNextClick(  );
                 break;
             }
+            case R.id.authorize_device: {
+                onAuthorizeClick();
+                break;
+            }
         }
     }
 
@@ -91,12 +106,13 @@ public class PaperWalletFragment extends Fragment implements View.OnClickListene
      *
      * @return A new instance of fragment UserDetailsFragment.
      */
-    public static PaperWalletFragment newInstance(String tokenId, String userId) {
+    public static PaperWalletFragment newInstance(String tokenId, String userId, boolean inAuthorizeDeviceMode) {
         PaperWalletFragment fragment = new PaperWalletFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         fragment.mTokenId = tokenId;
         fragment.mUserId = userId;
+        fragment.inAuthorizeDeviceMode = inAuthorizeDeviceMode;
         return fragment;
     }
 
@@ -109,6 +125,21 @@ public class PaperWalletFragment extends Fragment implements View.OnClickListene
         mActionButtons.setVisibility(View.GONE);
         mActionLoaders.setVisibility(View.VISIBLE);
         mListener.onShowPaperWalletButton();
+    }
+
+    private void onAuthorizeClick(){
+        if(mPWEditBox.getText() == null){
+            return;
+        }
+        String mnemonicsText = mPWEditBox.getText().toString();
+        if(mnemonicsText.split(",").length != 12){
+            mWalletInstructionText.setText("Invalid Mnemonics String. It should be 12 unique comma seperated words");
+            mWalletInstructionText.setVisibility(View.VISIBLE);
+            return;
+        }
+        mActionButtons.setVisibility(View.GONE);
+        mActionLoaders.setVisibility(View.VISIBLE);
+        mListener.authorizeDeviceUsingMnemonics(mnemonicsText, mUserId);
     }
 
     public void showWalletWords(String[] mnemonicsArray, String showText){
@@ -127,5 +158,6 @@ public class PaperWalletFragment extends Fragment implements View.OnClickListene
         void onBack();
         void onShowPaperWalletButton();
         void paperWalletFetchingDone(String[] walletWords, String showText);
+        void authorizeDeviceUsingMnemonics(String mnemonicsText, String userId);
     }
 }

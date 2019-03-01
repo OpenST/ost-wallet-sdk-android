@@ -126,12 +126,10 @@ public class UsersListActivity extends MappyBaseActivity implements
                     });
         } else if (id == R.id.show_paper_wallet) {
             Log.d(TAG, "Show Paper Wallet Clicked");
-            loadPaperWalletFragment(logInUser.getTokenId(), userId);
+            loadPaperWalletFragment(logInUser.getTokenId(), userId, false);
         } else if (id == R.id.device_words) {
-            Log.d(TAG, "Add device clicked");
-            List<String> mMnemonicsList = Arrays.asList("satisfy", "fish", "surround", "foster", "funny", "sword", "wisdom", "forward", "father", "pull", "lens", "joy");
-            String mMnemonics = "satisfy fish surround foster funny sword wisdom forward father pull lens joy";
-            OstSdk.addDeviceUsingMnemonics(userId, mMnemonics, new WorkFlowHelper(getApplicationContext()));
+            Log.d(TAG, "Add Device using mMnemonicsList Clicked");
+            loadPaperWalletFragment(logInUser.getTokenId(), userId, true);
         } else if (id == R.id.transactions) {
             Log.d(TAG, "Execute Transaction Clicked");
             String tokenHolderAddress = "0x30fa423c14625bb0bac6852d7b68f9d326ac1242";
@@ -185,9 +183,9 @@ public class UsersListActivity extends MappyBaseActivity implements
         transaction.commit();
     }
 
-    private void loadPaperWalletFragment(String tokenId, String userId) {
+    private void loadPaperWalletFragment(String tokenId, String userId, boolean loadForAuthorize) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        paperWalletFragment = PaperWalletFragment.newInstance(tokenId, userId);
+        paperWalletFragment = PaperWalletFragment.newInstance(tokenId, userId, loadForAuthorize);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, paperWalletFragment, "paper_wallet");
         transaction.addToBackStack("users_list");
@@ -342,6 +340,11 @@ public class UsersListActivity extends MappyBaseActivity implements
         if(paperWalletFragment != null){
             paperWalletFragment.showWalletWords(mnemonicsArray, showText);
         }
+    }
+
+    @Override
+    public void authorizeDeviceUsingMnemonics(String mnemonics, String userId){
+        OstSdk.addDeviceUsingMnemonics(userId, mnemonics, new WorkFlowHelper(getApplicationContext()));
     }
 
 //    public static class QRFragment extends android.support.v4.app.Fragment {

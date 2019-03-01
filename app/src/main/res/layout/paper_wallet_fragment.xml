@@ -63,17 +63,25 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:text="SHOW ME THE WORDS" />
+                    android:text="SHOW WORDS" />
+
+                <android.support.design.button.MaterialButton
+                    android:id="@+id/authorize_device"
+                    style="@style/Widget.OstDemoApp.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:visibility="gone"
+                    android:text="Authorize" />
 
                 <android.support.design.button.MaterialButton
                     android:id="@+id/cancel_button"
                     style="@style/Widget.OstDemoApp.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="12dp"
-                    android:layout_marginRight="12dp"
-                    android:layout_toStartOf="@id/next_button"
-                    android:layout_toLeftOf="@id/next_button"
+                    android:layout_marginLeft="110dp"
+                    android:layout_alignParentLeft="true"
                     android:text="Cancel" />
 
             </RelativeLayout>
