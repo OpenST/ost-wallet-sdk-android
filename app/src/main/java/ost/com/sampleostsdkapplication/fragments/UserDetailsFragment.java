@@ -1,4 +1,4 @@
-package ost.com.sampleostsdkapplication;
+package ost.com.sampleostsdkapplication.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +11,8 @@ import android.widget.EditText;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
+
+import ost.com.sampleostsdkapplication.R;
 
 /**
  * Fragment representing the User Details for OstDemoApp.

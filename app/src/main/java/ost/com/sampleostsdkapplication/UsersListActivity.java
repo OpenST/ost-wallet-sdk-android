@@ -41,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ost.com.sampleostsdkapplication.fragments.UserDetailsFragment;
+
 public class UsersListActivity extends MappyBaseActivity {
 
     private static final String TAG = "UsersListActivity";

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/loginPageBackgroundColor"
-    tools:context=".LoginFragment">
+    tools:context=".fragments.LoginFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

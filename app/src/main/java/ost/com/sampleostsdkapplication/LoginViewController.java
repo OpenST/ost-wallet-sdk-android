@@ -12,7 +12,7 @@ import com.ost.mobilesdk.OstSdk;
 
 import org.json.JSONObject;
 
-class LoginViewController {
+public class LoginViewController {
     private static final String TAG = "LoginViewController";
 
     private static final String REGISTER_TYPE = "register_type";
@@ -110,7 +110,7 @@ class LoginViewController {
 
     }
 
-    interface LoginFragmentInterface {
+    public interface LoginFragmentInterface {
         void setMobileNumberError(String text);
 
         void setUserNameError(String text);

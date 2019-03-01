@@ -1,4 +1,4 @@
-package ost.com.sampleostsdkapplication;
+package ost.com.sampleostsdkapplication.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import ost.com.sampleostsdkapplication.LoginViewController;
+import ost.com.sampleostsdkapplication.R;
 
 /**
  * Fragment representing the login screen for OstDemoApp.
