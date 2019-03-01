@@ -16,7 +16,6 @@ import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.EIP712;
 import com.ost.mobilesdk.utils.GnosisSafe;
 import com.ost.mobilesdk.utils.OstPayloadBuilder;
-import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
@@ -40,27 +39,11 @@ import java.util.Map;
  * 5. api post call
  * 6. polling
  */
-public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterface {
+public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements OstPinAcceptInterface {
 
     private static final String TAG = "OstAddSession";
     private final String mSpendingLimit;
     private final long mExpiresAfterInSecs;
-    private int mPinAskCount = 0;
-
-    private enum STATES {
-        INITIAL,
-        PIN_ENTERED,
-        CANCELLED,
-        AUTHENTICATED
-    }
-
-    private STATES mCurrentState = STATES.INITIAL;
-    private Object mStateObject = null;
-
-    private void setFlowState(STATES currentState, Object stateObject) {
-        this.mCurrentState = currentState;
-        this.mStateObject = stateObject;
-    }
 
     public OstAddSession(String userId, String spendingLimit, long expiresAfterInSecs, OstWorkFlowCallback callback) {
         super(userId, callback);
@@ -68,75 +51,10 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         mExpiresAfterInSecs = expiresAfterInSecs;
     }
 
-    synchronized public AsyncStatus process() {
-        switch (mCurrentState) {
-            case INITIAL:
-
-                Log.d(TAG, String.format("Add Session workflow for userId: %s started", mUserId));
-
-                Log.i(TAG, "Validating user Id");
-                if (!hasValidParams()) {
-                    Log.e(TAG, String.format("Invalid params for userId : %s", mUserId));
-                    return postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
-                }
-
-                Log.i(TAG, "Loading device and user entities");
-                AsyncStatus status = super.loadCurrentDevice();
-                status = status.isSuccess() ? super.loadUser() : status;
-                status = status.isSuccess() ? super.loadToken() : status;
-
-                if (!status.isSuccess()) {
-                    Log.e(TAG, String.format("Fetching of basic entities failed for user id: %s", mUserId));
-                    return status;
-                }
-
-                Log.i(TAG, "Validate states");
-                if (!hasActivatedUser()) {
-                    Log.e(TAG, String.format("User is not activated of user id: %s", mUserId));
-                    return postErrorInterrupt("wf_as_pr_2", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
-                }
-                if (!hasAuthorizedDevice()) {
-                    Log.e(TAG, String.format("Device is not authorized of user id: %s", mUserId));
-                    return postErrorInterrupt("wf_as_pr_3", OstErrors.ErrorCode.DEVICE_UNREGISTERED);
-                }
-
-                Log.i(TAG, "Ask for authentication");
-                if (shouldAskForBioMetric()) {
-                    new OstBiometricAuthentication(OstSdk.getContext(), getBioMetricCallBack());
-                } else {
-                    postGetPin(OstAddSession.this);
-                }
-                break;
-            case PIN_ENTERED:
-                Log.i(TAG, "Pin Entered");
-                String[] strings = ((String) mStateObject).split(" ");
-                String uPin = strings[0];
-                String appSalt = strings[0];
-                if (validatePin(uPin, appSalt)) {
-                    Log.d(TAG, "Pin Validated");
-                    postPinValidated();
-                } else {
-                    mPinAskCount = mPinAskCount + 1;
-                    if (mPinAskCount > OstConstants.MAX_PIN_LIMIT) {
-                        Log.d(TAG, "Max pin ask limit reached");
-                        return postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.MAX_PIN_LIMIT_REACHED);
-                    }
-                    Log.d(TAG, "Pin InValidated ask for pin again");
-                    return postInvalidPin(OstAddSession.this);
-                }
-            case AUTHENTICATED:
-                return authorizeSession();
-
-            case CANCELLED:
-                Log.d(TAG, String.format("Error in Add session flow: %s", mUserId));
-                postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.WORKFLOW_CANCELED);
-                break;
-        }
-        return new AsyncStatus(true);
-    }
 
 
-    private AsyncStatus authorizeSession() {
+    @Override
+    AsyncStatus performOnAuthenticated() {
         String sessionAddress = new OstKeyManager(mUserId).createSessionKey();
 
         OstApiClient ostApiClient = new OstApiClient(mUserId);
@@ -243,33 +161,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         return blockNumber;
     }
 
-    @Override
-    public void pinEntered(String uPin, String appSalt) {
-        setFlowState(STATES.PIN_ENTERED, String.format("%s %s", uPin, appSalt));
-        perform();
-    }
 
-
-    @Override
-    public void cancelFlow(OstError ostError) {
-        setFlowState(OstAddSession.STATES.CANCELLED, ostError);
-        perform();
-    }
-
-    @Override
-    void onBioMetricAuthenticationSuccess() {
-        super.onBioMetricAuthenticationSuccess();
-        setFlowState(OstAddSession.STATES.AUTHENTICATED, null);
-        perform();
-    }
-
-    @Override
-    void onBioMetricAuthenticationFail() {
-        super.onBioMetricAuthenticationFail();
-        super.onBioMetricAuthenticationFail();
-        setFlowState(OstAddSession.STATES.CANCELLED, null);
-        perform();
-    }
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {

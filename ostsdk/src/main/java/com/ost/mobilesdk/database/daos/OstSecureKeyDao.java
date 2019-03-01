@@ -16,15 +16,15 @@ public interface OstSecureKeyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(OstSecureKey... ostSecureKey);
 
-    @Query("DELETE FROM secure_key WHERE `key`=:key")
-    void delete(String key);
+    @Query("DELETE FROM bytes_storage WHERE `id`=:id")
+    void delete(String id);
 
-    @Query("SELECT * FROM secure_key WHERE `key` IN (:keys)")
-    OstSecureKey[] getByIds(String[] keys);
+    @Query("SELECT * FROM bytes_storage WHERE `id` IN (:id)")
+    OstSecureKey[] getByIds(String[] id);
 
-    @Query("SELECT * FROM secure_key WHERE `key`=:key")
-    OstSecureKey getById(String key);
+    @Query("SELECT * FROM bytes_storage WHERE `id`=:id")
+    OstSecureKey getById(String id);
 
-    @Query("DELETE FROM secure_key")
+    @Query("DELETE FROM bytes_storage")
     void deleteAll();
 }

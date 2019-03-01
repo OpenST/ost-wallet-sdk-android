@@ -43,9 +43,6 @@ public class OstErrors {
             case POLLING_TIMEOUT:
                 return "Polling timeout";
 
-            case MAX_PIN_LIMIT_REACHED:
-                return "Max pin ask limit reached";
-
             case ADD_DEVICE_API_FAILED:
                 return "Add device api failed";
 
@@ -100,11 +97,24 @@ public class OstErrors {
             case INVALID_QR_TRANSACTION_DATA:
                 return "Invalid qr transaction data";
 
-            case INVALID_PIN:
+            case INVALID_USER_PASSPHRASE:
                 return "Pin is Invalid";
+
+            case INVALID_NEW_USER_PASSPHRASE:
+                return "Pin is Invalid";
+
+
+            case MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED:
+                return "Max pin ask limit reached";
+
+            case RECOVERY_PASSPHRASE_OWNER_NOT_SET: return "Recovery owner is not set for this user";
+
+            case RECOVERY_KEY_GENERATION_FAILED: return "Failed to generate Recovery key";
 
             case POST_RECOVERY_API_FAILED:
                 return "Post recovery api failed";
+
+            case UNCAUGHT_EXCEPTION_HANDELED: return "Uncaught exception handeled";
 
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
@@ -117,7 +127,6 @@ public class OstErrors {
     }
 
     public enum ErrorCode {
-        UNKNOWN,
         USER_API_FAILED,
         TOKEN_API_FAILED,
         CHAIN_API_FAILED,
@@ -130,7 +139,6 @@ public class OstErrors {
         WORKFLOW_CANCELED,
         USER_NOT_ACTIVATED,
         POLLING_TIMEOUT,
-        MAX_PIN_LIMIT_REACHED,
         BLOCK_NUMBER_API_FAILED,
         ADD_DEVICE_API_FAILED,
         EIP712_FAILED,
@@ -149,7 +157,21 @@ public class OstErrors {
         USER_ALREADY_ACTIVATED,
         INVALID_MNEMONICS,
         INVALID_QR_TRANSACTION_DATA,
-        INVALID_PIN,
-        POST_RECOVERY_API_FAILED
+
+        //SESSION KEY
+        SESSION_KEY_GENERATION_FAILED,
+
+        //RECOVERY KEY
+        RECOVERY_PASSPHRASE_OWNER_NOT_SET,
+        INVALID_USER_PASSPHRASE,
+        INVALID_NEW_USER_PASSPHRASE,
+        MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED,
+        RECOVERY_KEY_GENERATION_FAILED,
+        POST_RECOVERY_API_FAILED,
+
+        //Generic
+        UNKNOWN,
+        UNCAUGHT_EXCEPTION_HANDELED,
+        DEPRECATED
     }
 }

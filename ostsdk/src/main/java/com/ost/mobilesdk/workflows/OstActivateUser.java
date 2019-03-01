@@ -11,6 +11,7 @@ import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
@@ -23,8 +24,8 @@ import java.io.IOException;
 public class OstActivateUser extends OstBaseWorkFlow {
 
     private static final String TAG = "OstActivateUser";
-    private final String mPassWord;
-    private final String mUPin;
+    private String mPassWord;
+    private String mUPin;
     private String mExpirationHeight;
     private final String mSpendingLimit;
     private final long mExpiresAfterInSecs;
@@ -87,11 +88,22 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 return postErrorInterrupt("wf_au_pr_2", ErrorCode.SALT_API_FAILED);
             }
 
-            Log.i(TAG, "Creating recovery key");
-            String recoveryAddress = createRecoveryKey(salt);
+            String recoveryAddress;
+            String sessionAddress;
+            try {
+                Log.i(TAG, "Creating recovery key");
+                OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
+                recoveryAddress =  ostKeyManager.getRecoveryKeyAddressUsing(mPassWord,mUPin,salt);
+                mPassWord = null;
+                mUPin = null;
+                salt = null;
 
-            Log.i(TAG, "Creating session key");
-            String sessionAddress = new OstKeyManager(mUserId).createSessionKey();
+                Log.i(TAG, "Creating session key");
+                sessionAddress = ostKeyManager.createSessionKey();
+            } catch (OstError error) {
+                return postErrorInterrupt(error);
+            }
+
 
             Log.i(TAG, "Activate user");
             Log.d(TAG, String.format("Deploying token with SessionAddress: %s, ExpirationHeight: %s," +
@@ -108,11 +120,11 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 } else {
                     //Return with error.
                     Log.e(TAG, String.format("Invalid response for User activate call %s", response.toString()));
-                    return postErrorInterrupt("wf_au_pr_3", ErrorCode.ACTIVATE_USER_API_FAILED);
+                    return postErrorInterrupt("wf_au_pr_4", ErrorCode.ACTIVATE_USER_API_FAILED);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Something went wrong while activating user.", e);
-                return postErrorInterrupt("wf_au_pr_4", ErrorCode.ACTIVATE_USER_API_FAILED);
+                return postErrorInterrupt("wf_au_pr_5", ErrorCode.ACTIVATE_USER_API_FAILED);
             }
         }
 
@@ -144,28 +156,6 @@ public class OstActivateUser extends OstBaseWorkFlow {
     boolean hasValidParams() {
         return super.hasValidParams() && !TextUtils.isEmpty(mUPin) && !TextUtils.isEmpty(mPassWord)
                 && (mExpiresAfterInSecs > 0) && !TextUtils.isEmpty(mSpendingLimit);
-    }
-
-
-    private String createRecoveryKey(String salt) {
-        String stringToCalculate = String.format("%s%s%s", mPassWord, mUPin, mUserId);
-
-        if (!storePinKeccek(mUPin, mPassWord)) {
-            return null;
-        }
-
-        byte[] seed = OstSdkCrypto.getInstance().genSCryptKey(stringToCalculate.getBytes(), salt.getBytes());
-
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        //Don't store key of recovery key
-        String address = ostKeyManager.createHDKeyAddress(seed);
-
-        return address;
-    }
-
-    private boolean storePinKeccek(String pin, String appSalt) {
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        return ostKeyManager.storePinHash(pin, appSalt);
     }
 
     private AsyncStatus calculateExpirationHeight() {

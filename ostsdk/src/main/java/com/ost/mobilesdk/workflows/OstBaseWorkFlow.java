@@ -133,28 +133,6 @@ abstract class OstBaseWorkFlow {
         return new AsyncStatus(true);
     }
 
-    AsyncStatus postInvalidPin(OstPinAcceptInterface pinAcceptInterface) {
-        Log.i(TAG, "Invalid Pin");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.invalidPin(mUserId, pinAcceptInterface);
-            }
-        });
-        return new AsyncStatus(true);
-    }
-
-    AsyncStatus postPinValidated() {
-        Log.i(TAG, "Pin validated");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.pinValidated(mUserId);
-            }
-        });
-        return new AsyncStatus(true);
-    }
-
     /**
      * calls flowInterrupt with error message.
      *
@@ -174,10 +152,14 @@ abstract class OstBaseWorkFlow {
 
     AsyncStatus postErrorInterrupt(String internalErrCode, OstErrors.ErrorCode errorCode) {
         Log.i(TAG, "Flow Error");
+        OstError error = new OstError(internalErrCode, errorCode);
+        return postErrorInterrupt(error);
+    }
+    AsyncStatus postErrorInterrupt(OstError error) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), new OstError(internalErrCode, errorCode));
+                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), error);
             }
         });
         return new AsyncStatus(false);
@@ -444,12 +426,6 @@ abstract class OstBaseWorkFlow {
         return ostDevice.getStatus().toLowerCase().equals(OstDevice.CONST_STATUS.AUTHORIZED);
     }
 
-    boolean validatePin(String uPin, String appSalt) {
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        boolean isValidated = ostKeyManager.validatePin(uPin, appSalt);
-        return isValidated;
-    }
-
     String getEIP712Hash(String deviceAddress, String deviceManagerAddress) {
         String callData = new GnosisSafe().getAddOwnerWithThresholdExecutableData(deviceAddress);
 
@@ -507,5 +483,22 @@ abstract class OstBaseWorkFlow {
             Log.e(TAG, "IO Exception");
             return new AsyncStatus(false);
         }
+    }
+
+
+
+    // Remove these.
+    boolean validatePin(String a, String b) {
+        return false;
+    }
+
+    AsyncStatus postPinValidated() {
+        OstError error = new OstError("bwf_ppv_1", ErrorCode.DEPRECATED);
+        return postErrorInterrupt(error);
+    }
+
+    AsyncStatus postInvalidPin(OstPinAcceptInterface i_d_k) {
+        OstError error = new OstError("bwf_pip_1", ErrorCode.DEPRECATED);
+        return postErrorInterrupt(error);
     }
 }

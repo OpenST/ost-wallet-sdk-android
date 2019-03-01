@@ -59,10 +59,9 @@ public class GnosisSafeTest {
                 .setVerifyingContract(deviceManager)
                 .build();
         String hashString = null;
-        String signature = null;
+
         try {
             hashString = new EIP712(safeTxData).toEIP712TransactionHash();
-            signature = new OstApiSigner(Numeric.hexStringToByteArray("0x0099cb31ed6a0f634cee503d97fab53dcd5702fb6e3e4630dc9679917e548ccf59")).signMessage(Numeric.hexStringToByteArray(hashString));
         } catch (Exception e) {
             e.printStackTrace();
         }

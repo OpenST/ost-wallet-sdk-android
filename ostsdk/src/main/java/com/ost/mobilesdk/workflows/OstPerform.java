@@ -89,49 +89,6 @@ public class OstPerform extends OstBaseWorkFlow {
         return hasDeviceAddress;
     }
 
-    private AsyncStatus authorizeDevice() {
-        try {
-            JSONObject response = mOstApiClient.getDeviceManager();
-        } catch (IOException e) {
-            return postErrorInterrupt("wf_ad_pr_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
-        }
-
-        String deviceAddress = getDeviceAddress();
-        String deviceManagerAddress = getDeviceManagerAddress();
-
-        String eip712Hash = getEIP712Hash(deviceAddress, deviceManagerAddress);
-        if (null == eip712Hash) {
-            Log.e(TAG, "EIP-712 error while parsing json object of sageTxn");
-            return postErrorInterrupt("wf_ad_pr_6", OstErrors.ErrorCode.EIP712_FAILED);
-        }
-
-        Log.i(TAG, "Sign eip712Hash");
-        String signature = OstUser.getById(mUserId).sign(eip712Hash);
-        String signerAddress = OstUser.getById(mUserId).getCurrentDevice().getAddress();
-
-        Log.i(TAG, "Api Call payload");
-        AsyncStatus apiCallStatus = makeAddDeviceCall(signature, signerAddress, deviceManagerAddress, deviceAddress);
-        if (apiCallStatus.isSuccess()) {
-            return postFlowComplete();
-        } else {
-            return postErrorInterrupt("wf_ad_pr_7", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
-        }
-    }
-
-    private String getDeviceAddress() {
-        try {
-            JSONObject data = mPayload.getJSONObject(OstConstants.QR_DATA);
-            return data.getString(OstConstants.QR_DEVICE_ADDRESS);
-        } catch (JSONException e) {
-            Log.e(TAG, "Unexpected JSONException");
-        }
-        return null;
-
-    }
-
-    private String getDeviceManagerAddress() {
-        return OstUser.getById(mUserId).getDeviceManagerAddress();
-    }
 
     private boolean validatePayload() {
         boolean hasDataDefinition = mPayload.has(OstConstants.QR_DATA_DEFINITION);

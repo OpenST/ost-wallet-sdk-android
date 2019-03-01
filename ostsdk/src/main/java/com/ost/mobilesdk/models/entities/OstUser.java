@@ -81,9 +81,9 @@ public class OstUser extends OstBaseEntity {
         return ostActiveSessionList.get(0);
     }
 
+    @Deprecated
     public String sign(String messageToSign) {
-        OstKeyManager ostKeyManager = new OstKeyManager(getId());
-        return ostKeyManager.sign(getCurrentDevice().getAddress(), Numeric.hexStringToByteArray(messageToSign));
+        return "";
     }
 
     public static class CONST_STATUS {

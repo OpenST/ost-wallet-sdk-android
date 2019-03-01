@@ -71,7 +71,7 @@ public class OstGetPaperWallet extends OstBaseWorkFlow implements OstPinAcceptIn
                     mPinAskCount = mPinAskCount + 1;
                     if (mPinAskCount > OstConstants.MAX_PIN_LIMIT) {
                         Log.d(TAG, "Max pin ask limit reached");
-                        return postErrorInterrupt("ef_pe_pr_2", OstErrors.ErrorCode.MAX_PIN_LIMIT_REACHED);
+                        return postErrorInterrupt("ef_pe_pr_2", OstErrors.ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
                     }
                     Log.d(TAG, "Pin InValidated ask for pin again");
                     return postInvalidPin(OstGetPaperWallet.this);

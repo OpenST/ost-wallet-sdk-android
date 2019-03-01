@@ -44,7 +44,7 @@ public class OstApiClient {
         mOstUser = OstSdk.getUser(userId);
 
         mOstHttpRequestClient = new OstHttpRequestClient(baseUrl);
-        mApiSigner = new OstKeyManager(userId).getApiSigner();
+        mApiSigner = new OstApiSigner(mUserId);
         mOstHttpRequestClient.setOstApiSigner(mApiSigner);
 
         mResponseParser = new OstApiHelper();

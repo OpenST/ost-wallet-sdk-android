@@ -6,6 +6,8 @@ import com.ost.mobilesdk.OstConstants;
 public class OstError extends Error {
 
     private static String Tag = "OstError";
+
+
     private final OstConstants.WORKFLOW_TYPE mFlowType;
     private final OstErrors.ErrorCode mErrorCode;
     private final String mInternalErrorCode;
@@ -45,4 +47,9 @@ public class OstError extends Error {
     public OstErrors.ErrorCode getErrorCode() {
         return mErrorCode;
     }
+
+    public String getInternalErrorCode() {
+        return mInternalErrorCode;
+    }
+
 }

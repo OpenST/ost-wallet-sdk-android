@@ -32,6 +32,10 @@ public interface OstConstants {
     String QR_AMOUNTS = "ams";
     String QR_TOKEN_ID = "tid";
 
+    int RECOVERY_PHRASE_PREFIX_MIN_LENGTH = 30;
+    int RECOVERY_PHRASE_USER_INPUT_MIN_LENGTH = 6;
+    int RECOVERY_PHRASE_SCRYPT_SALT_MIN_LENGTH = 1;
+
 
     //ToDo: Move this to OstWorkflows.java (Create one)
     enum WORKFLOW_TYPE {

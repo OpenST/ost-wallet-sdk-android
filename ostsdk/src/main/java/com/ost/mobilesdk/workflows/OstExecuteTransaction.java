@@ -138,7 +138,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
                     } catch (IOException e) {
                         Log.e(TAG, "update sessions error", e);
                     }
-                    //setFlowState(STATES.INITIAL, true);
+                    //setFlowState(StateManager.INITIAL, true);
                     //perform();
                 } else {
                     return postFlowComplete();

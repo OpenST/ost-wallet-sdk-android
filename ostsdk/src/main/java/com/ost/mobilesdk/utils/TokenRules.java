@@ -36,7 +36,7 @@ public class TokenRules {
             transferAmountList.add(new Uint256(new BigInteger(amount)));
         }
         Function function = new Function(
-                "directTransfers",  // function we're calling
+                DIRECT_TRANSFERS,  // function we're calling
                 Arrays.asList(new DynamicArray(addressList), new DynamicArray(transferAmountList)),
                 Collections.<TypeReference<?>>emptyList());
 

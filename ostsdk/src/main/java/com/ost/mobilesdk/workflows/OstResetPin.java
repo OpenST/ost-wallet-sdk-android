@@ -7,10 +7,11 @@ import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstRecoveryOwner;
 import com.ost.mobilesdk.security.OstKeyManager;
+import com.ost.mobilesdk.security.OstRecoverySigner;
+import com.ost.mobilesdk.security.SignedRestRecoveryStruct;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.utils.DelayedRecoveryModule;
-import com.ost.mobilesdk.utils.EIP712;
+import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
@@ -34,7 +35,7 @@ public class OstResetPin extends OstBaseWorkFlow {
     private final String mCurrentPin;
     private final String mNewPin;
     private OstResetPin.STATES mCurrentState = OstResetPin.STATES.INITIAL;
-    private String mNewRecoveryOwnerAddress;
+
 
     public OstResetPin(String userId, String appSalt, String currentPin, String newPin, OstWorkFlowCallback workFlowCallback) {
         super(userId, workFlowCallback);
@@ -45,6 +46,7 @@ public class OstResetPin extends OstBaseWorkFlow {
 
     @Override
     protected AsyncStatus process() {
+        String newRecoveryOwnerAddress = "";
         switch (mCurrentState) {
             case INITIAL:
                 Log.d(TAG, String.format("Perform workflow for userId: %s started", mUserId));
@@ -68,10 +70,18 @@ public class OstResetPin extends OstBaseWorkFlow {
                     return postErrorInterrupt("wf_rp_pr_2", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
                 }
 
-                boolean isValidated = new OstKeyManager(mUserId).validatePin(mCurrentPin, mAppSalt);
-                if (!isValidated) {
-                    return postErrorInterrupt("wf_rp_pr_3", OstErrors.ErrorCode.INVALID_PIN);
+                Log.i(TAG, "Getting salt");
+                String kitSalt = super.getSalt();
+                if (null == kitSalt) {
+                    Log.e(TAG, "Salt is null");
+                    return postErrorInterrupt("wf_rp_pr_3", OstErrors.ErrorCode.SALT_API_FAILED);
                 }
+
+//                Validation is not needed here. OstRecoverySigner will validate it.
+//                boolean isValidated = new OstKeyManager(mUserId).validatePin(mCurrentPin, mAppSalt, kitSalt);
+//                if (!isValidated) {
+//                    return postErrorInterrupt("wf_rp_pr_3", OstErrors.ErrorCode.INVALID_USER_PASSPHRASE);
+//                }
 
                 try {
                     mOstApiClient.getDevices(mOstUser.getCurrentDevice().getAddress());
@@ -80,37 +90,19 @@ public class OstResetPin extends OstBaseWorkFlow {
                     return postErrorInterrupt("wf_rp_pr_4", OstErrors.ErrorCode.USER_API_FAILED);
                 }
 
-
-                String recoveryOwnerAddress = mOstUser.getRecoveryOwnerAddress();
-                String recoveryAddress = mOstUser.getRecoveryAddress();
-
-                Log.i(TAG, "Getting salt");
-                String salt = super.getSalt();
-                if (null == salt) {
-                    Log.e(TAG, "Salt is null");
-                    return postErrorInterrupt("wf_rp_pr_3", OstErrors.ErrorCode.SALT_API_FAILED);
-                }
-
-                //Todo:: Set recovery hash after successfully revoking;
-                mNewRecoveryOwnerAddress = createRecoveryKey(mNewPin, mAppSalt, salt);
-
-                JSONObject jsonObject = new DelayedRecoveryModule().resetRecoveryOwnerData(recoveryOwnerAddress,
-                        mNewRecoveryOwnerAddress, recoveryAddress);
-                if (null == jsonObject) {
-                    return postErrorInterrupt("wf_rp_pr_4", OstErrors.ErrorCode.EIP712_FAILED);
-                }
-
-                String eip712Hash = null;
+                SignedRestRecoveryStruct struct;
                 try {
-                    eip712Hash = new EIP712(jsonObject).toEIP712TransactionHash();
-                } catch (Exception e) {
-                    return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.EIP712_FAILED);
+                    OstRecoverySigner signer = new OstRecoverySigner(mUserId);
+                    struct = signer.getResetRecoveryOwnerSignature(mAppSalt, mCurrentPin, kitSalt, mNewPin);
+                    signer = null;
+
+                } catch (OstError error) {
+                    return postErrorInterrupt(error.getInternalErrorCode(), error.getErrorCode() );
                 }
 
-                String signature = signData(mCurrentPin, mAppSalt, salt, eip712Hash);
-
-                Map<String, Object> requestMap = buildApiRequest(mNewRecoveryOwnerAddress,
-                        recoveryOwnerAddress, recoveryAddress, signature);
+                newRecoveryOwnerAddress = struct.getNewRecoverOwnerAddress();
+                Map<String, Object> requestMap = buildApiRequest(newRecoveryOwnerAddress,
+                        struct.getRecoveryOwnerAddress(), struct.getRecoveryContractAddress(), struct.getSignature());
 
                 JSONObject postRecoveryAddresssResponse = null;
                 try {
@@ -123,7 +115,7 @@ public class OstResetPin extends OstBaseWorkFlow {
                     return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RECOVERY_API_FAILED);
                 }
 
-                JSONObject jsonData = jsonObject.optJSONObject(OstConstants.RESPONSE_DATA);
+                JSONObject jsonData = struct.getEip712TypedData().optJSONObject(OstConstants.RESPONSE_DATA);
                 JSONObject resultTypeObject = jsonData.optJSONObject(jsonData.optString(OstConstants.RESULT_TYPE));
                 OstRecoveryOwner ostRecoveryOwner = null;
                 try {
@@ -133,14 +125,16 @@ public class OstResetPin extends OstBaseWorkFlow {
                 }
 
                 postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));
+
             case POLLING:
+
                 OstRecoveryPollingService.startPolling(mUserId, mNewRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZED,
                         OstRecoveryOwner.CONST_STATUS.AUTHORIZATION_FAILED);
-
+                
                 Log.i(TAG, "Waiting for update");
-                Bundle bundle = waitForUpdate(OstSdk.RECOVERY_OWNER, mNewRecoveryOwnerAddress);
+                Bundle bundle = waitForUpdate(OstSdk.RECOVERY_OWNER, newRecoveryOwnerAddress);
                 if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
-                    Log.d(TAG, String.format("Polling time out for recovery owner Id: %s", mNewRecoveryOwnerAddress));
+                    Log.d(TAG, String.format("Polling time out for recovery owner Id: %s", newRecoveryOwnerAddress));
                     return postErrorInterrupt("wf_adwq_pr_5", OstErrors.ErrorCode.POLLING_TIMEOUT);
                 }
 
@@ -155,47 +149,14 @@ public class OstResetPin extends OstBaseWorkFlow {
         return new AsyncStatus(true);
     }
 
-    private Map<String, Object> buildApiRequest(String newRecoveryOwnerAddress, String signer,
-                                                String recoveryAddress, String signature) {
+    private Map<String, Object> buildApiRequest(String newRecoveryOwnerAddress, String recoveryOwnerAddress,
+                                                String recoveryContractAddress, String signature) {
         Map<String, Object> map = new HashMap<>();
         map.put(NEW_RECOVERY_OWNER_ADDRESS, newRecoveryOwnerAddress);
-        map.put(TO, recoveryAddress);
-        map.put(SIGNER, signer);
+        map.put(TO, recoveryContractAddress);
+        map.put(SIGNER, recoveryOwnerAddress);
         map.put(SIGNATURE, signature);
         return map;
-    }
-
-    private String signData(String pin, String appSalt, String salt, String eip712Hash) {
-        String stringToCalculate = String.format("%s%s%s", appSalt, pin, mUserId);
-
-        byte[] seed = OstSdkCrypto.getInstance().genSCryptKey(stringToCalculate.getBytes(), salt.getBytes());
-
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        //Don't store key of recovery key
-        String signature = ostKeyManager.signUsingSeed(seed, eip712Hash);
-
-        return signature;
-    }
-
-    private String createRecoveryKey(String pin, String appSalt, String salt) {
-        String stringToCalculate = String.format("%s%s%s", appSalt, pin, mUserId);
-
-        if (!storePinKeccek(pin, appSalt)) {
-            return null;
-        }
-
-        byte[] seed = OstSdkCrypto.getInstance().genSCryptKey(stringToCalculate.getBytes(), salt.getBytes());
-
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        //Don't store key of recovery key
-        String address = ostKeyManager.createHDKeyAddress(seed);
-
-        return address;
-    }
-
-    private boolean storePinKeccek(String pin, String appSalt) {
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        return ostKeyManager.storePinHash(pin, appSalt);
     }
 
     @Override

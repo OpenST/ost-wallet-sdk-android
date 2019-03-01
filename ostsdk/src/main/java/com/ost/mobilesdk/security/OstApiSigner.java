@@ -2,16 +2,14 @@ package com.ost.mobilesdk.security;
 
 import com.ost.mobilesdk.network.OstHttpRequestClient;
 
-import org.web3j.crypto.Credentials;
-import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
 public class OstApiSigner implements OstHttpRequestClient.ApiSigner {
-    private final ECKeyPair mECKeyPair;
 
-    public OstApiSigner(byte[] key) {
-        mECKeyPair = ECKeyPair.create(key);
+    String mUserID;
+    public OstApiSigner(String userId) {
+        mUserID = userId;
     }
 
     /**
@@ -21,18 +19,13 @@ public class OstApiSigner implements OstHttpRequestClient.ApiSigner {
      */
     @Override
     public String sign(byte[] dataToSign) {
-        return createStringSignature(Sign.signPrefixedMessage(dataToSign, mECKeyPair));
+        InternalKeyManager ikm = new InternalKeyManager(mUserID);
+        Sign.SignatureData signatureData = ikm.signBytesWithApiSigner(dataToSign);
+        ikm = null;
+        return OstApiSigner.createStringSignature(signatureData);
     }
 
-    public String getAddress() {
-        return Credentials.create(mECKeyPair).getAddress();
-    }
-
-    private String createStringSignature(Sign.SignatureData signatureData) {
+    private static String createStringSignature(Sign.SignatureData signatureData) {
         return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x",(signatureData.getV()));
-    }
-
-    public String signMessage(byte[] bytes) {
-        return createStringSignature(Sign.signMessage(bytes, mECKeyPair, false));
     }
 }
