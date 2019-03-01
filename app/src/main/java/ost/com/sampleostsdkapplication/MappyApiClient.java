@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-class MappyApiClient {
+public class MappyApiClient {
     private static final String TAG = "MappyApiCLient";
     private final OstHttpRequestClient mOstHttpRequestClient;
     private final Handler mHandler;
 
-    MappyApiClient() {
+    public MappyApiClient() {
         mHandler = new Handler();
         mOstHttpRequestClient = new OstHttpRequestClient(App.BASE_URL_MAPPY);
     }

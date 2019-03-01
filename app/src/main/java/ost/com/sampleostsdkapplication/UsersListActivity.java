@@ -12,9 +12,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,69 +29,31 @@ import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import ost.com.sampleostsdkapplication.fragments.UserDetailsFragment;
+import ost.com.sampleostsdkapplication.fragments.UserListFragment;
 
 public class UsersListActivity extends MappyBaseActivity {
 
     private static final String TAG = "UsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
     private int PICK_IMAGE_REQUEST = 1;
-    private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
-    private UserAdapter mAdapter;
-    private List<UserData> mDataList = new ArrayList<>();
     private UserDetailsFragment userDetailsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_users_list);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        mRecyclerView = findViewById(R.id.user_recycler_view);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-
-        // specify an adapter (see also next example)
-        mAdapter = new UserAdapter(mDataList);
-        mRecyclerView.setAdapter(mAdapter);
-        new MappyApiClient().getUserList(new MappyApiClient.Callback() {
-            @Override
-            public void onResponse(boolean success, JSONObject response) {
-                mDataList.clear();
-                if (success) {
-                    try {
-                        JSONArray array = response.optJSONArray("users");
-                        for (int i = 0; i < array.length(); i++) {
-
-                            JSONObject jsonObject = array.getJSONObject(i);
-                            mDataList.add(UserData.parse(jsonObject));
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    mDataList.add(new UserData("", "Network Error", "", ""));
-                }
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+        setContentView(R.layout.user_list_activity);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        UserListFragment userListFragment = UserListFragment.newInstance();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, userListFragment, "users_list");
+        transaction.commit();
     }
 
 
@@ -240,18 +199,19 @@ public class UsersListActivity extends MappyBaseActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         userDetailsFragment = UserDetailsFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.users_list_container, userDetailsFragment, "user_details");
+        transaction.add(R.id.container, userDetailsFragment, "user_details");
+        transaction.addToBackStack("users_list");
         transaction.commit();
     }
 
-    private void showQRFragment(Bitmap qrImage) {
-        Context context = UsersListActivity.this;
-        FragmentManager fragmentManager = ((UsersListActivity) context).getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        android.support.v4.app.Fragment fragment = new QRFragment();
-        ((QRFragment) fragment).setQRImage(qrImage);
-        transaction.add(R.id.user_recycler_view, fragment).commit();
-    }
+//    private void showQRFragment(Bitmap qrImage) {
+//        Context context = UsersListActivity.this;
+//        FragmentManager fragmentManager = ((UsersListActivity) context).getSupportFragmentManager();
+//        FragmentTransaction transaction = fragmentManager.beginTransaction();
+//        android.support.v4.app.Fragment fragment = new QRFragment();
+//        ((QRFragment) fragment).setQRImage(qrImage);
+//        transaction.add(R.id.user_recycler_view, fragment).commit();
+//    }
 
     private void getPinDialog(final DialogCallback callback, String message) {
         LayoutInflater li = LayoutInflater.from(UsersListActivity.this);
@@ -335,37 +295,37 @@ public class UsersListActivity extends MappyBaseActivity {
         void onCancel();
     }
 
-    public static class QRFragment extends android.support.v4.app.Fragment {
-
-        private ImageView mImageView;
-        private Button mBtnDone;
-        private Bitmap mBitMap;
-        private Activity mActivity;
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.activity_qr_view, container, false);
-            mImageView = v.findViewById(R.id.imageDisplay);
-            mBtnDone = v.findViewById(R.id.btnDone);
-            mActivity = getActivity();
-            mBtnDone.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //OnClick start polling
-                }
-            });
-            return v;
-        }
-
-        void setQRImage(Bitmap bitmap) {
-            mBitMap = bitmap;
-        }
-
-        @Override
-        public void onResume() {
-            super.onResume();
-            mImageView.setImageBitmap(mBitMap);
-        }
-    }
+//    public static class QRFragment extends android.support.v4.app.Fragment {
+//
+//        private ImageView mImageView;
+//        private Button mBtnDone;
+//        private Bitmap mBitMap;
+//        private Activity mActivity;
+//
+//        @Override
+//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                                 Bundle savedInstanceState) {
+//            View v = inflater.inflate(R.layout.activity_qr_view, container, false);
+//            mImageView = v.findViewById(R.id.imageDisplay);
+//            mBtnDone = v.findViewById(R.id.btnDone);
+//            mActivity = getActivity();
+//            mBtnDone.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    //OnClick start polling
+//                }
+//            });
+//            return v;
+//        }
+//
+//        void setQRImage(Bitmap bitmap) {
+//            mBitMap = bitmap;
+//        }
+//
+//        @Override
+//        public void onResume() {
+//            super.onResume();
+//            mImageView.setImageBitmap(mBitMap);
+//        }
+//    }
 }
