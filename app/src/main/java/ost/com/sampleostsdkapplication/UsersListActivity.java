@@ -35,15 +35,17 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import ost.com.sampleostsdkapplication.fragments.SetUpUserFragment;
 import ost.com.sampleostsdkapplication.fragments.UserDetailsFragment;
 import ost.com.sampleostsdkapplication.fragments.UserListFragment;
 
-public class UsersListActivity extends MappyBaseActivity {
+public class UsersListActivity extends MappyBaseActivity implements SetUpUserFragment.OnSetUpUserFragmentListener {
 
     private static final String TAG = "UsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
     private int PICK_IMAGE_REQUEST = 1;
     private UserDetailsFragment userDetailsFragment;
+    private SetUpUserFragment userSetupFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,20 +78,7 @@ public class UsersListActivity extends MappyBaseActivity {
             loadUserDetailsFragment(logInUser.getTokenId(), userId);
         } else if (id == R.id.activate_user) {
             Log.d(TAG, "Activate User Clicked");
-            String password = logInUser.getPassword();
-            long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
-            String spendingLimit = "1000000000000";
-            getPinDialog(new DialogCallback() {
-                @Override
-                public void onSubmit(String pin) {
-                    OstSdk.activateUser(userId, pin, password, expiresAfterInSecs, spendingLimit, new WorkFlowHelper(getApplicationContext()));
-                }
-
-                @Override
-                public void onCancel() {
-                    // Dialog cancelled;
-                }
-            });
+            loadSetUpUserFragment(logInUser.getTokenId(), userId);
         } else if (id == R.id.add_device) {
             Log.d(TAG, "Add device clicked");
             Bitmap qrImage = OstSdk.getAddDeviceQRCode(userId);
@@ -204,6 +193,15 @@ public class UsersListActivity extends MappyBaseActivity {
         transaction.commit();
     }
 
+    private void loadSetUpUserFragment(String tokenId, String userId) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        userSetupFragment = SetUpUserFragment.newInstance(tokenId, userId);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, userSetupFragment, "user_setup");
+        transaction.addToBackStack("users_list");
+        transaction.commit();
+    }
+
 //    private void showQRFragment(Bitmap qrImage) {
 //        Context context = UsersListActivity.this;
 //        FragmentManager fragmentManager = ((UsersListActivity) context).getSupportFragmentManager();
@@ -293,6 +291,23 @@ public class UsersListActivity extends MappyBaseActivity {
         void onSubmit(String pin);
 
         void onCancel();
+    }
+
+    @Override
+    public void onBack(){
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onSetupUserSubmit(String pin){
+        Log.d(TAG,"Start user activation process");
+        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+        String userId = logInUser.getOstUserId();
+        String password = logInUser.getPassword();
+        long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
+        String spendingLimit = "1000000000000";
+        OstSdk.activateUser(userId, pin, password, expiresAfterInSecs, spendingLimit,
+                new WorkFlowHelper(getApplicationContext()));
     }
 
 //    public static class QRFragment extends android.support.v4.app.Fragment {
