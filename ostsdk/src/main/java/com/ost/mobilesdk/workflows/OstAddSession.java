@@ -10,11 +10,14 @@ import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
 import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
+import com.ost.mobilesdk.security.OstGnosisSafeSigner;
 import com.ost.mobilesdk.security.OstKeyManager;
+import com.ost.mobilesdk.security.structs.SignedAddSessionStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.EIP712;
 import com.ost.mobilesdk.utils.GnosisSafe;
 import com.ost.mobilesdk.utils.OstPayloadBuilder;
+import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
@@ -82,36 +85,45 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
             Log.e(TAG, "IO Exception ");
         }
 
-        int nonce = OstDeviceManager.getById(ostUser.getDeviceManagerAddress()).getNonce();
-        Log.i(TAG, String.format("Device Manager  nonce %d", nonce));
-        String stringNonce = String.valueOf(nonce);
+//        int nonce = OstDeviceManager.getById(ostUser.getDeviceManagerAddress()).getNonce();
+//        Log.i(TAG, String.format("Device Manager  nonce %d", nonce));
+//        String stringNonce = String.valueOf(nonce);
 
-        JSONObject jsonObject = new GnosisSafe.SafeTxnBuilder()
-                .setAddOwnerExecutableData(new GnosisSafe().getAuthorizeSessionExecutableData
-                        (sessionAddress, mSpendingLimit, expiryHeight))
-                .setToAddress(tokenHolderAddress)
-                .setVerifyingContract(deviceManagerAddress)
-                .setNonce(stringNonce)
-                .build();
+//        JSONObject jsonObject = new GnosisSafe.SafeTxnBuilder()
+//                .setAddOwnerExecutableData(new GnosisSafe().getAuthorizeSessionExecutableData
+//                        (sessionAddress, mSpendingLimit, expiryHeight))
+//                .setToAddress(tokenHolderAddress)
+//                .setVerifyingContract(deviceManagerAddress)
+//                .setNonce(stringNonce)
+//                .build();
+//
+//        String signature = null;
+//        String signerAddress = ostUser.getCurrentDevice().getAddress();
+//        try {
+//            String messageHash = new EIP712(jsonObject).toEIP712TransactionHash();
+//            signature = OstUser.getById(mUserId).sign(messageHash);
+//        } catch (Exception e) {
+//            Log.e(TAG, "Exception in toEIP712TransactionHash");
+//            return postErrorInterrupt("wf_as_pr_as_2", OstErrors.ErrorCode.EIP712_FAILED);
+//        }
 
-        String signature = null;
-        String signerAddress = ostUser.getCurrentDevice().getAddress();
+        OstGnosisSafeSigner signer = new OstGnosisSafeSigner(mUserId);
+        SignedAddSessionStruct struct;
         try {
-            String messageHash = new EIP712(jsonObject).toEIP712TransactionHash();
-            signature = OstUser.getById(mUserId).sign(messageHash);
-        } catch (Exception e) {
-            Log.e(TAG, "Exception in toEIP712TransactionHash");
-            return postErrorInterrupt("wf_as_pr_as_2", OstErrors.ErrorCode.EIP712_FAILED);
+            struct = signer.addSession(sessionAddress, mSpendingLimit, expiryHeight );
+        } catch (OstError error) {
+            return postErrorInterrupt(error);
         }
+
 
         Map<String, Object> map = new OstPayloadBuilder()
                 .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_SESSION.toUpperCase())
                 .setRawCalldata(new GnosisSafe().getAuthorizeSessionData(sessionAddress, mSpendingLimit, expiryHeight))
                 .setCallData(new GnosisSafe().getAuthorizeSessionExecutableData(sessionAddress, mSpendingLimit, expiryHeight))
-                .setTo(tokenHolderAddress)
-                .setSignatures(signature)
-                .setSigners(Arrays.asList(signerAddress))
-                .setNonce(stringNonce)
+                .setTo( struct.getTokenHolderAddress() )
+                .setSignatures( struct.getSignature() )
+                .setSigners(Arrays.asList( struct.getSignerAddress() ))
+                .setNonce( struct.getNonce() )
                 .build();
 
         JSONObject responseObject = null;

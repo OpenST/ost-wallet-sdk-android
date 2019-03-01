@@ -34,6 +34,20 @@ import java.util.concurrent.TimeUnit;
 
 class InternalKeyManager {
     private static OstSecureKeyModelRepository modelRepo = null;
+    private static OstSecureKeyModelRepository getByteStorageRepo() {
+        if ( null == modelRepo ) {
+            modelRepo = new OstSecureKeyModelRepository();
+        }
+        return modelRepo;
+    }
+
+    private static OstSessionKeyModelRepository sessionModelRepository = null;
+    private static OstSessionKeyModelRepository getSessionRepo() {
+        if ( null == sessionModelRepository ) {
+            sessionModelRepository = new OstSessionKeyModelRepository();
+        }
+        return sessionModelRepository;
+    }
 
     private static final String TAG = "IKM";
     private static final String USER_PRESENCE_INFO_HASH_FOR_ = "pin_hash_for_";
@@ -80,7 +94,7 @@ class InternalKeyManager {
         String mnemonicsMetaId = mKeyMetaStruct.getEthKeyMnemonicsIdentifier(address);
 
         //Get the encrypted mnemonics
-        OstSecureKeyModelRepository metaRepository = modelRepo;
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
         OstSecureKey ostSecureKey = metaRepository.getByKey(mnemonicsMetaId);
         if (null == ostSecureKey) {
             return null;
@@ -92,14 +106,18 @@ class InternalKeyManager {
         return mnemonics.split(" ");
     }
 
+    String signWithDeviceKey(String  messageHash) {
+        byte[] data = Numeric.hexStringToByteArray(messageHash);
+        return signWithDeviceKey( data );
+    }
 
     String signWithDeviceKey(byte[] data) {
         //Get the keyId.
         String deviceAddress = mKeyMetaStruct.deviceAddress;
-        String ethKeyId = mKeyMetaStruct.getEthKeyIdentifier(deviceAddress);
+        String ethKeyId = createEthKeyMetaId(deviceAddress);
 
         //Get the encrypted key
-        OstSecureKeyModelRepository metaRepository = modelRepo;
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
         OstSecureKey ostSecureKey = metaRepository.getByKey(ethKeyId);
         if (null == ostSecureKey) {
             return null;
@@ -139,7 +157,7 @@ class InternalKeyManager {
         privateKey = null;
         mnemonics = null;
 
-        OstSecureKeyModelRepository metaRepository = modelRepo;
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
 
         //Store encrypted mnemonics
         String mnemonicsMetaId = createMnemonicsMetaId(deviceAddress);
@@ -162,7 +180,7 @@ class InternalKeyManager {
         String apiKeyId = createEthKeyMetaId(apiKeyAddress);
 
         //Fetch and decrypt Api Key
-        OstSecureKeyModelRepository metaRepository = modelRepo;
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
         OstSecureKey osk = metaRepository.getByKey(apiKeyId);
         byte[] key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
         ECKeyPair ecKeyPair = ECKeyPair.create(key);
@@ -271,7 +289,7 @@ class InternalKeyManager {
 
         String userPresenceInfoId = getUserPresenceInfoId(recoveryOwnerAddress);
 
-        Future<AsyncStatus> future = modelRepo
+        Future<AsyncStatus> future = getByteStorageRepo()
                 .insertSecureKey(new OstSecureKey(userPresenceInfoId, encrypted));
 
         try {
@@ -306,7 +324,8 @@ class InternalKeyManager {
 
         // Get User Presence Info from DB
         String userPresenceInfoId = getUserPresenceInfoId(recoveryOwnerAddress);
-        OstSecureKey ostSecureKey = new OstSecureKeyModelRepository().getByKey(userPresenceInfoId);
+
+        OstSecureKey ostSecureKey = getByteStorageRepo().getByKey(userPresenceInfoId);
         if (null == ostSecureKey) {
             return false;
         }
@@ -341,7 +360,7 @@ class InternalKeyManager {
 
         //Store the encrypted key.
         String apiKeyId = createEthKeyMetaId(apiKeyAddress);
-        OstSecureKeyModelRepository metaRepository = modelRepo;
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
         Future<AsyncStatus> future = metaRepository.insertSecureKey(new OstSecureKey(apiKeyId, encryptedKey));
 
         try {
@@ -401,7 +420,7 @@ class InternalKeyManager {
     // endregion
 
     //region - Session Key Methods
-    String signWithSessionKey(String sessionAddress, String hashToSign) {
+    String signWithSession(String sessionAddress, String hashToSign) {
         OstSessionKey ostSessionKey = new OstSessionKeyModelRepository().getByKey(sessionAddress);
         if (null == ostSessionKey) {
             return null;
@@ -436,6 +455,11 @@ class InternalKeyManager {
         }
 
         return address;
+    }
+
+    boolean canSignWithSession(String sessionAddress) {
+        OstSessionKey ostSessionKey = getSessionRepo().getByKey(sessionAddress);
+        return  ( null != ostSessionKey );
     }
     //endregion
 
@@ -579,14 +603,11 @@ class InternalKeyManager {
 
     static KeyMetaStruct srtuct = null;
     static KeyMetaStruct getKeyMataStruct(String userId) {
-        if ( null == modelRepo ) {
-            modelRepo = new OstSecureKeyModelRepository();
-        }
 
         if ( null != srtuct ) {
             return srtuct;
         }
-        OstSecureKeyModelRepository metaRepository = modelRepo;
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
         String userMetaId = createUserMataId(userId);
         OstSecureKey ostSecureKey = metaRepository.getByKey(userMetaId);
         if (null == ostSecureKey) {
@@ -598,9 +619,6 @@ class InternalKeyManager {
 
 
     static KeyMetaStruct createObjectFromBytes(byte[] bytes) {
-        if ( null == modelRepo ) {
-            modelRepo = new OstSecureKeyModelRepository();
-        }
 
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         ObjectInput in = null;
@@ -625,9 +643,6 @@ class InternalKeyManager {
     }
 
     static byte[] createBytesFromObject(KeyMetaStruct object) {
-        if ( null == modelRepo ) {
-            modelRepo = new OstSecureKeyModelRepository();
-        }
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out = null;
@@ -650,7 +665,7 @@ class InternalKeyManager {
     }
 
     private boolean storeKeyMetaStruct() {
-        OstSecureKeyModelRepository metaRepository = modelRepo;
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
         String userMetaId = createUserMataId(mUserId);
         Future<AsyncStatus> future = metaRepository.insertSecureKey
                 (new OstSecureKey(userMetaId, createBytesFromObject(mKeyMetaStruct)));

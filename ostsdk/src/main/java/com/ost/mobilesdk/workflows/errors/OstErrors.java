@@ -116,6 +116,18 @@ public class OstErrors {
 
             case UNCAUGHT_EXCEPTION_HANDELED: return "Uncaught exception handeled";
 
+            case INSUFFICIENT_DATA: return "The device does not have sufficient data to perform this action.";
+
+            case DEPRECATED: return "The method has been deprecated";
+
+            case SESSION_KEY_GENERATION_FAILED: return "Failed to create new session key";
+
+            case FAILED_TO_GENERATE_MESSAGE_HASH: return "Failed to generate message hash needed to complete the action";
+
+            case INVALID_SESSION_ADDRESS: return "Invalid session address";
+
+            case FAILED_TO_SIGN_DATA: return "Failed to sign data.";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -168,6 +180,12 @@ public class OstErrors {
         MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED,
         RECOVERY_KEY_GENERATION_FAILED,
         POST_RECOVERY_API_FAILED,
+
+        //Key-Managers
+        INSUFFICIENT_DATA,
+        FAILED_TO_GENERATE_MESSAGE_HASH,
+        INVALID_SESSION_ADDRESS,
+        FAILED_TO_SIGN_DATA,
 
         //Generic
         UNKNOWN,
