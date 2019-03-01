@@ -17,6 +17,7 @@ import com.ost.mobilesdk.utils.SoliditySha3;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Keys;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
@@ -27,8 +28,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-
-import java.security.interfaces.ECKey;
 import java.util.HashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -64,37 +63,16 @@ class InternalKeyManager {
         }
     }
 
-    //region Device Key Methods
-    private void createDeviceKey() {
-        //Create mnemonics and encrypt it.
-        String mnemonics = OstSdkCrypto.getInstance().genMnemonics();
-        byte[] encryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(mnemonics.getBytes());
+    static boolean sanityCheckRecoveryPassphraseInputsValidity(String passphrasePrefix, String userPassphrase, String scriptSalt) {
+        if (TextUtils.isEmpty(passphrasePrefix) || passphrasePrefix.length() < OstConstants.RECOVERY_PHRASE_PREFIX_MIN_LENGTH) {
+            return false;
+        }
 
+        if (TextUtils.isEmpty(userPassphrase) || userPassphrase.length() < OstConstants.RECOVERY_PHRASE_USER_INPUT_MIN_LENGTH) {
+            return false;
+        }
 
-        //Create ECKeyPair and encrypt it.
-        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics);
-        String deviceAddress = Credentials.create(ecKeyPair).getAddress();
-        byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
-        byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
-        ecKeyPair = null;
-        privateKey = null;
-        mnemonics = null;
-
-        OstSecureKeyModelRepository metaRepository = modelRepo;
-
-        //Store encrypted mnemonics
-        String mnemonicsMetaId = createMnemonicsMetaId(deviceAddress);
-        OstSecureKey mnemonicsStorageBytes = new OstSecureKey(mnemonicsMetaId, encryptedMnemonics);
-        Future<AsyncStatus> future1 = metaRepository.insertSecureKey(mnemonicsStorageBytes);
-
-        //Store encrypted Device key.
-        String deviceAddressMetaId = createEthKeyMetaId(deviceAddress);
-        Future<AsyncStatus> future2 = metaRepository.insertSecureKey(new OstSecureKey(deviceAddressMetaId, encryptedKey));
-
-        // Update meta.
-        setMnemonicsMeta(deviceAddress);
-        setEthKeyMeta(deviceAddress);
-        mKeyMetaStruct.deviceAddress = deviceAddress;
+        return !TextUtils.isEmpty(scriptSalt) && scriptSalt.length() >= OstConstants.RECOVERY_PHRASE_SCRYPT_SALT_MIN_LENGTH;
     }
 
     String[] getMnemonics(String address) {
@@ -141,35 +119,41 @@ class InternalKeyManager {
 
     //endregion
 
-    // region - Api Key Methods
-    private String createApiKey() {
-        // Create a private key.
-        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKey();
-        String apiKeyAddress = Credentials.create(ecKeyPair).getAddress();
+    //region Device Key Methods
+    private void createDeviceKey() {
+        //Create mnemonics and encrypt it.
+        String mnemonics = OstSdkCrypto.getInstance().genMnemonics();
+        byte[] encryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(mnemonics.getBytes());
+
+
+        //Create ECKeyPair and encrypt it.
+        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics);
+        String deviceAddress = Credentials.create(ecKeyPair).getAddress();
+
+        //CheckSum as generated address is not CheckSum address
+        deviceAddress = Keys.toChecksumAddress(deviceAddress);
+
         byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
-        ecKeyPair = null;
-
-        //Encrypt the private key.
         byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
+        ecKeyPair = null;
         privateKey = null;
+        mnemonics = null;
 
-        //Store the encrypted key.
-        String apiKeyId = createEthKeyMetaId(apiKeyAddress);
         OstSecureKeyModelRepository metaRepository = modelRepo;
-        Future<AsyncStatus> future = metaRepository.insertSecureKey(new OstSecureKey(apiKeyId, encryptedKey));
 
-        try {
-            future.get(10, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
-            return null;
-        }
+        //Store encrypted mnemonics
+        String mnemonicsMetaId = createMnemonicsMetaId(deviceAddress);
+        OstSecureKey mnemonicsStorageBytes = new OstSecureKey(mnemonicsMetaId, encryptedMnemonics);
+        Future<AsyncStatus> future1 = metaRepository.insertSecureKey(mnemonicsStorageBytes);
 
-        //Update key meta.
-        setEthKeyMeta(apiKeyAddress);
-        mKeyMetaStruct.apiAddress = apiKeyAddress;
+        //Store encrypted Device key.
+        String deviceAddressMetaId = createEthKeyMetaId(deviceAddress);
+        Future<AsyncStatus> future2 = metaRepository.insertSecureKey(new OstSecureKey(deviceAddressMetaId, encryptedKey));
 
-        return apiKeyAddress;
+        // Update meta.
+        setMnemonicsMeta(deviceAddress);
+        setEthKeyMeta(deviceAddress);
+        mKeyMetaStruct.deviceAddress = deviceAddress;
     }
 
     Sign.SignatureData signBytesWithApiSigner(byte[] dataToSign) {
@@ -339,70 +323,39 @@ class InternalKeyManager {
 
     // region - Passphrase Locker Class
 
+    // region - Api Key Methods
+    private String createApiKey() {
+        // Create a private key.
+        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKey();
+        String apiKeyAddress = Credentials.create(ecKeyPair).getAddress();
 
-    class PassphraseValidationLocker {
-        private long lastInvalidAttemptTimestamp;
-        private long lastValidAttemptTimestamp;
-        private int retryCount;
+        //CheckSum as generated address is not CheckSum address
+        apiKeyAddress = Keys.toChecksumAddress(apiKeyAddress);
 
-        /**
-         * Use this method to check if validation is allowed.
-         * @return
-         */
-        private boolean isValidationAllowed() {
-            if ( retryCount < MaxRetryCount ) {
-                return true;
-            }
-            long now = System.currentTimeMillis();
-            long elapsedLockDuration = now - lastInvalidAttemptTimestamp;
-            if ( elapsedLockDuration <= LockDuration ) {
-                return false;
-            }
-            return true;
+        byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
+        ecKeyPair = null;
+
+        //Encrypt the private key.
+        byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
+        privateKey = null;
+
+        //Store the encrypted key.
+        String apiKeyId = createEthKeyMetaId(apiKeyAddress);
+        OstSecureKeyModelRepository metaRepository = modelRepo;
+        Future<AsyncStatus> future = metaRepository.insertSecureKey(new OstSecureKey(apiKeyId, encryptedKey));
+
+        try {
+            future.get(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
+            return null;
         }
 
-        /**
-         * Call this method to acknowledge validation.
-         */
-        private void validated() {
-            //To-Do: Update them in DB
-            lastValidAttemptTimestamp = System.currentTimeMillis();
-            lastInvalidAttemptTimestamp = 0;
-            retryCount = 0;
-        }
+        //Update key meta.
+        setEthKeyMeta(apiKeyAddress);
+        mKeyMetaStruct.apiAddress = apiKeyAddress;
 
-        /**
-         * Call this method to acknowledge invalidation.
-         */
-        private void invalidated() {
-            //To-Do: Update them in DB
-            boolean wasValidationAllowed = isValidationAllowed();
-
-            lastValidAttemptTimestamp = 0;
-            lastInvalidAttemptTimestamp = System.currentTimeMillis();
-            retryCount += 1;
-            if ( retryCount > 3 && wasValidationAllowed) {
-                retryCount = 1;
-            }
-        }
-
-        /**
-         * Use this method to check if validation is needed.
-         * @return
-         */
-        private boolean isValidationNeeded() {
-            //If passphrase validation is not allowed, return true.
-            if ( !isValidationAllowed() ) {
-                return true;
-            }
-
-            long now = System.currentTimeMillis();
-            long elapsedLockDuration = now - lastValidAttemptTimestamp;
-            if ( elapsedLockDuration > UnlockedDuration ) {
-                return true;
-            }
-            return false;
-        }
+        return apiKeyAddress;
     }
     // endregion
 
@@ -464,6 +417,10 @@ class InternalKeyManager {
     String createSessionKey() {
         ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKey();
         String address = Credentials.create(ecKeyPair).getAddress();
+
+        //CheckSum as generated address is not CheckSum address
+        address = Keys.toChecksumAddress(address);
+
         byte[] privateKey = ecKeyPair.getPrivateKey().toByteArray();
         byte[] encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
         privateKey = null;
@@ -556,19 +513,65 @@ class InternalKeyManager {
         return InternalKeyManager.sanityCheckRecoveryPassphraseInputsValidity(passphrasePrefix, userPassphrase, scriptSalt);
     }
 
-    static boolean sanityCheckRecoveryPassphraseInputsValidity(String passphrasePrefix, String userPassphrase, String scriptSalt) {
-        if ( TextUtils.isEmpty(passphrasePrefix) || passphrasePrefix.length() < OstConstants.RECOVERY_PHRASE_PREFIX_MIN_LENGTH) {
-            return false;
+    class PassphraseValidationLocker {
+        private long lastInvalidAttemptTimestamp;
+        private long lastValidAttemptTimestamp;
+        private int retryCount;
+
+        /**
+         * Use this method to check if validation is allowed.
+         *
+         * @return
+         */
+        private boolean isValidationAllowed() {
+            if (retryCount < MaxRetryCount) {
+                return true;
+            }
+            long now = System.currentTimeMillis();
+            long elapsedLockDuration = now - lastInvalidAttemptTimestamp;
+            return elapsedLockDuration > LockDuration;
         }
 
-        if ( TextUtils.isEmpty(userPassphrase) || userPassphrase.length() < OstConstants.RECOVERY_PHRASE_USER_INPUT_MIN_LENGTH) {
-            return false;
+        /**
+         * Call this method to acknowledge validation.
+         */
+        private void validated() {
+            //To-Do: Update them in DB
+            lastValidAttemptTimestamp = System.currentTimeMillis();
+            lastInvalidAttemptTimestamp = 0;
+            retryCount = 0;
         }
 
-        if ( TextUtils.isEmpty(scriptSalt) || scriptSalt.length() < OstConstants.RECOVERY_PHRASE_SCRYPT_SALT_MIN_LENGTH) {
-            return false;
+        /**
+         * Call this method to acknowledge invalidation.
+         */
+        private void invalidated() {
+            //To-Do: Update them in DB
+            boolean wasValidationAllowed = isValidationAllowed();
+
+            lastValidAttemptTimestamp = 0;
+            lastInvalidAttemptTimestamp = System.currentTimeMillis();
+            retryCount += 1;
+            if (retryCount > 3 && wasValidationAllowed) {
+                retryCount = 1;
+            }
         }
-        return true;
+
+        /**
+         * Use this method to check if validation is needed.
+         *
+         * @return
+         */
+        private boolean isValidationNeeded() {
+            //If passphrase validation is not allowed, return true.
+            if (!isValidationAllowed()) {
+                return true;
+            }
+
+            long now = System.currentTimeMillis();
+            long elapsedLockDuration = now - lastValidAttemptTimestamp;
+            return elapsedLockDuration > UnlockedDuration;
+        }
     }
     //endregion
 
