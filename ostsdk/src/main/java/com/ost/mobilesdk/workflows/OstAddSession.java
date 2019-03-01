@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
 import com.ost.mobilesdk.models.entities.OstSession;
@@ -129,6 +128,9 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         //Request Acknowledge
         postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
                 new OstContextEntity(OstSession.getById(sessionAddress), OstSdk.SESSION));
+
+        //increment nonce
+        OstDeviceManager.getById(ostUser.getDeviceManagerAddress()).incrementNonce();
 
         Log.i(TAG, "Starting Session polling service");
 
