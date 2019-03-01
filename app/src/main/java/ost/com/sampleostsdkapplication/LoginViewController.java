@@ -74,6 +74,7 @@ public class LoginViewController {
 
                 OstSdk.setupDevice(userId, tokenId, new WorkFlowHelper(activity.getApplicationContext()));
                 userListIntent.putExtra(OST_USER_ID, userId);
+                userListIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 activity.startActivity(userListIntent);
                 return;
             }
