@@ -104,6 +104,11 @@ public class OstAddDeviceWithMnemonics extends OstBaseWorkFlow implements OstPin
                 if (!apiCallStatus.isSuccess()) {
                     return postErrorInterrupt("wf_adwm_pr_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
                 }
+
+                //request acknowledge
+                postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+                        new OstContextEntity(OstDevice.getById(mSigningAddress), OstSdk.DEVICE));
+
             case POLLING:
                 OstDevicePollingService.startPolling(mUserId, mSigningAddress, OstDevice.CONST_STATUS.AUTHORIZED,
                         OstDevice.CONST_STATUS.CREATED);

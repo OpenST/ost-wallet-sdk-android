@@ -495,6 +495,10 @@ abstract class OstBaseWorkFlow {
             JSONObject jsonObject = ostApiClient.postAddDevice(map);
             Log.d(TAG, String.format("JSON Object response: %s", jsonObject.toString()));
             if (isValidResponse(jsonObject)) {
+
+                //increment nonce
+                OstDeviceManager.getById(deviceAddress).incrementNonce();
+
                 return new AsyncStatus(true);
             } else {
                 return new AsyncStatus(false);

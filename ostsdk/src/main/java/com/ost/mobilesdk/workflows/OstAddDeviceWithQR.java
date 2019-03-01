@@ -102,6 +102,11 @@ public class OstAddDeviceWithQR extends OstBaseWorkFlow implements OstVerifyData
                 if (!apiCallStatus.isSuccess()) {
                     return postErrorInterrupt("wf_adwq_pr_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
                 }
+
+                //request acknowledge
+                postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+                        new OstContextEntity(OstDevice.getById(mDeviceAddress), OstSdk.DEVICE));
+
             case POLLING:
                 OstDevicePollingService.startPolling(mUserId, mDeviceAddress, OstDevice.CONST_STATUS.AUTHORIZED,
                         OstDevice.CONST_STATUS.CREATED);

@@ -116,6 +116,9 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
                     return postErrorInterrupt("wf_et_pr_6", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
                 }
 
+                //Increment Nonce
+                session.incrementNonce();
+
                 //Request Acknowledge
                 postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
                         new OstContextEntity(OstTransaction.getById(entityId), OstSdk.TRANSACTION));
