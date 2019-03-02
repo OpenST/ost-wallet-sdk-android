@@ -7,6 +7,8 @@ import com.ost.mobilesdk.models.entities.OstSessionKey;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 
+import org.web3j.crypto.Keys;
+
 import java.util.concurrent.Future;
 
 public class OstSessionKeyModelRepository implements OstSessionKeyModel {
@@ -36,7 +38,7 @@ public class OstSessionKeyModelRepository implements OstSessionKeyModel {
 
     @Override
     public OstSessionKey getByKey(String key) {
-        return getModel().getById(key);
+        return getModel().getById(Keys.toChecksumAddress(key));
     }
 
     @Override

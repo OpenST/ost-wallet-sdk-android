@@ -5,6 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import org.web3j.crypto.Keys;
+
 @Entity(tableName = "session_key")
 public class OstSessionKey {
 
@@ -22,7 +24,7 @@ public class OstSessionKey {
     private byte[] data;
 
     public OstSessionKey(@NonNull String key, @NonNull byte[] data) {
-        this.key = key;
+        this.key = Keys.toChecksumAddress(key);
         this.data = data;
     }
 
