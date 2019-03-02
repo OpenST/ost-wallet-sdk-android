@@ -6,6 +6,8 @@ import com.ost.mobilesdk.database.daos.OstDeviceDao;
 import com.ost.mobilesdk.models.OstDeviceModel;
 import com.ost.mobilesdk.models.entities.OstDevice;
 
+import org.web3j.crypto.Keys;
+
 class OstDeviceModelRepository extends OstBaseModelCacheRepository implements OstDeviceModel {
 
     private static final int LRU_CACHE_SIZE = 5;
@@ -25,7 +27,7 @@ class OstDeviceModelRepository extends OstBaseModelCacheRepository implements Os
 
     @Override
     public OstDevice getEntityById(String id) {
-        return (OstDevice)super.getById(id);
+        return (OstDevice)super.getById(Keys.toChecksumAddress(id));
     }
 
     @Override

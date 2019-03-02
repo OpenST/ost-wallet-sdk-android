@@ -19,10 +19,12 @@ public class OstApiSigner implements OstHttpRequestClient.ApiSigner {
      */
     @Override
     public String sign(byte[] dataToSign) {
-        InternalKeyManager ikm = new InternalKeyManager(mUserID);
-        Sign.SignatureData signatureData = ikm.signBytesWithApiSigner(dataToSign);
-        ikm = null;
-        return OstApiSigner.createStringSignature(signatureData);
+        InternalKeyManager2 ikm = new InternalKeyManager2(mUserID);
+        try {
+            return ikm.signBytesWithApiSigner(dataToSign);
+        } finally {
+            ikm = null;
+        }
     }
 
     private static String createStringSignature(Sign.SignatureData signatureData) {
