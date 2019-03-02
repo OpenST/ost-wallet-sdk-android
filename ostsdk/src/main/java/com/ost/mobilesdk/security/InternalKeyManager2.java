@@ -94,24 +94,26 @@ public class InternalKeyManager2 {
         try {
             privateKey = ecKeyPair.getPrivateKey().toByteArray();
             encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
+
+
+            //Store the encrypted key.
+            String apiKeyId = createEthKeyMetaId(apiKeyAddress);
+            OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
+            Future<AsyncStatus> future = metaRepository.insertSecureKey(new OstSecureKey(apiKeyId, encryptedKey));
+
+            try {
+                future.get(10, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
+                return null;
+            }
+
         } catch (Exception ex) {
             Log.e(TAG, "m_s_ikm_cak: Unexpected Exception", ex);
             return null;
         } finally {
             ecKeyPair = null;
             clearBytes(privateKey);
-        }
-
-        //Store the encrypted key.
-        String apiKeyId = createEthKeyMetaId(apiKeyAddress);
-        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
-        Future<AsyncStatus> future = metaRepository.insertSecureKey(new OstSecureKey(apiKeyId, encryptedKey));
-
-        try {
-            future.get(10, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
-            return null;
         }
 
         //Update key meta.
@@ -139,6 +141,17 @@ public class InternalKeyManager2 {
         try {
             privateKey = ecKeyPair.getPrivateKey().toByteArray();
             encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
+
+            OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
+
+            //Store encrypted mnemonics
+            String mnemonicsMetaId = createMnemonicsMetaId(deviceAddress);
+            OstSecureKey mnemonicsStorageBytes = new OstSecureKey(mnemonicsMetaId, encryptedMnemonics);
+            Future<AsyncStatus> future1 = metaRepository.insertSecureKey(mnemonicsStorageBytes);
+
+            //Store encrypted Device key.
+            String deviceAddressMetaId = createEthKeyMetaId(deviceAddress);
+            Future<AsyncStatus> future2 = metaRepository.insertSecureKey(new OstSecureKey(deviceAddressMetaId, encryptedKey));
         } catch (Exception ex) {
             Log.e(TAG, "m_s_ikm_cdk: Unexpected Exception", ex);
             return;
@@ -147,17 +160,6 @@ public class InternalKeyManager2 {
             mnemonics = null;
             clearBytes(privateKey);
         }
-
-        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
-
-        //Store encrypted mnemonics
-        String mnemonicsMetaId = createMnemonicsMetaId(deviceAddress);
-        OstSecureKey mnemonicsStorageBytes = new OstSecureKey(mnemonicsMetaId, encryptedMnemonics);
-        Future<AsyncStatus> future1 = metaRepository.insertSecureKey(mnemonicsStorageBytes);
-
-        //Store encrypted Device key.
-        String deviceAddressMetaId = createEthKeyMetaId(deviceAddress);
-        Future<AsyncStatus> future2 = metaRepository.insertSecureKey(new OstSecureKey(deviceAddressMetaId, encryptedKey));
 
         // Update meta.
         setMnemonicsMeta(deviceAddress);
