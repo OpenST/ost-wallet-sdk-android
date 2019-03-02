@@ -12,12 +12,16 @@ import com.ost.mobilesdk.models.entities.OstSessionKey;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
+import com.ost.mobilesdk.security.structs.OstSignWithMnemonicsStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.SoliditySha3;
 
+import org.bouncycastle.crypto.digests.SHA512Digest;
+import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
+import org.web3j.crypto.MnemonicUtils;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
@@ -28,6 +32,10 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -89,6 +97,7 @@ class InternalKeyManager {
         return !TextUtils.isEmpty(scriptSalt) && scriptSalt.length() >= OstConstants.RECOVERY_PHRASE_SCRYPT_SALT_MIN_LENGTH;
     }
 
+    // region - Device Key Management
     String[] getMnemonics(String address) {
         //Get the keyId.
         String mnemonicsMetaId = mKeyMetaStruct.getEthKeyMnemonicsIdentifier(address);
@@ -124,20 +133,26 @@ class InternalKeyManager {
         }
 
         //Decrypt it.
-        byte[] decryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSecureKey.getData());
-        ECKeyPair ecKeyPair = ECKeyPair.create(decryptedKey);
+        byte[] decryptedKey = null;
+        String signature = null;
+        try {
+            decryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSecureKey.getData());
+            ECKeyPair ecKeyPair = ECKeyPair.create(decryptedKey);
 
-        //Sign the data.
-        Sign.SignatureData signatureData = Sign.signMessage(data, ecKeyPair, false);
-        ecKeyPair = null;
+            //Sign the data.
+            Sign.SignatureData signatureData = Sign.signMessage(data, ecKeyPair, false);
+            signature = signatureDataToString(signatureData);
+            ecKeyPair = null;
+        } finally {
+            if ( null != decryptedKey ) {
+                Arrays.fill(decryptedKey, (byte) 0);
+            }
+        }
 
         //return the signature.
-        return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
+        return signature;
     }
 
-    //endregion
-
-    //region Device Key Methods
     private void createDeviceKey() {
         //Create mnemonics and encrypt it.
         String mnemonics = OstSdkCrypto.getInstance().genMnemonics();
@@ -340,7 +355,6 @@ class InternalKeyManager {
     }
     //endregion
 
-    // region - Passphrase Locker Class
 
     // region - Api Key Methods
     private String createApiKey() {
@@ -390,7 +404,7 @@ class InternalKeyManager {
     /**
      * A Factory method to get In-Memory PassphraseValidationLocker for a given user-id
      * @param userId Id of the user.
-     * @return
+     * @return A simple time-based, In-Memory lock mechanism.
      */
     private PassphraseValidationLocker getLockerFor(String userId) {
         PassphraseValidationLocker locker = lockers.get(userId);
@@ -536,7 +550,9 @@ class InternalKeyManager {
     boolean areRecoveryPassphraseInputsValid(String passphrasePrefix, String userPassphrase, String scriptSalt) {
         return InternalKeyManager.sanityCheckRecoveryPassphraseInputsValidity(passphrasePrefix, userPassphrase, scriptSalt);
     }
+    //endregion
 
+    // region - Passphrase Locker Class
     class PassphraseValidationLocker {
         private long lastInvalidAttemptTimestamp;
         private long lastValidAttemptTimestamp;
@@ -702,5 +718,60 @@ class InternalKeyManager {
         mKeyMetaStruct.ethKeyMnemonicsMetaMapping.put(addressIdentifier, keyStoreIdentifier);
     }
     //endregion
+
+
+    void sign(OstSignWithMnemonicsStruct ostSignWithMnemonicsStruct) {
+        String messageHash = ostSignWithMnemonicsStruct.getMessageHash();
+        char[] mnemonics = ostSignWithMnemonicsStruct.getMnemonics();
+        if ( null == messageHash || null == mnemonics) {
+            return;
+        }
+
+        byte[] dataToSign =  Numeric.hexStringToByteArray(messageHash);
+        byte[] seed = null;
+        String signature = null;
+        String signerAddress = null;
+        try {
+
+            seed = MnemonicUtils.generateSeed(String.valueOf(mnemonics),null);
+            ECKeyPair ecKeyPair = ECKeyPair.create(seed);
+            signerAddress = Credentials.create(ecKeyPair).getAddress();
+
+            //Sachin: Please check here.
+            //Expected Signer Address: 0xb1CaeCf0928A210febc8973bFa1861ac3cD81252
+            //mnemonics: 'rail hospital yard floor oppose gold cash peasant kitchen anchor slot honey'
+
+            Sign.SignatureData signatureData = Sign.signMessage(dataToSign, ecKeyPair, false);
+            signature = signatureDataToString( signatureData );
+
+        } finally {
+            //Clean out mnemonics
+            Arrays.fill(mnemonics, (char) 0);
+
+            //Clean the seed.
+            if ( null != seed ) {
+                Arrays.fill(seed, (byte) 0);
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+
+        ostSignWithMnemonicsStruct.setSignature(signature);
+        ostSignWithMnemonicsStruct.setSigner(signerAddress);
+    }
+
+
+    static String signatureDataToString(Sign.SignatureData signatureData) {
+        return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
+    }
+
+    byte[] charsToBytes(char[] chars) {
+        CharBuffer charBuffer = CharBuffer.wrap(chars);
+        ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
+        byte[] bytes = Arrays.copyOfRange(byteBuffer.array(),
+                byteBuffer.position(), byteBuffer.limit());
+        Arrays.fill(byteBuffer.array(), (byte) 0); // clear sensitive data
+        return bytes;
+    }
+
 
 }

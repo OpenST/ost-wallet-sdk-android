@@ -81,7 +81,7 @@ public class OstApiClient {
         return mOstHttpRequestClient.post(String.format("/users/%s/activate-user/", mUserId), requestMap);
     }
 
-    public JSONObject getDevices(String address) throws IOException {
+    public JSONObject getDevice(String address) throws IOException {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/devices/%s/", mUserId, address), requestMap);
     }

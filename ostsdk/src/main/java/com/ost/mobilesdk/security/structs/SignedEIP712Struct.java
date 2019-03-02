@@ -1,10 +1,11 @@
 package com.ost.mobilesdk.security.structs;
 
 import org.json.JSONObject;
+import org.web3j.crypto.Keys;
 
 public class SignedEIP712Struct {
     public String getSignerAddress() {
-        return signerAddress;
+        return Keys.toChecksumAddress(signerAddress);
     }
 
     public void setSignerAddress(String signerAddress) {
@@ -12,7 +13,7 @@ public class SignedEIP712Struct {
     }
 
     public String getVerifyingContract() {
-        return verifyingContract;
+        return toSafeCheckSumAddress(verifyingContract);
     }
 
     public void setVerifyingContract(String verifyingContract) {
@@ -20,7 +21,7 @@ public class SignedEIP712Struct {
     }
 
     public String getToAddress() {
-        return toAddress;
+        return toSafeCheckSumAddress(toAddress);
     }
 
     public void setToAddress(String toAddress) {
@@ -70,5 +71,12 @@ public class SignedEIP712Struct {
 
     public SignedEIP712Struct() {
 
+    }
+
+    public String toSafeCheckSumAddress(String address) {
+        if ( null == address ) {
+            return address;
+        }
+        return Keys.toChecksumAddress(address);
     }
 }

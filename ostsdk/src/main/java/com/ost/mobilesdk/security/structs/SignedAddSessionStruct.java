@@ -1,7 +1,5 @@
 package com.ost.mobilesdk.security.structs;
 
-import org.json.JSONObject;
-
 public class SignedAddSessionStruct extends BaseDeviceManagerOperationStruct {
     private String sessionAddress;
     private String spendingLimit;

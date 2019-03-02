@@ -84,7 +84,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
                 }
 
                 if (!hasAuthorizedDevice()) {
-                    return postErrorInterrupt("wf_et_pr_4", OstErrors.ErrorCode.DEVICE_UNREGISTERED);
+                    return postErrorInterrupt("wf_et_pr_4", OstErrors.ErrorCode.DEVICE_NOT_SETUP);
                 }
 
                 Log.i(TAG, "Building call data");

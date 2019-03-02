@@ -7,7 +7,7 @@ public class OstErrors {
 
     public static String getMessage(ErrorCode code) {
         switch (code) {
-            case USER_API_FAILED:
+            case GET_USER_API_FAILED:
                 return "Failed to fetch user information";
 
             case SALT_API_FAILED:
@@ -18,6 +18,12 @@ public class OstErrors {
 
             case CHAIN_API_FAILED:
                 return "Failed to fetch block-chain information";
+
+            case RULES_API_FAILED:return "Failed to fetch rule information";
+
+            case GET_DEVICE_API_FAILED: return "Failed to fetch device Information";
+
+            case DEVICE_MANAGER_API_FAILED: return "Failed to fetch device manager information";
 
             case INVALID_WORKFLOW_PARAMS:
                 return "Invalid workflow params";
@@ -31,7 +37,7 @@ public class OstErrors {
             case ACTIVATE_USER_API_POLLING_FAILED:
                 return "Something went wrong while activating user";
 
-            case DEVICE_UNREGISTERED:
+            case DEVICE_NOT_SETUP:
                 return "Device not registered";
 
             case WORKFLOW_CANCELED:
@@ -128,6 +134,8 @@ public class OstErrors {
 
             case FAILED_TO_SIGN_DATA: return "Failed to sign data.";
 
+            case DEVICE_CAN_NOT_BE_AUTHORIZED: return "Only devices with status 'Registered' can be authorized.";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -139,15 +147,21 @@ public class OstErrors {
     }
 
     public enum ErrorCode {
-        USER_API_FAILED,
+        GET_USER_API_FAILED,
         TOKEN_API_FAILED,
+        GET_DEVICE_API_FAILED,
         CHAIN_API_FAILED,
         SALT_API_FAILED,
+        DEVICE_MANAGER_API_FAILED,
+        RULES_API_FAILED,
+
         INVALID_WORKFLOW_PARAMS,
         CREATE_DEVICE_FAILED,
         ACTIVATE_USER_API_FAILED,
         ACTIVATE_USER_API_POLLING_FAILED,
-        DEVICE_UNREGISTERED,
+
+        DEVICE_NOT_SETUP,
+
         WORKFLOW_CANCELED,
         USER_NOT_ACTIVATED,
         POLLING_TIMEOUT,
@@ -166,6 +180,7 @@ public class OstErrors {
         INVALID_ADD_DEVICE_ADDRESS,
         DEVICE_UNAUTHORIZED,
         DEVICE_ALREADY_AUTHORIZED,
+        DEVICE_CAN_NOT_BE_AUTHORIZED,
         USER_ALREADY_ACTIVATED,
         INVALID_MNEMONICS,
         INVALID_QR_TRANSACTION_DATA,

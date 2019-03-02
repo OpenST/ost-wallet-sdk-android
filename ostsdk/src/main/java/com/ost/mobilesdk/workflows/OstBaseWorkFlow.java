@@ -252,7 +252,7 @@ abstract class OstBaseWorkFlow {
         OstDevice ostDevice = OstDevice.getById(address);
         if (null != ostDevice) return true;
         try {
-            mOstApiClient.getDevices(address);
+            mOstApiClient.getDevice(address);
         } catch (IOException e) {
             Log.e(TAG, "Exception while getting device");
         }
@@ -272,51 +272,68 @@ abstract class OstBaseWorkFlow {
         return salt;
     }
 
-    OstDevice mCurrentDevice;
 
-    AsyncStatus loadCurrentDevice() {
-        OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
-        if (canDeviceMakeApiCall(ostDevice)) {
-            mCurrentDevice = ostDevice;
-            return new AsyncStatus(true);
+
+
+
+    //region - Ensure Data
+
+
+    OstDevice mCurrentDevice;
+    boolean hasSyncedDeviceToEnsureApiCommunication = false;
+    void ensureApiCommunication() throws OstError {
+        OstUser ostUser = OstUser.getById(mUserId);
+
+        if ( null == ostUser ) {
+            throw new OstError("wp_base_apic_1", ErrorCode.DEVICE_NOT_SETUP);
         }
-        Log.i(TAG, "Device is not registered");
-        return postErrorInterrupt("wp_base_lcd_1", ErrorCode.DEVICE_UNREGISTERED);
+
+        OstDevice ostDevice = ostUser.getCurrentDevice();
+        String deviceAddress = ostDevice.getAddress();
+        if ( null == ostDevice) {
+            throw new OstError("wp_base_apic_2", ErrorCode.DEVICE_NOT_SETUP);
+        }
+        else if ( !canDeviceMakeApiCall(ostDevice) ) {
+
+            // Lets try and make an api call.
+            hasSyncedDeviceToEnsureApiCommunication = true;
+            try {
+                syncCurrentDevice();
+            } catch (OstError ostError) {
+                //We know this could happen. Lets ignore the error given by syncCurrentDevice.
+                throw new OstError("wp_base_apic_3", ErrorCode.DEVICE_NOT_SETUP);
+            }
+
+            ostDevice = OstDevice.getById(deviceAddress);
+
+            //Check again.
+            if ( !canDeviceMakeApiCall(ostDevice) ) {
+                throw new OstError("wp_base_apic_4", ErrorCode.DEVICE_NOT_SETUP);
+            }
+        }
+        mCurrentDevice = ostDevice;
     }
 
     OstUser mOstUser;
-
-    AsyncStatus loadUser() {
-        //Check if we have user information.
+    void ensureOstUser() throws OstError {
         mOstUser = OstUser.getById(mUserId);
-        if (null == mOstUser || TextUtils.isEmpty(mOstUser.getTokenHolderAddress())) {
+        if ( null == mOstUser || TextUtils.isEmpty(mOstUser.getTokenHolderAddress()) || TextUtils.isEmpty(mOstUser.getDeviceManagerAddress())) {
             try {
                 mOstApiClient.getUser();
                 mOstUser = OstUser.getById(mUserId);
             } catch (IOException e) {
-                Log.i(TAG, "Encountered IOException while fetching user.");
-                mOstUser = null;
+                Log.d(TAG, "Encountered IOException while fetching user.");
+                OstError ostError = new OstError("wp_base_eou_1", ErrorCode.GET_USER_API_FAILED);
+                throw ostError;
             }
         }
-
-        if (null == mOstUser) {
-            Log.i(TAG, "User does not exist");
-            return postErrorInterrupt("wp_base_lusr_1", ErrorCode.USER_API_FAILED);
-        }
-        return new AsyncStatus(true);
     }
 
     OstToken mOstToken;
-
-    AsyncStatus loadToken() {
+    void ensureOstToken()  throws OstError {
         if (null == mOstUser) {
-            AsyncStatus loadUserStatus = this.loadUser();
-            if (!loadUserStatus.isSuccess()) {
-                return loadUserStatus;
-            }
+            ensureOstUser();
         }
-
-        //Check if we have user information.
         String tokenId = mOstUser.getTokenId();
         mOstToken = OstToken.getById(tokenId);
         if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId())) {
@@ -326,44 +343,125 @@ abstract class OstBaseWorkFlow {
                 mOstToken = OstToken.getById(tokenId);
             } catch (IOException e) {
                 Log.i(TAG, "Encountered IOException while fetching token.");
-                mOstToken = null;
+                throw new OstError("wp_base_eot_1", ErrorCode.TOKEN_API_FAILED);
             }
         }
+    }
 
-        if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId())) {
-            Log.e(TAG, "Token is null or does not contain chainId");
-            return postErrorInterrupt("wp_base_ltkn_1", ErrorCode.TOKEN_API_FAILED);
+    void ensureDeviceAuthorized() throws OstError {
+
+        if ( null == mCurrentDevice ) {  ensureApiCommunication(); }
+
+        if ( !mCurrentDevice.isAuthorized() && !hasSyncedDeviceToEnsureApiCommunication ) {
+            //Lets sync Device Information.
+            syncCurrentDevice();
+
+            //Check Again
+            if ( !mCurrentDevice.isAuthorized() ) {
+                throw new OstError("wp_base_eda_1", ErrorCode.DEVICE_UNAUTHORIZED);
+            }
+        }
+    }
+
+    void syncCurrentDevice() throws OstError {
+        OstUser ostUser = OstUser.getById(mUserId);
+        if ( null == ostUser ) {
+            throw new OstError("wp_base_scd_1", ErrorCode.DEVICE_NOT_SETUP);
+        }
+        OstDevice device = ostUser.getCurrentDevice();
+        String currentDeviceAddress = device.getAddress();
+        try {
+            mOstApiClient.getDevice( currentDeviceAddress );
+        } catch (IOException e) {
+            throw new OstError("wp_base_scd_2", ErrorCode.GET_DEVICE_API_FAILED);
+        }
+    }
+
+    OstDeviceManager mDeviceManager;
+    void ensureDeviceManager() throws OstError {
+        if ( null == mOstUser ) {  ensureOstUser(); }
+        String deviceManagerAddress = mOstUser.getDeviceManagerAddress();
+
+        if ( null == deviceManagerAddress ) {
+            throw new OstError("wp_base_edm_1", ErrorCode.USER_NOT_ACTIVATED);
+        }
+
+        mDeviceManager = OstDeviceManager.getById( deviceManagerAddress );
+        if ( null == mDeviceManager ) {
+            mDeviceManager = syncDeviceManager();
+        }
+    }
+
+    OstDeviceManager syncDeviceManager()  throws OstError {
+        if ( null == mOstUser ) {  ensureOstUser(); }
+        String deviceManagerAddress = mOstUser.getDeviceManagerAddress();
+        if ( null == deviceManagerAddress ) {
+            throw new OstError("wp_base_sdm_1", ErrorCode.USER_NOT_ACTIVATED);
+        }
+        try {
+            mOstApiClient.getDeviceManager();
+            mDeviceManager = OstDeviceManager.getById( deviceManagerAddress );
+            return mDeviceManager;
+        } catch (IOException e) {
+            throw new OstError("wp_base_sdm_2", ErrorCode.DEVICE_MANAGER_API_FAILED);
+        }
+    }
+
+    OstRule[] mOstRules;
+    OstRule[] ensureOstRules()  throws OstError {
+        if ( null == mOstToken ) {  ensureOstToken(); }
+
+        mOstRules = mOstToken.getAllRules();
+        if (null == mOstRules || mOstRules.length == 0) {
+            try {
+                mOstApiClient.getAllRules();
+            } catch (IOException e) {
+                OstError ostError = new OstError("wp_base_eot_1", ErrorCode.RULES_API_FAILED);
+                throw ostError;
+            }
+            mOstRules = mOstToken.getAllRules();
+        }
+        return mOstRules;
+    }
+
+
+    @Deprecated
+    AsyncStatus loadCurrentDevice() {
+        try {
+            ensureApiCommunication();
+        } catch (OstError ostError) {
+            return postErrorInterrupt(ostError);
         }
         return new AsyncStatus(true);
     }
 
-    OstRule[] mOstRules;
+    @Deprecated
+    AsyncStatus loadUser() {
+        try {
+            ensureOstUser();
+        } catch (OstError ostError) {
+            return postErrorInterrupt(ostError);
+        }
+        return new AsyncStatus(true);
+    }
 
+    @Deprecated
+    AsyncStatus loadToken() {
+        try {
+            ensureOstToken();
+        } catch (OstError ostError) {
+            return postErrorInterrupt(ostError);
+        }
+        return new AsyncStatus(true);
+    }
+
+    @Deprecated
     protected AsyncStatus loadRules() {
-        if (null == mOstUser) {
-            AsyncStatus loadUserStatus = this.loadUser();
-            AsyncStatus loadTokenStatus = this.loadToken();
-            if (!loadTokenStatus.isSuccess() || !loadUserStatus.isSuccess()) {
-                return loadUserStatus;
-            }
+        try {
+            ensureOstRules();
+        } catch (OstError ostError) {
+            return postErrorInterrupt(ostError);
         }
-        OstToken ostToken = OstToken.getById(mOstUser.getTokenId());
-        mOstRules = ostToken.getAllRules();
-        if (null == mOstRules || mOstRules.length == 0) {
-            try {
-                mOstApiClient.getAllRules();
-                mOstRules = ostToken.getAllRules();
-            } catch (IOException e) {
-                Log.i(TAG, "Encountered IOException while fetching rules.");
-                mOstRules = null;
-            }
-        }
-
-        if (null == mOstRules) {
-            Log.e(TAG, "Rules is null ");
-            return postErrorInterrupt("wp_base_lrskn_1", ErrorCode.TOKEN_API_FAILED);
-        }
-
         return new AsyncStatus(true);
     }
 
@@ -432,7 +530,7 @@ abstract class OstBaseWorkFlow {
         int nonce = OstDeviceManager.getById(deviceManagerAddress).getNonce();
 
         JSONObject safeTxn = new GnosisSafe.SafeTxnBuilder()
-                .setAddOwnerExecutableData(callData)
+                .setCallData(callData)
                 .setVerifyingContract(deviceManagerAddress)
                 .setToAddress(deviceManagerAddress)
                 .setNonce(String.valueOf(nonce))
@@ -473,7 +571,7 @@ abstract class OstBaseWorkFlow {
             if (isValidResponse(jsonObject)) {
 
                 //increment nonce
-                OstDeviceManager.getById(deviceAddress).incrementNonce();
+                OstDeviceManager.getById(deviceManagerAddress).incrementNonce();
 
                 return new AsyncStatus(true);
             } else {

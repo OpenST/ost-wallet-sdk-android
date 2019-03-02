@@ -1,6 +1,5 @@
 package com.ost.mobilesdk.workflows;
 
-import android.system.Os;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
@@ -23,7 +22,6 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
     private String appUserPassword;
     protected WorkflowStateManager stateManager;
 
-
     OstBaseUserAuthenticatorWorkflow(String userId, OstWorkFlowCallback callback) {
         super(userId, callback);
         setStateManager();
@@ -33,7 +31,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         stateManager = new WorkflowStateManager();
     }
 
-    synchronized public AsyncStatus process() {
+    synchronized protected AsyncStatus process() {
         AsyncStatus status = null;
         String currentState = stateManager.getCurrentState();
         Object currentStateObject = stateManager.getStateObject();
@@ -88,7 +86,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
                     if (shouldAskForBioMetric()) {
                         new OstBiometricAuthentication(OstSdk.getContext(), getBioMetricCallBack());
                     } else {
-                        return goToState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
+                        return goToState(WorkflowStateManager.AUTHENTICATED);
                     }
                     break;
 
@@ -101,8 +99,11 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
 
                 case WorkflowStateManager.AUTHENTICATED:
                     //Call the abstract method.
-                    return performOnAuthenticated();
-
+                    AsyncStatus status = performOnAuthenticated();
+                    if ( !status.isSuccess() ) {
+                        goToState(WorkflowStateManager.COMPLETED_WITH_ERROR);
+                    }
+                    return status;
                 case WorkflowStateManager.CANCELLED:
                     if ( stateObject instanceof OstError) {
                         return postErrorInterrupt( (OstError) stateObject );
@@ -134,35 +135,35 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         //To-Do: hasValidParams should throw errors. Rename it to validateParams.
         if (!hasValidParams()) {
             Log.e(TAG, String.format("Invalid params for userId : %s", mUserId));
-            OstError ostError = new OstError("bua_wf_pv_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
-            throw ostError;
+            throw new OstError("bua_wf_pv_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
         }
         return performNext();
     }
 
     protected AsyncStatus performUserDeviceValidation(Object stateObject) {
 
-        Log.i(TAG, "Loading device and user entities");
-        AsyncStatus status = super.loadCurrentDevice();
-        status = status.isSuccess() ? super.loadUser() : status;
-        status = status.isSuccess() ? super.loadToken() : status;
+        try {
+            //Ensure sdk can make Api calls
+            ensureApiCommunication();
 
-        if (!status.isSuccess()) {
-            Log.e(TAG, String.format("Fetching of basic entities failed for user id: %s", mUserId));
-            return goToState(WorkflowStateManager.COMPLETED_WITH_ERROR);
+            // Ensure we have OstUser complete entity.
+            ensureOstUser();
+
+            // Ensure we have OstToken complete entity.
+            ensureOstToken();
+
+            if ( shouldCheckCurrentDeviceAuthorization() ) {
+                //Ensure Device is Authorized.
+                ensureDeviceAuthorized();
+
+                //Ensures Device Manager is present as derived classes are likely going to need nonce.
+                ensureDeviceManager();
+            }
+
+        } catch (OstError err) {
+            return postErrorInterrupt(err);
         }
 
-        Log.i(TAG, "Validate states");
-        if (!hasActivatedUser()) {
-            Log.e(TAG, String.format("User is not activated of user id: %s", mUserId));
-            OstError ostError = new OstError("bua_wf_pud_1", ErrorCode.USER_NOT_ACTIVATED);
-            throw ostError;
-        }
-        if (!hasAuthorizedDevice()) {
-            Log.e(TAG, String.format("Device is not authorized of user id: %s", mUserId));
-            OstError ostError = new OstError("bua_wf_pud_2", ErrorCode.DEVICE_UNREGISTERED);
-            throw ostError;
-        }
         return performNext();
     }
 
@@ -321,4 +322,8 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
     }
 
     abstract AsyncStatus performOnAuthenticated();
+
+    boolean shouldCheckCurrentDeviceAuthorization() {
+        return true;
+    }
 }

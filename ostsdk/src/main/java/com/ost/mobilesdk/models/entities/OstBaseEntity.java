@@ -116,9 +116,14 @@ public abstract class OstBaseEntity {
             return null;
         }
         try {
-            return jsonObject.getString(getEntityIdKey());
+            String entityId = getEntityIdKey();
+            if ( jsonObject.isNull(entityId) ) {
+                Log.e(TAG, "Failed to read id from jsonObject" + ". Entity = " + this.getClass().toString());
+                return null;
+            }
+            return jsonObject.getString(entityId);
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to read id from jsonObject");
+            Log.e(TAG, "Failed to read id from jsonObject" + ". Entity = " + this.getClass().toString());
             return null;
         }
     }
@@ -130,10 +135,16 @@ public abstract class OstBaseEntity {
             return -1 * System.currentTimeMillis();
         }
 
+        String jsonKey = OstBaseEntity.UPDATED_TIMESTAMP;
+        if ( jsonObject.isNull(jsonKey) ) {
+            Log.d(TAG, "Failed to read timestamp from jsonObject" + ". Entity = " + this.getClass().toString());
+            return -1 * System.currentTimeMillis();
+        }
+
         try {
-            return jsonObject.getDouble(OstBaseEntity.UPDATED_TIMESTAMP);
+            return jsonObject.getDouble(jsonKey);
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to read timestamp from jsonObject");
+            Log.d(TAG, "Failed to read timestamp from jsonObject" + ". Entity = " + this.getClass().toString());
             return -1 * System.currentTimeMillis();
         }
     }
@@ -143,7 +154,7 @@ public abstract class OstBaseEntity {
         try {
             jsonObject.put(OstBaseEntity.UPDATED_TIMESTAMP, -1 * System.currentTimeMillis());
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to update timestamp in jsonObject");
+            Log.e(TAG, "Failed to update timestamp in jsonObject" + ". Entity = " + this.getClass().toString());
         }
     }
 
@@ -154,10 +165,15 @@ public abstract class OstBaseEntity {
             return null;
         }
         String parentIdKey = getParentIdKey();
+        if ( jsonObject.isNull(parentIdKey) ) {
+            Log.e(TAG, "Failed to read parent-id from jsonObject. parentIdKey = " + parentIdKey+ ". Entity = " + this.getClass().toString());
+            return null;
+        }
+
         try {
             return jsonObject.getString(parentIdKey);
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to read parent-id from jsonObject. parentIdKey = " + parentIdKey);
+            Log.e(TAG, "Failed to read parent-id from jsonObject. parentIdKey = " + parentIdKey+ ". Entity = " + this.getClass().toString());
             return null;
         }
     }
@@ -172,7 +188,7 @@ public abstract class OstBaseEntity {
         try {
             return jsonObject.getString(OstBaseEntity.STATUS);
         } catch (JSONException e) {
-            Log.e(TAG, "Failed to read status from jsonObject.");
+            Log.e(TAG, "Failed to read status from jsonObject."+ ". Entity = " + this.getClass().toString());
             return null;
         }
     }
@@ -215,6 +231,9 @@ public abstract class OstBaseEntity {
         JSONObject jsonObject = this.getJSONData();
         if ( null == jsonObject ) {
             Log.e(TAG, "getJsonDataPropertyAsString: jsonObject is null. key = " + key + ". Entity = " + this.getClass().toString() );
+            return null;
+        }
+        if ( jsonObject.isNull(key) ) {
             return null;
         }
         return jsonObject.optString(key,null);

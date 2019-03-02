@@ -203,8 +203,28 @@ public class OstDevice extends OstBaseEntity {
 
     public boolean canMakeApiCall() {
         String status = this.getStatus();
+        if ( TextUtils.isEmpty(status) ) {
+            return false;
+        }
         return OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
                 || OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(status)
                 || OstDevice.CONST_STATUS.AUTHORIZING.equalsIgnoreCase(status);
     }
+
+    public boolean isAuthorized() {
+        String status = this.getStatus();
+        if ( TextUtils.isEmpty(status) ) {
+            return false;
+        }
+        return OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status);
+    }
+
+    public boolean canBeAuthorized() {
+        String status = this.getStatus();
+        if ( TextUtils.isEmpty(status) ) {
+            return false;
+        }
+        return OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(status);
+    }
+
 }

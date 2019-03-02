@@ -1,6 +1,7 @@
 package com.ost.mobilesdk.security.structs;
 
 public class BaseDeviceManagerOperationStruct extends SignedEIP712Struct {
+
     public BaseDeviceManagerOperationStruct() {
 
     }
@@ -21,13 +22,13 @@ public class BaseDeviceManagerOperationStruct extends SignedEIP712Struct {
         setSignerAddress(deviceOwnerAddress);
     }
 
-    public String getExecutableData() {
-        return executableData;
+    private String callData;
+    public String getCallData() {
+        return callData;
+    }
+    public void setCallData(String callData) {
+        this.callData = callData;
     }
 
-    public void setExecutableData(String executableData) {
-        this.executableData = executableData;
-    }
 
-    private String executableData;
 }

@@ -51,7 +51,7 @@ public class OstDevicePollingService extends OstPollingService {
 
     @Override
     protected JSONObject poll(String deviceId, String entityId) throws IOException {
-        return new OstApiClient(deviceId).getDevices(entityId);
+        return new OstApiClient(deviceId).getDevice(entityId);
     }
 
     @Override

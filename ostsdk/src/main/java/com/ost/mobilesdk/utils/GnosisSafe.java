@@ -129,7 +129,7 @@ public class GnosisSafe {
 
     public static class SafeTxnBuilder {
         private static final String NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
-        private String addOwnerExecutableData = "0x0";
+        private String callData = "0x0";
         private String toAddress = "0x0";
         private String value = "0";
         private String operation = "0";
@@ -141,8 +141,8 @@ public class GnosisSafe {
         private String nonce = "0";
         private String verifyingContract = "0x0";
 
-        public SafeTxnBuilder setAddOwnerExecutableData(String addOwnerExecutableData) {
-            this.addOwnerExecutableData = addOwnerExecutableData;
+        public SafeTxnBuilder setCallData(String callData) {
+            this.callData = callData;
             return this;
         }
 
@@ -198,7 +198,7 @@ public class GnosisSafe {
 
         public JSONObject build() {
             return new GnosisSafe().getSafeTxData(toAddress, verifyingContract,
-                    value, addOwnerExecutableData, operation, safeTxnGas, dataGas, gasPrice,
+                    value, callData, operation, safeTxnGas, dataGas, gasPrice,
                     gasToken, refundAddress, nonce);
         }
     }

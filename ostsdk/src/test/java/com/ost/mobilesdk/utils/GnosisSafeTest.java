@@ -1,10 +1,7 @@
 package com.ost.mobilesdk.utils;
 
-import com.ost.mobilesdk.security.OstApiSigner;
-
 import org.json.JSONObject;
 import org.junit.Test;
-import org.web3j.utils.Numeric;
 
 import static org.junit.Assert.assertEquals;
 
@@ -53,7 +50,7 @@ public class GnosisSafeTest {
         String tokenHolder = "0x59aAF1528a3538752B165EB2D6e0293C86bbCa4F";
         String deviceManager = "0xA5936b94619E1f76349B27879c8B54A118c15A82";
         JSONObject safeTxData = new GnosisSafe.SafeTxnBuilder()
-                .setAddOwnerExecutableData(addOwnerExecutableData)
+                .setCallData(addOwnerExecutableData)
                 .setNonce("4")
                 .setToAddress(tokenHolder)
                 .setVerifyingContract(deviceManager)

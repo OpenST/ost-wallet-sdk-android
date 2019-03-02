@@ -119,7 +119,6 @@ public class PaperWalletFragment extends Fragment implements View.OnClickListene
     /**
      * Perform operation on clicking next
      *
-     * @param view
      */
     private void onNextClick(){
         mActionButtons.setVisibility(View.GONE);
@@ -132,8 +131,9 @@ public class PaperWalletFragment extends Fragment implements View.OnClickListene
             return;
         }
         String mnemonicsText = mPWEditBox.getText().toString();
-        if(mnemonicsText.split(",").length != 12){
-            mWalletInstructionText.setText("Invalid Mnemonics String. It should be 12 unique comma seperated words");
+        String[] splits = mnemonicsText.split(" ");
+        if( splits.length != 12){
+            mWalletInstructionText.setText("Invalid Mnemonics String. It should be 12 space seperated words");
             mWalletInstructionText.setVisibility(View.VISIBLE);
             return;
         }

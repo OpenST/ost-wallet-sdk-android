@@ -81,7 +81,7 @@ class OstSdkSync {
                     } else if (SYNC_ENTITY.USER == entity) {
                         ostApiClient.getUser();
                     } else if (SYNC_ENTITY.DEVICE == entity) {
-                        ostApiClient.getDevices(ostUser.getCurrentDevice().getAddress());
+                        ostApiClient.getDevice(ostUser.getCurrentDevice().getAddress());
                     } else if (SYNC_ENTITY.SESSION == entity) {
                         List<OstSession> ostSessionList = OstSession.getSessionsToSync(mUserId);
                         for (OstSession ostSession: ostSessionList) {

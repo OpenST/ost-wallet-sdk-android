@@ -15,7 +15,7 @@ import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddDevice;
-import com.ost.mobilesdk.workflows.OstAddDeviceWithMnemonics;
+import com.ost.mobilesdk.workflows.OstAddCurrentDeviceWithMnemonics;
 import com.ost.mobilesdk.workflows.OstAddSession;
 import com.ost.mobilesdk.workflows.OstDeviceRecovery;
 import com.ost.mobilesdk.workflows.OstExecuteTransaction;
@@ -139,8 +139,8 @@ public class OstSdk {
     }
 
     public static void addDeviceUsingMnemonics(String userId, String mMnemonics, OstWorkFlowCallback ostWorkFlowCallback) {
-        OstAddDeviceWithMnemonics ostAddDeviceWithMnemonics = new OstAddDeviceWithMnemonics(userId, mMnemonics, ostWorkFlowCallback);
-        ostAddDeviceWithMnemonics.perform();
+        OstAddCurrentDeviceWithMnemonics ostAddCurrentDeviceWithMnemonics = new OstAddCurrentDeviceWithMnemonics(userId, mMnemonics, ostWorkFlowCallback);
+        ostAddCurrentDeviceWithMnemonics.perform();
     }
 
     /**

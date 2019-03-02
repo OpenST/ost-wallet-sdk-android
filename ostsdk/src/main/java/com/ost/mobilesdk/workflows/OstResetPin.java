@@ -6,10 +6,8 @@ import android.util.Log;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstRecoveryOwner;
-import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.security.OstRecoverySigner;
 import com.ost.mobilesdk.security.SignedRestRecoveryStruct;
-import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
@@ -34,6 +32,7 @@ public class OstResetPin extends OstBaseWorkFlow {
     private final String mAppSalt;
     private final String mCurrentPin;
     private final String mNewPin;
+    private String mNewRecoveryOwnerAddress;
     private OstResetPin.STATES mCurrentState = OstResetPin.STATES.INITIAL;
 
 
@@ -84,10 +83,10 @@ public class OstResetPin extends OstBaseWorkFlow {
 //                }
 
                 try {
-                    mOstApiClient.getDevices(mOstUser.getCurrentDevice().getAddress());
+                    mOstApiClient.getDevice(mOstUser.getCurrentDevice().getAddress());
                 } catch (IOException e) {
                     Log.e(TAG, "GetDevice api failed");
-                    return postErrorInterrupt("wf_rp_pr_4", OstErrors.ErrorCode.USER_API_FAILED);
+                    return postErrorInterrupt("wf_rp_pr_4", OstErrors.ErrorCode.GET_USER_API_FAILED);
                 }
 
                 SignedRestRecoveryStruct struct;
@@ -101,6 +100,7 @@ public class OstResetPin extends OstBaseWorkFlow {
                 }
 
                 newRecoveryOwnerAddress = struct.getNewRecoverOwnerAddress();
+                mNewRecoveryOwnerAddress = newRecoveryOwnerAddress;
                 Map<String, Object> requestMap = buildApiRequest(newRecoveryOwnerAddress,
                         struct.getRecoveryOwnerAddress(), struct.getRecoveryContractAddress(), struct.getSignature());
 

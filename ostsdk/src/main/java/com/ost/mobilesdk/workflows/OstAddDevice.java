@@ -102,7 +102,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstPinAcceptInterfa
                 }
                 if (!hasRegisteredDevice()) {
                     Log.e(TAG, String.format("Device is not registered of user id: %s", mUserId));
-                    return postErrorInterrupt("wf_ad_pr_3", OstErrors.ErrorCode.DEVICE_UNREGISTERED);
+                    return postErrorInterrupt("wf_ad_pr_3", OstErrors.ErrorCode.DEVICE_NOT_SETUP);
                 }
                 if (hasAuthorizingDevice()) {
                     Log.v(TAG, String.format("Device is authorizing of user id: %s  start polling", mUserId));
@@ -141,7 +141,7 @@ public class OstAddDevice extends OstBaseWorkFlow implements OstPinAcceptInterfa
                 String signature = OstKeyManager.sign(eip712Hash, ecKeyPair);
                 String signerAddress = Credentials.create(ecKeyPair).getAddress();
                 try {
-                    mOstApiClient.getDevices(signerAddress);
+                    mOstApiClient.getDevice(signerAddress);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
