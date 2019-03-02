@@ -67,6 +67,29 @@ public class OstMultiSigSigner {
         return struct;
     }
 
+    public SignedAddDeviceStruct addExternalDevice(String deviceToBeAdded) {
+        KeyMetaStruct keyMeta = InternalKeyManager.getKeyMataStruct(mUserId);
+        if ( null == keyMeta) {
+            throw new OstError("km_gss_adwm_1", ErrorCode.DEVICE_NOT_SETUP);
+        }
+
+        // Get current device address.
+        String signerAddress = keyMeta.deviceAddress;
+        SignedAddDeviceStruct struct = createAddDeviceStruct(deviceToBeAdded);
+
+        InternalKeyManager ikm = null;
+        try {
+            ikm = new InternalKeyManager(mUserId);
+            String signature = ikm.signWithDeviceKey( struct.getMessageHash() );
+            struct.setDeviceOwnerAddress(signerAddress);
+            struct.setSignature(signature);
+            ikm = null;
+        }finally {
+            ikm = null;
+        }
+        return struct;
+    }
+
     public SignedAddDeviceStruct addCurrentDeviceWithMnemonics(byte[] mnemonics) {
         KeyMetaStruct keyMeta = InternalKeyManager.getKeyMataStruct(mUserId);
         if ( null == keyMeta) {
