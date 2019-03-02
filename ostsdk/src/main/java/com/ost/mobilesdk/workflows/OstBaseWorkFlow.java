@@ -260,6 +260,7 @@ abstract class OstBaseWorkFlow {
         return (null != ostDevice);
     }
 
+    @Deprecated
     protected String getSalt() {
         String salt = null;
         JSONObject jsonObject = null;

@@ -219,4 +219,12 @@ public class OstUser extends OstBaseEntity {
     public String getParentIdKey() {
         return OstUser.TOKEN_ID;
     }
+
+    public boolean isActivated() {
+        return OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase( this.getStatus() );
+    }
+
+    public boolean isActivating() {
+        return OstUser.CONST_STATUS.ACTIVATING.equalsIgnoreCase( this.getStatus() );
+    }
 }

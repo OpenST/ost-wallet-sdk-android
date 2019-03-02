@@ -12,6 +12,7 @@ import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.security.UserPassphrase;
 import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddCurrentDeviceWithMnemonics;
@@ -91,8 +92,24 @@ public class OstSdk {
         return OstModelFactory.getUserModel().getEntityById(id);
     }
 
-    public static void activateUser(String userId, String uPin, String password, long expiresAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback callback) {
-        final OstActivateUser ostActivateUser = new OstActivateUser(userId, uPin, password, expiresAfterInSecs, spendingLimitInWei, callback);
+    /**
+     * Starts the workflow to activate the user.
+     * User needs to be activated in order to transfer tokens.
+     * This is the step where shall be setting their pin for the first time.
+     * During this step User's token-holder is deployed on block-chain.
+     * A session is also created. Sessions are needed to send tokens.
+     *
+     * Note: Information contained in UserPassphrase shall be wiped out after use by Sdk.
+     * Do not retain it. It can not be used more than once.
+     *
+     * @param passphrase - A simple struct to transport pin information via app and Sdk.
+     * @param expiresAfterInSecs - Time after which default user session should expire.
+     * @param spendingLimitInWei - The maximum amount of Tokens user can transfer in 1 transaction using the default session key.
+     * @param callback - A workflow callback handler.
+     *
+     */
+    public static void activateUser(UserPassphrase passphrase, long expiresAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback callback) {
+        final OstActivateUser ostActivateUser = new OstActivateUser(passphrase,expiresAfterInSecs,spendingLimitInWei,callback);
         ostActivateUser.perform();
     }
 

@@ -11,11 +11,12 @@ import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.security.structs.OstSignWithMnemonicsStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.errors.OstErrors;
+import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.params.KeyParameter;
+import org.spongycastle.crypto.generators.SCrypt;
 import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -38,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.web3j.compat.Compat.UTF_8;
 
-public class InternalKeyManager2 {
+class InternalKeyManager2 {
     private static OstSecureKeyModelRepository modelRepo = null;
     private static OstSecureKeyModelRepository getByteStorageRepo() {
         if ( null == modelRepo ) {
@@ -185,10 +186,10 @@ public class InternalKeyManager2 {
     private void createDeviceKey() {
         byte[] mnemonics = null;
         byte[] privateKey = null;
-        ECKeyPair ecKeyPair = null;
+        ECKeyPair ecKeyPair;
 
-        byte[] encryptedMnemonics = null;
-        byte[] encryptedKey = null;
+        byte[] encryptedMnemonics;
+        byte[] encryptedKey;
         try {
             //Create mnemonics and encrypt it.
             mnemonics = generateMnemonics();
@@ -262,7 +263,7 @@ public class InternalKeyManager2 {
      * @param data byte[] of Hex String (messageHash) to sign.
      * @return signature
      */
-    String signWithDeviceKey(byte[] data) {
+    private String signWithDeviceKey(byte[] data) {
         //Get the keyId.
         String deviceAddress = mKeyMetaStruct.deviceAddress;
         String ethKeyId = createEthKeyMetaId(deviceAddress);
@@ -681,7 +682,7 @@ public class InternalKeyManager2 {
             mnemonics = generateMnemonics();
             return generateECKeyPair(mnemonics);
         } catch (Throwable th ) {
-            OstError ostError = new OstError("ikm_geckp_1", OstErrors.ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
+            OstError ostError = new OstError("ikm_geckp_1", ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
             throw ostError;
         } finally {
             clearBytes(mnemonics);
@@ -694,7 +695,7 @@ public class InternalKeyManager2 {
             seed = generateSeedFromMnemonicBytes(mnemonics, "");
             return Bip32ECKeyPair.generateKeyPair(seed);
         } catch (Throwable th ){
-            OstError ostError = new OstError("ikm_geckp_2", OstErrors.ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
+            OstError ostError = new OstError("ikm_geckp_2", ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
             throw ostError;
         } finally {
             clearBytes(seed);
@@ -718,4 +719,65 @@ public class InternalKeyManager2 {
     }
     //endregion
 
+    //region - Recovery Key
+    private static int SCryptMemoryCost = 2;
+    private static int SCryptBlockSize = 2;
+    private static int SCryptParallelization = 2;
+    private static int SCryptKeyLength = 32;
+
+    /**
+     * Create recovery key for given passphrase and salt.
+     * Make sure it is outside try/catch to avoid multiple clearBytes.
+     * But, devs must still set ecKeyPair = null in finally block.
+     *
+     * @param userPassphrase - Passphrase of the user.
+     * @param salt - Salt of recovery key.
+     * @return - Recovery Key. You need handle it properly.
+     */
+    private ECKeyPair createRecoveryKey(UserPassphrase userPassphrase, byte[] salt) {
+        byte[] seed = null;
+        byte[] passphrase = null;
+        try{
+            passphrase = userPassphrase.getPrefixedPassphrase();
+            seed = SCrypt.generate(passphrase, salt, SCryptMemoryCost, SCryptBlockSize, SCryptParallelization, SCryptKeyLength);
+            return Bip32ECKeyPair.generateKeyPair(seed);
+        } catch (Throwable th) {
+            //Suppress Error.
+            throw new OstError("c_ikm_crk_1", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
+        } finally {
+            //Clear the seed.
+            clearBytes(seed);
+
+            if ( null != userPassphrase ) {
+                userPassphrase.clear();
+            } else {
+                clearBytes(passphrase);
+            }
+
+            //Make UserPassphrase unusable.
+            clearBytes(passphrase);
+
+            //Make sure salt is unusable.
+            clearBytes(salt);
+        }
+    }
+
+    String getRecoveryAddress(UserPassphrase userPassphrase, byte[] salt) {
+        //Let createRecoveryKey be out side of try/catch.
+        ECKeyPair ecKeyPair = createRecoveryKey(userPassphrase,salt);
+
+        try {
+            return Credentials.create(ecKeyPair).getAddress();
+        } catch(Throwable th) {
+            //Suppress Error.
+            throw new OstError("c_ikm_gra_1", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
+        } finally {
+            ecKeyPair = null;
+        }
+    }
+
+
+
+
+    //endregion
 }

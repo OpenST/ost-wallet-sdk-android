@@ -22,9 +22,9 @@ import android.widget.Toast;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.CommonUtils;
+import com.ost.mobilesdk.security.UserPassphrase;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
-
 import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
@@ -290,10 +290,11 @@ public class UsersListActivity extends MappyBaseActivity implements
         Log.d(TAG,"Start user activation process");
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         String userId = logInUser.getOstUserId();
-        String password = logInUser.getPassword();
+        String passphrasePrefix = logInUser.getPassword();
         long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
         String spendingLimit = "1000000000000";
-        OstSdk.activateUser(userId, pin, password, expiresAfterInSecs, spendingLimit,
+
+        OstSdk.activateUser(new UserPassphrase(userId,pin,passphrasePrefix) , expiresAfterInSecs, spendingLimit,
                 new WorkFlowHelper(getApplicationContext()));
     }
 

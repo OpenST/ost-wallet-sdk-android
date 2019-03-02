@@ -2,6 +2,8 @@ package com.ost.mobilesdk.workflows.errors;
 
 import android.util.Log;
 
+import com.ost.mobilesdk.OstConstants;
+
 public class OstErrors {
     private static String TAG = "OstErrors";
 
@@ -138,6 +140,10 @@ public class OstErrors {
 
             case FAILED_TO_GENERATE_ETH_KEY: return "Failed to generate ethereum key.";
 
+            case INVALID_PASSPHRASE_PREFIX: return "Invalid Passphrase prefix. Passphrase prefix should be atleast " + OstConstants.RECOVERY_PHRASE_PREFIX_MIN_LENGTH + " long";
+
+            case USER_ACTIVATING: return "User is already activating.";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -183,6 +189,7 @@ public class OstErrors {
         DEVICE_UNAUTHORIZED,
         DEVICE_ALREADY_AUTHORIZED,
         DEVICE_CAN_NOT_BE_AUTHORIZED,
+        USER_ACTIVATING,
         USER_ALREADY_ACTIVATED,
         INVALID_MNEMONICS,
         INVALID_QR_TRANSACTION_DATA,
@@ -194,6 +201,8 @@ public class OstErrors {
         RECOVERY_PASSPHRASE_OWNER_NOT_SET,
         INVALID_USER_PASSPHRASE,
         INVALID_NEW_USER_PASSPHRASE,
+        INVALID_PASSPHRASE_PREFIX,
+
         MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED,
         RECOVERY_KEY_GENERATION_FAILED,
         POST_RECOVERY_API_FAILED,
