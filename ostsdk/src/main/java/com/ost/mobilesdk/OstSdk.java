@@ -14,7 +14,6 @@ import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.OstActivateUser;
-import com.ost.mobilesdk.workflows.OstAddDevice;
 import com.ost.mobilesdk.workflows.OstAddCurrentDeviceWithMnemonics;
 import com.ost.mobilesdk.workflows.OstAddSession;
 import com.ost.mobilesdk.workflows.OstDeviceRecovery;
@@ -108,12 +107,6 @@ public class OstSdk {
 
     public static void setupDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback workFlowCallback) {
         registerDevice(userId, tokenId, forceSync, workFlowCallback);
-    }
-
-    @Deprecated
-    public static void addDevice(String userId, OstWorkFlowCallback workFlowCallback) {
-        final OstAddDevice ostAddDevice = new OstAddDevice(userId, workFlowCallback);
-        ostAddDevice.perform();
     }
 
     public static void ostPerform(String userId, String data, OstWorkFlowCallback workFlowCallback) throws JSONException {
