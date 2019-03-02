@@ -18,6 +18,7 @@ import com.ost.mobilesdk.utils.SoliditySha3;
 
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
+import org.bouncycastle.crypto.params.KeyParameter;
 import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -41,6 +42,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import static org.web3j.compat.Compat.UTF_8;
 
 class InternalKeyManager {
     private static OstSecureKeyModelRepository modelRepo = null;
@@ -724,9 +727,13 @@ class InternalKeyManager {
     //endregion
 
 
+    // region - External Mnemonics Signing Method
+    public static final int HARDENED_BIT= 0x80000000;
+    public static final int[] HD_DERIVATION_PATH_FIRST_CHILD = (new int[]{44 | HARDENED_BIT,60 | HARDENED_BIT,0|HARDENED_BIT,0,0});
+
     void sign(OstSignWithMnemonicsStruct ostSignWithMnemonicsStruct) {
         String messageHash = ostSignWithMnemonicsStruct.getMessageHash();
-        char[] mnemonics = ostSignWithMnemonicsStruct.getMnemonics();
+        byte[] mnemonics = ostSignWithMnemonicsStruct.getMnemonics();
         if ( null == messageHash || null == mnemonics) {
             return;
         }
@@ -735,40 +742,78 @@ class InternalKeyManager {
         byte[] seed = null;
         String signature = null;
         String signerAddress = null;
-        Bip32ECKeyPair ecKeyPair = null;
+        Bip32ECKeyPair hdMasterKey = null;
+        Bip32ECKeyPair deriveKeyPair = null;
         try {
+            //Create Seed
+            seed = generateSeedFromMnemonicBytes(mnemonics,null);
 
-            seed = MnemonicUtils.generateSeed(String.valueOf(mnemonics),null);
-            ecKeyPair = Bip32ECKeyPair.generateKeyPair(seed);
-            signerAddress = Credentials.create(ecKeyPair).getAddress();
+            //Create hdMasterKey
+            hdMasterKey = Bip32ECKeyPair.generateKeyPair(seed);
+            deriveKeyPair = Bip32ECKeyPair.deriveKeyPair(hdMasterKey,HD_DERIVATION_PATH_FIRST_CHILD );
+            signerAddress = Credentials.create(deriveKeyPair).getAddress();
 
-            //Sachin: Please check here.
-            //Expected Signer Address: 0xb1CaeCf0928A210febc8973bFa1861ac3cD81252
-            //mnemonics: 'rail hospital yard floor oppose gold cash peasant kitchen anchor slot honey'
-            //Credentials.create(Bip32ECKeyPair.deriveKeyPair(ecKeyPair,(new int[]{44 | 0x80000000,60 | 0x80000000,0|0x80000000,0,0}) )).getAddress()
-
-            Sign.SignatureData signatureData = Sign.signMessage(dataToSign, ecKeyPair, false);
+            Sign.SignatureData signatureData = Sign.signMessage(dataToSign, deriveKeyPair, false);
             signature = signatureDataToString( signatureData );
 
+        } catch (Exception ex) {
+            //Mute the exceptions
+            ex.printStackTrace();
+            return;
         } finally {
             //Clean out mnemonics
-            Arrays.fill(mnemonics, (char) 0);
+            clearBytes(mnemonics);
+            if ( null != mnemonics) {Arrays.fill(mnemonics, (byte) 0);};
 
             //Clean the seed.
-            if ( null != seed ) {
-                Arrays.fill(seed, (byte) 0);
-            }
+            clearBytes(seed);
 
-            ecKeyPair.getPrivateKey().multiply(BigInteger.ZERO);
-
-            boolean hasCleaned = ecKeyPair.getPrivateKey().compareTo(BigInteger.ZERO) == 0;
-            Log.d("__", "hasCleaned" + hasCleaned);
+            hdMasterKey = null;
+            deriveKeyPair = null;
         }
 
         ostSignWithMnemonicsStruct.setSignature(signature);
         ostSignWithMnemonicsStruct.setSigner(signerAddress);
     }
 
+    private static final int SEED_ITERATIONS = 2048;
+    private static final int SEED_KEY_SIZE = 512;
+
+    /**
+     * To create a binary seed from the mnemonic, we use the PBKDF2 function with a
+     * mnemonic sentence (in UTF-8 NFKD) used as the password and the string "mnemonic"
+     * + passphrase (again in UTF-8 NFKD) used as the salt. The iteration count is set
+     * to 2048 and HMAC-SHA512 is used as the pseudo-random function. The length of the
+     * derived key is 512 bits (= 64 bytes).
+     *
+     * @param mnemonicBytes Byte array (Charset UTF_8 encoded) of the input mnemonic which should be 128-160 bits in length containing
+     *                 only valid words.
+     * @param passphrase The passphrase which will be used as part of salt for PBKDF2
+     *                   function
+     * @return Byte array representation of the generated seed
+     */
+    public static byte[] generateSeedFromMnemonicBytes(byte[] mnemonicBytes, String passphrase) {
+        passphrase = passphrase == null ? "" : passphrase;
+
+        String salt = String.format("mnemonic%s", passphrase);
+        PKCS5S2ParametersGenerator gen = new PKCS5S2ParametersGenerator(new SHA512Digest());
+        gen.init(mnemonicBytes, salt.getBytes(UTF_8), SEED_ITERATIONS);
+
+        return ((KeyParameter) gen.generateDerivedParameters(SEED_KEY_SIZE)).getKey();
+    }
+    //endregion
+
+
+
+
+
+    private static byte[] nonSecret = ("BYTES_CLEARED_" + String.valueOf((int) (System.currentTimeMillis()))  ).getBytes();
+    private static void clearBytes(byte[] secret) {
+        if ( null == secret ) { return; }
+        for (int i = 0; i < secret.length; i++) {
+            secret[i] = nonSecret[i % nonSecret.length];
+        }
+    }
 
     static String signatureDataToString(Sign.SignatureData signatureData) {
         return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
@@ -782,6 +827,7 @@ class InternalKeyManager {
         Arrays.fill(byteBuffer.array(), (byte) 0); // clear sensitive data
         return bytes;
     }
+
 
 
 }

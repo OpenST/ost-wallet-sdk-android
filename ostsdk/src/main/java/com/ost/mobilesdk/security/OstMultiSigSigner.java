@@ -67,7 +67,7 @@ public class OstMultiSigSigner {
         return struct;
     }
 
-    public SignedAddDeviceStruct addCurrentDeviceWithMnemonics(char[] mnemonics) {
+    public SignedAddDeviceStruct addCurrentDeviceWithMnemonics(byte[] mnemonics) {
         KeyMetaStruct keyMeta = InternalKeyManager.getKeyMataStruct(mUserId);
         if ( null == keyMeta) {
             throw new OstError("km_gss_adwm_1", ErrorCode.DEVICE_NOT_SETUP);

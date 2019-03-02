@@ -18,21 +18,23 @@ import com.ost.mobilesdk.workflows.services.OstPollingService;
 
 import java.io.IOException;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 
 public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWorkflow implements OstPinAcceptInterface {
 
     private static final String TAG = "OstADWithMnemonics";
-    private final char[] mMnemonics;
+    private final byte[] mMnemonics;
     SignedAddDeviceStruct signedData;
     String mAddedDeviceAddress;
 
     @Deprecated
     public OstAddCurrentDeviceWithMnemonics(String userId, String mnemonics, OstWorkFlowCallback callback) {
         super(userId, callback);
-        mMnemonics = mnemonics.toCharArray();
+        mMnemonics = mnemonics.getBytes(UTF_8);
     }
 
-    public OstAddCurrentDeviceWithMnemonics(String userId, char[] mnemonics, OstWorkFlowCallback callback) {
+    public OstAddCurrentDeviceWithMnemonics(String userId, byte[] mnemonics, OstWorkFlowCallback callback) {
         super(userId, callback);
         mMnemonics = mnemonics;
     }

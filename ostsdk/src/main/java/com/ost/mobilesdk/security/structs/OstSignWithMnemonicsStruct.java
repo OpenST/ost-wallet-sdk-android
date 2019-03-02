@@ -2,11 +2,11 @@ package com.ost.mobilesdk.security.structs;
 
 public class OstSignWithMnemonicsStruct {
 
-    public char[] getMnemonics() {
+    public byte[] getMnemonics() {
         return mnemonics;
     }
 
-    public void setMnemonics(char[] mnemonics) {
+    public void setMnemonics(byte[] mnemonics) {
         this.mnemonics = mnemonics;
     }
 
@@ -18,7 +18,7 @@ public class OstSignWithMnemonicsStruct {
         this.messageHash = messageHash;
     }
 
-    private char[] mnemonics;
+    private byte[] mnemonics;
     private String messageHash;
 
     public String getSigner() {
@@ -40,7 +40,7 @@ public class OstSignWithMnemonicsStruct {
     private String signer;
     private String signature;
 
-    public OstSignWithMnemonicsStruct(char[] mnemonics, String messageHash) {
+    public OstSignWithMnemonicsStruct(byte[] mnemonics, String messageHash) {
         this.mnemonics = mnemonics;
         this.messageHash = messageHash;
     }
