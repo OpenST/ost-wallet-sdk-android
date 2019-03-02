@@ -13,14 +13,15 @@ public class OstApiSigner implements OstHttpRequestClient.ApiSigner {
     }
 
     /**
-     * Sign Api using Api key
-     * @param dataToSign
+     * Generates signature for HTTP Api calls (ETH Personal Sign).
+     * @param dataToSign - byte[] to sign.
      * @return
      */
     @Override
     public String sign(byte[] dataToSign) {
-        InternalKeyManager2 ikm = new InternalKeyManager2(mUserID);
+        InternalKeyManager2 ikm = null;
         try {
+            ikm = new InternalKeyManager2(mUserID);
             return ikm.signBytesWithApiSigner(dataToSign);
         } finally {
             ikm = null;

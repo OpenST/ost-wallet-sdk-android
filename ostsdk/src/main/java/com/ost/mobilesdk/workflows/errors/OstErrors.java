@@ -136,6 +136,8 @@ public class OstErrors {
 
             case DEVICE_CAN_NOT_BE_AUTHORIZED: return "Only devices with status 'Registered' can be authorized.";
 
+            case FAILED_TO_GENERATE_ETH_KEY: return "Failed to generate ethereum key.";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -205,6 +207,7 @@ public class OstErrors {
         //Generic
         UNKNOWN,
         UNCAUGHT_EXCEPTION_HANDELED,
-        DEPRECATED
+        DEPRECATED,
+        FAILED_TO_GENERATE_ETH_KEY
     }
 }

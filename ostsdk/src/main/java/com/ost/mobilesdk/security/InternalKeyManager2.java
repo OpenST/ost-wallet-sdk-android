@@ -6,10 +6,13 @@ import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstSecureKey;
+import com.ost.mobilesdk.models.entities.OstSessionKey;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.security.structs.OstSignWithMnemonicsStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.workflows.errors.OstError;
+import com.ost.mobilesdk.workflows.errors.OstErrors;
 
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
@@ -18,6 +21,7 @@ import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
+import org.web3j.crypto.MnemonicUtils;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
@@ -28,6 +32,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -80,9 +85,14 @@ public class InternalKeyManager2 {
     }
 
     // region - Api Key Methods
-    private String createApiKey() {
+
+    /**
+     * Method to create and store new Api-Signer Key.
+     * The private key is encrypted and stored in DB.
+     */
+    private void createApiKey() {
         // Create a private key.
-        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKey();
+        ECKeyPair ecKeyPair = generateECKeyPair();
         String apiKeyAddress = Credentials.create(ecKeyPair).getAddress();
 
         //CheckSum as generated address is not CheckSum address
@@ -101,28 +111,26 @@ public class InternalKeyManager2 {
             OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
             Future<AsyncStatus> future = metaRepository.insertSecureKey(new OstSecureKey(apiKeyId, encryptedKey));
 
-            try {
-                future.get(10, TimeUnit.SECONDS);
-            } catch (Exception e) {
-                Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
-                return null;
-            }
+            //Wait key to be stored.
+            future.get(10, TimeUnit.SECONDS);
 
+            //Update key meta.
+            setEthKeyMeta(apiKeyAddress);
+            mKeyMetaStruct.apiAddress = apiKeyAddress;
         } catch (Exception ex) {
             Log.e(TAG, "m_s_ikm_cak: Unexpected Exception", ex);
-            return null;
+            return;
         } finally {
             ecKeyPair = null;
             clearBytes(privateKey);
         }
-
-        //Update key meta.
-        setEthKeyMeta(apiKeyAddress);
-        mKeyMetaStruct.apiAddress = apiKeyAddress;
-
-        return apiKeyAddress;
     }
 
+    /**
+     * Generates signature for HTTP Api calls (ETH Personal Sign).
+     * @param dataToSign - byte[] to sign.
+     * @return Signature
+     */
     String signBytesWithApiSigner(byte[] dataToSign) {
         //Get Api Key address and id.
         String apiKeyAddress = mKeyMetaStruct.getApiAddress();
@@ -130,29 +138,26 @@ public class InternalKeyManager2 {
 
         //Fetch and decrypt Api Key
         OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
-        OstSecureKey osk = metaRepository.getByKey(apiKeyId);
 
+        OstSecureKey osk = null;
         byte[] key = null;
         ECKeyPair ecKeyPair;
         try {
+            osk = metaRepository.getByKey(apiKeyId);
             key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
             ecKeyPair = ECKeyPair.create(key);
+            //Sign the data
+            Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
+            return signatureDataToString(signatureData);
         } catch (Exception ex) {
             Log.e(TAG, "m_s_ikm_sbwps: Unexpected Exception", ex);
             return null;
         } finally {
             clearBytes(key);
+            ecKeyPair = null;
+            osk = null;
         }
-
-        //Sign the data
-        Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
-        ecKeyPair = null;
-        return signatureDataToString(signatureData);
     }
-
-
-
-
     // endregion
 
     // region - Device Key Management
@@ -174,24 +179,41 @@ public class InternalKeyManager2 {
     }
 
 
+    /**
+     * Method to create and store new Device Key (Multi-Sig owner key).
+     * The private key is encrypted and stored in DB.
+     */
     private void createDeviceKey() {
-        //Create mnemonics and encrypt it.
-        String mnemonics = OstSdkCrypto.getInstance().genMnemonics();
-        byte[] encryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(mnemonics.getBytes());
-
-
-        //Create ECKeyPair and encrypt it.
-        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genECKeyFromMnemonics(mnemonics);
-        String deviceAddress = Credentials.create(ecKeyPair).getAddress();
-
-        //CheckSum as generated address is not CheckSum address
-        deviceAddress = Keys.toChecksumAddress(deviceAddress);
-
+        byte[] mnemonics = null;
         byte[] privateKey = null;
-        byte[] encryptedKey;
+        ECKeyPair ecKeyPair = null;
+
+        byte[] encryptedMnemonics = null;
+        byte[] encryptedKey = null;
         try {
+            //Create mnemonics and encrypt it.
+            mnemonics = generateMnemonics();;
+            encryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(mnemonics);
+
+
+            //Create ECKeyPair and encrypt it.
+            ecKeyPair = generateECKeyPair(mnemonics);
+
+            // Clear the mnemonics - set to null to avoid double clearing.
+            clearBytes(mnemonics);
+            mnemonics = null;
+
+            String deviceAddress = Credentials.create(ecKeyPair).getAddress();
+
+            //CheckSum as generated address is not CheckSum address
+            deviceAddress = Keys.toChecksumAddress(deviceAddress);
+
             privateKey = ecKeyPair.getPrivateKey().toByteArray();
             encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
+
+            // Clear the privateKey - set to null to avoid double clearing.
+            clearBytes(privateKey);
+            privateKey = null;
 
             OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
 
@@ -203,27 +225,44 @@ public class InternalKeyManager2 {
             //Store encrypted Device key.
             String deviceAddressMetaId = createEthKeyMetaId(deviceAddress);
             Future<AsyncStatus> future2 = metaRepository.insertSecureKey(new OstSecureKey(deviceAddressMetaId, encryptedKey));
+
+            // @Dev: Shouldn't we wait here for future1 & future2 ?
+            // We are not clearing the encryptedKey & encryptedMnemonics - for now.
+            // Although: These are less of a worry as they are encrypted anyway.
+
+            // Update meta.
+            setMnemonicsMeta(deviceAddress);
+            setEthKeyMeta(deviceAddress);
+            mKeyMetaStruct.deviceAddress = deviceAddress;
+
         } catch (Exception ex) {
-            Log.e(TAG, "m_s_ikm_cdk: Unexpected Exception", ex);
+            Log.e(TAG, "m_s_ikm_cdk: Unexpected Exception");
             return;
         } finally {
             ecKeyPair = null;
-            mnemonics = null;
+            clearBytes(mnemonics);
             clearBytes(privateKey);
         }
-
-        // Update meta.
-        setMnemonicsMeta(deviceAddress);
-        setEthKeyMeta(deviceAddress);
-        mKeyMetaStruct.deviceAddress = deviceAddress;
     }
 
-
+    /**
+     * Sign messageHash using the current device key of the user.
+     * @param messageHash - Hex String to sign.
+     * @return signature
+     */
     String signWithDeviceKey(String messageHash) {
         byte[] data = Numeric.hexStringToByteArray(messageHash);
         return signWithDeviceKey(data);
+
+        // @Dev: don't worry about data here
+        // Its just bytes of messageHash.
     }
 
+    /**
+     * Sign data using the current device key of the user.
+     * @param data byte[] of Hex String (messageHash) to sign.
+     * @return signature
+     */
     String signWithDeviceKey(byte[] data) {
         //Get the keyId.
         String deviceAddress = mKeyMetaStruct.deviceAddress;
@@ -238,7 +277,6 @@ public class InternalKeyManager2 {
 
         //Decrypt it.
         byte[] decryptedKey = null;
-        String signature = null;
         ECKeyPair ecKeyPair;
         try {
             decryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSecureKey.getData());
@@ -246,16 +284,97 @@ public class InternalKeyManager2 {
 
             //Sign the data.
             Sign.SignatureData signatureData = Sign.signMessage(data, ecKeyPair, false);
-            signature = signatureDataToString(signatureData);
+            return signatureDataToString(signatureData);
+        } catch (Throwable th) {
+            //Silence it.
+            Log.e(TAG, "m_s_ikm_swdk_2: Unexpected Exception");
+            return null;
         } finally {
             clearBytes(decryptedKey);
             ecKeyPair = null;
         }
-
-        //return the signature.
-        return signature;
     }
 
+    //endregion
+
+
+    //region - Session Key Methods
+    /**
+     * Create a new session key for the user.
+     * @return Address of session key
+     */
+    String createSessionKey() {
+        ECKeyPair ecKeyPair = null;
+        byte[] privateKey = null;
+        byte[] encryptedKey = null;
+        try {
+            ecKeyPair = generateECKeyPair();
+            String address = Credentials.create(ecKeyPair).getAddress();
+
+            //CheckSum as generated address is not CheckSum address
+            address = Keys.toChecksumAddress(address);
+
+            //Fetch the private key and encrypt it.
+            privateKey = ecKeyPair.getPrivateKey().toByteArray();
+            encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
+            clearBytes(privateKey);
+            ecKeyPair = null;
+
+            //Store the encrypted key.
+            Future<AsyncStatus> future = new OstSessionKeyModelRepository().insertSessionKey(new OstSessionKey(address, encryptedKey));
+            future.get(10, TimeUnit.SECONDS);
+
+            return address;
+        } catch (Exception e) {
+            Log.e(TAG, String.format("%s while waiting for insertion in DB", e.getMessage()));
+            return null;
+        } finally {
+            clearBytes(privateKey);
+            clearBytes(encryptedKey);
+            ecKeyPair = null;
+        }
+    }
+
+    /**
+     * Method to check if an encrypted copy of session key with the given address.
+     * @param sessionAddress
+     * @return true if encrypted copy of session key with the given address is present.
+     */
+    boolean canSignWithSession(String sessionAddress) {
+        sessionAddress = Keys.toChecksumAddress(sessionAddress);
+        OstSessionKey ostSessionKey = getSessionRepo().getByKey(sessionAddress);
+        return  ( null != ostSessionKey );
+    }
+
+    /**
+     * Method to sign with Session keys.
+     * @param sessionAddress
+     * @param hashToSign
+     * @return
+     */
+    String signWithSession(String sessionAddress, String hashToSign) {
+        OstSessionKey ostSessionKey = null;
+        byte[] sessionKey = null;
+        ECKeyPair ecKeyPair = null;
+
+        try {
+            ostSessionKey = new OstSessionKeyModelRepository().getByKey(sessionAddress);
+            if (null == ostSessionKey) {
+                return null;
+            }
+            sessionKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSessionKey.getData());
+            ecKeyPair = ECKeyPair.create(sessionKey);
+            Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(hashToSign), ecKeyPair, false);
+            return signatureDataToString(signatureData);
+        } catch (Throwable th) {
+            //Silence it.
+            Log.e(TAG, "m_s_ikm_sws_1: Unexpected Exception");
+            return null;
+        } finally {
+            ecKeyPair = null;
+            clearBytes(sessionKey);
+        }
+    }
     //endregion
 
     //region - KeyMetaStruct Methods
@@ -515,7 +634,9 @@ public class InternalKeyManager2 {
         ostSignWithMnemonicsStruct.setSignature(signature);
         ostSignWithMnemonicsStruct.setSigner(signerAddress);
     }
+    //endregion
 
+    //region - Custom Mnemonics Generation methods.
     private static final int SEED_ITERATIONS = 2048;
     private static final int SEED_KEY_SIZE = 512;
 
@@ -540,6 +661,45 @@ public class InternalKeyManager2 {
         gen.init(mnemonicBytes, salt.getBytes(UTF_8), SEED_ITERATIONS);
 
         return ((KeyParameter) gen.generateDerivedParameters(SEED_KEY_SIZE)).getKey();
+    }
+
+    private byte[] generateMnemonics() {
+        String mnemonics = null;
+        try {
+            byte[] initialEntropy = new byte[16];
+            SecureRandom secureRandom = new SecureRandom();
+            secureRandom.nextBytes(initialEntropy);
+            mnemonics = MnemonicUtils.generateMnemonic(initialEntropy);
+            return mnemonics.getBytes(UTF_8);
+        } finally {
+            mnemonics = null;
+        }
+    }
+
+    private ECKeyPair generateECKeyPair() {
+        byte[] mnemonics = null;
+        try {
+            mnemonics = generateMnemonics();
+            return generateECKeyPair(mnemonics);
+        } catch (Throwable th ) {
+            OstError ostError = new OstError("ikm_geckp_1", OstErrors.ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
+            throw ostError;
+        } finally {
+            clearBytes(mnemonics);
+        }
+    }
+
+    private ECKeyPair generateECKeyPair(byte[] mnemonics) {
+        byte[] seed = null;
+        try {
+            seed = generateSeedFromMnemonicBytes(mnemonics, "");
+            return Bip32ECKeyPair.generateKeyPair(seed);
+        } catch (Throwable th ){
+            OstError ostError = new OstError("ikm_geckp_2", OstErrors.ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
+            throw ostError;
+        } finally {
+            clearBytes(seed);
+        }
     }
     //endregion
 
