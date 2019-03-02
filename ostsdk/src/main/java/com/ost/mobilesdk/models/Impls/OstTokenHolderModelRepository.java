@@ -6,6 +6,8 @@ import com.ost.mobilesdk.database.daos.OstTokenHolderDao;
 import com.ost.mobilesdk.models.OstTokenHolderModel;
 import com.ost.mobilesdk.models.entities.OstTokenHolder;
 
+import org.web3j.crypto.Keys;
+
 class OstTokenHolderModelRepository extends OstBaseModelCacheRepository implements OstTokenHolderModel {
 
     private static final int LRU_CACHE_SIZE = 5;
@@ -24,7 +26,7 @@ class OstTokenHolderModelRepository extends OstBaseModelCacheRepository implemen
 
     @Override
     public OstTokenHolder getEntityById(String id) {
-        return (OstTokenHolder)super.getById(id);
+        return (OstTokenHolder)super.getById(Keys.toChecksumAddress(id));
     }
 
     @Override

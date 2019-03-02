@@ -6,6 +6,8 @@ import com.ost.mobilesdk.database.daos.OstSessionDao;
 import com.ost.mobilesdk.models.OstSessionModel;
 import com.ost.mobilesdk.models.entities.OstSession;
 
+import org.web3j.crypto.Keys;
+
 class OstSessionModelRepository extends OstBaseModelCacheRepository implements OstSessionModel {
 
     private static final int LRU_CACHE_SIZE = 5;
@@ -24,7 +26,7 @@ class OstSessionModelRepository extends OstBaseModelCacheRepository implements O
 
     @Override
     public OstSession getEntityById(String id) {
-        return (OstSession)super.getById(id);
+        return (OstSession)super.getById(Keys.toChecksumAddress(id));
     }
 
     @Override
