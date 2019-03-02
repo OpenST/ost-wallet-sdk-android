@@ -28,6 +28,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -123,6 +124,57 @@ public class InternalKeyManager2 {
         return apiKeyAddress;
     }
 
+    String signBytesWithApiSigner(byte[] dataToSign) {
+        //Get Api Key address and id.
+        String apiKeyAddress = mKeyMetaStruct.getApiAddress();
+        String apiKeyId = createEthKeyMetaId(apiKeyAddress);
+
+        //Fetch and decrypt Api Key
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
+        OstSecureKey osk = metaRepository.getByKey(apiKeyId);
+
+        byte[] key = null;
+        ECKeyPair ecKeyPair;
+        try {
+            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
+            ecKeyPair = ECKeyPair.create(key);
+        } catch (Exception ex) {
+            Log.e(TAG, "m_s_ikm_sbwps: Unexpected Exception", ex);
+            return null;
+        } finally {
+            clearBytes(key);
+        }
+
+        //Sign the data
+        Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
+        ecKeyPair = null;
+        return signatureDataToString(signatureData);
+    }
+
+
+
+
+    // endregion
+
+    // region - Device Key Management
+    String[] getMnemonics(String address) {
+        //Get the keyId.
+        String mnemonicsMetaId = mKeyMetaStruct.getEthKeyMnemonicsIdentifier(address);
+
+        //Get the encrypted mnemonics
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
+        OstSecureKey ostSecureKey = metaRepository.getByKey(mnemonicsMetaId);
+        if (null == ostSecureKey) {
+            return null;
+        }
+
+        //Decrypt it.
+        byte[] decryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSecureKey.getData());
+        String mnemonics = new String(decryptedMnemonics);
+        return mnemonics.split(" ");
+    }
+
+
     private void createDeviceKey() {
         //Create mnemonics and encrypt it.
         String mnemonics = OstSdkCrypto.getInstance().genMnemonics();
@@ -167,38 +219,46 @@ public class InternalKeyManager2 {
         mKeyMetaStruct.deviceAddress = deviceAddress;
     }
 
-    String signBytesWithApiSigner(byte[] dataToSign) {
-        //Get Api Key address and id.
-        String apiKeyAddress = mKeyMetaStruct.getApiAddress();
-        String apiKeyId = createEthKeyMetaId(apiKeyAddress);
 
-        //Fetch and decrypt Api Key
-        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
-        OstSecureKey osk = metaRepository.getByKey(apiKeyId);
-
-        byte[] key = null;
-        ECKeyPair ecKeyPair;
-        try {
-            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
-            ecKeyPair = ECKeyPair.create(key);
-        } catch (Exception ex) {
-            Log.e(TAG, "m_s_ikm_sbwps: Unexpected Exception", ex);
-            return null;
-        } finally {
-            clearBytes(key);
-        }
-
-        //Sign the data
-        Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
-        ecKeyPair = null;
-        return signatureDataToString(signatureData);
+    String signWithDeviceKey(String messageHash) {
+        byte[] data = Numeric.hexStringToByteArray(messageHash);
+        return signWithDeviceKey(data);
     }
 
+    String signWithDeviceKey(byte[] data) {
+        //Get the keyId.
+        String deviceAddress = mKeyMetaStruct.deviceAddress;
+        String ethKeyId = createEthKeyMetaId(deviceAddress);
 
+        //Get the encrypted key
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
+        OstSecureKey ostSecureKey = metaRepository.getByKey(ethKeyId);
+        if (null == ostSecureKey) {
+            return null;
+        }
 
+        //Decrypt it.
+        byte[] decryptedKey = null;
+        String signature = null;
+        try {
+            decryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSecureKey.getData());
+            ECKeyPair ecKeyPair = ECKeyPair.create(decryptedKey);
 
-    // endregion
+            //Sign the data.
+            Sign.SignatureData signatureData = Sign.signMessage(data, ecKeyPair, false);
+            signature = signatureDataToString(signatureData);
+            ecKeyPair = null;
+        } finally {
+            if (null != decryptedKey) {
+                Arrays.fill(decryptedKey, (byte) 0);
+            }
+        }
 
+        //return the signature.
+        return signature;
+    }
+
+    //endregion
 
     //region - KeyMetaStruct Methods
 
