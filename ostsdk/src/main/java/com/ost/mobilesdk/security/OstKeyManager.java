@@ -30,16 +30,6 @@ public class OstKeyManager {
         }
     }
 
-    static String signUsingSeed(byte[] seed, String eip712Hash) {
-        ECKeyPair ecKeyPair = OstSdkCrypto.getInstance().genHDKey(seed);
-        return sign(eip712Hash, ecKeyPair);
-    }
-
-    public static String sign(String eip712Hash, ECKeyPair ecKeyPair) {
-        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(eip712Hash), ecKeyPair, false);
-        return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
-    }
-
     public String getApiKeyAddress() {
         return mKeyMetaStruct.getApiAddress();
     }
@@ -64,10 +54,6 @@ public class OstKeyManager {
         return address;
     }
 
-//    public boolean hasAddress(String address) {
-//        return mKeyMetaStruct.hasAddress( address );
-//    }
-
     public String getDeviceAddress() {
         return mKeyMetaStruct.getDeviceAddress();
     }
@@ -75,16 +61,6 @@ public class OstKeyManager {
     public String[] getMnemonics() {
         String deviceAddress = getDeviceAddress();
         return getMnemonics(deviceAddress);
-    }
-
-    public boolean validatePin(String pin, String appSalt, String kitSalt) {
-        InternalKeyManager ikm = new InternalKeyManager(mUserId);
-        if ( !ikm.isUserPassphraseValidationAllowed() ) {
-            return false;
-        }
-        boolean isValid = ikm.validateUserPassphrase(appSalt, pin, kitSalt);
-        ikm = null;
-        return isValid;
     }
 
     public boolean validatePin(OstUserPinInfoHolder pinInfoHolder) {
