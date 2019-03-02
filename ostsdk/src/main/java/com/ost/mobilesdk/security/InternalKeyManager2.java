@@ -28,7 +28,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -240,18 +239,17 @@ public class InternalKeyManager2 {
         //Decrypt it.
         byte[] decryptedKey = null;
         String signature = null;
+        ECKeyPair ecKeyPair;
         try {
             decryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSecureKey.getData());
-            ECKeyPair ecKeyPair = ECKeyPair.create(decryptedKey);
+            ecKeyPair = ECKeyPair.create(decryptedKey);
 
             //Sign the data.
             Sign.SignatureData signatureData = Sign.signMessage(data, ecKeyPair, false);
             signature = signatureDataToString(signatureData);
-            ecKeyPair = null;
         } finally {
-            if (null != decryptedKey) {
-                Arrays.fill(decryptedKey, (byte) 0);
-            }
+            clearBytes(decryptedKey);
+            ecKeyPair = null;
         }
 
         //return the signature.
