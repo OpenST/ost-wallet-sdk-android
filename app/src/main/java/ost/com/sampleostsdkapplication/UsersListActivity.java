@@ -1,9 +1,7 @@
 package ost.com.sampleostsdkapplication;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,15 +15,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 
@@ -33,7 +29,6 @@ import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
-import java.util.List;
 
 import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
 import ost.com.sampleostsdkapplication.fragments.SetUpUserFragment;
@@ -324,10 +319,11 @@ public class UsersListActivity extends MappyBaseActivity implements
             }
 
             @Override
-            public void showPaperWallet(String[] mnemonicsArray) {
-                super.showPaperWallet(mnemonicsArray);
-                Log.d(TAG, "Paper wallet " + Arrays.asList(mnemonicsArray));
-                paperWalletFetchingDone(mnemonicsArray, "Please Save these words carefully.");
+            public void showPaperWallet(byte[] mnemonics) {
+                super.showPaperWallet(mnemonics);
+                Log.d(TAG, "Paper wallet " + Arrays.asList(mnemonics));
+                paperWalletFetchingDone(new String(mnemonics), "Please Save these words carefully.");
+                CommonUtils.clearBytes(mnemonics);
             }
             @Override
             public void invalidPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
@@ -338,9 +334,9 @@ public class UsersListActivity extends MappyBaseActivity implements
     }
 
     @Override
-    public void paperWalletFetchingDone(String[] mnemonicsArray, String showText){
+    public void paperWalletFetchingDone(String mnemonics, String showText) {
         if(paperWalletFragment != null){
-            paperWalletFragment.showWalletWords(mnemonicsArray, showText);
+            paperWalletFragment.showWalletWords(mnemonics, showText);
         }
     }
 

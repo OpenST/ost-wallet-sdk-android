@@ -147,7 +147,7 @@ public abstract class OstPollingService extends IntentService {
             Log.d(TAG, "JSONException", e);
             return null;
         }
-        Log.d(TAG, String.format("Entity from status: %s, Entity to status %s, entity status %s",
+        Log.d(TAG, String.format("Entity Success status: %s, Entity Failure status %s, Entity Current status %s",
                 entitySuccessStatus, entityFailureStatus, currentStatus));
 
         if (entitySuccessStatus.equalsIgnoreCase(currentStatus)) {
@@ -156,7 +156,7 @@ public abstract class OstPollingService extends IntentService {
         if (entityFailureStatus.equalsIgnoreCase(currentStatus)) {
             return entityFailureStatus;
         }
-        Log.d(TAG, String.format("N update of entity %s entity ", getEntityName()));
+        Log.d(TAG, String.format("No update received for %s entity", getEntityName()));
         return null;
     }
 

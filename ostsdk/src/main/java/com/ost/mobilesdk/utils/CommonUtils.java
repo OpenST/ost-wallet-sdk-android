@@ -44,7 +44,8 @@ public class CommonUtils {
     }
 
     public static final byte[] nonSecret = ("LETS_CLEAR_BYTES" + String.valueOf((int) (System.currentTimeMillis()))  ).getBytes();
-    private static void clearBytes(byte[] secret) {
+
+    public static void clearBytes(byte[] secret) {
         if ( null == secret ) { return; }
         for (int i = 0; i < secret.length; i++) {
             secret[i] = nonSecret[i % nonSecret.length];

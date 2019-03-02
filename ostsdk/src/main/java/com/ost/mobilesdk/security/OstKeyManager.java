@@ -1,13 +1,8 @@
 package com.ost.mobilesdk.security;
 
-import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.workflows.OstUserPinInfoHolder;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
-
-import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Sign;
-import org.web3j.utils.Numeric;
 
 public class OstKeyManager {
     private static final String TAG = "OstKeyManager";
@@ -34,9 +29,9 @@ public class OstKeyManager {
         return mKeyMetaStruct.getApiAddress();
     }
 
-    String[] getMnemonics(String address) {
+    byte[] getMnemonics(String address) {
         InternalKeyManager ikm = new InternalKeyManager(mUserId);
-        String[] mnemonics = ikm.getMnemonics(address);
+        byte[] mnemonics = ikm.getMnemonics(address);
         ikm = null;
         return mnemonics;
     }
@@ -58,7 +53,7 @@ public class OstKeyManager {
         return mKeyMetaStruct.getDeviceAddress();
     }
 
-    public String[] getMnemonics() {
+    public byte[] getMnemonics() {
         String deviceAddress = getDeviceAddress();
         return getMnemonics(deviceAddress);
     }

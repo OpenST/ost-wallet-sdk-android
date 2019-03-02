@@ -55,7 +55,7 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
     }
 
     @Override
-    public void showPaperWallet(String[] mnemonicsArray) {
+    public void showPaperWallet(byte[] mnemonics) {
 
     }
 

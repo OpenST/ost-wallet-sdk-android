@@ -23,7 +23,6 @@ import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
-import org.web3j.crypto.MnemonicUtils;
 import org.web3j.crypto.Sign;
 import org.web3j.utils.Numeric;
 
@@ -34,7 +33,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -104,21 +102,21 @@ class InternalKeyManager {
     }
 
     // region - Device Key Management
-    String[] getMnemonics(String address) {
-        //Get the keyId.
-        String mnemonicsMetaId = mKeyMetaStruct.getEthKeyMnemonicsIdentifier(address);
+    byte[] getMnemonics(String address) {
+        //Get the keyId metaId.
+        String metaId = createMnemonicsMetaId(address);
+        String mnemonicsIdentifier = mKeyMetaStruct.getEthKeyMnemonicsIdentifier(metaId);
 
         //Get the encrypted mnemonics
         OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
-        OstSecureKey ostSecureKey = metaRepository.getByKey(mnemonicsMetaId);
+        OstSecureKey ostSecureKey = metaRepository.getByKey(metaId);
         if (null == ostSecureKey) {
             return null;
         }
 
         //Decrypt it.
-        byte[] decryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSecureKey.getData());
-        String mnemonics = new String(decryptedMnemonics);
-        return mnemonics.split(" ");
+        byte[] decryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mnemonicsIdentifier).decrypt(ostSecureKey.getData());
+        return decryptedMnemonics;
     }
 
     String signWithDeviceKey(String  messageHash) {
@@ -764,7 +762,9 @@ class InternalKeyManager {
         } finally {
             //Clean out mnemonics
             clearBytes(mnemonics);
-            if ( null != mnemonics) {Arrays.fill(mnemonics, (byte) 0);};
+            if (null != mnemonics) {
+                Arrays.fill(mnemonics, (byte) 0);
+            }
 
             //Clean the seed.
             clearBytes(seed);

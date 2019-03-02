@@ -587,7 +587,7 @@ abstract class OstBaseWorkFlow {
 
     // Remove these.
     boolean validatePin(String a, String b) {
-        return false;
+        return true;
     }
 
     AsyncStatus postPinValidated() {

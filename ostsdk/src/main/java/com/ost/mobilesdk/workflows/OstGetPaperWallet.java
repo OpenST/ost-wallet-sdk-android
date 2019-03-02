@@ -79,9 +79,9 @@ public class OstGetPaperWallet extends OstBaseWorkFlow implements OstPinAcceptIn
             case AUTHENTICATED:
                 Log.i(TAG, "Fetch 12 words");
                 OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-                String[] mnemonicsArray = ostKeyManager.getMnemonics();
+                byte[] mnemonics = ostKeyManager.getMnemonics();
 
-                postMnemonics(mnemonicsArray);
+                postMnemonics(mnemonics);
                 postFlowComplete();
                 break;
             case CANCELLED:
@@ -92,12 +92,12 @@ public class OstGetPaperWallet extends OstBaseWorkFlow implements OstPinAcceptIn
         return new AsyncStatus(true);
     }
 
-    private AsyncStatus postMnemonics(String[] mnemonicsArray) {
+    private AsyncStatus postMnemonics(byte[] mnemonics) {
         Log.i(TAG, "show mnemonics");
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.showPaperWallet(mnemonicsArray);
+                mCallback.showPaperWallet(mnemonics);
             }
         });
         return new AsyncStatus(true);

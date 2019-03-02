@@ -125,7 +125,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
 
                 Log.i(TAG, "start polling");
                 OstTransactionPollingService.startPolling(mUserId, entityId,
-                        OstTransaction.CONST_STATUS.SUCCESS, OstTransaction.CONST_STATUS.FAIL);
+                        OstTransaction.CONST_STATUS.SUCCESS, OstTransaction.CONST_STATUS.FAILED);
 
                 Bundle bundle = waitForUpdate(OstSdk.TRANSACTION, entityId);
                 if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {

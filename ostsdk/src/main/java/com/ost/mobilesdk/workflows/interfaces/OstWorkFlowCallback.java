@@ -83,9 +83,9 @@ public interface OstWorkFlowCallback {
 
     /**
      * Show SDK user mnemonicsArray of the device address
-     * @param wordsArray words array
+     * @param mnemonics byte array of mnemonics
      */
-    void showPaperWallet(String[] wordsArray);
+    void showPaperWallet(byte[] mnemonics);
 
     /**
      * Inform SDK user about workflow core api call

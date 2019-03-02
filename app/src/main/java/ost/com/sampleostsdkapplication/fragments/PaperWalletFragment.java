@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -142,11 +141,11 @@ public class PaperWalletFragment extends Fragment implements View.OnClickListene
         mListener.authorizeDeviceUsingMnemonics(mnemonicsText, mUserId);
     }
 
-    public void showWalletWords(String[] mnemonicsArray, String showText){
+    public void showWalletWords(String mnemonics, String showText) {
         mActionButtons.setVisibility(View.VISIBLE);
         mActionLoaders.setVisibility(View.GONE);
-        if(mnemonicsArray != null){
-            mPWEditBox.setText(TextUtils.join(",", mnemonicsArray));
+        if (mnemonics != null) {
+            mPWEditBox.setText(mnemonics);
         }
         if(showText != null){
             mWalletInstructionText.setText(showText);
@@ -157,7 +156,8 @@ public class PaperWalletFragment extends Fragment implements View.OnClickListene
     public interface OnPaperWalletFragmentListener{
         void onBack();
         void onShowPaperWalletButton();
-        void paperWalletFetchingDone(String[] walletWords, String showText);
+
+        void paperWalletFetchingDone(String mnemonics, String showText);
         void authorizeDeviceUsingMnemonics(String mnemonicsText, String userId);
     }
 }
