@@ -18,6 +18,7 @@ import com.ost.mobilesdk.utils.SoliditySha3;
 
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
+import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
@@ -32,6 +33,7 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -189,23 +191,7 @@ class InternalKeyManager {
         mKeyMetaStruct.deviceAddress = deviceAddress;
     }
 
-    Sign.SignatureData signBytesWithApiSigner(byte[] dataToSign) {
-        //Get Api Key address and id.
-        String apiKeyAddress = mKeyMetaStruct.getApiAddress();
-        String apiKeyId = createEthKeyMetaId(apiKeyAddress);
 
-        //Fetch and decrypt Api Key
-        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
-        OstSecureKey osk = metaRepository.getByKey(apiKeyId);
-        byte[] key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
-        ECKeyPair ecKeyPair = ECKeyPair.create(key);
-        key = null;
-
-        //Sign the data
-        Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
-        ecKeyPair = null;
-        return signatureData;
-    }
     //endregion
 
     //region - Validate Pin
@@ -390,12 +376,30 @@ class InternalKeyManager {
 
         return apiKeyAddress;
     }
+    Sign.SignatureData signBytesWithApiSigner(byte[] dataToSign) {
+        //Get Api Key address and id.
+        String apiKeyAddress = mKeyMetaStruct.getApiAddress();
+        String apiKeyId = createEthKeyMetaId(apiKeyAddress);
+
+        //Fetch and decrypt Api Key
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
+        OstSecureKey osk = metaRepository.getByKey(apiKeyId);
+        byte[] key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
+        ECKeyPair ecKeyPair = ECKeyPair.create(key);
+        key = null;
+
+        //Sign the data
+        Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
+        ecKeyPair = null;
+        return signatureData;
+    }
     // endregion
 
     // region - Passphrase Locker Utility Methods
 
-    private static int MaxRetryCount = 3;
+
     //To-Do: Get these from configs/constants
+    private static int MaxRetryCount = 3;
     private static long LockDuration = (10 * 60 * 60 * 1000);
     private static long UnlockedDuration = 0;
 
@@ -731,15 +735,17 @@ class InternalKeyManager {
         byte[] seed = null;
         String signature = null;
         String signerAddress = null;
+        Bip32ECKeyPair ecKeyPair = null;
         try {
 
             seed = MnemonicUtils.generateSeed(String.valueOf(mnemonics),null);
-            ECKeyPair ecKeyPair = ECKeyPair.create(seed);
+            ecKeyPair = Bip32ECKeyPair.generateKeyPair(seed);
             signerAddress = Credentials.create(ecKeyPair).getAddress();
 
             //Sachin: Please check here.
             //Expected Signer Address: 0xb1CaeCf0928A210febc8973bFa1861ac3cD81252
             //mnemonics: 'rail hospital yard floor oppose gold cash peasant kitchen anchor slot honey'
+            //Credentials.create(Bip32ECKeyPair.deriveKeyPair(ecKeyPair,(new int[]{44 | 0x80000000,60 | 0x80000000,0|0x80000000,0,0}) )).getAddress()
 
             Sign.SignatureData signatureData = Sign.signMessage(dataToSign, ecKeyPair, false);
             signature = signatureDataToString( signatureData );
@@ -752,8 +758,12 @@ class InternalKeyManager {
             if ( null != seed ) {
                 Arrays.fill(seed, (byte) 0);
             }
+
+            ecKeyPair.getPrivateKey().multiply(BigInteger.ZERO);
+
+            boolean hasCleaned = ecKeyPair.getPrivateKey().compareTo(BigInteger.ZERO) == 0;
+            Log.d("__", "hasCleaned" + hasCleaned);
         }
-        StringBuilder sb = new StringBuilder();
 
         ostSignWithMnemonicsStruct.setSignature(signature);
         ostSignWithMnemonicsStruct.setSigner(signerAddress);
