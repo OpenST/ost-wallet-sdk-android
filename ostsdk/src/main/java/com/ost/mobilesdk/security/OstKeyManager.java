@@ -30,7 +30,7 @@ public class OstKeyManager {
     }
 
     byte[] getMnemonics(String address) {
-        InternalKeyManager ikm = new InternalKeyManager(mUserId);
+        InternalKeyManager2 ikm = new InternalKeyManager2(mUserId);
         byte[] mnemonics = ikm.getMnemonics(address);
         ikm = null;
         return mnemonics;

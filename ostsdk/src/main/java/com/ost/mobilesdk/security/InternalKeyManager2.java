@@ -8,7 +8,6 @@ import com.ost.mobilesdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstSecureKey;
 import com.ost.mobilesdk.models.entities.OstSessionKey;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
-import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.security.structs.OstSignWithMnemonicsStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -161,21 +160,21 @@ public class InternalKeyManager2 {
     // endregion
 
     // region - Device Key Management
-    String[] getMnemonics(String address) {
-        //Get the keyId.
-        String mnemonicsMetaId = mKeyMetaStruct.getEthKeyMnemonicsIdentifier(address);
+    byte[] getMnemonics(String address) {
+        //Get the keyId metaId.
+        String metaId = createMnemonicsMetaId(address);
+        String mnemonicsIdentifier = mKeyMetaStruct.getEthKeyMnemonicsIdentifier(metaId);
 
         //Get the encrypted mnemonics
         OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
-        OstSecureKey ostSecureKey = metaRepository.getByKey(mnemonicsMetaId);
+        OstSecureKey ostSecureKey = metaRepository.getByKey(metaId);
         if (null == ostSecureKey) {
             return null;
         }
 
         //Decrypt it.
-        byte[] decryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(ostSecureKey.getData());
-        String mnemonics = new String(decryptedMnemonics);
-        return mnemonics.split(" ");
+        byte[] decryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mnemonicsIdentifier).decrypt(ostSecureKey.getData());
+        return decryptedMnemonics;
     }
 
 
@@ -192,7 +191,7 @@ public class InternalKeyManager2 {
         byte[] encryptedKey = null;
         try {
             //Create mnemonics and encrypt it.
-            mnemonics = generateMnemonics();;
+            mnemonics = generateMnemonics();
             encryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(mnemonics);
 
 
