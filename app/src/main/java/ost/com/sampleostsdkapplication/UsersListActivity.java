@@ -40,6 +40,8 @@ import ost.com.sampleostsdkapplication.fragments.SetUpUserFragment;
 import ost.com.sampleostsdkapplication.fragments.UserDetailsFragment;
 import ost.com.sampleostsdkapplication.fragments.UserListFragment;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class UsersListActivity extends MappyBaseActivity implements
         SetUpUserFragment.OnSetUpUserFragmentListener,
         PaperWalletFragment.OnPaperWalletFragmentListener {
@@ -344,7 +346,7 @@ public class UsersListActivity extends MappyBaseActivity implements
 
     @Override
     public void authorizeDeviceUsingMnemonics(String mnemonics, String userId){
-        OstSdk.addDeviceUsingMnemonics(userId, mnemonics, new WorkFlowHelper(getApplicationContext()));
+        OstSdk.addDeviceUsingMnemonics(userId, mnemonics.getBytes(UTF_8), new WorkFlowHelper(getApplicationContext()));
     }
 
 //    public static class QRFragment extends android.support.v4.app.Fragment {

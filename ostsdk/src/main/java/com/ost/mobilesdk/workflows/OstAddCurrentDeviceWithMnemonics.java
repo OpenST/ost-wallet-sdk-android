@@ -28,18 +28,10 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
     SignedAddDeviceStruct signedData;
     String mAddedDeviceAddress;
 
-    @Deprecated
-    public OstAddCurrentDeviceWithMnemonics(String userId, String mnemonics, OstWorkFlowCallback callback) {
-        super(userId, callback);
-        mMnemonics = mnemonics.getBytes(UTF_8);
-    }
-
     public OstAddCurrentDeviceWithMnemonics(String userId, byte[] mnemonics, OstWorkFlowCallback callback) {
         super(userId, callback);
         mMnemonics = mnemonics;
     }
-
-
 
     @Override
     boolean hasValidParams() {

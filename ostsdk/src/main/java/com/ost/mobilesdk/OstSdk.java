@@ -138,8 +138,16 @@ public class OstSdk {
         ostExecuteTransaction.perform();
     }
 
-    public static void addDeviceUsingMnemonics(String userId, String mMnemonics, OstWorkFlowCallback ostWorkFlowCallback) {
-        OstAddCurrentDeviceWithMnemonics ostAddCurrentDeviceWithMnemonics = new OstAddCurrentDeviceWithMnemonics(userId, mMnemonics, ostWorkFlowCallback);
+    /**
+     * Authorizes current device using mnemonics (12 words) of already authorized device.
+     * IMPORTANT: The provided byte[] of mnemonics will be replaced with random bytes after user.
+     *
+     * @param userId - userId for current user provided by Kit.
+     * @param mnemonics - UTF-8 encoded byte[] of mnemonics of the authorized device. The device must belong to the user.
+     * @param ostWorkFlowCallback - Workflow callback interact.
+     */
+    public static void addDeviceUsingMnemonics(String userId, byte[] mnemonics, OstWorkFlowCallback ostWorkFlowCallback) {
+        OstAddCurrentDeviceWithMnemonics ostAddCurrentDeviceWithMnemonics = new OstAddCurrentDeviceWithMnemonics(userId, mnemonics, ostWorkFlowCallback);
         ostAddCurrentDeviceWithMnemonics.perform();
     }
 
