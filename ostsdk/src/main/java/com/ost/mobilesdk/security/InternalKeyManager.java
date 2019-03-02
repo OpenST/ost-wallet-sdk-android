@@ -45,6 +45,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.web3j.compat.Compat.UTF_8;
 
+@Deprecated
 class InternalKeyManager {
     private static OstSecureKeyModelRepository modelRepo = null;
     private static OstSecureKeyModelRepository getByteStorageRepo() {
