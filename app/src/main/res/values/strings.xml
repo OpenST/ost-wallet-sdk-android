@@ -1,0 +1,76 @@
+<resources>
+    <string name="app_name">SampleOstSdkApplication</string>
+    <string name="title_activity_login_sign_up">Sign in</string>
+    <!-- Strings related to login -->
+    <string name="name_hint">Name</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="description">Description</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_register">Register</string>
+    <string name="register_form">Register Form</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_mobilenumber">Mobile number may be incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="login_form">Login form</string>
+    <string name="user_status">User Status</string>
+    <string name="user_name">Name</string>
+    <string name="title_activity_users_list">User List</string>
+    <string name="error_incorrect_name">Name might be wrong</string>
+    <string name="add_device">Add Device</string>
+    <string name="scan_qr">Scan QR Code</string>
+    <string name="create_session">Create Session</string>
+    <string name="activate_user">Activate User</string>
+    <string name="show_user_details">Show Details</string>
+    <string name="show_paper_wallet">Show paper wallet</string>
+    <string name="add_device_words">Add Device Words</string>
+    <string name="execute_txn">Execute Transaction</string>
+    <string name="qr_execute_txn">QR exectute transaction</string>
+    <string name="mappy_sign_text">Sign in to continue</string>
+
+    <string name="shr_app_name">OstDemoApp</string>
+    <string name="shr_hint_username">Username</string>
+    <string name="shr_hint_mobile_number">Mobile Number</string>
+    <string name="shr_button_next">Next</string>
+    <string name="shr_button_create_account">Create Account</string>
+    <string name="shr_error_password">Password must contain at least 8 characters.</string>
+    <string name="shr_error_user_name">User name is empty</string>
+    <string name="shr_filter_title">Filter</string>
+    <string name="shr_search_title">Search</string>
+    <string name="shr_product_title">Title</string>
+    <string name="shr_product_description">Secondary text</string>
+
+    <string name="view_details">View Details</string>
+    <string name="ost_user_id">Ost-User-Id</string>
+    <string name="ost_user_status">User Status</string>
+    <string name="ost_token_id">Token Id</string>
+    <string name="ost_user_token_holder">Token Holder Address</string>
+    <string name="ost_user_device_manager">Device Manager Address</string>
+    <string name="ost_user_recovery_key">Recovery Key Address</string>
+    <string name="ost_user_device_address">Device Address</string>
+    <string name="device_name">Device Name</string>
+    <string name="device_status">Device Status</string>
+
+    <string name="setup_wallet">Set Up Your Wallet</string>
+    <string name="paper_wallet">Paper Wallet</string>
+    <string name="ost_welcome_text">Welcome To OST Powered Token Economy</string>
+    <string name="let_setup_wallet">Lets Setup Your Wallet.</string>
+    <string name="enter_pin">Enter 6 digits pin to secure your wallet. </string>
+
+    <!-- OstDemoApp backdrop menu labels -->
+    <string name="shr_featured_label">Featured</string>
+    <string name="shr_apartment_label">Apartment</string>
+    <string name="shr_accessories_label">Accessories</string>
+    <string name="shr_shoes_label">Shoes</string>
+    <string name="shr_tops_label">Tops</string>
+    <string name="shr_bottoms_label">Bottoms</string>
+    <string name="shr_dresses_label">Dresses</string>
+    <string name="shr_account_label">My Account</string>
+    <string name="reset_pin">Reset Pin</string>
+    <string name="device_recovery">Device recovery</string>
+    <string name="device_abort_recovery">Device abort recovery</string>
+</resources>
