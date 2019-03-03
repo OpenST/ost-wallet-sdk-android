@@ -4,7 +4,6 @@ import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.OstApiSigner;
-import com.ost.mobilesdk.security.OstKeyManager;
 
 import org.json.JSONObject;
 
@@ -38,6 +37,10 @@ public class OstApiClient {
     private final OstUser mOstUser;
     private final OstHttpRequestClient.ResponseParser mResponseParser;
     private final OstApiSigner mApiSigner;
+
+    public OstHttpRequestClient.ResponseParser getResponseParser() {
+        return mResponseParser;
+    }
 
     public OstApiClient(String userId, String baseUrl) {
         mUserId = userId;

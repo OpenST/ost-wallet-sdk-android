@@ -9,8 +9,8 @@ import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
-import com.ost.mobilesdk.security.OstMultiSigSigner;
 import com.ost.mobilesdk.security.OstKeyManager;
+import com.ost.mobilesdk.security.OstMultiSigSigner;
 import com.ost.mobilesdk.security.structs.SignedAddSessionStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.GnosisSafe;
@@ -141,11 +141,6 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         return postFlowComplete();
     }
 
-    @Override
-    boolean shouldCheckCurrentDeviceAuthorization() {
-        return true;
-    }
-
     private String getCurrentBlockNumber(OstApiClient ostApiClient) {
         String blockNumber = null;
         JSONObject jsonObject = null;
@@ -157,8 +152,6 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         blockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
         return blockNumber;
     }
-
-
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {

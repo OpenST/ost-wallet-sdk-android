@@ -47,9 +47,9 @@ public class OstMultiSigSigner {
             throw ostError;
         }
 
-        InternalKeyManager2 ikm;
+        InternalKeyManager ikm;
         try {
-            ikm = new InternalKeyManager2(mUserId);
+            ikm = new InternalKeyManager(mUserId);
 
             if (!ikm.canSignWithSession(sessionAddress)) {
                 OstError ostError = new OstError("km_gss_as_6", ErrorCode.INVALID_SESSION_ADDRESS);
@@ -70,7 +70,7 @@ public class OstMultiSigSigner {
     }
 
     public SignedAddDeviceStruct addExternalDevice(String deviceToBeAdded) {
-        KeyMetaStruct keyMeta = InternalKeyManager2.getKeyMataStruct(mUserId);
+        KeyMetaStruct keyMeta = InternalKeyManager.getKeyMataStruct(mUserId);
         if ( null == keyMeta) {
             throw new OstError("km_gss_adwm_1", ErrorCode.DEVICE_NOT_SETUP);
         }
@@ -79,9 +79,9 @@ public class OstMultiSigSigner {
         String signerAddress = keyMeta.deviceAddress;
         SignedAddDeviceStruct struct = createAddDeviceStruct(deviceToBeAdded);
 
-        InternalKeyManager2 ikm = null;
+        InternalKeyManager ikm = null;
         try {
-            ikm = new InternalKeyManager2(mUserId);
+            ikm = new InternalKeyManager(mUserId);
             String signature = ikm.signWithDeviceKey( struct.getMessageHash() );
             struct.setDeviceOwnerAddress(signerAddress);
             struct.setSignature(signature);
@@ -93,7 +93,7 @@ public class OstMultiSigSigner {
     }
 
     public SignedAddDeviceStruct addCurrentDeviceWithMnemonics(byte[] mnemonics) {
-        KeyMetaStruct keyMeta = InternalKeyManager2.getKeyMataStruct(mUserId);
+        KeyMetaStruct keyMeta = InternalKeyManager.getKeyMataStruct(mUserId);
         if ( null == keyMeta) {
             throw new OstError("km_gss_adwm_1", ErrorCode.DEVICE_NOT_SETUP);
 
@@ -105,9 +105,9 @@ public class OstMultiSigSigner {
 
         OstSignWithMnemonicsStruct ostSignWithMnemonicsStruct = new OstSignWithMnemonicsStruct(mnemonics, struct.getMessageHash());
 
-        InternalKeyManager2 ikm = null;
+        InternalKeyManager ikm = null;
         try {
-            ikm = new InternalKeyManager2(mUserId);
+            ikm = new InternalKeyManager(mUserId);
             //Sign the data.
             ikm.sign(ostSignWithMnemonicsStruct);
             String signerAddress =  ostSignWithMnemonicsStruct.getSigner();
@@ -197,17 +197,17 @@ public class OstMultiSigSigner {
     //endregion
 
     //region - data signers. Make sure they are private.
-    private void signData(BaseDeviceManagerOperationStruct struct, InternalKeyManager2 ikm) {
+    private void signData(BaseDeviceManagerOperationStruct struct, InternalKeyManager ikm) {
         String messageHash = struct.getMessageHash();
         //Check if we have a device key.
-        KeyMetaStruct keyMeta = InternalKeyManager2.getKeyMataStruct(mUserId);
+        KeyMetaStruct keyMeta = InternalKeyManager.getKeyMataStruct(mUserId);
         if ( null == keyMeta) {
             throw new OstError("km_gss_sd_1", ErrorCode.DEVICE_UNAUTHORIZED);
         }
 
         try {
             if ( null == ikm ) {
-                ikm = new InternalKeyManager2(mUserId);
+                ikm = new InternalKeyManager(mUserId);
             }
             String signature = ikm.signWithDeviceKey(messageHash);
             struct.setSignature(signature);

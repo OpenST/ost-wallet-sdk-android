@@ -1,5 +1,7 @@
 package com.ost.mobilesdk.workflows.interfaces;
 
+import com.ost.mobilesdk.security.UserPassphrase;
+
 /**
  * Sub Interface of
  * @see OstBaseInterface
@@ -8,8 +10,7 @@ package com.ost.mobilesdk.workflows.interfaces;
 public interface OstPinAcceptInterface extends OstBaseInterface {
     /**
      * SDK user will use it to pass user pin to SDK.
-     * @param uPin user pin passed from Application
-     * @param appUserPassword Application Provided Password for the user.
+     * @param passphrase recovery passphrase of the user.
      */
-    void pinEntered(String uPin, String appUserPassword);
+    void pinEntered(UserPassphrase passphrase);
 }

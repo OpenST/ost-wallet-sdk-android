@@ -6,25 +6,25 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
-import com.ost.mobilesdk.database.daos.OstDeviceOperationDao;
-import com.ost.mobilesdk.database.daos.OstSessionKeyDao;
-import com.ost.mobilesdk.database.daos.OstTransactionDao;
-import com.ost.mobilesdk.database.daos.OstDeviceManagerDao;
 import com.ost.mobilesdk.database.daos.OstDeviceDao;
+import com.ost.mobilesdk.database.daos.OstDeviceManagerDao;
+import com.ost.mobilesdk.database.daos.OstDeviceOperationDao;
 import com.ost.mobilesdk.database.daos.OstRuleDao;
+import com.ost.mobilesdk.database.daos.OstSessionDao;
+import com.ost.mobilesdk.database.daos.OstSessionKeyDao;
 import com.ost.mobilesdk.database.daos.OstTokenDao;
 import com.ost.mobilesdk.database.daos.OstTokenHolderDao;
-import com.ost.mobilesdk.database.daos.OstSessionDao;
+import com.ost.mobilesdk.database.daos.OstTransactionDao;
 import com.ost.mobilesdk.database.daos.OstUserDao;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
-import com.ost.mobilesdk.models.entities.OstSessionKey;
-import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.models.entities.OstRule;
 import com.ost.mobilesdk.models.entities.OstSession;
+import com.ost.mobilesdk.models.entities.OstSessionKey;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstTokenHolder;
+import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.models.entities.OstUser;
 
 @Database(entities = {OstUser.class, OstRule.class, OstToken.class, OstTransaction.class,

@@ -125,7 +125,7 @@ public class OstDeviceManager extends OstBaseEntity {
         int newNonce = currentNonce + 1;
         try {
             setJsonDataProperty(NONCE, newNonce);
-        } catch (JSONException e) {
+        } catch (Throwable e) {
             Log.e(TAG, "Unexpected exception", e);
             return currentNonce;
         }

@@ -14,14 +14,14 @@ class LogInUser {
     private String id;
     private String ostUserId;
     private String tokenId;
-    private String password;
+    private String passphrasePrefix;
 
     LogInUser(JSONObject jsonObject) {
         try {
             id = jsonObject.getString(Constants.APP_USER_ID);
             ostUserId = jsonObject.getString(Constants.USER_ID);
             tokenId = jsonObject.getString(Constants.TOKEN_ID);
-            password = jsonObject.getString(Constants.USER_PIN_SALT);
+            passphrasePrefix = jsonObject.getString(Constants.USER_PIN_SALT);
         } catch (JSONException e) {
             Log.e(TAG, "JSON exception", e.getCause());
         }
@@ -49,7 +49,7 @@ class LogInUser {
         return tokenId;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPassphrasePrefix() {
+        return passphrasePrefix;
     }
 }

@@ -1,7 +1,6 @@
 package com.ost.mobilesdk.workflows;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
@@ -11,7 +10,6 @@ import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.security.OstRecoveryManager;
 import com.ost.mobilesdk.security.UserPassphrase;
-import com.ost.mobilesdk.security.impls.OstSdkCrypto;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;

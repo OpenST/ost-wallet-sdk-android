@@ -1,7 +1,5 @@
 package com.ost.mobilesdk.security;
 
-import android.util.Log;
-import com.ost.mobilesdk.workflows.OstUserPinInfoHolder;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 
@@ -14,14 +12,14 @@ public class OstKeyManager {
 
     public OstKeyManager(String userId) {
         this.mUserId = userId;
-        mKeyMetaStruct = InternalKeyManager2.getKeyMataStruct(userId);
+        mKeyMetaStruct = InternalKeyManager.getKeyMataStruct(userId);
         if (null == mKeyMetaStruct ) {
 
             //Create new KeyManagerInstance so that keys are created.
-            InternalKeyManager2 ikm = new InternalKeyManager2(userId);
+            InternalKeyManager ikm = new InternalKeyManager(userId);
 
             //Fetch KeyMataStruct.
-            mKeyMetaStruct = InternalKeyManager2.getKeyMataStruct(userId);
+            mKeyMetaStruct = InternalKeyManager.getKeyMataStruct(userId);
             ikm = null;
         }
     }
@@ -31,7 +29,7 @@ public class OstKeyManager {
     }
 
     public byte[] getMnemonics() {
-        InternalKeyManager2 ikm = new InternalKeyManager2(mUserId);
+        InternalKeyManager ikm = new InternalKeyManager(mUserId);
 
         String deviceAddress = getDeviceAddress();
         byte[] mnemonics = ikm.getMnemonics(deviceAddress);
@@ -40,7 +38,7 @@ public class OstKeyManager {
     }
 
     public String createSessionKey() {
-        InternalKeyManager2 ikm = new InternalKeyManager2(mUserId);
+        InternalKeyManager ikm = new InternalKeyManager(mUserId);
         String address = ikm.createSessionKey();
         ikm = null;
 
@@ -54,17 +52,4 @@ public class OstKeyManager {
     public String getDeviceAddress() {
         return mKeyMetaStruct.getDeviceAddress();
     }
-
-
-
-    private int cnt = 0;
-    public boolean validatePin(OstUserPinInfoHolder pinInfoHolder) {
-        cnt++;
-        Log.i(TAG,"validatePin called " + cnt + " time(s).");
-        //Temp code.
-        UserPassphrase passphrase = new UserPassphrase(mUserId, pinInfoHolder.getUserPassphrase(), pinInfoHolder.getPassphrasePrefix());
-        return new OstRecoveryManager(mUserId).validatePassphrase(passphrase);
-
-    }
-
 }

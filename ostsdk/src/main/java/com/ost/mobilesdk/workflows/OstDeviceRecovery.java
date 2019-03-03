@@ -35,10 +35,9 @@ public class OstDeviceRecovery extends OstBaseWorkFlow {
                 String recoveredDeviceAddress = null;
                 String recoveredDeviceParentAddress = OstDevice.getById(recoveredDeviceAddress).getLinkedAddress();
                 String recoveryAddress = OstUser.getById(mUserId).getRecoveryAddress();
-                String salt = super.getSalt();
 
-                String signature = getExecutableCallDataSignature(recoveredDeviceParentAddress, recoveredDeviceAddress,
-                        currentDeviceAddress, recoveryAddress);
+//                String signature = getExecutableCallDataSignature(recoveredDeviceParentAddress, recoveredDeviceAddress,
+//                        currentDeviceAddress, recoveryAddress);
 
 
             case POLLING:
