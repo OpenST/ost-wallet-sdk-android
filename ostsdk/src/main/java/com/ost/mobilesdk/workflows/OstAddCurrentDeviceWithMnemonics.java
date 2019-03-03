@@ -19,8 +19,6 @@ import com.ost.mobilesdk.workflows.services.OstPollingService;
 
 import java.io.IOException;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 
 public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWorkflow implements OstPinAcceptInterface {
 

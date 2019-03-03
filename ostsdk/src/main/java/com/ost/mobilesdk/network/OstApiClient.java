@@ -4,7 +4,6 @@ import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.OstApiSigner;
-import com.ost.mobilesdk.security.OstKeyManager;
 
 import org.json.JSONObject;
 

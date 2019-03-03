@@ -1,7 +1,5 @@
 package com.ost.mobilesdk.security.structs;
 
-import org.web3j.crypto.Keys;
-
 public class SignedAddDeviceStruct extends BaseDeviceManagerOperationStruct {
 
     private String deviceToBeAdded;

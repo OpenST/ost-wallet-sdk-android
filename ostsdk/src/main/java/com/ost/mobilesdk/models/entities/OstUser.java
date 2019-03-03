@@ -10,7 +10,6 @@ import com.ost.mobilesdk.security.OstKeyManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
-import org.web3j.utils.Numeric;
 
 import java.util.Arrays;
 import java.util.List;

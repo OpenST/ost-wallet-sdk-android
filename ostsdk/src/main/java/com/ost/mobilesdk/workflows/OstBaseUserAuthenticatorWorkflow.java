@@ -5,7 +5,6 @@ import android.util.Log;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
-import com.ost.mobilesdk.security.OstKeyManager;
 import com.ost.mobilesdk.security.OstRecoveryManager;
 import com.ost.mobilesdk.security.UserPassphrase;
 import com.ost.mobilesdk.utils.AsyncStatus;
