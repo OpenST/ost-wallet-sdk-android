@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 
 abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow implements OstPinAcceptInterface {
-    private static String TAG = "BUAWorkFlow";
+    private static String TAG = "OstBUAWorkFlow";
     private int mPinAskCount = 0;
     private String uPin;
     private String appUserPassword;
@@ -83,10 +83,18 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
 
                 case WorkflowStateManager.DEVICE_VALIDATED:
                     Log.i(TAG, "Ask for authentication");
-                    if (shouldAskForBioMetric()) {
-                        new OstBiometricAuthentication(OstSdk.getContext(), getBioMetricCallBack());
+                    if (shouldAskForAuthentication()) {
+                        if (shouldAskForBioMetric()) {
+                            new OstBiometricAuthentication(OstSdk.getContext(), getBioMetricCallBack());
+                        } else {
+                            return goToState(WorkflowStateManager.AUTHENTICATED);
+                        }
                     } else {
-                        return goToState(WorkflowStateManager.AUTHENTICATED);
+                        AsyncStatus status = performOnDeviceValidation();
+                        if (!status.isSuccess()) {
+                            goToState(WorkflowStateManager.COMPLETED_WITH_ERROR);
+                        }
+                        return status;
                     }
                     break;
 
@@ -128,6 +136,13 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         return new AsyncStatus(true);
     }
 
+    protected AsyncStatus performOnDeviceValidation() {
+        return new AsyncStatus(true);
+    }
+
+    protected boolean shouldAskForAuthentication() {
+        return true;
+    }
 
 
     protected AsyncStatus performValidations(Object stateObject) {
@@ -160,6 +175,10 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
                 ensureDeviceManager();
             }
 
+            if (shouldCheckTokenRules()) {
+                ensureOstRules();
+            }
+
         } catch (OstError err) {
             return postErrorInterrupt(err);
         }
@@ -167,14 +186,16 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         return performNext();
     }
 
-
+    protected boolean shouldCheckTokenRules() {
+        return false;
+    }
 
 
     @Override
     public void pinEntered(String uPin, String appUserPassword) {
         OstUserPinInfoHolder pinInfoHolder = new OstUserPinInfoHolder();
         pinInfoHolder.setPassphrasePrefix(appUserPassword);
-        pinInfoHolder.setUserPassphrase(uPin);;
+        pinInfoHolder.setUserPassphrase(uPin);
         performWithState(WorkflowStateManager.PIN_INFO_RECEIVED, pinInfoHolder);
         pinInfoHolder = null;
 
@@ -204,7 +225,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
             return postErrorInterrupt("bpawf_vup_2", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
         }
         Log.d(TAG, "Pin InValidated ask for pin again");
-        OstPinAcceptInterface me = (OstPinAcceptInterface) this;
+        OstPinAcceptInterface me = this;
         return postInvalidPin(me);
     }
 
@@ -321,7 +342,9 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         }
     }
 
-    abstract AsyncStatus performOnAuthenticated();
+    AsyncStatus performOnAuthenticated() {
+        return new AsyncStatus(true);
+    }
 
     boolean shouldCheckCurrentDeviceAuthorization() {
         return true;

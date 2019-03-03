@@ -144,6 +144,9 @@ public class OstErrors {
 
             case USER_ACTIVATING: return "User is already activating.";
 
+            case EIP1077_FAILED:
+                return "EIP1077 failed";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -193,6 +196,7 @@ public class OstErrors {
         USER_ALREADY_ACTIVATED,
         INVALID_MNEMONICS,
         INVALID_QR_TRANSACTION_DATA,
+        EIP1077_FAILED,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,
