@@ -1,0 +1,65 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ost.com.sampleostsdkapplication.UsersListActivity">
+    <item
+        android:id="@+id/user_detail"
+        android:orderInCategory="100"
+        android:title="@string/show_user_details"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/activate_user"
+        android:orderInCategory="100"
+        android:title="Setup your Wallet"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/show_paper_wallet"
+        android:orderInCategory="100"
+        android:title="See your paper wallet"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/add_session"
+        android:orderInCategory="100"
+        android:title="@string/create_session"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/scan_qr"
+        android:orderInCategory="100"
+        android:title="@string/scan_qr"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/add_device"
+        android:orderInCategory="100"
+        android:title="Show QR Code to Authorize Device"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/device_words"
+        android:orderInCategory="100"
+        android:title="Authorize device using mnemonics"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/transactions"
+        android:orderInCategory="100"
+        android:title="@string/execute_txn"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/scan_qr_txn"
+        android:orderInCategory="100"
+        android:title="@string/qr_execute_txn"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/reset_pin"
+        android:orderInCategory="100"
+        android:title="@string/reset_pin"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/device_recovery"
+        android:orderInCategory="100"
+        android:title="@string/device_recovery"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/device_abort_recovery"
+        android:orderInCategory="100"
+        android:title="@string/device_abort_recovery"
+        app:showAsAction="never" />
+</menu>
