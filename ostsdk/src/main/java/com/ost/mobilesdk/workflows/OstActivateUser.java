@@ -100,7 +100,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
             OstError error = new OstError("wf_au_pr_4", ErrorCode.ACTIVATE_USER_API_FAILED);
             return postErrorInterrupt(error);
         } finally {
-            mPassphrase.clear();
+            mPassphrase.wipe();
         }
 
         //Activate the user if otherwise.

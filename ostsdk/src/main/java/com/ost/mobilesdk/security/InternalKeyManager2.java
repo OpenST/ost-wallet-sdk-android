@@ -729,16 +729,21 @@ class InternalKeyManager2 {
      * Create recovery key for given passphrase and salt.
      * Make sure it is outside try/catch to avoid multiple clearBytes.
      * But, devs must still set ecKeyPair = null in finally block.
+     * Also, the caller must ensure that userPassphrase is not null and not wiped before calling to avoid exceptions.
      *
      * @param userPassphrase - Passphrase of the user.
      * @param salt - Salt of recovery key.
      * @return - Recovery Key. You need handle it properly.
      */
     private ECKeyPair createRecoveryKey(UserPassphrase userPassphrase, byte[] salt) {
+        if ( null == userPassphrase || userPassphrase.isWiped() ) {
+            throw new IllegalArgumentException();
+        }
+
         byte[] seed = null;
         byte[] passphrase = null;
         try{
-            passphrase = userPassphrase.getPrefixedPassphrase();
+            passphrase = userPassphrase.getPassphrase();
             seed = SCrypt.generate(passphrase, salt, SCryptMemoryCost, SCryptBlockSize, SCryptParallelization, SCryptKeyLength);
             return Bip32ECKeyPair.generateKeyPair(seed);
         } catch (Throwable th) {
@@ -749,7 +754,7 @@ class InternalKeyManager2 {
             clearBytes(seed);
 
             if ( null != userPassphrase ) {
-                userPassphrase.clear();
+                userPassphrase.wipe();
             } else {
                 clearBytes(passphrase);
             }
@@ -765,12 +770,15 @@ class InternalKeyManager2 {
     String getRecoveryAddress(UserPassphrase userPassphrase, byte[] salt) {
         //Let createRecoveryKey be out side of try/catch.
         ECKeyPair ecKeyPair = createRecoveryKey(userPassphrase,salt);
+        if ( null == userPassphrase || userPassphrase.isWiped() ) {
+            throw new OstError("c_ikm_gra_1", ErrorCode.INVALID_USER_PASSPHRASE);
+        }
 
         try {
             return Credentials.create(ecKeyPair).getAddress();
         } catch(Throwable th) {
             //Suppress Error.
-            throw new OstError("c_ikm_gra_1", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
+            throw new OstError("c_ikm_gra_2", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
         } finally {
             ecKeyPair = null;
         }

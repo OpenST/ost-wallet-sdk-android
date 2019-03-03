@@ -10,7 +10,8 @@ import static org.web3j.compat.Compat.UTF_8;
 public class UserPassphrase {
 
     private final String userId;
-    private byte[] prefixedPassphrase;
+    private byte[] passphrase;
+    private boolean wiped = false;
 
     /**
      *
@@ -24,44 +25,56 @@ public class UserPassphrase {
      * Be sure to choose the library carefully.
      *
      * @param userId - Id of the user - as provided by https://kit.ost.com
-     * @param passphrase - Pin/Passphrase provided by the user. Min length 6.
-     * @param prefix - A prefix to the Pin/Passphrase. Min length 30.
+     * @param userPin - Pin/Passphrase provided by the user. Min length 6.
+     * @param passphrasePrefix - A prefix to the Pin/Passphrase. Min length 30.
      */
-    public UserPassphrase(String userId, String passphrase, String prefix) {
+    public UserPassphrase(String userId, String userPin, String passphrasePrefix) {
         this.userId = userId;
-        if ( null == passphrase || passphrase.length() < OstConstants.RECOVERY_PHRASE_USER_INPUT_MIN_LENGTH ) {
-            passphrase = null;
-            prefix = null;
+        if ( null == userPin || userPin.length() < OstConstants.RECOVERY_PHRASE_USER_INPUT_MIN_LENGTH ) {
+            userPin = null;
+            passphrasePrefix = null;
             throw new OstError("core_up_up_1", ErrorCode.INVALID_USER_PASSPHRASE);
         }
 
-        if ( null == prefix || prefix.length() < OstConstants.RECOVERY_PHRASE_PREFIX_MIN_LENGTH) {
-            passphrase = null;
-            prefix = null;
+        if ( null == passphrasePrefix || passphrasePrefix.length() < OstConstants.RECOVERY_PHRASE_PREFIX_MIN_LENGTH) {
+            userPin = null;
+            passphrasePrefix = null;
             throw new OstError("core_up_up_2", ErrorCode.INVALID_PASSPHRASE_PREFIX);
         }
 
-        this.prefixedPassphrase = String.format("%s%s%s", prefix, passphrase, userId).getBytes(UTF_8);
+        this.passphrase = String.format("%s%s%s", passphrasePrefix, userPin, userId).getBytes(UTF_8);
 
         //Forget the inputs.
-        passphrase = null;
-        prefix = null;
+        userPin = null;
+        passphrasePrefix = null;
     }
 
     public String getUserId() {
         return userId;
     }
 
-    byte[] getPrefixedPassphrase() {
-        return prefixedPassphrase;
+    byte[] getPassphrase() {
+        return passphrase;
     }
 
-    private static final byte[] nonSecret = (String.valueOf(System.currentTimeMillis()) + "RANDOM_BYTES_HERE").getBytes();
-    public void clear() {
-        if ( null == prefixedPassphrase ) { return; }
-        for (int i = 0; i < prefixedPassphrase.length; i++) {
-            prefixedPassphrase[i] = nonSecret[i % nonSecret.length];
+    /**
+     *
+     * @return true if passphrase has been wiped off memory.
+     */
+    public boolean isWiped() { return wiped; }
+
+
+    /**
+     * Method that shall be used to wipe passphrase.
+     */
+    public void wipe() {
+        if ( null == passphrase) { return; }
+        for (int i = 0; i < passphrase.length; i++) {
+            passphrase[i] = nonSecret[i % nonSecret.length];
         }
-        prefixedPassphrase = null;
+        passphrase = null;
+        wiped = true;
     }
+    private static final byte[] nonSecret = (String.valueOf(System.currentTimeMillis()) + "RANDOM_BYTES_HERE").getBytes();
+
 }
