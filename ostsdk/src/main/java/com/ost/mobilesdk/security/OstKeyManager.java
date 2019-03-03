@@ -13,14 +13,14 @@ public class OstKeyManager {
 
     public OstKeyManager(String userId) {
         this.mUserId = userId;
-        mKeyMetaStruct = InternalKeyManager.getKeyMataStruct(userId);
+        mKeyMetaStruct = InternalKeyManager2.getKeyMataStruct(userId);
         if (null == mKeyMetaStruct ) {
 
             //Create new KeyManagerInstance so that keys are created.
-            InternalKeyManager ikm = new InternalKeyManager(userId);
+            InternalKeyManager2 ikm = new InternalKeyManager2(userId);
 
             //Fetch KeyMataStruct.
-            mKeyMetaStruct = InternalKeyManager.getKeyMataStruct(userId);
+            mKeyMetaStruct = InternalKeyManager2.getKeyMataStruct(userId);
             ikm = null;
         }
     }
@@ -37,7 +37,7 @@ public class OstKeyManager {
     }
 
     public String createSessionKey() {
-        InternalKeyManager ikm = new InternalKeyManager(mUserId);
+        InternalKeyManager2 ikm = new InternalKeyManager2(mUserId);
         String address = ikm.createSessionKey();
         ikm = null;
 
@@ -68,22 +68,6 @@ public class OstKeyManager {
         ikm = null;
         return isValid;
 
-    }
-
-    public String getRecoveryKeyAddressUsing(String appSalt, String pin, String kitSalt) {
-        InternalKeyManager ikm = new InternalKeyManager(mUserId);
-        String address = ikm.getRecoveryKeyAddressUsing(appSalt,pin,kitSalt);
-        ikm = null;
-        if ( null == address ) {
-            OstError error = new OstError("km_okm_csk_1", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
-            throw error;
-        }
-        return address;
-    }
-
-    public String signUsingSessionKey(String a, String b) {
-        OstError error = new OstError("km_okm_susk_1", ErrorCode.DEPRECATED);
-        throw error;
     }
 
 }

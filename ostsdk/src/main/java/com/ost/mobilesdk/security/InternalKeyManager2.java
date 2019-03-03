@@ -56,7 +56,7 @@ class InternalKeyManager2 {
         return sessionModelRepository;
     }
 
-    private static final String TAG = "IKM";
+    private static final String TAG = "OST_IKM";
     private static final String USER_PRESENCE_INFO_HASH_FOR_ = "pin_hash_for_";
     private static final String USER_DEVICE_INFO_FOR = "user_device_info_for_";
     private static final String ETHEREUM_KEY_FOR_ = "ethereum_key_for_";
@@ -91,38 +91,33 @@ class InternalKeyManager2 {
      * The private key is encrypted and stored in DB.
      */
     private void createApiKey() {
-        // Create a private key.
-        ECKeyPair ecKeyPair = generateECKeyPair();
-        String apiKeyAddress = Credentials.create(ecKeyPair).getAddress();
-
-        //CheckSum as generated address is not CheckSum address
-        apiKeyAddress = Keys.toChecksumAddress(apiKeyAddress);
-
-
+        ECKeyPair ecKeyPair;
         byte[] privateKey = null;
-        byte[] encryptedKey;
+        byte[] encryptedKey = null;
         try {
+            // Create a private key.
+            ecKeyPair = generateECKeyPair();
             privateKey = ecKeyPair.getPrivateKey().toByteArray();
             encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
-
+            String apiKeyAddress = getKeyAddress(ecKeyPair);
 
             //Store the encrypted key.
             String apiKeyId = createEthKeyMetaId(apiKeyAddress);
             OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
             Future<AsyncStatus> future = metaRepository.insertSecureKey(new OstSecureKey(apiKeyId, encryptedKey));
 
-            //Wait key to be stored.
+            //Wait for key to be stored.
             future.get(10, TimeUnit.SECONDS);
 
             //Update key meta.
             setEthKeyMeta(apiKeyAddress);
             mKeyMetaStruct.apiAddress = apiKeyAddress;
         } catch (Exception ex) {
-            Log.e(TAG, "m_s_ikm_cak: Unexpected Exception", ex);
-            return;
+            throw new OstError("km_ikm_cak_1", ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
         } finally {
             ecKeyPair = null;
             clearBytes(privateKey);
+            clearBytes(encryptedKey);
         }
     }
 
@@ -197,17 +192,14 @@ class InternalKeyManager2 {
 
 
             //Create ECKeyPair and encrypt it.
-            ecKeyPair = generateECKeyPair(mnemonics);
+            ecKeyPair = generateECKeyPairWithMnemonics(mnemonics);
+            String deviceAddress = getKeyAddress(ecKeyPair);
 
             // Clear the mnemonics - set to null to avoid double clearing.
             clearBytes(mnemonics);
             mnemonics = null;
 
-            String deviceAddress = Credentials.create(ecKeyPair).getAddress();
-
-            //CheckSum as generated address is not CheckSum address
-            deviceAddress = Keys.toChecksumAddress(deviceAddress);
-
+            // Get private key and encrypt it.
             privateKey = ecKeyPair.getPrivateKey().toByteArray();
             encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
 
@@ -309,10 +301,7 @@ class InternalKeyManager2 {
         byte[] encryptedKey = null;
         try {
             ecKeyPair = generateECKeyPair();
-            String address = Credentials.create(ecKeyPair).getAddress();
-
-            //CheckSum as generated address is not CheckSum address
-            address = Keys.toChecksumAddress(address);
+            String address = getKeyAddress(ecKeyPair);
 
             //Fetch the private key and encrypt it.
             privateKey = ecKeyPair.getPrivateKey().toByteArray();
@@ -379,11 +368,11 @@ class InternalKeyManager2 {
 
     //region - KeyMetaStruct Methods
 
-    static KeyMetaStruct srtuct = null;
+    private static KeyMetaStruct keyMetaStruct = null;
     static KeyMetaStruct getKeyMataStruct(String userId) {
 
-        if ( null != srtuct ) {
-            return srtuct;
+        if ( null != keyMetaStruct) {
+            return keyMetaStruct;
         }
         OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
         String userMetaId = createUserMataId(userId);
@@ -391,8 +380,8 @@ class InternalKeyManager2 {
         if (null == ostSecureKey) {
             return null;
         }
-        srtuct = createObjectFromBytes(ostSecureKey.getData());
-        return srtuct;
+        keyMetaStruct = createObjectFromBytes(ostSecureKey.getData());
+        return keyMetaStruct;
     }
 
 
@@ -482,6 +471,215 @@ class InternalKeyManager2 {
     //endregion
 
 
+    // region - External Mnemonics Signing Method
+    void sign(OstSignWithMnemonicsStruct ostSignWithMnemonicsStruct) {
+        String messageHash = ostSignWithMnemonicsStruct.getMessageHash();
+        byte[] mnemonics = ostSignWithMnemonicsStruct.getMnemonics();
+        if ( null == messageHash || null == mnemonics) {
+            return;
+        }
+
+        byte[] dataToSign =  Numeric.hexStringToByteArray(messageHash);
+        String signature = null;
+        String signerAddress = null;
+        Bip32ECKeyPair ecKeyPair = null;
+        try {
+            //Create ecKeyPair
+            ecKeyPair = generateECKeyPairWithMnemonics(mnemonics);
+            signerAddress = getKeyAddress(ecKeyPair);
+
+            Sign.SignatureData signatureData = Sign.signMessage(dataToSign, ecKeyPair, false);
+            signature = signatureDataToString( signatureData );
+
+        } catch (Exception ex) {
+            //Mute the exceptions
+            ex.printStackTrace();
+            return;
+        } finally {
+            //Clean out mnemonics
+            clearBytes(mnemonics);
+
+            ecKeyPair = null;
+        }
+
+        ostSignWithMnemonicsStruct.setSignature(signature);
+        ostSignWithMnemonicsStruct.setSigner(signerAddress);
+    }
+    //endregion
+
+
+    //region - Key Generators
+    private ECKeyPair generateECKeyPair() {
+        byte[] mnemonics = null;
+        try {
+            mnemonics = generateMnemonics();
+            return generateECKeyPairWithMnemonics(mnemonics);
+        } catch (Throwable th ) {
+            throw new OstError("ikm_geckp_1", ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
+        } finally {
+            clearBytes(mnemonics);
+        }
+    }
+
+    private byte[] generateMnemonics() {
+        byte[] initialEntropy = new byte[16];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(initialEntropy);
+        return MnemonicUtils.generateMnemonic(initialEntropy).getBytes(UTF_8);
+    }
+
+    private static final int HARDENED_BIT= 0x80000000;
+    private static final int[] HD_DERIVATION_PATH_FIRST_CHILD = (new int[]{44 | HARDENED_BIT,60 | HARDENED_BIT, HARDENED_BIT, 0, 0});
+    private Bip32ECKeyPair generateECKeyPairWithMnemonics(byte[] mnemonics) {
+        byte[] seed = null;
+        Bip32ECKeyPair hdMasterKey = null;
+        try {
+            seed = generateSeedFromMnemonicBytes(mnemonics, "");
+            hdMasterKey = Bip32ECKeyPair.generateKeyPair(seed);
+            return Bip32ECKeyPair.deriveKeyPair(hdMasterKey,HD_DERIVATION_PATH_FIRST_CHILD );
+        } catch (Throwable th ){
+            throw  new OstError("ikm_geckp_2", ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
+        } finally {
+            clearBytes(seed);
+            hdMasterKey = null;
+        }
+    }
+
+    private static final int SEED_ITERATIONS = 2048;
+    private static final int SEED_KEY_SIZE = 512;
+    /**
+     * To create a binary seed from the mnemonic, we use the PBKDF2 function with a
+     * mnemonic sentence (in UTF-8 NFKD) used as the password and the string "mnemonic"
+     * + passphrase (again in UTF-8 NFKD) used as the salt. The iteration count is set
+     * to 2048 and HMAC-SHA512 is used as the pseudo-random function. The length of the
+     * derived key is 512 bits (= 64 bytes).
+     *
+     * @param mnemonicBytes Byte array (Charset UTF_8 encoded) of the input mnemonic which should be 128-160 bits in length containing
+     *                 only valid words.
+     * @param passphrase The passphrase which will be used as part of salt for PBKDF2
+     *                   function
+     * @return Byte array representation of the generated seed
+     */
+    public static byte[] generateSeedFromMnemonicBytes(byte[] mnemonicBytes, String passphrase) {
+        passphrase = passphrase == null ? "" : passphrase;
+
+        String salt = String.format("mnemonic%s", passphrase);
+        PKCS5S2ParametersGenerator gen = new PKCS5S2ParametersGenerator(new SHA512Digest());
+        gen.init(mnemonicBytes, salt.getBytes(UTF_8), SEED_ITERATIONS);
+
+        return ((KeyParameter) gen.generateDerivedParameters(SEED_KEY_SIZE)).getKey();
+    }
+    //endregion
+
+
+    //region - Passphrase based Recovery Key
+
+    /**
+     * Create recovery key for given passphrase and salt.
+     * Make sure it is outside try/catch to avoid multiple clearBytes.
+     * But, devs must still set ecKeyPair = null in finally block.
+     * Also, the caller must ensure that userPassphrase is not null and not wiped before calling to avoid exceptions.
+     *
+     * @param userPassphrase - Passphrase of the user.
+     * @param salt - Salt of recovery key.
+     * @return - Recovery Key. You need handle it properly.
+     */
+    private ECKeyPair createRecoveryKey(UserPassphrase userPassphrase, byte[] salt) {
+        int SCryptMemoryCost = 2;
+        int SCryptBlockSize = 2;
+        int SCryptParallelization = 2;
+        int SCryptKeyLength = 32;
+
+
+        if ( null == userPassphrase || userPassphrase.isWiped() ) {
+            throw new IllegalArgumentException();
+        }
+
+        byte[] seed = null;
+        byte[] passphrase = null;
+        try{
+            passphrase = userPassphrase.getPassphrase();
+            seed = SCrypt.generate(passphrase, salt, SCryptMemoryCost, SCryptBlockSize, SCryptParallelization, SCryptKeyLength);
+            return Bip32ECKeyPair.generateKeyPair(seed);
+        } catch (Throwable th) {
+            //Suppress Error.
+            throw new OstError("c_ikm_crk_1", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
+        } finally {
+            //Clear the seed.
+            clearBytes(seed);
+
+            //Wipe user passphrase.
+            userPassphrase.wipe();
+
+            //Make UserPassphrase unusable.
+            clearBytes(passphrase);
+
+            //Make sure salt is unusable.
+            clearBytes(salt);
+        }
+    }
+
+    String getRecoveryAddress(UserPassphrase userPassphrase, byte[] salt) {
+        //Let createRecoveryKey be out side of try/catch.
+        ECKeyPair ecKeyPair = null;
+        if ( null == userPassphrase || userPassphrase.isWiped() ) {
+            throw new OstError("c_ikm_gra_1", ErrorCode.INVALID_USER_PASSPHRASE);
+        }
+
+        try {
+            ecKeyPair = createRecoveryKey(userPassphrase,salt);
+            return getKeyAddress(ecKeyPair);
+        } catch(Throwable th) {
+            //Suppress Error.
+            throw new OstError("c_ikm_gra_2", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
+        } finally {
+            ecKeyPair = null;
+        }
+    }
+
+
+
+
+    //endregion
+
+
+    // region - Passphrase Locker Utility Methods
+
+    // A static hash-map that stores instances of PassphraseValidationLocker
+    private static HashMap<String,InternalKeyManager2.PassphraseValidationLocker> lockers = new HashMap<>();
+    /**
+     * A Factory method to get In-Memory PassphraseValidationLocker for a given user-id
+     * @param userId Id of the user.
+     * @return A simple time-based, In-Memory lock mechanism.
+     */
+    private InternalKeyManager2.PassphraseValidationLocker getLockerFor(String userId) {
+        InternalKeyManager2.PassphraseValidationLocker locker = lockers.get(userId);
+        if ( null == locker ) {
+            locker = new InternalKeyManager2.PassphraseValidationLocker();
+            lockers.put(userId, locker);
+        }
+        return locker;
+    }
+
+    boolean isUserPassphraseValidationAllowed() {
+        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
+        return locker.isValidationAllowed();
+    }
+    private void userPassphraseValidated() {
+        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
+        locker.validated();
+    }
+    private void userPassphraseInvalidated() {
+        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
+        locker.invalidated();
+    }
+    boolean isUserPassphraseValidationNeeded() {
+        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
+        return locker.isValidationNeeded();
+    }
+    // endregion
+
+
     // region - Passphrase Locker Class
     static class PassphraseValidationLocker {
         private static int MaxRetryCount = 3;
@@ -550,163 +748,8 @@ class InternalKeyManager2 {
     //endregion
 
 
-    // region - Passphrase Locker Utility Methods
-
-    // A static hash-map that stores instances of PassphraseValidationLocker
-    private static HashMap<String,InternalKeyManager2.PassphraseValidationLocker> lockers = new HashMap<>();
-    /**
-     * A Factory method to get In-Memory PassphraseValidationLocker for a given user-id
-     * @param userId Id of the user.
-     * @return A simple time-based, In-Memory lock mechanism.
-     */
-    private InternalKeyManager2.PassphraseValidationLocker getLockerFor(String userId) {
-        InternalKeyManager2.PassphraseValidationLocker locker = lockers.get(userId);
-        if ( null == locker ) {
-            locker = new InternalKeyManager2.PassphraseValidationLocker();
-            lockers.put(userId, locker);
-        }
-        return locker;
-    }
-
-    boolean isUserPassphraseValidationAllowed() {
-        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
-        return locker.isValidationAllowed();
-    }
-    private void userPassphraseValidated() {
-        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
-        locker.validated();
-    }
-    private void userPassphraseInvalidated() {
-        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
-        locker.invalidated();
-    }
-    boolean isUserPassphraseValidationNeeded() {
-        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
-        return locker.isValidationNeeded();
-    }
-    // endregion
-
-
-    // region - External Mnemonics Signing Method
-    public static final int HARDENED_BIT= 0x80000000;
-    public static final int[] HD_DERIVATION_PATH_FIRST_CHILD = (new int[]{44 | HARDENED_BIT,60 | HARDENED_BIT,0|HARDENED_BIT,0,0});
-
-    void sign(OstSignWithMnemonicsStruct ostSignWithMnemonicsStruct) {
-        String messageHash = ostSignWithMnemonicsStruct.getMessageHash();
-        byte[] mnemonics = ostSignWithMnemonicsStruct.getMnemonics();
-        if ( null == messageHash || null == mnemonics) {
-            return;
-        }
-
-        byte[] dataToSign =  Numeric.hexStringToByteArray(messageHash);
-        byte[] seed = null;
-        String signature = null;
-        String signerAddress = null;
-        Bip32ECKeyPair hdMasterKey = null;
-        Bip32ECKeyPair deriveKeyPair = null;
-        try {
-            //Create Seed
-            seed = generateSeedFromMnemonicBytes(mnemonics,null);
-
-            //Create hdMasterKey
-            hdMasterKey = Bip32ECKeyPair.generateKeyPair(seed);
-            deriveKeyPair = Bip32ECKeyPair.deriveKeyPair(hdMasterKey,HD_DERIVATION_PATH_FIRST_CHILD );
-            signerAddress = Credentials.create(deriveKeyPair).getAddress();
-
-            Sign.SignatureData signatureData = Sign.signMessage(dataToSign, deriveKeyPair, false);
-            signature = signatureDataToString( signatureData );
-
-        } catch (Exception ex) {
-            //Mute the exceptions
-            ex.printStackTrace();
-            return;
-        } finally {
-            //Clean out mnemonics
-            clearBytes(mnemonics);
-
-            //Clean the seed.
-            clearBytes(seed);
-
-            hdMasterKey = null;
-            deriveKeyPair = null;
-        }
-
-        ostSignWithMnemonicsStruct.setSignature(signature);
-        ostSignWithMnemonicsStruct.setSigner(signerAddress);
-    }
-    //endregion
-
-    //region - Custom Mnemonics Generation methods.
-    private static final int SEED_ITERATIONS = 2048;
-    private static final int SEED_KEY_SIZE = 512;
-
-    /**
-     * To create a binary seed from the mnemonic, we use the PBKDF2 function with a
-     * mnemonic sentence (in UTF-8 NFKD) used as the password and the string "mnemonic"
-     * + passphrase (again in UTF-8 NFKD) used as the salt. The iteration count is set
-     * to 2048 and HMAC-SHA512 is used as the pseudo-random function. The length of the
-     * derived key is 512 bits (= 64 bytes).
-     *
-     * @param mnemonicBytes Byte array (Charset UTF_8 encoded) of the input mnemonic which should be 128-160 bits in length containing
-     *                 only valid words.
-     * @param passphrase The passphrase which will be used as part of salt for PBKDF2
-     *                   function
-     * @return Byte array representation of the generated seed
-     */
-    public static byte[] generateSeedFromMnemonicBytes(byte[] mnemonicBytes, String passphrase) {
-        passphrase = passphrase == null ? "" : passphrase;
-
-        String salt = String.format("mnemonic%s", passphrase);
-        PKCS5S2ParametersGenerator gen = new PKCS5S2ParametersGenerator(new SHA512Digest());
-        gen.init(mnemonicBytes, salt.getBytes(UTF_8), SEED_ITERATIONS);
-
-        return ((KeyParameter) gen.generateDerivedParameters(SEED_KEY_SIZE)).getKey();
-    }
-
-    private byte[] generateMnemonics() {
-        String mnemonics = null;
-        try {
-            byte[] initialEntropy = new byte[16];
-            SecureRandom secureRandom = new SecureRandom();
-            secureRandom.nextBytes(initialEntropy);
-            mnemonics = MnemonicUtils.generateMnemonic(initialEntropy);
-            return mnemonics.getBytes(UTF_8);
-        } finally {
-            mnemonics = null;
-        }
-    }
-
-    private ECKeyPair generateECKeyPair() {
-        byte[] mnemonics = null;
-        try {
-            mnemonics = generateMnemonics();
-            return generateECKeyPair(mnemonics);
-        } catch (Throwable th ) {
-            OstError ostError = new OstError("ikm_geckp_1", ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
-            throw ostError;
-        } finally {
-            clearBytes(mnemonics);
-        }
-    }
-
-    private ECKeyPair generateECKeyPair(byte[] mnemonics) {
-        byte[] seed = null;
-        try {
-            seed = generateSeedFromMnemonicBytes(mnemonics, "");
-            return Bip32ECKeyPair.generateKeyPair(seed);
-        } catch (Throwable th ){
-            OstError ostError = new OstError("ikm_geckp_2", ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
-            throw ostError;
-        } finally {
-            clearBytes(seed);
-        }
-    }
-    //endregion
-
-
-
     // region - internal utilities
-    static String signatureDataToString(Sign.SignatureData signatureData) {
+    private static String signatureDataToString(Sign.SignatureData signatureData) {
         return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x",(signatureData.getV()));
     }
 
@@ -717,75 +760,20 @@ class InternalKeyManager2 {
             secret[i] = nonSecret[i % nonSecret.length];
         }
     }
-    //endregion
 
-    //region - Recovery Key
-    private static int SCryptMemoryCost = 2;
-    private static int SCryptBlockSize = 2;
-    private static int SCryptParallelization = 2;
-    private static int SCryptKeyLength = 32;
-
-    /**
-     * Create recovery key for given passphrase and salt.
-     * Make sure it is outside try/catch to avoid multiple clearBytes.
-     * But, devs must still set ecKeyPair = null in finally block.
-     * Also, the caller must ensure that userPassphrase is not null and not wiped before calling to avoid exceptions.
-     *
-     * @param userPassphrase - Passphrase of the user.
-     * @param salt - Salt of recovery key.
-     * @return - Recovery Key. You need handle it properly.
-     */
-    private ECKeyPair createRecoveryKey(UserPassphrase userPassphrase, byte[] salt) {
-        if ( null == userPassphrase || userPassphrase.isWiped() ) {
-            throw new IllegalArgumentException();
-        }
-
-        byte[] seed = null;
-        byte[] passphrase = null;
-        try{
-            passphrase = userPassphrase.getPassphrase();
-            seed = SCrypt.generate(passphrase, salt, SCryptMemoryCost, SCryptBlockSize, SCryptParallelization, SCryptKeyLength);
-            return Bip32ECKeyPair.generateKeyPair(seed);
-        } catch (Throwable th) {
-            //Suppress Error.
-            throw new OstError("c_ikm_crk_1", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
-        } finally {
-            //Clear the seed.
-            clearBytes(seed);
-
-            if ( null != userPassphrase ) {
-                userPassphrase.wipe();
-            } else {
-                clearBytes(passphrase);
-            }
-
-            //Make UserPassphrase unusable.
-            clearBytes(passphrase);
-
-            //Make sure salt is unusable.
-            clearBytes(salt);
-        }
-    }
-
-    String getRecoveryAddress(UserPassphrase userPassphrase, byte[] salt) {
-        //Let createRecoveryKey be out side of try/catch.
-        ECKeyPair ecKeyPair = createRecoveryKey(userPassphrase,salt);
-        if ( null == userPassphrase || userPassphrase.isWiped() ) {
-            throw new OstError("c_ikm_gra_1", ErrorCode.INVALID_USER_PASSPHRASE);
-        }
-
+    private String getKeyAddress(ECKeyPair keyPair) {
+        Credentials credentials = null;
         try {
-            return Credentials.create(ecKeyPair).getAddress();
-        } catch(Throwable th) {
-            //Suppress Error.
-            throw new OstError("c_ikm_gra_2", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
+            credentials = Credentials.create(keyPair);
+            String address = credentials.getAddress();
+            return Keys.toChecksumAddress(address);
         } finally {
-            ecKeyPair = null;
+            credentials =null;
         }
     }
 
 
-
-
     //endregion
+
+
 }
