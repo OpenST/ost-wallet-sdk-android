@@ -218,8 +218,9 @@ public class OstSdk {
         ostStartPolling.perform();
     }
 
-    public static void resetPin(String userId, String appSalt, String currentPin, String newPin, OstWorkFlowCallback workFlowCallback) {
-        final OstResetPin ostResetPin = new OstResetPin(userId, appSalt, currentPin, newPin, workFlowCallback);
+
+    public static void resetRecoveryPassphrase(String userId, UserPassphrase currentPassphrase, UserPassphrase newPassphrase, OstWorkFlowCallback workFlowCallback) {
+        final OstResetPin ostResetPin = new OstResetPin(userId, currentPassphrase, newPassphrase,workFlowCallback);
         ostResetPin.perform();
     }
 

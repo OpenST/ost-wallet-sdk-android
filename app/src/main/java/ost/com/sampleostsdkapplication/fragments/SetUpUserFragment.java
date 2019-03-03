@@ -104,7 +104,7 @@ public class SetUpUserFragment extends Fragment implements View.OnClickListener 
      * @param view
      */
     private void onNextClick(){
-        if (mPinEditBox.getText() == null || mPinEditBox.getText().length() != 6){
+        if (mPinEditBox.getText() == null || mPinEditBox.getText().length() < 6){
             mPinTextInput.setError("Please enter 6 Digit Pin");
             return;
         }

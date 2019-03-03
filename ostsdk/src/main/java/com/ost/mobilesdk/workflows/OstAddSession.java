@@ -141,11 +141,6 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         return postFlowComplete();
     }
 
-    @Override
-    boolean shouldCheckCurrentDeviceAuthorization() {
-        return true;
-    }
-
     private String getCurrentBlockNumber(OstApiClient ostApiClient) {
         String blockNumber = null;
         JSONObject jsonObject = null;
@@ -157,8 +152,6 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         blockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
         return blockNumber;
     }
-
-
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {

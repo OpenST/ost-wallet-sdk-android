@@ -39,6 +39,10 @@ public class OstApiClient {
     private final OstHttpRequestClient.ResponseParser mResponseParser;
     private final OstApiSigner mApiSigner;
 
+    public OstHttpRequestClient.ResponseParser getResponseParser() {
+        return mResponseParser;
+    }
+
     public OstApiClient(String userId, String baseUrl) {
         mUserId = userId;
         mOstUser = OstSdk.getUser(userId);

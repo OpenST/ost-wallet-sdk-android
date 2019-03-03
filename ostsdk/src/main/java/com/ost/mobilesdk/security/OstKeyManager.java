@@ -1,7 +1,5 @@
 package com.ost.mobilesdk.security;
 
-import android.util.Log;
-import com.ost.mobilesdk.workflows.OstUserPinInfoHolder;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 
@@ -54,17 +52,4 @@ public class OstKeyManager {
     public String getDeviceAddress() {
         return mKeyMetaStruct.getDeviceAddress();
     }
-
-
-
-    private int cnt = 0;
-    public boolean validatePin(OstUserPinInfoHolder pinInfoHolder) {
-        cnt++;
-        Log.i(TAG,"validatePin called " + cnt + " time(s).");
-        //Temp code.
-        UserPassphrase passphrase = new UserPassphrase(mUserId, pinInfoHolder.getUserPassphrase(), pinInfoHolder.getPassphrasePrefix());
-        return new OstRecoveryManager(mUserId).validatePassphrase(passphrase);
-
-    }
-
 }

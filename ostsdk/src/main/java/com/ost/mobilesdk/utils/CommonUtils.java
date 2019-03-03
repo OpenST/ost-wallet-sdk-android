@@ -43,7 +43,7 @@ public class CommonUtils {
         return addressList;
     }
 
-    public static final byte[] nonSecret = ("LETS_CLEAR_BYTES" + String.valueOf((int) (System.currentTimeMillis()))  ).getBytes();
+    private static final byte[] nonSecret = ("LETS_CLEAR_BYTES" + String.valueOf((int) (System.currentTimeMillis()))  ).getBytes();
 
     public static void clearBytes(byte[] secret) {
         if ( null == secret ) { return; }

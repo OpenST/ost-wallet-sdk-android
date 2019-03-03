@@ -108,17 +108,7 @@ public class UsersListActivity extends MappyBaseActivity implements
                         @Override
                         public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
                             super.getPin(userId, ostPinAcceptInterface);
-                            getPinDialog(new DialogCallback() {
-                                @Override
-                                public void onSubmit(String pin) {
-                                    ostPinAcceptInterface.pinEntered(pin, logInUser.getPassword());
-                                }
-
-                                @Override
-                                public void onCancel() {
-                                    ostPinAcceptInterface.cancelFlow(new OstError("Don't know pin"));
-                                }
-                            });
+                            showPinDialog(ostPinAcceptInterface);
                         }
                     });
         } else if (id == R.id.show_paper_wallet) {
@@ -137,24 +127,35 @@ public class UsersListActivity extends MappyBaseActivity implements
             });
         } else if (id == R.id.reset_pin) {
             Log.d(TAG, "Reset pin");
-            String currentPin = "123456";
-            String appSalt = logInUser.getPassword();
+            byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
             getPinDialog(new DialogCallback() {
                 @Override
                 public void onSubmit(String pin) {
-                    OstSdk.resetPin(userId, appSalt, currentPin, pin, new WorkFlowHelper(getApplicationContext()) {
-                    });
+                    UserPassphrase currentPassphrase = new UserPassphrase(userId, pin.getBytes(UTF_8), appSalt);
+                    getPinDialog(new DialogCallback() {
+                        @Override
+                        public void onSubmit(String pin) {
+                            UserPassphrase newPassphrase = new UserPassphrase(userId, pin.getBytes(UTF_8), appSalt);
+                            OstSdk.resetRecoveryPassphrase(userId, currentPassphrase, newPassphrase, new WorkFlowHelper(getApplicationContext()) {});
+                        }
+
+                        @Override
+                        public void onCancel() {
+
+                        }
+                    },"Enter new pin");
+
                 }
 
                 @Override
                 public void onCancel() {
                     // Dialog cancelled;
                 }
-            });
+            }, "Enter your current pin.");
         } else if (id == R.id.device_recovery) {
             Log.d(TAG, "Device Recovery");
             String currentPin = "123456";
-            String appSalt = logInUser.getPassword();
+            String appSalt = logInUser.getPassphrasePrefix();
             String address = "0x30fa423c14625bb0bac6852d7b68f9d326ac1242";
             OstSdk.initiateRecoverDevice(userId, appSalt, currentPin, address, new WorkFlowHelper(getApplicationContext()) {
             });
@@ -249,6 +250,23 @@ public class UsersListActivity extends MappyBaseActivity implements
         getPinDialog(callback, "Enter Pin : ");
     }
 
+    private void showPinDialog(OstPinAcceptInterface ostPinAcceptInterface) {
+        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+        DialogCallback callback = new DialogCallback() {
+            @Override
+            public void onSubmit(String pin) {
+                UserPassphrase passphrase = new UserPassphrase(logInUser.getOstUserId(), pin, logInUser.getPassphrasePrefix());
+                ostPinAcceptInterface.pinEntered(passphrase);
+            }
+
+            @Override
+            public void onCancel() {
+                ostPinAcceptInterface.cancelFlow(new OstError("Don't know pin"));
+            }
+        };
+        getPinDialog(callback, "Enter Pin : ");
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -290,7 +308,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         Log.d(TAG,"Start user activation process");
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         String userId = logInUser.getOstUserId();
-        String passphrasePrefix = logInUser.getPassword();
+        String passphrasePrefix = logInUser.getPassphrasePrefix();
         long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
         String spendingLimit = "1000000000000";
 
@@ -309,7 +327,8 @@ public class UsersListActivity extends MappyBaseActivity implements
                 getPinDialog(new DialogCallback() {
                     @Override
                     public void onSubmit(String pin) {
-                        ostPinAcceptInterface.pinEntered(pin, logInUser.getPassword());
+                        UserPassphrase passphrase = new UserPassphrase(userId, pin, logInUser.getPassphrasePrefix());
+                        ostPinAcceptInterface.pinEntered(passphrase);
                     }
 
                     @Override

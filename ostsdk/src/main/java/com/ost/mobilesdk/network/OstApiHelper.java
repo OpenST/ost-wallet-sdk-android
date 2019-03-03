@@ -28,7 +28,7 @@ public class OstApiHelper implements OstHttpRequestClient.ResponseParser {
 
     public void updateWithApiResponse(JSONObject jsonObject) {
         try {
-            Log.d(TAG, String.format("Response: %s", jsonObject.toString()));
+
             if (!jsonObject.getBoolean(OstConstants.RESPONSE_SUCCESS)) {
                 Log.e(TAG, "JSON response false");
                 return;

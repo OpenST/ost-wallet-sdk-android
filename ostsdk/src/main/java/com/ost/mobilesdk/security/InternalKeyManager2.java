@@ -596,14 +596,12 @@ class InternalKeyManager2 {
         int SCryptParallelization = 2;
         int SCryptKeyLength = 32;
 
-
-        if ( null == userPassphrase || userPassphrase.isWiped() ) {
-            throw new IllegalArgumentException();
-        }
-
         byte[] seed = null;
         byte[] passphrase = null;
         try{
+            if ( null == userPassphrase || userPassphrase.isWiped() ) {
+                throw new IllegalArgumentException();
+            }
             passphrase = userPassphrase.getPassphrase();
             seed = SCrypt.generate(passphrase, salt, SCryptMemoryCost, SCryptBlockSize, SCryptParallelization, SCryptKeyLength);
             return Bip32ECKeyPair.generateKeyPair(seed);
@@ -643,6 +641,49 @@ class InternalKeyManager2 {
         }
     }
 
+    String signDataWithRecoveryKey(String hexStringToSign, UserPassphrase passphrase, byte[] salt) {
+
+        if ( !isUserPassphraseValidationAllowed() ) {
+            throw new IllegalAccessError(OstErrors.getMessage(ErrorCode.USER_PASSPHRASE_VALIDATION_LOCKED) );
+        }
+
+        ECKeyPair ecKeyPair = null;
+        try {
+            OstUser ostUser = OstUser.getById(mUserId);
+            String recoveryOwnerAddress = ostUser.getRecoveryOwnerAddress();
+            // Generate ecKeyPair.
+            ecKeyPair = createRecoveryKey(passphrase, salt);
+
+            // Validate recoveryOwnerAddress.
+            String expectedRecoveryOwnerAddress = Credentials.create(ecKeyPair).getAddress();
+            if ( !expectedRecoveryOwnerAddress.equalsIgnoreCase(recoveryOwnerAddress) ) {
+                // Note that user passphrase is invalid.
+                userPassphraseInvalidated();
+                //Do not throw. Just return null.
+                return null;
+            }
+
+            // Note that user passphrase is valid.
+            userPassphraseValidated();
+
+            // Sign the data.
+            Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(hexStringToSign), ecKeyPair, false);
+            String signature = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
+            return signature;
+        } catch (Throwable th) {
+            //Supress it.
+            return null;
+        } finally {
+            if ( null == ecKeyPair ) {
+                clearBytes(salt);
+            }
+            ecKeyPair = null;
+        }
+    }
+    //endregion
+
+
+    //region - Validate user passphrase
 
     /**
      * Validates user passphrase
@@ -843,7 +884,7 @@ class InternalKeyManager2 {
         InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
         locker.validated();
     }
-    private void userPassphraseInvalidated() {
+    void userPassphraseInvalidated() {
         InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
         locker.invalidated();
     }

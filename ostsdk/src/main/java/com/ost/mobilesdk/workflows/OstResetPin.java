@@ -6,8 +6,9 @@ import android.util.Log;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstRecoveryOwner;
-import com.ost.mobilesdk.security.OstRecoverySigner;
-import com.ost.mobilesdk.security.SignedResetRecoveryStruct;
+import com.ost.mobilesdk.security.OstRecoveryManager;
+import com.ost.mobilesdk.security.UserPassphrase;
+import com.ost.mobilesdk.security.structs.SignedResetRecoveryStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
@@ -29,18 +30,17 @@ public class OstResetPin extends OstBaseWorkFlow {
     private static final String TO = "to";
     private static final String SIGNER = "signer";
     private static final String SIGNATURE = "signature";
-    private final String mAppSalt;
-    private final String mCurrentPin;
-    private final String mNewPin;
+    private final UserPassphrase currentPassphrase;
+    private final UserPassphrase newPassphrase;
+
     private String mNewRecoveryOwnerAddress;
     private OstResetPin.STATES mCurrentState = OstResetPin.STATES.INITIAL;
 
 
-    public OstResetPin(String userId, String appSalt, String currentPin, String newPin, OstWorkFlowCallback workFlowCallback) {
+    public OstResetPin(String userId, UserPassphrase currentPassphrase, UserPassphrase newPassphrase, OstWorkFlowCallback workFlowCallback) {
         super(userId, workFlowCallback);
-        mAppSalt = appSalt;
-        mCurrentPin = currentPin;
-        mNewPin = newPin;
+        this.currentPassphrase = currentPassphrase;
+        this.newPassphrase = newPassphrase;
     }
 
     @Override
@@ -69,18 +69,6 @@ public class OstResetPin extends OstBaseWorkFlow {
                     return postErrorInterrupt("wf_rp_pr_2", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
                 }
 
-                Log.i(TAG, "Getting salt");
-                String kitSalt = super.getSalt();
-                if (null == kitSalt) {
-                    Log.e(TAG, "Salt is null");
-                    return postErrorInterrupt("wf_rp_pr_3", OstErrors.ErrorCode.SALT_API_FAILED);
-                }
-
-//                Validation is not needed here. OstRecoverySigner will validate it.
-//                boolean isValidated = new OstKeyManager(mUserId).validatePin(mCurrentPin, mAppSalt, kitSalt);
-//                if (!isValidated) {
-//                    return postErrorInterrupt("wf_rp_pr_3", OstErrors.ErrorCode.INVALID_USER_PASSPHRASE);
-//                }
 
                 try {
                     mOstApiClient.getDevice(mOstUser.getCurrentDevice().getAddress());
@@ -91,16 +79,16 @@ public class OstResetPin extends OstBaseWorkFlow {
 
 
                 SignedResetRecoveryStruct struct;
+                OstRecoveryManager rkm;
                 try {
-                    OstRecoverySigner signer = new OstRecoverySigner(mUserId);
-                    struct = signer.getResetRecoveryOwnerSignature(mAppSalt, mCurrentPin, kitSalt, mNewPin);
-                    signer = null;
-
+                    rkm = new OstRecoveryManager(mUserId);
+                    struct = rkm.getResetRecoveryOwnerSignature(currentPassphrase,newPassphrase);
+                    rkm = null;
                 } catch (OstError error) {
                     return postErrorInterrupt(error.getInternalErrorCode(), error.getErrorCode() );
                 }
 
-                newRecoveryOwnerAddress = struct.getNewRecoverOwnerAddress();
+                newRecoveryOwnerAddress = struct.getNewRecoveryOwnerAddress();
                 mNewRecoveryOwnerAddress = newRecoveryOwnerAddress;
                 Map<String, Object> requestMap = buildApiRequest(newRecoveryOwnerAddress,
                         struct.getRecoveryOwnerAddress(), struct.getRecoveryContractAddress(), struct.getSignature());
@@ -116,7 +104,7 @@ public class OstResetPin extends OstBaseWorkFlow {
                     return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RECOVERY_API_FAILED);
                 }
 
-                JSONObject jsonData = struct.getEip712TypedData().optJSONObject(OstConstants.RESPONSE_DATA);
+                JSONObject jsonData = struct.getTypedData().optJSONObject(OstConstants.RESPONSE_DATA);
                 JSONObject resultTypeObject = jsonData.optJSONObject(jsonData.optString(OstConstants.RESULT_TYPE));
                 OstRecoveryOwner ostRecoveryOwner = null;
                 try {

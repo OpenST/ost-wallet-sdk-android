@@ -1,11 +1,14 @@
 package com.ost.mobilesdk.security;
 
-import android.util.Log;
+import android.text.TextUtils;
 
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
+import com.ost.mobilesdk.security.structs.SignedResetRecoveryStruct;
 import com.ost.mobilesdk.utils.CommonUtils;
+import com.ost.mobilesdk.utils.DelayedRecoveryModule;
+import com.ost.mobilesdk.utils.EIP712;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 
@@ -51,21 +54,27 @@ public class OstRecoveryManager {
     public boolean validatePassphrase(UserPassphrase passphrase) {
         InternalKeyManager2 ikm = null;
         try {
-            if ( !ostUser().isActivated() ) {
-                throw new OstError("km_orm_vp_1", ErrorCode.USER_NOT_ACTIVATED);
-            }
-
             ikm = new InternalKeyManager2(userId);
             if ( !ikm.isUserPassphraseValidationAllowed() ) {
                 throw new OstError("km_orm_vp_2", ErrorCode.USER_PASSPHRASE_VALIDATION_LOCKED);
             }
 
+            if ( !ostUser().getId().equals(passphrase.getUserId()) ) {
+                ikm.userPassphraseInvalidated();
+                throw new OstError("km_orm_vp_1", ErrorCode.INVALID_USER_PASSPHRASE);
+            }
+
+            if ( !ostUser().isActivated() ) {
+                ikm.userPassphraseInvalidated();
+                throw new OstError("km_orm_vp_2", ErrorCode.USER_NOT_ACTIVATED);
+            }
+
             return ikm.validateUserPassphrase(passphrase, getSalt());
         } finally {
             ikm = null;
+            passphrase.wipe();
         }
     }
-
 
     //region - SCrypt salt from Kit.
     private byte[] getSalt() {
@@ -93,5 +102,88 @@ public class OstRecoveryManager {
     }
     //endregion
 
+    public SignedResetRecoveryStruct getResetRecoveryOwnerSignature(UserPassphrase currentPassphrase, UserPassphrase newUserPassphrase) {
+        OstUser user = OstUser.getById(userId);
+        InternalKeyManager2 ikm = new InternalKeyManager2(userId);
+        // Check if recovery is locked.
+        if (!ikm.isUserPassphraseValidationAllowed()) {
+            currentPassphrase.wipe();
+            newUserPassphrase.wipe();
+            throw new OstError("km_rs_grppws_1", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
+        }
+
+
+        String recoveryOwnerAddress = user.getRecoveryOwnerAddress();
+        String recoveryContractAddress = user.getRecoveryAddress();
+        if (TextUtils.isEmpty(recoveryOwnerAddress) || TextUtils.isEmpty(recoveryContractAddress)) {
+            currentPassphrase.wipe();
+            newUserPassphrase.wipe();
+            throw new OstError("km_rm_grrows_2", ErrorCode.RECOVERY_PASSPHRASE_OWNER_NOT_SET);
+        }
+
+        // Sanity check validity of new user passphrase.
+        if (currentPassphrase.isWiped() || newUserPassphrase.isWiped()) {
+            currentPassphrase.wipe();
+            newUserPassphrase.wipe();
+            throw new OstError("km_rs_grrows_3", ErrorCode.INVALID_NEW_USER_PASSPHRASE);
+        }
+
+
+        //Get salt from kit.
+        byte[] salt = null;
+        byte[] saltForNewRecoveryOwner = null;
+
+        String newRecoveryOwnerAddress = null;
+        String signature = null;
+        try {
+
+            salt = getSalt();
+            saltForNewRecoveryOwner = salt.clone();
+            newRecoveryOwnerAddress = ikm.getRecoveryAddress(newUserPassphrase, saltForNewRecoveryOwner);
+
+            // Create Data
+
+            JSONObject eip712TypedData = new DelayedRecoveryModule().resetRecoveryOwnerData(recoveryOwnerAddress,
+                    newRecoveryOwnerAddress, recoveryContractAddress);
+
+            if (null == eip712TypedData) {
+                throw new OstError("km_rs_grrows_4", ErrorCode.EIP712_FAILED);
+            }
+            String eip712Hash = getEIP712SignHash(eip712TypedData);
+
+            //Set recovery contract address.
+            SignedResetRecoveryStruct dataHolder = new SignedResetRecoveryStruct(newRecoveryOwnerAddress);
+            dataHolder.setRecoveryContractAddress(recoveryContractAddress);
+            dataHolder.setRecoveryOwnerAddress(recoveryOwnerAddress);
+            dataHolder.setTypedData(eip712TypedData);
+            dataHolder.setMessageHash(eip712Hash);
+
+            //Sign the message hash
+            signature = ikm.signDataWithRecoveryKey(eip712Hash, currentPassphrase, salt);
+            if ( null == signature ) {
+                throw new OstError("km_rs_grrows_5", ErrorCode.INVALID_USER_PASSPHRASE);
+            }
+            dataHolder.setSignature(signature);
+            return dataHolder;
+
+        } finally {
+            if ( null == newRecoveryOwnerAddress && null != saltForNewRecoveryOwner) {
+                CommonUtils.clearBytes(saltForNewRecoveryOwner);
+            }
+            if ( null == signature ) {
+                CommonUtils.clearBytes(salt);
+            }
+        }
+    }
+
+
+    private String getEIP712SignHash(JSONObject typedData) {
+        try {
+            return new EIP712(typedData).toEIP712TransactionHash();
+        } catch (Exception e) {
+            OstError error = new OstError("km_rs_grrows_4", ErrorCode.EIP712_FAILED);
+            throw error;
+        }
+    }
 
 }

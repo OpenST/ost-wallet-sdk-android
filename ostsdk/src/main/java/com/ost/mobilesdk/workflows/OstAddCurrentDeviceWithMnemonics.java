@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.OstMultiSigSigner;
 import com.ost.mobilesdk.security.structs.SignedAddDeviceStruct;
@@ -86,6 +87,9 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
             //request acknowledge
             postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
                     new OstContextEntity(OstDevice.getById(mAddedDeviceAddress), OstSdk.DEVICE));
+
+            //increment nonce
+            OstDeviceManager.getById(mOstUser.getDeviceManagerAddress()).incrementNonce();
 
             //Start the polling
             return startPolling();

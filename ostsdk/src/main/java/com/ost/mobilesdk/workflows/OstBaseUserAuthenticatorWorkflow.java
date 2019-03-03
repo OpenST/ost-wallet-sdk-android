@@ -6,6 +6,8 @@ import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 import com.ost.mobilesdk.security.OstKeyManager;
+import com.ost.mobilesdk.security.OstRecoveryManager;
+import com.ost.mobilesdk.security.UserPassphrase;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
@@ -18,8 +20,6 @@ import java.util.ArrayList;
 abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow implements OstPinAcceptInterface {
     private static String TAG = "OstBUAWorkFlow";
     private int mPinAskCount = 0;
-    private String uPin;
-    private String appUserPassword;
     protected WorkflowStateManager stateManager;
 
     OstBaseUserAuthenticatorWorkflow(String userId, OstWorkFlowCallback callback) {
@@ -103,7 +103,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
                     break;
 
                 case WorkflowStateManager.PIN_INFO_RECEIVED:
-                    return verifyUserPin( (OstUserPinInfoHolder) stateObject );
+                    return verifyUserPin( (UserPassphrase) stateObject );
 
                 case WorkflowStateManager.AUTHENTICATED:
                     //Call the abstract method.
@@ -192,30 +192,19 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
 
 
     @Override
-    public void pinEntered(String uPin, String appUserPassword) {
-        OstUserPinInfoHolder pinInfoHolder = new OstUserPinInfoHolder();
-        pinInfoHolder.setPassphrasePrefix(appUserPassword);
-        pinInfoHolder.setUserPassphrase(uPin);
-        performWithState(WorkflowStateManager.PIN_INFO_RECEIVED, pinInfoHolder);
-        pinInfoHolder = null;
+    public void pinEntered(UserPassphrase passphrase) {
+        performWithState(WorkflowStateManager.PIN_INFO_RECEIVED, passphrase);
 
     }
 
-    AsyncStatus verifyUserPin(OstUserPinInfoHolder infoHolder) {
+    AsyncStatus verifyUserPin(UserPassphrase passphrase) {
 
-        Log.i(TAG, "Pin Entered");
-        String kitSalt = getSalt();
-        if ( null == kitSalt ) {
-            return postErrorInterrupt("bpawf_vup_1", ErrorCode.SALT_API_FAILED);
-        }
-        infoHolder.setScriptSalt(kitSalt);
-        kitSalt = null;
-
-        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
-        boolean isValid = ostKeyManager.validatePin(infoHolder);
+        OstRecoveryManager recoveryManager = new OstRecoveryManager(mUserId);
+        boolean isValid = recoveryManager.validatePassphrase(passphrase);
 
         if ( isValid ) {
             postPinValidated();
+            recoveryManager = null;
             return goToState(WorkflowStateManager.AUTHENTICATED);
         }
 

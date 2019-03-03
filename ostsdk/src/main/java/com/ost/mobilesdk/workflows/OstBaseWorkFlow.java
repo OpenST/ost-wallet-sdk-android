@@ -260,26 +260,9 @@ abstract class OstBaseWorkFlow {
         return (null != ostDevice);
     }
 
-    @Deprecated
-    protected String getSalt() {
-        String salt = null;
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = mOstApiClient.getSalt();
-        } catch (IOException e) {
-            Log.e(TAG, "IOException");
-        }
-        salt = parseResponseForKey(jsonObject, OstConstants.SCRYPT_SALT);
-        return salt;
-    }
-
-
-
 
 
     //region - Ensure Data
-
-
     OstDevice mCurrentDevice;
     boolean hasSyncedDeviceToEnsureApiCommunication = false;
     void ensureApiCommunication() throws OstError {

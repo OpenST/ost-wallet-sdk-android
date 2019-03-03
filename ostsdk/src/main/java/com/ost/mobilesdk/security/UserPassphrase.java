@@ -1,6 +1,7 @@
 package com.ost.mobilesdk.security;
 
 import com.ost.mobilesdk.OstConstants;
+import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 
@@ -9,7 +10,7 @@ import static org.web3j.compat.Compat.UTF_8;
 
 public class UserPassphrase {
 
-    private final String userId;
+    private String userId;
     private byte[] passphrase;
     private boolean wiped = false;
 
@@ -29,7 +30,7 @@ public class UserPassphrase {
      * @param passphrasePrefix - A prefix to the Pin/Passphrase. Min length 30.
      */
     public UserPassphrase(String userId, String userPin, String passphrasePrefix) {
-        this.userId = userId;
+        setUserId(userId);
         if ( null == userPin || userPin.length() < OstConstants.RECOVERY_PHRASE_USER_INPUT_MIN_LENGTH ) {
             userPin = null;
             passphrasePrefix = null;
@@ -47,6 +48,50 @@ public class UserPassphrase {
         //Forget the inputs.
         userPin = null;
         passphrasePrefix = null;
+    }
+
+    public UserPassphrase(String userId, byte[] userPin, byte[] passphrasePrefix) {
+        setUserId(userId);
+        if ( null == userPin || userPin.length < OstConstants.RECOVERY_PHRASE_USER_INPUT_MIN_LENGTH ) {
+            userPin = null;
+            passphrasePrefix = null;
+            throw new OstError("core_up_up2_1", ErrorCode.INVALID_USER_PASSPHRASE);
+        }
+
+        if ( null == passphrasePrefix || passphrasePrefix.length < OstConstants.RECOVERY_PHRASE_PREFIX_MIN_LENGTH) {
+            userPin = null;
+            passphrasePrefix = null;
+            throw new OstError("core_up_up2_2", ErrorCode.INVALID_PASSPHRASE_PREFIX);
+        }
+
+        int passphraseLength = passphrasePrefix.length + userPin.length + userId.length();
+
+        byte[] userIdBytes = userId.getBytes(UTF_8);
+        passphrase = new byte[passphraseLength];
+
+        int cpyPos = 0;
+        int cpyLen = passphrasePrefix.length;
+        System.arraycopy(passphrasePrefix, 0, passphrase, cpyPos, cpyLen );
+
+        cpyPos += cpyLen;
+        cpyLen = userPin.length;
+        System.arraycopy(userPin, 0, passphrase, cpyPos, cpyLen );
+
+        cpyPos += cpyLen;
+        cpyLen = userIdBytes.length;
+        System.arraycopy(userIdBytes, 0, passphrase, cpyPos, cpyLen );
+
+        //Forget the inputs.
+        userPin = null;
+        passphrasePrefix = null;
+    }
+
+    private void setUserId(String userId) {
+        OstUser ostUser = OstUser.getById(userId);
+        if ( null == ostUser ) {
+            throw new OstError("core_up_sui_1", ErrorCode.DEVICE_NOT_SETUP);
+        }
+        this.userId = userId;
     }
 
     public String getUserId() {
