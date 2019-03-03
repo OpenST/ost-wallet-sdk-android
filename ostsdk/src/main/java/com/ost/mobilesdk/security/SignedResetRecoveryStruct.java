@@ -2,7 +2,7 @@ package com.ost.mobilesdk.security;
 
 import org.json.JSONObject;
 
-public class SignedRestRecoveryStruct {
+public class SignedResetRecoveryStruct {
 
     private String recoveryContractAddress;
     private String signature;
@@ -10,7 +10,7 @@ public class SignedRestRecoveryStruct {
     private String recoveryOwnerAddress;
     private JSONObject eip712TypedData;
 
-    public SignedRestRecoveryStruct(String newRecoverOwnerAddress, String recoveryOwnerAddress, String recoveryContractAddress, JSONObject typedData, String signature) {
+    public SignedResetRecoveryStruct(String newRecoverOwnerAddress, String recoveryOwnerAddress, String recoveryContractAddress, JSONObject typedData, String signature) {
         this.newRecoverOwnerAddress = newRecoverOwnerAddress;
         this.recoveryOwnerAddress = recoveryOwnerAddress;
         this.recoveryContractAddress = recoveryContractAddress;

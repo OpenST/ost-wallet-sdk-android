@@ -32,7 +32,6 @@ public class OstRecoveryManager {
         return OstUser.getById(userId);
     }
 
-
     public String getRecoveryAddressFor(UserPassphrase passphrase) {
         InternalKeyManager2 ikm = null;
         try {
@@ -49,6 +48,23 @@ public class OstRecoveryManager {
         }
     }
 
+    public boolean validatePassphrase(UserPassphrase passphrase) {
+        InternalKeyManager2 ikm = null;
+        try {
+            if ( !ostUser().isActivated() ) {
+                throw new OstError("km_orm_vp_1", ErrorCode.USER_NOT_ACTIVATED);
+            }
+
+            ikm = new InternalKeyManager2(userId);
+            if ( !ikm.isUserPassphraseValidationAllowed() ) {
+                throw new OstError("km_orm_vp_2", ErrorCode.USER_PASSPHRASE_VALIDATION_LOCKED);
+            }
+
+            return ikm.validateUserPassphrase(passphrase, getSalt());
+        } finally {
+            ikm = null;
+        }
+    }
 
 
     //region - SCrypt salt from Kit.

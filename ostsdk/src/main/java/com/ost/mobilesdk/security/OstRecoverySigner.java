@@ -19,7 +19,7 @@ public class OstRecoverySigner {
         mUserId = userId;
     }
 
-    public SignedRestRecoveryStruct getResetRecoveryOwnerSignature(String passphrasePrefix, String userPassphrase, String scriptSalt, String newUserPassphrase) {
+    public SignedResetRecoveryStruct getResetRecoveryOwnerSignature(String passphrasePrefix, String userPassphrase, String scriptSalt, String newUserPassphrase) {
         OstUser user = OstUser.getById(mUserId);
         String recoveryOwnerAddress = user.getRecoveryOwnerAddress();
         String recoveryContractAddress = user.getRecoveryAddress();
@@ -62,7 +62,7 @@ public class OstRecoverySigner {
             throw error;
         }
 
-        return new SignedRestRecoveryStruct(newRecoveryOwnerAddress,recoveryOwnerAddress,recoveryContractAddress, eip712TypedData, signature);
+        return new SignedResetRecoveryStruct(newRecoveryOwnerAddress,recoveryOwnerAddress,recoveryContractAddress, eip712TypedData, signature);
     }
 
 
