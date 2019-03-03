@@ -1,6 +1,5 @@
 package com.ost.mobilesdk.security;
 
-import android.arch.persistence.room.Ignore;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,7 +12,6 @@ import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.security.structs.OstSignWithMnemonicsStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.utils.SoliditySha3;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
@@ -45,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.web3j.compat.Compat.UTF_8;
 
-class InternalKeyManager2 {
+class InternalKeyManager {
     private static OstSecureKeyModelRepository modelRepo = null;
     private static OstSecureKeyModelRepository getByteStorageRepo() {
         if ( null == modelRepo ) {
@@ -71,7 +69,7 @@ class InternalKeyManager2 {
 
     private KeyMetaStruct mKeyMetaStruct;
     private String mUserId;
-    InternalKeyManager2(String userId) {
+    InternalKeyManager(String userId) {
         mUserId = userId;
         mKeyMetaStruct = getKeyMataStruct(userId);
         if (null == mKeyMetaStruct) {
@@ -861,35 +859,35 @@ class InternalKeyManager2 {
     // region - Passphrase Locker Utility Methods
 
     // A static hash-map that stores instances of PassphraseValidationLocker
-    private static HashMap<String,InternalKeyManager2.PassphraseValidationLocker> lockers = new HashMap<>();
+    private static HashMap<String,InternalKeyManager.PassphraseValidationLocker> lockers = new HashMap<>();
     /**
      * A Factory method to get In-Memory PassphraseValidationLocker for a given user-id
      * @param userId Id of the user.
      * @return A simple time-based, In-Memory lock mechanism.
      */
-    private InternalKeyManager2.PassphraseValidationLocker getLockerFor(String userId) {
-        InternalKeyManager2.PassphraseValidationLocker locker = lockers.get(userId);
+    private InternalKeyManager.PassphraseValidationLocker getLockerFor(String userId) {
+        InternalKeyManager.PassphraseValidationLocker locker = lockers.get(userId);
         if ( null == locker ) {
-            locker = new InternalKeyManager2.PassphraseValidationLocker();
+            locker = new InternalKeyManager.PassphraseValidationLocker();
             lockers.put(userId, locker);
         }
         return locker;
     }
 
     boolean isUserPassphraseValidationAllowed() {
-        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
+        InternalKeyManager.PassphraseValidationLocker locker = getLockerFor(mUserId);
         return locker.isValidationAllowed();
     }
     private void userPassphraseValidated() {
-        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
+        InternalKeyManager.PassphraseValidationLocker locker = getLockerFor(mUserId);
         locker.validated();
     }
     void userPassphraseInvalidated() {
-        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
+        InternalKeyManager.PassphraseValidationLocker locker = getLockerFor(mUserId);
         locker.invalidated();
     }
     boolean isUserPassphraseValidationNeeded() {
-        InternalKeyManager2.PassphraseValidationLocker locker = getLockerFor(mUserId);
+        InternalKeyManager.PassphraseValidationLocker locker = getLockerFor(mUserId);
         return locker.isValidationNeeded();
     }
     // endregion

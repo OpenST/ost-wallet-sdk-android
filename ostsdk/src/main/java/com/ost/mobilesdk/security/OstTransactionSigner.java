@@ -62,7 +62,7 @@ public class OstTransactionSigner {
         }
 
         Log.i(TAG, "Signing Transaction using session");
-        InternalKeyManager2 ikm = new InternalKeyManager2(mUserId);
+        InternalKeyManager ikm = new InternalKeyManager(mUserId);
         String signature = ikm.signWithSession(signerSessionAddress, eip1077TxnHash);
 
         if (null == signature) {

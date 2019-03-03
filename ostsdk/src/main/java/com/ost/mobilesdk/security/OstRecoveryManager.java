@@ -36,7 +36,7 @@ public class OstRecoveryManager {
     }
 
     public String getRecoveryAddressFor(UserPassphrase passphrase) {
-        InternalKeyManager2 ikm = null;
+        InternalKeyManager ikm = null;
         try {
             if ( ostUser().isActivated() ) {
                 throw new OstError("km_orm_gra_1", ErrorCode.USER_ALREADY_ACTIVATED);
@@ -44,7 +44,7 @@ public class OstRecoveryManager {
                 throw new OstError("km_orm_gra_2", ErrorCode.USER_ACTIVATING);
             }
 
-            ikm = new InternalKeyManager2(userId);
+            ikm = new InternalKeyManager(userId);
             return ikm.getRecoveryAddress(passphrase, getSalt());
         } finally {
             ikm = null;
@@ -52,9 +52,9 @@ public class OstRecoveryManager {
     }
 
     public boolean validatePassphrase(UserPassphrase passphrase) {
-        InternalKeyManager2 ikm = null;
+        InternalKeyManager ikm = null;
         try {
-            ikm = new InternalKeyManager2(userId);
+            ikm = new InternalKeyManager(userId);
             if ( !ikm.isUserPassphraseValidationAllowed() ) {
                 throw new OstError("km_orm_vp_2", ErrorCode.USER_PASSPHRASE_VALIDATION_LOCKED);
             }
@@ -104,7 +104,7 @@ public class OstRecoveryManager {
 
     public SignedResetRecoveryStruct getResetRecoveryOwnerSignature(UserPassphrase currentPassphrase, UserPassphrase newUserPassphrase) {
         OstUser user = OstUser.getById(userId);
-        InternalKeyManager2 ikm = new InternalKeyManager2(userId);
+        InternalKeyManager ikm = new InternalKeyManager(userId);
         // Check if recovery is locked.
         if (!ikm.isUserPassphraseValidationAllowed()) {
             currentPassphrase.wipe();
