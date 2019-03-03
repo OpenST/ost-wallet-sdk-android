@@ -7,7 +7,7 @@ import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstRecoveryOwner;
 import com.ost.mobilesdk.security.OstRecoverySigner;
-import com.ost.mobilesdk.security.SignedRestRecoveryStruct;
+import com.ost.mobilesdk.security.SignedResetRecoveryStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
@@ -89,7 +89,7 @@ public class OstResetPin extends OstBaseWorkFlow {
                     return postErrorInterrupt("wf_rp_pr_4", OstErrors.ErrorCode.GET_USER_API_FAILED);
                 }
 
-                SignedRestRecoveryStruct struct;
+                SignedResetRecoveryStruct struct;
                 try {
                     OstRecoverySigner signer = new OstRecoverySigner(mUserId);
                     struct = signer.getResetRecoveryOwnerSignature(mAppSalt, mCurrentPin, kitSalt, mNewPin);

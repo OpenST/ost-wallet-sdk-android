@@ -144,6 +144,8 @@ public class OstErrors {
 
             case USER_ACTIVATING: return "User is already activating.";
 
+            case USER_PASSPHRASE_VALIDATION_LOCKED: return "Can not validate user passphrase because of too many wrong attempts.";
+
             case EIP1077_FAILED:
                 return "EIP1077 failed";
 
@@ -204,6 +206,7 @@ public class OstErrors {
         //RECOVERY KEY
         RECOVERY_PASSPHRASE_OWNER_NOT_SET,
         INVALID_USER_PASSPHRASE,
+        USER_PASSPHRASE_VALIDATION_LOCKED,
         INVALID_NEW_USER_PASSPHRASE,
         INVALID_PASSPHRASE_PREFIX,
 

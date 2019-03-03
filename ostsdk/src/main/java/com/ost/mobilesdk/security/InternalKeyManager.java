@@ -88,42 +88,7 @@ class InternalKeyManager {
 
     //region - Validate Pin
 
-    /**
-     * Validates user passphrase
-     * @param passphrasePrefix - Password Prefix Provided my the consumer application
-     * @param userPassphrase - Pin entered by user. Min length 6.
-     * @param scriptSalt - SCript salt provided by Kit.
-     * @return true if provided inputs can prove userPassphrase validity.
-     */
-    boolean validateUserPassphrase(String passphrasePrefix, String userPassphrase, String scriptSalt) {
-        if ( !areRecoveryPassphraseInputsValid(passphrasePrefix, userPassphrase, scriptSalt) ) {
-            userPassphraseInvalidated();
-            return false;
-        }
 
-        if ( !isUserPassphraseValidationAllowed() ) {
-            return false;
-        }
-
-
-        OstUser ostUser = OstUser.getById(mUserId);
-        String recoveryOwnerAddress = ostUser.getRecoveryOwnerAddress();
-        if ( validateWithUserPresenceInfo(passphrasePrefix, userPassphrase, scriptSalt, recoveryOwnerAddress) ) {
-            userPassphraseValidated();
-            return true;
-        }
-
-        boolean isValid = validateByCreatingRecoveryOwner(passphrasePrefix, userPassphrase, scriptSalt,recoveryOwnerAddress);
-        if ( isValid ) {
-            // Let update user presence.
-            userPassphraseValidated();
-            storeUserPresenceInfoInDb(passphrasePrefix, userPassphrase, scriptSalt, recoveryOwnerAddress);
-        } else {
-            userPassphraseInvalidated();
-        }
-
-        return isValid;
-    }
 
     /**
      * Validate user passphrase by creating recovery address

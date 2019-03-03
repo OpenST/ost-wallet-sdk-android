@@ -87,7 +87,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
                         if (shouldAskForBioMetric()) {
                             new OstBiometricAuthentication(OstSdk.getContext(), getBioMetricCallBack());
                         } else {
-                            return goToState(WorkflowStateManager.AUTHENTICATED);
+                            return goToState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
                         }
                     } else {
                         AsyncStatus status = performOnDeviceValidation();
