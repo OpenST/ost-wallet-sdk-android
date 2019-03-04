@@ -68,6 +68,16 @@ public class SignedEIP712Struct {
     private String signature;
     private String nonce;
 
+    public String getPrimaryType() {
+        return primaryType;
+    }
+
+    void setPrimaryType(String primaryType) {
+        this.primaryType = primaryType;
+    }
+
+    private String primaryType;
+
 
     public SignedEIP712Struct() {
 
