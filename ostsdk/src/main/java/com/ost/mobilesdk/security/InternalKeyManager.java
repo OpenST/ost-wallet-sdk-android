@@ -70,21 +70,23 @@ class InternalKeyManager {
     private KeyMetaStruct mKeyMetaStruct;
     private String mUserId;
     InternalKeyManager(String userId) {
-        mUserId = userId;
-        mKeyMetaStruct = getKeyMataStruct(userId);
-        if (null == mKeyMetaStruct) {
+        synchronized (InternalKeyManager.class) {
+            mUserId = userId;
+            mKeyMetaStruct = getKeyMataStruct(userId);
+            if (null == mKeyMetaStruct) {
 
-            Log.d(TAG, String.format("Creating new Ost Secure key for userId : %s", userId));
+                Log.d(TAG, String.format("Creating new Ost Secure key for userId : %s", userId));
 
-            mKeyMetaStruct = new KeyMetaStruct();
-            //Generate Api Key
-            createApiKey();
+                mKeyMetaStruct = new KeyMetaStruct();
+                //Generate Api Key
+                createApiKey();
 
-            //Generate Device Key
-            createDeviceKey();
+                //Generate Device Key
+                createDeviceKey();
 
-            //Store the meta into Db.
-            storeKeyMetaStruct();
+                //Store the meta into Db.
+                storeKeyMetaStruct();
+            }
         }
     }
 
@@ -788,7 +790,7 @@ class InternalKeyManager {
 
 
     //region - User Presence Info - Information that can prove the presence of user via valid pin.
-    private String createUserPresenceInfoHash(UserPassphrase passphrase, byte[] salt, String recoveryOwnerAddress) throws Exception {
+    private String createUserPresenceInfoHash(UserPassphrase passphrase, byte[] salt, String recoveryOwnerAddress) {
         // check if we can use passphrase.
         if ( null == passphrase || passphrase.isWiped() || null == salt || salt.length < 1 || TextUtils.isEmpty(recoveryOwnerAddress)) {
             userPassphraseInvalidated();

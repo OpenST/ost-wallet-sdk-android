@@ -21,10 +21,12 @@ import android.widget.Toast;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.security.UserPassphrase;
+import com.ost.mobilesdk.utils.CommonUtils;
+import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
+
 import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
@@ -106,8 +108,8 @@ public class UsersListActivity extends MappyBaseActivity implements
             OstSdk.addSession(userId, "1000000000",
                     System.currentTimeMillis() / 1000, new WorkFlowHelper(getApplicationContext()) {
                         @Override
-                        public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-                            super.getPin(userId, ostPinAcceptInterface);
+                        public void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+                            super.getPin(ostWorkflowContext, userId, ostPinAcceptInterface);
                             showPinDialog(ostPinAcceptInterface);
                         }
                     });
@@ -322,8 +324,8 @@ public class UsersListActivity extends MappyBaseActivity implements
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         OstSdk.getPaperWallet(logInUser.getOstUserId(), new WorkFlowHelper(getApplicationContext()) {
             @Override
-            public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-                super.getPin(userId, ostPinAcceptInterface);
+            public void getPin(OstWorkflowContext workflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+                super.getPin(workflowContext, userId, ostPinAcceptInterface);
                 getPinDialog(new DialogCallback() {
                     @Override
                     public void onSubmit(String pin) {
@@ -346,7 +348,7 @@ public class UsersListActivity extends MappyBaseActivity implements
                 CommonUtils.clearBytes(mnemonics);
             }
             @Override
-            public void invalidPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+            public void invalidPin(OstWorkflowContext workflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
                 Log.d(TAG, "Invalid Pin");
                 paperWalletFetchingDone(null, "Invalid Pin.");
             }

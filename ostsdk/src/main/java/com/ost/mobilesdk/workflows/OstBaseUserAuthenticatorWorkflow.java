@@ -218,7 +218,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.pinValidated(mUserId);
+                mCallback.pinValidated(new OstWorkflowContext(getWorkflowType()), mUserId);
             }
         });
         return new AsyncStatus(true);
@@ -229,7 +229,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.invalidPin(mUserId, pinAcceptInterface);
+                mCallback.invalidPin(new OstWorkflowContext(getWorkflowType()), mUserId, pinAcceptInterface);
             }
         });
         return new AsyncStatus(true);

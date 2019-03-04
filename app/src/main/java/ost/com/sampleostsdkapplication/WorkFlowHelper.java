@@ -1,8 +1,6 @@
 package ost.com.sampleostsdkapplication;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,13 +10,10 @@ import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
-
-import java.io.ByteArrayOutputStream;
 
 class WorkFlowHelper implements OstWorkFlowCallback {
 
@@ -47,17 +42,17 @@ class WorkFlowHelper implements OstWorkFlowCallback {
     }
 
     @Override
-    public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+    public void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
 
     }
 
     @Override
-    public void invalidPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+    public void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
 
     }
 
     @Override
-    public void pinValidated(String userId) {
+    public void pinValidated(OstWorkflowContext ostWorkflowContext, String userId) {
 
     }
 
@@ -69,20 +64,6 @@ class WorkFlowHelper implements OstWorkFlowCallback {
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
         Toast.makeText(OstSdk.getContext(), String.format("Work Flow %s Error: %s", ostWorkflowContext.getWorkflow_type(), ostError.getMessage()), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showQR(Bitmap qrImage, OstStartPollingInterface startPollingInterface) {
-        Log.i(TAG, "showing QR code");
-        ByteArrayOutputStream bStream = new ByteArrayOutputStream();
-        qrImage.compress(Bitmap.CompressFormat.PNG, 100, bStream);
-        byte[] byteArray = bStream.toByteArray();
-
-        Intent anotherIntent = new Intent(mApp, QR_view.class);
-        anotherIntent.putExtra("image", byteArray);
-        mApp.startActivity(anotherIntent);
-        //Need to be on click of button "start polling"
-        startPollingInterface.startPolling();
     }
 
     @Override

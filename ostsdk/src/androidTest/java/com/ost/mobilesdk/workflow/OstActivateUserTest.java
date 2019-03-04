@@ -9,9 +9,6 @@ import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.OstKeyManager;
-import com.ost.mobilesdk.workflows.OstContextEntity;
-import com.ost.mobilesdk.workflows.OstWorkflowContext;
-import com.ost.mobilesdk.workflows.errors.OstError;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -42,18 +39,18 @@ public class OstActivateUserTest {
         String spendingLimit = "100000";
         Looper.prepare();
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.activateUser("", uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
-            @Override
-            public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-                super.flowComplete(ostWorkflowContext, ostContextEntity);
-            }
-
-            @Override
-            public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-                super.flowInterrupt(ostWorkflowContext, ostError);
-                countDownLatch.countDown();
-            }
-        });
+//        OstSdk.activateUser(new UserPassphrase(), uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
+//            @Override
+//            public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+//                super.flowComplete(ostWorkflowContext, ostContextEntity);
+//            }
+//
+//            @Override
+//            public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+//                super.flowInterrupt(ostWorkflowContext, ostError);
+//                countDownLatch.countDown();
+//            }
+//        });
 
         try {
             countDownLatch.await(20, TimeUnit.SECONDS);
@@ -91,18 +88,18 @@ public class OstActivateUserTest {
         }
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.activateUser(userId, uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
-            @Override
-            public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-                super.flowComplete(ostWorkflowContext, ostContextEntity);
-            }
-
-            @Override
-            public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-                super.flowInterrupt(ostWorkflowContext, ostError);
-                countDownLatch.countDown();
-            }
-        });
+//        OstSdk.activateUser(userId, uPin, password , expirationHeight, spendingLimit, new AbsWorkFlowCallback() {
+//            @Override
+//            public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+//                super.flowComplete(ostWorkflowContext, ostContextEntity);
+//            }
+//
+//            @Override
+//            public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+//                super.flowInterrupt(ostWorkflowContext, ostError);
+//                countDownLatch.countDown();
+//            }
+//        });
 
         try {
             countDownLatch.await(20, TimeUnit.SECONDS);

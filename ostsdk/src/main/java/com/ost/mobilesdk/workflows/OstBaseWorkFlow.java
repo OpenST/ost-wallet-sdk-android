@@ -127,7 +127,7 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.getPin(mUserId, pinAcceptInterface);
+                mCallback.getPin(new OstWorkflowContext(getWorkflowType()), mUserId, pinAcceptInterface);
             }
         });
         return new AsyncStatus(true);
