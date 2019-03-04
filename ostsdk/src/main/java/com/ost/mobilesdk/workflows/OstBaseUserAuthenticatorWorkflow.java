@@ -157,7 +157,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
             ensureApiCommunication();
 
             // Ensure we have OstUser complete entity.
-            ensureOstUser();
+            ensureOstUser( shouldAskForAuthentication() );
 
             // Ensure we have OstToken complete entity.
             ensureOstToken();

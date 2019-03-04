@@ -300,8 +300,11 @@ abstract class OstBaseWorkFlow {
 
     OstUser mOstUser;
     void ensureOstUser() throws OstError {
+        ensureOstUser(false);
+    }
+    void ensureOstUser(boolean forceSync) throws OstError {
         mOstUser = OstUser.getById(mUserId);
-        if ( null == mOstUser || TextUtils.isEmpty(mOstUser.getTokenHolderAddress()) || TextUtils.isEmpty(mOstUser.getDeviceManagerAddress())) {
+        if ( forceSync || null == mOstUser || TextUtils.isEmpty(mOstUser.getTokenHolderAddress()) || TextUtils.isEmpty(mOstUser.getDeviceManagerAddress())) {
             try {
                 mOstApiClient.getUser();
                 mOstUser = OstUser.getById(mUserId);

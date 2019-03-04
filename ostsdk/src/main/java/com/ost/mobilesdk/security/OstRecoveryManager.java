@@ -136,7 +136,7 @@ public class OstRecoveryManager {
         String newRecoveryOwnerAddress = null;
         String signature = null;
         try {
-
+            forceSyncUser();
             salt = getSalt();
             saltForNewRecoveryOwner = salt.clone();
             newRecoveryOwnerAddress = ikm.getRecoveryAddress(newUserPassphrase, saltForNewRecoveryOwner);
@@ -173,9 +173,18 @@ public class OstRecoveryManager {
             if ( null == signature ) {
                 CommonUtils.clearBytes(salt);
             }
+            currentPassphrase.wipe();
+            newUserPassphrase.wipe();
         }
     }
 
+    private void forceSyncUser() {
+        try {
+            apiClient.getUser();
+        } catch (IOException e) {
+            throw new OstError("km_orm_fsu_1", ErrorCode.GET_USER_API_FAILED);
+        }
+    }
 
     private String getEIP712SignHash(JSONObject typedData) {
         try {
