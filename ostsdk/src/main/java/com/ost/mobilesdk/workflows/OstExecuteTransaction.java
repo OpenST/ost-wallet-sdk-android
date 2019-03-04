@@ -8,6 +8,7 @@ import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.security.OstTransactionSigner;
 import com.ost.mobilesdk.security.structs.SignedTransactionStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
@@ -95,8 +96,13 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
     }
 
     @Override
-    protected boolean shouldCheckTokenRules() {
-        return true;
+    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
+        try {
+            ensureOstRules();
+        } catch (OstError error) {
+            return postErrorInterrupt(error);
+        }
+        return super.onUserDeviceValidationPerformed(stateObject);
     }
 
 

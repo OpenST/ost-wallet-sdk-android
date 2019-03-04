@@ -169,22 +169,17 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
                 //Ensures Device Manager is present as derived classes are likely going to need nonce.
                 ensureDeviceManager();
             }
-
-            if (shouldCheckTokenRules()) {
-                ensureOstRules();
-            }
-
+            
         } catch (OstError err) {
             return postErrorInterrupt(err);
         }
 
+        return onUserDeviceValidationPerformed(stateObject);
+    }
+
+    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
         return performNext();
     }
-
-    protected boolean shouldCheckTokenRules() {
-        return false;
-    }
-
 
     @Override
     public void pinEntered(UserPassphrase passphrase) {
