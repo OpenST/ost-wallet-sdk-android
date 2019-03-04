@@ -14,7 +14,7 @@ Android version support: 22 and above
 
 Refer [Sample app](app) for SDK usage
 ## OstSdk apis
-###init
+### init
 To get started with the SDK, you must first initialize SDK by calling init() api.<br/>
 It initializes all the required instances and run migrations of db.<br/>
 Recommended location to call init() is in Application sub-class.<br/><br/>
@@ -27,7 +27,7 @@ public void onCreate() {
         OstSdk.init(getApplicationContext(), BASE_URL);
 }
 ```
-###setupDevice
+### setupDevice
 After init, setupDevice api should be called everytime the app launches.<br/>
 It ensures current device is in registered state before calling kit apis.<br/>
 Recommended location to call setupDevice() is in MainActivity.<br/><br/>
@@ -39,7 +39,7 @@ Recommended location to call setupDevice() is in MainActivity.<br/><br/>
 OstSdk.setupDevice(userId, tokenId, new WorkFlowHelper());
 ```
 
-###activateUser
+### activateUser
 It Authorizes the Registered device and Activate the user.<br/>
 It makes user eligible to do device operations and transactions.<br/><br/>
 &nbsp; parameter passphrase: User pin<br/>
@@ -51,7 +51,7 @@ It makes user eligible to do device operations and transactions.<br/><br/>
 OstSdk.activateUser(passphrase, expiresAfterInSecs, spendingLimitInWei, new WorkFlowHelper())
 ```
 
-###addSession
+### addSession
 To add new Session to device manager.<br/>
 Will be used when there are no current session available to do transactions.<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
@@ -63,7 +63,7 @@ Will be used when there are no current session available to do transactions.<br/
 OstSdk.addSession(userId, expireAfterInSecs, spendingLimitInWei, new WorkFlowHelper())
 ```
 
-###ostPerform
+### ostPerform
 To perform operations based on QR data provided.<br/>
 Through QR, Add device and transaction operations can be performed.<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
@@ -74,7 +74,7 @@ Through QR, Add device and transaction operations can be performed.<br/><br/>
 OstSdk.ostPerform(userId, data, new WorkFlowHelper())
 ```
 
-###getPaperWallet
+### getPaperWallet
 To get Paper wallet( 12 words used to generate wallet) of the current device.<br/>
 Paper wallet will be used to add new device incase device is lost<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
@@ -84,7 +84,7 @@ Paper wallet will be used to add new device incase device is lost<br/><br/>
 OstSdk.getPaperWallet(String userId, new WorkFlowHelper())
 ```
 
-###executeTransaction
+### executeTransaction
 To execute Rule.<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter tokenId: Id assigned by Ost to token<br/>
@@ -96,7 +96,7 @@ To execute Rule.<br/><br/>
 ```java
 OstSdk.executeTransaction(userId, tokenId, tokenHolderAddresses, amounts, ruleName, new WorkFlowHelper())
 ```
-###addDeviceUsingMnemonics
+### addDeviceUsingMnemonics
 It add new device using mnemonics provided.<br/>
 Using mnemonics it generates wallet key to add new current device.<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
@@ -107,7 +107,7 @@ Using mnemonics it generates wallet key to add new current device.<br/><br/>
 OstSdk.addDeviceUsingMnemonics(userId, mnemonics, new WorkFlowHelper())
 ```
 
-###getAddDeviceQRCode
+### getAddDeviceQRCode
 Getter method which return QR bitmap image for add device<br/>
 Use this methods to generate QR code of current device to be added from authorized device<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
@@ -115,7 +115,7 @@ Use this methods to generate QR code of current device to be added from authoriz
 ```java
 OstSdk.getAddDeviceQRCode(userId)
 ```
-###startPolling
+### startPolling
 To poll provided entity.<br/>
 Polling can be used when any entity is in transition status and desired status update is needed<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
@@ -129,7 +129,7 @@ Polling can be used when any entity is in transition status and desired status u
 OstSdk.startPolling(userId, entityId, entityType, successStatus, failureStatus, new WorkFlowHelper())
 ```
 
-###resetPin
+### resetPin
 To update current Pin with new Pin.<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter appSalt: Salt provided by app<br/>
