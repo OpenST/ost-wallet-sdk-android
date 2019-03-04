@@ -248,11 +248,11 @@ public class UsersListActivity extends MappyBaseActivity implements
         alertDialog.show();
     }
 
-    private void getPinDialog(final DialogCallback callback) {
+    public void getPinDialog(final DialogCallback callback) {
         getPinDialog(callback, "Enter Pin : ");
     }
 
-    private void showPinDialog(OstPinAcceptInterface ostPinAcceptInterface) {
+    public void showPinDialog(OstPinAcceptInterface ostPinAcceptInterface) {
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         DialogCallback callback = new DialogCallback() {
             @Override
@@ -294,7 +294,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         }
     }
 
-    interface DialogCallback {
+    public interface DialogCallback {
         void onSubmit(String pin);
 
         void onCancel();
@@ -314,51 +314,18 @@ public class UsersListActivity extends MappyBaseActivity implements
         long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
         String spendingLimit = "1000000000000";
 
-        OstSdk.activateUser(new UserPassphrase(userId,pin,passphrasePrefix) , expiresAfterInSecs, spendingLimit,
-                new WorkFlowHelper(getApplicationContext()));
+        if(userSetupFragment != null){
+            OstSdk.activateUser(new UserPassphrase(userId,pin,passphrasePrefix) , expiresAfterInSecs, spendingLimit,
+                    userSetupFragment.registerWorkflowCallbacks(logInUser));
+        }
     }
 
     @Override
     public void onShowPaperWalletButton(){
         Log.d(TAG,"Ask for pin");
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-        OstSdk.getPaperWallet(logInUser.getOstUserId(), new WorkFlowHelper(getApplicationContext()) {
-            @Override
-            public void getPin(OstWorkflowContext workflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-                super.getPin(workflowContext, userId, ostPinAcceptInterface);
-                getPinDialog(new DialogCallback() {
-                    @Override
-                    public void onSubmit(String pin) {
-                        UserPassphrase passphrase = new UserPassphrase(userId, pin, logInUser.getPassphrasePrefix());
-                        ostPinAcceptInterface.pinEntered(passphrase);
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        ostPinAcceptInterface.cancelFlow(new OstError("Don't know pin"));
-                    }
-                });
-            }
-
-            @Override
-            public void showPaperWallet(byte[] mnemonics) {
-                super.showPaperWallet(mnemonics);
-                Log.d(TAG, "Paper wallet " + Arrays.asList(mnemonics));
-                paperWalletFetchingDone(new String(mnemonics), "Please Save these words carefully.");
-                CommonUtils.clearBytes(mnemonics);
-            }
-            @Override
-            public void invalidPin(OstWorkflowContext workflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-                Log.d(TAG, "Invalid Pin");
-                paperWalletFetchingDone(null, "Invalid Pin.");
-            }
-        });
-    }
-
-    @Override
-    public void paperWalletFetchingDone(String mnemonics, String showText) {
         if(paperWalletFragment != null){
-            paperWalletFragment.showWalletWords(mnemonics, showText);
+            OstSdk.getPaperWallet(logInUser.getOstUserId(), paperWalletFragment.registerWorkflowCallbacks(logInUser));
         }
     }
 

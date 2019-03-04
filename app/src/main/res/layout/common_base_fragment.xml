@@ -95,6 +95,24 @@
                 android:textColor="@color/colorRed"
                 android:visibility="gone"/>
 
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/workflow_details"
+                style="@style/Widget.OstDemoApp.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="110dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/colorAzure"
+                app:errorEnabled="true"
+                android:visibility="gone">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/workflow_details_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="12sp"
+                    android:maxLines="4"/>
+            </android.support.design.widget.TextInputLayout>
+
         </LinearLayout>
     </RelativeLayout>
 </ScrollView>

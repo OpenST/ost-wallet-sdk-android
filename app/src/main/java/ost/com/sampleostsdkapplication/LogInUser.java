@@ -9,7 +9,7 @@ import com.ost.mobilesdk.models.entities.OstUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-class LogInUser {
+public class LogInUser {
     private static final String TAG = "LogInUser";
     private String id;
     private String ostUserId;

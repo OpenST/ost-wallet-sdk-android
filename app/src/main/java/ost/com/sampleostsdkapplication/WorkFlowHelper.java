@@ -15,13 +15,13 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 
-class WorkFlowHelper implements OstWorkFlowCallback {
+public class WorkFlowHelper implements OstWorkFlowCallback {
 
 
     private static final String TAG = "WorkFlowHelper";
     private final App mApp;
 
-    WorkFlowHelper(Context context) {
+    public WorkFlowHelper(Context context) {
         mApp = ((App) context.getApplicationContext());
     }
 
@@ -58,6 +58,7 @@ class WorkFlowHelper implements OstWorkFlowCallback {
 
     @Override
     public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        Log.d("Workflow", "Inside workflow complete");
         Toast.makeText(OstSdk.getContext(), "Work Flow Successfull", Toast.LENGTH_SHORT).show();
     }
 

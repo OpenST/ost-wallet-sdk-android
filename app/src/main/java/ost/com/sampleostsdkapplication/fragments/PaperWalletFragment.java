@@ -83,17 +83,8 @@ public class PaperWalletFragment extends BaseFragment {
         return fragment;
     }
 
-    public void showWalletWords(String mnemonics, String showText) {
-        hideLoader();
-        if (mnemonics != null) {
-            mPWEditBox.setText(mnemonics);
-        }
-        showWalletInstructionText(showText);
-    }
-
     public interface OnPaperWalletFragmentListener extends OnBaseFragmentListener{
         void onShowPaperWalletButton();
-        void paperWalletFetchingDone(String mnemonics, String showText);
         void authorizeDeviceUsingMnemonics(String mnemonicsText, String userId);
     }
 }
