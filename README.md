@@ -42,13 +42,14 @@ OstSdk.setupDevice(userId, tokenId, new WorkFlowHelper());
 ### activateUser
 It Authorizes the Registered device and Activate the user.<br/>
 It makes user eligible to do device operations and transactions.<br/><br/>
-&nbsp; parameter passphrase: User pin<br/>
-&nbsp; parameter expiresAfterInSecs: sessions key expiry time<br/>
+&nbsp; parameter UserPassphrase: object which will contain user Id, user pin and passphrasePrefix<br/>
+&nbsp; parameter expiresAfterInSecs: session key expiry time<br/>
 &nbsp; parameter spendingLimitInWei: spending limit once in a transaction of session<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void activateUser(UserPassphrase passphrase, long expiresAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback callback)**<br/>
 ```java
-OstSdk.activateUser(passphrase, expiresAfterInSecs, spendingLimitInWei, new WorkFlowHelper())
+UserPassphrase userPassPhrase = new UserPassphrase(userId, pin, passphrasePrefix)
+OstSdk.activateUser(userPassPhrase, expiresAfterInSecs, spendingLimitInWei, new WorkFlowHelper())
 ```
 
 ### addSession
