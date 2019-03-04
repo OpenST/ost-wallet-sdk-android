@@ -89,11 +89,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
                             return goToState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
                         }
                     } else {
-                        AsyncStatus status = performOnDeviceValidation();
-                        if (!status.isSuccess()) {
-                            goToState(WorkflowStateManager.COMPLETED_WITH_ERROR);
-                        }
-                        return status;
+                        return goToState(WorkflowStateManager.AUTHENTICATED);
                     }
                     break;
 

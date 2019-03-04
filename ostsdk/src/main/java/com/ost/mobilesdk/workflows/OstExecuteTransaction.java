@@ -42,8 +42,7 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
 
 
     @Override
-    protected AsyncStatus performOnDeviceValidation() {
-
+    AsyncStatus performOnAuthenticated() {
         if (!mOstUser.getTokenId().equalsIgnoreCase(mTokenId)) {
             return postErrorInterrupt("wf_et_pr_1", OstErrors.ErrorCode.DIFFERENT_ECONOMY);
         }

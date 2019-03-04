@@ -104,7 +104,7 @@ public class OstResetPin extends OstBaseWorkFlow {
                     return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RECOVERY_API_FAILED);
                 }
 
-                JSONObject jsonData = struct.getTypedData().optJSONObject(OstConstants.RESPONSE_DATA);
+                JSONObject jsonData = postRecoveryAddresssResponse.optJSONObject(OstConstants.RESPONSE_DATA);
                 JSONObject resultTypeObject = jsonData.optJSONObject(jsonData.optString(OstConstants.RESULT_TYPE));
                 OstRecoveryOwner ostRecoveryOwner = null;
                 try {
