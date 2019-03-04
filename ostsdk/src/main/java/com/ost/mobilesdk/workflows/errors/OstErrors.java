@@ -9,6 +9,8 @@ public class OstErrors {
 
     public static String getMessage(ErrorCode code) {
         switch (code) {
+            case INVALID_USER_ID: return "Invalid user Id";
+            case INVALID_WORKFLOW_CALLBACK: return "Invalid Workflow Callback. Workflow callback can not be null.";
             case GET_USER_API_FAILED:
                 return "Failed to fetch user information";
 
@@ -90,6 +92,8 @@ public class OstErrors {
             case INVALID_ADD_DEVICE_ADDRESS:
                 return "Invalid add device address";
 
+            case INVALID_RECOVER_DEVICE_ADDRESS:return "Invalid device address. This address can not be recovered.";
+
             case DEVICE_UNAUTHORIZED:
                 return "Device unauthorized";
 
@@ -136,7 +140,7 @@ public class OstErrors {
 
             case FAILED_TO_SIGN_DATA: return "Failed to sign data.";
 
-            case DEVICE_CAN_NOT_BE_AUTHORIZED: return "Only devices with status 'Registered' can be authorized.";
+            case DEVICE_CAN_NOT_BE_AUTHORIZED: return "Current device can not be authorized. Only devices with status 'Registered' can be authorized.";
 
             case FAILED_TO_GENERATE_ETH_KEY: return "Failed to generate ethereum key.";
 
@@ -160,6 +164,8 @@ public class OstErrors {
     }
 
     public enum ErrorCode {
+        INVALID_USER_ID,
+        INVALID_WORKFLOW_CALLBACK,
         GET_USER_API_FAILED,
         TOKEN_API_FAILED,
         GET_DEVICE_API_FAILED,
@@ -191,6 +197,7 @@ public class OstErrors {
         UNKNOWN_ENTITY_TYPE,
         INVALID_QR_DEVICE_OPERATION_DATA,
         INVALID_ADD_DEVICE_ADDRESS,
+        INVALID_RECOVER_DEVICE_ADDRESS,
         DEVICE_UNAUTHORIZED,
         DEVICE_ALREADY_AUTHORIZED,
         DEVICE_CAN_NOT_BE_AUTHORIZED,
