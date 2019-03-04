@@ -133,7 +133,7 @@ public class UsersListActivity extends MappyBaseActivity implements
             getPinDialog(new DialogCallback() {
                 @Override
                 public void onSubmit(String pin) {
-                    UserPassphrase currentPassphrase = new UserPassphrase(userId, pin.getBytes(UTF_8), appSalt);
+                    UserPassphrase currentPassphrase = new UserPassphrase(userId, pin.getBytes(UTF_8), appSalt.clone());
                     getPinDialog(new DialogCallback() {
                         @Override
                         public void onSubmit(String pin) {
