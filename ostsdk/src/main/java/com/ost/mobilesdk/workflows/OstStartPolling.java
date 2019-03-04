@@ -88,9 +88,4 @@ public class OstStartPolling extends OstBaseWorkFlow {
         }
         return new AsyncStatus(true);
     }
-
-    @Override
-    boolean hasValidParams() {
-        return super.hasValidParams();
-    }
 }
