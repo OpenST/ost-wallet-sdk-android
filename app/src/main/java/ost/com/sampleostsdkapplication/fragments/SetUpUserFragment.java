@@ -1,87 +1,54 @@
 package ost.com.sampleostsdkapplication.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import ost.com.sampleostsdkapplication.R;
 
 /**
- * Fragment representing the login screen for OstDemoApp.
+ * Fragment representing the SetUp User screen for OstDemoApp.
  */
-public class SetUpUserFragment extends Fragment implements View.OnClickListener {
-
+public class SetUpUserFragment extends BaseFragment {
     private String mUserId;
     private String mTokenId;
-    private MaterialButton nextButton;
-    private MaterialButton cancelButton;
     private TextInputLayout mPinTextInput;
     private EditText mPinEditBox;
-    private RelativeLayout mActionButtons;
-    private FrameLayout mActionLoaders;
-    private OnSetUpUserFragmentListener mListener;
+    private LinearLayout mExternalView;
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.setup_user_fragment, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        View childLayout = inflater.inflate(R.layout.setup_user_fragment, null);
+        mExternalView = view.findViewById(R.id.external_view);
+        mExternalView.addView(childLayout);
         mPinTextInput = view.findViewById(R.id.user_setup_pin);
         mPinEditBox = view.findViewById(R.id.user_setup_pin_edit);
-        nextButton = view.findViewById(R.id.next_button);
-        nextButton.setOnClickListener(this);
-        cancelButton = view.findViewById(R.id.cancel_button);
-        cancelButton.setOnClickListener(this);
-        mActionButtons = view.findViewById(R.id.action_buttons);
-        mActionLoaders = view.findViewById(R.id.action_loader);
         return view;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public String getPageTitle(){
+        return getResources().getString(R.string.setup_wallet);
     }
 
-    @Override
-    public void onDestroy(){
-        if(mListener != null){
-            mListener = null;
+    /**
+     * Perform operation on clicking next
+     * @param view
+     */
+    public void onNextClick(){
+        if (mPinEditBox.getText() == null || mPinEditBox.getText().length() < 6){
+            mPinTextInput.setError("Please enter 6 Digit Pin");
+            return;
         }
-        super.onDestroy();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnSetUpUserFragmentListener) {
-            mListener = (OnSetUpUserFragmentListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnChannelSelectionFragmentListener");
-        }
-    }
-
-    @Override
-    public void onClick(View view){
-        switch (view.getId()){
-            case R.id.cancel_button: {
-                mListener.onBack();
-                break;
-            }
-            case R.id.next_button: {
-                onNextClick(  );
-                break;
-            }
-        }
+        showLoader();
+        OnSetUpUserFragmentListener mListener = (OnSetUpUserFragmentListener) getFragmentListener();
+        mListener.onSetupUserSubmit(mPinEditBox.getText().toString());
     }
 
     /**
@@ -99,22 +66,7 @@ public class SetUpUserFragment extends Fragment implements View.OnClickListener 
         return fragment;
     }
 
-    /**
-     * Perform operation on clicking next
-     * @param view
-     */
-    private void onNextClick(){
-        if (mPinEditBox.getText() == null || mPinEditBox.getText().length() < 6){
-            mPinTextInput.setError("Please enter 6 Digit Pin");
-            return;
-        }
-        mActionButtons.setVisibility(View.GONE);
-        mActionLoaders.setVisibility(View.VISIBLE);
-        mListener.onSetupUserSubmit(mPinEditBox.getText().toString());
-    }
-
-    public interface OnSetUpUserFragmentListener{
-        void onBack();
+    public interface OnSetUpUserFragmentListener extends OnBaseFragmentListener{
         void onSetupUserSubmit(String pin);
     }
 }
