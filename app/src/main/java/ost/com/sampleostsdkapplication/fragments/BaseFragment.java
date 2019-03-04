@@ -146,6 +146,13 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
+            public void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+                super.invalidPin(ostWorkflowContext, userId, ostPinAcceptInterface);
+                hideLoader();
+                showWalletInstructionText("Invalid Pin.");
+            }
+
+            @Override
             public void showPaperWallet(byte[] mnemonics) {
                 super.showPaperWallet(mnemonics);
                 showWalletWords(new String(mnemonics), "Please save these words carefully.");
