@@ -21,10 +21,11 @@ import android.widget.Toast;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.security.UserPassphrase;
+import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
+
 import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
@@ -103,8 +104,8 @@ public class UsersListActivity extends MappyBaseActivity implements
             Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
             startActivityForResult(intent, QR_REQUEST_CODE);
         } else if (id == R.id.add_session) {
-            OstSdk.addSession(userId, "1000000000",
-                    System.currentTimeMillis() / 1000, new WorkFlowHelper(getApplicationContext()) {
+            OstSdk.addSession(userId, System.currentTimeMillis() / 1000, "1000000000"
+                    , new WorkFlowHelper(getApplicationContext()) {
                         @Override
                         public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
                             super.getPin(userId, ostPinAcceptInterface);

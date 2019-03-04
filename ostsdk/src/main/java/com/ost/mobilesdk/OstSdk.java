@@ -109,7 +109,7 @@ public class OstSdk {
      *
      */
     public static void activateUser(UserPassphrase passphrase, long expiresAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback callback) {
-        final OstActivateUser ostActivateUser = new OstActivateUser(passphrase,expiresAfterInSecs,spendingLimitInWei,callback);
+        final OstActivateUser ostActivateUser = new OstActivateUser(passphrase, expiresAfterInSecs, spendingLimitInWei, callback);
         ostActivateUser.perform();
     }
 
@@ -133,8 +133,8 @@ public class OstSdk {
         ostPerform.process();
     }
 
-    public static void addSession(String userId, String spendingLimit, long expireAfterInSecs, OstWorkFlowCallback workFlowCallback) {
-        final OstAddSession ostAddSession = new OstAddSession(userId, spendingLimit, expireAfterInSecs, workFlowCallback);
+    public static void addSession(String userId, long expireAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback workFlowCallback) {
+        final OstAddSession ostAddSession = new OstAddSession(userId, spendingLimitInWei, expireAfterInSecs, workFlowCallback);
         ostAddSession.perform();
     }
 
@@ -143,8 +143,8 @@ public class OstSdk {
         ostGetPaperWallet.perform();
     }
 
-    public static void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback workFlowCallback) {
-        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenId, tokenHolderAddresses, amounts, transactionType, workFlowCallback);
+    public static void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback workFlowCallback) {
+        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenId, tokenHolderAddresses, amounts, ruleName, workFlowCallback);
         ostExecuteTransaction.perform();
     }
 
