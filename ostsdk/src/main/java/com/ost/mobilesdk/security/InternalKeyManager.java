@@ -374,11 +374,9 @@ class InternalKeyManager {
 
     //region - KeyMetaStruct Methods
 
-    private static KeyMetaStruct keyMetaStruct = null;
     static KeyMetaStruct getKeyMataStruct(String userId) {
-
-        if ( null != keyMetaStruct) {
-            return keyMetaStruct;
+        if (null == userId) {
+            return null;
         }
         OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
         String userMetaId = createUserMataId(userId);
@@ -386,7 +384,7 @@ class InternalKeyManager {
         if (null == ostSecureKey) {
             return null;
         }
-        keyMetaStruct = createObjectFromBytes(ostSecureKey.getData());
+        KeyMetaStruct keyMetaStruct = createObjectFromBytes(ostSecureKey.getData());
         return keyMetaStruct;
     }
 
