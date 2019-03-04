@@ -16,6 +16,8 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstDevicePollingService;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 
+import org.web3j.crypto.WalletUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -132,8 +134,11 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow impleme
     }
 
     @Override
-    boolean hasValidParams() {
-        return super.hasValidParams() && !TextUtils.isEmpty(mDeviceAddressToBeAdded);
+    void ensureValidParams() {
+        if ( TextUtils.isEmpty(mDeviceAddressToBeAdded) || !WalletUtils.isValidAddress(mDeviceAddressToBeAdded) ) {
+            throw new OstError("wf_ad_evp_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
+        }
+        super.ensureValidParams();
     }
 
     @Override

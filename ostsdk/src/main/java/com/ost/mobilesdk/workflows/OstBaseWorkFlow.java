@@ -77,6 +77,23 @@ abstract class OstBaseWorkFlow {
         return !TextUtils.isEmpty(mUserId) && null != mHandler && null != mCallback;
     }
 
+    /**
+     * Method that can be called to validate and params.
+     * @Dev: Please make sure this method is only used to perform validations
+     * that do not need API calls. For any validation that needs API call, please
+     * use onUserDeviceValidationPerformed.
+     */
+    void ensureValidParams() {
+        if ( TextUtils.isEmpty(mUserId) ) {
+            throw new OstError("wf_bwf_evp_1", ErrorCode.INVALID_USER_ID);
+        }
+
+        if ( null == mCallback ) {
+            throw new OstError("wf_bwf_evp_2", ErrorCode.INVALID_WORKFLOW_CALLBACK);
+        }
+
+    }
+
     public Future<AsyncStatus> perform() {
         return DispatchAsync.dispatch(new DispatchAsync.Executor() {
             @Override

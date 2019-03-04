@@ -131,21 +131,16 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         return new AsyncStatus(true);
     }
 
-    protected AsyncStatus performOnDeviceValidation() {
-        return new AsyncStatus(true);
-    }
-
     protected boolean shouldAskForAuthentication() {
         return true;
     }
 
 
     protected AsyncStatus performValidations(Object stateObject) {
-        Log.i(TAG, "Validating user Id");
-        //To-Do: hasValidParams should throw errors. Rename it to validateParams.
-        if (!hasValidParams()) {
-            Log.e(TAG, String.format("Invalid params for userId : %s", mUserId));
-            throw new OstError("bua_wf_pv_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
+        try {
+            ensureValidParams();
+        } catch (OstError ostError) {
+            return postErrorInterrupt(ostError);
         }
         return performNext();
     }
@@ -169,7 +164,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
                 //Ensures Device Manager is present as derived classes are likely going to need nonce.
                 ensureDeviceManager();
             }
-            
+
         } catch (OstError err) {
             return postErrorInterrupt(err);
         }

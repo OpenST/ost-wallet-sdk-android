@@ -32,9 +32,13 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
         mMnemonics = mnemonics;
     }
 
+
     @Override
-    boolean hasValidParams() {
-        return super.hasValidParams() && !(mMnemonics.length < 1);
+    void ensureValidParams() {
+        if ( null == mMnemonics || mMnemonics.length < 1) {
+            throw new OstError("wf_acdwm_evp_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+        }
+        super.ensureValidParams();
     }
 
     @Override
