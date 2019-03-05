@@ -60,6 +60,12 @@
     <string name="ost_welcome_text">Welcome To OST Powered Token Economy</string>
     <string name="let_setup_wallet">Lets Setup Your Wallet.</string>
     <string name="enter_pin">Enter 6 digits pin to secure your wallet. </string>
+    <string name="six_digit_pin">6 Digit Pin </string>
+    <string name="current_pin">Current Pin: </string>
+    <string name="new_pin">New Pin: </string>
+    <string name="reset_pin">Reset Pin</string>
+    <string name="enter_six_digit_pin">Please enter 6 Digit Pin.</string>
+    <string name="new_old_pin_same">New Pin cannot be same as Old.</string>
 
     <!-- OstDemoApp backdrop menu labels -->
     <string name="shr_featured_label">Featured</string>
@@ -70,7 +76,6 @@
     <string name="shr_bottoms_label">Bottoms</string>
     <string name="shr_dresses_label">Dresses</string>
     <string name="shr_account_label">My Account</string>
-    <string name="reset_pin">Reset Pin</string>
     <string name="device_recovery">Device recovery</string>
     <string name="device_abort_recovery">Device abort recovery</string>
 </resources>

@@ -136,7 +136,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
      * @param logInUser
      * @return
      */
-    public WorkFlowHelper registerWorkflowCallbacks(LogInUser logInUser){
+    public WorkFlowHelper registerWorkflowCallbacks(){
         WorkFlowHelper wfh = new WorkFlowHelper(getActivity()) {
             @Override
             public void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {

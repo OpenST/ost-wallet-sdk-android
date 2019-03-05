@@ -33,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
+import ost.com.sampleostsdkapplication.fragments.ResetPinFragment;
 import ost.com.sampleostsdkapplication.fragments.SetUpUserFragment;
 import ost.com.sampleostsdkapplication.fragments.UserDetailsFragment;
 import ost.com.sampleostsdkapplication.fragments.UserListFragment;
@@ -41,7 +42,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class UsersListActivity extends MappyBaseActivity implements
         SetUpUserFragment.OnSetUpUserFragmentListener,
-        PaperWalletFragment.OnPaperWalletFragmentListener {
+        PaperWalletFragment.OnPaperWalletFragmentListener,
+        ResetPinFragment.OnResetPinFragmentListener {
 
     private static final String TAG = "UsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
@@ -49,6 +51,7 @@ public class UsersListActivity extends MappyBaseActivity implements
     private UserDetailsFragment userDetailsFragment;
     private SetUpUserFragment userSetupFragment;
     private PaperWalletFragment paperWalletFragment;
+    private ResetPinFragment resetPinFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,31 +132,7 @@ public class UsersListActivity extends MappyBaseActivity implements
             });
         } else if (id == R.id.reset_pin) {
             Log.d(TAG, "Reset pin");
-            byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
-            getPinDialog(new DialogCallback() {
-                @Override
-                public void onSubmit(String pin) {
-                    UserPassphrase currentPassphrase = new UserPassphrase(userId, pin.getBytes(UTF_8), appSalt.clone());
-                    getPinDialog(new DialogCallback() {
-                        @Override
-                        public void onSubmit(String pin) {
-                            UserPassphrase newPassphrase = new UserPassphrase(userId, pin.getBytes(UTF_8), appSalt);
-                            OstSdk.resetRecoveryPassphrase(userId, currentPassphrase, newPassphrase, new WorkFlowHelper(getApplicationContext()) {});
-                        }
-
-                        @Override
-                        public void onCancel() {
-
-                        }
-                    },"Enter new pin");
-
-                }
-
-                @Override
-                public void onCancel() {
-                    // Dialog cancelled;
-                }
-            }, "Enter your current pin.");
+            loadResetPinFragment(logInUser.getTokenId(), userId);
         } else if (id == R.id.device_recovery) {
             Log.d(TAG, "Device Recovery");
             String currentPin = "123456";
@@ -193,14 +172,14 @@ public class UsersListActivity extends MappyBaseActivity implements
         transaction.commit();
     }
 
-//    private void showQRFragment(Bitmap qrImage) {
-//        Context context = UsersListActivity.this;
-//        FragmentManager fragmentManager = ((UsersListActivity) context).getSupportFragmentManager();
-//        FragmentTransaction transaction = fragmentManager.beginTransaction();
-//        android.support.v4.app.Fragment fragment = new QRFragment();
-//        ((QRFragment) fragment).setQRImage(qrImage);
-//        transaction.add(R.id.user_recycler_view, fragment).commit();
-//    }
+    private void loadResetPinFragment(String tokenId, String userId) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        resetPinFragment = ResetPinFragment.newInstance(tokenId, userId);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, resetPinFragment, "reset_pin");
+        transaction.addToBackStack("users_list");
+        transaction.commit();
+    }
 
     private void getPinDialog(final DialogCallback callback, String message) {
         LayoutInflater li = LayoutInflater.from(UsersListActivity.this);
@@ -317,7 +296,20 @@ public class UsersListActivity extends MappyBaseActivity implements
 
         if(userSetupFragment != null){
             OstSdk.activateUser(new UserPassphrase(userId,pin,passphrasePrefix) , expiresAfterInSecs, spendingLimit,
-                    userSetupFragment.registerWorkflowCallbacks(logInUser));
+                    userSetupFragment.registerWorkflowCallbacks());
+        }
+    }
+
+    @Override
+    public void onResetPinSubmit(String oldPin, String newPin){
+        Log.d(TAG,"Start Reset pin process");
+        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+        byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
+        UserPassphrase currentPassphrase = new UserPassphrase(logInUser.getOstUserId(), oldPin.getBytes(UTF_8), appSalt.clone());
+        UserPassphrase newPassphrase = new UserPassphrase(logInUser.getOstUserId(), newPin.getBytes(UTF_8), appSalt.clone());
+        if(resetPinFragment != null){
+            OstSdk.resetRecoveryPassphrase(logInUser.getOstUserId(), currentPassphrase, newPassphrase,
+                    resetPinFragment.registerWorkflowCallbacks());
         }
     }
 
@@ -326,7 +318,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         Log.d(TAG,"Ask for pin");
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         if(paperWalletFragment != null){
-            OstSdk.getPaperWallet(logInUser.getOstUserId(), paperWalletFragment.registerWorkflowCallbacks(logInUser));
+            OstSdk.getPaperWallet(logInUser.getOstUserId(), paperWalletFragment.registerWorkflowCallbacks());
         }
     }
 
