@@ -123,8 +123,12 @@ public class OstErrors {
 
             case RECOVERY_KEY_GENERATION_FAILED: return "Failed to generate Recovery key";
 
-            case POST_RECOVERY_API_FAILED:
-                return "Post recovery api failed";
+            case POST_RESET_RECOVERY_API_FAILED:
+                return "Reset Recovery api failed";
+
+            case POST_RECOVER_DEVICE_API_FAILED: return "Recover Device API failed";
+
+            case POST_ABORT_RECOVER_DEVICE_API_FAILED: return "Abort Recover Device API failed";
 
             case UNCAUGHT_EXCEPTION_HANDELED: return "Uncaught exception handeled";
 
@@ -219,7 +223,9 @@ public class OstErrors {
 
         MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED,
         RECOVERY_KEY_GENERATION_FAILED,
-        POST_RECOVERY_API_FAILED,
+        POST_RESET_RECOVERY_API_FAILED,
+        POST_RECOVER_DEVICE_API_FAILED,
+        POST_ABORT_RECOVER_DEVICE_API_FAILED,
 
         //Key-Managers
         INSUFFICIENT_DATA,

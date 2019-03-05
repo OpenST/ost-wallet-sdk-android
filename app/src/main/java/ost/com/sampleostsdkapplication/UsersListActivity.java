@@ -157,9 +157,10 @@ public class UsersListActivity extends MappyBaseActivity implements
         } else if (id == R.id.device_recovery) {
             Log.d(TAG, "Device Recovery");
             String currentPin = "123456";
-            String appSalt = logInUser.getPassphrasePrefix();
-            String address = "0x30fa423c14625bb0bac6852d7b68f9d326ac1242";
-            OstSdk.initiateRecoverDevice(userId, appSalt, currentPin, address, new WorkFlowHelper(getApplicationContext()) {
+            byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
+            String address = "0x1c5a4aa050fd1dc3b5450b736ce8168814339fac";
+            UserPassphrase passphrase = new UserPassphrase(userId, currentPin.getBytes(UTF_8), appSalt);
+            OstSdk.initiateRecoverDevice(userId, passphrase, address, new WorkFlowHelper(getApplicationContext()) {
             });
         }
         return super.onOptionsItemSelected(item);

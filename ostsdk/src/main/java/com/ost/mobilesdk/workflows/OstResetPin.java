@@ -101,7 +101,7 @@ public class OstResetPin extends OstBaseWorkFlow {
                 }
 
                 if (!isValidResponse(postRecoveryAddresssResponse)) {
-                    return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RECOVERY_API_FAILED);
+                    return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RESET_RECOVERY_API_FAILED);
                 }
 
                 JSONObject jsonData = postRecoveryAddresssResponse.optJSONObject(OstConstants.RESPONSE_DATA);
@@ -110,7 +110,7 @@ public class OstResetPin extends OstBaseWorkFlow {
                 try {
                     ostRecoveryOwner = OstRecoveryOwner.parse(resultTypeObject);
                 } catch (JSONException e) {
-                    return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RECOVERY_API_FAILED);
+                    return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RESET_RECOVERY_API_FAILED);
                 }
 
                 postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));

@@ -182,6 +182,11 @@ abstract class OstBaseWorkFlow {
         return new AsyncStatus(false);
     }
 
+    void postRequestAcknowledge(OstContextEntity ostContextEntity) {
+        OstWorkflowContext workflowContext = new OstWorkflowContext(getWorkflowType());
+        postRequestAcknowledge(workflowContext, ostContextEntity);
+    }
+
     void postRequestAcknowledge(OstWorkflowContext workflowContext, OstContextEntity ostContextEntity) {
         Log.i(TAG, "Request Acknowledge");
         mHandler.post(new Runnable() {
