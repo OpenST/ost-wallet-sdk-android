@@ -218,14 +218,16 @@ class InternalKeyManager {
             //Store encrypted mnemonics
             String mnemonicsMetaId = createMnemonicsMetaId(deviceAddress);
             OstSecureKey mnemonicsStorageBytes = new OstSecureKey(mnemonicsMetaId, encryptedMnemonics);
-            Future<AsyncStatus> future1 = metaRepository.insertSecureKey(mnemonicsStorageBytes);
+            Future<AsyncStatus> futureStoreMnemonics = metaRepository.insertSecureKey(mnemonicsStorageBytes);
 
             //Store encrypted Device key.
             String deviceAddressMetaId = createEthKeyMetaId(deviceAddress);
-            Future<AsyncStatus> future2 = metaRepository.insertSecureKey(new OstSecureKey(deviceAddressMetaId, encryptedKey));
+            Future<AsyncStatus> futureStoreDeviceAddress = metaRepository.insertSecureKey(new OstSecureKey(deviceAddressMetaId, encryptedKey));
 
-            // @Dev: Shouldn't we wait here for future1 & future2 ?
-            // We are not clearing the encryptedKey & encryptedMnemonics - for now.
+            futureStoreMnemonics.get(10, TimeUnit.SECONDS);
+            futureStoreDeviceAddress.get(10, TimeUnit.SECONDS);
+
+            // @Dev: We are not clearing the encryptedKey & encryptedMnemonics - for now.
             // Although: These are less of a worry as they are encrypted anyway.
 
             // Update meta.
