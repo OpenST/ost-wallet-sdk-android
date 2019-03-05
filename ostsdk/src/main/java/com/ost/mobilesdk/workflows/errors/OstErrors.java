@@ -157,6 +157,12 @@ public class OstErrors {
             case EIP1077_FAILED:
                 return "EIP1077 failed";
 
+            case UNKNOWN_RULE_NAME:
+                return "Unknown rule name";
+
+            case PRICE_POINTS_API_FAILED:
+                return "Price points api failed";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -210,6 +216,8 @@ public class OstErrors {
         INVALID_MNEMONICS,
         INVALID_QR_TRANSACTION_DATA,
         EIP1077_FAILED,
+        PRICE_POINTS_API_FAILED,
+        UNKNOWN_RULE_NAME,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,

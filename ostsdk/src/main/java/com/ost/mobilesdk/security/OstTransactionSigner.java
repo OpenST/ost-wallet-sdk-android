@@ -6,9 +6,11 @@ import com.ost.mobilesdk.models.entities.OstRule;
 import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.structs.SignedTransactionStruct;
 import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.utils.EIP1077;
+import com.ost.mobilesdk.utils.PricerRule;
 import com.ost.mobilesdk.utils.TokenHolder;
 import com.ost.mobilesdk.utils.TokenRules;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -16,6 +18,7 @@ import com.ost.mobilesdk.workflows.errors.OstErrors;
 
 import org.json.JSONObject;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import static com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
@@ -24,6 +27,8 @@ import static com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 public class OstTransactionSigner {
     private static final String TAG = "OstTransactionSigner";
     private static final String DIRECT_TRANSFER = "Direct Transfer";
+    private static final String PRICER = "Pricer";
+    private static final String COUNTRY_CODE_USD = "USD";
     private final String mUserId;
     private final String mTokenId;
 
@@ -35,10 +40,57 @@ public class OstTransactionSigner {
     public SignedTransactionStruct getSignedTransaction(String ruleName, List<String> tokenHolderAddresses, List<String> amounts) {
         OstUser user = OstUser.getById(mUserId);
 
-        Log.i(TAG, "Building call data");
-        String callData = createCallData(ruleName, tokenHolderAddresses, amounts);
+        tokenHolderAddresses = new CommonUtils().toCheckSumAddresses(tokenHolderAddresses);
 
-        String rawCallData = createRawCallData(ruleName, tokenHolderAddresses, amounts);
+        String callData = null;
+        String rawCallData = null;
+
+        switch (ruleName) {
+            case DIRECT_TRANSFER:
+                Log.i(TAG, "Building call data");
+                callData = new TokenRules().getTransactionExecutableData(tokenHolderAddresses, amounts);
+                rawCallData = new TokenRules().getTransactionRawCallData(tokenHolderAddresses, amounts);
+                break;
+            case PRICER:
+                Log.i(TAG, "Fetch price points");
+                double pricePointUSDtoOST;
+                OstApiClient ostApiClient = new OstApiClient(mUserId);
+                try {
+                    CommonUtils commonUtils = new CommonUtils();
+                    JSONObject jsonObject = ostApiClient.getPricePoints();
+                    if (!commonUtils.isValidResponse(jsonObject)) {
+                        OstError ostError = new OstError("km_ts_st_5",
+                                OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
+                        throw ostError;
+                    }
+                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(jsonObject, "OST");
+                    if (null == pricePointObject) {
+                        OstError ostError = new OstError("km_ts_st_6",
+                                OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
+                        throw ostError;
+                    }
+                    pricePointUSDtoOST = pricePointObject.getDouble(COUNTRY_CODE_USD);
+
+                } catch (Exception e) {
+                    OstError ostError = new OstError("km_ts_st_7",
+                            OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
+                    throw ostError;
+                }
+                Log.i(TAG, "Building call data");
+
+                BigInteger weiPricePoint = convertPricePointFromEthToWei(pricePointUSDtoOST);
+
+                callData = new PricerRule().getPriceTxnExecutableData(user.getTokenHolderAddress(),
+                        tokenHolderAddresses, amounts, COUNTRY_CODE_USD, weiPricePoint);
+                rawCallData = new PricerRule().getPricerTransactionRawCallData(user.getTokenHolderAddress(),
+                        tokenHolderAddresses, amounts, COUNTRY_CODE_USD, weiPricePoint);
+                break;
+            default:
+                OstError ostError = new OstError("km_ts_st_8",
+                        OstErrors.ErrorCode.UNKNOWN_RULE_NAME);
+                throw ostError;
+
+        }
 
         String ruleAddress = getRuleAddressFor(ruleName);
         if (null == ruleAddress) {
@@ -74,12 +126,15 @@ public class OstTransactionSigner {
                 callData, signature);
     }
 
-    private String createCallData(String ruleName, List<String> tokenHolderAddresses, List<String> amounts) {
-        if (ruleName.equalsIgnoreCase(DIRECT_TRANSFER)) {
-            tokenHolderAddresses = new CommonUtils().toCheckSumAddresses(tokenHolderAddresses);
-            return new TokenRules().getTransactionExecutableData(tokenHolderAddresses, amounts);
-        }
-        return null;
+    private BigInteger convertPricePointFromEthToWei(double pricePointUSDtoOST) {
+        int pricePointDoubleLength = String.valueOf(pricePointUSDtoOST).length();
+        int pricePointInteger = (int) (pricePointUSDtoOST * Math.pow(10, pricePointDoubleLength));
+        String pricePointString = String.valueOf(pricePointInteger);
+
+        BigInteger exponentToMakeWei = new BigInteger("10").pow(18 - pricePointDoubleLength);
+        BigInteger interimBigInteger = new BigInteger(pricePointString).multiply(exponentToMakeWei);
+
+        return interimBigInteger;
     }
 
     private String getRuleAddressFor(String directTransfer) {

@@ -190,4 +190,12 @@ public class OstApiClient {
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/devices/abort-recovery", mUserId), requestMap);
     }
+
+    public JSONObject getPricePoints() throws IOException {
+        String tokenId = mOstUser.getTokenId();
+        OstToken ostToken = OstToken.getById(tokenId);
+        String chainId = ostToken.getChainId();
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get(String.format("/chains/%s/price-points", chainId), requestMap);
+    }
 }

@@ -28,7 +28,7 @@
     <string name="show_paper_wallet">Show paper wallet</string>
     <string name="add_device_words">Add Device Words</string>
     <string name="execute_txn">Execute Transaction</string>
-    <string name="qr_execute_txn">QR exectute transaction</string>
+    <string name="pay_execute_txn">Pay transaction</string>
     <string name="mappy_sign_text">Sign in to continue</string>
 
     <string name="shr_app_name">OstDemoApp</string>

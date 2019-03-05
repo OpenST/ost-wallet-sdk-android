@@ -22,8 +22,6 @@ import android.widget.Toast;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.UserPassphrase;
-import com.ost.mobilesdk.utils.CommonUtils;
-import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 
@@ -122,9 +120,17 @@ public class UsersListActivity extends MappyBaseActivity implements
             Log.d(TAG, "Execute Transaction Clicked");
             String tokenHolderAddress = "0x30fa423c14625bb0bac6852d7b68f9d326ac1242";
             String amount = "5";
-            String transactionType = "Direct Transfer";
+            String ruleName = "Direct Transfer";
             String tokenId = logInUser.getTokenId();
-            OstSdk.executeTransaction(userId, tokenId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), transactionType, new WorkFlowHelper(getApplicationContext()) {
+            OstSdk.executeTransaction(userId, tokenId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper(getApplicationContext()) {
+            });
+        } else if (id == R.id.pay_txn) {
+            Log.d(TAG, "Execute Pay Transaction Clicked");
+            String tokenHolderAddress = "0x3530b7d78132ff484f4a1fe7b6d7a1dd0c94fd2c";
+            String amount = "5";
+            String ruleName = "Pricer";
+            String tokenId = logInUser.getTokenId();
+            OstSdk.executeTransaction(userId, tokenId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper(getApplicationContext()) {
             });
         } else if (id == R.id.reset_pin) {
             Log.d(TAG, "Reset pin");
