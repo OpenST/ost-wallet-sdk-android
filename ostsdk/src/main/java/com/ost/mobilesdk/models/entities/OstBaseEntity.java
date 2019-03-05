@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.models.OstBaseModel;
@@ -57,9 +58,13 @@ public abstract class OstBaseEntity {
     }
 
     public static OstBaseEntity insertOrUpdate(JSONObject jsonObject, OstBaseModel ostBaseModel, String identifier, EntityFactory entityFactory) throws JSONException {
-        OstBaseEntity dbEntity = ostBaseModel.getEntityById(identifier);
+        String id = jsonObject.optString(identifier);
+        if (TextUtils.isEmpty(id)) {
+            throw new JSONException("Identifier value is null");
+        }
+        OstBaseEntity dbEntity = ostBaseModel.getEntityById(id);
         if (null != dbEntity) {
-            if (dbEntity.getUpdatedTimestamp() != OstBaseEntity.getUpdatedTimestamp(jsonObject)) {
+            if (dbEntity.getUpdatedTimestamp() == OstBaseEntity.getUpdatedTimestamp(jsonObject)) {
                 return dbEntity;
             }
             dbEntity.processJson(jsonObject);
