@@ -32,6 +32,7 @@ import org.json.JSONException;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+import ost.com.sampleostsdkapplication.fragments.CreateSessionFragment;
 import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
 import ost.com.sampleostsdkapplication.fragments.ResetPinFragment;
 import ost.com.sampleostsdkapplication.fragments.SetUpUserFragment;
@@ -43,7 +44,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class UsersListActivity extends MappyBaseActivity implements
         SetUpUserFragment.OnSetUpUserFragmentListener,
         PaperWalletFragment.OnPaperWalletFragmentListener,
-        ResetPinFragment.OnResetPinFragmentListener {
+        ResetPinFragment.OnResetPinFragmentListener,
+        CreateSessionFragment.OnCreateSessionFragmentListener {
 
     private static final String TAG = "UsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
@@ -52,6 +54,7 @@ public class UsersListActivity extends MappyBaseActivity implements
     private SetUpUserFragment userSetupFragment;
     private PaperWalletFragment paperWalletFragment;
     private ResetPinFragment resetPinFragment;
+    private CreateSessionFragment createSessionFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,14 +111,7 @@ public class UsersListActivity extends MappyBaseActivity implements
             Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
             startActivityForResult(intent, QR_REQUEST_CODE);
         } else if (id == R.id.add_session) {
-            OstSdk.addSession(userId, "1000000000",
-                    System.currentTimeMillis() / 1000, new WorkFlowHelper(getApplicationContext()) {
-                        @Override
-                        public void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-                            super.getPin(ostWorkflowContext, userId, ostPinAcceptInterface);
-                            showPinDialog(ostPinAcceptInterface);
-                        }
-                    });
+            loadCreateSessionFragment(logInUser.getTokenId(), userId);
         } else if (id == R.id.show_paper_wallet) {
             Log.d(TAG, "Show Paper Wallet Clicked");
             loadPaperWalletFragment(logInUser.getTokenId(), userId, false);
@@ -177,6 +173,15 @@ public class UsersListActivity extends MappyBaseActivity implements
         resetPinFragment = ResetPinFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, resetPinFragment, "reset_pin");
+        transaction.addToBackStack("users_list");
+        transaction.commit();
+    }
+
+    private void loadCreateSessionFragment(String tokenId, String userId) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        createSessionFragment = CreateSessionFragment.newInstance(tokenId, userId);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, createSessionFragment, "create_session");
         transaction.addToBackStack("users_list");
         transaction.commit();
     }
@@ -310,6 +315,15 @@ public class UsersListActivity extends MappyBaseActivity implements
         if(resetPinFragment != null){
             OstSdk.resetRecoveryPassphrase(logInUser.getOstUserId(), currentPassphrase, newPassphrase,
                     resetPinFragment.registerWorkflowCallbacks());
+        }
+    }
+
+    @Override
+    public void onCreateSessionSubmit(String spendingLimit, long expiryAfterSecs){
+        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+        if(createSessionFragment != null){
+            OstSdk.addSession(logInUser.getOstUserId(), spendingLimit,
+                    expiryAfterSecs, createSessionFragment.registerWorkflowCallbacks());
         }
     }
 

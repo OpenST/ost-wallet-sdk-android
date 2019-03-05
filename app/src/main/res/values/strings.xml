@@ -23,7 +23,6 @@
     <string name="error_incorrect_name">Name might be wrong</string>
     <string name="add_device">Add Device</string>
     <string name="scan_qr">Scan QR Code</string>
-    <string name="create_session">Create Session</string>
     <string name="activate_user">Activate User</string>
     <string name="show_user_details">Show Details</string>
     <string name="show_paper_wallet">Show paper wallet</string>
@@ -66,6 +65,13 @@
     <string name="reset_pin">Reset Pin</string>
     <string name="enter_six_digit_pin">Please enter 6 Digit Pin.</string>
     <string name="new_old_pin_same">New Pin cannot be same as Old.</string>
+    <string name="spending_limit">Spending Limit: </string>
+    <string name="spending_limit_amount">Max spending limit for session </string>
+    <string name="session_expiration">Session Expiration: </string>
+    <string name="no_of_days_expiry">Enter number of days for expiry.</string>
+    <string name="valid_number_of_days">Please enter valid number of days, less than 365 days.</string>
+    <string name="create_session">Create Session</string>
+    <string name="valid_spending_limt">Please enter valid spending limit.</string>
 
     <!-- OstDemoApp backdrop menu labels -->
     <string name="shr_featured_label">Featured</string>
