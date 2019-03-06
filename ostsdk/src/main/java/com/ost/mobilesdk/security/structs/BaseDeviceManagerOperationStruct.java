@@ -23,6 +23,8 @@ public class BaseDeviceManagerOperationStruct extends SignedEIP712Struct {
     }
 
     private String callData;
+    private String rawCallData;
+
     public String getCallData() {
         return callData;
     }
@@ -30,5 +32,11 @@ public class BaseDeviceManagerOperationStruct extends SignedEIP712Struct {
         this.callData = callData;
     }
 
+    public void setRawCallData(String rawCallData) {
+        this.rawCallData = rawCallData;
+    }
 
+    public String getRawCallData() {
+        return rawCallData;
+    }
 }

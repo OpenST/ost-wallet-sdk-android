@@ -76,14 +76,10 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
             return postErrorInterrupt(ostError);
         }
 
-        String signature = signedData.getSignature();
-        String signerAddress = signedData.getSignerAddress();
         mAddedDeviceAddress = signedData.getDeviceToBeAdded();
 
-
-
         Log.i(TAG, "Api Call payload");
-        AsyncStatus apiCallStatus = makeAddDeviceCall(signature, signerAddress, deviceManagerAddress, deviceAddress);
+        AsyncStatus apiCallStatus = makeAddDeviceCall(signedData);
 
         if ( apiCallStatus.isSuccess() ) {
             //request acknowledge

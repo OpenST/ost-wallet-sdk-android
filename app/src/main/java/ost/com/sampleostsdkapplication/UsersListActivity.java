@@ -102,8 +102,8 @@ public class UsersListActivity extends MappyBaseActivity implements
             anotherIntent.putExtra("image", byteArray);
             getApplicationContext().startActivity(anotherIntent);
             //Need to be on click of button "start polling"
-            OstSdk.startPolling(userId, userId, OstSdk.USER, OstUser.CONST_STATUS.ACTIVATING,
-                    OstUser.CONST_STATUS.ACTIVATED, new WorkFlowHelper(getApplicationContext()));
+            OstSdk.startPolling(userId, userId, OstSdk.USER, OstUser.CONST_STATUS.ACTIVATED,
+                    OstUser.CONST_STATUS.CREATED, new WorkFlowHelper(getApplicationContext()));
             //startPollingInterface.startPolling();
         } else if (id == R.id.scan_qr) {
             Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
@@ -118,7 +118,7 @@ public class UsersListActivity extends MappyBaseActivity implements
             loadPaperWalletFragment(logInUser.getTokenId(), userId, true);
         } else if (id == R.id.transactions) {
             Log.d(TAG, "Execute Transaction Clicked");
-            String tokenHolderAddress = "0x30fa423c14625bb0bac6852d7b68f9d326ac1242";
+            String tokenHolderAddress = "0x3530b7d78132ff484f4a1fe7b6d7a1dd0c94fd2c";
             String amount = "5";
             String ruleName = "Direct Transfer";
             String tokenId = logInUser.getTokenId();

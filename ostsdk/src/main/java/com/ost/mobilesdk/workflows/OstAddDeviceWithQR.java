@@ -6,8 +6,8 @@ import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
-import com.ost.mobilesdk.models.entities.OstDeviceManager;
-import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.security.OstMultiSigSigner;
+import com.ost.mobilesdk.security.structs.SignedAddDeviceStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
@@ -89,20 +89,11 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow impleme
         }
 
         String deviceAddress = mDeviceAddressToBeAdded;
-        String deviceManagerAddress = OstUser.getById(mUserId).getDeviceManagerAddress();
-
-        String eip712Hash = getEIP712Hash(deviceAddress, deviceManagerAddress);
-        if (null == eip712Hash) {
-            Log.e(TAG, "EIP-712 error while parsing json object of sageTxn");
-            return postErrorInterrupt("wf_adwq_pr_8", ErrorCode.EIP712_FAILED);
-        }
-
-        Log.i(TAG, "Sign eip712Hash");
-        String signature = OstUser.getById(mUserId).sign(eip712Hash);
-        String signerAddress = OstUser.getById(mUserId).getCurrentDevice().getAddress();
+        OstMultiSigSigner ostMultiSigSigner = new OstMultiSigSigner(mUserId);
+        SignedAddDeviceStruct signedData = ostMultiSigSigner.addExternalDevice(deviceAddress);
 
         Log.i(TAG, "Api Call payload");
-        AsyncStatus apiCallStatus = makeAddDeviceCall(signature, signerAddress, deviceManagerAddress, deviceAddress);
+        AsyncStatus apiCallStatus = makeAddDeviceCall(signedData);
 
         if (!apiCallStatus.isSuccess()) {
             return postErrorInterrupt("wf_adwq_pr_4", ErrorCode.ADD_DEVICE_API_FAILED);
@@ -112,8 +103,6 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow impleme
         postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
                 new OstContextEntity(OstDevice.getById(mDeviceAddressToBeAdded), OstSdk.DEVICE));
 
-        //increment nonce
-        OstDeviceManager.getById(mOstUser.getDeviceManagerAddress()).incrementNonce();
 
         return pollForStatus();
     }

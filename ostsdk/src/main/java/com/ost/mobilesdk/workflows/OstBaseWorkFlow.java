@@ -23,6 +23,7 @@ import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.security.OstKeyManager;
+import com.ost.mobilesdk.security.structs.SignedAddDeviceStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.utils.EIP712;
@@ -504,7 +505,7 @@ abstract class OstBaseWorkFlow {
         LocalBroadcastManager.getInstance(OstSdk.getContext()).registerReceiver(updateReceiver,
                 new IntentFilter(OstPollingService.ENTITY_UPDATE_MESSAGE));
         try {
-            countDownLatch.await(Integer.MAX_VALUE, TimeUnit.SECONDS);
+            countDownLatch.await(OstConstants.POLLING_WAIT_TIME_IN_SECS, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Log.e(TAG, "Unexpected error while waiting for polling", e);
         }
@@ -559,20 +560,18 @@ abstract class OstBaseWorkFlow {
         return safeTxnEIP712Hash;
     }
 
-    AsyncStatus makeAddDeviceCall(String signature, String signerAddress, String deviceManagerAddress, String deviceAddress) {
-        String callData = new GnosisSafe().getAddOwnerWithThresholdExecutableData(deviceAddress);
-        int nonce = OstDeviceManager.getById(deviceManagerAddress).getNonce();
+    AsyncStatus makeAddDeviceCall(SignedAddDeviceStruct signedAddDeviceStruct) {
         Log.i(TAG, "Api Call payload");
         try {
-
+            String deviceManagerAddress = signedAddDeviceStruct.getDeviceManagerAddress();
             Map<String, Object> map = new OstPayloadBuilder()
                     .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
-                    .setRawCalldata(new GnosisSafe().getAddOwnerWithThresholdCallData(deviceAddress))
-                    .setCallData(callData)
+                    .setRawCalldata(signedAddDeviceStruct.getRawCallData())
+                    .setCallData(signedAddDeviceStruct.getCallData())
                     .setTo(deviceManagerAddress)
-                    .setSignatures(signature)
-                    .setSigners(Arrays.asList(signerAddress))
-                    .setNonce(String.valueOf(nonce))
+                    .setSignatures(signedAddDeviceStruct.getSignature())
+                    .setSigners(Arrays.asList(signedAddDeviceStruct.getSignerAddress()))
+                    .setNonce(String.valueOf(signedAddDeviceStruct.getNonce()))
                     .build();
             OstApiClient ostApiClient = new OstApiClient(mUserId);
             JSONObject jsonObject = ostApiClient.postAddDevice(map);

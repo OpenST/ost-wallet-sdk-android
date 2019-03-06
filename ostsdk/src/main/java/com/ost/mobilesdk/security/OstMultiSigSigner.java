@@ -141,6 +141,9 @@ public class OstMultiSigSigner {
         SignedAddDeviceStruct struct = new SignedAddDeviceStruct(deviceAddressToBeAdded);
         String callData = new GnosisSafe().getAddOwnerWithThresholdExecutableData(deviceAddressToBeAdded);
         struct.setCallData(callData);
+
+        String rawCallData = new GnosisSafe().getAddOwnerWithThresholdCallData(deviceAddressToBeAdded);
+        struct.setRawCallData(rawCallData);
         setCommonData(struct);
 
         // Generate message hash.

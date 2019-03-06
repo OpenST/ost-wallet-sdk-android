@@ -25,7 +25,7 @@ public interface OstConstants {
     String QR_DATA_DEFINITION = "dd";
     String QR_DATA_DEFINITION_VERSION = "ddv";
     String QR_DEVICE_ADDRESS = "da";
-    String DATA_DEFINITION_TRANSACTION = "TRANSACTION";
+    String DATA_DEFINITION_TRANSACTION = "TX";
     String DATA_DEFINITION_AUTHORIZE_DEVICE = "AUTHORIZE_DEVICE";
     String QR_RULE_NAME = "rn";
     String QR_TOKEN_HOLDER_ADDRESSES = "ads";
@@ -35,6 +35,7 @@ public interface OstConstants {
     int RECOVERY_PHRASE_PREFIX_MIN_LENGTH = 30;
     int RECOVERY_PHRASE_USER_INPUT_MIN_LENGTH = 6;
     int RECOVERY_PHRASE_SCRYPT_SALT_MIN_LENGTH = 1;
+    long POLLING_WAIT_TIME_IN_SECS = 60 * 2;
 
 
     //ToDo: Move this to OstWorkflows.java (Create one)

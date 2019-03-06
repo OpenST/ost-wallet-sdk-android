@@ -26,8 +26,8 @@ import static com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 
 public class OstTransactionSigner {
     private static final String TAG = "OstTransactionSigner";
-    private static final String DIRECT_TRANSFER = "Direct Transfer";
-    private static final String PRICER = "Pricer";
+    private static final String DIRECT_TRANSFER = "direct transfer";
+    private static final String PRICER = "pricer";
     private static final String COUNTRY_CODE_USD = "USD";
     private final String mUserId;
     private final String mTokenId;
@@ -44,6 +44,7 @@ public class OstTransactionSigner {
 
         String callData = null;
         String rawCallData = null;
+        ruleName = ruleName.toLowerCase();
 
         switch (ruleName) {
             case DIRECT_TRANSFER:
@@ -122,7 +123,7 @@ public class OstTransactionSigner {
             throw ostError;
         }
 
-        return new SignedTransactionStruct(activeSession, user.getTokenHolderAddress(), rawCallData,
+        return new SignedTransactionStruct(activeSession, ruleAddress, rawCallData,
                 callData, signature);
     }
 
