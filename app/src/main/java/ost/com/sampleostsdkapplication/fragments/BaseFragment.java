@@ -15,16 +15,11 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ost.mobilesdk.security.UserPassphrase;
-import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 
-import java.util.Arrays;
-
-import ost.com.sampleostsdkapplication.LogInUser;
 import ost.com.sampleostsdkapplication.R;
 import ost.com.sampleostsdkapplication.UsersListActivity;
 import ost.com.sampleostsdkapplication.WorkFlowHelper;

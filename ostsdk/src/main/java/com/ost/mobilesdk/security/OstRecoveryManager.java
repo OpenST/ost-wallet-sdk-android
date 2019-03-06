@@ -16,8 +16,6 @@ import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.web3j.crypto.Keys;
-import org.web3j.crypto.WalletUtils;
 
 import java.io.IOException;
 

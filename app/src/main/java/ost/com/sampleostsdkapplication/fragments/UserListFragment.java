@@ -1,6 +1,5 @@
 package ost.com.sampleostsdkapplication.fragments;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -9,8 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -110,10 +107,4 @@ public class UserListFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getActivity().getMenuInflater();
-//        inflater.inflate(R.menu.menu_users_list, menu);
-//        return true;
-//    }
 }
