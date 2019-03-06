@@ -198,4 +198,9 @@ public class OstApiClient {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/chains/%s/price-points", chainId), requestMap);
     }
+
+    public JSONObject getBalance() throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get(String.format("/users/%s/balance", mUserId), requestMap);
+    }
 }
