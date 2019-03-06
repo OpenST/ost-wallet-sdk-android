@@ -756,9 +756,10 @@ class InternalKeyManager {
                     //Note: We can't recreate providedUserPresenceInfoHash.
                     // As soon as recovery key is created,
                     // createRecoveryKey method has already wiped out all bytes[].
-
-                    // Lets store the providedUserPresenceInfoHash.
-                    storeUserPresenceInfoInDb(providedUserPresenceInfoHash, recoveryOwnerAddress);
+                    synchronized (InternalKeyManager.class) {
+                        // Lets store the providedUserPresenceInfoHash.
+                        storeUserPresenceInfoInDb(providedUserPresenceInfoHash, recoveryOwnerAddress);
+                    }
                 }
                 return true;
             } else {

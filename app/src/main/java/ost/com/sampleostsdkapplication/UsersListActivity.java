@@ -80,7 +80,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         String userId = logInUser.getOstUserId();
 
-        if (id == R.id.user_detail){
+        if (id == R.id.user_detail) {
             Log.d(TAG, "Show user details clicked");
             loadUserDetailsFragment(logInUser.getTokenId(), userId);
         } else if (id == R.id.activate_user) {
@@ -117,17 +117,12 @@ public class UsersListActivity extends MappyBaseActivity implements
             Log.d(TAG, "Add Device using mMnemonicsList Clicked");
             loadPaperWalletFragment(logInUser.getTokenId(), userId, true);
         } else if (id == R.id.transactions) {
-            Log.d(TAG, "Execute Transaction Clicked");
-            String tokenHolderAddress = "0x3530b7d78132ff484f4a1fe7b6d7a1dd0c94fd2c";
-            String amount = "5";
-            String ruleName = "Direct Transfer";
-            String tokenId = logInUser.getTokenId();
-            OstSdk.executeTransaction(userId, tokenId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper(getApplicationContext()) {
-            });
+            Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
+            startActivityForResult(intent, QR_REQUEST_CODE);
         } else if (id == R.id.pay_txn) {
             Log.d(TAG, "Execute Pay Transaction Clicked");
             String tokenHolderAddress = "0x3530b7d78132ff484f4a1fe7b6d7a1dd0c94fd2c";
-            String amount = "5";
+            String amount = "1";
             String ruleName = "Pricer";
             String tokenId = logInUser.getTokenId();
             OstSdk.executeTransaction(userId, tokenId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper(getApplicationContext()) {
@@ -292,92 +287,58 @@ public class UsersListActivity extends MappyBaseActivity implements
     }
 
     @Override
-    public void onBack(){
+    public void onBack() {
         super.onBackPressed();
     }
 
     @Override
-    public void onSetupUserSubmit(String pin){
-        Log.d(TAG,"Start user activation process");
+    public void onSetupUserSubmit(String pin) {
+        Log.d(TAG, "Start user activation process");
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         String userId = logInUser.getOstUserId();
         String passphrasePrefix = logInUser.getPassphrasePrefix();
         long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
         String spendingLimit = "1000000000000";
 
-        if(userSetupFragment != null){
-            OstSdk.activateUser(new UserPassphrase(userId,pin,passphrasePrefix) , expiresAfterInSecs, spendingLimit,
+        if (userSetupFragment != null) {
+            OstSdk.activateUser(new UserPassphrase(userId, pin, passphrasePrefix), expiresAfterInSecs, spendingLimit,
                     userSetupFragment.registerWorkflowCallbacks());
         }
     }
 
     @Override
-    public void onResetPinSubmit(String oldPin, String newPin){
-        Log.d(TAG,"Start Reset pin process");
+    public void onResetPinSubmit(String oldPin, String newPin) {
+        Log.d(TAG, "Start Reset pin process");
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
         UserPassphrase currentPassphrase = new UserPassphrase(logInUser.getOstUserId(), oldPin.getBytes(UTF_8), appSalt.clone());
         UserPassphrase newPassphrase = new UserPassphrase(logInUser.getOstUserId(), newPin.getBytes(UTF_8), appSalt.clone());
-        if(resetPinFragment != null){
+        if (resetPinFragment != null) {
             OstSdk.resetRecoveryPassphrase(logInUser.getOstUserId(), currentPassphrase, newPassphrase,
                     resetPinFragment.registerWorkflowCallbacks());
         }
     }
 
     @Override
-    public void onCreateSessionSubmit(String spendingLimit, long expiryAfterSecs){
+    public void onCreateSessionSubmit(String spendingLimit, long expiryAfterSecs) {
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-        if(createSessionFragment != null){
+        if (createSessionFragment != null) {
             OstSdk.addSession(logInUser.getOstUserId(), spendingLimit,
                     expiryAfterSecs, createSessionFragment.registerWorkflowCallbacks());
         }
     }
 
     @Override
-    public void onShowPaperWalletButton(){
-        Log.d(TAG,"Ask for pin");
+    public void onShowPaperWalletButton() {
+        Log.d(TAG, "Ask for pin");
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-        if(paperWalletFragment != null){
+        if (paperWalletFragment != null) {
             OstSdk.getPaperWallet(logInUser.getOstUserId(), paperWalletFragment.registerWorkflowCallbacks());
         }
     }
 
     @Override
-    public void authorizeDeviceUsingMnemonics(String mnemonics, String userId){
+    public void authorizeDeviceUsingMnemonics(String mnemonics, String userId) {
         OstSdk.addDeviceUsingMnemonics(userId, mnemonics.getBytes(UTF_8), new WorkFlowHelper(getApplicationContext()));
     }
-
-//    public static class QRFragment extends android.support.v4.app.Fragment {
-//
-//        private ImageView mImageView;
-//        private Button mBtnDone;
-//        private Bitmap mBitMap;
-//        private Activity mActivity;
-//
-//        @Override
-//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                                 Bundle savedInstanceState) {
-//            View v = inflater.inflate(R.layout.activity_qr_view, container, false);
-//            mImageView = v.findViewById(R.id.imageDisplay);
-//            mBtnDone = v.findViewById(R.id.btnDone);
-//            mActivity = getActivity();
-//            mBtnDone.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    //OnClick start polling
-//                }
-//            });
-//            return v;
-//        }
-//
-//        void setQRImage(Bitmap bitmap) {
-//            mBitMap = bitmap;
-//        }
-//
-//        @Override
-//        public void onResume() {
-//            super.onResume();
-//            mImageView.setImageBitmap(mBitMap);
-//        }
-//    }
 }

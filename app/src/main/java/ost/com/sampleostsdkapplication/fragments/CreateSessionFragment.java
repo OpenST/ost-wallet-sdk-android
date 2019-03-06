@@ -3,6 +3,7 @@ package ost.com.sampleostsdkapplication.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,10 +44,9 @@ public class CreateSessionFragment extends BaseFragment {
 
     /**
      * Perform operation on clicking next
-     * @param view
      */
     public void onNextClick(){
-        if (mSpendingLimitEditBox.getText() == null || Integer.parseInt(mSpendingLimitEditBox.getText().toString()) < 1){
+        if (TextUtils.isEmpty(mSpendingLimit.toString()) && mSpendingLimit.toString().length() < 1) {
             mSpendingLimit.setError(getResources().getString(R.string.valid_spending_limt));
             return;
         }
@@ -58,7 +58,7 @@ public class CreateSessionFragment extends BaseFragment {
         }
         showLoader();
         OnCreateSessionFragmentListener mListener = (OnCreateSessionFragmentListener) getFragmentListener();
-        String spendingLimit = mSpendingLimitEditBox.getText().toString() + "000000000000000000";
+        String spendingLimit = mSpendingLimitEditBox.getText().toString();
         long expiryAfterSecs = (Integer.parseInt(mSessionExpirationEditBox.getText().toString()) * 86400);
         mListener.onCreateSessionSubmit(spendingLimit, expiryAfterSecs);
     }

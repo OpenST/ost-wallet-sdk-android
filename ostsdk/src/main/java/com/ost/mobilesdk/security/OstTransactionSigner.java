@@ -18,6 +18,7 @@ import com.ost.mobilesdk.workflows.errors.OstErrors;
 
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -128,14 +129,12 @@ public class OstTransactionSigner {
     }
 
     private BigInteger convertPricePointFromEthToWei(double pricePointUSDtoOST) {
-        int pricePointDoubleLength = String.valueOf(pricePointUSDtoOST).length();
-        int pricePointInteger = (int) (pricePointUSDtoOST * Math.pow(10, pricePointDoubleLength));
-        String pricePointString = String.valueOf(pricePointInteger);
+        BigDecimal bigDecimal = new BigDecimal(pricePointUSDtoOST);
+        BigDecimal toWeiMultiplier = new BigDecimal(10).pow(18);
+        BigDecimal weiDecimal = bigDecimal.multiply(toWeiMultiplier);
+        BigInteger weiInteger = weiDecimal.toBigInteger();
 
-        BigInteger exponentToMakeWei = new BigInteger("10").pow(18 - pricePointDoubleLength);
-        BigInteger interimBigInteger = new BigInteger(pricePointString).multiply(exponentToMakeWei);
-
-        return interimBigInteger;
+        return weiInteger;
     }
 
     private String getRuleAddressFor(String directTransfer) {

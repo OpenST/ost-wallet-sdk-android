@@ -45,6 +45,7 @@
     <item
         android:id="@+id/pay_txn"
         android:orderInCategory="100"
+        android:visible="false"
         android:title="@string/pay_execute_txn"
         app:showAsAction="never" />
     <item
@@ -61,5 +62,6 @@
         android:id="@+id/device_abort_recovery"
         android:orderInCategory="100"
         android:title="@string/device_abort_recovery"
+        android:visible="false"
         app:showAsAction="never" />
 </menu>
