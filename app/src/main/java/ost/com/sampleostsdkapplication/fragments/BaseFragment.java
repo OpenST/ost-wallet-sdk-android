@@ -128,7 +128,6 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     /**
      * Method to register workflow callbacks on views.
      *
-     * @param logInUser
      * @return
      */
     public WorkFlowHelper registerWorkflowCallbacks(){

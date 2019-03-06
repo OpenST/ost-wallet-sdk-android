@@ -39,7 +39,6 @@ public class SetUpUserFragment extends BaseFragment {
 
     /**
      * Perform operation on clicking next
-     * @param view
      */
     public void onNextClick(){
         if (mPinEditBox.getText() == null || mPinEditBox.getText().length() != 6){

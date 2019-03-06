@@ -32,6 +32,7 @@ import java.util.Arrays;
 
 import ost.com.sampleostsdkapplication.fragments.CreateSessionFragment;
 import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
+import ost.com.sampleostsdkapplication.fragments.QRPerformFragment;
 import ost.com.sampleostsdkapplication.fragments.ResetPinFragment;
 import ost.com.sampleostsdkapplication.fragments.SetUpUserFragment;
 import ost.com.sampleostsdkapplication.fragments.UserDetailsFragment;
@@ -43,7 +44,8 @@ public class UsersListActivity extends MappyBaseActivity implements
         SetUpUserFragment.OnSetUpUserFragmentListener,
         PaperWalletFragment.OnPaperWalletFragmentListener,
         ResetPinFragment.OnResetPinFragmentListener,
-        CreateSessionFragment.OnCreateSessionFragmentListener {
+        CreateSessionFragment.OnCreateSessionFragmentListener,
+        QRPerformFragment.OnQRPerformListener {
 
     private static final String TAG = "UsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
@@ -53,6 +55,7 @@ public class UsersListActivity extends MappyBaseActivity implements
     private PaperWalletFragment paperWalletFragment;
     private ResetPinFragment resetPinFragment;
     private CreateSessionFragment createSessionFragment;
+    private QRPerformFragment qrPerformFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,7 @@ public class UsersListActivity extends MappyBaseActivity implements
                     OstUser.CONST_STATUS.CREATED, new WorkFlowHelper(getApplicationContext()));
             //startPollingInterface.startPolling();
         } else if (id == R.id.scan_qr) {
+            loadQRPerformFragment(logInUser.getTokenId(), userId);
             Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
             startActivityForResult(intent, QR_REQUEST_CODE);
         } else if (id == R.id.add_session) {
@@ -117,6 +121,7 @@ public class UsersListActivity extends MappyBaseActivity implements
             Log.d(TAG, "Add Device using mMnemonicsList Clicked");
             loadPaperWalletFragment(logInUser.getTokenId(), userId, true);
         } else if (id == R.id.transactions) {
+            loadQRPerformFragment(logInUser.getTokenId(), userId);
             Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
             startActivityForResult(intent, QR_REQUEST_CODE);
         } else if (id == R.id.pay_txn) {
@@ -183,6 +188,15 @@ public class UsersListActivity extends MappyBaseActivity implements
         createSessionFragment = CreateSessionFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, createSessionFragment, "create_session");
+        transaction.addToBackStack("users_list");
+        transaction.commit();
+    }
+
+    private void loadQRPerformFragment(String tokenId, String userId) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        qrPerformFragment = QRPerformFragment.newInstance(tokenId, userId);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, qrPerformFragment, "qr_perform");
         transaction.addToBackStack("users_list");
         transaction.commit();
     }
@@ -273,11 +287,16 @@ public class UsersListActivity extends MappyBaseActivity implements
             String userId = ((App) getApplicationContext()).getLoggedUser().getOstUserId();
             String returnedResult = data.getData().toString();
             try {
-                OstSdk.ostPerform(userId, returnedResult, new WorkFlowHelper(getApplicationContext()));
+                OstSdk.ostPerform(userId, returnedResult, qrPerformFragment.registerWorkflowCallbacks());
             } catch (JSONException e) {
                 Log.e(TAG, "JSONException while parsing");
             }
         }
+    }
+
+    @Override
+    public void onDataVerified() {
+
     }
 
     public interface DialogCallback {
