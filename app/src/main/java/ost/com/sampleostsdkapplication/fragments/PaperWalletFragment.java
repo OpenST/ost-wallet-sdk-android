@@ -44,7 +44,6 @@ public class PaperWalletFragment extends BaseFragment {
 
     /**
      * Perform operation on clicking next
-     * @param view
      */
     public void onNextClick(){
         if(inAuthorizeDeviceMode){
