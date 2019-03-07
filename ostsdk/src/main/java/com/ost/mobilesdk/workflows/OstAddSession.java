@@ -123,12 +123,9 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         OstDeviceManager.getById(ostUser.getDeviceManagerAddress()).incrementNonce();
 
         Log.i(TAG, "Starting Session polling service");
-
-        OstSessionPollingService.startPolling(mUserId, sessionAddress, OstSession.CONST_STATUS.AUTHORISED,
-                OstSession.CONST_STATUS.CREATED);
-
         Log.i(TAG, "Waiting for update");
-        Bundle bundle = waitForUpdate(OstSdk.SESSION, sessionAddress);
+        Bundle bundle = OstSessionPollingService.startPolling(mUserId, sessionAddress, OstSession.CONST_STATUS.AUTHORISED,
+                OstSession.CONST_STATUS.CREATED);
         if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             Log.d(TAG, String.format("Polling time out for session Id: %s", sessionAddress));
             return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.POLLING_TIMEOUT);

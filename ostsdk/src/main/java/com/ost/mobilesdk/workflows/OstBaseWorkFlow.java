@@ -490,7 +490,7 @@ abstract class OstBaseWorkFlow {
                 boolean isValidResponse = intent.getBooleanExtra(OstPollingService.EXTRA_IS_VALID_RESPONSE, true);
                 boolean isPollingTimeOut = intent.getBooleanExtra(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
                 if (mUserId.equals(userId) && pEntityType.equalsIgnoreCase(entityType) && pEntityId.equals(entityId)) {
-                    Log.d(TAG, String.format("Got update message from polling service for device id:%s", entityId));
+                    Log.d(TAG, String.format("Got update message from polling service for %s id:%s", entityType, entityId));
                     if (isPollingTimeOut) {
                         Log.w(TAG, "Polling timeout reached");
                     }

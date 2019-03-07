@@ -117,11 +117,10 @@ public class OstResetPin extends OstBaseWorkFlow {
 
             case POLLING:
 
-                OstRecoveryPollingService.startPolling(mUserId, mNewRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZED,
-                        OstRecoveryOwner.CONST_STATUS.AUTHORIZATION_FAILED);
-                
                 Log.i(TAG, "Waiting for update");
-                Bundle bundle = waitForUpdate(OstSdk.RECOVERY_OWNER, newRecoveryOwnerAddress);
+                Bundle bundle = OstRecoveryPollingService.startPolling(mUserId, mNewRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZED,
+                        OstRecoveryOwner.CONST_STATUS.AUTHORIZATION_FAILED);
+
                 if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
                     Log.d(TAG, String.format("Polling time out for recovery owner Id: %s", newRecoveryOwnerAddress));
                     return postErrorInterrupt("wf_adwq_pr_5", OstErrors.ErrorCode.POLLING_TIMEOUT);

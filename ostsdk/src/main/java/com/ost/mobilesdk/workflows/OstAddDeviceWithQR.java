@@ -108,11 +108,9 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow impleme
     }
 
     private AsyncStatus pollForStatus() {
-        OstDevicePollingService.startPolling(mUserId, mDeviceAddressToBeAdded, OstDevice.CONST_STATUS.AUTHORIZED,
-                OstDevice.CONST_STATUS.CREATED);
-
         Log.i(TAG, "Waiting for update");
-        Bundle bundle = waitForUpdate(OstSdk.DEVICE, mDeviceAddressToBeAdded);
+        Bundle bundle = OstDevicePollingService.startPolling(mUserId, mDeviceAddressToBeAdded, OstDevice.CONST_STATUS.AUTHORIZED,
+                OstDevice.CONST_STATUS.CREATED);
         if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             Log.d(TAG, String.format("Polling time out for device Id: %s", mDeviceAddressToBeAdded));
             return postErrorInterrupt("wf_adwq_pr_5", ErrorCode.POLLING_TIMEOUT);

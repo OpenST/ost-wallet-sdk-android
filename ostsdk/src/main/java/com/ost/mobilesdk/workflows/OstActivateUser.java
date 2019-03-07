@@ -103,11 +103,9 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
         //Activate the user if otherwise.
         Log.i(TAG, "Starting user polling service");
-        OstUserPollingService.startPolling(mUserId, mUserId, OstUser.CONST_STATUS.ACTIVATED,
-                OstUser.CONST_STATUS.CREATED);
-
         Log.i(TAG, "Waiting for update");
-        Bundle bundle = waitForUpdate(OstSdk.USER, mUserId);
+        Bundle bundle = OstUserPollingService.startPolling(mUserId, mUserId, OstUser.CONST_STATUS.ACTIVATED,
+                OstUser.CONST_STATUS.CREATED);
         if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
             return postErrorInterrupt("wf_au_pr_5", ErrorCode.ACTIVATE_USER_API_POLLING_FAILED);

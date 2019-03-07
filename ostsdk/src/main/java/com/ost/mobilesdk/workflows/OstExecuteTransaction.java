@@ -70,10 +70,8 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
                 new OstContextEntity(OstTransaction.getById(entityId), OstSdk.TRANSACTION));
 
         Log.i(TAG, "start polling");
-        OstTransactionPollingService.startPolling(mUserId, entityId,
+        Bundle bundle = OstTransactionPollingService.startPolling(mUserId, entityId,
                 OstTransaction.CONST_STATUS.SUCCESS, OstTransaction.CONST_STATUS.FAILED);
-
-        Bundle bundle = waitForUpdate(OstSdk.TRANSACTION, entityId);
         if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             return postErrorInterrupt("wf_et_pr_5", OstErrors.ErrorCode.POLLING_TIMEOUT);
         }

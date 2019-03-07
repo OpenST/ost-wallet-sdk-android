@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.models.entities.OstDevice;
 
 public class QR_view extends AppCompatActivity {
 
@@ -29,8 +29,9 @@ public class QR_view extends AppCompatActivity {
                 LogInUser logInUser = ((App) OstSdk.getContext()).getLoggedUser();
                 String userId = logInUser.getOstUserId();
 
-                OstSdk.startPolling(userId, userId, OstSdk.USER, OstUser.CONST_STATUS.ACTIVATED,
-                        OstUser.CONST_STATUS.CREATED, new WorkFlowHelper(getApplicationContext()));
+                OstSdk.startPolling(userId, OstSdk.getUser(userId).getCurrentDevice().getAddress(),
+                        OstSdk.DEVICE, OstDevice.CONST_STATUS.AUTHORIZED,
+                        OstDevice.CONST_STATUS.REGISTERED, new WorkFlowHelper(getApplicationContext()));
                 finish();
             }
         });

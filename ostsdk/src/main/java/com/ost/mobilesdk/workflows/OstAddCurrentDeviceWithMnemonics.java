@@ -96,11 +96,9 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
     }
 
     AsyncStatus startPolling() {
-        OstDevicePollingService.startPolling(mUserId, mAddedDeviceAddress, OstDevice.CONST_STATUS.AUTHORIZED,
-                OstDevice.CONST_STATUS.REGISTERED);
-
         Log.i(TAG, "Waiting for update");
-        Bundle bundle = waitForUpdate(OstSdk.DEVICE, mAddedDeviceAddress);
+        Bundle bundle = OstDevicePollingService.startPolling(mUserId, mAddedDeviceAddress, OstDevice.CONST_STATUS.AUTHORIZED,
+                OstDevice.CONST_STATUS.REGISTERED);
 
         boolean hasTimedout = bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
         if ( hasTimedout ) {

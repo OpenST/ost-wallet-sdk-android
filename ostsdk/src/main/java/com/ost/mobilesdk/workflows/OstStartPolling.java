@@ -37,6 +37,7 @@ public class OstStartPolling extends OstBaseWorkFlow {
     @Override
     protected AsyncStatus process() {
 
+        Bundle bundle;
         Log.d(TAG, String.format("Polling workflow for userId: %s started", mUserId));
 
         Log.i(TAG, "validate params");
@@ -45,29 +46,29 @@ public class OstStartPolling extends OstBaseWorkFlow {
         }
         switch (mEntityType) {
             case OstSdk.USER:
-                OstUserPollingService.startPolling(mUserId, mEntityId, mFromStatus, mToStatus);
-                AsyncStatus userStatus = waitForUpdate();
+                bundle = OstUserPollingService.startPolling(mUserId, mEntityId, mFromStatus, mToStatus);
+                AsyncStatus userStatus = waitForUpdate(bundle);
                 if (!userStatus.isSuccess()) return userStatus;
 
                 return postFlowComplete(new OstContextEntity(OstUser.getById(mEntityId), mEntityType));
 
             case OstSdk.DEVICE:
-                OstDevicePollingService.startPolling(mUserId, mEntityId, mFromStatus, mToStatus);
-                AsyncStatus deviceStatus = waitForUpdate();
+                bundle = OstDevicePollingService.startPolling(mUserId, mEntityId, mFromStatus, mToStatus);
+                AsyncStatus deviceStatus = waitForUpdate(bundle);
                 if (!deviceStatus.isSuccess()) return deviceStatus;
 
                 return postFlowComplete(new OstContextEntity(OstDevice.getById(mEntityId), mEntityType));
 
             case OstSdk.SESSION:
-                OstSessionPollingService.startPolling(mUserId, mEntityId, mFromStatus, mToStatus);
-                AsyncStatus sessionStatus = waitForUpdate();
+                bundle = OstSessionPollingService.startPolling(mUserId, mEntityId, mFromStatus, mToStatus);
+                AsyncStatus sessionStatus = waitForUpdate(bundle);
                 if (!sessionStatus.isSuccess()) return sessionStatus;
 
                 return postFlowComplete(new OstContextEntity(OstSession.getById(mEntityId), mEntityType));
 
             case OstSdk.TRANSACTION:
-                OstTransactionPollingService.startPolling(mUserId, mEntityId, mFromStatus, mToStatus);
-                AsyncStatus transactionStatus = waitForUpdate();
+                bundle = OstTransactionPollingService.startPolling(mUserId, mEntityId, mFromStatus, mToStatus);
+                AsyncStatus transactionStatus = waitForUpdate(bundle);
                 if (!transactionStatus.isSuccess()) return transactionStatus;
 
                 return postFlowComplete(new OstContextEntity(OstTransaction.getById(mEntityId), mEntityType));
@@ -75,9 +76,8 @@ public class OstStartPolling extends OstBaseWorkFlow {
         return postErrorInterrupt("wf_sp_pr_4", OstErrors.ErrorCode.UNKNOWN_ENTITY_TYPE);
     }
 
-    private AsyncStatus waitForUpdate() {
+    private AsyncStatus waitForUpdate(Bundle bundle) {
         Log.i(TAG, "Waiting for update");
-        Bundle bundle = waitForUpdate(mEntityType, mEntityId);
         if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             Log.d(TAG, String.format("Polling time out for %s Id: %s", mEntityType, mEntityId));
             return postErrorInterrupt("wf_sp_pr_2", OstErrors.ErrorCode.POLLING_TIMEOUT);
