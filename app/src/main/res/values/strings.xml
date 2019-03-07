@@ -1,4 +1,4 @@
-<resources>
+<resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SampleOstSdkApplication</string>
     <string name="title_activity_login_sign_up">Sign in</string>
     <!-- Strings related to login -->
@@ -72,6 +72,7 @@
     <string name="valid_number_of_days">Please enter valid number of days, less than 365 days.</string>
     <string name="create_session">Create Session</string>
     <string name="valid_spending_limt">Please enter valid spending limit.</string>
+    <string name="done">Done</string>
 
     <!-- OstDemoApp backdrop menu labels -->
     <string name="shr_featured_label">Featured</string>

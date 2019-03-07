@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffffff"
     android:orientation="vertical"
     android:padding="10dp" >
 
     <TextView
         android:id="@+id/textView"
+        android:layout_margin="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Enter Pin : "
@@ -15,8 +17,31 @@
 
     <EditText
         android:id="@+id/editTextDialogUserInput"
+        android:layout_margin="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
         <requestFocus />
     </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="end"
+        android:background="#ffffffff"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/buttonCancel"
+            android:layout_width="100dp"
+            android:layout_margin="10dp"
+            android:text="@string/cancel"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/buttonDone"
+            android:layout_width="100dp"
+            android:layout_margin="10dp"
+            android:text="@string/done"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

@@ -1,8 +1,6 @@
 package ost.com.sampleostsdkapplication;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -199,42 +198,43 @@ public class UsersListActivity extends MappyBaseActivity implements
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(UsersListActivity.this);
         alertDialogBuilder.setView(promptsView);
 
-        final TextView label = promptsView
-                .findViewById(R.id.textView);
+        final TextView label = promptsView.findViewById(R.id.textView);
 
         label.setText(message);
-        final EditText userInput = promptsView
-                .findViewById(R.id.editTextDialogUserInput);
+        final EditText userInput = promptsView.findViewById(R.id.editTextDialogUserInput);
 
         boolean errorFlag = false;
         // set dialog message
         alertDialogBuilder
-                .setCancelable(false)
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                                callback.onCancel();
-                            }
-                        })
-                .setPositiveButton("Done",
-                        new DialogInterface.OnClickListener() {
-                            @SuppressLint("SetTextI18n")
-                            public void onClick(DialogInterface dialog, int id) {
-                                String pin = userInput.getText().toString();
-                                if (pin.length() < 6) {
-                                    Log.w(TAG, "Pin length to small");
-                                    getPinDialog(callback, "Pin size less than 6 char enter again:");
-                                } else {
-                                    dialog.dismiss();
-                                    callback.onSubmit(pin);
-                                }
-                            }
-                        }
-                );
+                .setCancelable(false);
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
+
+        final Button cancelButton = promptsView.findViewById(R.id.buttonCancel);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                callback.onCancel();
+            }
+        });
+        final Button doneButton = promptsView.findViewById(R.id.buttonDone);
+
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pin = userInput.getText().toString();
+                if (pin.length() < 6) {
+                    Log.w(TAG, "Pin length to small");
+                    getPinDialog(callback, "Pin size less than 6 char enter again:");
+                } else {
+                    alertDialog.dismiss();
+                    callback.onSubmit(pin);
+                }
+            }
+        });
 
         // show it
         alertDialog.show();
