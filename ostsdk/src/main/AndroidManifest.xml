@@ -13,7 +13,7 @@
         <activity
             android:name=".biometric.FingerprintAuthenticationDialogActivity"
             android:excludeFromRecents="true"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Material.Dialog.NoActionBar" />
 
         <service
             android:name=".workflows.services.OstUserPollingService"

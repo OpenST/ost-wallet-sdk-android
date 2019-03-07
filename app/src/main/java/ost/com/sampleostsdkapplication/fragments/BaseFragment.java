@@ -164,7 +164,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
             public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
                 Log.d("Workflow", "Inside workflow acknowledged");
                 super.requestAcknowledged(ostWorkflowContext, ostContextEntity);
-                addWorkflowTaskText("Workflow acknowledged at: ");
+                addWorkflowTaskText(String.format("Entity type: %s\n Workflow acknowledged at: ",
+                        ostContextEntity.getEntityType()));
             }
 
             @Override

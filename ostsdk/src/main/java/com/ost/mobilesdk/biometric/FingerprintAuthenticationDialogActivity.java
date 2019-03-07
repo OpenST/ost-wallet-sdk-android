@@ -7,8 +7,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ost.mobilesdk.R;
@@ -21,8 +19,7 @@ public class FingerprintAuthenticationDialogActivity extends Activity
         implements FingerprintUiHelper.Callback {
 
     private static final String TAG = "BiometricDailog";
-    private Button mCancelButton;
-    private View mFingerprintContent;
+    private TextView mCancelButton;
 
     private Stage mStage = Stage.FINGERPRINT;
 
@@ -35,7 +32,7 @@ public class FingerprintAuthenticationDialogActivity extends Activity
         setContentView(R.layout.fingerprint_dialog_container);
         // Do not create a new Fragment when the Activity is re-created such as orientation changes.
         setFinishOnTouchOutside(false);
-        mCancelButton = (Button) findViewById(R.id.cancel_button);
+        mCancelButton = findViewById(R.id.cancel_button);
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,12 +40,11 @@ public class FingerprintAuthenticationDialogActivity extends Activity
             }
         });
 
-        mFingerprintContent = findViewById(R.id.fingerprint_container);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             mFingerprintUiHelper = new FingerprintUiHelper(
                     getSystemService(FingerprintManager.class),
-                    (ImageView) findViewById(R.id.fingerprint_icon),
-                    (TextView) findViewById(R.id.fingerprint_status), this);
+                    findViewById(R.id.fingerprint_icon),
+                    findViewById(R.id.fingerprint_status), this);
             updateStage();
         } else {
             Log.e(TAG, "Bio metric is not supported for api less than 23");
@@ -73,13 +69,10 @@ public class FingerprintAuthenticationDialogActivity extends Activity
         switch (mStage) {
             case FINGERPRINT:
                 mCancelButton.setText(R.string.cancel);
-                mFingerprintContent.setVisibility(View.VISIBLE);
                 break;
             case NEW_FINGERPRINT_ENROLLED:
                 // Intentional fall through
             case PASSWORD:
-                mCancelButton.setText(R.string.cancel);
-                mFingerprintContent.setVisibility(View.GONE);
                 break;
         }
     }

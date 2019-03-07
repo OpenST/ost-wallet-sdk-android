@@ -1,46 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="280dp"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <include layout="@layout/fingerprint_dialog_content" />
-
-    </FrameLayout>
-
     <LinearLayout
-        android:id="@+id/buttonPanel"
-        android:layout_width="match_parent"
+        android:id="@+id/fingerprint_top"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:gravity="bottom"
-        style="?android:attr/buttonBarStyle">
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="21dp"
+        android:orientation="vertical">
 
-        <Space
-            android:id="@+id/spacer"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:visibility="invisible" />
-        <Button
-            android:id="@+id/cancel_button"
-            style="?android:attr/buttonBarNegativeButtonStyle"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/authorize"
+            android:textColor="#de000000"
+            android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/second_dialog_button"
-            style="?android:attr/buttonBarPositiveButtonStyle"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            android:text="@string/authorize_sub_heading"
+            android:textColor="#8a000000"
+            android:textSize="16sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/fingerprint_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="23dp"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/fingerprint_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/description_fingerprint_icon"
+            android:src="@drawable/ic_fingerprint_check"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/fingerprint_status"
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fingerprint_check_status"
+            android:textColor="#8a000000"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fingerprint_bottom"
+        android:layout_marginTop="36dp"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="29dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/cancel_button"
+            android:textAllCaps="true"
+            android:textSize="14sp"
+            android:textColor="#ff5e54"
+            android:text="@string/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

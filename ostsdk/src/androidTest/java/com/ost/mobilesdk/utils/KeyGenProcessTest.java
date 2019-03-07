@@ -41,7 +41,7 @@ public class KeyGenProcessTest {
         // Context of the app under test.
         byte[] salt = "0x1234564835635432523acfdb1234564835635432523acfdb1234564835635432523acfdb".getBytes();
         long startTime = System.currentTimeMillis();
-        byte[] byteOutput = SCrypt.generate("uPin".getBytes(), salt, (int) Math.pow(2, 14), 8, 1, 32);
+        byte[] byteOutput = SCrypt.generate("uPin".getBytes(), salt, (int) Math.pow(2, 16), 8, 1, 32);
         long deltaTime = System.currentTimeMillis() - startTime;
         String scryptOutput = Numeric.toHexString(byteOutput);
         System.out.println("Delta :" + deltaTime + "Scrypt out put " + scryptOutput);
