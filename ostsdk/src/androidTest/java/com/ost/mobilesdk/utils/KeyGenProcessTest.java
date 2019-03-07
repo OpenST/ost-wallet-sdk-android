@@ -10,6 +10,8 @@ import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.spongycastle.crypto.generators.SCrypt;
+import org.web3j.utils.Numeric;
 
 import java.util.concurrent.ExecutionException;
 
@@ -32,5 +34,16 @@ public class KeyGenProcessTest {
 
         String walletAddress = new KeyGenProcess().execute("1");
         assertNotNull(walletAddress);
+    }
+
+    @Test
+    public void testSCrypt() {
+        // Context of the app under test.
+        byte[] salt = "0x1234564835635432523acfdb1234564835635432523acfdb1234564835635432523acfdb".getBytes();
+        long startTime = System.currentTimeMillis();
+        byte[] byteOutput = SCrypt.generate("uPin".getBytes(), salt, (int) Math.pow(2, 14), 8, 1, 32);
+        long deltaTime = System.currentTimeMillis() - startTime;
+        String scryptOutput = Numeric.toHexString(byteOutput);
+        System.out.println("Delta :" + deltaTime + "Scrypt out put " + scryptOutput);
     }
 }

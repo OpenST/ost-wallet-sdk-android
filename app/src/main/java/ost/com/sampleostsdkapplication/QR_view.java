@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.models.entities.OstUser;
+
 public class QR_view extends AppCompatActivity {
 
     @Override
@@ -22,7 +25,13 @@ public class QR_view extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Need to be on click of button "start polling"
+                LogInUser logInUser = ((App) OstSdk.getContext()).getLoggedUser();
+                String userId = logInUser.getOstUserId();
 
+                OstSdk.startPolling(userId, userId, OstSdk.USER, OstUser.CONST_STATUS.ACTIVATED,
+                        OstUser.CONST_STATUS.CREATED, new WorkFlowHelper(getApplicationContext()));
+                finish();
             }
         });
         imageView.setImageBitmap(bmp);

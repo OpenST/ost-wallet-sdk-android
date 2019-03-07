@@ -5,9 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -20,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.security.UserPassphrase;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
@@ -49,7 +46,6 @@ public class UsersListActivity extends MappyBaseActivity implements
 
     private static final String TAG = "UsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
-    private int PICK_IMAGE_REQUEST = 1;
     private UserDetailsFragment userDetailsFragment;
     private SetUpUserFragment userSetupFragment;
     private PaperWalletFragment paperWalletFragment;
@@ -103,11 +99,7 @@ public class UsersListActivity extends MappyBaseActivity implements
 
             Intent anotherIntent = new Intent(getApplicationContext(), QR_view.class);
             anotherIntent.putExtra("image", byteArray);
-            getApplicationContext().startActivity(anotherIntent);
-            //Need to be on click of button "start polling"
-            OstSdk.startPolling(userId, userId, OstSdk.USER, OstUser.CONST_STATUS.ACTIVATED,
-                    OstUser.CONST_STATUS.CREATED, new WorkFlowHelper(getApplicationContext()));
-            //startPollingInterface.startPolling();
+            startActivity(anotherIntent);
         } else if (id == R.id.scan_qr) {
             loadQRPerformFragment(logInUser.getTokenId(), userId);
             Intent intent = new Intent(getApplicationContext(), SimpleScannerActivity.class);
@@ -272,17 +264,6 @@ public class UsersListActivity extends MappyBaseActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-
-            Uri uri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                Log.d(TAG, String.valueOf(bitmap));
-            } catch (Exception e) {
-                Log.e(TAG, "IOException in on Activity result");
-            }
-        }
         if (requestCode == QR_REQUEST_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
             String userId = ((App) getApplicationContext()).getLoggedUser().getOstUserId();
             String returnedResult = data.getData().toString();

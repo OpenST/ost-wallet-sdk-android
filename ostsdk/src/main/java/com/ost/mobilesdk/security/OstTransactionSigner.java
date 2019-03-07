@@ -30,6 +30,7 @@ public class OstTransactionSigner {
     private static final String DIRECT_TRANSFER = "direct transfer";
     private static final String PRICER = "pricer";
     private static final String COUNTRY_CODE_USD = "USD";
+    private static final String DECIMAL_EXPONENT = "decimals";
     private final String mUserId;
     private final String mTokenId;
 
@@ -56,6 +57,7 @@ public class OstTransactionSigner {
             case PRICER:
                 Log.i(TAG, "Fetch price points");
                 double pricePointUSDtoOST;
+                int decimalExponent;
                 OstApiClient ostApiClient = new OstApiClient(mUserId);
                 try {
                     CommonUtils commonUtils = new CommonUtils();
@@ -72,6 +74,7 @@ public class OstTransactionSigner {
                         throw ostError;
                     }
                     pricePointUSDtoOST = pricePointObject.getDouble(COUNTRY_CODE_USD);
+                    decimalExponent = pricePointObject.getInt(DECIMAL_EXPONENT);
 
                 } catch (Exception e) {
                     OstError ostError = new OstError("km_ts_st_7",
@@ -80,7 +83,7 @@ public class OstTransactionSigner {
                 }
                 Log.i(TAG, "Building call data");
 
-                BigInteger weiPricePoint = convertPricePointFromEthToWei(pricePointUSDtoOST);
+                BigInteger weiPricePoint = convertPricePointFromEthToWei(pricePointUSDtoOST, decimalExponent);
 
                 callData = new PricerRule().getPriceTxnExecutableData(user.getTokenHolderAddress(),
                         tokenHolderAddresses, amounts, COUNTRY_CODE_USD, weiPricePoint);
@@ -128,9 +131,9 @@ public class OstTransactionSigner {
                 callData, signature);
     }
 
-    private BigInteger convertPricePointFromEthToWei(double pricePointUSDtoOST) {
+    private BigInteger convertPricePointFromEthToWei(double pricePointUSDtoOST, int decimalExponent) {
         BigDecimal bigDecimal = new BigDecimal(pricePointUSDtoOST);
-        BigDecimal toWeiMultiplier = new BigDecimal(10).pow(18);
+        BigDecimal toWeiMultiplier = new BigDecimal(10).pow(decimalExponent);
         BigDecimal weiDecimal = bigDecimal.multiply(toWeiMultiplier);
         BigInteger weiInteger = weiDecimal.toBigInteger();
 

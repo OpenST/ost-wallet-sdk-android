@@ -49,4 +49,12 @@ public interface OstConstants {
         ADD_SESSION,
         EXECUTE_TRANSACTION
     }
+
+    /**
+     * Config:
+     * n : 2^14
+     * r : 8
+     * p : 1
+     *
+     */
 }
