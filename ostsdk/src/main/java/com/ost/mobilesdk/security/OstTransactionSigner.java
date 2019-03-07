@@ -132,7 +132,7 @@ public class OstTransactionSigner {
     }
 
     private BigInteger convertPricePointFromEthToWei(double pricePointUSDtoOST, int decimalExponent) {
-        BigDecimal bigDecimal = new BigDecimal(pricePointUSDtoOST);
+        BigDecimal bigDecimal = new BigDecimal(String.valueOf(pricePointUSDtoOST));
         BigDecimal toWeiMultiplier = new BigDecimal(10).pow(decimalExponent);
         BigDecimal weiDecimal = bigDecimal.multiply(toWeiMultiplier);
         BigInteger weiInteger = weiDecimal.toBigInteger();
