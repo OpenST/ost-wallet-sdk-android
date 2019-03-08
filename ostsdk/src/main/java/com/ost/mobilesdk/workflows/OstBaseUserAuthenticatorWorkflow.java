@@ -120,6 +120,9 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
 
                 case WorkflowStateManager.COMPLETED_WITH_ERROR:
                     return new AsyncStatus(false);
+                case WorkflowStateManager.CALLBACK_LOST:
+                    Log.w(TAG, "The callback instance has been lost. Workflow class name: " + getClass().getName());
+                    return new AsyncStatus(false);
             }
         } catch (OstError ostError) {
             return postErrorInterrupt(ostError);
@@ -208,7 +211,10 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.pinValidated(new OstWorkflowContext(getWorkflowType()), mUserId);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.pinValidated(new OstWorkflowContext(getWorkflowType()), mUserId);
+                }
             }
         });
         return new AsyncStatus(true);
@@ -219,7 +225,12 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.invalidPin(new OstWorkflowContext(getWorkflowType()), mUserId, pinAcceptInterface);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.invalidPin(new OstWorkflowContext(getWorkflowType()), mUserId, pinAcceptInterface);
+                } else {
+                    goToState(WorkflowStateManager.CALLBACK_LOST);
+                }
             }
         });
         return new AsyncStatus(true);
@@ -243,6 +254,22 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         performWithState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
     }
 
+    AsyncStatus postGetPin(OstPinAcceptInterface pinAcceptInterface) {
+        Log.i(TAG, "get Pin");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.getPin(new OstWorkflowContext(getWorkflowType()), mUserId, pinAcceptInterface);
+                } else {
+                    goToState(WorkflowStateManager.CALLBACK_LOST);
+                }
+            }
+        });
+        return new AsyncStatus(true);
+    }
+
     public static class WorkflowStateManager {
         ArrayList<String> orderedStates = new ArrayList<>();
         public static final String INITIAL = "INITIAL";
@@ -256,6 +283,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         public static final String COMPLETED = "COMPLETED";
         public static final String VERIFY_DATA = "VERIFY_DATA";
         public static final String DATA_VERIFIED = "DATA_VERIFIED";
+        public static final String CALLBACK_LOST = "CALLBACK_LOST";
 
 
         private int mCurrentState = 0;
@@ -277,6 +305,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
             orderedStates.add(CANCELLED);
             orderedStates.add(COMPLETED);
             orderedStates.add(COMPLETED_WITH_ERROR);
+            orderedStates.add(CALLBACK_LOST);
         }
 
 

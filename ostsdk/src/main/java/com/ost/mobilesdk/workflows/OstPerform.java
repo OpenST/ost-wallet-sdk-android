@@ -34,6 +34,7 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
         mPayload = payload;
     }
 
+
     @Override
     protected void setStateManager() {
         super.setStateManager();
@@ -43,6 +44,7 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
         orderedStates.add(paramsValidationIndx + 1, VERIFY_DATA);
         orderedStates.add(paramsValidationIndx + 2, DATA_VERIFIED);
     }
+
 
     @Override
     protected AsyncStatus onStateChanged(String state, Object stateObject) {
@@ -57,7 +59,6 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
                     return new AsyncStatus(true);
                 case DATA_VERIFIED:
                     dataDefinitionInstance.startDataDefinitionFlow();
-
                     return new AsyncStatus(true);
             }
         } catch (OstError ostError) {
@@ -84,9 +85,9 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
         String dataDefinition = getDataDefinition();
         JSONObject dataObject = getDataObject();
         if (OstConstants.DATA_DEFINITION_TRANSACTION.equalsIgnoreCase(dataDefinition)) {
-            return new OstExecuteTransaction.TransactionDataDefinitionInstance(dataObject, mUserId, mCallback);
+            return new OstExecuteTransaction.TransactionDataDefinitionInstance(dataObject, mUserId, getCallback());
         } else if (OstConstants.DATA_DEFINITION_AUTHORIZE_DEVICE.equalsIgnoreCase(dataDefinition)) {
-            return new OstAddDeviceWithQR.AddDeviceDataDefinitionInstance(dataObject, mUserId, mCallback);
+            return new OstAddDeviceWithQR.AddDeviceDataDefinitionInstance(dataObject, mUserId, getCallback());
         } else {
             throw new OstError("wf_pe_pr_1", OstErrors.ErrorCode.UNKNOWN_DATA_DEFINITION);
         }

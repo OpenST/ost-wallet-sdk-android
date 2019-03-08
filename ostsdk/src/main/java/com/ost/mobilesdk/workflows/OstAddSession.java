@@ -113,7 +113,7 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
             return postErrorInterrupt("wf_as_pr_as_3", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }
         if (!isValidResponse(responseObject)) {
-            return postErrorInterrupt("Not a valid response");
+            return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }
         //Request Acknowledge
         postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),

@@ -41,7 +41,12 @@ public class OstGetPaperWallet extends OstBaseUserAuthenticatorWorkflow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.showPaperWallet(mnemonics);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.showPaperWallet(mnemonics);
+                } else {
+                    goToState(WorkflowStateManager.CALLBACK_LOST);
+                }
             }
         });
     }

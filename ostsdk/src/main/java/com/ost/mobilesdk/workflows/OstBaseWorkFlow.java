@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -53,7 +54,12 @@ abstract class OstBaseWorkFlow {
 
     final String mUserId;
     final Handler mHandler;
-    final OstWorkFlowCallback mCallback;
+
+    private final WeakReference <OstWorkFlowCallback> workFlowCallbackWeakReference;
+
+    protected OstWorkFlowCallback getCallback() {
+        return workFlowCallbackWeakReference.get();
+    }
     final OstApiClient mOstApiClient;
     private OstBiometricAuthentication.Callback mBioMetricCallBack;
 
@@ -70,13 +76,14 @@ abstract class OstBaseWorkFlow {
 
     OstBaseWorkFlow(String userId, OstWorkFlowCallback callback) {
         mUserId = userId;
+
         mHandler = new Handler(Looper.getMainLooper());
-        mCallback = callback;
+        workFlowCallbackWeakReference = new WeakReference<>(callback);
         mOstApiClient = new OstApiClient(mUserId);
     }
 
     boolean hasValidParams() {
-        return !TextUtils.isEmpty(mUserId) && null != mHandler && null != mCallback;
+        return !TextUtils.isEmpty(mUserId) && null != mHandler && null != getCallback();
     }
 
     /**
@@ -90,7 +97,7 @@ abstract class OstBaseWorkFlow {
             throw new OstError("wf_bwf_evp_1", ErrorCode.INVALID_USER_ID);
         }
 
-        if ( null == mCallback ) {
+        if ( null == getCallback() ) {
             throw new OstError("wf_bwf_evp_2", ErrorCode.INVALID_WORKFLOW_CALLBACK);
         }
 
@@ -116,7 +123,10 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowComplete(new OstWorkflowContext(getWorkflowType()), ostContextEntity);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.flowComplete(new OstWorkflowContext(getWorkflowType()), ostContextEntity);
+                }
             }
         });
         return new AsyncStatus(true);
@@ -136,38 +146,13 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), new OstError(msg));
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), new OstError(msg));
+                }
             }
         });
     }
-
-    AsyncStatus postGetPin(OstPinAcceptInterface pinAcceptInterface) {
-        Log.i(TAG, "get Pin");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.getPin(new OstWorkflowContext(getWorkflowType()), mUserId, pinAcceptInterface);
-            }
-        });
-        return new AsyncStatus(true);
-    }
-
-    /**
-     * calls flowInterrupt with error message.
-     *
-     * @param msg: Error Message.
-     */
-    AsyncStatus postErrorInterrupt(String msg) {
-        Log.i(TAG, "Flow Error");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), new OstError(msg));
-            }
-        });
-        return new AsyncStatus(false);
-    }
-
 
     AsyncStatus postErrorInterrupt(String internalErrCode, OstErrors.ErrorCode errorCode) {
         Log.i(TAG, "Flow Error");
@@ -178,7 +163,10 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), error);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), error);
+                }
             }
         });
         return new AsyncStatus(false);
@@ -194,7 +182,10 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.requestAcknowledged(workflowContext, ostContextEntity);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.requestAcknowledged(workflowContext, ostContextEntity);
+                }
             }
         });
     }
@@ -204,7 +195,10 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.verifyData(new OstWorkflowContext(getWorkflowType()), ostContextEntity, ostVerifyDataInterface);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.verifyData(new OstWorkflowContext(getWorkflowType()), ostContextEntity, ostVerifyDataInterface);
+                }
             }
         });
     }

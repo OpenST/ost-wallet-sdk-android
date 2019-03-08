@@ -118,7 +118,12 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.registerDevice(apiResponse, OstRegisterDevice.this);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.registerDevice(apiResponse, OstRegisterDevice.this);
+                } else {
+                    //Do Nothing, let the workflow die.
+                }
             }
         });
     }
