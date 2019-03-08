@@ -13,6 +13,7 @@ import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstTokenHolder;
 import com.ost.mobilesdk.models.entities.OstTransaction;
 import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.workflows.errors.OstErrors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,12 +28,11 @@ public class OstApiHelper implements OstHttpRequestClient.ResponseParser {
     }
 
     public void updateWithApiResponse(JSONObject jsonObject) {
-        try {
+        if ( null == jsonObject || !jsonObject.optBoolean(OstConstants.RESPONSE_SUCCESS) ) {
+            throw new OstApiError("nw_api_helper_uwapir_1", OstErrors.ErrorCode.KIT_API_ERROR, jsonObject);
+        }
 
-            if (!jsonObject.getBoolean(OstConstants.RESPONSE_SUCCESS)) {
-                Log.e(TAG, "JSON response false");
-                return;
-            }
+        try {
             JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
 
             if (jsonData.has(OstSdk.USER)) {

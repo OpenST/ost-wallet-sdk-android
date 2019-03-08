@@ -10,6 +10,7 @@ import com.google.common.net.UrlEscapers;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.security.OstApiSigner;
+import com.ost.mobilesdk.workflows.errors.OstErrors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -110,9 +111,9 @@ public class OstHttpRequestClient {
 
     private static String GET_REQUEST = "GET";
     private static String POST_REQUEST = "POST";
-    private static String SocketTimeoutExceptionString = "{'success':'false','err':{'code':'GATEWAY_TIMEOUT','internal_id':'TIMEOUT_ERROR','msg':'','error_data':[]}}";
-    private static String IOExceptionString = "{'success':'false','err':{'code':'IOException','internal_id':'IO_EXCEPTION','msg':'','error_data':[]}}";
-    private static String NetworkExceptionString = "{'success':'false','err':{'code':'NO_NETWORK','internal_id':'NO_NETWORK','msg':'','error_data':[]}}";
+    private static String SocketTimeoutExceptionString = "{'success':'false','err':{'code':'REQUEST_TIMEOUT','internal_id':'SDK(TIMEOUT_ERROR)','msg':'','error_data':[]}}";
+    private static String IOExceptionString = "{'success':'false','err':{'code':'IOException','internal_id':'SDK(IO_EXCEPTION)','msg':'','error_data':[]}}";
+    private static String NetworkExceptionString = "{'success':'false','err':{'code':'NO_NETWORK','internal_id':'SDK(NO_NETWORK)','msg':'','error_data':[]}}";
 
     public JSONObject get(String resource, Map<String, Object> queryParams) throws IOException {
         return send(GET_REQUEST, resource, queryParams);
