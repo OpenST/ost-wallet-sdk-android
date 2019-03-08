@@ -1,4 +1,4 @@
-package com.ost.mobilesdk.security.structs;
+package com.ost.mobilesdk.ecKeyInteracts.structs;
 
 public class OstSignWithMnemonicsStruct {
 

@@ -9,8 +9,7 @@ import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.security.OstApiSigner;
-import com.ost.mobilesdk.workflows.errors.OstErrors;
+import com.ost.mobilesdk.ecKeyInteracts.OstApiSigner;
 
 import org.json.JSONException;
 import org.json.JSONObject;

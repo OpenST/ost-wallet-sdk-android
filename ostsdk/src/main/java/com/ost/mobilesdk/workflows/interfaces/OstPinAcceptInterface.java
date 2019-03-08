@@ -1,6 +1,6 @@
 package com.ost.mobilesdk.workflows.interfaces;
 
-import com.ost.mobilesdk.security.UserPassphrase;
+import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
 
 /**
  * Sub Interface of

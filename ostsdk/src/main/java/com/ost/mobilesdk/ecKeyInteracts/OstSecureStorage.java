@@ -1,4 +1,4 @@
-package com.ost.mobilesdk.security;
+package com.ost.mobilesdk.ecKeyInteracts;
 
 public interface OstSecureStorage {
 

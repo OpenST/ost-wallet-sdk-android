@@ -2,9 +2,9 @@ package com.ost.mobilesdk.workflows;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
-import com.ost.mobilesdk.security.OstRecoveryManager;
-import com.ost.mobilesdk.security.UserPassphrase;
-import com.ost.mobilesdk.security.structs.SignedRecoverOperationStruct;
+import com.ost.mobilesdk.ecKeyInteracts.OstRecoveryManager;
+import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedRecoverOperationStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;

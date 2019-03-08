@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.security.UserPassphrase;
+import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 
 import org.json.JSONException;

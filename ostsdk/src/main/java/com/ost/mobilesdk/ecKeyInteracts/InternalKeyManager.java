@@ -1,4 +1,4 @@
-package com.ost.mobilesdk.security;
+package com.ost.mobilesdk.ecKeyInteracts;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -9,8 +9,8 @@ import com.ost.mobilesdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstSecureKey;
 import com.ost.mobilesdk.models.entities.OstSessionKey;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
-import com.ost.mobilesdk.security.structs.OstSignWithMnemonicsStruct;
+import com.ost.mobilesdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
+import com.ost.mobilesdk.ecKeyInteracts.structs.OstSignWithMnemonicsStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
@@ -23,7 +23,6 @@ import org.spongycastle.crypto.generators.SCrypt;
 import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
-import org.web3j.crypto.Hash;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.MnemonicUtils;
 import org.web3j.crypto.Sign;
@@ -37,7 +36,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.security.SecureRandom;
-import java.util.HashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 

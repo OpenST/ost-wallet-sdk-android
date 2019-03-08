@@ -2,7 +2,7 @@ package com.ost.mobilesdk.workflows;
 
 import android.util.Log;
 
-import com.ost.mobilesdk.security.OstKeyManager;
+import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;

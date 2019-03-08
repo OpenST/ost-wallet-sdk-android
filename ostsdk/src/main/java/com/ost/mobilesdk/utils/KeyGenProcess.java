@@ -4,9 +4,9 @@ import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
-import com.ost.mobilesdk.security.OstCrypto;
-import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
-import com.ost.mobilesdk.security.impls.OstSdkCrypto;
+import com.ost.mobilesdk.ecKeyInteracts.OstCrypto;
+import com.ost.mobilesdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
+import com.ost.mobilesdk.ecKeyInteracts.impls.OstSdkCrypto;
 
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;

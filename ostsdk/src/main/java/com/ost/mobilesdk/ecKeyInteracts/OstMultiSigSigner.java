@@ -1,12 +1,12 @@
-package com.ost.mobilesdk.security;
+package com.ost.mobilesdk.ecKeyInteracts;
 
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.security.structs.BaseDeviceManagerOperationStruct;
-import com.ost.mobilesdk.security.structs.OstSignWithMnemonicsStruct;
-import com.ost.mobilesdk.security.structs.SignedAddDeviceStruct;
-import com.ost.mobilesdk.security.structs.SignedAddSessionStruct;
+import com.ost.mobilesdk.ecKeyInteracts.structs.BaseDeviceManagerOperationStruct;
+import com.ost.mobilesdk.ecKeyInteracts.structs.OstSignWithMnemonicsStruct;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddSessionStruct;
 import com.ost.mobilesdk.utils.EIP712;
 import com.ost.mobilesdk.utils.GnosisSafe;
 import com.ost.mobilesdk.workflows.errors.OstError;

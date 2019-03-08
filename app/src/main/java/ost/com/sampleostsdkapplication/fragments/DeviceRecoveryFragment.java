@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.security.UserPassphrase;
+import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
 
 import ost.com.sampleostsdkapplication.R;
 

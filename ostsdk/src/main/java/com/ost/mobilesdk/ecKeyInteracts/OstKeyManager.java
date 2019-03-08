@@ -1,4 +1,4 @@
-package com.ost.mobilesdk.security;
+package com.ost.mobilesdk.ecKeyInteracts;
 
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;

@@ -1,4 +1,4 @@
-package com.ost.mobilesdk.security.impls;
+package com.ost.mobilesdk.ecKeyInteracts.impls;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.security.keystore.KeyProperties;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.ost.mobilesdk.security.OstSecureStorage;
+import com.ost.mobilesdk.ecKeyInteracts.OstSecureStorage;
 
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;

@@ -1,6 +1,6 @@
-package com.ost.mobilesdk.security.impls;
+package com.ost.mobilesdk.ecKeyInteracts.impls;
 
-import com.ost.mobilesdk.security.OstCrypto;
+import com.ost.mobilesdk.ecKeyInteracts.OstCrypto;
 
 import org.spongycastle.crypto.digests.KeccakDigest;
 import org.spongycastle.crypto.digests.SHA256Digest;

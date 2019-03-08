@@ -1,4 +1,4 @@
-package com.ost.mobilesdk.security;
+package com.ost.mobilesdk.ecKeyInteracts;
 
 import android.text.TextUtils;
 
@@ -6,8 +6,8 @@ import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
-import com.ost.mobilesdk.security.structs.SignedRecoverOperationStruct;
-import com.ost.mobilesdk.security.structs.SignedResetRecoveryStruct;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedRecoverOperationStruct;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedResetRecoveryStruct;
 import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.utils.DelayedRecoveryModule;
 import com.ost.mobilesdk.utils.EIP712;

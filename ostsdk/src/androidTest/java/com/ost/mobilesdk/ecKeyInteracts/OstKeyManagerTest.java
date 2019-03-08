@@ -1,4 +1,4 @@
-package com.ost.mobilesdk.security;
+package com.ost.mobilesdk.ecKeyInteracts;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

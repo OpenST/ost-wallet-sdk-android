@@ -1,10 +1,10 @@
-package com.ost.mobilesdk.security;
+package com.ost.mobilesdk.ecKeyInteracts;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
+import com.ost.mobilesdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

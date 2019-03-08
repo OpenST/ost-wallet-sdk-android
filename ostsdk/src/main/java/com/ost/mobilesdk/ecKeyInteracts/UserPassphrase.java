@@ -1,4 +1,4 @@
-package com.ost.mobilesdk.security;
+package com.ost.mobilesdk.ecKeyInteracts;
 
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.models.entities.OstUser;
