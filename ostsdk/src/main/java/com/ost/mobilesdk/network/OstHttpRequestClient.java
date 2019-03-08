@@ -7,8 +7,9 @@ import android.util.Log;
 
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
+import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.security.OstApiSigner;
+import com.ost.mobilesdk.ecKeyInteracts.OstApiSigner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -109,9 +110,9 @@ public class OstHttpRequestClient {
 
     private static String GET_REQUEST = "GET";
     private static String POST_REQUEST = "POST";
-    private static String SocketTimeoutExceptionString = "{'success':'false','err':{'code':'GATEWAY_TIMEOUT','internal_id':'TIMEOUT_ERROR','msg':'','error_data':[]}}";
-    private static String IOExceptionString = "{'success':'false','err':{'code':'IOException','internal_id':'IO_EXCEPTION','msg':'','error_data':[]}}";
-    private static String NetworkExceptionString = "{'success':'false','err':{'code':'NO_NETWORK','internal_id':'NO_NETWORK','msg':'','error_data':[]}}";
+    private static String SocketTimeoutExceptionString = "{'success':'false','err':{'code':'REQUEST_TIMEOUT','internal_id':'SDK(TIMEOUT_ERROR)','msg':'','error_data':[]}}";
+    private static String IOExceptionString = "{'success':'false','err':{'code':'IOException','internal_id':'SDK(IO_EXCEPTION)','msg':'','error_data':[]}}";
+    private static String NetworkExceptionString = "{'success':'false','err':{'code':'NO_NETWORK','internal_id':'SDK(NO_NETWORK)','msg':'','error_data':[]}}";
 
     public JSONObject get(String resource, Map<String, Object> queryParams) throws IOException {
         return send(GET_REQUEST, resource, queryParams);
@@ -215,8 +216,8 @@ public class OstHttpRequestClient {
         // Build the request Object.
         Request request;
         if (GET_REQUEST.equalsIgnoreCase(requestType)) {
-            requestBuilder.get().addHeader("Content-Type", "application/x-www-form-urlencoded");
-            requestBuilder.get().addHeader("User-Agent", "ost-sdk-js 1.1.0");
+            requestBuilder.get().addHeader("Content-Type", OstConstants.CONTENT_TYPE);
+            requestBuilder.get().addHeader("User-Agent", OstConstants.USER_AGENT);
         } else {
             FormBody formBody = formBodyBuilder.build();
             if (DEBUG && VERBOSE) {

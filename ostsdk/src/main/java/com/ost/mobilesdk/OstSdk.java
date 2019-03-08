@@ -12,15 +12,15 @@ import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.security.UserPassphrase;
+import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
 import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddCurrentDeviceWithMnemonics;
 import com.ost.mobilesdk.workflows.OstAddSession;
-import com.ost.mobilesdk.workflows.OstDeviceRecovery;
 import com.ost.mobilesdk.workflows.OstExecuteTransaction;
 import com.ost.mobilesdk.workflows.OstGetPaperWallet;
 import com.ost.mobilesdk.workflows.OstPerform;
+import com.ost.mobilesdk.workflows.OstRecoverDeviceWorkflow;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
 import com.ost.mobilesdk.workflows.OstResetPin;
 import com.ost.mobilesdk.workflows.OstStartPolling;
@@ -45,6 +45,7 @@ public class OstSdk {
     public static final String DEVICE = "device";
     public static final String SESSIONS = "sessions";
     public static final String RECOVERY_OWNER = "recovery_owner";
+    public static final String JSON_OBJECT = "JSON";
     private static final String TAG = "OstSdk";
     private static volatile OstSdk INSTANCE;
 
@@ -130,10 +131,10 @@ public class OstSdk {
         Log.i(TAG, String.format("Scanned text: %s", data));
         JSONObject payload = new JSONObject(data);
         final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
-        ostPerform.process();
+        ostPerform.perform();
     }
 
-    public static void addSession(String userId, long expireAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback workFlowCallback) {
+    public static void addSession(String userId, String spendingLimitInWei, long expireAfterInSecs, OstWorkFlowCallback workFlowCallback) {
         final OstAddSession ostAddSession = new OstAddSession(userId, spendingLimitInWei, expireAfterInSecs, workFlowCallback);
         ostAddSession.perform();
     }
@@ -143,8 +144,9 @@ public class OstSdk {
         ostGetPaperWallet.perform();
     }
 
-    public static void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback workFlowCallback) {
-        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenId, tokenHolderAddresses, amounts, ruleName, workFlowCallback);
+
+    public static void executeTransaction(String userId, List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback workFlowCallback) {
+        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenHolderAddresses, amounts, transactionType, workFlowCallback);
         ostExecuteTransaction.perform();
     }
 
@@ -224,15 +226,16 @@ public class OstSdk {
         ostResetPin.perform();
     }
 
-    public static void initiateRecoverDevice(String userId, String appSalt, String pin, String addressToReplace, OstWorkFlowCallback workFlowCallback) {
-        final OstDeviceRecovery ostDeviceRecovery = new OstDeviceRecovery(userId, appSalt, pin, addressToReplace,
-                OstDeviceRecovery.TYPE.INITIATE_DEVICE_RECOVERY, workFlowCallback);
-        ostDeviceRecovery.perform();
+    public static void initiateRecoverDevice(String userId, UserPassphrase passphrase, String deviceAddressToRecover, OstWorkFlowCallback workFlowCallback) {
+        final OstRecoverDeviceWorkflow ostRecoverDeviceWorkflow = new OstRecoverDeviceWorkflow(userId,
+                passphrase,
+                deviceAddressToRecover,
+                workFlowCallback
+            );
+        ostRecoverDeviceWorkflow.perform();
     }
 
-    public static void revokeRecoverDevice(String userId, String appSalt, String pin, String addressToReplace, OstWorkFlowCallback workFlowCallback) {
-        final OstDeviceRecovery ostDeviceRecovery = new OstDeviceRecovery(userId, appSalt, pin, addressToReplace,
-                OstDeviceRecovery.TYPE.REVOKE_DEVICE_RECOVERY, workFlowCallback);
-        ostDeviceRecovery.perform();
+    public static void revokeRecoverDevice(String userId, UserPassphrase passphrase, String deviceAddressToRecover, String deviceAddressToAuthorize, OstWorkFlowCallback workFlowCallback) {
+        //TBD.
     }
 }

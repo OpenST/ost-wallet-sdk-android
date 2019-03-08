@@ -16,8 +16,8 @@
     <string name="purchase_button_not_invalidated_description">
         You can proceed to purchase with this button \n even if a new fingerprint is enrolled
     </string>
-    <string name="fingerprint_not_recognized">Fingerprint not recognized. Try again</string>
-    <string name="fingerprint_success">Fingerprint recognized</string>
+    <string name="fingerprint_not_recognized">Not recognized</string>
+    <string name="fingerprint_success">Fingerprint Successful</string>
     <string name="item_title">White Mesh Pluto Backpack</string>
     <string name="item_price">$62.68</string>
     <string name="item_description">Mesh backpack in white. Black textile trim throughout.</string>
@@ -28,4 +28,7 @@
     <string name="use_fingerprint_to_authenticate_key" >use_fingerprint_to_authenticate_key</string>
     <string name="description_bugdroid_icon">Android bugdroid image</string>
     <string name="description_fingerprint_icon">Fingerprint icon</string>
+    <string name="authorize">Authorize</string>
+    <string name="authorize_sub_heading">Authorize you fingerprint</string>
+    <string name="fingerprint_check_status">Touch the fingerprint sensor</string>
 </resources>

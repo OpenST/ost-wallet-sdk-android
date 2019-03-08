@@ -43,9 +43,10 @@
         android:title="@string/execute_txn"
         app:showAsAction="never" />
     <item
-        android:id="@+id/scan_qr_txn"
+        android:id="@+id/pay_txn"
         android:orderInCategory="100"
-        android:title="@string/qr_execute_txn"
+        android:visible="false"
+        android:title="@string/pay_execute_txn"
         app:showAsAction="never" />
     <item
         android:id="@+id/reset_pin"
@@ -61,5 +62,6 @@
         android:id="@+id/device_abort_recovery"
         android:orderInCategory="100"
         android:title="@string/device_abort_recovery"
+        android:visible="false"
         app:showAsAction="never" />
 </menu>

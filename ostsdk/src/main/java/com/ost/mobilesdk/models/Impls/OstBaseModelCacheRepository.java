@@ -47,7 +47,11 @@ abstract class OstBaseModelCacheRepository extends OstBaseModelRepository {
         if (null != mInMemoryMap.get(id)) {
             return mInMemoryMap.get(id);
         }
-        return super.getById(id);
+        OstBaseEntity ostBaseEntity = super.getById(id);
+        if (null != ostBaseEntity) {
+            mLruCache.put(ostBaseEntity.getId(), ostBaseEntity);
+        }
+        return ostBaseEntity;
     }
 
     public OstBaseEntity[] getByIds(String[] ids) {

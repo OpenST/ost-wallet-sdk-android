@@ -40,25 +40,25 @@ public class DelayedRecoveryModule {
         return jsonObject;
     }
 
-    public JSONObject generateInitiateRecoveryOwnerData(String prevOwnerAddress, String oldOwnerAddress,
-                                                        String newOwnerAddress, String recoveryAddress) {
-        return recoveryOwnerData(prevOwnerAddress, oldOwnerAddress, newOwnerAddress, recoveryAddress,
+    public JSONObject initiateRecoveryOwnerData(String prevOwnerAddress, String oldOwnerAddress,
+                                                String newOwnerAddress, String recoveryAddress) {
+        return getRecoveryOperationTypedData(prevOwnerAddress, oldOwnerAddress, newOwnerAddress, recoveryAddress,
                 "InitiateRecoveryStruct");
 
     }
 
     public JSONObject generateAbortRecoveryOwnerData(String prevOwnerAddress, String oldOwnerAddress,
                                                      String newOwnerAddress, String recoveryAddress) {
-        return recoveryOwnerData(prevOwnerAddress, oldOwnerAddress, newOwnerAddress, recoveryAddress,
+        return getRecoveryOperationTypedData(prevOwnerAddress, oldOwnerAddress, newOwnerAddress, recoveryAddress,
                 "AbortRecoveryStruct");
 
     }
 
-    private JSONObject recoveryOwnerData(String prevOwnerAddress, String oldOwnerAddress, String newOwnerAddress,
-                                         String recoveryAddress, String primaryType) {
+    public JSONObject getRecoveryOperationTypedData(String prevOwnerAddress, String oldOwnerAddress, String newOwnerAddress,
+                                                     String recoveryAddress, String primaryType) {
         JSONObject jsonObject = null;
         try {
-            jsonObject = new JSONObject("const typedDataInput = {\n" +
+            jsonObject = new JSONObject("{\n" +
                     "      types: {\n" +
                     "        EIP712Domain: [{ name: 'verifyingContract', type: 'address' }],\n" +
                     "        " + primaryType + ": [\n" +
@@ -72,9 +72,9 @@ public class DelayedRecoveryModule {
                     "        verifyingContract: " + recoveryAddress + "\n" +
                     "      },\n" +
                     "      message: {\n" +
-                    "        prevOwner: " + prevOwnerAddress + ",\n" +
-                    "        oldOwner: " + oldOwnerAddress + ",\n" +
-                    "        newOwner: " + newOwnerAddress + "\n" +
+                    "        prevOwner: \"" + prevOwnerAddress + "\",\n" +
+                    "        oldOwner: \"" + oldOwnerAddress + "\",\n" +
+                    "        newOwner: \"" + newOwnerAddress + "\"\n" +
                     "      }\n" +
                     "    }");
         } catch (JSONException e) {

@@ -5,8 +5,8 @@ import android.util.Log;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
-import com.ost.mobilesdk.security.OstRecoveryManager;
-import com.ost.mobilesdk.security.UserPassphrase;
+import com.ost.mobilesdk.ecKeyInteracts.OstRecoveryManager;
+import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
@@ -89,11 +89,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
                             return goToState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
                         }
                     } else {
-                        AsyncStatus status = performOnDeviceValidation();
-                        if (!status.isSuccess()) {
-                            goToState(WorkflowStateManager.COMPLETED_WITH_ERROR);
-                        }
-                        return status;
+                        return goToState(WorkflowStateManager.AUTHENTICATED);
                     }
                     break;
 
@@ -124,6 +120,9 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
 
                 case WorkflowStateManager.COMPLETED_WITH_ERROR:
                     return new AsyncStatus(false);
+                case WorkflowStateManager.CALLBACK_LOST:
+                    Log.w(TAG, "The callback instance has been lost. Workflow class name: " + getClass().getName());
+                    return new AsyncStatus(false);
             }
         } catch (OstError ostError) {
             return postErrorInterrupt(ostError);
@@ -135,21 +134,16 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         return new AsyncStatus(true);
     }
 
-    protected AsyncStatus performOnDeviceValidation() {
-        return new AsyncStatus(true);
-    }
-
     protected boolean shouldAskForAuthentication() {
         return true;
     }
 
 
     protected AsyncStatus performValidations(Object stateObject) {
-        Log.i(TAG, "Validating user Id");
-        //To-Do: hasValidParams should throw errors. Rename it to validateParams.
-        if (!hasValidParams()) {
-            Log.e(TAG, String.format("Invalid params for userId : %s", mUserId));
-            throw new OstError("bua_wf_pv_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
+        try {
+            ensureValidParams();
+        } catch (OstError ostError) {
+            return postErrorInterrupt(ostError);
         }
         return performNext();
     }
@@ -161,7 +155,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
             ensureApiCommunication();
 
             // Ensure we have OstUser complete entity.
-            ensureOstUser();
+            ensureOstUser( shouldAskForAuthentication() );
 
             // Ensure we have OstToken complete entity.
             ensureOstToken();
@@ -174,21 +168,16 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
                 ensureDeviceManager();
             }
 
-            if (shouldCheckTokenRules()) {
-                ensureOstRules();
-            }
-
         } catch (OstError err) {
             return postErrorInterrupt(err);
         }
 
+        return onUserDeviceValidationPerformed(stateObject);
+    }
+
+    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
         return performNext();
     }
-
-    protected boolean shouldCheckTokenRules() {
-        return false;
-    }
-
 
     @Override
     public void pinEntered(UserPassphrase passphrase) {
@@ -208,7 +197,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         }
 
         mPinAskCount = mPinAskCount + 1;
-        if (mPinAskCount > OstConstants.MAX_PIN_LIMIT) {
+        if (mPinAskCount > OstConstants.OST_PIN_MAX_RETRY_COUNT) {
             Log.d(TAG, "Max pin ask limit reached");
             return postErrorInterrupt("bpawf_vup_2", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
         }
@@ -222,7 +211,10 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.pinValidated(mUserId);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.pinValidated(new OstWorkflowContext(getWorkflowType()), mUserId);
+                }
             }
         });
         return new AsyncStatus(true);
@@ -233,14 +225,19 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.invalidPin(mUserId, pinAcceptInterface);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.invalidPin(new OstWorkflowContext(getWorkflowType()), mUserId, pinAcceptInterface);
+                } else {
+                    goToState(WorkflowStateManager.CALLBACK_LOST);
+                }
             }
         });
         return new AsyncStatus(true);
     }
 
-    @Override
-    public void cancelFlow(OstError ostError) {
+
+    public void cancelFlow() {
         performWithState(WorkflowStateManager.CANCELLED);
     }
 
@@ -257,6 +254,22 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         performWithState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
     }
 
+    AsyncStatus postGetPin(OstPinAcceptInterface pinAcceptInterface) {
+        Log.i(TAG, "get Pin");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.getPin(new OstWorkflowContext(getWorkflowType()), mUserId, pinAcceptInterface);
+                } else {
+                    goToState(WorkflowStateManager.CALLBACK_LOST);
+                }
+            }
+        });
+        return new AsyncStatus(true);
+    }
+
     public static class WorkflowStateManager {
         ArrayList<String> orderedStates = new ArrayList<>();
         public static final String INITIAL = "INITIAL";
@@ -268,6 +281,9 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         public static final String CANCELLED = "CANCELLED";
         public static final String COMPLETED_WITH_ERROR = "COMPLETED_WITH_ERROR";
         public static final String COMPLETED = "COMPLETED";
+        public static final String VERIFY_DATA = "VERIFY_DATA";
+        public static final String DATA_VERIFIED = "DATA_VERIFIED";
+        public static final String CALLBACK_LOST = "CALLBACK_LOST";
 
 
         private int mCurrentState = 0;
@@ -289,6 +305,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
             orderedStates.add(CANCELLED);
             orderedStates.add(COMPLETED);
             orderedStates.add(COMPLETED_WITH_ERROR);
+            orderedStates.add(CALLBACK_LOST);
         }
 
 

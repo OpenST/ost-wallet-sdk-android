@@ -12,7 +12,8 @@ public class OstWorkflowContext {
         EXECUTE_TRANSACTION,
         ADD_DEVICE_WITH_QR,
         ADD_DEVICE_WITH_MNEMONICS,
-        PIN_RESET
+        PIN_RESET,
+        RECOVER_DEVICE,
     }
     private WORKFLOW_TYPE workflow_type;
 

@@ -6,9 +6,9 @@ import android.util.Log;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstRecoveryOwner;
-import com.ost.mobilesdk.security.OstRecoveryManager;
-import com.ost.mobilesdk.security.UserPassphrase;
-import com.ost.mobilesdk.security.structs.SignedResetRecoveryStruct;
+import com.ost.mobilesdk.ecKeyInteracts.OstRecoveryManager;
+import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedResetRecoveryStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
@@ -101,27 +101,26 @@ public class OstResetPin extends OstBaseWorkFlow {
                 }
 
                 if (!isValidResponse(postRecoveryAddresssResponse)) {
-                    return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RECOVERY_API_FAILED);
+                    return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RESET_RECOVERY_API_FAILED);
                 }
 
-                JSONObject jsonData = struct.getTypedData().optJSONObject(OstConstants.RESPONSE_DATA);
+                JSONObject jsonData = postRecoveryAddresssResponse.optJSONObject(OstConstants.RESPONSE_DATA);
                 JSONObject resultTypeObject = jsonData.optJSONObject(jsonData.optString(OstConstants.RESULT_TYPE));
                 OstRecoveryOwner ostRecoveryOwner = null;
                 try {
                     ostRecoveryOwner = OstRecoveryOwner.parse(resultTypeObject);
                 } catch (JSONException e) {
-                    return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RECOVERY_API_FAILED);
+                    return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RESET_RECOVERY_API_FAILED);
                 }
 
                 postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));
 
             case POLLING:
 
-                OstRecoveryPollingService.startPolling(mUserId, mNewRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZED,
-                        OstRecoveryOwner.CONST_STATUS.AUTHORIZATION_FAILED);
-                
                 Log.i(TAG, "Waiting for update");
-                Bundle bundle = waitForUpdate(OstSdk.RECOVERY_OWNER, newRecoveryOwnerAddress);
+                Bundle bundle = OstRecoveryPollingService.startPolling(mUserId, mNewRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZED,
+                        OstRecoveryOwner.CONST_STATUS.AUTHORIZATION_FAILED);
+
                 if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
                     Log.d(TAG, String.format("Polling time out for recovery owner Id: %s", newRecoveryOwnerAddress));
                     return postErrorInterrupt("wf_adwq_pr_5", OstErrors.ErrorCode.POLLING_TIMEOUT);
@@ -132,7 +131,7 @@ public class OstResetPin extends OstBaseWorkFlow {
                 break;
             case CANCELLED:
                 Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
-                postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.WORKFLOW_CANCELED);
+                postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.WORKFLOW_CANCELLED);
                 break;
         }
         return new AsyncStatus(true);

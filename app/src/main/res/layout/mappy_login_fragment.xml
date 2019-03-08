@@ -72,7 +72,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="100dp">
+                android:layout_marginTop="20dp">
 
                 <android.support.design.button.MaterialButton
                     android:id="@+id/next_button"
@@ -97,13 +97,13 @@
             </RelativeLayout>
 
             <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="98dp"
                 android:layout_marginBottom="16dp"
                 android:tint="?android:attr/textColorPrimary"
-                app:srcCompat="@drawable/shr_logo" />
+                app:srcCompat="@drawable/ostdemoapp150" />
 
         </LinearLayout>
     </RelativeLayout>

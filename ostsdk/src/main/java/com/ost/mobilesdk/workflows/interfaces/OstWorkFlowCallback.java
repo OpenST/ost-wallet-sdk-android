@@ -1,7 +1,5 @@
 package com.ost.mobilesdk.workflows.interfaces;
 
-import android.graphics.Bitmap;
-
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -30,7 +28,7 @@ public interface OstWorkFlowCallback {
      * @param userId                Id of user whose password and pin are needed.
      * @param ostPinAcceptInterface To pass pin
      */
-    void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface);
+    void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 
     /**
      * Inform SDK user about invalid pin
@@ -39,7 +37,7 @@ public interface OstWorkFlowCallback {
      * @param userId                Id of user whose password and pin are needed.
      * @param ostPinAcceptInterface to pass another pin
      */
-    void invalidPin(String userId, OstPinAcceptInterface ostPinAcceptInterface);
+    void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 
     /**
      * Inform SDK user that entered pin is validated.
@@ -47,7 +45,7 @@ public interface OstWorkFlowCallback {
      *
      * @param userId Id of user whose pin and password has been validated.
      */
-    void pinValidated(String userId);
+    void pinValidated(OstWorkflowContext ostWorkflowContext, String userId);
 
     /**
      * Inform SDK user the the flow is complete
@@ -66,14 +64,6 @@ public interface OstWorkFlowCallback {
      * @param ostError reason of interruption
      */
     void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError);
-
-    /**
-     * Ask SDK user to show the provided QR code
-     *
-     * @param qrImage               QR code bitmap image
-     * @param startPollingInterface To start polling
-     */
-    void showQR(Bitmap qrImage, OstStartPollingInterface startPollingInterface);
 
     /**
      * Device SDK is no more functional with corrupted data.

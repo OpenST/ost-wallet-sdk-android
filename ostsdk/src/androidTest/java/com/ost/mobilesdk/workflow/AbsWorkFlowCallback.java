@@ -1,13 +1,10 @@
 package com.ost.mobilesdk.workflow;
 
-import android.graphics.Bitmap;
-
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstStartPollingInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
@@ -20,17 +17,17 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
     }
 
     @Override
-    public void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+    public void getPin(OstWorkflowContext workflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
 
     }
 
     @Override
-    public void invalidPin(String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+    public void invalidPin(OstWorkflowContext workflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
 
     }
 
     @Override
-    public void pinValidated(String userId) {
+    public void pinValidated(OstWorkflowContext workflowContext, String userId) {
 
     }
 
@@ -41,11 +38,6 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
 
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-
-    }
-
-    @Override
-    public void showQR(Bitmap qrImage, OstStartPollingInterface startPollingInterface) {
 
     }
 

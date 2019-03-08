@@ -7,8 +7,8 @@ import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.security.OstMultiSigSigner;
-import com.ost.mobilesdk.security.structs.SignedAddDeviceStruct;
+import com.ost.mobilesdk.ecKeyInteracts.OstMultiSigSigner;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
@@ -32,9 +32,13 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
         mMnemonics = mnemonics;
     }
 
+
     @Override
-    boolean hasValidParams() {
-        return super.hasValidParams() && !(mMnemonics.length < 1);
+    void ensureValidParams() {
+        if ( null == mMnemonics || mMnemonics.length < 1) {
+            throw new OstError("wf_acdwm_evp_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+        }
+        super.ensureValidParams();
     }
 
     @Override
@@ -72,14 +76,10 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
             return postErrorInterrupt(ostError);
         }
 
-        String signature = signedData.getSignature();
-        String signerAddress = signedData.getSignerAddress();
         mAddedDeviceAddress = signedData.getDeviceToBeAdded();
 
-
-
         Log.i(TAG, "Api Call payload");
-        AsyncStatus apiCallStatus = makeAddDeviceCall(signature, signerAddress, deviceManagerAddress, deviceAddress);
+        AsyncStatus apiCallStatus = makeAddDeviceCall(signedData);
 
         if ( apiCallStatus.isSuccess() ) {
             //request acknowledge
@@ -96,11 +96,9 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
     }
 
     AsyncStatus startPolling() {
-        OstDevicePollingService.startPolling(mUserId, mAddedDeviceAddress, OstDevice.CONST_STATUS.AUTHORIZED,
-                OstDevice.CONST_STATUS.REGISTERED);
-
         Log.i(TAG, "Waiting for update");
-        Bundle bundle = waitForUpdate(OstSdk.DEVICE, mAddedDeviceAddress);
+        Bundle bundle = OstDevicePollingService.startPolling(mUserId, mAddedDeviceAddress, OstDevice.CONST_STATUS.AUTHORIZED,
+                OstDevice.CONST_STATUS.REGISTERED);
 
         boolean hasTimedout = bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
         if ( hasTimedout ) {

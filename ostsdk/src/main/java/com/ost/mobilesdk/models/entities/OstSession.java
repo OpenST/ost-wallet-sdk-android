@@ -10,7 +10,7 @@ import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.OstSessionModel;
-import com.ost.mobilesdk.security.impls.OstAndroidSecureStorage;
+import com.ost.mobilesdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.utils.EIP1077;
 
 import org.json.JSONException;

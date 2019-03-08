@@ -2,16 +2,19 @@ package com.ost.mobilesdk.utils;
 
 import android.util.Log;
 
+import com.ost.mobilesdk.OstConstants;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ost.mobilesdk.models.entities.OstDevice.TAG;
-
 public class CommonUtils {
+    private static final String TAG = "CommonUtils";
+
     public CommonUtils() {
     }
 
@@ -52,4 +55,46 @@ public class CommonUtils {
         }
     }
 
+    public String parseStringResponseForKey(JSONObject jsonObject, String key) {
+        try {
+            JSONObject resultType = parseResponseForResultType(jsonObject);
+            String stringValue = resultType.getString(key);
+            return stringValue;
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON Exception");
+        }
+        return null;
+    }
+
+    public boolean isValidResponse(JSONObject jsonObject) {
+        try {
+            if (jsonObject.getBoolean(OstConstants.RESPONSE_SUCCESS)) {
+                return true;
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON Exception");
+        }
+        return false;
+    }
+
+    public JSONObject parseResponseForResultType(JSONObject jsonObject) throws JSONException {
+        if (!isValidResponse(jsonObject)) {
+            Log.e(TAG, "JSON response false");
+            return null;
+        }
+        JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
+        JSONObject resultTypeObject = jsonData.getJSONObject(jsonData.getString(OstConstants.RESULT_TYPE));
+        return resultTypeObject;
+    }
+
+    public JSONObject parseObjectResponseForKey(JSONObject jsonObject, String key) {
+        try {
+            JSONObject resultType = parseResponseForResultType(jsonObject);
+            JSONObject keyObject = resultType.getJSONObject(key);
+            return keyObject;
+        } catch (JSONException e) {
+            Log.e(TAG, "JSON Exception");
+        }
+        return null;
+    }
 }

@@ -7,9 +7,9 @@ import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
-import com.ost.mobilesdk.security.OstKeyManager;
-import com.ost.mobilesdk.security.OstRecoveryManager;
-import com.ost.mobilesdk.security.UserPassphrase;
+import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
+import com.ost.mobilesdk.ecKeyInteracts.OstRecoveryManager;
+import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
@@ -103,11 +103,9 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
         //Activate the user if otherwise.
         Log.i(TAG, "Starting user polling service");
-        OstUserPollingService.startPolling(mUserId, mUserId, OstUser.CONST_STATUS.ACTIVATED,
-                OstUser.CONST_STATUS.CREATED);
-
         Log.i(TAG, "Waiting for update");
-        Bundle bundle = waitForUpdate(OstSdk.USER, mUserId);
+        Bundle bundle = OstUserPollingService.startPolling(mUserId, mUserId, OstUser.CONST_STATUS.ACTIVATED,
+                OstUser.CONST_STATUS.CREATED);
         if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
             return postErrorInterrupt("wf_au_pr_5", ErrorCode.ACTIVATE_USER_API_POLLING_FAILED);
@@ -142,7 +140,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
         currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
         blockGenerationTime = Long.parseLong(strBlockGenerationTime);
-        long bufferBlocks = OstConstants.SESSION_BUFFER_TIME / blockGenerationTime;
+        long bufferBlocks = OstConstants.OST_SESSION_BUFFER_TIME / blockGenerationTime;
         long expiresAfterBlocks = mExpiresAfterInSecs / blockGenerationTime;
         long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
 

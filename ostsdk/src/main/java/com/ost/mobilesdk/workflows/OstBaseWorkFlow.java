@@ -8,6 +8,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,7 +23,8 @@ import com.ost.mobilesdk.models.entities.OstRule;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
-import com.ost.mobilesdk.security.OstKeyManager;
+import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.utils.EIP712;
@@ -40,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -51,7 +54,12 @@ abstract class OstBaseWorkFlow {
 
     final String mUserId;
     final Handler mHandler;
-    final OstWorkFlowCallback mCallback;
+
+    private final WeakReference <OstWorkFlowCallback> workFlowCallbackWeakReference;
+
+    protected OstWorkFlowCallback getCallback() {
+        return workFlowCallbackWeakReference.get();
+    }
     final OstApiClient mOstApiClient;
     private OstBiometricAuthentication.Callback mBioMetricCallBack;
 
@@ -68,13 +76,31 @@ abstract class OstBaseWorkFlow {
 
     OstBaseWorkFlow(String userId, OstWorkFlowCallback callback) {
         mUserId = userId;
-        mHandler = new Handler();
-        mCallback = callback;
+
+        mHandler = new Handler(Looper.getMainLooper());
+        workFlowCallbackWeakReference = new WeakReference<>(callback);
         mOstApiClient = new OstApiClient(mUserId);
     }
 
     boolean hasValidParams() {
-        return !TextUtils.isEmpty(mUserId) && null != mHandler && null != mCallback;
+        return !TextUtils.isEmpty(mUserId) && null != mHandler && null != getCallback();
+    }
+
+    /**
+     * Method that can be called to validate and params.
+     * @Dev: Please make sure this method is only used to perform validations
+     * that do not need API calls. For any validation that needs API call, please
+     * use onUserDeviceValidationPerformed.
+     */
+    void ensureValidParams() {
+        if ( TextUtils.isEmpty(mUserId) ) {
+            throw new OstError("wf_bwf_evp_1", ErrorCode.INVALID_USER_ID);
+        }
+
+        if ( null == getCallback() ) {
+            throw new OstError("wf_bwf_evp_2", ErrorCode.INVALID_WORKFLOW_CALLBACK);
+        }
+
     }
 
     public Future<AsyncStatus> perform() {
@@ -97,7 +123,10 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowComplete(new OstWorkflowContext(getWorkflowType()), ostContextEntity);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.flowComplete(new OstWorkflowContext(getWorkflowType()), ostContextEntity);
+                }
             }
         });
         return new AsyncStatus(true);
@@ -106,49 +135,6 @@ abstract class OstBaseWorkFlow {
     AsyncStatus postFlowComplete() {
         return postFlowComplete(null);
     }
-
-    /**
-     * @param msg
-     * @Deprecated: Use postErrorInterrupt instead.
-     */
-    @Deprecated
-    void postError(String msg) {
-        Log.i(TAG, "Flow Error");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), new OstError(msg));
-            }
-        });
-    }
-
-    AsyncStatus postGetPin(OstPinAcceptInterface pinAcceptInterface) {
-        Log.i(TAG, "get Pin");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.getPin(mUserId, pinAcceptInterface);
-            }
-        });
-        return new AsyncStatus(true);
-    }
-
-    /**
-     * calls flowInterrupt with error message.
-     *
-     * @param msg: Error Message.
-     */
-    AsyncStatus postErrorInterrupt(String msg) {
-        Log.i(TAG, "Flow Error");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), new OstError(msg));
-            }
-        });
-        return new AsyncStatus(false);
-    }
-
 
     AsyncStatus postErrorInterrupt(String internalErrCode, OstErrors.ErrorCode errorCode) {
         Log.i(TAG, "Flow Error");
@@ -159,10 +145,18 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), error);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), error);
+                }
             }
         });
         return new AsyncStatus(false);
+    }
+
+    void postRequestAcknowledge(OstContextEntity ostContextEntity) {
+        OstWorkflowContext workflowContext = new OstWorkflowContext(getWorkflowType());
+        postRequestAcknowledge(workflowContext, ostContextEntity);
     }
 
     void postRequestAcknowledge(OstWorkflowContext workflowContext, OstContextEntity ostContextEntity) {
@@ -170,7 +164,10 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.requestAcknowledged(workflowContext, ostContextEntity);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.requestAcknowledged(workflowContext, ostContextEntity);
+                }
             }
         });
     }
@@ -180,7 +177,10 @@ abstract class OstBaseWorkFlow {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mCallback.verifyData(new OstWorkflowContext(getWorkflowType()), ostContextEntity, ostVerifyDataInterface);
+                OstWorkFlowCallback callback = getCallback();
+                if ( null != callback ) {
+                    callback.verifyData(new OstWorkflowContext(getWorkflowType()), ostContextEntity, ostVerifyDataInterface);
+                }
             }
         });
     }
@@ -300,8 +300,11 @@ abstract class OstBaseWorkFlow {
 
     OstUser mOstUser;
     void ensureOstUser() throws OstError {
+        ensureOstUser(false);
+    }
+    void ensureOstUser(boolean forceSync) throws OstError {
         mOstUser = OstUser.getById(mUserId);
-        if ( null == mOstUser || TextUtils.isEmpty(mOstUser.getTokenHolderAddress()) || TextUtils.isEmpty(mOstUser.getDeviceManagerAddress())) {
+        if ( forceSync || null == mOstUser || TextUtils.isEmpty(mOstUser.getTokenHolderAddress()) || TextUtils.isEmpty(mOstUser.getDeviceManagerAddress())) {
             try {
                 mOstApiClient.getUser();
                 mOstUser = OstUser.getById(mUserId);
@@ -464,7 +467,7 @@ abstract class OstBaseWorkFlow {
                 boolean isValidResponse = intent.getBooleanExtra(OstPollingService.EXTRA_IS_VALID_RESPONSE, true);
                 boolean isPollingTimeOut = intent.getBooleanExtra(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
                 if (mUserId.equals(userId) && pEntityType.equalsIgnoreCase(entityType) && pEntityId.equals(entityId)) {
-                    Log.d(TAG, String.format("Got update message from polling service for device id:%s", entityId));
+                    Log.d(TAG, String.format("Got update message from polling service for %s id:%s", entityType, entityId));
                     if (isPollingTimeOut) {
                         Log.w(TAG, "Polling timeout reached");
                     }
@@ -479,7 +482,7 @@ abstract class OstBaseWorkFlow {
         LocalBroadcastManager.getInstance(OstSdk.getContext()).registerReceiver(updateReceiver,
                 new IntentFilter(OstPollingService.ENTITY_UPDATE_MESSAGE));
         try {
-            countDownLatch.await(Integer.MAX_VALUE, TimeUnit.SECONDS);
+            countDownLatch.await(OstConstants.POLLING_WAIT_TIME_IN_SECS, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             Log.e(TAG, "Unexpected error while waiting for polling", e);
         }
@@ -534,20 +537,18 @@ abstract class OstBaseWorkFlow {
         return safeTxnEIP712Hash;
     }
 
-    AsyncStatus makeAddDeviceCall(String signature, String signerAddress, String deviceManagerAddress, String deviceAddress) {
-        String callData = new GnosisSafe().getAddOwnerWithThresholdExecutableData(deviceAddress);
-        int nonce = OstDeviceManager.getById(deviceManagerAddress).getNonce();
+    AsyncStatus makeAddDeviceCall(SignedAddDeviceStruct signedAddDeviceStruct) {
         Log.i(TAG, "Api Call payload");
         try {
-
+            String deviceManagerAddress = signedAddDeviceStruct.getDeviceManagerAddress();
             Map<String, Object> map = new OstPayloadBuilder()
                     .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
-                    .setRawCalldata(new GnosisSafe().getAddOwnerWithThresholdCallData(deviceAddress))
-                    .setCallData(callData)
+                    .setRawCalldata(signedAddDeviceStruct.getRawCallData())
+                    .setCallData(signedAddDeviceStruct.getCallData())
                     .setTo(deviceManagerAddress)
-                    .setSignatures(signature)
-                    .setSigners(Arrays.asList(signerAddress))
-                    .setNonce(String.valueOf(nonce))
+                    .setSignatures(signedAddDeviceStruct.getSignature())
+                    .setSigners(Arrays.asList(signedAddDeviceStruct.getSignerAddress()))
+                    .setNonce(String.valueOf(signedAddDeviceStruct.getNonce()))
                     .build();
             OstApiClient ostApiClient = new OstApiClient(mUserId);
             JSONObject jsonObject = ostApiClient.postAddDevice(map);

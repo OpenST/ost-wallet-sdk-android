@@ -51,7 +51,7 @@ public class FingerprintUiHelper extends FingerprintManager.AuthenticationCallba
         // noinspection ResourceType
         mFingerprintManager
                 .authenticate(cryptoObject, mCancellationSignal, 0 /* flags */, this, null);
-        mIcon.setImageResource(R.drawable.ic_fingerprint_success);
+        mIcon.setImageResource(R.drawable.ic_fingerprint_check);
     }
 
     public void stopListening() {
@@ -117,8 +117,8 @@ public class FingerprintUiHelper extends FingerprintManager.AuthenticationCallba
             mErrorTextView.setTextColor(
                     mErrorTextView.getResources().getColor(R.color.hint_color, null));
             mErrorTextView.setText(
-                    mErrorTextView.getResources().getString(R.string.fingerprint_hint));
-            mIcon.setImageResource(R.drawable.ic_fingerprint_success);
+                    mErrorTextView.getResources().getString(R.string.fingerprint_check_status));
+            mIcon.setImageResource(R.drawable.ic_fingerprint_check);
         }
     };
 

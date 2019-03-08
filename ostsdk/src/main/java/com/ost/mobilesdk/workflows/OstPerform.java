@@ -5,94 +5,110 @@ import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.utils.CommonUtils;
+import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
+import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
+import java.util.ArrayList;
+
+import static com.ost.mobilesdk.workflows.OstBaseUserAuthenticatorWorkflow.WorkflowStateManager.DATA_VERIFIED;
+import static com.ost.mobilesdk.workflows.OstBaseUserAuthenticatorWorkflow.WorkflowStateManager.PARAMS_VALIDATED;
+import static com.ost.mobilesdk.workflows.OstBaseUserAuthenticatorWorkflow.WorkflowStateManager.VERIFY_DATA;
 
 /**
- * Device A which will add
- * 1. Scan QR code
- * 2. Sign with wallet key
- * 3. approve
+ * Performs operations based on payload provided
  */
-public class OstPerform extends OstBaseWorkFlow {
+public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstVerifyDataInterface {
 
     private static final String TAG = "OstPerform";
     private final JSONObject mPayload;
+    private DataDefinitionInstance dataDefinitionInstance;
+
 
     public OstPerform(String userId, JSONObject payload, OstWorkFlowCallback callback) {
         super(userId, callback);
         mPayload = payload;
     }
 
-    public AsyncStatus process() {
 
-        Log.d(TAG, String.format("Perform workflow for userId: %s started", mUserId));
+    @Override
+    protected void setStateManager() {
+        super.setStateManager();
+        ArrayList<String> orderedStates = stateManager.orderedStates;
+        int paramsValidationIndx = orderedStates.indexOf(OstBaseUserAuthenticatorWorkflow.WorkflowStateManager.PARAMS_VALIDATED);
+        //Add custom states.
+        orderedStates.add(paramsValidationIndx + 1, VERIFY_DATA);
+        orderedStates.add(paramsValidationIndx + 2, DATA_VERIFIED);
+    }
 
-        Log.i(TAG, "Validating  payload");
-        if (!validatePayload()) {
-            Log.e(TAG, String.format("payload validation failed for %s", mPayload.toString()));
-            return postErrorInterrupt("wf_pe_pr_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+
+    @Override
+    protected AsyncStatus onStateChanged(String state, Object stateObject) {
+        try {
+            switch (state) {
+                case PARAMS_VALIDATED:
+                    return performNext();
+                case VERIFY_DATA:
+                    OstContextEntity ostContextEntity = dataDefinitionInstance.getContextEntity();
+                    postVerifyData(ostContextEntity, OstPerform.this);
+
+                    return new AsyncStatus(true);
+                case DATA_VERIFIED:
+                    dataDefinitionInstance.startDataDefinitionFlow();
+                    return new AsyncStatus(true);
+            }
+        } catch (OstError ostError) {
+            return postErrorInterrupt(ostError);
+        } catch (Throwable th) {
+            OstError ostError = new OstError("bua_wf_osc_1", OstErrors.ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+            ostError.setStackTrace(th.getStackTrace());
+            return postErrorInterrupt(ostError);
         }
+        return super.onStateChanged(state, stateObject);
+    }
+
+    @Override
+    void ensureValidParams() {
+        super.ensureValidParams();
+
+        validatePayload();
+        dataDefinitionInstance = getDataDefinitionInstance();
+        dataDefinitionInstance.validateDataPayload();
+        dataDefinitionInstance.validateDataParams();
+    }
+
+    private DataDefinitionInstance getDataDefinitionInstance() {
         String dataDefinition = getDataDefinition();
         JSONObject dataObject = getDataObject();
         if (OstConstants.DATA_DEFINITION_TRANSACTION.equalsIgnoreCase(dataDefinition)) {
-            if (!validateTransactionData(dataObject)) {
-                return postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.INVALID_QR_TRANSACTION_DATA);
-            }
-            String ruleName = dataObject.optString(OstConstants.QR_RULE_NAME);
-
-            JSONArray jsonArrayTokenHolderAddresses = dataObject.optJSONArray(OstConstants.QR_TOKEN_HOLDER_ADDRESSES);
-            List<String> tokenHolderAddresses = new CommonUtils().jsonArrayToList(jsonArrayTokenHolderAddresses);
-
-            JSONArray jsonArrayAmounts = dataObject.optJSONArray(OstConstants.QR_AMOUNTS);
-            List<String> amounts = new CommonUtils().jsonArrayToList(jsonArrayAmounts);
-
-            String tokenId = dataObject.optString(OstConstants.QR_TOKEN_ID);
-
-            OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(mUserId, tokenId,
-                    tokenHolderAddresses, amounts, ruleName, mCallback);
-            ostExecuteTransaction.perform();
-
+            return new OstExecuteTransaction.TransactionDataDefinitionInstance(dataObject, mUserId, getCallback());
         } else if (OstConstants.DATA_DEFINITION_AUTHORIZE_DEVICE.equalsIgnoreCase(dataDefinition)) {
-            if (!validateDeviceOperationData(dataObject)) {
-                return postErrorInterrupt("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_QR_DEVICE_OPERATION_DATA);
-            }
-            String deviceAddress = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
-            OstAddDeviceWithQR ostAddDeviceWithQR = new OstAddDeviceWithQR(mUserId, deviceAddress, mCallback);
-            ostAddDeviceWithQR.perform();
-            return new AsyncStatus(true);
+            return new OstAddDeviceWithQR.AddDeviceDataDefinitionInstance(dataObject, mUserId, getCallback());
+        } else {
+            throw new OstError("wf_pe_pr_1", OstErrors.ErrorCode.UNKNOWN_DATA_DEFINITION);
         }
-
-        return new AsyncStatus(false);
-
     }
 
-    private boolean validateTransactionData(JSONObject dataObject) {
-        boolean hasRuleName = dataObject.has(OstConstants.QR_RULE_NAME);
-        boolean hasTokenHolderAddresses = dataObject.has(OstConstants.QR_TOKEN_HOLDER_ADDRESSES);
-        boolean hasAmounts = dataObject.has(OstConstants.QR_AMOUNTS);
-        boolean hasTokenId = dataObject.has(OstConstants.QR_TOKEN_ID);
-        return hasRuleName && hasTokenHolderAddresses && hasAmounts && hasTokenId;
+    @Override
+    public void dataVerified() {
+        stateManager.setState(DATA_VERIFIED);
+        perform();
     }
 
-    private boolean validateDeviceOperationData(JSONObject dataObject) {
-        boolean hasDeviceAddress = dataObject.has(OstConstants.QR_DEVICE_ADDRESS);
-        return hasDeviceAddress;
-    }
-
-
-    private boolean validatePayload() {
+    private void validatePayload() {
+        if (null == mPayload) {
+            throw new OstError("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+        }
         boolean hasDataDefinition = mPayload.has(OstConstants.QR_DATA_DEFINITION);
         boolean hasDataDefinitionVersion = mPayload.has(OstConstants.QR_DATA_DEFINITION_VERSION);
         boolean data = mPayload.has(OstConstants.QR_DATA);
-        return hasDataDefinition && hasDataDefinitionVersion && data;
+        if (!(hasDataDefinition && hasDataDefinitionVersion && data)) {
+            throw new OstError("wf_pe_pr_3", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+        }
     }
 
     private @NonNull
@@ -117,5 +133,15 @@ public class OstPerform extends OstBaseWorkFlow {
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
         return OstWorkflowContext.WORKFLOW_TYPE.PERFORM;
+    }
+
+    interface DataDefinitionInstance {
+        void validateDataPayload();
+
+        void validateDataParams();
+
+        OstContextEntity getContextEntity();
+
+        void startDataDefinitionFlow();
     }
 }

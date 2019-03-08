@@ -3,16 +3,22 @@ package com.ost.mobilesdk.workflows;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstTransaction;
-import com.ost.mobilesdk.security.OstTransactionSigner;
-import com.ost.mobilesdk.security.structs.SignedTransactionStruct;
+import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.ecKeyInteracts.OstTransactionSigner;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedTransactionStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
+import com.ost.mobilesdk.utils.CommonUtils;
+import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstTransactionPollingService;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -30,11 +36,9 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
     private final List<String> mTokenHolderAddresses;
     private final List<String> mAmounts;
     private final String mRuleName;
-    private final String mTokenId;
 
-    public OstExecuteTransaction(String userId, String tokenId ,List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback callback) {
+    public OstExecuteTransaction(String userId, List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback callback) {
         super(userId, callback);
-        mTokenId = tokenId;
         mTokenHolderAddresses = tokenHolderAddresses;
         mAmounts = amounts;
         mRuleName = ruleName;
@@ -42,11 +46,7 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
 
 
     @Override
-    protected AsyncStatus performOnDeviceValidation() {
-
-        if (!mOstUser.getTokenId().equalsIgnoreCase(mTokenId)) {
-            return postErrorInterrupt("wf_et_pr_1", OstErrors.ErrorCode.DIFFERENT_ECONOMY);
-        }
+    AsyncStatus performOnAuthenticated() {
 
         OstTransactionSigner ostTransactionSigner = new OstTransactionSigner(mUserId);
         SignedTransactionStruct signedTransactionStruct = ostTransactionSigner
@@ -70,10 +70,8 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
                 new OstContextEntity(OstTransaction.getById(entityId), OstSdk.TRANSACTION));
 
         Log.i(TAG, "start polling");
-        OstTransactionPollingService.startPolling(mUserId, entityId,
+        Bundle bundle = OstTransactionPollingService.startPolling(mUserId, entityId,
                 OstTransaction.CONST_STATUS.SUCCESS, OstTransaction.CONST_STATUS.FAILED);
-
-        Bundle bundle = waitForUpdate(OstSdk.TRANSACTION, entityId);
         if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             return postErrorInterrupt("wf_et_pr_5", OstErrors.ErrorCode.POLLING_TIMEOUT);
         }
@@ -96,8 +94,13 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
     }
 
     @Override
-    protected boolean shouldCheckTokenRules() {
-        return true;
+    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
+        try {
+            ensureOstRules();
+        } catch (OstError error) {
+            return postErrorInterrupt(error);
+        }
+        return super.onUserDeviceValidationPerformed(stateObject);
     }
 
 
@@ -202,5 +205,73 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
         return OstWorkflowContext.WORKFLOW_TYPE.EXECUTE_TRANSACTION;
+    }
+
+    static class TransactionDataDefinitionInstance implements OstPerform.DataDefinitionInstance {
+        private static final String TAG = "TransactionDDInstance";
+
+        private final JSONObject dataObject;
+        private final String userId;
+        private final OstWorkFlowCallback callback;
+
+        public TransactionDataDefinitionInstance(JSONObject dataObject, String userId, OstWorkFlowCallback callback) {
+            this.dataObject = dataObject;
+            this.userId = userId;
+            this.callback = callback;
+        }
+
+        @Override
+        public void validateDataPayload() {
+            boolean hasRuleName = dataObject.has(OstConstants.QR_RULE_NAME);
+            boolean hasTokenHolderAddresses = dataObject.has(OstConstants.QR_TOKEN_HOLDER_ADDRESSES);
+            boolean hasAmounts = dataObject.has(OstConstants.QR_AMOUNTS);
+            boolean hasTokenId = dataObject.has(OstConstants.QR_TOKEN_ID);
+            if (!(hasRuleName && hasTokenHolderAddresses && hasAmounts && hasTokenId)) {
+                throw new OstError("wf_pe_pr_3", OstErrors.ErrorCode.INVALID_QR_TRANSACTION_DATA);
+            }
+        }
+
+        @Override
+        public void validateDataParams() {
+            String tokenId = dataObject.optString(OstConstants.QR_TOKEN_ID);
+            if (!OstUser.getById(userId).getTokenId().equalsIgnoreCase(tokenId)) {
+                throw new OstError("wf_et_pr_1", OstErrors.ErrorCode.DIFFERENT_ECONOMY);
+            }
+        }
+
+        @Override
+        public OstContextEntity getContextEntity() {
+            JSONObject jsonObject = updateJSONKeys(dataObject);
+            OstContextEntity contextEntity = new OstContextEntity(jsonObject, OstSdk.JSON_OBJECT);
+            return contextEntity;
+        }
+
+        private JSONObject updateJSONKeys(JSONObject dataObject) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put(OstConstants.RULE_NAME, dataObject.optString(OstConstants.QR_RULE_NAME));
+                jsonObject.put(OstConstants.TOKEN_HOLDER_ADDRESSES, dataObject.optJSONArray(OstConstants.QR_TOKEN_HOLDER_ADDRESSES));
+                jsonObject.put(OstConstants.AMOUNTS, dataObject.optJSONArray(OstConstants.QR_AMOUNTS));
+                jsonObject.put(OstConstants.TOKEN_ID, dataObject.optJSONArray(OstConstants.QR_TOKEN_ID));
+            } catch (JSONException e) {
+                Log.e(TAG, "JSON Exception in updateJSONKeys: ", e);
+            }
+            return jsonObject;
+        }
+
+        @Override
+        public void startDataDefinitionFlow() {
+            String ruleName = dataObject.optString(OstConstants.QR_RULE_NAME);
+
+            JSONArray jsonArrayTokenHolderAddresses = dataObject.optJSONArray(OstConstants.QR_TOKEN_HOLDER_ADDRESSES);
+            List<String> tokenHolderAddresses = new CommonUtils().jsonArrayToList(jsonArrayTokenHolderAddresses);
+
+            JSONArray jsonArrayAmounts = dataObject.optJSONArray(OstConstants.QR_AMOUNTS);
+            List<String> amounts = new CommonUtils().jsonArrayToList(jsonArrayAmounts);
+
+            OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId,
+                    tokenHolderAddresses, amounts, ruleName, callback);
+            ostExecuteTransaction.perform();
+        }
     }
 }

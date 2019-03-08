@@ -3,13 +3,13 @@ package com.ost.mobilesdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.OstDeviceModel;
+import com.ost.mobilesdk.utils.AdvertisingIdClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +57,15 @@ public class OstDevice extends OstBaseEntity {
         public static final String REVOKED = "revoked";
     }
 
+    /**
+     * To create OstDevice object
+     * Should not be called from MainThread( UI Thread )
+     *
+     * @param address    Device Address
+     * @param apiAddress Api Address
+     * @param userId     User Id
+     * @return Ost Device Object
+     */
     public static OstDevice init(String address, String apiAddress, String userId) {
         OstDevice ostDevice = OstDevice.getById(address);
         if (null != ostDevice) {
@@ -64,7 +73,7 @@ public class OstDevice extends OstBaseEntity {
             return ostDevice;
         }
 
-        String uuid = Settings.Secure.getString(OstSdk.getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        String uuid = getAdvertisementId();
 
         String deviceName = android.os.Build.MANUFACTURER + android.os.Build.PRODUCT;
 
@@ -84,6 +93,17 @@ public class OstDevice extends OstBaseEntity {
         }
 
         return null;
+    }
+
+    private static String getAdvertisementId() {
+        AdvertisingIdClient.AdInfo idInfo = null;
+        try {
+            idInfo = AdvertisingIdClient.getAdvertisingIdInfo(OstSdk.getContext());
+            return idInfo.getId();
+        } catch (Exception e) {
+            Log.e(TAG, "Not able to fetch advertisement Id", e);
+        }
+        return "no_id_found";
     }
 
     public static OstDevice[] getDevicesByParentId(String userId) {

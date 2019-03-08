@@ -1,119 +1,23 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="vertical">
+
+<android.support.design.widget.TextInputLayout
+    android:id="@+id/paper_wallet_til"
+    style="@style/Widget.OstDemoApp.TextInputLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/loginPageBackgroundColor"
-    tools:context=".UsersListActivity">
+    android:layout_height="110dp"
+    android:layout_marginTop="10dp"
+    android:hint="Paper Wallet Words"
+    app:errorEnabled="true">
 
-    <RelativeLayout
+    <android.support.design.widget.TextInputEditText
+        android:id="@+id/paper_wallet_edit_box"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/user_detail_page"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:padding="24dp"
-            android:paddingTop="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:text="@string/paper_wallet"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                app:srcCompat="@drawable/ostdemoapp300" />
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/paper_wallet_til"
-                style="@style/Widget.OstDemoApp.TextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="110dp"
-                android:layout_marginTop="10dp"
-                android:hint="Paper Wallet Words"
-                app:errorEnabled="true">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/paper_wallet_edit_box"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:maxLines="4"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <RelativeLayout
-                android:id="@+id/action_buttons"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
-
-                <android.support.design.button.MaterialButton
-                    android:id="@+id/next_button"
-                    style="@style/Widget.OstDemoApp.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:text="SHOW WORDS" />
-
-                <android.support.design.button.MaterialButton
-                    android:id="@+id/authorize_device"
-                    style="@style/Widget.OstDemoApp.Button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:visibility="gone"
-                    android:text="Authorize" />
-
-                <android.support.design.button.MaterialButton
-                    android:id="@+id/cancel_button"
-                    style="@style/Widget.OstDemoApp.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="110dp"
-                    android:layout_alignParentLeft="true"
-                    android:text="Cancel" />
-
-            </RelativeLayout>
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/action_loader"
-                android:layout_marginRight="30dp"
-                android:visibility="gone"
-                android:layout_gravity="right">
-
-                <ImageView
-                    android:id="@+id/loader"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/loader_img"
-                    android:layout_gravity="right"
-                    android:padding="10dp" />
-
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/wallet_instruction_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:textSize="18sp"
-                android:textColor="@color/colorRed"
-                android:visibility="gone"/>
-
-        </LinearLayout>
-    </RelativeLayout>
-</ScrollView>
+        android:layout_height="match_parent"
+        android:maxLines="4"/>
+</android.support.design.widget.TextInputLayout>
+</LinearLayout>

@@ -8,7 +8,6 @@ import android.util.Log;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.security.OstApiSigner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +16,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -90,8 +88,8 @@ public class KitApiTest {
         /*  Create handle for the RetrofitInstance interface*/
         try {
             OstApiClient ostApiClient = new OstApiClient(USER_ID);
-            OstApiSigner ostApiSigner = new OstApiSigner(Numeric.hexStringToByteArray("0x6edc3804eb9f70b26731447b4e43955c5532f2195a6fe77cbed287dbd3c762ce"));
-            ostApiClient.getOstHttpRequestClient().setOstApiSigner(ostApiSigner);
+//            OstApiSigner ostApiSigner = new OstApiSigner(Numeric.hexStringToByteArray("0x6edc3804eb9f70b26731447b4e43955c5532f2195a6fe77cbed287dbd3c762ce"));
+//            ostApiClient.getOstHttpRequestClient().setOstApiSigner(ostApiSigner);
             try {
                 Field field = ostApiClient.getClass().getDeclaredField("mOstUser");
                 field.setAccessible(true);
@@ -115,8 +113,8 @@ public class KitApiTest {
         /*  Create handle for the RetrofitInstance interface*/
         try {
             OstApiClient ostApiClient = new OstApiClient(USER_ID);
-            OstApiSigner ostApiSigner = new OstApiSigner(Numeric.hexStringToByteArray("0x6edc3804eb9f70b26731447b4e43955c5532f2195a6fe77cbed287dbd3c762ce"));
-            ostApiClient.getOstHttpRequestClient().setOstApiSigner(ostApiSigner);
+//            OstApiSigner ostApiSigner = new OstApiSigner(Numeric.hexStringToByteArray("0x6edc3804eb9f70b26731447b4e43955c5532f2195a6fe77cbed287dbd3c762ce"));
+//            ostApiClient.getOstHttpRequestClient().setOstApiSigner(ostApiSigner);
             try {
                 Field field = ostApiClient.getClass().getDeclaredField("mOstUser");
                 field.setAccessible(true);

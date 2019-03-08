@@ -9,9 +9,9 @@ import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
-import com.ost.mobilesdk.security.OstKeyManager;
-import com.ost.mobilesdk.security.OstMultiSigSigner;
-import com.ost.mobilesdk.security.structs.SignedAddSessionStruct;
+import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
+import com.ost.mobilesdk.ecKeyInteracts.OstMultiSigSigner;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddSessionStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.GnosisSafe;
 import com.ost.mobilesdk.utils.OstPayloadBuilder;
@@ -23,7 +23,6 @@ import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstSessionPollingService;
 
 import org.json.JSONObject;
-import org.web3j.crypto.Keys;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -70,9 +69,6 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         String tokenHolderAddress = ostUser.getTokenHolderAddress();
         String deviceManagerAddress = ostUser.getDeviceManagerAddress();
 
-        sessionAddress = Keys.toChecksumAddress(sessionAddress);
-        tokenHolderAddress = Keys.toChecksumAddress(tokenHolderAddress);
-        deviceManagerAddress = Keys.toChecksumAddress(deviceManagerAddress);
 
         String expiryHeight = new BigInteger(blockNumber).add(new BigInteger(String
                 .valueOf(mExpiresAfterInSecs))).toString();
@@ -113,7 +109,7 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
             return postErrorInterrupt("wf_as_pr_as_3", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }
         if (!isValidResponse(responseObject)) {
-            return postErrorInterrupt("Not a valid response");
+            return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }
         //Request Acknowledge
         postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
@@ -123,12 +119,9 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         OstDeviceManager.getById(ostUser.getDeviceManagerAddress()).incrementNonce();
 
         Log.i(TAG, "Starting Session polling service");
-
-        OstSessionPollingService.startPolling(mUserId, sessionAddress, OstSession.CONST_STATUS.AUTHORISED,
-                OstSession.CONST_STATUS.CREATED);
-
         Log.i(TAG, "Waiting for update");
-        Bundle bundle = waitForUpdate(OstSdk.SESSION, sessionAddress);
+        Bundle bundle = OstSessionPollingService.startPolling(mUserId, sessionAddress, OstSession.CONST_STATUS.AUTHORISED,
+                OstSession.CONST_STATUS.CREATED);
         if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             Log.d(TAG, String.format("Polling time out for session Id: %s", sessionAddress));
             return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.POLLING_TIMEOUT);

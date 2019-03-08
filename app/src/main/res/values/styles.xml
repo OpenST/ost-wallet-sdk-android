@@ -39,7 +39,7 @@
     </style>
 
     <style name="Widget.OstDemoApp.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">@color/primaryButtonTextColor</item>
         <item name="backgroundTint">?attr/colorPrimaryDark</item>
         <item name="android:stateListAnimator" tools:ignore="NewApi">
             @animator/shr_next_button_state_list_anim

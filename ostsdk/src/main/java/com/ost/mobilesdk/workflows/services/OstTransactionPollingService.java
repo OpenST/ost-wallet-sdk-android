@@ -3,6 +3,7 @@ package com.ost.mobilesdk.workflows.services;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.models.entities.OstBaseEntity;
@@ -18,8 +19,8 @@ public class OstTransactionPollingService extends OstPollingService {
 
     private static final String TAG = "OstTransactionPollingService";
 
-    public OstTransactionPollingService() {
-        super();
+    public OstTransactionPollingService(String userId, String entityId, String successStatus, String failureStatus) {
+        super(userId, entityId, successStatus, failureStatus);
     }
 
     /**
@@ -28,10 +29,9 @@ public class OstTransactionPollingService extends OstPollingService {
      *
      * @see IntentService
      */
-    public static void startPolling(String userId, String entityId, String successStatus, String failureStatus) {
-        Context context = OstSdk.getContext();
-        Intent intent = new Intent(context, OstTransactionPollingService.class);
-        OstPollingService.startPolling(context, intent, userId, entityId, successStatus, failureStatus);
+    public static Bundle startPolling(String userId, String entityId, String successStatus, String failureStatus) {
+        OstTransactionPollingService ostTransactionPollingService = new OstTransactionPollingService(userId, entityId, successStatus, failureStatus);
+        return ostTransactionPollingService.waitForUpdate();
     }
 
     @Override
