@@ -7,7 +7,7 @@
     <color name="primaryButtonTextColor">#FFFFFF</color>
     <color name="toolbarIconColor">#FFFFFF</color>
     <color name="loginPageBackgroundColor">#FFFFFF</color>
-    <color name="productGridBackgroundColor">#FFFBFA</color>
+    <color name="productGridBackgroundColor">#819AA1</color>
     <color name="colorControlActivated">#34445b</color>
     <color name="colorRed">#eb4d4a</color>
 </resources>
