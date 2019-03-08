@@ -136,24 +136,6 @@ abstract class OstBaseWorkFlow {
         return postFlowComplete(null);
     }
 
-    /**
-     * @param msg
-     * @Deprecated: Use postErrorInterrupt instead.
-     */
-    @Deprecated
-    void postError(String msg) {
-        Log.i(TAG, "Flow Error");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                OstWorkFlowCallback callback = getCallback();
-                if ( null != callback ) {
-                    callback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), new OstError(msg));
-                }
-            }
-        });
-    }
-
     AsyncStatus postErrorInterrupt(String internalErrCode, OstErrors.ErrorCode errorCode) {
         Log.i(TAG, "Flow Error");
         OstError error = new OstError(internalErrCode, errorCode);

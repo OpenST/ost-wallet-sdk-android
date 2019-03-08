@@ -11,6 +11,7 @@ public class OstErrors {
         switch (code) {
             case INVALID_USER_ID: return "Invalid user Id";
             case INVALID_WORKFLOW_CALLBACK: return "Invalid Workflow Callback. Workflow callback can not be null.";
+            case KIT_API_ERROR: return "Kit Api returned error.";
             case GET_USER_API_FAILED:
                 return "Failed to fetch user information";
 
@@ -245,6 +246,7 @@ public class OstErrors {
         WORKFLOW_CANCELLED,
         UNCAUGHT_EXCEPTION_HANDELED,
         DEPRECATED,
-        FAILED_TO_GENERATE_ETH_KEY
+        FAILED_TO_GENERATE_ETH_KEY,
+        KIT_API_ERROR
     }
 }
