@@ -45,24 +45,4 @@ public interface OstConstants {
     String OST_PRICE_POINT_CURRENCY_SYMBOL = "OST";
     int OST_REQUEST_TIMEOUT_DURATION = 6; //Seconds
     long OST_SESSION_BUFFER_TIME = 60 * 60;
-
-    //ToDo: Move this to OstWorkflows.java (Create one)
-    enum WORKFLOW_TYPE {
-        UNKNOWN,
-        REGISTER_DEVICE,
-        ACTIVATE_USER,
-        ADD_DEVICE,
-        PERFORM,
-        GET_PAPER_WALLET,
-        ADD_SESSION,
-        EXECUTE_TRANSACTION
-    }
-
-    /**
-     * Config:
-     * n : 2^14
-     * r : 8
-     * p : 1
-     *
-     */
 }

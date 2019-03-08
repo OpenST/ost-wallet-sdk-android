@@ -4,13 +4,13 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
+import com.ost.mobilesdk.ecKeyInteracts.structs.OstSignWithMnemonicsStruct;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstSecureKey;
 import com.ost.mobilesdk.models.entities.OstSessionKey;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
-import com.ost.mobilesdk.ecKeyInteracts.structs.OstSignWithMnemonicsStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
@@ -42,6 +42,10 @@ import java.util.concurrent.TimeUnit;
 import static org.web3j.compat.Compat.UTF_8;
 
 class InternalKeyManager {
+    private static final int N = 14;
+    private static final int R = 8;
+    private static final int P = 1;
+
     private static OstSecureKeyModelRepository modelRepo = null;
     private static OstSecureKeyModelRepository getByteStorageRepo() {
         if ( null == modelRepo ) {
@@ -589,9 +593,9 @@ class InternalKeyManager {
      * @return - Recovery Key. You need handle it properly.
      */
     private ECKeyPair createRecoveryKey(UserPassphrase userPassphrase, byte[] salt) {
-        int SCryptMemoryCost = 2;
-        int SCryptBlockSize = 2;
-        int SCryptParallelization = 2;
+        int SCryptMemoryCost = (int) Math.pow(2, N);
+        int SCryptBlockSize = R;
+        int SCryptParallelization = P;
         int SCryptKeyLength = 32;
 
         byte[] seed = null;
