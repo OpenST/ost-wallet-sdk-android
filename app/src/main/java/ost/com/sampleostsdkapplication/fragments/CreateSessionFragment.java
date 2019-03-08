@@ -51,8 +51,7 @@ public class CreateSessionFragment extends BaseFragment {
             return;
         }
         if (mSessionExpirationEditBox.getText() == null ||
-                Integer.parseInt(mSessionExpirationEditBox.getText().toString()) < 1 ||
-                Integer.parseInt(mSessionExpirationEditBox.getText().toString()) > 365){
+                Integer.parseInt(mSessionExpirationEditBox.getText().toString()) < 1 ){
             mSessionExpiration.setError(getResources().getString(R.string.valid_number_of_days));
             return;
         }

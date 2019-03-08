@@ -101,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
                 android:layout_marginTop="10dp"
-                android:background="@color/colorAzure"
+                android:background="@color/colorPrimary"
                 app:errorEnabled="true"
                 android:visibility="gone">
 
@@ -110,6 +110,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:textSize="12sp"
+                    android:textColor="@color/primaryButtonTextColor"
+                    android:editable="false"
                     android:maxLines="4"/>
             </android.support.design.widget.TextInputLayout>
 
