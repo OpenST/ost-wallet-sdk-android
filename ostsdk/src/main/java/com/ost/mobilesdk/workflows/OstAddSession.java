@@ -23,7 +23,6 @@ import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstSessionPollingService;
 
 import org.json.JSONObject;
-import org.web3j.crypto.Keys;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -70,9 +69,6 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         String tokenHolderAddress = ostUser.getTokenHolderAddress();
         String deviceManagerAddress = ostUser.getDeviceManagerAddress();
 
-        sessionAddress = Keys.toChecksumAddress(sessionAddress);
-        tokenHolderAddress = Keys.toChecksumAddress(tokenHolderAddress);
-        deviceManagerAddress = Keys.toChecksumAddress(deviceManagerAddress);
 
         String expiryHeight = new BigInteger(blockNumber).add(new BigInteger(String
                 .valueOf(mExpiresAfterInSecs))).toString();

@@ -12,6 +12,8 @@ import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
 
+import org.json.JSONObject;
+
 import ost.com.sampleostsdkapplication.R;
 
 /**
@@ -58,14 +60,15 @@ public class QRPerformFragment extends BaseFragment {
     @Override
     public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         super.verifyData(ostWorkflowContext, ostContextEntity, ostVerifyDataInterface);
-        String message = ostContextEntity.getMessage();
-        mVerifyDataView.setText(message);
+        JSONObject jsonObject = (JSONObject) ostContextEntity.getEntity();
+        mVerifyDataView.setText(jsonObject.toString());
         getNextButton().setText(getString(R.string.authorize));
         getNextButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ostVerifyDataInterface.dataVerified();
-                getNextButton().setVisibility(View.INVISIBLE);
+                getNextButton().setEnabled(false);
+                showLoader();
             }
         });
     }

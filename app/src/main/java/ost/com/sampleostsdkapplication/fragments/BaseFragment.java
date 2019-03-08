@@ -14,7 +14,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -139,6 +141,9 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         }
     }
 
+    public void flowStarted() {
+        addWorkflowTaskText("Work flow started at: ");
+    }
 
     @Override
     public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
@@ -169,8 +174,14 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
 
     @Override
     public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        String completeString = String.format("Workflow %s complete entity %s ",
+                ostWorkflowContext.getWorkflow_type(), null == ostContextEntity ? "null" : ostContextEntity.getEntityType());
+
         Log.d("Workflow", "Inside workflow complete");
-        addWorkflowTaskText("Workflow completed at: ");
+        Toast.makeText(OstSdk.getContext(), "Work Flow Successful", Toast.LENGTH_SHORT).show();
+
+        Log.d("Workflow", "Inside workflow complete");
+        addWorkflowTaskText(String.format("%s completed at: ", completeString));
         hideLoader();
     }
 
@@ -178,19 +189,22 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
     public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d("Workflow", "Inside workflow acknowledged");
         addWorkflowTaskText(String.format("Entity type: %s\n Workflow acknowledged at: ",
-                ostContextEntity.getEntityType()));
+                null == ostContextEntity ? "null" : ostContextEntity.getEntityType()));
     }
 
     @Override
     public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         Log.d("Workflow", "Inside workflow verify Data");
-        addWorkflowTaskText(String.format("Verify data: %s", (JSONObject) ostContextEntity.getEntity()));
+        addWorkflowTaskText(String.format("Verify data: %s", (null == ostContextEntity ? new JSONObject() : ostContextEntity.getEntity()).toString()));
     }
 
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        String errorString = String.format("Work Flow %s Error: %s", ostWorkflowContext.getWorkflow_type(), ostError.getMessage());
+        Toast.makeText(OstSdk.getContext(), errorString, Toast.LENGTH_SHORT).show();
+
         Log.d("Workflow", "Inside workflow interrupt");
-        addWorkflowTaskText("Workflow interrupted at: ");
+        addWorkflowTaskText(String.format("%s interrupted at: ", errorString));
         hideLoader();
     }
 

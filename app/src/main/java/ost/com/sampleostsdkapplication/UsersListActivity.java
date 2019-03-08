@@ -268,7 +268,10 @@ public class UsersListActivity extends MappyBaseActivity implements
             String userId = ((App) getApplicationContext()).getLoggedUser().getOstUserId();
             String returnedResult = data.getData().toString();
             try {
-                OstSdk.ostPerform(userId, returnedResult, qrPerformFragment);
+                if (qrPerformFragment != null) {
+                    OstSdk.ostPerform(userId, returnedResult, qrPerformFragment);
+                    qrPerformFragment.flowStarted();
+                }
             } catch (JSONException e) {
                 Log.e(TAG, "JSONException while parsing");
             }
@@ -303,6 +306,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         if (userSetupFragment != null) {
             OstSdk.activateUser(new UserPassphrase(userId, pin, passphrasePrefix), expiresAfterInSecs, spendingLimit,
                     userSetupFragment);
+            userSetupFragment.flowStarted();
         }
     }
 
@@ -316,6 +320,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         if (resetPinFragment != null) {
             OstSdk.resetRecoveryPassphrase(logInUser.getOstUserId(), currentPassphrase, newPassphrase,
                     resetPinFragment);
+            resetPinFragment.flowStarted();
         }
     }
 
@@ -325,6 +330,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         if (createSessionFragment != null) {
             OstSdk.addSession(logInUser.getOstUserId(), spendingLimit,
                     expiryAfterSecs, createSessionFragment);
+            createSessionFragment.flowStarted();
         }
     }
 

@@ -100,11 +100,14 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
     }
 
     private void validatePayload() {
+        if (null == mPayload) {
+            throw new OstError("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+        }
         boolean hasDataDefinition = mPayload.has(OstConstants.QR_DATA_DEFINITION);
         boolean hasDataDefinitionVersion = mPayload.has(OstConstants.QR_DATA_DEFINITION_VERSION);
         boolean data = mPayload.has(OstConstants.QR_DATA);
         if (!(hasDataDefinition && hasDataDefinitionVersion && data)) {
-            throw new OstError("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+            throw new OstError("wf_pe_pr_3", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
         }
     }
 

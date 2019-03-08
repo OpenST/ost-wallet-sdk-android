@@ -43,7 +43,6 @@ public class ResetPinFragment extends BaseFragment {
 
     /**
      * Perform operation on clicking next
-     * @param view
      */
     public void onNextClick(){
         if (mOldPinEditBox.getText() == null || mOldPinEditBox.getText().length() < 6){

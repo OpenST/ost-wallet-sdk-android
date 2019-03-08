@@ -23,6 +23,11 @@ public interface OstConstants {
     String QR_AMOUNTS = "ams";
     String QR_TOKEN_ID = "tid";
 
+    String RULE_NAME = "rule_name";
+    String TOKEN_HOLDER_ADDRESSES = "token_holder_addresses";
+    String AMOUNTS = "amounts";
+    String DEVICE_ADDRESS = "device_address";
+
     int RECOVERY_PHRASE_PREFIX_MIN_LENGTH = 30;
     int RECOVERY_PHRASE_USER_INPUT_MIN_LENGTH = 6;
     long POLLING_WAIT_TIME_IN_SECS = 60 * 2;

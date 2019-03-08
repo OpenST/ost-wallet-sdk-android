@@ -17,6 +17,7 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstDevicePollingService;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.WalletUtils;
 
@@ -89,6 +90,7 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
     }
 
     static class AddDeviceDataDefinitionInstance implements OstPerform.DataDefinitionInstance {
+        private static final String TAG = "AddDeviceDDInstance";
         private final JSONObject dataObject;
         private final String userId;
         private final OstWorkFlowCallback callback;
@@ -113,10 +115,19 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
 
         @Override
         public OstContextEntity getContextEntity() {
-            String deviceAddress = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
-            String stringMessage = String.format("Adding Device address: %s", deviceAddress);
-            OstContextEntity contextEntity = new OstContextEntity(stringMessage, null, "StringMessage");
+            JSONObject jsonObject = updateJSONKeys(dataObject);
+            OstContextEntity contextEntity = new OstContextEntity(jsonObject, OstSdk.JSON_OBJECT);
             return contextEntity;
+        }
+
+        private JSONObject updateJSONKeys(JSONObject dataObject) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put(OstConstants.DEVICE_ADDRESS, dataObject.optString(OstConstants.QR_DEVICE_ADDRESS));
+            } catch (JSONException e) {
+                Log.e(TAG, "JSON Exception in updateJSONKeys: ", e);
+            }
+            return jsonObject;
         }
 
         @Override

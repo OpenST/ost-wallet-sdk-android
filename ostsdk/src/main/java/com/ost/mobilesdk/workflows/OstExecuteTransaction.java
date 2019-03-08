@@ -18,6 +18,7 @@ import com.ost.mobilesdk.workflows.services.OstPollingService;
 import com.ost.mobilesdk.workflows.services.OstTransactionPollingService;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -207,6 +208,8 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
     }
 
     static class TransactionDataDefinitionInstance implements OstPerform.DataDefinitionInstance {
+        private static final String TAG = "TransactionDDInstance";
+
         private final JSONObject dataObject;
         private final String userId;
         private final OstWorkFlowCallback callback;
@@ -238,11 +241,22 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
 
         @Override
         public OstContextEntity getContextEntity() {
-            String dataString = dataObject.toString();
-
-            String stringMessage = String.format("Execute transaction of data: %s", dataString);
-            OstContextEntity contextEntity = new OstContextEntity(stringMessage, null, "StringMessage");
+            JSONObject jsonObject = updateJSONKeys(dataObject);
+            OstContextEntity contextEntity = new OstContextEntity(jsonObject, OstSdk.JSON_OBJECT);
             return contextEntity;
+        }
+
+        private JSONObject updateJSONKeys(JSONObject dataObject) {
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put(OstConstants.RULE_NAME, dataObject.optString(OstConstants.QR_RULE_NAME));
+                jsonObject.put(OstConstants.TOKEN_HOLDER_ADDRESSES, dataObject.optJSONArray(OstConstants.QR_TOKEN_HOLDER_ADDRESSES));
+                jsonObject.put(OstConstants.AMOUNTS, dataObject.optJSONArray(OstConstants.QR_AMOUNTS));
+                jsonObject.put(OstConstants.TOKEN_ID, dataObject.optJSONArray(OstConstants.QR_TOKEN_ID));
+            } catch (JSONException e) {
+                Log.e(TAG, "JSON Exception in updateJSONKeys: ", e);
+            }
+            return jsonObject;
         }
 
         @Override

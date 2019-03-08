@@ -45,6 +45,7 @@ public class OstSdk {
     public static final String DEVICE = "device";
     public static final String SESSIONS = "sessions";
     public static final String RECOVERY_OWNER = "recovery_owner";
+    public static final String JSON_OBJECT = "JSON";
     private static final String TAG = "OstSdk";
     private static volatile OstSdk INSTANCE;
 
