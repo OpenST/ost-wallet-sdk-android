@@ -643,7 +643,7 @@ class InternalKeyManager {
 
     String signDataWithRecoveryKey(String hexStringToSign, UserPassphrase passphrase, byte[] salt) {
 
-        if ( !isUserPassphraseValidationAllowed() ) {
+        if ( isUserPassphraseValidationLocked() ) {
             throw new IllegalAccessError(OstErrors.getMessage(ErrorCode.USER_PASSPHRASE_VALIDATION_LOCKED) );
         }
 
@@ -693,7 +693,7 @@ class InternalKeyManager {
      */
     boolean validateUserPassphrase(UserPassphrase passphrase, byte[] salt) {
 
-        if ( !isUserPassphraseValidationAllowed() ) {
+        if ( isUserPassphraseValidationLocked() ) {
             throw new IllegalAccessError(OstErrors.getMessage(ErrorCode.USER_PASSPHRASE_VALIDATION_LOCKED) );
         }
 
@@ -860,109 +860,21 @@ class InternalKeyManager {
 
 
     // region - Passphrase Locker Utility Methods
-
-    // A static hash-map that stores instances of PassphraseValidationLocker
-    private static HashMap<String,InternalKeyManager.PassphraseValidationLocker> lockers = new HashMap<>();
-    /**
-     * A Factory method to get In-Memory PassphraseValidationLocker for a given user-id
-     * @param userId Id of the user.
-     * @return A simple time-based, In-Memory lock mechanism.
-     */
-    private InternalKeyManager.PassphraseValidationLocker getLockerFor(String userId) {
-        InternalKeyManager.PassphraseValidationLocker locker = lockers.get(userId);
-        if ( null == locker ) {
-            locker = new InternalKeyManager.PassphraseValidationLocker();
-            lockers.put(userId, locker);
-        }
-        return locker;
+    boolean isUserPassphraseValidationLocked() {
+        //Future - Implement passphrase locker.
+        return false;
     }
-
     boolean isUserPassphraseValidationAllowed() {
-        InternalKeyManager.PassphraseValidationLocker locker = getLockerFor(mUserId);
-        return locker.isValidationAllowed();
+        //Future - Implement passphrase locker.
+        return true;
     }
     private void userPassphraseValidated() {
-        InternalKeyManager.PassphraseValidationLocker locker = getLockerFor(mUserId);
-        locker.validated();
+        //Future - Implement passphrase locker.
     }
     void userPassphraseInvalidated() {
-        InternalKeyManager.PassphraseValidationLocker locker = getLockerFor(mUserId);
-        locker.invalidated();
-    }
-    boolean isUserPassphraseValidationNeeded() {
-        InternalKeyManager.PassphraseValidationLocker locker = getLockerFor(mUserId);
-        return locker.isValidationNeeded();
+        //Future - Implement passphrase locker.
     }
     // endregion
-
-
-    // region - Passphrase Locker Class
-    static class PassphraseValidationLocker {
-        private static int MaxRetryCount = 3;
-        private static long LockDuration = (10 * 60 * 60 * 1000);
-        private static long UnlockedDuration = 0;
-
-        private long lastInvalidAttemptTimestamp;
-        private long lastValidAttemptTimestamp;
-        private int retryCount;
-
-        /**
-         * Use this method to check if validation is allowed.
-         *
-         * @return
-         */
-        private boolean isValidationAllowed() {
-            if (retryCount < MaxRetryCount) {
-                return true;
-            }
-            long now = System.currentTimeMillis();
-            long elapsedLockDuration = now - lastInvalidAttemptTimestamp;
-            return elapsedLockDuration > LockDuration;
-        }
-
-        /**
-         * Call this method to acknowledge validation.
-         */
-        private void validated() {
-            //To-Do: Update them in DB
-            lastValidAttemptTimestamp = System.currentTimeMillis();
-            lastInvalidAttemptTimestamp = 0;
-            retryCount = 0;
-        }
-
-        /**
-         * Call this method to acknowledge invalidation.
-         */
-        private void invalidated() {
-            //To-Do: Update them in DB
-            boolean wasValidationAllowed = isValidationAllowed();
-
-            lastValidAttemptTimestamp = 0;
-            lastInvalidAttemptTimestamp = System.currentTimeMillis();
-            retryCount += 1;
-            if (retryCount > 3 && wasValidationAllowed) {
-                retryCount = 1;
-            }
-        }
-
-        /**
-         * Use this method to check if validation is needed.
-         *
-         * @return
-         */
-        private boolean isValidationNeeded() {
-            //If passphrase validation is not allowed, return true.
-            if (!isValidationAllowed()) {
-                return true;
-            }
-
-            long now = System.currentTimeMillis();
-            long elapsedLockDuration = now - lastValidAttemptTimestamp;
-            return elapsedLockDuration > UnlockedDuration;
-        }
-    }
-    //endregion
-
 
     // region - internal utilities
     private static String signatureDataToString(Sign.SignatureData signatureData) {

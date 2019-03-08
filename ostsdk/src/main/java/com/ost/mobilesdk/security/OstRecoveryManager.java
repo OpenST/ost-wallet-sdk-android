@@ -62,7 +62,7 @@ public class OstRecoveryManager {
         InternalKeyManager ikm = null;
         try {
             ikm = new InternalKeyManager(userId);
-            if ( !ikm.isUserPassphraseValidationAllowed() ) {
+            if ( ikm.isUserPassphraseValidationLocked() ) {
                 throw new OstError("km_orm_vp_2", ErrorCode.USER_PASSPHRASE_VALIDATION_LOCKED);
             }
 
@@ -101,7 +101,7 @@ public class OstRecoveryManager {
             OstUser user = OstUser.getById(userId);
             ikm = new InternalKeyManager(userId);
             // Check if recovery is locked.
-            if (!ikm.isUserPassphraseValidationAllowed()) {
+            if ( ikm.isUserPassphraseValidationLocked() ) {
                 currentPassphrase.wipe();
                 newUserPassphrase.wipe();
                 throw new OstError("km_rs_grppws_1", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
@@ -181,7 +181,7 @@ public class OstRecoveryManager {
             ikm = new InternalKeyManager(userId);
 
             // Check if recovery is locked.
-            if (!ikm.isUserPassphraseValidationAllowed()) {
+            if ( ikm.isUserPassphraseValidationLocked() ) {
                 throw new OstError("km_rs_grds_1", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
             }
 
