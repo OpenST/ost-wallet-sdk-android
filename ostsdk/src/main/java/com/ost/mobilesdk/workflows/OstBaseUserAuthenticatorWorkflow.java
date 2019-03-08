@@ -236,8 +236,8 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         return new AsyncStatus(true);
     }
 
-    @Override
-    public void cancelFlow(OstError ostError) {
+
+    public void cancelFlow() {
         performWithState(WorkflowStateManager.CANCELLED);
     }
 

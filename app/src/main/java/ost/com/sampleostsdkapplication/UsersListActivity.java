@@ -255,7 +255,7 @@ public class UsersListActivity extends MappyBaseActivity implements
 
             @Override
             public void onCancel() {
-                ostPinAcceptInterface.cancelFlow(new OstError("Don't know pin"));
+                ostPinAcceptInterface.cancelFlow();
             }
         };
         getPinDialog(callback, "Enter Pin : ");

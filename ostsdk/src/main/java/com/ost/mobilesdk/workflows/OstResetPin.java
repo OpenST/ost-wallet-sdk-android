@@ -131,7 +131,7 @@ public class OstResetPin extends OstBaseWorkFlow {
                 break;
             case CANCELLED:
                 Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
-                postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.WORKFLOW_CANCELED);
+                postErrorInterrupt("wf_pe_pr_3", OstErrors.ErrorCode.WORKFLOW_CANCELLED);
                 break;
         }
         return new AsyncStatus(true);

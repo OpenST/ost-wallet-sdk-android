@@ -35,7 +35,7 @@ public class WorkFlowHelper implements OstWorkFlowCallback {
                 if (success) {
                     ostDeviceRegisteredInterface.deviceRegistered(response);
                 } else {
-                    ostDeviceRegisteredInterface.cancelFlow(new OstError(response.toString()));
+                    ostDeviceRegisteredInterface.cancelFlow();
                 }
             }
         });

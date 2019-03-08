@@ -6,5 +6,5 @@ import com.ost.mobilesdk.workflows.errors.OstError;
  * Base Interface having SDK's flows common methods
  */
 interface OstBaseInterface {
-    void cancelFlow(OstError ostError);
+    void cancelFlow();
 }

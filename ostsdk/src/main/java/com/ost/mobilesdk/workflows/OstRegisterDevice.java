@@ -95,7 +95,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                 break;
 
             case CANCELED:
-                return postErrorInterrupt("wf_rd_pr_3" , ErrorCode.WORKFLOW_CANCELED);
+                return postErrorInterrupt("wf_rd_pr_3" , ErrorCode.WORKFLOW_CANCELLED);
         }
         return new AsyncStatus(true);
     }
@@ -164,8 +164,8 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
     }
 
     @Override
-    public void cancelFlow(OstError ostError) {
-        setFlowState(OstRegisterDevice.STATES.CANCELED, ostError);
+    public void cancelFlow() {
+        setFlowState(OstRegisterDevice.STATES.CANCELED, null);
         perform();
     }
 }

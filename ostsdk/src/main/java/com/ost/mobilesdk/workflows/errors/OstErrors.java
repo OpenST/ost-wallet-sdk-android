@@ -44,9 +44,6 @@ public class OstErrors {
             case DEVICE_NOT_SETUP:
                 return "Device not registered";
 
-            case WORKFLOW_CANCELED:
-                return "Workflow canceled by application";
-
             case USER_NOT_ACTIVATED:
                 return "User not activated";
 
@@ -163,6 +160,8 @@ public class OstErrors {
             case PRICE_POINTS_API_FAILED:
                 return "Price points api failed";
 
+            case WORKFLOW_CANCELLED:return "Workflow cancelled";
+            case UNKNOWN_DATA_DEFINITION: return "The QR code does not contain valid data definition";
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -191,7 +190,6 @@ public class OstErrors {
 
         DEVICE_NOT_SETUP,
 
-        WORKFLOW_CANCELED,
         USER_NOT_ACTIVATED,
         POLLING_TIMEOUT,
         BLOCK_NUMBER_API_FAILED,
@@ -244,6 +242,7 @@ public class OstErrors {
 
         //Generic
         UNKNOWN,
+        WORKFLOW_CANCELLED,
         UNCAUGHT_EXCEPTION_HANDELED,
         DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY

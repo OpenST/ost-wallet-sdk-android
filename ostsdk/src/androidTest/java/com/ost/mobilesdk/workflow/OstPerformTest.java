@@ -46,7 +46,7 @@ public class OstPerformTest {
                 Assert.assertTrue(ostContextEntity.getEntityType().equalsIgnoreCase(OstSdk.DEVICE));
 
                 countDownLatch.countDown();
-                ostVerifyDataInterface.cancelFlow(new OstError("Test Cancel"));
+                ostVerifyDataInterface.cancelFlow();
             }
 
             @Override
