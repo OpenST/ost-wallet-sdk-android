@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.security.UserPassphrase;
-import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
 
 import org.json.JSONException;
@@ -27,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 import ost.com.sampleostsdkapplication.fragments.CreateSessionFragment;
+import ost.com.sampleostsdkapplication.fragments.DeviceRecoveryFragment;
 import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
 import ost.com.sampleostsdkapplication.fragments.QRPerformFragment;
 import ost.com.sampleostsdkapplication.fragments.ResetPinFragment;
@@ -40,8 +40,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         SetUpUserFragment.OnSetUpUserFragmentListener,
         PaperWalletFragment.OnPaperWalletFragmentListener,
         ResetPinFragment.OnResetPinFragmentListener,
-        CreateSessionFragment.OnCreateSessionFragmentListener,
-        QRPerformFragment.OnQRPerformListener {
+        CreateSessionFragment.OnCreateSessionFragmentListener {
 
     private static final String TAG = "UsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
@@ -120,7 +119,6 @@ public class UsersListActivity extends MappyBaseActivity implements
             String tokenHolderAddress = "0x3530b7d78132ff484f4a1fe7b6d7a1dd0c94fd2c";
             String amount = "1";
             String ruleName = "Pricer";
-            String tokenId = logInUser.getTokenId();
             OstSdk.executeTransaction(userId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper(getApplicationContext()) {
             });
         } else if (id == R.id.reset_pin) {
@@ -128,14 +126,19 @@ public class UsersListActivity extends MappyBaseActivity implements
             loadResetPinFragment(logInUser.getTokenId(), userId);
         } else if (id == R.id.device_recovery) {
             Log.d(TAG, "Device Recovery");
-            String currentPin = "123456";
             byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
-            String address = "0x1c5a4aa050fd1dc3b5450b736ce8168814339fac";
-            UserPassphrase passphrase = new UserPassphrase(userId, currentPin.getBytes(UTF_8), appSalt);
-            OstSdk.initiateRecoverDevice(userId, passphrase, address, new WorkFlowHelper(getApplicationContext()) {
-            });
+            loadDeviceRecoveryFragment(logInUser.getTokenId(), userId, appSalt);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadDeviceRecoveryFragment(String tokenId, String userId, byte[] appSalt) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        DeviceRecoveryFragment deviceRecoveryFragment = DeviceRecoveryFragment.newInstance(tokenId, userId, appSalt);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, deviceRecoveryFragment, "device_recovery");
+        transaction.addToBackStack("device_recovery");
+        transaction.commit();
     }
 
     private void loadUserDetailsFragment(String tokenId, String userId) {
@@ -278,10 +281,6 @@ public class UsersListActivity extends MappyBaseActivity implements
         }
     }
 
-    @Override
-    public void onDataVerified() {
-
-    }
 
     public interface DialogCallback {
         void onSubmit(String pin);

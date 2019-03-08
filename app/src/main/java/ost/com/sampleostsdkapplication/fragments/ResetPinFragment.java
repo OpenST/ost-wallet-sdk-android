@@ -27,13 +27,13 @@ public class ResetPinFragment extends BaseFragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        View childLayout = inflater.inflate(R.layout.reset_pin_fragment, null);
+        View childLayout = inflater.inflate(R.layout.two_input_fragment, null);
         mExternalView = view.findViewById(R.id.external_view);
         mExternalView.addView(childLayout);
-        mOldPinTextInput = view.findViewById(R.id.old_pin);
-        mOldPinEditBox = view.findViewById(R.id.old_pin_edit_box);
-        mNewPinTextInput = view.findViewById(R.id.new_pin);
-        mNewPinEditBox = view.findViewById(R.id.new_pin_edit_box);
+        mOldPinTextInput = view.findViewById(R.id.first_text_input);
+        mOldPinEditBox = view.findViewById(R.id.first_edit_box);
+        mNewPinTextInput = view.findViewById(R.id.second_text_input);
+        mNewPinEditBox = view.findViewById(R.id.second_edit_box);
         return view;
     }
 

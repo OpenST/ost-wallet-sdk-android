@@ -72,8 +72,4 @@ public class QRPerformFragment extends BaseFragment {
             }
         });
     }
-
-    public interface OnQRPerformListener extends OnBaseFragmentListener {
-        void onDataVerified();
-    }
 }
