@@ -46,11 +46,11 @@ public class ResetPinFragment extends BaseFragment {
      * @param view
      */
     public void onNextClick(){
-        if (mOldPinEditBox.getText() == null || mOldPinEditBox.getText().length() != 6){
+        if (mOldPinEditBox.getText() == null || mOldPinEditBox.getText().length() < 6){
             mOldPinTextInput.setError(getResources().getString(R.string.enter_six_digit_pin));
             return;
         }
-        if (mNewPinEditBox.getText() == null || mNewPinEditBox.getText().length() != 6){
+        if (mNewPinEditBox.getText() == null || mNewPinEditBox.getText().length() < 6){
             mNewPinTextInput.setError(getResources().getString(R.string.enter_six_digit_pin));
             return;
         }

@@ -41,7 +41,7 @@ public class SetUpUserFragment extends BaseFragment {
      * Perform operation on clicking next
      */
     public void onNextClick(){
-        if (mPinEditBox.getText() == null || mPinEditBox.getText().length() != 6){
+        if (mPinEditBox.getText() == null || mPinEditBox.getText().length() < 6){
             mPinTextInput.setError(getResources().getString(R.string.enter_six_digit_pin));
             return;
         }
