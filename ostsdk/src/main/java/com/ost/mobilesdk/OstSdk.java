@@ -134,7 +134,7 @@ public class OstSdk {
         ostPerform.perform();
     }
 
-    public static void addSession(String userId, long expireAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback workFlowCallback) {
+    public static void addSession(String userId, String spendingLimitInWei, long expireAfterInSecs, OstWorkFlowCallback workFlowCallback) {
         final OstAddSession ostAddSession = new OstAddSession(userId, spendingLimitInWei, expireAfterInSecs, workFlowCallback);
         ostAddSession.perform();
     }
