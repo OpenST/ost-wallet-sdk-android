@@ -79,7 +79,9 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
             throw new OstError("wf_ad_evp_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
         }
 
-        hasValidAddress(mDeviceAddressToBeAdded);
+        if (!hasValidAddress(mDeviceAddressToBeAdded)) {
+            throw new OstError("wf_ad_evp_2", ErrorCode.INVALID_ADD_DEVICE_ADDRESS);
+        }
 
         super.ensureValidParams();
     }
@@ -111,6 +113,7 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
 
         @Override
         public void validateDataParams() {
+
         }
 
         @Override
