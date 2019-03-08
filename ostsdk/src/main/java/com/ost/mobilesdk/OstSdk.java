@@ -130,7 +130,7 @@ public class OstSdk {
         Log.i(TAG, String.format("Scanned text: %s", data));
         JSONObject payload = new JSONObject(data);
         final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
-        ostPerform.process();
+        ostPerform.perform();
     }
 
     public static void addSession(String userId, String spendingLimit, long expireAfterInSecs, OstWorkFlowCallback workFlowCallback) {
@@ -143,8 +143,8 @@ public class OstSdk {
         ostGetPaperWallet.perform();
     }
 
-    public static void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback workFlowCallback) {
-        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenId, tokenHolderAddresses, amounts, transactionType, workFlowCallback);
+    public static void executeTransaction(String userId, List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback workFlowCallback) {
+        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenHolderAddresses, amounts, transactionType, workFlowCallback);
         ostExecuteTransaction.perform();
     }
 

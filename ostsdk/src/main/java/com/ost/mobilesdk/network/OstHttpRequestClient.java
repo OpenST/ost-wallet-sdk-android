@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
+import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.security.OstApiSigner;
 
@@ -215,8 +216,8 @@ public class OstHttpRequestClient {
         // Build the request Object.
         Request request;
         if (GET_REQUEST.equalsIgnoreCase(requestType)) {
-            requestBuilder.get().addHeader("Content-Type", "application/x-www-form-urlencoded");
-            requestBuilder.get().addHeader("User-Agent", "ost-sdk-js 1.1.0");
+            requestBuilder.get().addHeader("Content-Type", OstConstants.CONTENT_TYPE);
+            requestBuilder.get().addHeader("User-Agent", OstConstants.USER_AGENT);
         } else {
             FormBody formBody = formBodyBuilder.build();
             if (DEBUG && VERBOSE) {

@@ -194,7 +194,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         }
 
         mPinAskCount = mPinAskCount + 1;
-        if (mPinAskCount > OstConstants.MAX_PIN_LIMIT) {
+        if (mPinAskCount > OstConstants.OST_PIN_MAX_RETRY_COUNT) {
             Log.d(TAG, "Max pin ask limit reached");
             return postErrorInterrupt("bpawf_vup_2", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
         }
@@ -254,6 +254,8 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         public static final String CANCELLED = "CANCELLED";
         public static final String COMPLETED_WITH_ERROR = "COMPLETED_WITH_ERROR";
         public static final String COMPLETED = "COMPLETED";
+        public static final String VERIFY_DATA = "VERIFY_DATA";
+        public static final String DATA_VERIFIED = "DATA_VERIFIED";
 
 
         private int mCurrentState = 0;

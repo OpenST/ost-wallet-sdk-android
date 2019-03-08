@@ -8,6 +8,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -69,7 +70,7 @@ abstract class OstBaseWorkFlow {
 
     OstBaseWorkFlow(String userId, OstWorkFlowCallback callback) {
         mUserId = userId;
-        mHandler = new Handler();
+        mHandler = new Handler(Looper.getMainLooper());
         mCallback = callback;
         mOstApiClient = new OstApiClient(mUserId);
     }

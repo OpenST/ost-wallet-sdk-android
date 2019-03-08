@@ -218,6 +218,7 @@ public class OstErrors {
         EIP1077_FAILED,
         PRICE_POINTS_API_FAILED,
         UNKNOWN_RULE_NAME,
+        UNKNOWN_DATA_DEFINITION,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,

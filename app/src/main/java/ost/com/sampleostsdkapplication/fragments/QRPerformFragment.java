@@ -8,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ost.mobilesdk.workflows.OstContextEntity;
+import com.ost.mobilesdk.workflows.OstWorkflowContext;
+import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
+
 import ost.com.sampleostsdkapplication.R;
 
 /**
@@ -37,15 +41,6 @@ public class QRPerformFragment extends BaseFragment {
     }
 
     /**
-     * Perform operation on clicking next
-     */
-    public void onNextClick() {
-        showLoader();
-        OnQRPerformListener mListener = (OnQRPerformListener) getFragmentListener();
-        mListener.onDataVerified();
-    }
-
-    /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
@@ -58,6 +53,21 @@ public class QRPerformFragment extends BaseFragment {
         fragment.mTokenId = tokenId;
         fragment.mUserId = userId;
         return fragment;
+    }
+
+    @Override
+    public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+        super.verifyData(ostWorkflowContext, ostContextEntity, ostVerifyDataInterface);
+        String message = ostContextEntity.getMessage();
+        mVerifyDataView.setText(message);
+        getNextButton().setText(getString(R.string.authorize));
+        getNextButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ostVerifyDataInterface.dataVerified();
+                getNextButton().setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     public interface OnQRPerformListener extends OnBaseFragmentListener {

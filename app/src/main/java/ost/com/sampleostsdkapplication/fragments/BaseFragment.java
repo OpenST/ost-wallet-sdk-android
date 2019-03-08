@@ -18,19 +18,32 @@ import android.widget.TextView;
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.errors.OstError;
+import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
+import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
+import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
+
+import org.json.JSONObject;
 
 import ost.com.sampleostsdkapplication.R;
 import ost.com.sampleostsdkapplication.UsersListActivity;
-import ost.com.sampleostsdkapplication.WorkFlowHelper;
 
 /**
  * Fragment representing the Base of all fragments.
  */
-public class BaseFragment extends Fragment implements View.OnClickListener {
+public class BaseFragment extends Fragment implements View.OnClickListener, OstWorkFlowCallback {
 
     private String mUserId;
     private String mTokenId;
+
+    public MaterialButton getNextButton() {
+        return nextButton;
+    }
+
+    public MaterialButton getCancelButton() {
+        return cancelButton;
+    }
+
     private MaterialButton nextButton;
     private MaterialButton cancelButton;
     private RelativeLayout mActionButtons;
@@ -77,107 +90,113 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onDestroy(){
-        if(mListener != null){
+    public void onDestroy() {
+        if (mListener != null) {
             mListener = null;
         }
         super.onDestroy();
     }
 
     @Override
-    public void onClick(View view){
-        switch (view.getId()){
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.cancel_button: {
                 mListener.onBack();
                 break;
             }
             case R.id.next_button: {
-                onNextClick(  );
+                onNextClick();
                 break;
             }
         }
     }
 
-    public OnBaseFragmentListener getFragmentListener(){
+    public OnBaseFragmentListener getFragmentListener() {
         return mListener;
     }
 
-    public String getPageTitle(){
+    public String getPageTitle() {
         return "";
     }
 
-    public void onNextClick(){}
+    public void onNextClick() {
+    }
 
-    public void showLoader(){
+    public void showLoader() {
         mActionButtons.setVisibility(View.GONE);
         mActionLoaders.setVisibility(View.VISIBLE);
     }
 
-    public void hideLoader(){
+    public void hideLoader() {
         mActionButtons.setVisibility(View.VISIBLE);
         mActionLoaders.setVisibility(View.GONE);
     }
 
-    public void showWalletInstructionText(String showText){
-        if(showText != null){
+    public void showWalletInstructionText(String showText) {
+        if (showText != null) {
             mWalletInstructionText.setText(showText);
             mWalletInstructionText.setVisibility(View.VISIBLE);
         }
     }
 
-    /**
-     * Method to register workflow callbacks on views.
-     *
-     * @return
-     */
-    public WorkFlowHelper registerWorkflowCallbacks(){
-        WorkFlowHelper wfh = new WorkFlowHelper(getActivity()) {
-            @Override
-            public void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-                super.getPin(ostWorkflowContext, userId, ostPinAcceptInterface);
-                UsersListActivity activity = (UsersListActivity) getActivity();
-                activity.showPinDialog(ostPinAcceptInterface);
-            }
 
-            @Override
-            public void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-                super.invalidPin(ostWorkflowContext, userId, ostPinAcceptInterface);
-                hideLoader();
-                showWalletInstructionText("Invalid Pin.");
-            }
+    @Override
+    public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
 
-            @Override
-            public void showPaperWallet(byte[] mnemonics) {
-                super.showPaperWallet(mnemonics);
-                showWalletWords(new String(mnemonics), "Please save these words carefully.");
-            }
+    }
 
-            @Override
-            public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-                Log.d("Workflow", "Inside workflow complete");
-                super.flowComplete(ostWorkflowContext, ostContextEntity);
-                addWorkflowTaskText("Workflow completed at: ");
-                hideLoader();
-            }
+    @Override
+    public void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+        UsersListActivity activity = (UsersListActivity) getActivity();
+        activity.showPinDialog(ostPinAcceptInterface);
+    }
 
-            @Override
-            public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-                Log.d("Workflow", "Inside workflow acknowledged");
-                super.requestAcknowledged(ostWorkflowContext, ostContextEntity);
-                addWorkflowTaskText(String.format("Entity type: %s\n Workflow acknowledged at: ",
-                        ostContextEntity.getEntityType()));
-            }
+    @Override
+    public void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+        hideLoader();
+        showWalletInstructionText("Invalid Pin.");
+    }
 
-            @Override
-            public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-                Log.d("Workflow", "Inside workflow interrupt");
-                addWorkflowTaskText("Workflow interrupted at: ");
-                super.flowInterrupt(ostWorkflowContext, ostError);
-                hideLoader();
-            }
-        };
-        addWorkflowTaskText("Workflow Initiated at: ");
-        return wfh;
+    @Override
+    public void pinValidated(OstWorkflowContext ostWorkflowContext, String userId) {
+
+    }
+
+    @Override
+    public void showPaperWallet(byte[] mnemonics) {
+        showWalletWords(new String(mnemonics), "Please save these words carefully.");
+    }
+
+    @Override
+    public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        Log.d("Workflow", "Inside workflow complete");
+        addWorkflowTaskText("Workflow completed at: ");
+        hideLoader();
+    }
+
+    @Override
+    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        Log.d("Workflow", "Inside workflow acknowledged");
+        addWorkflowTaskText(String.format("Entity type: %s\n Workflow acknowledged at: ",
+                ostContextEntity.getEntityType()));
+    }
+
+    @Override
+    public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+        Log.d("Workflow", "Inside workflow verify Data");
+        addWorkflowTaskText(String.format("Verify data: %s", (JSONObject) ostContextEntity.getEntity()));
+    }
+
+    @Override
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        Log.d("Workflow", "Inside workflow interrupt");
+        addWorkflowTaskText("Workflow interrupted at: ");
+        hideLoader();
+    }
+
+    @Override
+    public void deviceUnauthorized() {
+        addWorkflowTaskText("Workflow interrupted for deviceUnauthorized at: ");
     }
 
     public void showWalletWords(String mnemonics, String showText) {
@@ -189,14 +208,14 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         showWalletInstructionText(showText);
     }
 
-    public void addWorkflowTaskText(String str){
+    public void addWorkflowTaskText(String str) {
         String finalStr = mWorkflowDetailsBox.getText().toString();
         finalStr += ("\n " + str + String.valueOf((int) (System.currentTimeMillis() / 1000)));
         mWorkflowDetailsBox.setText(finalStr);
         mWorkflowDetails.setVisibility(View.VISIBLE);
     }
 
-    public interface OnBaseFragmentListener{
+    public interface OnBaseFragmentListener {
         void onBack();
     }
 }

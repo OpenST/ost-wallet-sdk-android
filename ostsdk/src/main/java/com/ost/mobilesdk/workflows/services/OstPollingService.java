@@ -36,8 +36,8 @@ public abstract class OstPollingService {
     private static final int POLL_MAX_COUNT = 10;
 
     private static final String TAG = "OstPollingService";
-    private static final long POLLING_INTERVAL = OstConstants.BLOCK_GENERATION_TIME * 1000;
-    private static final long INITIAL_POLLING_INTERVAL = 6 * OstConstants.BLOCK_GENERATION_TIME * 1000;
+    private static final long POLLING_INTERVAL = OstConstants.OST_BLOCK_GENERATION_TIME * 1000;
+    private static final long INITIAL_POLLING_INTERVAL = 6 * OstConstants.OST_BLOCK_GENERATION_TIME * 1000;
     private final String failedStatus;
     private final String successStatus;
     private final String entityId;
@@ -96,7 +96,6 @@ public abstract class OstPollingService {
             if (null != status) {
                 Log.d(TAG, String.format("Is %s entity updated status %s", getEntityName(), status));
                 return sendUpdateMessage(userId, entityId, false, status.equalsIgnoreCase(successStatus));
-
             }
             pollCount = pollCount - 1;
             try {

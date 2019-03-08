@@ -121,7 +121,7 @@ public class UsersListActivity extends MappyBaseActivity implements
             String amount = "1";
             String ruleName = "Pricer";
             String tokenId = logInUser.getTokenId();
-            OstSdk.executeTransaction(userId, tokenId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper(getApplicationContext()) {
+            OstSdk.executeTransaction(userId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper(getApplicationContext()) {
             });
         } else if (id == R.id.reset_pin) {
             Log.d(TAG, "Reset pin");
@@ -268,7 +268,7 @@ public class UsersListActivity extends MappyBaseActivity implements
             String userId = ((App) getApplicationContext()).getLoggedUser().getOstUserId();
             String returnedResult = data.getData().toString();
             try {
-                OstSdk.ostPerform(userId, returnedResult, qrPerformFragment.registerWorkflowCallbacks());
+                OstSdk.ostPerform(userId, returnedResult, qrPerformFragment);
             } catch (JSONException e) {
                 Log.e(TAG, "JSONException while parsing");
             }
@@ -302,7 +302,7 @@ public class UsersListActivity extends MappyBaseActivity implements
 
         if (userSetupFragment != null) {
             OstSdk.activateUser(new UserPassphrase(userId, pin, passphrasePrefix), expiresAfterInSecs, spendingLimit,
-                    userSetupFragment.registerWorkflowCallbacks());
+                    userSetupFragment);
         }
     }
 
@@ -315,7 +315,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         UserPassphrase newPassphrase = new UserPassphrase(logInUser.getOstUserId(), newPin.getBytes(UTF_8), appSalt.clone());
         if (resetPinFragment != null) {
             OstSdk.resetRecoveryPassphrase(logInUser.getOstUserId(), currentPassphrase, newPassphrase,
-                    resetPinFragment.registerWorkflowCallbacks());
+                    resetPinFragment);
         }
     }
 
@@ -324,7 +324,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         if (createSessionFragment != null) {
             OstSdk.addSession(logInUser.getOstUserId(), spendingLimit,
-                    expiryAfterSecs, createSessionFragment.registerWorkflowCallbacks());
+                    expiryAfterSecs, createSessionFragment);
         }
     }
 
@@ -333,7 +333,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         Log.d(TAG, "Ask for pin");
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         if (paperWalletFragment != null) {
-            OstSdk.getPaperWallet(logInUser.getOstUserId(), paperWalletFragment.registerWorkflowCallbacks());
+            OstSdk.getPaperWallet(logInUser.getOstUserId(), paperWalletFragment);
         }
     }
 

@@ -140,7 +140,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
         currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
         blockGenerationTime = Long.parseLong(strBlockGenerationTime);
-        long bufferBlocks = OstConstants.SESSION_BUFFER_TIME / blockGenerationTime;
+        long bufferBlocks = OstConstants.OST_SESSION_BUFFER_TIME / blockGenerationTime;
         long expiresAfterBlocks = mExpiresAfterInSecs / blockGenerationTime;
         long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
 
