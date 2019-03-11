@@ -38,7 +38,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class UsersListActivity extends MappyBaseActivity implements
         SetUpUserFragment.OnSetUpUserFragmentListener,
-        PaperWalletFragment.OnPaperWalletFragmentListener,
         ResetPinFragment.OnResetPinFragmentListener,
         CreateSessionFragment.OnCreateSessionFragmentListener {
 
@@ -331,19 +330,5 @@ public class UsersListActivity extends MappyBaseActivity implements
                     expiryAfterSecs, createSessionFragment);
             createSessionFragment.flowStarted();
         }
-    }
-
-    @Override
-    public void onShowPaperWalletButton() {
-        Log.d(TAG, "Ask for pin");
-        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-        if (paperWalletFragment != null) {
-            OstSdk.getPaperWallet(logInUser.getOstUserId(), paperWalletFragment);
-        }
-    }
-
-    @Override
-    public void authorizeDeviceUsingMnemonics(String mnemonics, String userId) {
-        OstSdk.addDeviceUsingMnemonics(userId, mnemonics.getBytes(UTF_8), new WorkFlowHelper(getApplicationContext()));
     }
 }

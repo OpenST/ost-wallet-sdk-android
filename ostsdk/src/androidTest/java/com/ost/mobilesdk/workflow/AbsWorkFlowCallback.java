@@ -47,11 +47,6 @@ public class AbsWorkFlowCallback implements OstWorkFlowCallback {
     }
 
     @Override
-    public void showPaperWallet(byte[] mnemonics) {
-
-    }
-
-    @Override
     public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
 
     }

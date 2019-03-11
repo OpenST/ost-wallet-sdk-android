@@ -27,18 +27,7 @@ public class WorkFlowHelper implements OstWorkFlowCallback {
 
     @Override
     public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
-        Log.i(TAG, String.format("Device Object %s ", apiParams.toString()));
-        String mUserId = mApp.getLoggedUser().getId();
-        new MappyApiClient().registerDevice(mUserId, apiParams, new MappyApiClient.Callback() {
-            @Override
-            public void onResponse(boolean success, JSONObject response) {
-                if (success) {
-                    ostDeviceRegisteredInterface.deviceRegistered(response);
-                } else {
-                    ostDeviceRegisteredInterface.cancelFlow();
-                }
-            }
-        });
+
     }
 
     @Override
@@ -69,11 +58,6 @@ public class WorkFlowHelper implements OstWorkFlowCallback {
 
     @Override
     public void deviceUnauthorized() {
-
-    }
-
-    @Override
-    public void showPaperWallet(byte[] mnemonics) {
 
     }
 

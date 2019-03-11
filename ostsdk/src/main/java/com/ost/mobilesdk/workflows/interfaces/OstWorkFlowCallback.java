@@ -71,11 +71,6 @@ public interface OstWorkFlowCallback {
      */
     void deviceUnauthorized();
 
-    /**
-     * Show SDK user mnemonicsArray of the device address
-     * @param mnemonics byte array of mnemonics
-     */
-    void showPaperWallet(byte[] mnemonics);
 
     /**
      * Inform SDK user about workflow core api call

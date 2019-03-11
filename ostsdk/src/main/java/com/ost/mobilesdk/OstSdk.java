@@ -8,11 +8,11 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.ost.mobilesdk.database.ConfigSharedPreferences;
 import com.ost.mobilesdk.database.OstSdkDatabase;
 import com.ost.mobilesdk.database.OstSdkKeyDatabase;
+import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
 import com.ost.mobilesdk.utils.QRCode;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddCurrentDeviceWithMnemonics;
@@ -46,6 +46,7 @@ public class OstSdk {
     public static final String SESSIONS = "sessions";
     public static final String RECOVERY_OWNER = "recovery_owner";
     public static final String JSON_OBJECT = "JSON";
+    public static final String PAPER_WALLET = "paper_wallet";
     private static final String TAG = "OstSdk";
     private static volatile OstSdk INSTANCE;
 

@@ -2,11 +2,13 @@ package ost.com.sampleostsdkapplication.fragments;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +17,27 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
+
+import org.json.JSONObject;
+
+import ost.com.sampleostsdkapplication.App;
+import ost.com.sampleostsdkapplication.LogInUser;
 import ost.com.sampleostsdkapplication.LoginViewController;
+import ost.com.sampleostsdkapplication.MappyApiClient;
 import ost.com.sampleostsdkapplication.R;
+import ost.com.sampleostsdkapplication.UsersListActivity;
+
+import static ost.com.sampleostsdkapplication.Constants.OST_USER_ID;
 
 /**
  * Fragment representing the login screen for OstDemoApp.
  */
-public class LoginFragment extends Fragment implements LoginViewController.LoginFragmentInterface {
+public class LoginFragment extends BaseFragment implements
+        LoginViewController.LoginFragmentInterface {
 
+    private static final String TAG = "LoginFragment";
     private LoginViewController mLoginViewController;
     private TextInputLayout mMobileTextInput;
     private EditText mNumberEditText;
@@ -123,5 +138,43 @@ public class LoginFragment extends Fragment implements LoginViewController.Login
                 mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
+    }
+
+    @Override
+    public void startUserListActivity() {
+        if (null == getActivity()) {
+            Log.e(TAG, "Activity is null");
+        }
+        Activity activity = getActivity();
+        LogInUser logInUser = ((App) getActivity().getApplicationContext()).getLoggedUser();
+        String userId = logInUser.getOstUserId();
+        OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), LoginFragment.this);
+
+        Intent userListIntent = new Intent(activity.getApplicationContext(), UsersListActivity.class);
+        userListIntent.putExtra(OST_USER_ID, userId);
+        userListIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        getActivity().getApplicationContext().startActivity(userListIntent);
+    }
+
+    @Override
+    public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
+        Log.i(TAG, String.format("Device Object %s ", apiParams.toString()));
+        if (null == getActivity()) {
+            Log.e(TAG, "Activity is null");
+            ostDeviceRegisteredInterface.cancelFlow();
+        }
+        LogInUser logInUser = ((App) getActivity().getApplicationContext()).getLoggedUser();
+        String mUserId = logInUser.getId();
+        new MappyApiClient().registerDevice(mUserId, apiParams, new MappyApiClient.Callback() {
+            @Override
+            public void onResponse(boolean success, JSONObject response) {
+                if (success) {
+                    ostDeviceRegisteredInterface.deviceRegistered(response);
+                } else {
+                    ostDeviceRegisteredInterface.cancelFlow();
+                }
+            }
+        });
+        super.registerDevice(apiParams, ostDeviceRegisteredInterface);
     }
 }
