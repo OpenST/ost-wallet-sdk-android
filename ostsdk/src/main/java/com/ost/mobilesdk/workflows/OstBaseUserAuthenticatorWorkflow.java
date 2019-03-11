@@ -197,13 +197,13 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         }
 
         mPinAskCount = mPinAskCount + 1;
-        if (mPinAskCount > OstConstants.OST_PIN_MAX_RETRY_COUNT) {
-            Log.d(TAG, "Max pin ask limit reached");
-            return postErrorInterrupt("bpawf_vup_2", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
+        if (mPinAskCount < OstConstants.OST_PIN_MAX_RETRY_COUNT) {
+            Log.d(TAG, "Pin InValidated ask for pin again");
+            OstPinAcceptInterface me = this;
+            return postInvalidPin(me);
         }
-        Log.d(TAG, "Pin InValidated ask for pin again");
-        OstPinAcceptInterface me = this;
-        return postInvalidPin(me);
+        Log.d(TAG, "Max pin ask limit reached");
+        return postErrorInterrupt("bpawf_vup_2", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
     }
 
     AsyncStatus postPinValidated() {

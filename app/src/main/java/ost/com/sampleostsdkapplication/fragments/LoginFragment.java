@@ -18,6 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.workflows.OstContextEntity;
+import com.ost.mobilesdk.workflows.OstWorkflowContext;
+import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 
 import org.json.JSONObject;
@@ -146,14 +149,8 @@ public class LoginFragment extends BaseFragment implements
             Log.e(TAG, "Activity is null");
         }
         Activity activity = getActivity();
-        LogInUser logInUser = ((App) getActivity().getApplicationContext()).getLoggedUser();
-        String userId = logInUser.getOstUserId();
+        LogInUser logInUser = ((App) activity.getApplicationContext()).getLoggedUser();
         OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), LoginFragment.this);
-
-        Intent userListIntent = new Intent(activity.getApplicationContext(), UsersListActivity.class);
-        userListIntent.putExtra(OST_USER_ID, userId);
-        userListIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        getActivity().getApplicationContext().startActivity(userListIntent);
     }
 
     @Override
@@ -162,6 +159,7 @@ public class LoginFragment extends BaseFragment implements
         if (null == getActivity()) {
             Log.e(TAG, "Activity is null");
             ostDeviceRegisteredInterface.cancelFlow();
+            return;
         }
         LogInUser logInUser = ((App) getActivity().getApplicationContext()).getLoggedUser();
         String mUserId = logInUser.getId();
@@ -176,5 +174,27 @@ public class LoginFragment extends BaseFragment implements
             }
         });
         super.registerDevice(apiParams, ostDeviceRegisteredInterface);
+    }
+
+    @Override
+    public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        super.flowComplete(ostWorkflowContext, ostContextEntity);
+        Activity activity = getActivity();
+        if (null == getActivity()) {
+            Log.e(TAG, "Activity is null");
+            return;
+        }
+        LogInUser logInUser = ((App) activity.getApplicationContext()).getLoggedUser();
+        String userId = logInUser.getOstUserId();
+
+        Intent userListIntent = new Intent(activity.getApplicationContext(), UsersListActivity.class);
+        userListIntent.putExtra(OST_USER_ID, userId);
+        userListIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        activity.getApplicationContext().startActivity(userListIntent);
+    }
+
+    @Override
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        super.flowInterrupt(ostWorkflowContext, ostError);
     }
 }

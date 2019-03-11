@@ -164,6 +164,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
     public void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         hideLoader();
         showWalletInstructionText("Invalid Pin.");
+        UsersListActivity activity = (UsersListActivity) getActivity();
+        activity.showPinDialog(ostPinAcceptInterface);
     }
 
     @Override

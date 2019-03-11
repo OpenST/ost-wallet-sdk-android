@@ -205,7 +205,7 @@ public class OstMultiSigSigner {
         //Check if we have a device key.
         KeyMetaStruct keyMeta = InternalKeyManager.getKeyMataStruct(mUserId);
         if ( null == keyMeta) {
-            throw new OstError("km_gss_sd_1", ErrorCode.DEVICE_UNAUTHORIZED);
+            throw new OstError("km_gss_sd_1", ErrorCode.DEVICE_NOT_SETUP);
         }
 
         try {

@@ -43,7 +43,7 @@ public class OstUser extends OstBaseEntity {
     public static OstUser init(String id, String tokenId) {
         OstUser ostUser = OstUser.getById(id);
         if (null != ostUser) {
-            Log.e(TAG, String.format("OstUser with id %s already exist", id));
+            Log.d(TAG, String.format("OstUser with id %s already exist", id));
             return ostUser;
         }
 
@@ -177,7 +177,7 @@ public class OstUser extends OstBaseEntity {
     }
 
     public OstDevice createDevice() {
-        OstKeyManager ostKeyManager = new OstKeyManager(getId());
+        OstKeyManager ostKeyManager = new OstKeyManager(getId(), true);
         String apiAddress = ostKeyManager.getApiKeyAddress();
         String address = ostKeyManager.getDeviceAddress();
         Log.d(TAG, "Create new device.");
