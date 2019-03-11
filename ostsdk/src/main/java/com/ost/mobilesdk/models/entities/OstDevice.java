@@ -47,6 +47,18 @@ public class OstDevice extends OstBaseEntity {
                 CONST_STATUS.REVOKED).contains(status);
     }
 
+    public boolean isRevoked() {
+        String status = this.getStatus();
+        if (TextUtils.isEmpty(status)) {
+            return false;
+        }
+        return CONST_STATUS.REVOKED.equalsIgnoreCase(status);
+    }
+
+    public boolean canBeRevoked() {
+        return isAuthorized();
+    }
+
 
     public static class CONST_STATUS {
         public static final String CREATED = "created";

@@ -51,11 +51,11 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
         try {
             switch (state) {
                 case PARAMS_VALIDATED:
+                    dataDefinitionInstance.validateApiDependentParams();
                     return performNext();
                 case VERIFY_DATA:
                     OstContextEntity ostContextEntity = dataDefinitionInstance.getContextEntity();
                     postVerifyData(ostContextEntity, OstPerform.this);
-
                     return new AsyncStatus(true);
                 case DATA_VERIFIED:
                     dataDefinitionInstance.startDataDefinitionFlow();
@@ -88,6 +88,8 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
             return new OstExecuteTransaction.TransactionDataDefinitionInstance(dataObject, mUserId, getCallback());
         } else if (OstConstants.DATA_DEFINITION_AUTHORIZE_DEVICE.equalsIgnoreCase(dataDefinition)) {
             return new OstAddDeviceWithQR.AddDeviceDataDefinitionInstance(dataObject, mUserId, getCallback());
+        } else if (OstConstants.DATA_DEFINITION_REVOKE_DEVICE.equalsIgnoreCase(dataDefinition)) {
+            return new OstRevokeDevice.RevokeDeviceDataDefinitionInstance(dataObject, mUserId, getCallback());
         } else {
             throw new OstError("wf_pe_pr_1", OstErrors.ErrorCode.UNKNOWN_DATA_DEFINITION);
         }
@@ -143,5 +145,7 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
         OstContextEntity getContextEntity();
 
         void startDataDefinitionFlow();
+
+        void validateApiDependentParams();
     }
 }

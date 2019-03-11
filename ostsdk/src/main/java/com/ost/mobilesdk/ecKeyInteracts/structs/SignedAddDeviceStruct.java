@@ -15,6 +15,4 @@ public class SignedAddDeviceStruct extends BaseDeviceManagerOperationStruct {
     public void setDeviceToBeAdded(String deviceToBeAdded) {
         this.deviceToBeAdded = deviceToBeAdded;
     }
-
-
 }

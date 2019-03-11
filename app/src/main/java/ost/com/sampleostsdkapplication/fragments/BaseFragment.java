@@ -231,6 +231,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         String finalStr = mWorkflowDetailsBox.getText().toString();
         finalStr += ("\n " + str + String.valueOf((int) (System.currentTimeMillis() / 1000)));
         mWorkflowDetailsBox.setText(finalStr);
+        mWorkflowDetailsBox.scrollTo(0, mWorkflowDetailsBox.getBottom());
         mWorkflowDetails.setVisibility(View.VISIBLE);
     }
 

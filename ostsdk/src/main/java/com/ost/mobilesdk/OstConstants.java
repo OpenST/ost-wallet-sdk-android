@@ -18,6 +18,7 @@ public interface OstConstants {
     String QR_DEVICE_ADDRESS = "da";
     String DATA_DEFINITION_TRANSACTION = "TX";
     String DATA_DEFINITION_AUTHORIZE_DEVICE = "AUTHORIZE_DEVICE";
+    String DATA_DEFINITION_REVOKE_DEVICE = "RD";
     String QR_RULE_NAME = "rn";
     String QR_TOKEN_HOLDER_ADDRESSES = "ads";
     String QR_AMOUNTS = "ams";

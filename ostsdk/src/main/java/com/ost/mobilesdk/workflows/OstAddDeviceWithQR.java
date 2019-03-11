@@ -6,9 +6,10 @@ import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.ecKeyInteracts.OstMultiSigSigner;
 import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
+import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
@@ -118,8 +119,9 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
 
         @Override
         public OstContextEntity getContextEntity() {
-            JSONObject jsonObject = updateJSONKeys(dataObject);
-            OstContextEntity contextEntity = new OstContextEntity(jsonObject, OstSdk.JSON_OBJECT);
+            String deviceAddress = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
+            OstDevice ostDevice = OstDevice.getById(deviceAddress);
+            OstContextEntity contextEntity = new OstContextEntity(ostDevice, OstSdk.DEVICE);
             return contextEntity;
         }
 
@@ -138,6 +140,22 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
             String deviceAddress = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
             OstAddDeviceWithQR ostAddDeviceWithQR = new OstAddDeviceWithQR(userId, deviceAddress, callback);
             ostAddDeviceWithQR.perform();
+        }
+
+        @Override
+        public void validateApiDependentParams() {
+            String deviceAddress = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
+            try {
+                new OstApiClient(userId).getDevice(deviceAddress);
+            } catch (IOException e) {
+                throw new OstError("wf_pe_ad_3", ErrorCode.GET_DEVICE_API_FAILED);
+            }
+            if (null == OstDevice.getById(deviceAddress)) {
+                throw new OstError("wf_pe_ad_4", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
+            }
+            if (!OstDevice.getById(deviceAddress).canBeAuthorized()) {
+                throw new OstError("wf_pe_ad_5", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
+            }
         }
     }
 }

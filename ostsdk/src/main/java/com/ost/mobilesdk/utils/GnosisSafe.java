@@ -8,7 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.generated.Uint256;
@@ -24,6 +23,7 @@ public class GnosisSafe {
     private static final String TAG = "OstGnosisSafe";
     private static final String ADD_OWNER_WITH_THRESHHOLD = "addOwnerWithThreshold";
     private static final String AUTHORIZED_SESSION = "authorizeSession";
+    private static final String REMOVED_OWNER = "removeOwner";
 
     public GnosisSafe() {
 
@@ -33,7 +33,7 @@ public class GnosisSafe {
         Function function = new Function(
                 "authorizeSession",  // function we're calling
                 Arrays.asList(new Address(sessionAddress), new Uint256(new BigInteger(spendingLimit)), new Uint256(new BigInteger(expirationHeight))),  // Parameters to pass as Solidity Types
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
 
         return FunctionEncoder.encode(function);
     }
@@ -60,7 +60,7 @@ public class GnosisSafe {
         Function function = new Function(
                 "addOwnerWithThreshold",  // function we're calling
                 Arrays.asList(new Address(ownerAddress), new Uint256(new BigInteger(threshHold))),  // Parameters to pass as Solidity Types
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
 
         return FunctionEncoder.encode(function);
     }
@@ -123,6 +123,33 @@ public class GnosisSafe {
             return typedDataInput;
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getRemoveOwnerWithThresholdExecutableData(String prevOwner, String ownerToRemove) {
+        Function function = new Function(
+                "removeOwner",  // function we're calling
+                Arrays.asList(new Address(prevOwner), new Address(ownerToRemove), new Uint256(new BigInteger("1"))),  // Parameters to pass as Solidity Types
+                Collections.emptyList());
+
+        return FunctionEncoder.encode(function);
+    }
+
+    public String getRemoveOwnerWithThresholdCallData(String prevOwner, String ownerToRemove) {
+        String threshold = "1";
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(OstConstants.METHOD, REMOVED_OWNER);
+            JSONArray jsonArray = new JSONArray();
+            jsonArray.put(prevOwner);
+            jsonArray.put(ownerToRemove);
+            jsonArray.put(threshold);
+            jsonObject.put(OstConstants.PARAMETERS, jsonArray);
+
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected exception while parsing json");
         }
         return null;
     }

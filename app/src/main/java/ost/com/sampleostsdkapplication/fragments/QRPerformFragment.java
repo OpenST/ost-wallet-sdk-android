@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.workflows.OstContextEntity;
 import com.ost.mobilesdk.workflows.OstWorkflowContext;
 import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
@@ -60,7 +62,13 @@ public class QRPerformFragment extends BaseFragment {
     @Override
     public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         super.verifyData(ostWorkflowContext, ostContextEntity, ostVerifyDataInterface);
-        JSONObject jsonObject = (JSONObject) ostContextEntity.getEntity();
+        JSONObject jsonObject;
+        if (OstSdk.DEVICE.equalsIgnoreCase(ostContextEntity.getEntityType())) {
+            jsonObject = ((OstDevice) ostContextEntity.getEntity()).getData();
+        } else {
+            jsonObject = (JSONObject) ostContextEntity.getEntity();
+        }
+
         mVerifyDataView.setText(jsonObject.toString());
         getNextButton().setText(getString(R.string.authorize));
         getNextButton().setOnClickListener(new View.OnClickListener() {

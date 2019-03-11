@@ -152,6 +152,9 @@ public class OstErrors {
 
             case USER_PASSPHRASE_VALIDATION_LOCKED: return "Can not validate user passphrase because of too many wrong attempts.";
 
+            case DEVICE_CAN_NOT_BE_REVOKED:
+                return "Device can not be revoked";
+
             case EIP1077_FAILED:
                 return "EIP1077 failed";
 
@@ -163,6 +166,12 @@ public class OstErrors {
 
             case WORKFLOW_CANCELLED:return "Workflow cancelled";
             case UNKNOWN_DATA_DEFINITION: return "The QR code does not contain valid data definition";
+
+            case DEVICE_ALREADY_REVOKED:
+                return "Device is already revoked";
+
+            case INVALID_REVOKE_DEVICE_ADDRESS:
+                return "Invalid revoke device address";
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -209,7 +218,10 @@ public class OstErrors {
         INVALID_RECOVER_DEVICE_ADDRESS,
         DEVICE_UNAUTHORIZED,
         DEVICE_ALREADY_AUTHORIZED,
+        DEVICE_ALREADY_REVOKED,
         DEVICE_CAN_NOT_BE_AUTHORIZED,
+        DEVICE_CAN_NOT_BE_REVOKED,
+        INVALID_REVOKE_DEVICE_ADDRESS,
         USER_ACTIVATING,
         USER_ALREADY_ACTIVATED,
         INVALID_MNEMONICS,
