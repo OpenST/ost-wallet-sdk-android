@@ -62,4 +62,13 @@ public class PricerRule {
         }
         return jsonObject.toString();
     }
+
+    public String calDirectTransferSpendingLimit(List<String> amounts, BigInteger fiatMultiplier) {
+        BigInteger bigInteger = BigInteger.ZERO;
+        for (String amount : amounts) {
+            BigInteger btFiaEquivalent = fiatMultiplier.multiply(new BigInteger(amount));
+            bigInteger = bigInteger.add(btFiaEquivalent);
+        }
+        return bigInteger.toString();
+    }
 }

@@ -328,7 +328,8 @@ abstract class OstBaseWorkFlow {
         }
         String tokenId = mOstUser.getTokenId();
         mOstToken = OstToken.getById(tokenId);
-        if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId())) {
+        if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId()) ||
+                TextUtils.isEmpty(mOstToken.getBtDecimals())) {
             //Make API Call.
             try {
                 mOstApiClient.getToken();

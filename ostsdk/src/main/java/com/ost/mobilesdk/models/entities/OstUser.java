@@ -70,14 +70,16 @@ public class OstUser extends OstBaseEntity {
         return currentDevice;
     }
 
-    public OstSession getActiveSession() {
+    public OstSession getActiveSession(String spendingBtAmountInWei) {
         List<OstSession> ostActiveSessionList = OstSession.getActiveSessions(getId());
-        // Todo: Logic to filter most appropriate session.
-        if (ostActiveSessionList.size() < 1) {
-            Log.e(TAG, "No Active session key available");
-            return null;
+
+        for (OstSession ostSession : ostActiveSessionList) {
+            if (ostSession.getSpendingLimit().compareTo(spendingBtAmountInWei) > 0) {
+                return ostSession;
+            }
         }
-        return ostActiveSessionList.get(0);
+        Log.e(TAG, "No Active session key available");
+        return null;
     }
 
     @Deprecated

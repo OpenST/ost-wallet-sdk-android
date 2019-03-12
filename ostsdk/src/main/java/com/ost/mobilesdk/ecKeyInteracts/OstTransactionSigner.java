@@ -46,6 +46,7 @@ public class OstTransactionSigner {
 
         String callData = null;
         String rawCallData = null;
+        String spendingBtAmountInWei = BigInteger.ZERO.toString();
         ruleName = ruleName.toLowerCase();
 
         switch (ruleName) {
@@ -53,6 +54,7 @@ public class OstTransactionSigner {
                 Log.i(TAG, "Building call data");
                 callData = new TokenRules().getTransactionExecutableData(tokenHolderAddresses, amounts);
                 rawCallData = new TokenRules().getTransactionRawCallData(tokenHolderAddresses, amounts);
+                spendingBtAmountInWei = new TokenRules().calDirectTransferSpendingLimit(amounts);
                 break;
             case PRICER:
                 Log.i(TAG, "Fetch price points");
@@ -85,13 +87,34 @@ public class OstTransactionSigner {
 
                 BigInteger weiPricePoint = convertPricePointFromEthToWei(pricePointUSDtoOST, decimalExponent);
 
+                OstToken ostToken = OstToken.getById(mTokenId);
+                if (null == ostToken) {
+                    throw new OstError("km_ts_st_8",
+                            ErrorCode.TOKEN_API_FAILED);
+                }
+                String conversionFactor = ostToken.getConversionFactor();
+                if (null == conversionFactor) {
+                    throw new OstError("km_ts_st_9",
+                            ErrorCode.INSUFFICIENT_DATA);
+                }
+                String btDecimalsString = ostToken.getBtDecimals();
+                if (null == btDecimalsString) {
+                    throw new OstError("km_ts_st_10",
+                            ErrorCode.INSUFFICIENT_DATA);
+                }
+                int btDecimals = Integer.parseInt(btDecimalsString);
+
+
+                BigInteger fiatMultiplier = calFiatMultiplier(pricePointUSDtoOST, decimalExponent, conversionFactor, btDecimals);
+
                 callData = new PricerRule().getPriceTxnExecutableData(user.getTokenHolderAddress(),
                         tokenHolderAddresses, amounts, COUNTRY_CODE_USD, weiPricePoint);
                 rawCallData = new PricerRule().getPricerTransactionRawCallData(user.getTokenHolderAddress(),
                         tokenHolderAddresses, amounts, COUNTRY_CODE_USD, weiPricePoint);
+                spendingBtAmountInWei = new PricerRule().calDirectTransferSpendingLimit(amounts, fiatMultiplier);
                 break;
             default:
-                OstError ostError = new OstError("km_ts_st_8",
+                OstError ostError = new OstError("km_ts_st_11",
                         OstErrors.ErrorCode.UNKNOWN_RULE_NAME);
                 throw ostError;
 
@@ -103,7 +126,7 @@ public class OstTransactionSigner {
             throw ostError;
         }
 
-        OstSession activeSession = user.getActiveSession();
+        OstSession activeSession = user.getActiveSession(spendingBtAmountInWei);
         if (null == activeSession) {
             OstError ostError = new OstError("km_ts_st_2", OstErrors.ErrorCode.NO_SESSION_FOUND);
             throw ostError;
@@ -130,6 +153,29 @@ public class OstTransactionSigner {
         return new SignedTransactionStruct(activeSession, ruleAddress, rawCallData,
                 callData, signature);
     }
+
+    private BigInteger calFiatMultiplier(double pricePointOSTtoUSD,
+                                         int decimalExponent,
+                                         String conversionFactor,
+                                         int btDecimals) {
+        // weiDecimal = OstToUsd * 10^decimalExponent
+        BigDecimal bigDecimal = new BigDecimal(String.valueOf(pricePointOSTtoUSD));
+        BigDecimal toWeiMultiplier = new BigDecimal(10).pow(decimalExponent);
+        BigDecimal weiDecimal = bigDecimal.multiply(toWeiMultiplier);
+
+        // bigDecimalWeiDecimal = weiDecimal * conversionFactor
+        BigDecimal bigDecimalConversionFactor = new BigDecimal(String.valueOf(conversionFactor));
+        BigDecimal bigDecimalWeiDecimal = weiDecimal.multiply(bigDecimalConversionFactor);
+
+        // toBtWeiMultiplier = 10^btDecimal
+        BigDecimal toBtWeiMultiplier = new BigDecimal(10).pow(btDecimals);
+
+        // multiplierForFiat = toBtWeiMultiplier / bigDecimalWeiDecimal
+        BigInteger multiplierForFiat = toBtWeiMultiplier.toBigInteger().divide(bigDecimalWeiDecimal.toBigInteger());
+
+        return multiplierForFiat;
+    }
+
 
     private BigInteger convertPricePointFromEthToWei(double pricePointUSDtoOST, int decimalExponent) {
         BigDecimal bigDecimal = new BigDecimal(String.valueOf(pricePointUSDtoOST));

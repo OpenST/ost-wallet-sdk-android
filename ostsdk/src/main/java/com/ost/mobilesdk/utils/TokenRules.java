@@ -6,7 +6,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.abi.FunctionEncoder;
-import org.web3j.abi.TypeReference;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.DynamicArray;
 import org.web3j.abi.datatypes.Function;
@@ -38,7 +37,7 @@ public class TokenRules {
         Function function = new Function(
                 DIRECT_TRANSFERS,  // function we're calling
                 Arrays.asList(new DynamicArray(addressList), new DynamicArray(transferAmountList)),
-                Collections.<TypeReference<?>>emptyList());
+                Collections.emptyList());
 
         return FunctionEncoder.encode(function);
     }
@@ -60,5 +59,13 @@ public class TokenRules {
             e.printStackTrace();
         }
         return jsonObject.toString();
+    }
+
+    public String calDirectTransferSpendingLimit(List<String> amounts) {
+        BigInteger bigInteger = BigInteger.ZERO;
+        for (String amount : amounts) {
+            bigInteger = bigInteger.add(new BigInteger(amount));
+        }
+        return bigInteger.toString();
     }
 }
