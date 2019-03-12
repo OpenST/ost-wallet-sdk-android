@@ -20,7 +20,6 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstDevicePollingService;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.WalletUtils;
 
@@ -132,52 +131,16 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
         return OstWorkflowContext.WORKFLOW_TYPE.ADD_DEVICE_WITH_QR;
     }
 
-    static class RevokeDeviceDataDefinitionInstance implements OstPerform.DataDefinitionInstance {
+    static class RevokeDeviceDataDefinitionInstance extends OstDeviceDataDefinitionInstance {
         private static final String TAG = "RevokeDeviceDDInstance";
-        private final JSONObject dataObject;
-        private final String userId;
-        private final OstWorkFlowCallback callback;
 
         public RevokeDeviceDataDefinitionInstance(JSONObject dataObject, String userId, OstWorkFlowCallback callback) {
-            this.dataObject = dataObject;
-            this.userId = userId;
-            this.callback = callback;
-        }
-
-        @Override
-        public void validateDataPayload() {
-            boolean hasDeviceAddress = dataObject.has(OstConstants.QR_DEVICE_ADDRESS);
-            if (!hasDeviceAddress) {
-                throw new OstError("wf_pe_pr_2", ErrorCode.INVALID_QR_DEVICE_OPERATION_DATA);
-            }
-        }
-
-        @Override
-        public void validateDataParams() {
-
-        }
-
-        @Override
-        public OstContextEntity getContextEntity() {
-            String deviceAddress = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
-            OstDevice ostDevice = OstDevice.getById(deviceAddress);
-            OstContextEntity contextEntity = new OstContextEntity(ostDevice, OstSdk.DEVICE);
-            return contextEntity;
-        }
-
-        private JSONObject updateJSONKeys(JSONObject dataObject) {
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put(OstConstants.DEVICE_ADDRESS, dataObject.optString(OstConstants.QR_DEVICE_ADDRESS));
-            } catch (JSONException e) {
-                Log.e(TAG, "JSON Exception in updateJSONKeys: ", e);
-            }
-            return jsonObject;
+            super(dataObject, userId, callback);
         }
 
         @Override
         public void startDataDefinitionFlow() {
-            String deviceAddress = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
+            String deviceAddress = getDeviceAddress();
             OstRevokeDevice ostRevokeDevice = new OstRevokeDevice(userId, deviceAddress, callback);
             ostRevokeDevice.perform();
         }
