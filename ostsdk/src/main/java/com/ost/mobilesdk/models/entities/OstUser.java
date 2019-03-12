@@ -4,8 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.util.Log;
 
-import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
+import com.ost.mobilesdk.models.Impls.OstModelFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;

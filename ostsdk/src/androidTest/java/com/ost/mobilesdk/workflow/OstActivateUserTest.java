@@ -5,10 +5,10 @@ import android.os.Looper;
 import android.support.test.InstrumentationRegistry;
 
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;

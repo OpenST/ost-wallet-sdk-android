@@ -2,12 +2,12 @@ package com.ost.mobilesdk.ecKeyInteracts;
 
 import android.util.Log;
 
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedTransactionStruct;
 import com.ost.mobilesdk.models.entities.OstRule;
 import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
-import com.ost.mobilesdk.ecKeyInteracts.structs.SignedTransactionStruct;
 import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.utils.EIP1077;
 import com.ost.mobilesdk.utils.PricerRule;
