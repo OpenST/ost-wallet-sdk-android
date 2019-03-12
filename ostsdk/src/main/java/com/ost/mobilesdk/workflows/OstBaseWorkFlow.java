@@ -27,7 +27,6 @@ import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.network.OstApiError;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.utils.EIP712;
 import com.ost.mobilesdk.utils.GnosisSafe;
 import com.ost.mobilesdk.utils.OstPayloadBuilder;
@@ -46,12 +45,17 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 abstract class OstBaseWorkFlow {
     private static final String TAG = "OstBaseWorkFlow";
+    private final static ThreadPoolExecutor THREAD_POOL_EXECUTOR = (ThreadPoolExecutor) Executors
+            .newFixedThreadPool(1);
 
     final String mUserId;
     final Handler mHandler;
@@ -105,12 +109,16 @@ abstract class OstBaseWorkFlow {
     }
 
     public Future<AsyncStatus> perform() {
-        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+        return getAsyncQueue().submit(new Callable<AsyncStatus>() {
             @Override
             public AsyncStatus call() {
                 return process();
             }
         });
+    }
+
+    ThreadPoolExecutor getAsyncQueue() {
+        return THREAD_POOL_EXECUTOR;
     }
 
     protected abstract AsyncStatus process();
