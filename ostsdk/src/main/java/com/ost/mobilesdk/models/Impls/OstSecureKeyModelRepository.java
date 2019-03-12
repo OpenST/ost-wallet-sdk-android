@@ -35,6 +35,16 @@ public class OstSecureKeyModelRepository implements OstSecureKeyModel {
         return getModel().getById(id);
     }
 
+    public Future<AsyncStatus> delete(String id) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                getModel().delete(id);
+                return new AsyncStatus(true);
+            }
+        });
+    }
+
     @Override
     public Future<AsyncStatus> deleteAllSecureKeys() {
         return DispatchAsync.dispatch(new DispatchAsync.Executor() {

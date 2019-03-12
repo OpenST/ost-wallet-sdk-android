@@ -119,11 +119,25 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
             throw new OstError("wf_rd_evp_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
         }
 
-        if (!hasValidAddress(mDeviceToBeRevoked)) {
-            throw new OstError("wf_rd_evp_2", ErrorCode.INVALID_ADD_DEVICE_ADDRESS);
-        }
-
         super.ensureValidParams();
+    }
+
+    @Override
+    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
+        //Validate mDeviceAddressToBeAdded
+        OstDevice ostDevice = OstDevice.getById(mDeviceToBeRevoked);
+        if (null == ostDevice) {
+            try {
+                mOstApiClient.getDevice(mDeviceToBeRevoked);
+            } catch (IOException e) {
+                Log.e(TAG, "Exception while getting device");
+            }
+        }
+        ostDevice = OstDevice.getById(mDeviceToBeRevoked);
+        if ( null == ostDevice || !ostDevice.canBeRevoked() ) {
+            return postErrorInterrupt(new OstError("wf_rd_oudvp_1", ErrorCode.DEVICE_CAN_NOT_BE_REVOKED));
+        }
+        return super.onUserDeviceValidationPerformed(stateObject);
     }
 
     @Override

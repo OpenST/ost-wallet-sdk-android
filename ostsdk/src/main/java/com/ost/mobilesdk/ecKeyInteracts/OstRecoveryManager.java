@@ -193,7 +193,7 @@ public class OstRecoveryManager {
             }
 
             OstDevice currentDevice = OstUser.getById(userId).getCurrentDevice();
-            if ( !currentDevice.canBeAuthorized() ) {
+            if ( null == currentDevice || !currentDevice.canBeAuthorized() ) {
                 throw new OstError("km_rs_grds_3", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
             }
             String deviceAddressToBeAuthorized = currentDevice.getAddress();

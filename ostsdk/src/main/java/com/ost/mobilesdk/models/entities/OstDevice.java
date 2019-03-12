@@ -261,4 +261,12 @@ public class OstDevice extends OstBaseEntity {
         return OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(status);
     }
 
+    public boolean canBeRegistered() {
+        String status = this.getStatus();
+        if ( TextUtils.isEmpty(status) ) {
+            return false;
+        }
+        return OstDevice.CONST_STATUS.CREATED.equalsIgnoreCase(status);
+    }
+
 }

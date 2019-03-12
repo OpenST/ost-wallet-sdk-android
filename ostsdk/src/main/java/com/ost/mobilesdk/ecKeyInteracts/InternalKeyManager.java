@@ -36,6 +36,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.security.SecureRandom;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -177,8 +178,7 @@ class InternalKeyManager {
         }
 
         //Decrypt it.
-        byte[] decryptedMnemonics = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mnemonicsIdentifier).decrypt(ostSecureKey.getData());
-        return decryptedMnemonics;
+        return OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mnemonicsIdentifier).decrypt(ostSecureKey.getData());
     }
 
 
@@ -239,7 +239,6 @@ class InternalKeyManager {
 
         } catch (Exception ex) {
             Log.e(TAG, "m_s_ikm_cdk: Unexpected Exception");
-            return;
         } finally {
             ecKeyPair = null;
             clearBytes(mnemonics);
@@ -392,6 +391,28 @@ class InternalKeyManager {
         return keyMetaStruct;
     }
 
+    static boolean apiSignerUnauthorized(String userId) {
+        if (null == userId) {
+            Log.d(TAG,"userId null");
+            return false;
+        }
+        OstSecureKeyModelRepository metaRepository = getByteStorageRepo();
+        String userMetaId = createUserMataId(userId);
+        OstSecureKey ostSecureKey = metaRepository.getByKey(userMetaId);
+        if (null == ostSecureKey) {
+            Log.d(TAG,"No meta found");
+            return false;
+        }
+        Future<AsyncStatus> task = metaRepository.delete(userMetaId);
+        try {
+            task.get();
+            return true;
+        } catch (Throwable th) {
+            Log.e(TAG,"apiSignerUnauthorized: Some exception occurred.");
+            return false;
+        }
+    }
+
 
     static KeyMetaStruct createObjectFromBytes(byte[] bytes) {
 
@@ -417,7 +438,7 @@ class InternalKeyManager {
         return null;
     }
 
-    static byte[] createBytesFromObject(KeyMetaStruct object) {
+    private static byte[] createBytesFromObject(KeyMetaStruct object) {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput out = null;

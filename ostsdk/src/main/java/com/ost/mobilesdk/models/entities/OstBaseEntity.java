@@ -189,13 +189,7 @@ public abstract class OstBaseEntity {
             Log.e(TAG, "jsonObject is null");
             return null;
         }
-
-        try {
-            return jsonObject.getString(OstBaseEntity.STATUS);
-        } catch (JSONException e) {
-            Log.e(TAG, "Failed to read status from jsonObject."+ ". Entity = " + this.getClass().toString());
-            return null;
-        }
+        return jsonObject.optString(OstBaseEntity.STATUS, null);
     }
 
 

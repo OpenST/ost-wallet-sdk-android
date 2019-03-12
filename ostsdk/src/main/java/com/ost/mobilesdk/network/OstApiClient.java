@@ -50,7 +50,7 @@ public class OstApiClient {
         mApiSigner = new OstApiSigner(mUserId);
         mOstHttpRequestClient.setOstApiSigner(mApiSigner);
 
-        mResponseParser = new OstApiHelper();
+        mResponseParser = new OstApiHelper(userId);
         mOstHttpRequestClient.setResponseParser(mResponseParser);
     }
 

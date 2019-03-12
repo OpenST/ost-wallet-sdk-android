@@ -46,23 +46,20 @@ public class OstApiError extends OstError {
         return ApiErrorCodes.BAD_REQUEST.equalsIgnoreCase( getApiErrorCode() );
     }
 
-    public boolean isAuthenticationError(){
-        return ApiErrorCodes.AUTHENTICATION_ERROR.equalsIgnoreCase( getApiErrorCode() );
-    }
-
-    public boolean isNotFound() {
-        return ApiErrorCodes.NOT_FOUND.equalsIgnoreCase( getApiErrorCode() );
-    }
-
     public boolean isDeviceTimeOutOfSync() {
-        if ( isAuthenticationError() ) {
-            ApiErrorData apiRequestTimestamp = getApiErrorData("api_request_timestamp");
-            if ( null == apiRequestTimestamp ) {
-                return false;
-            }
-            return true;
+        ApiErrorData apiRequestTimestamp = getApiErrorData("api_request_timestamp");
+        if ( null == apiRequestTimestamp ) {
+            return false;
         }
-        return false;
+        return true;
+    }
+
+    public boolean isApiSignerUnauthorized() {
+        ApiErrorData apiKey = getApiErrorData("api_key");
+        if ( null == apiKey ) {
+            return false;
+        }
+        return true;
     }
 
     public ApiErrorData getApiErrorData(String parameterName) {

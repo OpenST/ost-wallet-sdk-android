@@ -16,6 +16,8 @@ import android.util.Log;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
+import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
@@ -23,8 +25,7 @@ import com.ost.mobilesdk.models.entities.OstRule;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
-import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
-import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
+import com.ost.mobilesdk.network.OstApiError;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.utils.EIP712;
@@ -248,17 +249,6 @@ abstract class OstBaseWorkFlow {
         return false;
     }
 
-    boolean hasValidAddress(String address) {
-        OstDevice ostDevice = OstDevice.getById(address);
-        if (null != ostDevice) return true;
-        try {
-            mOstApiClient.getDevice(address);
-        } catch (IOException e) {
-            Log.e(TAG, "Exception while getting device");
-        }
-        ostDevice = OstDevice.getById(address);
-        return (null != ostDevice);
-    }
 
 
 
@@ -284,8 +274,15 @@ abstract class OstBaseWorkFlow {
             try {
                 syncCurrentDevice();
             } catch (OstError ostError) {
-                //We know this could happen. Lets ignore the error given by syncCurrentDevice.
-                throw new OstError("wp_base_apic_3", ErrorCode.DEVICE_NOT_SETUP);
+
+                if ( ostError.isApiError() ) {
+                    OstApiError apiError = (OstApiError) ostError;
+                    if ( apiError.isApiSignerUnauthorized() ) {
+                        //We know this could happen. Lets ignore the error given by syncCurrentDevice.
+                        throw new OstError("wp_base_apic_3", ErrorCode.DEVICE_NOT_SETUP);
+                    }
+                }
+                throw ostError;
             }
 
             ostDevice = OstDevice.getById(deviceAddress);

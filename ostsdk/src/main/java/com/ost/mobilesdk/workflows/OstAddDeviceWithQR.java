@@ -77,11 +77,25 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
             throw new OstError("wf_ad_evp_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
         }
 
-        if (!hasValidAddress(mDeviceAddressToBeAdded)) {
-            throw new OstError("wf_ad_evp_2", ErrorCode.INVALID_ADD_DEVICE_ADDRESS);
-        }
-
         super.ensureValidParams();
+    }
+
+    @Override
+    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
+        //Validate mDeviceAddressToBeAdded
+        OstDevice ostDevice = OstDevice.getById(mDeviceAddressToBeAdded);
+        if (null == ostDevice) {
+            try {
+                mOstApiClient.getDevice(mDeviceAddressToBeAdded);
+            } catch (IOException e) {
+                Log.e(TAG, "Exception while getting device");
+            }
+        }
+        ostDevice = OstDevice.getById(mDeviceAddressToBeAdded);
+        if ( null == ostDevice || !ostDevice.canBeAuthorized() ) {
+            return postErrorInterrupt(new OstError("wf_adqr_oudvp_1", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED));
+        }
+        return super.onUserDeviceValidationPerformed(stateObject);
     }
 
     @Override

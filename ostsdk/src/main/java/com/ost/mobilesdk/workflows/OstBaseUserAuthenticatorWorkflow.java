@@ -126,9 +126,9 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
             }
         } catch (OstError ostError) {
             return postErrorInterrupt(ostError);
-        } catch (Exception exception) {
+        } catch (Throwable throwable) {
             OstError ostError = new OstError("bua_wf_osc_1", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
-            ostError.setStackTrace(exception.getStackTrace());
+            ostError.setStackTrace(throwable.getStackTrace());
             return postErrorInterrupt(ostError);
         }
         return new AsyncStatus(true);
