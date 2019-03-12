@@ -90,6 +90,12 @@ class OstApiHelper implements OstHttpRequestClient.ResponseParser {
             if (jsonData.has(OstSdk.DEVICE)) {
                 OstDevice.parse(jsonData.getJSONObject(OstSdk.DEVICE));
             }
+            if (jsonData.has(OstSdk.DEVICES)) {
+                JSONArray jsonArray = jsonData.getJSONArray(OstSdk.DEVICES);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    OstDevice.parse(jsonArray.getJSONObject(i));
+                }
+            }
         } catch (JSONException e) {
             Log.e(TAG, "JSONException");
         }

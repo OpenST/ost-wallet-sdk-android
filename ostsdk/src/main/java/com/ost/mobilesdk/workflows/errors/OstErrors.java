@@ -172,6 +172,9 @@ public class OstErrors {
 
             case INVALID_REVOKE_DEVICE_ADDRESS:
                 return "Invalid revoke device address";
+            case NO_PENDING_RECOVERY:
+                return "There is no pending device recovery";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -230,6 +233,7 @@ public class OstErrors {
         PRICE_POINTS_API_FAILED,
         UNKNOWN_RULE_NAME,
         UNKNOWN_DATA_DEFINITION,
+        NO_PENDING_RECOVERY,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,

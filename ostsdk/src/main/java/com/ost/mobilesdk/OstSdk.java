@@ -14,6 +14,7 @@ import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.QRCode;
+import com.ost.mobilesdk.workflows.OstAbortDeviceRecovery;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddCurrentDeviceWithMnemonics;
 import com.ost.mobilesdk.workflows.OstAddSession;
@@ -47,6 +48,7 @@ public class OstSdk {
     public static final String RECOVERY_OWNER = "recovery_owner";
     public static final String JSON_OBJECT = "JSON";
     public static final String PAPER_WALLET = "paper_wallet";
+    public static final String DEVICES = "devices";
     private static final String TAG = "OstSdk";
     private static volatile OstSdk INSTANCE;
 
@@ -236,7 +238,11 @@ public class OstSdk {
         ostRecoverDeviceWorkflow.perform();
     }
 
-    public static void revokeRecoverDevice(String userId, UserPassphrase passphrase, String deviceAddressToRecover, String deviceAddressToAuthorize, OstWorkFlowCallback workFlowCallback) {
-        //TBD.
+    public static void revokeRecoverDevice(String userId, UserPassphrase passphrase, OstWorkFlowCallback workFlowCallback) {
+        final OstAbortDeviceRecovery ostAbortDeviceRecovery = new OstAbortDeviceRecovery(userId,
+                passphrase,
+                workFlowCallback
+        );
+        ostAbortDeviceRecovery.perform();
     }
 }

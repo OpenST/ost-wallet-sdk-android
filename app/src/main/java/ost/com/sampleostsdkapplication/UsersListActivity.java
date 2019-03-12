@@ -25,6 +25,7 @@ import org.json.JSONException;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+import ost.com.sampleostsdkapplication.fragments.AbortDeviceRecoveryFragment;
 import ost.com.sampleostsdkapplication.fragments.CreateSessionFragment;
 import ost.com.sampleostsdkapplication.fragments.DeviceRecoveryFragment;
 import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
@@ -127,8 +128,21 @@ public class UsersListActivity extends MappyBaseActivity implements
             Log.d(TAG, "Device Recovery");
             byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
             loadDeviceRecoveryFragment(logInUser.getTokenId(), userId, appSalt);
+        } else if (id == R.id.device_abort_recovery) {
+            Log.d(TAG, "Device Recovery");
+            byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
+            AbortRecoveryFragment(logInUser.getTokenId(), userId, appSalt);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void AbortRecoveryFragment(String tokenId, String userId, byte[] appSalt) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AbortDeviceRecoveryFragment deviceRecoveryFragment = AbortDeviceRecoveryFragment.newInstance(tokenId, userId, appSalt);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, deviceRecoveryFragment, "abort_device_recovery");
+        transaction.addToBackStack("abort_device_recovery");
+        transaction.commit();
     }
 
     private void loadDeviceRecoveryFragment(String tokenId, String userId, byte[] appSalt) {

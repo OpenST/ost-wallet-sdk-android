@@ -59,6 +59,14 @@ public class OstDevice extends OstBaseEntity {
         return isAuthorized();
     }
 
+    public boolean isRecovering() {
+        String status = this.getStatus();
+        if (TextUtils.isEmpty(status)) {
+            return false;
+        }
+        return CONST_STATUS.RECOVERING.equalsIgnoreCase(status);
+    }
+
 
     public static class CONST_STATUS {
         public static final String CREATED = "created";

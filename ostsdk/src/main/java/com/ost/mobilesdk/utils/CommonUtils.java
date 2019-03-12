@@ -57,7 +57,7 @@ public class CommonUtils {
 
     public String parseStringResponseForKey(JSONObject jsonObject, String key) {
         try {
-            JSONObject resultType = parseResponseForResultType(jsonObject);
+            JSONObject resultType = (JSONObject) parseResponseForResultType(jsonObject);
             String stringValue = resultType.getString(key);
             return stringValue;
         } catch (JSONException e) {
@@ -77,19 +77,19 @@ public class CommonUtils {
         return false;
     }
 
-    public JSONObject parseResponseForResultType(JSONObject jsonObject) throws JSONException {
+    public Object parseResponseForResultType(JSONObject jsonObject) throws JSONException {
         if (!isValidResponse(jsonObject)) {
             Log.e(TAG, "JSON response false");
             return null;
         }
         JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
-        JSONObject resultTypeObject = jsonData.getJSONObject(jsonData.getString(OstConstants.RESULT_TYPE));
+        Object resultTypeObject = jsonData.getJSONObject(jsonData.getString(OstConstants.RESULT_TYPE));
         return resultTypeObject;
     }
 
     public JSONObject parseObjectResponseForKey(JSONObject jsonObject, String key) {
         try {
-            JSONObject resultType = parseResponseForResultType(jsonObject);
+            JSONObject resultType = (JSONObject) parseResponseForResultType(jsonObject);
             JSONObject keyObject = resultType.getJSONObject(key);
             return keyObject;
         } catch (JSONException e) {

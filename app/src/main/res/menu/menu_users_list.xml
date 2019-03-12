@@ -62,6 +62,5 @@
         android:id="@+id/device_abort_recovery"
         android:orderInCategory="100"
         android:title="@string/device_abort_recovery"
-        android:visible="false"
         app:showAsAction="never" />
 </menu>
