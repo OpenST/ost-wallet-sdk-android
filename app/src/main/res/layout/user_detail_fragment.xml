@@ -10,6 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ProgressBar
+            android:id="@+id/progress_bar_sync"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/user_detail_page"
             android:layout_width="match_parent"
@@ -217,6 +226,11 @@
                     android:maxLines="1" />
             </android.support.design.widget.TextInputLayout>
 
+            <Button
+                android:id="@+id/btn_sync_user"
+                android:text="@string/sync_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </RelativeLayout>
 </ScrollView>

@@ -1,6 +1,5 @@
 package ost.com.sampleostsdkapplication;
 
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -19,10 +18,9 @@ public class WorkFlowHelper implements OstWorkFlowCallback {
 
 
     private static final String TAG = "WorkFlowHelper";
-    private final App mApp;
 
-    public WorkFlowHelper(Context context) {
-        mApp = ((App) context.getApplicationContext());
+    public WorkFlowHelper() {
+
     }
 
     @Override

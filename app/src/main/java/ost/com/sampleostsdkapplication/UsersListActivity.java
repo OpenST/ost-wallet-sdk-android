@@ -118,7 +118,7 @@ public class UsersListActivity extends MappyBaseActivity implements
             String tokenHolderAddress = "0x3530b7d78132ff484f4a1fe7b6d7a1dd0c94fd2c";
             String amount = "1";
             String ruleName = "Pricer";
-            OstSdk.executeTransaction(userId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper(getApplicationContext()) {
+            OstSdk.executeTransaction(userId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper() {
             });
         } else if (id == R.id.reset_pin) {
             Log.d(TAG, "Reset pin");

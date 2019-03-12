@@ -31,7 +31,7 @@ public class QR_view extends AppCompatActivity {
 
                 OstSdk.startPolling(userId, OstSdk.getUser(userId).getCurrentDevice().getAddress(),
                         OstSdk.DEVICE, OstDevice.CONST_STATUS.AUTHORIZED,
-                        OstDevice.CONST_STATUS.REGISTERED, new WorkFlowHelper(getApplicationContext()));
+                        OstDevice.CONST_STATUS.REGISTERED, new WorkFlowHelper());
                 finish();
             }
         });
