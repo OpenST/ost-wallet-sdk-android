@@ -65,12 +65,6 @@ public interface OstWorkFlowCallback {
      */
     void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError);
 
-    /**
-     * Device SDK is no more functional with corrupted data.
-     * And it need to be reinitialized with new wallet key.
-     */
-    void deviceUnauthorized();
-
 
     /**
      * Inform SDK user about workflow core api call

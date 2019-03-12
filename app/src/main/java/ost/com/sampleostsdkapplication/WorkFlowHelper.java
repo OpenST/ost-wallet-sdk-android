@@ -55,11 +55,6 @@ public class WorkFlowHelper implements OstWorkFlowCallback {
     }
 
     @Override
-    public void deviceUnauthorized() {
-
-    }
-
-    @Override
     public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
 
     }

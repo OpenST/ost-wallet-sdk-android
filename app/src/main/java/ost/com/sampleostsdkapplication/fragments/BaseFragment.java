@@ -210,11 +210,6 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         hideLoader();
     }
 
-    @Override
-    public void deviceUnauthorized() {
-        addWorkflowTaskText("Workflow interrupted for deviceUnauthorized at: ");
-    }
-
     public void showWalletWords(String mnemonics, String showText) {
         hideLoader();
         if (mnemonics != null) {

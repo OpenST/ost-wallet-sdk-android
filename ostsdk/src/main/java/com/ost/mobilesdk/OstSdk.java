@@ -206,22 +206,6 @@ public class OstSdk {
                 .getQRCOde();
     }
 
-    /**
-     * To initiate polling for entity
-     *
-     * @param userId
-     * @param entityId
-     * @param entityType
-     * @param fromStatus
-     * @param toStatus
-     * @param workFlowCallback
-     */
-    public static void startPolling(String userId, String entityId, String entityType,
-                                    String fromStatus, String toStatus, OstWorkFlowCallback workFlowCallback) {
-        final OstStartPolling ostStartPolling = new OstStartPolling(userId, entityId,
-                entityType, fromStatus, toStatus, workFlowCallback);
-        ostStartPolling.perform();
-    }
 
 
     public static void resetRecoveryPassphrase(String userId, UserPassphrase currentPassphrase, UserPassphrase newPassphrase, OstWorkFlowCallback workFlowCallback) {
