@@ -233,10 +233,3 @@ OstSdk.resetPin(userId, appSalt, currentPin, newPin, new OstWorkFlowCallbackImpl
     void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError)
 ```
 
-```java
-   /**
-     * Device SDK is no more functional with corrupted data.
-     * And it need to be reinitialized with new wallet key.
-     */
-    void deviceUnauthorized()
-```
