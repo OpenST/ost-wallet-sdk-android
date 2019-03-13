@@ -20,16 +20,7 @@ public class WorkFlowHelper implements OstWorkFlowCallback {
 
 
     private static final String TAG = "WorkFlowHelper";
-
-    //To-Do: Remove the patch work after audit.
-    private static ArrayList<WorkFlowHelper> patchWork = new ArrayList<>();
-
-    public WorkFlowHelper() {
-        mApp = ((App) context.getApplicationContext());
-        //To-Do: Remove the patch work after audit.
-        patchWork.add(this);
-    }
-
+    
     @Override
     public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
 
