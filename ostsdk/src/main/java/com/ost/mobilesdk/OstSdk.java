@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import com.ost.mobilesdk.database.ConfigSharedPreferences;
 import com.ost.mobilesdk.database.OstSdkDatabase;
 import com.ost.mobilesdk.database.OstSdkKeyDatabase;
 import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
@@ -24,7 +23,6 @@ import com.ost.mobilesdk.workflows.OstPerform;
 import com.ost.mobilesdk.workflows.OstRecoverDeviceWorkflow;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
 import com.ost.mobilesdk.workflows.OstResetPin;
-import com.ost.mobilesdk.workflows.OstStartPolling;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
@@ -63,7 +61,6 @@ public class OstSdk {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
-        ConfigSharedPreferences.init(mApplicationContext);
         BASE_URL = baseUrl;
     }
 
@@ -78,6 +75,9 @@ public class OstSdk {
         if (INSTANCE == null) {
             synchronized (OstSdk.class) {
                 if (INSTANCE == null) {
+                    //Create Config.
+                    OstConfigs.init(context);
+                    //Create instance.
                     INSTANCE = new OstSdk(context, baseUrl);
                 }
             }

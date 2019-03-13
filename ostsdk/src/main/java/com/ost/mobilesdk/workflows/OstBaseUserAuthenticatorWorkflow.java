@@ -2,7 +2,7 @@ package com.ost.mobilesdk.workflows;
 
 import android.util.Log;
 
-import com.ost.mobilesdk.OstConstants;
+import com.ost.mobilesdk.OstConfigs;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 import com.ost.mobilesdk.ecKeyInteracts.OstRecoveryManager;
@@ -197,7 +197,7 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         }
 
         mPinAskCount = mPinAskCount + 1;
-        if (mPinAskCount < OstConstants.OST_PIN_MAX_RETRY_COUNT) {
+        if (mPinAskCount < OstConfigs.getInstance().PIN_MAX_RETRY_COUNT) {
             Log.d(TAG, "Pin InValidated ask for pin again");
             OstPinAcceptInterface me = this;
             return postInvalidPin(me);
