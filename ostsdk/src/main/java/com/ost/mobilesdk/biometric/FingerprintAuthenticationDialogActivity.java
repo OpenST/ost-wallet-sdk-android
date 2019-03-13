@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -83,7 +84,7 @@ public class FingerprintAuthenticationDialogActivity extends Activity
         // successful.
         Intent intent = new Intent(OstBiometricAuthentication.INTENT_FILTER_FINGERPRINT_AUTH);
         intent.putExtra(OstBiometricAuthentication.IS_AUTHENTICATED, true);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this.getApplicationContext()).sendBroadcast(intent);
         finish();
     }
 
@@ -91,7 +92,7 @@ public class FingerprintAuthenticationDialogActivity extends Activity
     public void onError() {
         Intent intent = new Intent(OstBiometricAuthentication.INTENT_FILTER_FINGERPRINT_AUTH);
         intent.putExtra(OstBiometricAuthentication.IS_AUTHENTICATED, false);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this.getApplicationContext()).sendBroadcast(intent);
         finish();
     }
 
