@@ -41,7 +41,7 @@ public class OstSessionTest {
         jsonObject.put(OstSession.USER_ID, "1234");
         jsonObject.put(OstSession.STATUS, "status");
         jsonObject.put(OstSession.TOKEN_HOLDER_ADDRESS, "123");
-        jsonObject.put(OstSession.EXPIRATION_BLOCK_HEIGHT, "1000");
+        jsonObject.put(OstSession.EXPIRATION_HEIGHT, "1000");
         jsonObject.put(OstSession.SPENDING_LIMIT, "9999");
         jsonObject.put(OstSession.NONCE, 1);
 

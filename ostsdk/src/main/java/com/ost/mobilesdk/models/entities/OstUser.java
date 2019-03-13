@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,9 +73,12 @@ public class OstUser extends OstBaseEntity {
 
     public OstSession getActiveSession(String spendingBtAmountInWei) {
         List<OstSession> ostActiveSessionList = OstSession.getActiveSessions(getId());
-
+        String currentTime = String.valueOf(System.currentTimeMillis());
         for (OstSession ostSession : ostActiveSessionList) {
-            if (ostSession.getSpendingLimit().compareTo(spendingBtAmountInWei) > 0) {
+            String expirationTimestamp = ostSession.getExpirationTimestamp();
+            BigInteger spendingLimitBI = new BigInteger(ostSession.getSpendingLimit());
+            BigInteger spendingBtAmountInWeiBI = new BigInteger(spendingBtAmountInWei);
+            if (spendingLimitBI.compareTo(spendingBtAmountInWeiBI) > 0 && expirationTimestamp.compareTo(currentTime) > 0) {
                 return ostSession;
             }
         }

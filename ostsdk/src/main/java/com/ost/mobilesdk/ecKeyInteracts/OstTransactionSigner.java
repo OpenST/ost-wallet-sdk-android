@@ -58,7 +58,7 @@ public class OstTransactionSigner {
                 break;
             case PRICER:
                 Log.i(TAG, "Fetch price points");
-                double pricePointUSDtoOST;
+                double pricePointOSTtoUSD;
                 int decimalExponent;
                 OstApiClient ostApiClient = new OstApiClient(mUserId);
                 try {
@@ -75,7 +75,7 @@ public class OstTransactionSigner {
                                 OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
                         throw ostError;
                     }
-                    pricePointUSDtoOST = pricePointObject.getDouble(COUNTRY_CODE_USD);
+                    pricePointOSTtoUSD = pricePointObject.getDouble(COUNTRY_CODE_USD);
                     decimalExponent = pricePointObject.getInt(DECIMAL_EXPONENT);
 
                 } catch (Exception e) {
@@ -85,7 +85,7 @@ public class OstTransactionSigner {
                 }
                 Log.i(TAG, "Building call data");
 
-                BigInteger weiPricePoint = convertPricePointFromEthToWei(pricePointUSDtoOST, decimalExponent);
+                BigInteger weiPricePoint = convertPricePointFromEthToWei(pricePointOSTtoUSD, decimalExponent);
 
                 OstToken ostToken = OstToken.getById(mTokenId);
                 if (null == ostToken) {
@@ -105,7 +105,7 @@ public class OstTransactionSigner {
                 int btDecimals = Integer.parseInt(btDecimalsString);
 
 
-                BigInteger fiatMultiplier = calFiatMultiplier(pricePointUSDtoOST, decimalExponent, conversionFactor, btDecimals);
+                BigInteger fiatMultiplier = calFiatMultiplier(pricePointOSTtoUSD, decimalExponent, conversionFactor, btDecimals);
 
                 callData = new PricerRule().getPriceTxnExecutableData(user.getTokenHolderAddress(),
                         tokenHolderAddresses, amounts, COUNTRY_CODE_USD, weiPricePoint);
@@ -171,9 +171,9 @@ public class OstTransactionSigner {
         BigDecimal toBtWeiMultiplier = new BigDecimal(10).pow(btDecimals);
 
         // multiplierForFiat = toBtWeiMultiplier / bigDecimalWeiDecimal
-        BigInteger multiplierForFiat = toBtWeiMultiplier.toBigInteger().divide(bigDecimalWeiDecimal.toBigInteger());
+        BigDecimal multiplierForFiat = toBtWeiMultiplier.divideToIntegralValue(bigDecimalWeiDecimal);
 
-        return multiplierForFiat;
+        return multiplierForFiat.toBigInteger();
     }
 
 
