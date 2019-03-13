@@ -14,13 +14,20 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class WorkFlowHelper implements OstWorkFlowCallback {
 
 
     private static final String TAG = "WorkFlowHelper";
 
-    public WorkFlowHelper() {
+    //To-Do: Remove the patch work after audit.
+    private static ArrayList<WorkFlowHelper> patchWork = new ArrayList<>();
 
+    public WorkFlowHelper() {
+        mApp = ((App) context.getApplicationContext());
+        //To-Do: Remove the patch work after audit.
+        patchWork.add(this);
     }
 
     @Override

@@ -1,9 +1,14 @@
 package com.ost.mobilesdk.biometric;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 public class OstBiometricAuthentication {
     public static final String INTENT_FILTER_FINGERPRINT_AUTH = "com.ost.ostsdk.biometric.FINGERPRINT_AUTH";
@@ -18,7 +23,7 @@ public class OstBiometricAuthentication {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         BroadcastReceiver broadcastReceiver = new AuthenticationReceiver(callback);
-        context.registerReceiver(broadcastReceiver, new IntentFilter(INTENT_FILTER_FINGERPRINT_AUTH));
+        LocalBroadcastManager.getInstance(context).registerReceiver(broadcastReceiver, new IntentFilter(INTENT_FILTER_FINGERPRINT_AUTH));
         mContext.getApplicationContext().startActivity(intent);
 
     }
@@ -39,7 +44,7 @@ public class OstBiometricAuthentication {
             } else {
                 mCallback.onError();
             }
-            context.unregisterReceiver(this);
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
         }
     }
     public interface Callback {
