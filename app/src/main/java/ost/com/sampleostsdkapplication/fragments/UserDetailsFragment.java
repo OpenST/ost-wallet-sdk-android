@@ -120,9 +120,8 @@ public class UserDetailsFragment extends Fragment {
 
     /**
      * Populate Data in the fragment view.
-     *
      */
-    private void populateData(){
+    private void populateData() {
         OstUser user = OstSdk.getUser(mUserId);
         OstDevice device = user.getCurrentDevice();
         mUserIdEdit.setText(mUserId);
@@ -131,9 +130,11 @@ public class UserDetailsFragment extends Fragment {
         mUserTHEdit.setText(user.getTokenHolderAddress());
         mUserDMEdit.setText(user.getDeviceManagerAddress());
         mUserRecoveryKeyEdit.setText(user.getRecoveryOwnerAddress());
-        mDeviceAddrEdit.setText(device.getAddress());
-        mDeviceNameEdit.setText(device.getDeviceName());
-        mDeviceStatusEdit.setText(device.getStatus());
+        if (null != device) {
+            mDeviceAddrEdit.setText(device.getAddress());
+            mDeviceNameEdit.setText(device.getDeviceName());
+            mDeviceStatusEdit.setText(device.getStatus());
+        }
     }
 
     public void showProgress(boolean show) {

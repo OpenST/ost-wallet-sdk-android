@@ -22,8 +22,6 @@ public class FingerprintAuthenticationDialogActivity extends Activity
     private static final String TAG = "BiometricDailog";
     private TextView mCancelButton;
 
-    private Stage mStage = Stage.FINGERPRINT;
-
     private FingerprintUiHelper mFingerprintUiHelper;
 
 
@@ -46,7 +44,6 @@ public class FingerprintAuthenticationDialogActivity extends Activity
                     getSystemService(FingerprintManager.class),
                     findViewById(R.id.fingerprint_icon),
                     findViewById(R.id.fingerprint_status), this);
-            updateStage();
         } else {
             Log.e(TAG, "Bio metric is not supported for api less than 23");
             finish();
@@ -64,18 +61,6 @@ public class FingerprintAuthenticationDialogActivity extends Activity
     public void onPause() {
         super.onPause();
         mFingerprintUiHelper.stopListening();
-    }
-
-    private void updateStage() {
-        switch (mStage) {
-            case FINGERPRINT:
-                mCancelButton.setText(R.string.cancel);
-                break;
-            case NEW_FINGERPRINT_ENROLLED:
-                // Intentional fall through
-            case PASSWORD:
-                break;
-        }
     }
 
     @Override
@@ -100,14 +85,5 @@ public class FingerprintAuthenticationDialogActivity extends Activity
     public void onBackPressed() {
         onError();
         super.onBackPressed();
-    }
-
-    /**
-     * Enumeration to indicate which authentication method the user is trying to authenticate with.
-     */
-    public enum Stage {
-        FINGERPRINT,
-        NEW_FINGERPRINT_ENROLLED,
-        PASSWORD
     }
 }

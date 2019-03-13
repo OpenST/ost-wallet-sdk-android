@@ -271,12 +271,11 @@ abstract class OstBaseWorkFlow {
         }
 
         OstDevice ostDevice = ostUser.getCurrentDevice();
-        String deviceAddress = ostDevice.getAddress();
         if ( null == ostDevice) {
             throw new OstError("wp_base_apic_2", ErrorCode.DEVICE_NOT_SETUP);
         }
         else if ( !canDeviceMakeApiCall(ostDevice) ) {
-
+            String deviceAddress = ostDevice.getAddress();
             // Lets try and make an api call.
             hasSyncedDeviceToEnsureApiCommunication = true;
             try {
