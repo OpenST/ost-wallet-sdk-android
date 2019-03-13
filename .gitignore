@@ -27,6 +27,11 @@ proguard/
 # Log Files
 *.log
 
+## File-based project format:
+*.ipr
+*.iws
+
+
 # Android Studio Navigation editor temp files
 .navigation/
 
@@ -36,6 +41,42 @@ captures/
 # IntelliJ
 *.iml
 .idea/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+
+# [Maven] ========================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# [Gradle-Android] ========================
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Gradle Signing
+signing.properties
+trestle.keystore
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
 
 # Keystore files
 # Uncomment the following lines if you do not want to check your keystore files in.
@@ -64,3 +105,11 @@ ostsdk/ostsdk.iml
 
 #db schema files
 ostsdk/schemas/
+
+
+# Misc
+/.idea/workspace.xml
+.DS_Store
+/captures
+**/*.iml
+*.class
