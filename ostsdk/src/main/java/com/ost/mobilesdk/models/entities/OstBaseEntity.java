@@ -64,9 +64,6 @@ public abstract class OstBaseEntity {
         }
         OstBaseEntity dbEntity = ostBaseModel.getEntityById(id);
         if (null != dbEntity) {
-            if (dbEntity.getUpdatedTimestamp() == OstBaseEntity.getUpdatedTimestamp(jsonObject)) {
-                return dbEntity;
-            }
             dbEntity.processJson(jsonObject);
         } else {
             dbEntity = entityFactory.createEntity(jsonObject);
