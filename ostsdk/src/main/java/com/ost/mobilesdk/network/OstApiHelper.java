@@ -5,7 +5,6 @@ import android.util.Log;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.ecKeyInteracts.OstApiSigner;
-import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
@@ -34,7 +33,7 @@ class OstApiHelper implements OstHttpRequestClient.ResponseParser {
         updateWithApiResponse(jsonObject);
     }
 
-    private void updateWithApiResponse(JSONObject jsonObject) {
+    synchronized private void updateWithApiResponse(JSONObject jsonObject) {
         if ( null == jsonObject || !jsonObject.optBoolean(OstConstants.RESPONSE_SUCCESS) ) {
             OstApiError apiError =  new OstApiError("nw_api_helper_uwapir_1", OstErrors.ErrorCode.KIT_API_ERROR, jsonObject);
             if ( apiError.isApiSignerUnauthorized() ) {

@@ -15,6 +15,7 @@ public class OstBiometricAuthentication {
         this.mContext = context;
 
         Intent intent = new Intent(mContext, FingerprintAuthenticationDialogActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         BroadcastReceiver broadcastReceiver = new AuthenticationReceiver(callback);
         context.registerReceiver(broadcastReceiver, new IntentFilter(INTENT_FILTER_FINGERPRINT_AUTH));

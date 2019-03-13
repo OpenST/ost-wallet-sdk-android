@@ -36,7 +36,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.security.SecureRandom;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -391,7 +390,7 @@ class InternalKeyManager {
         return keyMetaStruct;
     }
 
-    static boolean apiSignerUnauthorized(String userId) {
+    synchronized static boolean apiSignerUnauthorized(String userId) {
         if (null == userId) {
             Log.d(TAG,"userId null");
             return false;

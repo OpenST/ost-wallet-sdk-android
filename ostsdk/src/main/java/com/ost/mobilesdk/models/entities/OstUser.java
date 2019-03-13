@@ -232,4 +232,8 @@ public class OstUser extends OstBaseEntity {
     public boolean isActivating() {
         return OstUser.CONST_STATUS.ACTIVATING.equalsIgnoreCase( this.getStatus() );
     }
+
+    public void flushCurrentDevice() {
+        this.currentDevice = null;
+    }
 }

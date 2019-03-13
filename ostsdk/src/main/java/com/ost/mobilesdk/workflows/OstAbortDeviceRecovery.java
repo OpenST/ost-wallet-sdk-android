@@ -105,6 +105,7 @@ public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
     private void hasValidStatus(String status) {
         if (OstDevice.CONST_STATUS.REVOKING.equalsIgnoreCase(status) ||
                 OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status)) {
+            return;
         }
         throw new OstError("wf_adr_pr_3", ErrorCode.NO_PENDING_RECOVERY);
     }
@@ -117,7 +118,7 @@ public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
             dataHolder = rm.getAbortDeviceSignature(passphrase, mRecoveringDeviceAddress, mRevokingDeviceAddress);
             rm = null;
             Map<String, Object> postData = buildApiRequest(dataHolder);
-            mOstApiClient.postRevokeDevice(postData);
+            mOstApiClient.postAbortRecovery(postData);
             OstContextEntity contextEntity = new OstContextEntity(mCurrentDevice, OstSdk.DEVICE);
             postRequestAcknowledge(contextEntity);
 

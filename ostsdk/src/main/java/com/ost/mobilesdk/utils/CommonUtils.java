@@ -83,7 +83,7 @@ public class CommonUtils {
             return null;
         }
         JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
-        Object resultTypeObject = jsonData.getJSONObject(jsonData.getString(OstConstants.RESULT_TYPE));
+        Object resultTypeObject = jsonData.get(jsonData.getString(OstConstants.RESULT_TYPE));
         return resultTypeObject;
     }
 

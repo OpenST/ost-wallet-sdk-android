@@ -1,13 +1,11 @@
 package com.ost.mobilesdk.ecKeyInteracts;
 
 import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiError;
 import com.ost.mobilesdk.network.OstHttpRequestClient;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
-
-import org.web3j.crypto.Sign;
-import org.web3j.utils.Numeric;
 
 public class OstApiSigner implements OstHttpRequestClient.ApiSigner {
 
@@ -33,20 +31,30 @@ public class OstApiSigner implements OstHttpRequestClient.ApiSigner {
     }
 
     public void apiSignerUnauthorized(OstApiError error) {
-        if ( null == error || !error.isApiSignerUnauthorized()) {
-            return;
-        }
         try {
+            if (null == error || !error.isApiSignerUnauthorized()) {
+                return;
+            }
+
             KeyMetaStruct meta = InternalKeyManager.getKeyMataStruct(mUserId);
-            String currentDeviceAddress = meta.getDeviceAddress();
-            if ( null != currentDeviceAddress) {
-                OstDevice device = OstDevice.getById(currentDeviceAddress);
-                if ( null != device && device.canBeRegistered() ) {
-                    //Ignore this call for devices with status Created.
-                    return;
+            if (null != meta) {
+                String currentDeviceAddress = meta.getDeviceAddress();
+                if (null != currentDeviceAddress) {
+                    OstDevice device = OstDevice.getById(currentDeviceAddress);
+                    if (null != device && device.canBeRegistered()) {
+                        //Ignore this call for devices with status Created.
+                        return;
+                    }
                 }
             }
+            //Tell ikm about it.
             InternalKeyManager.apiSignerUnauthorized(mUserId);
+
+            //Flush the current device.
+            OstUser user = OstUser.getById(mUserId);
+            if (null != user) {
+                user.flushCurrentDevice();
+            }
         } catch (Throwable th) {
             OstError caughtError;
             if ( th instanceof OstError ) {
