@@ -15,6 +15,42 @@ Java Compile version: 1.7
 Android version support: 22 and above
 
 Refer [Sample app](app) for SDK usage
+
+## Add sdk dependency in build.gradle
+```
+dependencies {
+        implementation 'com.ost:ost-client-android-sdk:0.1.0.beta.10'
+}
+```
+
+## Add mobile sdk config file
+ Config file is needed for application specific configuration of ost sdk.</br>
+ - Create file "ost-mobilesdk.json"
+ - Refer below json example and update values with your app specific configuration.
+ ```json
+  {
+        "BLOCK_GENERATION_TIME": 3,
+        "PIN_MAX_RETRY_COUNT": 3,
+        "REQUEST_TIMEOUT_DURATION": 60,
+        "SESSION_BUFFER_TIME": 3600,
+        "PRICE_POINT_TOKEN_SYMBOL": "OST",
+        "PRICE_POINT_CURRENCY_SYMBOL": "USD"
+  }
+ ```
+- Place you file under main directory assets folder, if not present create one.</br>
+  File path example: app -> src -> main -> assets -> ost-mobilesdk.json</br>
+
+## Update build.gradle files
+In you app build.gradle files add compile options for java 1.8 version
+```
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+```
+ 
 ## OstSdk apis
 ### init
 To get started with the SDK, you must first initialize SDK by calling init() api.<br/>
