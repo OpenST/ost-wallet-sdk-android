@@ -3,13 +3,14 @@ package com.ost.mobilesdk.workflows;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.ost.mobilesdk.OstConfigs;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
 import com.ost.mobilesdk.ecKeyInteracts.OstRecoveryManager;
 import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
+import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
@@ -140,7 +141,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
         currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
         blockGenerationTime = Long.parseLong(strBlockGenerationTime);
-        long bufferBlocks = OstConstants.OST_SESSION_BUFFER_TIME / blockGenerationTime;
+        long bufferBlocks = (OstConfigs.getInstance().SESSION_BUFFER_TIME) / blockGenerationTime;
         long expiresAfterBlocks = mExpiresAfterInSecs / blockGenerationTime;
         long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
 

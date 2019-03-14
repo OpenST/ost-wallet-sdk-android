@@ -4,13 +4,14 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.util.Log;
 
-import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
+import com.ost.mobilesdk.models.Impls.OstModelFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class OstUser extends OstBaseEntity {
     public static OstUser init(String id, String tokenId) {
         OstUser ostUser = OstUser.getById(id);
         if (null != ostUser) {
-            Log.e(TAG, String.format("OstUser with id %s already exist", id));
+            Log.d(TAG, String.format("OstUser with id %s already exist", id));
             return ostUser;
         }
 
@@ -70,14 +71,19 @@ public class OstUser extends OstBaseEntity {
         return currentDevice;
     }
 
-    public OstSession getActiveSession() {
+    public OstSession getActiveSession(String spendingBtAmountInWei) {
         List<OstSession> ostActiveSessionList = OstSession.getActiveSessions(getId());
-        // Todo: Logic to filter most appropriate session.
-        if (ostActiveSessionList.size() < 1) {
-            Log.e(TAG, "No Active session key available");
-            return null;
+        String currentTime = String.valueOf(System.currentTimeMillis());
+        for (OstSession ostSession : ostActiveSessionList) {
+            String expirationTimestamp = ostSession.getExpirationTimestamp();
+            BigInteger spendingLimitBI = new BigInteger(ostSession.getSpendingLimit());
+            BigInteger spendingBtAmountInWeiBI = new BigInteger(spendingBtAmountInWei);
+            if (spendingLimitBI.compareTo(spendingBtAmountInWeiBI) > 0 && expirationTimestamp.compareTo(currentTime) > 0) {
+                return ostSession;
+            }
         }
-        return ostActiveSessionList.get(0);
+        Log.e(TAG, "No Active session key available");
+        return null;
     }
 
     @Deprecated
@@ -177,7 +183,7 @@ public class OstUser extends OstBaseEntity {
     }
 
     public OstDevice createDevice() {
-        OstKeyManager ostKeyManager = new OstKeyManager(getId());
+        OstKeyManager ostKeyManager = new OstKeyManager(getId(), true);
         String apiAddress = ostKeyManager.getApiKeyAddress();
         String address = ostKeyManager.getDeviceAddress();
         Log.d(TAG, "Create new device.");
@@ -225,5 +231,9 @@ public class OstUser extends OstBaseEntity {
 
     public boolean isActivating() {
         return OstUser.CONST_STATUS.ACTIVATING.equalsIgnoreCase( this.getStatus() );
+    }
+
+    public void flushCurrentDevice() {
+        this.currentDevice = null;
     }
 }

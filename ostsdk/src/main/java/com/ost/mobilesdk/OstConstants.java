@@ -17,7 +17,8 @@ public interface OstConstants {
     String QR_DATA_DEFINITION_VERSION = "ddv";
     String QR_DEVICE_ADDRESS = "da";
     String DATA_DEFINITION_TRANSACTION = "TX";
-    String DATA_DEFINITION_AUTHORIZE_DEVICE = "AUTHORIZE_DEVICE";
+    String DATA_DEFINITION_AUTHORIZE_DEVICE = "AD";
+    String DATA_DEFINITION_REVOKE_DEVICE = "RD";
     String QR_RULE_NAME = "rn";
     String QR_TOKEN_HOLDER_ADDRESSES = "ads";
     String QR_AMOUNTS = "ams";
@@ -37,12 +38,4 @@ public interface OstConstants {
     String OST_API_VERSION = "2";
     String USER_AGENT = String.format("ost-sdk-android-%s-%s", OST_API_VERSION, BUILD_VERSION_NAME);
     String CONTENT_TYPE = "application/x-www-form-urlencoded";
-
-    //Todo:: Will come from config
-    int OST_BLOCK_GENERATION_TIME = 3;
-    int OST_PIN_MAX_RETRY_COUNT = 3;
-    String OST_PRICE_POINT_TOKEN_SYMBOL = "OST";
-    String OST_PRICE_POINT_CURRENCY_SYMBOL = "OST";
-    int OST_REQUEST_TIMEOUT_DURATION = 6; //Seconds
-    long OST_SESSION_BUFFER_TIME = 60 * 60;
 }

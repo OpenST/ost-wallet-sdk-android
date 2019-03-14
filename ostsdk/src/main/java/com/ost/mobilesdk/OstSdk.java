@@ -5,15 +5,15 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import com.ost.mobilesdk.database.ConfigSharedPreferences;
 import com.ost.mobilesdk.database.OstSdkDatabase;
 import com.ost.mobilesdk.database.OstSdkKeyDatabase;
+import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
 import com.ost.mobilesdk.utils.QRCode;
+import com.ost.mobilesdk.workflows.OstAbortDeviceRecovery;
 import com.ost.mobilesdk.workflows.OstActivateUser;
 import com.ost.mobilesdk.workflows.OstAddCurrentDeviceWithMnemonics;
 import com.ost.mobilesdk.workflows.OstAddSession;
@@ -23,7 +23,6 @@ import com.ost.mobilesdk.workflows.OstPerform;
 import com.ost.mobilesdk.workflows.OstRecoverDeviceWorkflow;
 import com.ost.mobilesdk.workflows.OstRegisterDevice;
 import com.ost.mobilesdk.workflows.OstResetPin;
-import com.ost.mobilesdk.workflows.OstStartPolling;
 import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
@@ -46,6 +45,8 @@ public class OstSdk {
     public static final String SESSIONS = "sessions";
     public static final String RECOVERY_OWNER = "recovery_owner";
     public static final String JSON_OBJECT = "JSON";
+    public static final String PAPER_WALLET = "paper_wallet";
+    public static final String DEVICES = "devices";
     private static final String TAG = "OstSdk";
     private static volatile OstSdk INSTANCE;
 
@@ -60,7 +61,6 @@ public class OstSdk {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
-        ConfigSharedPreferences.init(mApplicationContext);
         BASE_URL = baseUrl;
     }
 
@@ -75,6 +75,9 @@ public class OstSdk {
         if (INSTANCE == null) {
             synchronized (OstSdk.class) {
                 if (INSTANCE == null) {
+                    //Create Config.
+                    OstConfigs.init(context);
+                    //Create instance.
                     INSTANCE = new OstSdk(context, baseUrl);
                 }
             }
@@ -203,22 +206,6 @@ public class OstSdk {
                 .getQRCOde();
     }
 
-    /**
-     * To initiate polling for entity
-     *
-     * @param userId
-     * @param entityId
-     * @param entityType
-     * @param fromStatus
-     * @param toStatus
-     * @param workFlowCallback
-     */
-    public static void startPolling(String userId, String entityId, String entityType,
-                                    String fromStatus, String toStatus, OstWorkFlowCallback workFlowCallback) {
-        final OstStartPolling ostStartPolling = new OstStartPolling(userId, entityId,
-                entityType, fromStatus, toStatus, workFlowCallback);
-        ostStartPolling.perform();
-    }
 
 
     public static void resetRecoveryPassphrase(String userId, UserPassphrase currentPassphrase, UserPassphrase newPassphrase, OstWorkFlowCallback workFlowCallback) {
@@ -235,7 +222,11 @@ public class OstSdk {
         ostRecoverDeviceWorkflow.perform();
     }
 
-    public static void revokeRecoverDevice(String userId, UserPassphrase passphrase, String deviceAddressToRecover, String deviceAddressToAuthorize, OstWorkFlowCallback workFlowCallback) {
-        //TBD.
+    public static void revokeRecoverDevice(String userId, UserPassphrase passphrase, OstWorkFlowCallback workFlowCallback) {
+        final OstAbortDeviceRecovery ostAbortDeviceRecovery = new OstAbortDeviceRecovery(userId,
+                passphrase,
+                workFlowCallback
+        );
+        ostAbortDeviceRecovery.perform();
     }
 }

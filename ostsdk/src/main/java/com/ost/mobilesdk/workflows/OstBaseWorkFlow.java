@@ -16,6 +16,8 @@ import android.util.Log;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
+import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
@@ -23,10 +25,8 @@ import com.ost.mobilesdk.models.entities.OstRule;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
-import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
-import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
+import com.ost.mobilesdk.network.OstApiError;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.utils.DispatchAsync;
 import com.ost.mobilesdk.utils.EIP712;
 import com.ost.mobilesdk.utils.GnosisSafe;
 import com.ost.mobilesdk.utils.OstPayloadBuilder;
@@ -45,12 +45,17 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 abstract class OstBaseWorkFlow {
     private static final String TAG = "OstBaseWorkFlow";
+    private final static ThreadPoolExecutor THREAD_POOL_EXECUTOR = (ThreadPoolExecutor) Executors
+            .newFixedThreadPool(1);
 
     final String mUserId;
     final Handler mHandler;
@@ -104,12 +109,16 @@ abstract class OstBaseWorkFlow {
     }
 
     public Future<AsyncStatus> perform() {
-        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+        return getAsyncQueue().submit(new Callable<AsyncStatus>() {
             @Override
             public AsyncStatus call() {
                 return process();
             }
         });
+    }
+
+    ThreadPoolExecutor getAsyncQueue() {
+        return THREAD_POOL_EXECUTOR;
     }
 
     protected abstract AsyncStatus process();
@@ -248,17 +257,6 @@ abstract class OstBaseWorkFlow {
         return false;
     }
 
-    boolean hasValidAddress(String address) {
-        OstDevice ostDevice = OstDevice.getById(address);
-        if (null != ostDevice) return true;
-        try {
-            mOstApiClient.getDevice(address);
-        } catch (IOException e) {
-            Log.e(TAG, "Exception while getting device");
-        }
-        ostDevice = OstDevice.getById(address);
-        return (null != ostDevice);
-    }
 
 
 
@@ -273,19 +271,25 @@ abstract class OstBaseWorkFlow {
         }
 
         OstDevice ostDevice = ostUser.getCurrentDevice();
-        String deviceAddress = ostDevice.getAddress();
         if ( null == ostDevice) {
             throw new OstError("wp_base_apic_2", ErrorCode.DEVICE_NOT_SETUP);
         }
         else if ( !canDeviceMakeApiCall(ostDevice) ) {
-
+            String deviceAddress = ostDevice.getAddress();
             // Lets try and make an api call.
             hasSyncedDeviceToEnsureApiCommunication = true;
             try {
                 syncCurrentDevice();
             } catch (OstError ostError) {
-                //We know this could happen. Lets ignore the error given by syncCurrentDevice.
-                throw new OstError("wp_base_apic_3", ErrorCode.DEVICE_NOT_SETUP);
+
+                if ( ostError.isApiError() ) {
+                    OstApiError apiError = (OstApiError) ostError;
+                    if ( apiError.isApiSignerUnauthorized() ) {
+                        //We know this could happen. Lets ignore the error given by syncCurrentDevice.
+                        throw new OstError("wp_base_apic_3", ErrorCode.DEVICE_NOT_SETUP);
+                    }
+                }
+                throw ostError;
             }
 
             ostDevice = OstDevice.getById(deviceAddress);
@@ -323,7 +327,8 @@ abstract class OstBaseWorkFlow {
         }
         String tokenId = mOstUser.getTokenId();
         mOstToken = OstToken.getById(tokenId);
-        if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId())) {
+        if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId()) ||
+                TextUtils.isEmpty(mOstToken.getBtDecimals())) {
             //Make API Call.
             try {
                 mOstApiClient.getToken();

@@ -5,10 +5,10 @@ import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstTransaction;
-import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.ecKeyInteracts.OstTransactionSigner;
 import com.ost.mobilesdk.ecKeyInteracts.structs.SignedTransactionStruct;
+import com.ost.mobilesdk.models.entities.OstTransaction;
+import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -272,6 +272,11 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
             OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId,
                     tokenHolderAddresses, amounts, ruleName, callback);
             ostExecuteTransaction.perform();
+        }
+
+        @Override
+        public void validateApiDependentParams() {
+
         }
     }
 }

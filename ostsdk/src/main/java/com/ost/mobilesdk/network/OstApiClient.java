@@ -1,9 +1,9 @@
 package com.ost.mobilesdk.network;
 
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.ecKeyInteracts.OstApiSigner;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.ecKeyInteracts.OstApiSigner;
 
 import org.json.JSONObject;
 
@@ -50,7 +50,7 @@ public class OstApiClient {
         mApiSigner = new OstApiSigner(mUserId);
         mOstHttpRequestClient.setOstApiSigner(mApiSigner);
 
-        mResponseParser = new OstApiHelper();
+        mResponseParser = new OstApiHelper(userId);
         mOstHttpRequestClient.setResponseParser(mResponseParser);
     }
 
@@ -197,6 +197,11 @@ public class OstApiClient {
         String chainId = ostToken.getChainId();
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/chains/%s/price-points", chainId), requestMap);
+    }
+
+    public JSONObject getPendingRecovery() throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get(String.format("/users/%s/devices/pending-recovery", mUserId), requestMap);
     }
 
     public JSONObject getBalance() throws IOException {

@@ -125,11 +125,15 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
     }
 
     public void showLoader() {
+        if (null == mActionButtons) return;
+
         mActionButtons.setVisibility(View.GONE);
         mActionLoaders.setVisibility(View.VISIBLE);
     }
 
     public void hideLoader() {
+        if (null == mActionButtons) return;
+
         mActionButtons.setVisibility(View.VISIBLE);
         mActionLoaders.setVisibility(View.GONE);
     }
@@ -160,6 +164,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
     public void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         hideLoader();
         showWalletInstructionText("Invalid Pin.");
+        UsersListActivity activity = (UsersListActivity) getActivity();
+        activity.showPinDialog(ostPinAcceptInterface);
     }
 
     @Override
@@ -167,10 +173,6 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
 
     }
 
-    @Override
-    public void showPaperWallet(byte[] mnemonics) {
-        showWalletWords(new String(mnemonics), "Please save these words carefully.");
-    }
 
     @Override
     public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
@@ -208,11 +210,6 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         hideLoader();
     }
 
-    @Override
-    public void deviceUnauthorized() {
-        addWorkflowTaskText("Workflow interrupted for deviceUnauthorized at: ");
-    }
-
     public void showWalletWords(String mnemonics, String showText) {
         hideLoader();
         if (mnemonics != null) {
@@ -223,9 +220,13 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
     }
 
     public void addWorkflowTaskText(String str) {
+
+        if (null == mWorkflowDetailsBox) return;
+
         String finalStr = mWorkflowDetailsBox.getText().toString();
         finalStr += ("\n " + str + String.valueOf((int) (System.currentTimeMillis() / 1000)));
         mWorkflowDetailsBox.setText(finalStr);
+        mWorkflowDetailsBox.scrollTo(0, mWorkflowDetailsBox.getBottom());
         mWorkflowDetails.setVisibility(View.VISIBLE);
     }
 

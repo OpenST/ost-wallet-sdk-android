@@ -1,14 +1,11 @@
 package ost.com.sampleostsdkapplication;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
-
-import com.ost.mobilesdk.OstSdk;
 
 import org.json.JSONObject;
 
@@ -61,7 +58,6 @@ public class LoginViewController {
     private void parseResponse(JSONObject response, boolean isRegister) {
         if (null != response && null != mLoginFragment.getActivity()) {
             Activity activity = mLoginFragment.getActivity();
-            Intent userListIntent = new Intent(activity, UsersListActivity.class);
             Toast.makeText(activity.getApplicationContext(), isRegister ? "User Registered" : "User Authenticated", Toast.LENGTH_SHORT).show();
             Log.i(TAG, String.format("JSON Response : %s", response.toString()));
 
@@ -72,10 +68,7 @@ public class LoginViewController {
             if (null != userId) {
                 mLoginFragment.showProgress(false);
 
-                OstSdk.setupDevice(userId, tokenId, new WorkFlowHelper(activity.getApplicationContext()));
-                userListIntent.putExtra(OST_USER_ID, userId);
-                userListIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                activity.startActivity(userListIntent);
+                mLoginFragment.startUserListActivity();
                 return;
             }
             Log.i(TAG, "UserId is null");
@@ -125,5 +118,7 @@ public class LoginViewController {
         Activity getActivity();
 
         String getString(int text);
+
+        void startUserListActivity();
     }
 }

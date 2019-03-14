@@ -3,11 +3,11 @@ package com.ost.mobilesdk.ecKeyInteracts;
 import android.text.TextUtils;
 
 import com.ost.mobilesdk.OstConstants;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedRecoverOperationStruct;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedResetRecoveryStruct;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
-import com.ost.mobilesdk.ecKeyInteracts.structs.SignedRecoverOperationStruct;
-import com.ost.mobilesdk.ecKeyInteracts.structs.SignedResetRecoveryStruct;
 import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.utils.DelayedRecoveryModule;
 import com.ost.mobilesdk.utils.EIP712;
@@ -193,7 +193,7 @@ public class OstRecoveryManager {
             }
 
             OstDevice currentDevice = OstUser.getById(userId).getCurrentDevice();
-            if ( !currentDevice.canBeAuthorized() ) {
+            if ( null == currentDevice || !currentDevice.canBeAuthorized() ) {
                 throw new OstError("km_rs_grds_3", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
             }
             String deviceAddressToBeAuthorized = currentDevice.getAddress();
@@ -233,6 +233,79 @@ public class OstRecoveryManager {
                 error = (OstError) th;
             } else {
                 error = new OstError("km_rs_grds_uc_1", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+            }
+            throw error;
+        } finally {
+            passphrase.wipe();
+            CommonUtils.clearBytes(salt);
+        }
+    }
+
+    public SignedRecoverOperationStruct getAbortDeviceSignature(UserPassphrase passphrase,
+                                                                String recoveringAddress,
+                                                                String revokingAddress) {
+        byte[] salt = null;
+        String signature = null;
+        InternalKeyManager ikm = null;
+        SignedRecoverOperationStruct dataHolder;
+        try {
+            forceSyncUser();
+
+            OstUser user = ostUser();
+            ikm = new InternalKeyManager(userId);
+
+            // Check if recovery is locked.
+            if (ikm.isUserPassphraseValidationLocked()) {
+                throw new OstError("km_rs_gads_1", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
+            }
+
+            // Make user has recovery key
+            String recoveryOwnerAddress = user.getRecoveryOwnerAddress();
+            String recoveryContractAddress = user.getRecoveryAddress();
+            if (TextUtils.isEmpty(recoveryOwnerAddress) || TextUtils.isEmpty(recoveryContractAddress)) {
+                throw new OstError("km_rs_gads_2", ErrorCode.RECOVERY_PASSPHRASE_OWNER_NOT_SET);
+            }
+
+            OstDevice recoveringDevice = OstDevice.getById(recoveringAddress);
+            if (!recoveringDevice.isRecovering()) {
+                throw new OstError("km_rs_gads_3", ErrorCode.INSUFFICIENT_DATA);
+            }
+
+            OstDevice deviceToRevoke = OstDevice.getById(revokingAddress);
+            if (null == deviceToRevoke) {
+                throw new OstError("km_rs_gads_4", ErrorCode.INSUFFICIENT_DATA);
+            }
+
+            String linkedAddress = deviceToRevoke.getLinkedAddress();
+            if (null == linkedAddress) {
+                throw new OstError("km_rs_gads_4", ErrorCode.INSUFFICIENT_DATA);
+            }
+
+            // Sanity check validity of new user passphrase.
+            if (passphrase.isWiped()) {
+                ikm.userPassphraseInvalidated();
+                throw new OstError("km_rs_gads_5", ErrorCode.INVALID_USER_PASSPHRASE);
+            }
+
+            try {
+                dataHolder = composeRecoveryOperation(ABORT_RECOVERY_STRUCT, deviceToRevoke, recoveringDevice);
+            } catch (Throwable th) {
+                throw new OstError("km_rs_gads_6", ErrorCode.EIP712_FAILED);
+            }
+
+            salt = getSalt();
+            signature = ikm.signDataWithRecoveryKey(dataHolder.getMessageHash(), passphrase, salt);
+            if (null == signature) {
+                throw new OstError("km_rs_garows_5", ErrorCode.INVALID_USER_PASSPHRASE);
+            }
+            dataHolder.setSignature(signature);
+            return dataHolder;
+        } catch (Throwable th) {
+            OstError error;
+            if (th instanceof OstError) {
+                error = (OstError) th;
+            } else {
+                error = new OstError("km_rs_gads_uc_1", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
             }
             throw error;
         } finally {

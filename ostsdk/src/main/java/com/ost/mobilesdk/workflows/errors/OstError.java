@@ -1,7 +1,6 @@
 package com.ost.mobilesdk.workflows.errors;
-import android.util.Log;
 
-import com.ost.mobilesdk.OstConstants;
+import android.util.Log;
 
 public class OstError extends Error {
 

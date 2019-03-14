@@ -1,6 +1,5 @@
 package ost.com.sampleostsdkapplication;
 
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,30 +14,16 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class WorkFlowHelper implements OstWorkFlowCallback {
 
 
     private static final String TAG = "WorkFlowHelper";
-    private final App mApp;
-
-    public WorkFlowHelper(Context context) {
-        mApp = ((App) context.getApplicationContext());
-    }
-
+    
     @Override
     public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
-        Log.i(TAG, String.format("Device Object %s ", apiParams.toString()));
-        String mUserId = mApp.getLoggedUser().getId();
-        new MappyApiClient().registerDevice(mUserId, apiParams, new MappyApiClient.Callback() {
-            @Override
-            public void onResponse(boolean success, JSONObject response) {
-                if (success) {
-                    ostDeviceRegisteredInterface.deviceRegistered(response);
-                } else {
-                    ostDeviceRegisteredInterface.cancelFlow();
-                }
-            }
-        });
+
     }
 
     @Override
@@ -65,16 +50,6 @@ public class WorkFlowHelper implements OstWorkFlowCallback {
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
         Toast.makeText(OstSdk.getContext(), String.format("Work Flow %s Error: %s", ostWorkflowContext.getWorkflow_type(), ostError.getMessage()), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void deviceUnauthorized() {
-
-    }
-
-    @Override
-    public void showPaperWallet(byte[] mnemonics) {
-
     }
 
     @Override

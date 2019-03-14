@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.ecKeyInteracts.OstMultiSigSigner;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstUser;
-import com.ost.mobilesdk.ecKeyInteracts.OstMultiSigSigner;
-import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors;

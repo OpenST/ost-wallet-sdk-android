@@ -152,6 +152,9 @@ public class OstErrors {
 
             case USER_PASSPHRASE_VALIDATION_LOCKED: return "Can not validate user passphrase because of too many wrong attempts.";
 
+            case DEVICE_CAN_NOT_BE_REVOKED:
+                return "Device can not be revoked";
+
             case EIP1077_FAILED:
                 return "EIP1077 failed";
 
@@ -163,6 +166,30 @@ public class OstErrors {
 
             case WORKFLOW_CANCELLED:return "Workflow cancelled";
             case UNKNOWN_DATA_DEFINITION: return "The QR code does not contain valid data definition";
+
+            case DEVICE_ALREADY_REVOKED:
+                return "Device is already revoked";
+
+            case INVALID_REVOKE_DEVICE_ADDRESS:
+                return "Invalid revoke device address";
+            case NO_PENDING_RECOVERY:
+                return "There is no pending device recovery";
+            case CONFIG_READ_FAILED:
+                return "Failed to read config file. Please place the ost-sdk config file in main/assets folder.";
+
+            case INVALID_BLOCK_GENERATION_TIME:
+                return "Invalid configuration 'BLOCK_GENERATION_TIME'. It must be an Integer greater than zero";
+            case INVALID_PIN_MAX_RETRY_COUNT:
+                return "Invalid configuration 'PIN_MAX_RETRY_COUNT'. It must be an Integer greater than zero";
+            case INVALID_SESSION_BUFFER_TIME:
+                return "Invalid configuration 'SESSION_BUFFER_TIME'. It must be long greater than or equal to zero";
+            case INVALID_PRICE_POINT_TOKEN_SYMBOL:
+                return "Invalid configuration 'PRICE_POINT_TOKEN_SYMBOL'.";
+            case INVALID_PRICE_POINT_CURRENCY_SYMBOL:
+                return "Invalid configuration 'PRICE_POINT_CURRENCY_SYMBOL'.";
+            case INVALID_REQUEST_TIMEOUT_DURATION:
+                return "Invalid configuration 'REQUEST_TIMEOUT_DURATION'. It must be Integer greater than zero.";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -209,7 +236,10 @@ public class OstErrors {
         INVALID_RECOVER_DEVICE_ADDRESS,
         DEVICE_UNAUTHORIZED,
         DEVICE_ALREADY_AUTHORIZED,
+        DEVICE_ALREADY_REVOKED,
         DEVICE_CAN_NOT_BE_AUTHORIZED,
+        DEVICE_CAN_NOT_BE_REVOKED,
+        INVALID_REVOKE_DEVICE_ADDRESS,
         USER_ACTIVATING,
         USER_ALREADY_ACTIVATED,
         INVALID_MNEMONICS,
@@ -218,6 +248,7 @@ public class OstErrors {
         PRICE_POINTS_API_FAILED,
         UNKNOWN_RULE_NAME,
         UNKNOWN_DATA_DEFINITION,
+        NO_PENDING_RECOVERY,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,
@@ -241,12 +272,23 @@ public class OstErrors {
         INVALID_SESSION_ADDRESS,
         FAILED_TO_SIGN_DATA,
 
+
+        //Configurations
+        INVALID_BLOCK_GENERATION_TIME,
+        INVALID_PIN_MAX_RETRY_COUNT,
+        INVALID_PRICE_POINT_TOKEN_SYMBOL,
+        INVALID_PRICE_POINT_CURRENCY_SYMBOL,
+        INVALID_REQUEST_TIMEOUT_DURATION,
+        INVALID_SESSION_BUFFER_TIME,
+
+
         //Generic
         UNKNOWN,
         WORKFLOW_CANCELLED,
         UNCAUGHT_EXCEPTION_HANDELED,
         DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY,
-        KIT_API_ERROR
+        KIT_API_ERROR,
+        CONFIG_READ_FAILED,
     }
 }

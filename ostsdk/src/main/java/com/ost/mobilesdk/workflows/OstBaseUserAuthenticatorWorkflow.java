@@ -2,7 +2,7 @@ package com.ost.mobilesdk.workflows;
 
 import android.util.Log;
 
-import com.ost.mobilesdk.OstConstants;
+import com.ost.mobilesdk.OstConfigs;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.biometric.OstBiometricAuthentication;
 import com.ost.mobilesdk.ecKeyInteracts.OstRecoveryManager;
@@ -126,9 +126,9 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
             }
         } catch (OstError ostError) {
             return postErrorInterrupt(ostError);
-        } catch (Exception exception) {
+        } catch (Throwable throwable) {
             OstError ostError = new OstError("bua_wf_osc_1", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
-            ostError.setStackTrace(exception.getStackTrace());
+            ostError.setStackTrace(throwable.getStackTrace());
             return postErrorInterrupt(ostError);
         }
         return new AsyncStatus(true);
@@ -197,13 +197,13 @@ abstract public class OstBaseUserAuthenticatorWorkflow extends OstBaseWorkFlow i
         }
 
         mPinAskCount = mPinAskCount + 1;
-        if (mPinAskCount > OstConstants.OST_PIN_MAX_RETRY_COUNT) {
-            Log.d(TAG, "Max pin ask limit reached");
-            return postErrorInterrupt("bpawf_vup_2", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
+        if (mPinAskCount < OstConfigs.getInstance().PIN_MAX_RETRY_COUNT) {
+            Log.d(TAG, "Pin InValidated ask for pin again");
+            OstPinAcceptInterface me = this;
+            return postInvalidPin(me);
         }
-        Log.d(TAG, "Pin InValidated ask for pin again");
-        OstPinAcceptInterface me = this;
-        return postInvalidPin(me);
+        Log.d(TAG, "Max pin ask limit reached");
+        return postErrorInterrupt("bpawf_vup_2", ErrorCode.MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED);
     }
 
     AsyncStatus postPinValidated() {

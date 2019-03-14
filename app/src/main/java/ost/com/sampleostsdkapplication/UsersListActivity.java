@@ -25,6 +25,7 @@ import org.json.JSONException;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
+import ost.com.sampleostsdkapplication.fragments.AbortDeviceRecoveryFragment;
 import ost.com.sampleostsdkapplication.fragments.CreateSessionFragment;
 import ost.com.sampleostsdkapplication.fragments.DeviceRecoveryFragment;
 import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
@@ -38,7 +39,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class UsersListActivity extends MappyBaseActivity implements
         SetUpUserFragment.OnSetUpUserFragmentListener,
-        PaperWalletFragment.OnPaperWalletFragmentListener,
         ResetPinFragment.OnResetPinFragmentListener,
         CreateSessionFragment.OnCreateSessionFragmentListener {
 
@@ -119,7 +119,7 @@ public class UsersListActivity extends MappyBaseActivity implements
             String tokenHolderAddress = "0x3530b7d78132ff484f4a1fe7b6d7a1dd0c94fd2c";
             String amount = "1";
             String ruleName = "Pricer";
-            OstSdk.executeTransaction(userId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper(getApplicationContext()) {
+            OstSdk.executeTransaction(userId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper() {
             });
         } else if (id == R.id.reset_pin) {
             Log.d(TAG, "Reset pin");
@@ -128,8 +128,21 @@ public class UsersListActivity extends MappyBaseActivity implements
             Log.d(TAG, "Device Recovery");
             byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
             loadDeviceRecoveryFragment(logInUser.getTokenId(), userId, appSalt);
+        } else if (id == R.id.device_abort_recovery) {
+            Log.d(TAG, "Device Recovery");
+            byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
+            AbortRecoveryFragment(logInUser.getTokenId(), userId, appSalt);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void AbortRecoveryFragment(String tokenId, String userId, byte[] appSalt) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AbortDeviceRecoveryFragment deviceRecoveryFragment = AbortDeviceRecoveryFragment.newInstance(tokenId, userId, appSalt);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, deviceRecoveryFragment, "abort_device_recovery");
+        transaction.addToBackStack("abort_device_recovery");
+        transaction.commit();
     }
 
     private void loadDeviceRecoveryFragment(String tokenId, String userId, byte[] appSalt) {
@@ -331,19 +344,5 @@ public class UsersListActivity extends MappyBaseActivity implements
                     expiryAfterSecs, createSessionFragment);
             createSessionFragment.flowStarted();
         }
-    }
-
-    @Override
-    public void onShowPaperWalletButton() {
-        Log.d(TAG, "Ask for pin");
-        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-        if (paperWalletFragment != null) {
-            OstSdk.getPaperWallet(logInUser.getOstUserId(), paperWalletFragment);
-        }
-    }
-
-    @Override
-    public void authorizeDeviceUsingMnemonics(String mnemonics, String userId) {
-        OstSdk.addDeviceUsingMnemonics(userId, mnemonics.getBytes(UTF_8), new WorkFlowHelper(getApplicationContext()));
     }
 }

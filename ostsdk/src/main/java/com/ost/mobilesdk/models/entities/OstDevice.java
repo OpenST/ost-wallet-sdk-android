@@ -47,6 +47,26 @@ public class OstDevice extends OstBaseEntity {
                 CONST_STATUS.REVOKED).contains(status);
     }
 
+    public boolean isRevoked() {
+        String status = this.getStatus();
+        if (TextUtils.isEmpty(status)) {
+            return false;
+        }
+        return CONST_STATUS.REVOKED.equalsIgnoreCase(status);
+    }
+
+    public boolean canBeRevoked() {
+        return isAuthorized();
+    }
+
+    public boolean isRecovering() {
+        String status = this.getStatus();
+        if (TextUtils.isEmpty(status)) {
+            return false;
+        }
+        return CONST_STATUS.RECOVERING.equalsIgnoreCase(status);
+    }
+
 
     public static class CONST_STATUS {
         public static final String CREATED = "created";
@@ -54,6 +74,7 @@ public class OstDevice extends OstBaseEntity {
         public static final String AUTHORIZING = "authorizing";
         public static final String AUTHORIZED = "authorized";
         public static final String REVOKING = "revoking";
+        public static final String RECOVERING = "recovering";
         public static final String REVOKED = "revoked";
     }
 
@@ -228,7 +249,8 @@ public class OstDevice extends OstBaseEntity {
         }
         return OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
                 || OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.AUTHORIZING.equalsIgnoreCase(status);
+                || OstDevice.CONST_STATUS.AUTHORIZING.equalsIgnoreCase(status)
+                || OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status);
     }
 
     public boolean isAuthorized() {
@@ -245,6 +267,14 @@ public class OstDevice extends OstBaseEntity {
             return false;
         }
         return OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(status);
+    }
+
+    public boolean canBeRegistered() {
+        String status = this.getStatus();
+        if ( TextUtils.isEmpty(status) ) {
+            return false;
+        }
+        return OstDevice.CONST_STATUS.CREATED.equalsIgnoreCase(status);
     }
 
 }

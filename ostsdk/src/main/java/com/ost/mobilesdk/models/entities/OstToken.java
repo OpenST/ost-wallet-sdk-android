@@ -21,6 +21,7 @@ public class OstToken extends OstBaseEntity {
     public static final String AUXILIARY_CHAINS = "auxiliary_chains";
     private static final String CHAIN_ID = "chain_id";
     private static final String TAG = "OstToken";
+    private static final String DECIMALS = "decimals";
 
 
     public static String getIdentifier() {
@@ -65,7 +66,7 @@ public class OstToken extends OstBaseEntity {
     public static OstToken init(String tokenId) {
         OstToken ostToken = OstToken.getById(tokenId);
         if (null != ostToken) {
-            Log.e(TAG, String.format("OstToken with Id %s already exists", tokenId));
+            Log.d(TAG, String.format("OstToken with Id %s already exists", tokenId));
             return ostToken;
         }
 
@@ -121,6 +122,10 @@ public class OstToken extends OstBaseEntity {
 
     public String getConversionFactor() {
         return this.getJsonDataPropertyAsString(OstToken.CONVERSION_FACTOR);
+    }
+
+    public String getBtDecimals() {
+        return this.getJsonDataPropertyAsString(OstToken.DECIMALS);
     }
 
     public String getTotalSupply() {

@@ -4,6 +4,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+import android.util.Log;
 
 import com.ost.mobilesdk.database.daos.OstSecureKeyDao;
 import com.ost.mobilesdk.models.entities.OstSecureKey;
@@ -18,11 +19,12 @@ public abstract class OstSdkKeyDatabase extends RoomDatabase {
     private static volatile OstSdkKeyDatabase INSTANCE;
 
     public static OstSdkKeyDatabase initDatabase(final Context context) {
+        String databasePath = String.format("%s/%s", context.getNoBackupFilesDir(),DATABASE_NAME);
         if (INSTANCE == null) {
             synchronized (OstSdkKeyDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            OstSdkKeyDatabase.class, DATABASE_NAME)
+                            OstSdkKeyDatabase.class, databasePath)
                             .allowMainThreadQueries()
                             .addMigrations(
                                     /*Add your migration class object here

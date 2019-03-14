@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
+import com.ost.mobilesdk.OstConfigs;
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.ecKeyInteracts.OstApiSigner;
@@ -100,7 +101,7 @@ public class OstHttpRequestClient {
 
         client = new OkHttpClient.Builder()
                 .connectionPool(new ConnectionPool(10, 2, TimeUnit.MINUTES))
-                .connectTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(OstConfigs.getInstance().REQUEST_TIMEOUT_DURATION, TimeUnit.SECONDS)
                 .readTimeout(timeout, TimeUnit.SECONDS)
                 .dispatcher(dispatcher)
                 .retryOnConnectionFailure(false)

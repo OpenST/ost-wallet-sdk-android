@@ -1,7 +1,6 @@
 package com.ost.mobilesdk.workflows;
 
-import android.util.Log;
-
+import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.ecKeyInteracts.OstKeyManager;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -25,8 +24,8 @@ public class OstGetPaperWallet extends OstBaseUserAuthenticatorWorkflow {
         OstKeyManager ostKeyManager = null;
         try {
             ostKeyManager = new OstKeyManager(mUserId);
-            postMnemonics(ostKeyManager.getMnemonics());
-            return super.performOnAuthenticated();
+            OstContextEntity ostContextEntity = new OstContextEntity(ostKeyManager.getMnemonics(), OstSdk.PAPER_WALLET);
+            return postFlowComplete(ostContextEntity);
         } catch (OstError error) {
             return postErrorInterrupt( error );
         } catch (Throwable th) {
@@ -34,21 +33,6 @@ public class OstGetPaperWallet extends OstBaseUserAuthenticatorWorkflow {
         } finally {
             ostKeyManager = null;
         }
-    }
-
-    private void postMnemonics(byte[] mnemonics) {
-        Log.i(TAG, "show mnemonics");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                OstWorkFlowCallback callback = getCallback();
-                if ( null != callback ) {
-                    callback.showPaperWallet(mnemonics);
-                } else {
-                    goToState(WorkflowStateManager.CALLBACK_LOST);
-                }
-            }
-        });
     }
 
     @Override

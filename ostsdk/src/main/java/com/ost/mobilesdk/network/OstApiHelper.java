@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.ecKeyInteracts.OstApiSigner;
 import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstDeviceManager;
 import com.ost.mobilesdk.models.entities.OstDeviceManagerOperation;
@@ -19,17 +20,31 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OstApiHelper implements OstHttpRequestClient.ResponseParser {
+class OstApiHelper implements OstHttpRequestClient.ResponseParser {
     private static final String TAG = "OstApiHelper";
+
+    String mUserId;
+    OstApiHelper(String userId) {
+        mUserId = userId;
+    }
 
     @Override
     public void parse(JSONObject jsonObject) {
         updateWithApiResponse(jsonObject);
     }
 
-    public void updateWithApiResponse(JSONObject jsonObject) {
+    synchronized private void updateWithApiResponse(JSONObject jsonObject) {
         if ( null == jsonObject || !jsonObject.optBoolean(OstConstants.RESPONSE_SUCCESS) ) {
-            throw new OstApiError("nw_api_helper_uwapir_1", OstErrors.ErrorCode.KIT_API_ERROR, jsonObject);
+            OstApiError apiError =  new OstApiError("nw_api_helper_uwapir_1", OstErrors.ErrorCode.KIT_API_ERROR, jsonObject);
+            if ( apiError.isApiSignerUnauthorized() ) {
+                try {
+                    OstApiSigner signer = new OstApiSigner(mUserId);
+                    signer.apiSignerUnauthorized(apiError);
+                } catch (Throwable th) {
+                    //Do Nothing.
+                }
+            }
+            throw apiError;
         }
 
         try {
@@ -73,6 +88,12 @@ public class OstApiHelper implements OstHttpRequestClient.ResponseParser {
             }
             if (jsonData.has(OstSdk.DEVICE)) {
                 OstDevice.parse(jsonData.getJSONObject(OstSdk.DEVICE));
+            }
+            if (jsonData.has(OstSdk.DEVICES)) {
+                JSONArray jsonArray = jsonData.getJSONArray(OstSdk.DEVICES);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    OstDevice.parse(jsonArray.getJSONObject(i));
+                }
             }
         } catch (JSONException e) {
             Log.e(TAG, "JSONException");

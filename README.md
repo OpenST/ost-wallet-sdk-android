@@ -2,12 +2,14 @@
 ## Introduction
 OST Client SDK for Android
 
-Wallet SDK is a mobile application development SDK that enables our partner companies to:
-Key Management: Safely generate and store keys on the mobile device
-Encrypt the wallet keys and back up the encrypted data on Kit. 
-Sign ethereum transactions and data as defined by contracts using EIP-1077. 
-Signed transactions are needed for activities such as adding, authorizing and removing keys.
-Signed data is needed to execute actions on the blockchain. These digital signatures ensure that users have complete control of there tokens and these tokens can only be transferred with their explicit or implicit consent.
+Wallet SDK is a mobile application development SDK that enables our partner companies to:</br>
+- Key Management: Safely generate and store keys on the mobile device.</br>
+- Recovery key generation: Assist in generating recovery key from user passphrase, appllication salt,
+and kit salt.</br>
+- Rule Execution: Sign ethereum transactions and data to exeute rule as defined by contracts using EIP-1077.</br>
+- Device Operations: Sign transactions using EIP-712 to perform activities such as adding, authorizing and revoking device keys.</br>
+- Data Signing: Signed data is needed to execute actions on the blockchain.
+These digital signatures ensure that users have complete control of there tokens and these tokens can only be transferred with their explicit or implicit consent.</br>
 
 Java Compile version: 1.7
 Android version support: 22 and above
@@ -72,7 +74,7 @@ Recommended location to call setupDevice() is in MainActivity.<br/><br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void setupDevice(String userId, String tokenId, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.setupDevice(userId, tokenId, new WorkFlowHelper());
+OstSdk.setupDevice(userId, tokenId, new OstWorkFlowCallbackImpl());
 ```
 
 ### activateUser
@@ -85,7 +87,7 @@ It makes user eligible to do device operations and transactions.<br/><br/>
 &nbsp; **void activateUser(UserPassphrase passphrase, long expiresAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback callback)**<br/>
 ```java
 UserPassphrase userPassPhrase = new UserPassphrase(userId, pin, passphrasePrefix)
-OstSdk.activateUser(userPassPhrase, expiresAfterInSecs, spendingLimitInWei, new WorkFlowHelper())
+OstSdk.activateUser(userPassPhrase, expiresAfterInSecs, spendingLimitInWei, new OstWorkFlowCallbackImpl())
 ```
 
 ### addSession
@@ -97,7 +99,7 @@ Will be used when there are no current session available to do transactions.<br/
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void addSession(String userId, long expireAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.addSession(userId, expireAfterInSecs, spendingLimitInWei, new WorkFlowHelper())
+OstSdk.addSession(userId, expireAfterInSecs, spendingLimitInWei, new OstWorkFlowCallbackImpl())
 ```
 
 ### ostPerform
@@ -108,7 +110,7 @@ Through QR, Add device and transaction operations can be performed.<br/><br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void ostPerform(String userId, String data, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.ostPerform(userId, data, new WorkFlowHelper())
+OstSdk.ostPerform(userId, data, new OstWorkFlowCallbackImpl())
 ```
 
 ### getPaperWallet
@@ -118,20 +120,19 @@ Paper wallet will be used to add new device incase device is lost<br/><br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void getPaperWallet(String userId, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.getPaperWallet(String userId, new WorkFlowHelper())
+OstSdk.getPaperWallet(String userId, new OstWorkFlowCallbackImpl())
 ```
 
 ### executeTransaction
 To execute Rule.<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
-&nbsp; parameter tokenId: Id assigned by Ost to token<br/>
 &nbsp; parameter tokenHolderAddresses: Token holder addresses of amount receiver<br/>
 &nbsp; parameter amounts: Amounts corresponding to tokenHolderAddresses in wei to be transfered<br/>
 &nbsp; parameter ruleName: Rule name to be executed<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.executeTransaction(userId, tokenId, tokenHolderAddresses, amounts, ruleName, new WorkFlowHelper())
+OstSdk.executeTransaction(userId, tokenHolderAddresses, amounts, ruleName, new OstWorkFlowCallbackImpl())
 ```
 ### addDeviceUsingMnemonics
 It add new device using mnemonics provided.<br/>
@@ -141,7 +142,7 @@ Using mnemonics it generates wallet key to add new current device.<br/><br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void addDeviceUsingMnemonics(String userId, byte[] mnemonics, OstWorkFlowCallback ostWorkFlowCallback)**<br/>
 ```java
-OstSdk.addDeviceUsingMnemonics(userId, mnemonics, new WorkFlowHelper())
+OstSdk.addDeviceUsingMnemonics(userId, mnemonics, new OstWorkFlowCallbackImpl())
 ```
 
 ### getAddDeviceQRCode
@@ -163,7 +164,7 @@ Polling can be used when any entity is in transition status and desired status u
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void startPolling(String userId, String entityId, String entityType, String successStatus, String failureStatus, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.startPolling(userId, entityId, entityType, successStatus, failureStatus, new WorkFlowHelper())
+OstSdk.startPolling(userId, entityId, entityType, successStatus, failureStatus, new OstWorkFlowCallbackImpl())
 ```
 
 ### resetPin
@@ -175,7 +176,7 @@ To update current Pin with new Pin.<br/><br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void resetPin(String userId, String appSalt, String currentPin, String newPin, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.resetPin(userId, appSalt, currentPin, newPin, new WorkFlowHelper())
+OstSdk.resetPin(userId, appSalt, currentPin, newPin, new OstWorkFlowCallbackImpl())
 ```
 
 ## WorkFlow Callbacks
@@ -188,7 +189,7 @@ OstSdk.resetPin(userId, appSalt, currentPin, newPin, new WorkFlowHelper())
      * @param apiParams                    Register Device API parameters
      * @param ostDeviceRegisteredInterface To pass response
      */
-void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface)
+    void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface)
 ```
 
 ```java
@@ -199,7 +200,7 @@ void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDevice
      * @param ostContextEntity         info about entity
      * @param ostVerifyDataInterface to acknowledge workflow to proceed
      */
-void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface)
+    void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface)
 ```
 
 ```java
@@ -207,10 +208,11 @@ void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostConte
      * Pin needed to check the authenticity of the user.
      * Developers should show pin dialog on this callback
      *
+     * @param ostWorkflowContext    holds work flow type
      * @param userId                Id of user whose password and pin are needed.
      * @param ostPinAcceptInterface To pass pin
      */
-void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface)
+    void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 ```
 
 ```java
@@ -218,10 +220,11 @@ void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface)
      * Inform SDK user about invalid pin
      * Developers should show invalid pin error and ask for pin again on this callback
      *
+     * @param ostWorkflowContext    holds work flow type
      * @param userId                Id of user whose password and pin are needed.
      * @param ostPinAcceptInterface to pass another pin
      */
-void invalidPin(String userId, OstPinAcceptInterface ostPinAcceptInterface)
+    void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 ```
 
 ```java
@@ -229,17 +232,10 @@ void invalidPin(String userId, OstPinAcceptInterface ostPinAcceptInterface)
      * Inform SDK user that entered pin is validated.
      * Developers should dismiss pin dialog on this callback
      *
+     * @param ostWorkflowContext    holds work flow type
      * @param userId Id of user whose pin and password has been validated.
      */
-void pinValidated(String userId)
-```
-
-```java
-   /**
-     * Show SDK user mnemonicsArray of the device address
-     * @param mnemonics byte array of mnemonics
-     */
-void showPaperWallet(byte[] mnemonics)
+    void pinValidated(OstWorkflowContext ostWorkflowContext, String userId);
 ```
 
 ```java
@@ -248,7 +244,7 @@ void showPaperWallet(byte[] mnemonics)
      * @param ostWorkflowContext info about workflow type
      * @param ostContextEntity info about entity
      */
-void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity)
+    void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity)
 ```
 
 ```java
@@ -259,7 +255,7 @@ void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity
      * @param ostContextEntity status of the flow
      * @see OstContextEntity
      */
-void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity)
+    void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity)
 ```
 
 ```java
@@ -270,14 +266,42 @@ void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostCon
      * @param ostWorkflowContext workflow type
      * @param ostError reason of interruption
      */
-void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError)
+    void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError)
+```
+## Steps to use Android mobile sdk through AAR lib
+- Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
+- Create libs folder under app directory in your application project.
+- In libs folder add your downloaded aar file.
+- Add aar lib dependency to your build.gradle file
+```
+ implementation files('libs/ostsdk-release.aar')
+```
+- Also add dependencies of ostsdk in you build.gradle
+
+```groovy
+dependencies {
+
+    // your app dependencies
+
+    //--- Section to Copy  ----
+
+    // Room components
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+    implementation 'com.madgag.spongycastle:core:1.56.0.0'
+    implementation 'org.web3j:core:4.1.0-android'
+    // Lifecycle components
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation 'com.google.guava:guava:18.0'
+    // Zxing barcode dependency
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
+
+    //---Section to Copy  ----
+
+}
 ```
 
-```java
-   /**
-     * Device SDK is no more functional with corrupted data.
-     * And it need to be reinitialized with new wallet key.
-     */
-void deviceUnauthorized()
-```
+- Clean and then Build your Android project.
 

@@ -2,12 +2,13 @@ package com.ost.mobilesdk.ecKeyInteracts;
 
 import android.util.Log;
 
+import com.ost.mobilesdk.OstConfigs;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedTransactionStruct;
 import com.ost.mobilesdk.models.entities.OstRule;
 import com.ost.mobilesdk.models.entities.OstSession;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.network.OstApiClient;
-import com.ost.mobilesdk.ecKeyInteracts.structs.SignedTransactionStruct;
 import com.ost.mobilesdk.utils.CommonUtils;
 import com.ost.mobilesdk.utils.EIP1077;
 import com.ost.mobilesdk.utils.PricerRule;
@@ -29,7 +30,6 @@ public class OstTransactionSigner {
     private static final String TAG = "OstTransactionSigner";
     private static final String DIRECT_TRANSFER = "direct transfer";
     private static final String PRICER = "pricer";
-    private static final String COUNTRY_CODE_USD = "USD";
     private static final String DECIMAL_EXPONENT = "decimals";
     private final String mUserId;
     private final String mTokenId;
@@ -46,6 +46,7 @@ public class OstTransactionSigner {
 
         String callData = null;
         String rawCallData = null;
+        String spendingBtAmountInWei = BigInteger.ZERO.toString();
         ruleName = ruleName.toLowerCase();
 
         switch (ruleName) {
@@ -53,10 +54,11 @@ public class OstTransactionSigner {
                 Log.i(TAG, "Building call data");
                 callData = new TokenRules().getTransactionExecutableData(tokenHolderAddresses, amounts);
                 rawCallData = new TokenRules().getTransactionRawCallData(tokenHolderAddresses, amounts);
+                spendingBtAmountInWei = new TokenRules().calDirectTransferSpendingLimit(amounts);
                 break;
             case PRICER:
                 Log.i(TAG, "Fetch price points");
-                double pricePointUSDtoOST;
+                double pricePointOSTtoUSD;
                 int decimalExponent;
                 OstApiClient ostApiClient = new OstApiClient(mUserId);
                 try {
@@ -67,13 +69,13 @@ public class OstTransactionSigner {
                                 OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
                         throw ostError;
                     }
-                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(jsonObject, "OST");
+                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(jsonObject, OstConfigs.getInstance().PRICE_POINT_TOKEN_SYMBOL);
                     if (null == pricePointObject) {
                         OstError ostError = new OstError("km_ts_st_6",
                                 OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
                         throw ostError;
                     }
-                    pricePointUSDtoOST = pricePointObject.getDouble(COUNTRY_CODE_USD);
+                    pricePointOSTtoUSD = pricePointObject.getDouble(OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL);
                     decimalExponent = pricePointObject.getInt(DECIMAL_EXPONENT);
 
                 } catch (Exception e) {
@@ -83,15 +85,36 @@ public class OstTransactionSigner {
                 }
                 Log.i(TAG, "Building call data");
 
-                BigInteger weiPricePoint = convertPricePointFromEthToWei(pricePointUSDtoOST, decimalExponent);
+                BigInteger weiPricePoint = convertPricePointFromEthToWei(pricePointOSTtoUSD, decimalExponent);
+
+                OstToken ostToken = OstToken.getById(mTokenId);
+                if (null == ostToken) {
+                    throw new OstError("km_ts_st_8",
+                            ErrorCode.TOKEN_API_FAILED);
+                }
+                String conversionFactor = ostToken.getConversionFactor();
+                if (null == conversionFactor) {
+                    throw new OstError("km_ts_st_9",
+                            ErrorCode.INSUFFICIENT_DATA);
+                }
+                String btDecimalsString = ostToken.getBtDecimals();
+                if (null == btDecimalsString) {
+                    throw new OstError("km_ts_st_10",
+                            ErrorCode.INSUFFICIENT_DATA);
+                }
+                int btDecimals = Integer.parseInt(btDecimalsString);
+
+
+                BigInteger fiatMultiplier = calFiatMultiplier(pricePointOSTtoUSD, decimalExponent, conversionFactor, btDecimals);
 
                 callData = new PricerRule().getPriceTxnExecutableData(user.getTokenHolderAddress(),
-                        tokenHolderAddresses, amounts, COUNTRY_CODE_USD, weiPricePoint);
+                        tokenHolderAddresses, amounts, OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL, weiPricePoint);
                 rawCallData = new PricerRule().getPricerTransactionRawCallData(user.getTokenHolderAddress(),
-                        tokenHolderAddresses, amounts, COUNTRY_CODE_USD, weiPricePoint);
+                        tokenHolderAddresses, amounts, OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL, weiPricePoint);
+                spendingBtAmountInWei = new PricerRule().calDirectTransferSpendingLimit(amounts, fiatMultiplier);
                 break;
             default:
-                OstError ostError = new OstError("km_ts_st_8",
+                OstError ostError = new OstError("km_ts_st_11",
                         OstErrors.ErrorCode.UNKNOWN_RULE_NAME);
                 throw ostError;
 
@@ -103,7 +126,7 @@ public class OstTransactionSigner {
             throw ostError;
         }
 
-        OstSession activeSession = user.getActiveSession();
+        OstSession activeSession = user.getActiveSession(spendingBtAmountInWei);
         if (null == activeSession) {
             OstError ostError = new OstError("km_ts_st_2", OstErrors.ErrorCode.NO_SESSION_FOUND);
             throw ostError;
@@ -130,6 +153,29 @@ public class OstTransactionSigner {
         return new SignedTransactionStruct(activeSession, ruleAddress, rawCallData,
                 callData, signature);
     }
+
+    private BigInteger calFiatMultiplier(double pricePointOSTtoUSD,
+                                         int decimalExponent,
+                                         String conversionFactor,
+                                         int btDecimals) {
+        // weiDecimal = OstToUsd * 10^decimalExponent
+        BigDecimal bigDecimal = new BigDecimal(String.valueOf(pricePointOSTtoUSD));
+        BigDecimal toWeiMultiplier = new BigDecimal(10).pow(decimalExponent);
+        BigDecimal weiDecimal = bigDecimal.multiply(toWeiMultiplier);
+
+        // bigDecimalWeiDecimal = weiDecimal * conversionFactor
+        BigDecimal bigDecimalConversionFactor = new BigDecimal(String.valueOf(conversionFactor));
+        BigDecimal bigDecimalWeiDecimal = weiDecimal.multiply(bigDecimalConversionFactor);
+
+        // toBtWeiMultiplier = 10^btDecimal
+        BigDecimal toBtWeiMultiplier = new BigDecimal(10).pow(btDecimals);
+
+        // multiplierForFiat = toBtWeiMultiplier / bigDecimalWeiDecimal
+        BigDecimal multiplierForFiat = toBtWeiMultiplier.divideToIntegralValue(bigDecimalWeiDecimal);
+
+        return multiplierForFiat.toBigInteger();
+    }
+
 
     private BigInteger convertPricePointFromEthToWei(double pricePointUSDtoOST, int decimalExponent) {
         BigDecimal bigDecimal = new BigDecimal(String.valueOf(pricePointUSDtoOST));

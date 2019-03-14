@@ -9,7 +9,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.workflows.OstContextEntity;
+import com.ost.mobilesdk.workflows.OstWorkflowContext;
+
 import ost.com.sampleostsdkapplication.R;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Fragment representing the login screen for OstDemoApp.
@@ -57,13 +63,12 @@ public class PaperWalletFragment extends BaseFragment {
                 return;
             }
             showLoader();
-            OnPaperWalletFragmentListener mListener = (OnPaperWalletFragmentListener) getFragmentListener();
-            mListener.authorizeDeviceUsingMnemonics(mnemonicsText, mUserId);
+            OstSdk.addDeviceUsingMnemonics(mUserId, mnemonicsText.getBytes(UTF_8), this);
         } else {
             showLoader();
-            OnPaperWalletFragmentListener mListener = (OnPaperWalletFragmentListener) getFragmentListener();
-            mListener.onShowPaperWalletButton();
+            OstSdk.getPaperWallet(mUserId, this);
         }
+        flowStarted();
     }
 
     /**
@@ -82,8 +87,14 @@ public class PaperWalletFragment extends BaseFragment {
         return fragment;
     }
 
-    public interface OnPaperWalletFragmentListener extends OnBaseFragmentListener{
-        void onShowPaperWalletButton();
-        void authorizeDeviceUsingMnemonics(String mnemonicsText, String userId);
+    @Override
+    public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        if (OstWorkflowContext.WORKFLOW_TYPE.GET_PAPER_WALLET.equals(ostWorkflowContext.getWorkflow_type())) {
+            if (OstSdk.PAPER_WALLET.equals(ostContextEntity.getEntityType())) {
+                byte[] mnemonics = (byte[]) ostContextEntity.getEntity();
+                showWalletWords(new String(mnemonics), "Please save these words carefully.");
+            }
+        }
+        super.flowComplete(ostWorkflowContext, ostContextEntity);
     }
 }

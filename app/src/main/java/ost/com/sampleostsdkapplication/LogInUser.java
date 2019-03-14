@@ -39,11 +39,6 @@ public class LogInUser {
         return OstSdk.getUser(ostUserId);
     }
 
-    public OstDevice getOstDevice() {
-        OstUser user = getOstUser();
-        return user.getCurrentDevice();
-    }
-
 
     public String getTokenId() {
         return tokenId;

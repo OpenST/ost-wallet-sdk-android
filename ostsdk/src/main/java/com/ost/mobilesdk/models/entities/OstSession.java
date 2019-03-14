@@ -7,10 +7,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstSdk;
+import com.ost.mobilesdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.models.Impls.OstModelFactory;
 import com.ost.mobilesdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.mobilesdk.models.OstSessionModel;
-import com.ost.mobilesdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
 import com.ost.mobilesdk.utils.EIP1077;
 
 import org.json.JSONException;
@@ -36,7 +36,8 @@ public class OstSession extends OstBaseEntity {
     public static final String ADDRESS = "address";
     public static final String TOKEN_HOLDER_ADDRESS = "token_holder_address";
     public static final String USER_ID = "user_id";
-    public static final String EXPIRATION_BLOCK_HEIGHT = "expiration_block_height";
+    public static final String EXPIRATION_HEIGHT = "expiration_height";
+    public static final String APPROX_EXPIRATION_TIMESTAMP = "approx_expiration_timestamp";
     public static final String SPENDING_LIMIT = "spending_limit";
     public static final String NONCE = "nonce";
 
@@ -130,6 +131,9 @@ public class OstSession extends OstBaseEntity {
         return super.validate(jsonObject) &&
                 jsonObject.has(OstSession.ADDRESS) &&
                 jsonObject.has(OstSession.USER_ID) &&
+                jsonObject.has(OstSession.SPENDING_LIMIT) &&
+                jsonObject.has(OstSession.EXPIRATION_HEIGHT) &&
+                jsonObject.has(OstSession.APPROX_EXPIRATION_TIMESTAMP) &&
                 jsonObject.has(OstSession.NONCE);
     }
 
@@ -175,8 +179,12 @@ public class OstSession extends OstBaseEntity {
     }
 
 
-    public String getExpirationBlockHeight() {
-        return this.getJsonDataPropertyAsString(OstSession.EXPIRATION_BLOCK_HEIGHT);
+    public String getExpirationHeight() {
+        return this.getJsonDataPropertyAsString(OstSession.EXPIRATION_HEIGHT);
+    }
+
+    public String getExpirationTimestamp() {
+        return this.getJsonDataPropertyAsString(OstSession.APPROX_EXPIRATION_TIMESTAMP);
     }
 
     public String getSpendingLimit() {

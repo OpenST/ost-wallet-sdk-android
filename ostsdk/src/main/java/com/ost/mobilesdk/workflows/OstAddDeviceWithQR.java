@@ -4,20 +4,18 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.ost.mobilesdk.OstConstants;
 import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.ecKeyInteracts.OstMultiSigSigner;
 import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
+import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.network.OstApiClient;
 import com.ost.mobilesdk.utils.AsyncStatus;
 import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.errors.OstErrors;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import com.ost.mobilesdk.workflows.services.OstDevicePollingService;
 import com.ost.mobilesdk.workflows.services.OstPollingService;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.WalletUtils;
 
@@ -79,11 +77,25 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
             throw new OstError("wf_ad_evp_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
         }
 
-        if (!hasValidAddress(mDeviceAddressToBeAdded)) {
-            throw new OstError("wf_ad_evp_2", ErrorCode.INVALID_ADD_DEVICE_ADDRESS);
-        }
-
         super.ensureValidParams();
+    }
+
+    @Override
+    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
+        //Validate mDeviceAddressToBeAdded
+        OstDevice ostDevice = OstDevice.getById(mDeviceAddressToBeAdded);
+        if (null == ostDevice) {
+            try {
+                mOstApiClient.getDevice(mDeviceAddressToBeAdded);
+            } catch (IOException e) {
+                Log.e(TAG, "Exception while getting device");
+            }
+        }
+        ostDevice = OstDevice.getById(mDeviceAddressToBeAdded);
+        if ( null == ostDevice || !ostDevice.canBeAuthorized() ) {
+            return postErrorInterrupt(new OstError("wf_adqr_oudvp_1", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED));
+        }
+        return super.onUserDeviceValidationPerformed(stateObject);
     }
 
     @Override
@@ -91,53 +103,34 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
         return OstWorkflowContext.WORKFLOW_TYPE.ADD_DEVICE_WITH_QR;
     }
 
-    static class AddDeviceDataDefinitionInstance implements OstPerform.DataDefinitionInstance {
+    static class AddDeviceDataDefinitionInstance extends OstDeviceDataDefinitionInstance {
         private static final String TAG = "AddDeviceDDInstance";
-        private final JSONObject dataObject;
-        private final String userId;
-        private final OstWorkFlowCallback callback;
 
         public AddDeviceDataDefinitionInstance(JSONObject dataObject, String userId, OstWorkFlowCallback callback) {
-            this.dataObject = dataObject;
-            this.userId = userId;
-            this.callback = callback;
-        }
-
-        @Override
-        public void validateDataPayload() {
-            boolean hasDeviceAddress = dataObject.has(OstConstants.QR_DEVICE_ADDRESS);
-            if (!hasDeviceAddress) {
-                throw new OstError("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_QR_DEVICE_OPERATION_DATA);
-            }
-        }
-
-        @Override
-        public void validateDataParams() {
-
-        }
-
-        @Override
-        public OstContextEntity getContextEntity() {
-            JSONObject jsonObject = updateJSONKeys(dataObject);
-            OstContextEntity contextEntity = new OstContextEntity(jsonObject, OstSdk.JSON_OBJECT);
-            return contextEntity;
-        }
-
-        private JSONObject updateJSONKeys(JSONObject dataObject) {
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put(OstConstants.DEVICE_ADDRESS, dataObject.optString(OstConstants.QR_DEVICE_ADDRESS));
-            } catch (JSONException e) {
-                Log.e(TAG, "JSON Exception in updateJSONKeys: ", e);
-            }
-            return jsonObject;
+            super(dataObject, userId, callback);
         }
 
         @Override
         public void startDataDefinitionFlow() {
-            String deviceAddress = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
+            String deviceAddress = getDeviceAddress();
             OstAddDeviceWithQR ostAddDeviceWithQR = new OstAddDeviceWithQR(userId, deviceAddress, callback);
             ostAddDeviceWithQR.perform();
+        }
+
+        @Override
+        public void validateApiDependentParams() {
+            String deviceAddress = getDeviceAddress();
+            try {
+                new OstApiClient(userId).getDevice(deviceAddress);
+            } catch (IOException e) {
+                throw new OstError("wf_pe_ad_3", ErrorCode.GET_DEVICE_API_FAILED);
+            }
+            if (null == OstDevice.getById(deviceAddress)) {
+                throw new OstError("wf_pe_ad_4", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
+            }
+            if (!OstDevice.getById(deviceAddress).canBeAuthorized()) {
+                throw new OstError("wf_pe_ad_5", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
+            }
         }
     }
 }

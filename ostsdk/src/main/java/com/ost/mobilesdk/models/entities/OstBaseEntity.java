@@ -64,9 +64,6 @@ public abstract class OstBaseEntity {
         }
         OstBaseEntity dbEntity = ostBaseModel.getEntityById(id);
         if (null != dbEntity) {
-            if (dbEntity.getUpdatedTimestamp() == OstBaseEntity.getUpdatedTimestamp(jsonObject)) {
-                return dbEntity;
-            }
             dbEntity.processJson(jsonObject);
         } else {
             dbEntity = entityFactory.createEntity(jsonObject);
@@ -189,13 +186,7 @@ public abstract class OstBaseEntity {
             Log.e(TAG, "jsonObject is null");
             return null;
         }
-
-        try {
-            return jsonObject.getString(OstBaseEntity.STATUS);
-        } catch (JSONException e) {
-            Log.e(TAG, "Failed to read status from jsonObject."+ ". Entity = " + this.getClass().toString());
-            return null;
-        }
+        return jsonObject.optString(OstBaseEntity.STATUS, null);
     }
 
 

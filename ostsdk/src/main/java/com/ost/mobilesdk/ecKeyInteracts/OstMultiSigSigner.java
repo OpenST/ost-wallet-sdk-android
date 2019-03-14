@@ -1,12 +1,13 @@
 package com.ost.mobilesdk.ecKeyInteracts;
 
-import com.ost.mobilesdk.models.entities.OstDevice;
-import com.ost.mobilesdk.models.entities.OstDeviceManager;
-import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.ecKeyInteracts.structs.BaseDeviceManagerOperationStruct;
 import com.ost.mobilesdk.ecKeyInteracts.structs.OstSignWithMnemonicsStruct;
 import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.mobilesdk.ecKeyInteracts.structs.SignedAddSessionStruct;
+import com.ost.mobilesdk.ecKeyInteracts.structs.SignedRevokeDeviceStruct;
+import com.ost.mobilesdk.models.entities.OstDevice;
+import com.ost.mobilesdk.models.entities.OstDeviceManager;
+import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.EIP712;
 import com.ost.mobilesdk.utils.GnosisSafe;
 import com.ost.mobilesdk.workflows.errors.OstError;
@@ -205,7 +206,7 @@ public class OstMultiSigSigner {
         //Check if we have a device key.
         KeyMetaStruct keyMeta = InternalKeyManager.getKeyMataStruct(mUserId);
         if ( null == keyMeta) {
-            throw new OstError("km_gss_sd_1", ErrorCode.DEVICE_UNAUTHORIZED);
+            throw new OstError("km_gss_sd_1", ErrorCode.DEVICE_NOT_SETUP);
         }
 
         try {
@@ -221,6 +222,63 @@ public class OstMultiSigSigner {
             ostError.setStackTrace( throwable.getStackTrace() );
             throw ostError;
         }
+    }
+
+    public SignedRevokeDeviceStruct revokeDevice(String deviceToBeRevoked, String prevOwner) {
+        KeyMetaStruct keyMeta = InternalKeyManager.getKeyMataStruct(mUserId);
+        if (null == keyMeta) {
+            throw new OstError("km_gss_adwm_1", ErrorCode.DEVICE_NOT_SETUP);
+        }
+
+        // Get current device address.
+        String signerAddress = keyMeta.deviceAddress;
+        SignedRevokeDeviceStruct struct = createRevokeDeviceStruct(deviceToBeRevoked, prevOwner);
+
+        InternalKeyManager ikm = null;
+        try {
+            ikm = new InternalKeyManager(mUserId);
+            String signature = ikm.signWithDeviceKey(struct.getMessageHash());
+            struct.setDeviceOwnerAddress(signerAddress);
+            struct.setSignature(signature);
+            ikm = null;
+        } finally {
+            ikm = null;
+        }
+        return struct;
+    }
+
+    private SignedRevokeDeviceStruct createRevokeDeviceStruct(String deviceToBeRevoked, String prevOwner) {
+        OstDevice device = OstDevice.getById(deviceToBeRevoked);
+        if (null == device) {
+            throw new OstError("km_gss_crds_1", ErrorCode.INSUFFICIENT_DATA);
+        }
+
+        if (device.isRevoked()) {
+            throw new OstError("km_gss_crds_2", ErrorCode.DEVICE_ALREADY_REVOKED);
+        }
+
+        if (!device.canBeRevoked()) {
+            throw new OstError("km_gss_crds_3", ErrorCode.DEVICE_CAN_NOT_BE_REVOKED);
+        }
+
+        SignedRevokeDeviceStruct struct = new SignedRevokeDeviceStruct(deviceToBeRevoked);
+        String callData = new GnosisSafe().getRemoveOwnerWithThresholdExecutableData(prevOwner, deviceToBeRevoked);
+        struct.setCallData(callData);
+
+        String rawCallData = new GnosisSafe().getRemoveOwnerWithThresholdCallData(prevOwner, deviceToBeRevoked);
+        struct.setRawCallData(rawCallData);
+        setCommonData(struct);
+
+        // Generate message hash.
+        try {
+            String messageHash = new EIP712(struct.getTypedData()).toEIP712TransactionHash();
+            struct.setMessageHash(messageHash);
+        } catch (Exception e) {
+            OstError ostError = new OstError("km_gss_crds_4", ErrorCode.FAILED_TO_GENERATE_MESSAGE_HASH);
+            throw ostError;
+        }
+
+        return struct;
     }
     //endregion
 

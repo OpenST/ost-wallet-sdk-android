@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -20,8 +21,6 @@ public class FingerprintAuthenticationDialogActivity extends Activity
 
     private static final String TAG = "BiometricDailog";
     private TextView mCancelButton;
-
-    private Stage mStage = Stage.FINGERPRINT;
 
     private FingerprintUiHelper mFingerprintUiHelper;
 
@@ -45,7 +44,6 @@ public class FingerprintAuthenticationDialogActivity extends Activity
                     getSystemService(FingerprintManager.class),
                     findViewById(R.id.fingerprint_icon),
                     findViewById(R.id.fingerprint_status), this);
-            updateStage();
         } else {
             Log.e(TAG, "Bio metric is not supported for api less than 23");
             finish();
@@ -65,25 +63,13 @@ public class FingerprintAuthenticationDialogActivity extends Activity
         mFingerprintUiHelper.stopListening();
     }
 
-    private void updateStage() {
-        switch (mStage) {
-            case FINGERPRINT:
-                mCancelButton.setText(R.string.cancel);
-                break;
-            case NEW_FINGERPRINT_ENROLLED:
-                // Intentional fall through
-            case PASSWORD:
-                break;
-        }
-    }
-
     @Override
     public void onAuthenticated() {
         // Callback from FingerprintUiHelper. Let the activity know that authentication was
         // successful.
         Intent intent = new Intent(OstBiometricAuthentication.INTENT_FILTER_FINGERPRINT_AUTH);
         intent.putExtra(OstBiometricAuthentication.IS_AUTHENTICATED, true);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this.getApplicationContext()).sendBroadcast(intent);
         finish();
     }
 
@@ -91,7 +77,7 @@ public class FingerprintAuthenticationDialogActivity extends Activity
     public void onError() {
         Intent intent = new Intent(OstBiometricAuthentication.INTENT_FILTER_FINGERPRINT_AUTH);
         intent.putExtra(OstBiometricAuthentication.IS_AUTHENTICATED, false);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this.getApplicationContext()).sendBroadcast(intent);
         finish();
     }
 
@@ -99,14 +85,5 @@ public class FingerprintAuthenticationDialogActivity extends Activity
     public void onBackPressed() {
         onError();
         super.onBackPressed();
-    }
-
-    /**
-     * Enumeration to indicate which authentication method the user is trying to authenticate with.
-     */
-    public enum Stage {
-        FINGERPRINT,
-        NEW_FINGERPRINT_ENROLLED,
-        PASSWORD
     }
 }

@@ -11,9 +11,13 @@ public class OstKeyManager {
     private KeyMetaStruct mKeyMetaStruct;
 
     public OstKeyManager(String userId) {
+        this(userId,false);
+    }
+
+    public OstKeyManager(String userId, boolean createDeviceIfNeeded) {
         this.mUserId = userId;
         mKeyMetaStruct = InternalKeyManager.getKeyMataStruct(userId);
-        if (null == mKeyMetaStruct ) {
+        if (null == mKeyMetaStruct && createDeviceIfNeeded ) {
 
             //Create new KeyManagerInstance so that keys are created.
             InternalKeyManager ikm = new InternalKeyManager(userId);
@@ -25,6 +29,9 @@ public class OstKeyManager {
     }
 
     public String getApiKeyAddress() {
+        if ( null == mKeyMetaStruct ) {
+            return null;
+        }
         return mKeyMetaStruct.getApiAddress();
     }
 
@@ -50,6 +57,9 @@ public class OstKeyManager {
     }
 
     public String getDeviceAddress() {
+        if ( null == mKeyMetaStruct ) {
+            return null;
+        }
         return mKeyMetaStruct.getDeviceAddress();
     }
 }

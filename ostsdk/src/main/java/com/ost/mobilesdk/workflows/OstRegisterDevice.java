@@ -8,7 +8,6 @@ import com.ost.mobilesdk.models.entities.OstDevice;
 import com.ost.mobilesdk.models.entities.OstToken;
 import com.ost.mobilesdk.models.entities.OstUser;
 import com.ost.mobilesdk.utils.AsyncStatus;
-import com.ost.mobilesdk.workflows.errors.OstError;
 import com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
