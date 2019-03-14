@@ -5,6 +5,7 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
+import android.util.Log;
 
 import com.ost.mobilesdk.database.daos.OstDeviceDao;
 import com.ost.mobilesdk.database.daos.OstDeviceManagerDao;
@@ -59,11 +60,12 @@ public abstract class OstSdkDatabase extends RoomDatabase {
     private static volatile OstSdkDatabase INSTANCE;
 
     public static OstSdkDatabase initDatabase(final Context context) {
+        String databasePath = String.format("%s/%s", context.getNoBackupFilesDir(),DATABASE_NAME);
         if (INSTANCE == null) {
             synchronized (OstSdkDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            OstSdkDatabase.class, DATABASE_NAME)
+                            OstSdkDatabase.class, databasePath)
                             .allowMainThreadQueries()
                             .addMigrations(
                                     /*Add your migration class object here
