@@ -232,4 +232,40 @@ OstSdk.resetPin(userId, appSalt, currentPin, newPin, new OstWorkFlowCallbackImpl
      */
     void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError)
 ```
+## Steps to use Android mobile sdk through AAR lib
+- Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
+- Create libs folder under app directory in your application project.
+- In libs folder add your downloaded aar file.
+- Add aar lib dependency to your build.gradle file
+```
+ implementation files('libs/ostsdk-release.aar')
+```
+- Also add dependencies of ostsdk in you build.gradle
+
+```groovy
+dependencies {
+
+    // your app dependencies
+
+    //--- Section to Copy  ----
+
+    // Room components
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+    implementation 'com.madgag.spongycastle:core:1.56.0.0'
+    implementation 'org.web3j:core:4.1.0-android'
+    // Lifecycle components
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation 'com.google.guava:guava:18.0'
+    // Zxing barcode dependency
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
+
+    //---Section to Copy  ----
+
+}
+```
+
+- Clean and then Build your Android project.
 
