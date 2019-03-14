@@ -137,7 +137,7 @@ public class UserDetailsFragment extends Fragment {
         }
     }
 
-    public void showProgress(boolean show) {
+    public void showProgress(final boolean show) {
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         mUserDetailPage.setVisibility(show ? View.GONE : View.VISIBLE);

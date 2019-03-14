@@ -70,6 +70,7 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         String deviceManagerAddress = ostUser.getDeviceManagerAddress();
 
 
+        //TODO: FIX-ME: Divide mExpiresAfterInSec by Block generation time
         String expiryHeight = new BigInteger(blockNumber).add(new BigInteger(String
                 .valueOf(mExpiresAfterInSecs))).toString();
 

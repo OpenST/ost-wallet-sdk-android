@@ -225,7 +225,7 @@ public class UsersListActivity extends MappyBaseActivity implements
                 .setCancelable(false);
 
         // create alert dialog
-        AlertDialog alertDialog = alertDialogBuilder.create();
+        final AlertDialog alertDialog = alertDialogBuilder.create();
 
         final Button cancelButton = promptsView.findViewById(R.id.buttonCancel);
 
@@ -260,8 +260,8 @@ public class UsersListActivity extends MappyBaseActivity implements
         getPinDialog(callback, "Enter Pin : ");
     }
 
-    public void showPinDialog(OstPinAcceptInterface ostPinAcceptInterface) {
-        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+    public void showPinDialog(final OstPinAcceptInterface ostPinAcceptInterface) {
+        final LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         DialogCallback callback = new DialogCallback() {
             @Override
             public void onSubmit(String pin) {

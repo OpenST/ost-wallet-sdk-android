@@ -60,7 +60,7 @@ public class QRPerformFragment extends BaseFragment {
     }
 
     @Override
-    public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+    public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, final OstVerifyDataInterface ostVerifyDataInterface) {
         super.verifyData(ostWorkflowContext, ostContextEntity, ostVerifyDataInterface);
         JSONObject jsonObject;
         if (OstSdk.DEVICE.equalsIgnoreCase(ostContextEntity.getEntityType())) {

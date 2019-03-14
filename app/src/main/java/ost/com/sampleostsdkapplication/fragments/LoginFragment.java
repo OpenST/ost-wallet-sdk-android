@@ -121,7 +121,7 @@ public class LoginFragment extends BaseFragment implements
     }
 
     @Override
-    public void showProgress(boolean show) {
+    public void showProgress(final boolean show) {
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -154,7 +154,7 @@ public class LoginFragment extends BaseFragment implements
     }
 
     @Override
-    public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
+    public void registerDevice(JSONObject apiParams, final OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
         Log.i(TAG, String.format("Device Object %s ", apiParams.toString()));
         if (null == getActivity()) {
             Log.e(TAG, "Activity is null");
