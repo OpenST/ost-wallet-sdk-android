@@ -83,6 +83,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'android.arch.persistence.room:testing:1.1.1'
 
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+
     // https://mvnrepository.com/artifact/org.json/json
     testImplementation 'org.json:json:20160810'
 }
