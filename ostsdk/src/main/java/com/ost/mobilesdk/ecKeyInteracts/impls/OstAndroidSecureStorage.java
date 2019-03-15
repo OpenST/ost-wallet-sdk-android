@@ -7,6 +7,7 @@ import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.ost.mobilesdk.ecKeyInteracts.OstSecureStorage;
@@ -96,12 +97,17 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
 
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.M)
     private KeyGenParameterSpec initGeneratorWithKeyGenParameterSpec() {
         KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(mKeyAlias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                 .setBlockModes(KeyProperties.BLOCK_MODE_ECB)
                 .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
                 .setUserAuthenticationRequired(false);
+        //Use strong box when available.
+        int strongBoxApiVersion = Build.VERSION_CODES.P;
+        if (strongBoxApiVersion <= Build.VERSION.SDK_INT) {
+            builder.setIsStrongBoxBacked(true);
+        }
 
         return builder.build();
     }
