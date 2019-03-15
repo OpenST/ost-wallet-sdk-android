@@ -12,6 +12,7 @@ import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.generated.Bytes3;
 import org.web3j.abi.datatypes.generated.Uint256;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,11 +64,11 @@ public class PricerRule {
         return jsonObject.toString();
     }
 
-    public String calDirectTransferSpendingLimit(List<String> amounts, BigInteger fiatMultiplier) {
+    public String calDirectTransferSpendingLimit(List<String> amounts, BigDecimal fiatMultiplier) {
         BigInteger bigInteger = BigInteger.ZERO;
         for (String amount : amounts) {
-            BigInteger btFiaEquivalent = fiatMultiplier.multiply(new BigInteger(amount));
-            bigInteger = bigInteger.add(btFiaEquivalent);
+            BigDecimal btFiaEquivalent = fiatMultiplier.multiply(new BigDecimal(amount));
+            bigInteger = bigInteger.add(btFiaEquivalent.toBigInteger());
         }
         return bigInteger.toString();
     }

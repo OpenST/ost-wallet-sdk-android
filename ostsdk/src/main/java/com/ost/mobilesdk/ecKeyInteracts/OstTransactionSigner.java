@@ -105,7 +105,7 @@ public class OstTransactionSigner {
                 int btDecimals = Integer.parseInt(btDecimalsString);
 
 
-                BigInteger fiatMultiplier = calFiatMultiplier(pricePointOSTtoUSD, decimalExponent, conversionFactor, btDecimals);
+                BigDecimal fiatMultiplier = calFiatMultiplier(pricePointOSTtoUSD, decimalExponent, conversionFactor, btDecimals);
 
                 callData = new PricerRule().getPriceTxnExecutableData(user.getTokenHolderAddress(),
                         tokenHolderAddresses, amounts, OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL, weiPricePoint);
@@ -154,26 +154,26 @@ public class OstTransactionSigner {
                 callData, signature);
     }
 
-    private BigInteger calFiatMultiplier(double pricePointOSTtoUSD,
-                                         int decimalExponent,
-                                         String conversionFactor,
-                                         int btDecimals) {
+    private BigDecimal calFiatMultiplier(double oneOstToUsd,
+                                         int usdDecimalExponent,
+                                         String oneOstToBT,
+                                         int btDecimalExponent) {
         // weiDecimal = OstToUsd * 10^decimalExponent
-        BigDecimal bigDecimal = new BigDecimal(String.valueOf(pricePointOSTtoUSD));
-        BigDecimal toWeiMultiplier = new BigDecimal(10).pow(decimalExponent);
-        BigDecimal weiDecimal = bigDecimal.multiply(toWeiMultiplier);
-
-        // bigDecimalWeiDecimal = weiDecimal * conversionFactor
-        BigDecimal bigDecimalConversionFactor = new BigDecimal(String.valueOf(conversionFactor));
-        BigDecimal bigDecimalWeiDecimal = weiDecimal.multiply(bigDecimalConversionFactor);
+        BigDecimal bigDecimal = new BigDecimal(String.valueOf(oneOstToUsd));
+        BigDecimal toWeiMultiplier = new BigDecimal(10).pow(usdDecimalExponent);
+        BigDecimal usdWeiDecimalDenominator = bigDecimal.multiply(toWeiMultiplier);
 
         // toBtWeiMultiplier = 10^btDecimal
-        BigDecimal toBtWeiMultiplier = new BigDecimal(10).pow(btDecimals);
+        BigDecimal toBtWeiMultiplier = new BigDecimal(10).pow(btDecimalExponent);
 
-        // multiplierForFiat = toBtWeiMultiplier / bigDecimalWeiDecimal
-        BigDecimal multiplierForFiat = toBtWeiMultiplier.divideToIntegralValue(bigDecimalWeiDecimal);
+        // btInWeiNumerator = conversionFactorOstToPin * toBtWeiMultiplier
+        BigDecimal conversionFactorOstToPin = new BigDecimal(String.valueOf(oneOstToBT));
+        BigDecimal btInWeiNumerator = conversionFactorOstToPin.multiply(toBtWeiMultiplier);
 
-        return multiplierForFiat.toBigInteger();
+        // multiplierForFiat = btInWeiNumerator / usdWeiDecimalDenominator
+        BigDecimal multiplierForFiat = btInWeiNumerator.divideToIntegralValue(usdWeiDecimalDenominator);
+
+        return multiplierForFiat;
     }
 
 
