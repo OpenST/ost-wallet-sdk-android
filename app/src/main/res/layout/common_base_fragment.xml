@@ -75,12 +75,11 @@
                 android:visibility="gone"
                 android:layout_gravity="right">
 
-                <ImageView
+                <ost.com.sampleostsdkapplication.uicomponents.LoaderView
                     android:id="@+id/loader"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/loader_img"
-                    android:layout_gravity="right"
+                    android:layout_gravity="end"
                     android:padding="10dp" />
 
             </FrameLayout>
