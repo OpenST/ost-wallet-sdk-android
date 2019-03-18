@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstDevice;
-import com.ost.mobilesdk.workflows.OstContextEntity;
-import com.ost.mobilesdk.workflows.OstWorkflowContext;
-import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstDevice;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
 import org.json.JSONObject;
 

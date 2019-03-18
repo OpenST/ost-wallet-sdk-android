@@ -2,7 +2,7 @@ package ost.com.sampleostsdkapplication;
 
 import android.app.Application;
 
-import com.ost.mobilesdk.OstSdk;
+import com.ost.walletsdk.OstSdk;
 
 public class App extends Application {
 

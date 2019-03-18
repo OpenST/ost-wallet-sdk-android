@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.workflows.OstContextEntity;
-import com.ost.mobilesdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
 
 import ost.com.sampleostsdkapplication.R;
 

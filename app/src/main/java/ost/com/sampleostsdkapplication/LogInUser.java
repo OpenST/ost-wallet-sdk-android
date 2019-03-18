@@ -2,9 +2,8 @@ package ost.com.sampleostsdkapplication;
 
 import android.util.Log;
 
-import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstDevice;
-import com.ost.mobilesdk.models.entities.OstUser;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -11,8 +11,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.ecKeyInteracts.UserPassphrase;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 
 import ost.com.sampleostsdkapplication.R;
 

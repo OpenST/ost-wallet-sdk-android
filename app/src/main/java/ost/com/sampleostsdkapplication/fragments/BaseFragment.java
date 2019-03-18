@@ -15,14 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.workflows.OstContextEntity;
-import com.ost.mobilesdk.workflows.OstWorkflowContext;
-import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.interfaces.OstDeviceRegisteredInterface;
+import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
+import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
+import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 

@@ -17,11 +17,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.workflows.OstContextEntity;
-import com.ost.mobilesdk.workflows.OstWorkflowContext;
-import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.interfaces.OstDeviceRegisteredInterface;
 
 import org.json.JSONObject;
 
