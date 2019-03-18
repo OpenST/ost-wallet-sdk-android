@@ -50,8 +50,10 @@ public class CreateSessionFragment extends BaseFragment {
             mSpendingLimit.setError(getResources().getString(R.string.valid_spending_limt));
             return;
         }
-        if (mSessionExpirationEditBox.getText() == null ||
-                Integer.parseInt(mSessionExpirationEditBox.getText().toString()) < 1 ){
+        if (TextUtils.isEmpty(mSessionExpirationEditBox.getText())
+                ||
+                (!TextUtils.isEmpty(mSessionExpirationEditBox.getText()) &&
+                        Integer.parseInt(mSessionExpirationEditBox.getText().toString()) < 1)) {
             mSessionExpiration.setError(getResources().getString(R.string.valid_number_of_days));
             return;
         }
