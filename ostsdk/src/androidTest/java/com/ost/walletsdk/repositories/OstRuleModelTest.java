@@ -51,7 +51,7 @@ public class OstRuleModelTest {
     public static void setUp() throws IOException {
         Context appContext = InstrumentationRegistry.getTargetContext();
         testHelper.createDatabase("ostsdk_db", 1);
-        OstSdk.init(appContext.getApplicationContext(), "");
+        OstSdk.initialize(appContext.getApplicationContext(), "");
 
         OstRuleModel ostRuleModel = OstModelFactory.getRuleModel();
         ostRuleModel.deleteAllEntities();

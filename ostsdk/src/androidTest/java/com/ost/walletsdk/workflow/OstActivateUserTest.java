@@ -35,7 +35,7 @@ public class OstActivateUserTest {
     @BeforeClass
     public static void setUp() throws ExecutionException, InterruptedException {
         mAppContext = InstrumentationRegistry.getTargetContext();
-        OstSdk.init(mAppContext, "");
+        OstSdk.initialize(mAppContext, "");
         new OstSecureKeyModelRepository().deleteAllSecureKeys().get();
     }
 

@@ -34,7 +34,7 @@ public class OstKeyManagerTest {
     @BeforeClass
     public static void setUp() throws InterruptedException, ExecutionException {
         Context appContext = InstrumentationRegistry.getTargetContext();
-        OstSdk.init(appContext, "");
+        OstSdk.initialize(appContext, "");
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
         new OstSecureKeyModelRepository().deleteAllSecureKeys().get();
