@@ -13,6 +13,7 @@ package com.ost.mobilesdk.ecKeyInteracts;
 import android.util.Log;
 
 import com.ost.mobilesdk.OstConfigs;
+import com.ost.mobilesdk.OstSdk;
 import com.ost.mobilesdk.ecKeyInteracts.structs.SignedTransactionStruct;
 import com.ost.mobilesdk.models.entities.OstRule;
 import com.ost.mobilesdk.models.entities.OstSession;
@@ -38,8 +39,8 @@ import static com.ost.mobilesdk.workflows.errors.OstErrors.ErrorCode;
 
 public class OstTransactionSigner {
     private static final String TAG = "OstTransactionSigner";
-    private static final String DIRECT_TRANSFER = "direct transfer";
-    private static final String PRICER = "pricer";
+    private static final String DIRECT_TRANSFER = OstSdk.RULE_NAME_DIRECT_TRANSFER;
+    private static final String PRICER =OstSdk.RULE_NAME_PRICER;
     private static final String DECIMAL_EXPONENT = "decimals";
     private final String mUserId;
     private final String mTokenId;

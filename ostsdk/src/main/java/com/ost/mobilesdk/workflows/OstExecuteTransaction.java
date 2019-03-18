@@ -42,16 +42,22 @@ import java.util.Map;
 public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
 
     private static final String TAG = "OstExecuteTransaction";
-    private static final String DIRECT_TRANSFER = "Direct Transfer";
     private final List<String> mTokenHolderAddresses;
     private final List<String> mAmounts;
     private final String mRuleName;
+    private final Map<String, Object> mMeta;
 
-    public OstExecuteTransaction(String userId, List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback callback) {
+    public OstExecuteTransaction(String userId,
+                                 List<String> tokenHolderAddresses,
+                                 List<String> amounts,
+                                 String ruleName,
+                                 Map<String, Object> meta,
+                                 OstWorkFlowCallback callback) {
         super(userId, callback);
         mTokenHolderAddresses = tokenHolderAddresses;
         mAmounts = amounts;
         mRuleName = ruleName;
+        mMeta = meta;
     }
 
 
@@ -138,6 +144,7 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
                 .setRawCallData(signedTransactionStruct.getRawCallData())
                 .setSignature(signedTransactionStruct.getSignature())
                 .setSigner(signedTransactionStruct.getSignerAddress())
+                .setMetaProperty(mMeta)
                 .build();
     }
 
@@ -223,10 +230,15 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
         private final JSONObject dataObject;
         private final String userId;
         private final OstWorkFlowCallback callback;
+        private final JSONObject metaObject;
 
-        public TransactionDataDefinitionInstance(JSONObject dataObject, String userId, OstWorkFlowCallback callback) {
+        public TransactionDataDefinitionInstance(JSONObject dataObject,
+                                                 JSONObject metaObject,
+                                                 String userId,
+                                                 OstWorkFlowCallback callback) {
             this.dataObject = dataObject;
             this.userId = userId;
+            this.metaObject = metaObject;
             this.callback = callback;
         }
 
@@ -259,10 +271,14 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
         private JSONObject updateJSONKeys(JSONObject dataObject) {
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put(OstConstants.RULE_NAME, dataObject.optString(OstConstants.QR_RULE_NAME));
-                jsonObject.put(OstConstants.TOKEN_HOLDER_ADDRESSES, dataObject.optJSONArray(OstConstants.QR_TOKEN_HOLDER_ADDRESSES));
-                jsonObject.put(OstConstants.AMOUNTS, dataObject.optJSONArray(OstConstants.QR_AMOUNTS));
-                jsonObject.put(OstConstants.TOKEN_ID, dataObject.optJSONArray(OstConstants.QR_TOKEN_ID));
+                jsonObject.put(OstConstants.RULE_NAME,
+                        dataObject.optString(OstConstants.QR_RULE_NAME));
+                jsonObject.put(OstConstants.TOKEN_HOLDER_ADDRESSES,
+                        dataObject.optJSONArray(OstConstants.QR_TOKEN_HOLDER_ADDRESSES));
+                jsonObject.put(OstConstants.AMOUNTS,
+                        dataObject.optJSONArray(OstConstants.QR_AMOUNTS));
+                jsonObject.put(OstConstants.TOKEN_ID,
+                        dataObject.optJSONArray(OstConstants.QR_TOKEN_ID));
             } catch (JSONException e) {
                 Log.e(TAG, "JSON Exception in updateJSONKeys: ", e);
             }
@@ -272,16 +288,48 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
         @Override
         public void startDataDefinitionFlow() {
             String ruleName = dataObject.optString(OstConstants.QR_RULE_NAME);
+            CommonUtils commonUtils = new CommonUtils();
+            Map<String, Object> metaMap = getMetaMap();
 
-            JSONArray jsonArrayTokenHolderAddresses = dataObject.optJSONArray(OstConstants.QR_TOKEN_HOLDER_ADDRESSES);
-            List<String> tokenHolderAddresses = new CommonUtils().jsonArrayToList(jsonArrayTokenHolderAddresses);
+            JSONArray jsonArrayTokenHolderAddresses = dataObject.optJSONArray(
+                    OstConstants.QR_TOKEN_HOLDER_ADDRESSES
+            );
+            List<String> tokenHolderAddresses = commonUtils.jsonArrayToList(
+                    jsonArrayTokenHolderAddresses
+            );
 
             JSONArray jsonArrayAmounts = dataObject.optJSONArray(OstConstants.QR_AMOUNTS);
-            List<String> amounts = new CommonUtils().jsonArrayToList(jsonArrayAmounts);
+            List<String> amounts = commonUtils.jsonArrayToList(jsonArrayAmounts);
 
             OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId,
-                    tokenHolderAddresses, amounts, ruleName, callback);
+                    tokenHolderAddresses,
+                    amounts,
+                    ruleName,
+                    metaMap,
+                    callback);
+
             ostExecuteTransaction.perform();
+        }
+
+        private Map<String, Object> getMetaMap() {
+            Map<String, Object> metaMap = new HashMap<>();
+            if (null == metaObject) {
+                return metaMap;
+            }
+
+            String transactionName = metaObject.optString(OstConstants.QR_META_TRANSACTION_NAME,
+                    "");
+            metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+
+            String transactionType = metaObject.optString(OstConstants.QR_META_TRANSACTION_TYPE,
+                    "");
+            metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+
+            String transactionDetails = metaObject.optString(OstConstants.QR_META_TRANSACTION_DETAILS,
+                    "");
+            metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+
+            return metaMap;
         }
 
         @Override

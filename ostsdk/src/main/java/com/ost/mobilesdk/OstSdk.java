@@ -39,7 +39,9 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OstSdk {
     public static final String RULES = "rules";
@@ -57,6 +59,14 @@ public class OstSdk {
     public static final String JSON_OBJECT = "JSON";
     public static final String PAPER_WALLET = "paper_wallet";
     public static final String DEVICES = "devices";
+
+    /**
+     * Rule name to pass for workflow execute transactions
+     * @see OstSdk#executeTransaction(String, List, List, String ruleName, OstWorkFlowCallback)
+     */
+    public static final String RULE_NAME_DIRECT_TRANSFER = "direct transfer";
+    public static final String RULE_NAME_PRICER = "pricer";
+
     private static final String TAG = "OstSdk";
     private static volatile OstSdk INSTANCE;
 
@@ -158,8 +168,54 @@ public class OstSdk {
     }
 
 
-    public static void executeTransaction(String userId, List<String> tokenHolderAddresses, List<String> amounts, String transactionType, OstWorkFlowCallback workFlowCallback) {
-        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId, tokenHolderAddresses, amounts, transactionType, workFlowCallback);
+    public static void executeTransaction(String userId,
+                                          List<String> tokenHolderAddresses,
+                                          List<String> amounts,
+                                          String ruleName,
+                                          OstWorkFlowCallback workFlowCallback) {
+        executeTransaction(userId,
+                tokenHolderAddresses,
+                amounts,
+                ruleName,
+                new HashMap<>(),
+                workFlowCallback);
+    }
+
+
+    /**
+     * Start the workflow to execute rule transaction.
+     * Before execute transactions make sure you have created Session having sufficient spending limit
+     * You can create session by
+     * {@link #addSession(String, String, long, OstWorkFlowCallback)} every time you need sessions and
+     * {@link #activateUser(UserPassphrase, long, String, OstWorkFlowCallback)} once you activate user.
+     * Rule name is need to be passed to execute rule.
+     * {@link #RULE_NAME_DIRECT_TRANSFER#RULE_NAME_PRICER}
+     * It can do multiple transfers by passing list of token holder receiver addresses with
+     * respective amounts.
+     *
+     * @param userId user Id of transaction addressee
+     * @param tokenHolderAddresses List<String> token holder addresses list to where amounts need to be sent
+     * @param amounts List<String> amounts list corresponding to token holder addresses
+     * @param ruleName rule name to execute in transaction
+     * @param meta data about transaction example:-
+     *             {name: "transaction name",
+     *             type "user-to-user",
+     *             details, "like"}
+     * @param workFlowCallback workflow callback handler.
+     */
+    public static void executeTransaction(String userId,
+                                          List<String> tokenHolderAddresses,
+                                          List<String> amounts,
+                                          String ruleName,
+                                          Map<String, Object> meta,
+                                          OstWorkFlowCallback workFlowCallback) {
+        final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId,
+                tokenHolderAddresses,
+                amounts,
+                ruleName,
+                meta,
+                workFlowCallback);
+
         ostExecuteTransaction.perform();
     }
 

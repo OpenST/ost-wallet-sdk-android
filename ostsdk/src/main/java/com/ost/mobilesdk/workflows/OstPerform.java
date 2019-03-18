@@ -74,7 +74,7 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
         } catch (OstError ostError) {
             return postErrorInterrupt(ostError);
         } catch (Throwable th) {
-            OstError ostError = new OstError("bua_wf_osc_1", OstErrors.ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+            OstError ostError = new OstError("bua_wf_op_1", OstErrors.ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
             ostError.setStackTrace(th.getStackTrace());
             return postErrorInterrupt(ostError);
         }
@@ -94,15 +94,35 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
     private DataDefinitionInstance getDataDefinitionInstance() {
         String dataDefinition = getDataDefinition();
         JSONObject dataObject = getDataObject();
+
         if (OstConstants.DATA_DEFINITION_TRANSACTION.equalsIgnoreCase(dataDefinition)) {
-            return new OstExecuteTransaction.TransactionDataDefinitionInstance(dataObject, mUserId, getCallback());
+            JSONObject metaObject = getMetaObject();
+            return new OstExecuteTransaction.TransactionDataDefinitionInstance(
+                    dataObject,
+                    metaObject,
+                    mUserId,
+                    getCallback());
         } else if (OstConstants.DATA_DEFINITION_AUTHORIZE_DEVICE.equalsIgnoreCase(dataDefinition)) {
-            return new OstAddDeviceWithQR.AddDeviceDataDefinitionInstance(dataObject, mUserId, getCallback());
+            return new OstAddDeviceWithQR.AddDeviceDataDefinitionInstance(
+                    dataObject,
+                    mUserId,
+                    getCallback());
         } else if (OstConstants.DATA_DEFINITION_REVOKE_DEVICE.equalsIgnoreCase(dataDefinition)) {
-            return new OstRevokeDevice.RevokeDeviceDataDefinitionInstance(dataObject, mUserId, getCallback());
+            return new OstRevokeDevice.RevokeDeviceDataDefinitionInstance(
+                    dataObject,
+                    mUserId,
+                    getCallback());
         } else {
             throw new OstError("wf_pe_pr_1", OstErrors.ErrorCode.UNKNOWN_DATA_DEFINITION);
         }
+    }
+
+    private JSONObject getMetaObject() {
+        JSONObject jsonObject = mPayload.optJSONObject(OstConstants.QR_META);
+        if (null == jsonObject) {
+            return new JSONObject();
+        }
+        return jsonObject;
     }
 
     @Override
