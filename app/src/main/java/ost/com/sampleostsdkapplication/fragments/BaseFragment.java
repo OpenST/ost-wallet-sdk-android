@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.button.MaterialButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,14 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.workflows.OstContextEntity;
-import com.ost.mobilesdk.workflows.OstWorkflowContext;
-import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstPinAcceptInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstVerifyDataInterface;
-import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.interfaces.OstDeviceRegisteredInterface;
+import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
+import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
+import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 
@@ -35,26 +34,20 @@ import ost.com.sampleostsdkapplication.UsersListActivity;
  */
 public class BaseFragment extends Fragment implements View.OnClickListener, OstWorkFlowCallback {
 
-    private String mUserId;
-    private String mTokenId;
+    private static final String TAG = "OstBaseFragment";
 
     public MaterialButton getNextButton() {
         return nextButton;
     }
 
-    public MaterialButton getCancelButton() {
-        return cancelButton;
-    }
 
     private MaterialButton nextButton;
-    private MaterialButton cancelButton;
     private RelativeLayout mActionButtons;
     private FrameLayout mActionLoaders;
     private TextView mWalletInstructionText;
     private OnBaseFragmentListener mListener;
     private View mView;
-    private TextInputLayout mWorkflowDetails;
-    private EditText mWorkflowDetailsBox;
+    private TextView mWorkflowDetailsBox;
 
     @Override
     public View onCreateView(
@@ -63,14 +56,14 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         mView = inflater.inflate(R.layout.common_base_fragment, container, false);
         TextView pageTitle = mView.findViewById(R.id.page_title);
         pageTitle.setText(getPageTitle());
+        MaterialButton cancelButton = mView.findViewById(R.id.cancel_button);
+        cancelButton.setOnClickListener(this);
+
         nextButton = mView.findViewById(R.id.next_button);
         nextButton.setOnClickListener(this);
-        cancelButton = mView.findViewById(R.id.cancel_button);
-        cancelButton.setOnClickListener(this);
         mActionButtons = mView.findViewById(R.id.action_buttons);
         mActionLoaders = mView.findViewById(R.id.action_loader);
         mWalletInstructionText = mView.findViewById(R.id.wallet_instruction_text);
-        mWorkflowDetails = mView.findViewById(R.id.workflow_details);
         mWorkflowDetailsBox = mView.findViewById(R.id.workflow_details_box);
         return mView;
     }
@@ -157,6 +150,11 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
     @Override
     public void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         UsersListActivity activity = (UsersListActivity) getActivity();
+        if (null == activity) {
+            Log.e(TAG, "In get Pin activity is null");
+            ostPinAcceptInterface.cancelFlow();
+            return;
+        }
         activity.showPinDialog(ostPinAcceptInterface);
     }
 
@@ -165,6 +163,11 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         hideLoader();
         showWalletInstructionText("Invalid Pin.");
         UsersListActivity activity = (UsersListActivity) getActivity();
+        if (null == activity) {
+            Log.e(TAG, "In invalid Pin activity is null");
+            ostPinAcceptInterface.cancelFlow();
+            return;
+        }
         activity.showPinDialog(ostPinAcceptInterface);
     }
 
@@ -227,7 +230,7 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         finalStr += ("\n " + str + String.valueOf((int) (System.currentTimeMillis() / 1000)));
         mWorkflowDetailsBox.setText(finalStr);
         mWorkflowDetailsBox.scrollTo(0, mWorkflowDetailsBox.getBottom());
-        mWorkflowDetails.setVisibility(View.VISIBLE);
+        mWorkflowDetailsBox.setVisibility(View.VISIBLE);
     }
 
     public interface OnBaseFragmentListener {

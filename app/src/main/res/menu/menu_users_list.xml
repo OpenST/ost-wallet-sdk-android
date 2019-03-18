@@ -40,6 +40,7 @@
     <item
         android:id="@+id/transactions"
         android:orderInCategory="100"
+        android:visible="false"
         android:title="@string/execute_txn"
         app:showAsAction="never" />
     <item

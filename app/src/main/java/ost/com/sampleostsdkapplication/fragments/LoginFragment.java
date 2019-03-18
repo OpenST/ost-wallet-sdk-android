@@ -17,11 +17,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.workflows.OstContextEntity;
-import com.ost.mobilesdk.workflows.OstWorkflowContext;
-import com.ost.mobilesdk.workflows.errors.OstError;
-import com.ost.mobilesdk.workflows.interfaces.OstDeviceRegisteredInterface;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.interfaces.OstDeviceRegisteredInterface;
 
 import org.json.JSONObject;
 
@@ -121,7 +121,7 @@ public class LoginFragment extends BaseFragment implements
     }
 
     @Override
-    public void showProgress(boolean show) {
+    public void showProgress(final boolean show) {
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -154,7 +154,7 @@ public class LoginFragment extends BaseFragment implements
     }
 
     @Override
-    public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
+    public void registerDevice(JSONObject apiParams, final OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
         Log.i(TAG, String.format("Device Object %s ", apiParams.toString()));
         if (null == getActivity()) {
             Log.e(TAG, "Activity is null");

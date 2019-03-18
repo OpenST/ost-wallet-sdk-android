@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ost.mobilesdk">
+    package="com.ost.walletsdk">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
@@ -8,7 +18,7 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <application>
         <activity
-            android:name=".biometric.FingerprintAuthenticationDialogActivity"
+            android:name="com.ost.walletsdk.biometric.FingerprintAuthenticationDialogActivity"
             android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Material.Dialog.NoActionBar" />
     </application>

@@ -3,9 +3,9 @@ package ost.com.sampleostsdkapplication;
 import android.os.Handler;
 import android.util.Log;
 
-import com.ost.mobilesdk.OstSdk;
-import com.ost.mobilesdk.models.entities.OstDevice;
-import com.ost.mobilesdk.network.OstHttpRequestClient;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstDevice;
+import com.ost.walletsdk.network.OstHttpRequestClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,8 +24,8 @@ public class MappyApiClient {
         mOstHttpRequestClient = new OstHttpRequestClient(App.BASE_URL_MAPPY);
     }
 
-    public void getUser(String userId, Callback callback) {
-        Map<String, Object> map = new HashMap<>();
+    public void getUser(final String userId,final  Callback callback) {
+        final Map<String, Object> map = new HashMap<>();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -44,8 +44,8 @@ public class MappyApiClient {
         createUser(name, mobileNumber, "", callback);
     }
 
-    public void createUser(String name, String mobileNumber, String description, Callback callback) {
-        Map<String, Object> map = new HashMap<>();
+    public void createUser(String name, String mobileNumber, String description,final  Callback callback) {
+        final Map<String, Object> map = new HashMap<>();
         map.put(Constants.USER_NAME, name);
         map.put(Constants.MOBILE_NUMBER, mobileNumber);
         map.put(Constants.DESCRIPTION, description);
@@ -70,8 +70,8 @@ public class MappyApiClient {
         }).start();
     }
 
-    public void registerDevice(String userId, JSONObject jsonObject, Callback callback) {
-        Map<String, Object> map = new HashMap<>();
+    public void registerDevice(final String userId, final JSONObject jsonObject,final  Callback callback) {
+        final Map<String, Object> map = new HashMap<>();
         try {
             JSONObject deviceObject = jsonObject.getJSONObject(OstSdk.DEVICE);
             map.put("address", deviceObject.getString(OstDevice.ADDRESS));
@@ -96,7 +96,7 @@ public class MappyApiClient {
         }).start();
     }
 
-    public void getUserList(Callback callback) {
+    public void getUserList(final Callback callback) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -112,8 +112,8 @@ public class MappyApiClient {
         }).start();
     }
 
-    public void loginUser(String name, String mobileNumber, Callback callback) {
-        Map<String, Object> map = new HashMap<>();
+    public void loginUser(String name, String mobileNumber,final  Callback callback) {
+        final Map<String, Object> map = new HashMap<>();
         map.put(Constants.USER_NAME, name);
         map.put(Constants.MOBILE_NUMBER, mobileNumber);
         new Thread(new Runnable() {
@@ -137,7 +137,7 @@ public class MappyApiClient {
         }).start();
     }
 
-    private void runOnUI(Callback callback, boolean success, JSONObject response) {
+    private void runOnUI(final Callback callback,final boolean success,final JSONObject response) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {

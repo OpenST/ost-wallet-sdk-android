@@ -21,7 +21,7 @@ public class LoginViewController {
         mLoginFragment = loginFragment;
     }
 
-    public void onButtonAction(Editable userName, Editable mobileNumber, boolean isRegister) {
+    public void onButtonAction(Editable userName, Editable mobileNumber, final boolean isRegister) {
         boolean success = true;
         if (!isPasswordValid(mobileNumber)) {
             mLoginFragment.setMobileNumberError(getString(R.string.error_incorrect_mobilenumber));
