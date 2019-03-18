@@ -14,6 +14,7 @@ import com.ost.walletsdk.ecKeyInteracts.structs.BaseDeviceManagerOperationStruct
 import com.ost.walletsdk.ecKeyInteracts.structs.OstSignWithMnemonicsStruct;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedAddSessionStruct;
+import com.ost.walletsdk.ecKeyInteracts.structs.SignedLogoutSessionsStruct;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedRevokeDeviceStruct;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstDeviceManager;
@@ -78,6 +79,10 @@ public class OstMultiSigSigner {
 
         //All good
         return struct;
+    }
+
+    public SignedLogoutSessionsStruct logoutAllSessions() {
+        return new SignedLogoutSessionsStruct();
     }
 
     public SignedAddDeviceStruct addExternalDevice(String deviceToBeAdded) {

@@ -77,7 +77,11 @@ public class OstApiClient {
         return mOstHttpRequestClient.get("/tokens/", requestMap);
     }
 
-    public JSONObject postUserActivate(String sessionAddress, String expirationHeight, String spendingLimit, String recoveryOwnerAddress) throws IOException {
+    public JSONObject postUserActivate(String sessionAddress,
+                                       String expirationHeight,
+                                       String spendingLimit,
+                                       String recoveryOwnerAddress) throws IOException {
+
         Map<String, Object> requestMap = new HashMap<>();
 
         requestMap.put(SESSION_ADDRESSES, Arrays.asList(sessionAddress));
@@ -217,5 +221,11 @@ public class OstApiClient {
     public JSONObject getBalance() throws IOException {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/balance", mUserId), requestMap);
+    }
+
+    public JSONObject postLogoutAllSessions(Map<String, Object> map) throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        requestMap.putAll(map);
+        return mOstHttpRequestClient.post(String.format("/users/%s/sessions/logout", mUserId), requestMap);
     }
 }
