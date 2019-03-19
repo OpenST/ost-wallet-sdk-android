@@ -150,6 +150,10 @@ public class LoginFragment extends BaseFragment implements
         }
         Activity activity = getActivity();
         LogInUser logInUser = ((App) activity.getApplicationContext()).getLoggedUser();
+
+        //show progress for setup device flow
+        showProgress(true);
+
         OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), LoginFragment.this);
     }
 
@@ -179,6 +183,10 @@ public class LoginFragment extends BaseFragment implements
     @Override
     public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         super.flowComplete(ostWorkflowContext, ostContextEntity);
+
+        //hide progress after flow complete
+        showProgress(false);
+
         Activity activity = getActivity();
         if (null == getActivity()) {
             Log.e(TAG, "Activity is null");
@@ -196,5 +204,8 @@ public class LoginFragment extends BaseFragment implements
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
         super.flowInterrupt(ostWorkflowContext, ostError);
+
+        //hide progress after flow interrupt
+        showProgress(false);
     }
 }

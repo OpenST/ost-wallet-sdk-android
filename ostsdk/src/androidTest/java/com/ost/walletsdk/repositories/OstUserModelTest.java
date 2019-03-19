@@ -50,7 +50,7 @@ public class OstUserModelTest {
     public static void setUp() throws IOException {
         Context appContext = InstrumentationRegistry.getTargetContext();
         testHelper.createDatabase("ostsdk_db", 1);
-        OstSdk.init(appContext.getApplicationContext(), "");
+        OstSdk.initialize(appContext.getApplicationContext(), "");
 
         OstUserModel ostUserModel = OstModelFactory.getUserModel();
         ostUserModel.deleteAllEntities();

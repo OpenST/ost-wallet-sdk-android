@@ -14,7 +14,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        OstSdk.init(getApplicationContext(), BASE_URL_KIT);
+        OstSdk.initialize(getApplicationContext(), BASE_URL_KIT);
     }
 
     public LogInUser getLoggedUser() {

@@ -107,7 +107,7 @@
                 android:textColor="@color/primaryButtonTextColor"
                 android:background="@color/colorPrimary"
                 android:maxLines="1000"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
         </LinearLayout>
     </RelativeLayout>
 </ScrollView>

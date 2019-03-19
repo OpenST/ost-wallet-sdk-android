@@ -285,7 +285,7 @@ public class UsersListActivity extends MappyBaseActivity implements
             String returnedResult = data.getData().toString();
             try {
                 if (qrPerformFragment != null) {
-                    OstSdk.ostPerform(userId, returnedResult, qrPerformFragment);
+                    OstSdk.performQRAction(userId, returnedResult, qrPerformFragment);
                     qrPerformFragment.flowStarted();
                 }
             } catch (JSONException e) {
@@ -330,7 +330,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         UserPassphrase currentPassphrase = new UserPassphrase(logInUser.getOstUserId(), oldPin.getBytes(UTF_8), appSalt.clone());
         UserPassphrase newPassphrase = new UserPassphrase(logInUser.getOstUserId(), newPin.getBytes(UTF_8), appSalt.clone());
         if (resetPinFragment != null) {
-            OstSdk.resetRecoveryPassphrase(logInUser.getOstUserId(), currentPassphrase, newPassphrase,
+            OstSdk.resetPin(logInUser.getOstUserId(), currentPassphrase, newPassphrase,
                     resetPinFragment);
             resetPinFragment.flowStarted();
         }

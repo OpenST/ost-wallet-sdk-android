@@ -52,17 +52,17 @@ android {
 ```
  
 ## OstSdk apis
-### init
-To get started with the SDK, you must first initialize SDK by calling init() api.<br/>
+### initialize
+To get started with the SDK, you must first initialize SDK by calling initialize() api.<br/>
 It initializes all the required instances and run migrations of db.<br/>
-Recommended location to call init() is in Application sub-class.<br/><br/>
+Recommended location to call initialize() is in Application sub-class.<br/><br/>
 &nbsp; parameter context: ApplicationContext.<br/>
 &nbsp; parameter baseUrl: Kit endpoint.<br/>
-&nbsp; **init(context, baseUrl)**<br/>
+&nbsp; **initialize(context, baseUrl)**<br/>
 ```java
 public void onCreate() {
         super.onCreate();
-        OstSdk.init(getApplicationContext(), BASE_URL);
+        OstSdk.initialize(getApplicationContext(), BASE_URL);
 }
 ```
 ### setupDevice
@@ -102,15 +102,15 @@ Will be used when there are no current session available to do transactions.<br/
 OstSdk.addSession(userId, expireAfterInSecs, spendingLimitInWei, new OstWorkFlowCallbackImpl())
 ```
 
-### ostPerform
+### performQRAction
 To perform operations based on QR data provided.<br/>
 Through QR, Add device and transaction operations can be performed.<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter data: JSON object string scanned from QR code<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void ostPerform(String userId, String data, OstWorkFlowCallback workFlowCallback)**<br/>
+&nbsp; **void performQRAction(String userId, String data, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.ostPerform(userId, data, new OstWorkFlowCallbackImpl())
+OstSdk.performQRAction(userId, data, new OstWorkFlowCallbackImpl())
 ```
 
 ### getPaperWallet
@@ -134,15 +134,15 @@ To execute Rule.<br/><br/>
 ```java
 OstSdk.executeTransaction(userId, tokenHolderAddresses, amounts, ruleName, new OstWorkFlowCallbackImpl())
 ```
-### addDeviceUsingMnemonics
-It add new device using mnemonics provided.<br/>
+### authorizeCurrentDeviceWithMnemonics
+It authorize current device using mnemonics provided.<br/>
 Using mnemonics it generates wallet key to add new current device.<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter mnemonics: byte array of paper wallet<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void addDeviceUsingMnemonics(String userId, byte[] mnemonics, OstWorkFlowCallback ostWorkFlowCallback)**<br/>
+&nbsp; **void authorizeCurrentDeviceWithMnemonics(String userId, byte[] mnemonics, OstWorkFlowCallback ostWorkFlowCallback)**<br/>
 ```java
-OstSdk.addDeviceUsingMnemonics(userId, mnemonics, new OstWorkFlowCallbackImpl())
+OstSdk.authorizeCurrentDeviceWithMnemonics(userId, mnemonics, new OstWorkFlowCallbackImpl())
 ```
 
 ### getAddDeviceQRCode

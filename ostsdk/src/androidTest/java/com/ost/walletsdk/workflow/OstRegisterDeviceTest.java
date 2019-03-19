@@ -39,7 +39,7 @@ public class OstRegisterDeviceTest {
     @BeforeClass
     public static void setUp() throws ExecutionException, InterruptedException {
         mAppContext = InstrumentationRegistry.getTargetContext();
-        OstSdk.init(mAppContext, "");
+        OstSdk.initialize(mAppContext, "");
         new OstSecureKeyModelRepository().deleteAllSecureKeys().get();
     }
 
@@ -51,7 +51,7 @@ public class OstRegisterDeviceTest {
         final String[] address = new String[1];
         Looper.prepare();
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.registerDevice(userId, tokenId, false, new AbsWorkFlowCallback() {
+        OstSdk.setupDevice(userId, tokenId, false, new AbsWorkFlowCallback() {
             @Override
             public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
                 try {
@@ -88,7 +88,7 @@ public class OstRegisterDeviceTest {
         String tokenId = "58";
         Looper.prepare();
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.registerDevice(userId, tokenId, false, new AbsWorkFlowCallback() {
+        OstSdk.setupDevice(userId, tokenId, false, new AbsWorkFlowCallback() {
             @Override
             public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
                 countDownLatch.countDown();
