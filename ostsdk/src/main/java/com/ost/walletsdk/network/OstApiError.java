@@ -21,6 +21,17 @@ import java.util.ArrayList;
 public class OstApiError extends OstError {
 
 
+    public String getErrCode() {
+        return errCode;
+    }
+
+    public String getErrMsg() {
+        return errMsg;
+    }
+
+    private String errCode;
+    private String errMsg;
+
     public JSONObject getJsonApiError() {
         return jsonApiError;
     }
@@ -94,6 +105,10 @@ public class OstApiError extends OstError {
         if ( null == jsonApiError ) {
             return;
         }
+
+        errCode = jsonApiError.optString("code");
+        errMsg = jsonApiError.optString("msg");
+
         JSONArray jsonErrorData = jsonApiError.optJSONArray("error_data");
         if ( null == jsonErrorData){
             return;
@@ -116,7 +131,7 @@ public class OstApiError extends OstError {
         }
     }
 
-    static class ApiErrorData {
+    public static class ApiErrorData {
         public String getParameter() {
             return parameter;
         }
