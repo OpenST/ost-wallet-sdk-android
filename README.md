@@ -19,7 +19,7 @@ Refer [Sample app](app) for SDK usage
 ## Add sdk dependency in build.gradle
 ```
 dependencies {
-        implementation 'com.ost:ost-client-android-sdk:0.1.0.beta.10'
+        implementation 'com.ost:ost-wallet-sdk-android:0.1.0.beta.11'
 }
 ```
 
