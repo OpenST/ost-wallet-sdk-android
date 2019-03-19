@@ -63,7 +63,7 @@ public class PaperWalletFragment extends BaseFragment {
                 return;
             }
             showLoader();
-            OstSdk.addDeviceUsingMnemonics(mUserId, mnemonicsText.getBytes(UTF_8), this);
+            OstSdk.authorizeCurrentDeviceWithMnemonics(mUserId, mnemonicsText.getBytes(UTF_8), this);
         } else {
             showLoader();
             OstSdk.getPaperWallet(mUserId, this);

@@ -87,12 +87,12 @@ public class OstSdk {
 
     public static OstSdk get() {
         if (null == INSTANCE) {
-            throw new RuntimeException("OstSdk.init() should be call before get");
+            throw new RuntimeException("OstSdk.initialize() should be call before get");
         }
         return INSTANCE;
     }
 
-    public static void init(Context context, String baseUrl) {
+    public static void initialize(Context context, String baseUrl) {
         if (INSTANCE == null) {
             synchronized (OstSdk.class) {
                 if (INSTANCE == null) {
@@ -138,7 +138,7 @@ public class OstSdk {
         ostActivateUser.perform();
     }
 
-    public static void registerDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback callback) {
+    private static void registerDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback callback) {
         final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, tokenId, forceSync, callback);
         ostRegisterDevice.perform();
     }
@@ -151,7 +151,7 @@ public class OstSdk {
         registerDevice(userId, tokenId, forceSync, workFlowCallback);
     }
 
-    public static void ostPerform(String userId, String data, OstWorkFlowCallback workFlowCallback) throws JSONException {
+    public static void performQRAction(String userId, String data, OstWorkFlowCallback workFlowCallback) throws JSONException {
         Log.i(TAG, String.format("Scanned text: %s", data));
         JSONObject payload = new JSONObject(data);
         final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
@@ -228,7 +228,7 @@ public class OstSdk {
      * @param mnemonics - UTF-8 encoded byte[] of mnemonics of the authorized device. The device must belong to the user.
      * @param ostWorkFlowCallback - Workflow callback interact.
      */
-    public static void addDeviceUsingMnemonics(String userId, byte[] mnemonics, OstWorkFlowCallback ostWorkFlowCallback) {
+    public static void authorizeCurrentDeviceWithMnemonics(String userId, byte[] mnemonics, OstWorkFlowCallback ostWorkFlowCallback) {
         OstAddCurrentDeviceWithMnemonics ostAddCurrentDeviceWithMnemonics = new OstAddCurrentDeviceWithMnemonics(userId, mnemonics, ostWorkFlowCallback);
         ostAddCurrentDeviceWithMnemonics.perform();
     }
@@ -282,7 +282,7 @@ public class OstSdk {
      * @param newPassphrase     Struct of new passPhrase
      * @param workFlowCallback  Work flow interact
      */
-    public static void resetRecoveryPassphrase(String userId,
+    public static void resetPin(String userId,
                                                UserPassphrase currentPassphrase,
                                                UserPassphrase newPassphrase,
                                                OstWorkFlowCallback workFlowCallback) {

@@ -37,7 +37,7 @@ public class OstPerformTest {
     @BeforeClass
     public static void setUp() throws ExecutionException, InterruptedException {
         mAppContext = InstrumentationRegistry.getTargetContext();
-        OstSdk.init(mAppContext, "");
+        OstSdk.initialize(mAppContext, "");
         new OstSecureKeyModelRepository().deleteAllSecureKeys().get();
     }
 
@@ -49,7 +49,7 @@ public class OstPerformTest {
         String data = jsonObject.toString();
         Looper.prepare();
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        OstSdk.ostPerform(userId, data, new AbsWorkFlowCallback() {
+        OstSdk.performQRAction(userId, data, new AbsWorkFlowCallback() {
             @Override
             public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
                 Assert.assertEquals(ostWorkflowContext.getWorkflow_type(), OstWorkflowContext.WORKFLOW_TYPE.PERFORM);
