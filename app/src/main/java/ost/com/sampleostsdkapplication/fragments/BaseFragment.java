@@ -35,12 +35,14 @@ import ost.com.sampleostsdkapplication.UsersListActivity;
 public class BaseFragment extends Fragment implements View.OnClickListener, OstWorkFlowCallback {
 
     private static final String TAG = "OstBaseFragment";
-
-    public MaterialButton getNextButton() {
+    MaterialButton getNextButton() {
         return nextButton;
     }
+    MaterialButton getCancelButton() {
+        return cancelButton;
+    }
 
-
+    private MaterialButton cancelButton;
     private MaterialButton nextButton;
     private RelativeLayout mActionButtons;
     private FrameLayout mActionLoaders;
@@ -56,9 +58,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         mView = inflater.inflate(R.layout.common_base_fragment, container, false);
         TextView pageTitle = mView.findViewById(R.id.page_title);
         pageTitle.setText(getPageTitle());
-        MaterialButton cancelButton = mView.findViewById(R.id.cancel_button);
+        cancelButton = mView.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(this);
-
         nextButton = mView.findViewById(R.id.next_button);
         nextButton.setOnClickListener(this);
         mActionButtons = mView.findViewById(R.id.action_buttons);

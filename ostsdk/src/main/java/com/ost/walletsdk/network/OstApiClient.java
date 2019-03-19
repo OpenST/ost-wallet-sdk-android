@@ -226,6 +226,11 @@ public class OstApiClient {
     public JSONObject postLogoutAllSessions(Map<String, Object> map) throws IOException {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
-        return mOstHttpRequestClient.post(String.format("/users/%s/sessions/logout", mUserId), requestMap);
+        return mOstHttpRequestClient.post(String.format("/users/%s/token-holder/logout", mUserId), requestMap);
+    }
+
+    public JSONObject getTokenHolder() throws IOException {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get(String.format("/users/%s/token-holder", mUserId), requestMap);
     }
 }

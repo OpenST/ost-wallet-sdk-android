@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
+import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 
 import org.json.JSONException;
@@ -28,6 +29,7 @@ import java.util.Arrays;
 import ost.com.sampleostsdkapplication.fragments.AbortDeviceRecoveryFragment;
 import ost.com.sampleostsdkapplication.fragments.CreateSessionFragment;
 import ost.com.sampleostsdkapplication.fragments.DeviceRecoveryFragment;
+import ost.com.sampleostsdkapplication.fragments.LogoutFragment;
 import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
 import ost.com.sampleostsdkapplication.fragments.QRPerformFragment;
 import ost.com.sampleostsdkapplication.fragments.ResetPinFragment;
@@ -42,7 +44,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         ResetPinFragment.OnResetPinFragmentListener,
         CreateSessionFragment.OnCreateSessionFragmentListener {
 
-    private static final String TAG = "UsersListActivity";
+    private static final String TAG = "OstUsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
     private UserDetailsFragment userDetailsFragment;
     private SetUpUserFragment userSetupFragment;
@@ -69,6 +71,16 @@ public class UsersListActivity extends MappyBaseActivity implements
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LogInUser logInUser = ((App) getApplicationContext()).getLoggedUser();
+        if (OstUser.CONST_STATUS.CREATED
+                .equalsIgnoreCase(
+                        logInUser.getOstUser().getStatus())) {
+            loadSetUpUserFragment(logInUser.getTokenId(), logInUser.getOstUserId());
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -132,8 +144,20 @@ public class UsersListActivity extends MappyBaseActivity implements
             Log.d(TAG, "Device Recovery");
             byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
             AbortRecoveryFragment(logInUser.getTokenId(), userId, appSalt);
+        } else if (id == R.id.device_logout) {
+            Log.d(TAG, "Device Logout initiated");
+            loadLogoutFragment( userId );
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadLogoutFragment(String userId) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        LogoutFragment logoutFragment = LogoutFragment.newInstance(userId);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, logoutFragment, "device_logout");
+        transaction.addToBackStack("device_logout");
+        transaction.commit();
     }
 
     private void AbortRecoveryFragment(String tokenId, String userId, byte[] appSalt) {
@@ -168,7 +192,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         userSetupFragment = SetUpUserFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, userSetupFragment, "user_setup");
-        transaction.addToBackStack("users_list");
+        transaction.addToBackStack("user_setup");
         transaction.commit();
     }
 
@@ -177,7 +201,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         paperWalletFragment = PaperWalletFragment.newInstance(tokenId, userId, loadForAuthorize);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, paperWalletFragment, "paper_wallet");
-        transaction.addToBackStack("users_list");
+        transaction.addToBackStack("paper_wallet");
         transaction.commit();
     }
 
@@ -186,7 +210,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         resetPinFragment = ResetPinFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, resetPinFragment, "reset_pin");
-        transaction.addToBackStack("users_list");
+        transaction.addToBackStack("reset_pin");
         transaction.commit();
     }
 
@@ -195,7 +219,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         createSessionFragment = CreateSessionFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, createSessionFragment, "create_session");
-        transaction.addToBackStack("users_list");
+        transaction.addToBackStack("create_session");
         transaction.commit();
     }
 
@@ -204,7 +228,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         qrPerformFragment = QRPerformFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, qrPerformFragment, "qr_perform");
-        transaction.addToBackStack("users_list");
+        transaction.addToBackStack("qr_perform");
         transaction.commit();
     }
 

@@ -10,9 +10,6 @@
 
 package com.ost.walletsdk.workflows.services;
 
-import android.app.IntentService;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import com.ost.walletsdk.OstSdk;
@@ -29,16 +26,10 @@ public class OstDevicePollingService extends OstPollingService {
 
     private static final String TAG = "OstDevicePollingService";
 
-    public OstDevicePollingService(String userId, String entityId, String successStatus, String failedStatus) {
+    private OstDevicePollingService(String userId, String entityId, String successStatus, String failedStatus) {
         super(userId, entityId, successStatus, failedStatus);
     }
 
-    /**
-     * Starts this service to perform polling with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
     public static Bundle startPolling(String userId, String entityId, String successStatus, String failedStatus) {
         OstDevicePollingService ostDevicePollingService = new OstDevicePollingService(userId, entityId, successStatus, failedStatus);
         return ostDevicePollingService.waitForUpdate();
@@ -47,11 +38,6 @@ public class OstDevicePollingService extends OstPollingService {
     @Override
     protected OstBaseEntity parseEntity(JSONObject entityObject) throws JSONException {
         return OstDevice.parse(entityObject);
-    }
-
-    @Override
-    protected Intent getServiceIntent(Context context) {
-        return new Intent(context, OstDevicePollingService.class);
     }
 
     @Override

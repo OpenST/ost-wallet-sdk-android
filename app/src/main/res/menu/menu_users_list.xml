@@ -64,4 +64,9 @@
         android:orderInCategory="100"
         android:title="@string/device_abort_recovery"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/device_logout"
+        android:orderInCategory="100"
+        android:title="@string/logout_all_sessions"
+        app:showAsAction="never" />
 </menu>
