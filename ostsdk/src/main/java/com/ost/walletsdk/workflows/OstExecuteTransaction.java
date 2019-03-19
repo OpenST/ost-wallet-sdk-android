@@ -100,7 +100,9 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
             }
             return postErrorInterrupt("wf_et_pr_6", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
         } else {
-            return postFlowComplete();
+            return postFlowComplete(
+                    new OstContextEntity(OstTransaction.getById(entityId), OstSdk.TRANSACTION)
+            );
         }
     }
 

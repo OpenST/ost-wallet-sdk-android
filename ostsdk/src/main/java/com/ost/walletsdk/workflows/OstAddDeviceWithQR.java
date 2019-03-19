@@ -78,7 +78,9 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
         }
 
         Log.i(TAG, "Response received for Add device");
-        return postFlowComplete();
+        return postFlowComplete(
+                new OstContextEntity(OstDevice.getById(mDeviceAddressToBeAdded), OstSdk.DEVICE)
+        );
     }
 
     @Override

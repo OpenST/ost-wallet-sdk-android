@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
 
 import ost.com.sampleostsdkapplication.App;
 import ost.com.sampleostsdkapplication.MainActivity;
@@ -62,13 +63,22 @@ public class LogoutFragment extends BaseFragment {
     @Override
     public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         //Clear local login user details;
+        super.flowComplete(ostWorkflowContext, ostContextEntity);
+        relaunchApp();
+    }
+
+    @Override
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        super.flowInterrupt(ostWorkflowContext, ostError);
+        relaunchApp();
+    }
+
+    void relaunchApp() {
         if (null == getActivity()) {
             Log.e(TAG, "Get activity is null");
         }
-        App app =  ((App) getActivity().getApplicationContext());
+        App app = ((App) getActivity().getApplicationContext());
         app.setLoggedUser(null);
-
-        super.flowComplete(ostWorkflowContext, ostContextEntity);
 
         Intent i = new Intent(app, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

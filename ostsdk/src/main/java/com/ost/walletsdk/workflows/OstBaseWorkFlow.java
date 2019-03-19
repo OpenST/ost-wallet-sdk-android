@@ -18,6 +18,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.biometric.OstBiometricAuthentication;
@@ -535,6 +536,28 @@ abstract class OstBaseWorkFlow {
             Log.e(TAG, "IO Exception");
             return new AsyncStatus(false);
         }
+    }
+
+    String calculateExpirationHeight(long expiresInSecs) {
+        JSONObject jsonObject = null;
+        long currentBlockNumber, blockGenerationTime;
+        String strCurrentBlockNumber;
+        String strBlockGenerationTime;
+        try {
+            jsonObject = mOstApiClient.getCurrentBlockNumber();
+            strCurrentBlockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
+            strBlockGenerationTime = parseResponseForKey(jsonObject, OstConstants.BLOCK_TIME);
+        } catch (Throwable e) {
+            throw new OstError("wf_bwf_ceh_1", ErrorCode.CHAIN_API_FAILED);
+        }
+
+        currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
+        blockGenerationTime = Long.parseLong(strBlockGenerationTime);
+        long bufferBlocks = (OstConfigs.getInstance().SESSION_BUFFER_TIME) / blockGenerationTime;
+        long expiresAfterBlocks = expiresInSecs / blockGenerationTime;
+        long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
+
+        return String.valueOf(expirationHeight);
     }
 
 

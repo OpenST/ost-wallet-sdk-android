@@ -75,14 +75,9 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
             return postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.BLOCK_NUMBER_API_FAILED);
         }
 
-        OstUser ostUser = OstUser.getById(mUserId);
-        String tokenHolderAddress = ostUser.getTokenHolderAddress();
-        String deviceManagerAddress = ostUser.getDeviceManagerAddress();
+        OstUser ostUser = mOstUser;
 
-
-        //TODO: FIX-ME: Divide mExpiresAfterInSec by Block generation time
-        String expiryHeight = new BigInteger(blockNumber).add(new BigInteger(String
-                .valueOf(mExpiresAfterInSecs))).toString();
+        String expiryHeight = calculateExpirationHeight(mExpiresAfterInSecs);
 
         try {
             ostApiClient.getDeviceManager();
@@ -142,7 +137,9 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         new OstSdkSync(mUserId,OstSdkSync.SYNC_ENTITY.SESSION).perform();
 
         Log.i(TAG, "Response received for Add session");
-        return postFlowComplete();
+        return postFlowComplete(
+                new OstContextEntity(OstSession.getById(sessionAddress), OstSdk.SESSION)
+        );
     }
 
     private String getCurrentBlockNumber(OstApiClient ostApiClient) {

@@ -94,13 +94,21 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                 }
                 Log.i(TAG, "Device is already registered. ostDevice.status:" + ostDevice.getStatus() );
                 sync();
-                postFlowComplete();
+                postFlowComplete(
+                        new OstContextEntity(ostDevice, OstSdk.DEVICE)
+                );
+
                 break;
 
             case REGISTERED:
                 Log.i(TAG, "Device registered");
                 syncRegisteredEntities();
-                postFlowComplete();
+                postFlowComplete(
+                        new OstContextEntity(
+                                OstUser.getById(mUserId).getCurrentDevice(),
+                                OstSdk.DEVICE
+                        )
+                );
                 break;
 
             case CANCELED:

@@ -73,7 +73,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
             ensureOstToken();
 
-            String expirationHeight = this.calculateExpirationHeight();
+            String expirationHeight = this.calculateExpirationHeight(mExpiresAfterInSecs);
 
 
 
@@ -126,35 +126,12 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 OstSdkSync.SYNC_ENTITY.SESSION).perform();
 
         Log.i(TAG, "Response received for post Token deployment");
-        postFlowComplete();
+        postFlowComplete( new OstContextEntity(mOstUser, OstSdk.USER) );
 
         return new AsyncStatus(true);
     }
 
     private boolean hasActivatingUser() {
         return OstSdk.getUser(mUserId).isActivating();
-    }
-
-
-    private String calculateExpirationHeight() {
-        JSONObject jsonObject = null;
-        long currentBlockNumber, blockGenerationTime;
-        String strCurrentBlockNumber;
-        String strBlockGenerationTime;
-        try {
-            jsonObject = mOstApiClient.getCurrentBlockNumber();
-            strCurrentBlockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
-            strBlockGenerationTime = parseResponseForKey(jsonObject, OstConstants.BLOCK_TIME);
-        } catch (Throwable e) {
-            throw new OstError("wf_au_ceh_1", ErrorCode.CHAIN_API_FAILED);
-        }
-
-        currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
-        blockGenerationTime = Long.parseLong(strBlockGenerationTime);
-        long bufferBlocks = (OstConfigs.getInstance().SESSION_BUFFER_TIME) / blockGenerationTime;
-        long expiresAfterBlocks = mExpiresAfterInSecs / blockGenerationTime;
-        long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
-
-        return String.valueOf(expirationHeight);
     }
 }
