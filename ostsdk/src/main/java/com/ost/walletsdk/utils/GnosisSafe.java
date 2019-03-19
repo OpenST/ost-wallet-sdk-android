@@ -41,7 +41,7 @@ public class GnosisSafe {
 
     public String getAuthorizeSessionExecutableData(String sessionAddress, String spendingLimit, String expirationHeight) {
         Function function = new Function(
-                "authorizeSession",  // function we're calling
+                AUTHORIZED_SESSION,  // function we're calling
                 Arrays.asList(new Address(sessionAddress), new Uint256(new BigInteger(spendingLimit)), new Uint256(new BigInteger(expirationHeight))),  // Parameters to pass as Solidity Types
                 Collections.emptyList());
 
@@ -68,7 +68,7 @@ public class GnosisSafe {
 
     public String getAddOwnerWithThresholdExecutableData(String ownerAddress, String threshHold) {
         Function function = new Function(
-                "addOwnerWithThreshold",  // function we're calling
+                ADD_OWNER_WITH_THRESHHOLD,  // function we're calling
                 Arrays.asList(new Address(ownerAddress), new Uint256(new BigInteger(threshHold))),  // Parameters to pass as Solidity Types
                 Collections.emptyList());
 
@@ -120,7 +120,7 @@ public class GnosisSafe {
                     "      message: {\n" +
                     "        to: " + to + ",\n" +
                     "        value: " + value + ",\n" +
-                    "        data: " + data + ",\n" +
+                    "        data: '" + data + "',\n" +
                     "        operation: " + operation + ",\n" +
                     "        safeTxGas: " + safeTxGas + ",\n" +
                     "        dataGas: " + dataGas + ",\n" +
@@ -139,7 +139,7 @@ public class GnosisSafe {
 
     public String getRemoveOwnerWithThresholdExecutableData(String prevOwner, String ownerToRemove) {
         Function function = new Function(
-                "removeOwner",  // function we're calling
+                REMOVED_OWNER,  // function we're calling
                 Arrays.asList(new Address(prevOwner), new Address(ownerToRemove), new Uint256(new BigInteger("1"))),  // Parameters to pass as Solidity Types
                 Collections.emptyList());
 

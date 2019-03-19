@@ -153,7 +153,9 @@ public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
         }
 
         Log.i(TAG, "Response received for Add device");
-        return postFlowComplete();
+        return postFlowComplete(
+                new OstContextEntity(OstDevice.getById(mRecoveringDeviceAddress), OstSdk.DEVICE)
+        );
     }
 
     private Map<String, Object> buildApiRequest(SignedRecoverOperationStruct dataHolder) {

@@ -12,11 +12,21 @@ package com.ost.walletsdk.utils;
 
 import android.util.Log;
 
+import com.ost.walletsdk.OstConstants;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.web3j.abi.FunctionEncoder;
+import org.web3j.abi.datatypes.Function;
 import org.web3j.utils.Numeric;
+
+import java.util.Collections;
 
 public class TokenHolder {
     private static final String TAG = "OstTokenHolder";
     private static final String EXECUTABLE_CALL_STRING = "executeRule(address,bytes,uint256,uint8,bytes32,bytes32)";
+    private static final String LOGOUT_ALL_SESSIONS = "logout";
 
     public TokenHolder() {
     }
@@ -31,5 +41,32 @@ public class TokenHolder {
         }
         hash = hash.substring(0,10);
         return hash;
+    }
+
+
+    public String getLogoutExecutableData() {
+        Function function = new Function(
+                LOGOUT_ALL_SESSIONS,  // function we're calling
+                Collections.emptyList(),  // Parameters to pass as Solidity Types
+                Collections.emptyList()
+        );
+
+        return FunctionEncoder.encode(function);
+    }
+
+
+    public String getLogoutData() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(OstConstants.METHOD, LOGOUT_ALL_SESSIONS);
+
+            //There are no parameters for logout method
+            JSONArray jsonArray = new JSONArray();
+            jsonObject.put(OstConstants.PARAMETERS, jsonArray);
+            return jsonObject.toString();
+        } catch (JSONException e) {
+            Log.e(TAG, "Unexpected exception while parsing json");
+        }
+        return null;
     }
 }

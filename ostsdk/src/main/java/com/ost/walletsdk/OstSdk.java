@@ -29,6 +29,7 @@ import com.ost.walletsdk.workflows.OstAddCurrentDeviceWithMnemonics;
 import com.ost.walletsdk.workflows.OstAddSession;
 import com.ost.walletsdk.workflows.OstExecuteTransaction;
 import com.ost.walletsdk.workflows.OstGetPaperWallet;
+import com.ost.walletsdk.workflows.OstLogoutAllSessions;
 import com.ost.walletsdk.workflows.OstPerform;
 import com.ost.walletsdk.workflows.OstRecoverDeviceWorkflow;
 import com.ost.walletsdk.workflows.OstRegisterDevice;
@@ -273,26 +274,69 @@ public class OstSdk {
     }
 
 
-
-    public static void resetPin(String userId, UserPassphrase currentPassphrase, UserPassphrase newPassphrase, OstWorkFlowCallback workFlowCallback) {
-        final OstResetPin ostResetPin = new OstResetPin(userId, currentPassphrase, newPassphrase,workFlowCallback);
+    /**
+     * To change current passPhrase to new passPhrase
+     *
+     * @param userId            user Id whose passPhrase to change
+     * @param currentPassphrase Struct of current passPhrase
+     * @param newPassphrase     Struct of new passPhrase
+     * @param workFlowCallback  Work flow interact
+     */
+    public static void resetPin(String userId,
+                                               UserPassphrase currentPassphrase,
+                                               UserPassphrase newPassphrase,
+                                               OstWorkFlowCallback workFlowCallback) {
+        final OstResetPin ostResetPin = new OstResetPin(userId,
+                currentPassphrase,
+                newPassphrase,
+                workFlowCallback);
         ostResetPin.perform();
     }
 
-    public static void initiateRecoverDevice(String userId, UserPassphrase passphrase, String deviceAddressToRecover, OstWorkFlowCallback workFlowCallback) {
+    /**
+     * It will authorize the current device by revoking provided device address.
+     *
+     * @param userId                 user id of recovery user
+     * @param passphrase             Struct of current passPhrase
+     * @param deviceAddressToRecover Address of device to recover
+     * @param workFlowCallback       Work flow interact
+     */
+    public static void initiateRecoverDevice(String userId,
+                                             UserPassphrase passphrase,
+                                             String deviceAddressToRecover,
+                                             OstWorkFlowCallback workFlowCallback) {
         final OstRecoverDeviceWorkflow ostRecoverDeviceWorkflow = new OstRecoverDeviceWorkflow(userId,
                 passphrase,
                 deviceAddressToRecover,
-                workFlowCallback
-            );
+                workFlowCallback);
         ostRecoverDeviceWorkflow.perform();
     }
 
-    public static void revokeRecoverDevice(String userId, UserPassphrase passphrase, OstWorkFlowCallback workFlowCallback) {
+    /**
+     * If there are any ongoing initiate recovery in process, It will abort that recovery process
+     *
+     * @param userId           userId of recovery user
+     * @param passphrase       A simple struct to transport pin information via app and Sdk.
+     * @param workFlowCallback Workflow callback Interact
+     */
+    public static void revokeRecoverDevice(String userId,
+                                           UserPassphrase passphrase,
+                                           OstWorkFlowCallback workFlowCallback) {
         final OstAbortDeviceRecovery ostAbortDeviceRecovery = new OstAbortDeviceRecovery(userId,
                 passphrase,
-                workFlowCallback
-        );
+                workFlowCallback);
         ostAbortDeviceRecovery.perform();
+    }
+
+    /**
+     * It will revoke all the sessions associated with provided userId
+     *
+     * @param userId           user Id whose sessions to revoke
+     * @param workFlowCallback Workflow callback interact.
+     */
+    public static void logoutAllSessions(String userId,
+                                         OstWorkFlowCallback workFlowCallback) {
+        final OstLogoutAllSessions ostLogoutAllSessions = new OstLogoutAllSessions(userId, workFlowCallback);
+        ostLogoutAllSessions.perform();
     }
 }

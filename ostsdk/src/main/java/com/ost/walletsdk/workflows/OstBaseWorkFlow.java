@@ -10,19 +10,15 @@
 
 package com.ost.walletsdk.workflows;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.biometric.OstBiometricAuthentication;
@@ -46,7 +42,6 @@ import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
-import com.ost.walletsdk.workflows.services.OstPollingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,11 +51,9 @@ import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 abstract class OstBaseWorkFlow {
     private static final String TAG = "OstBaseWorkFlow";
@@ -467,44 +460,6 @@ abstract class OstBaseWorkFlow {
         return new AsyncStatus(true);
     }
 
-    Bundle waitForUpdate(final String pEntityType, final String pEntityId) {
-        final Bundle bundle = new Bundle();
-
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        BroadcastReceiver updateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // Get extra data included in the Intent
-                Log.d(TAG, "Intent received");
-                String userId = intent.getStringExtra(OstPollingService.EXTRA_USER_ID);
-                String entityId = intent.getStringExtra(OstPollingService.EXTRA_ENTITY_ID);
-                String entityType = intent.getStringExtra(OstPollingService.EXTRA_ENTITY_TYPE);
-                boolean isValidResponse = intent.getBooleanExtra(OstPollingService.EXTRA_IS_VALID_RESPONSE, true);
-                boolean isPollingTimeOut = intent.getBooleanExtra(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true);
-                if (mUserId.equals(userId) && pEntityType.equalsIgnoreCase(entityType) && pEntityId.equals(entityId)) {
-                    Log.d(TAG, String.format("Got update message from polling service for %s id:%s", entityType, entityId));
-                    if (isPollingTimeOut) {
-                        Log.w(TAG, "Polling timeout reached");
-                    }
-                    if (!isValidResponse) {
-                        Log.w(TAG, "Not a valid response");
-                    }
-                    bundle.putAll(intent.getExtras());
-                    countDownLatch.countDown();
-                }
-            }
-        };
-        LocalBroadcastManager.getInstance(OstSdk.getContext()).registerReceiver(updateReceiver,
-                new IntentFilter(OstPollingService.ENTITY_UPDATE_MESSAGE));
-        try {
-            countDownLatch.await(OstConstants.POLLING_WAIT_TIME_IN_SECS, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            Log.e(TAG, "Unexpected error while waiting for polling", e);
-        }
-        LocalBroadcastManager.getInstance(OstSdk.getContext()).unregisterReceiver(updateReceiver);
-        return bundle;
-    }
-
     boolean shouldAskForBioMetric() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //Fingerprint API only available on from Android 6.0 (M)
@@ -581,6 +536,28 @@ abstract class OstBaseWorkFlow {
             Log.e(TAG, "IO Exception");
             return new AsyncStatus(false);
         }
+    }
+
+    String calculateExpirationHeight(long expiresInSecs) {
+        JSONObject jsonObject = null;
+        long currentBlockNumber, blockGenerationTime;
+        String strCurrentBlockNumber;
+        String strBlockGenerationTime;
+        try {
+            jsonObject = mOstApiClient.getCurrentBlockNumber();
+            strCurrentBlockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
+            strBlockGenerationTime = parseResponseForKey(jsonObject, OstConstants.BLOCK_TIME);
+        } catch (Throwable e) {
+            throw new OstError("wf_bwf_ceh_1", ErrorCode.CHAIN_API_FAILED);
+        }
+
+        currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
+        blockGenerationTime = Long.parseLong(strBlockGenerationTime);
+        long bufferBlocks = (OstConfigs.getInstance().SESSION_BUFFER_TIME) / blockGenerationTime;
+        long expiresAfterBlocks = expiresInSecs / blockGenerationTime;
+        long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
+
+        return String.valueOf(expirationHeight);
     }
 
 

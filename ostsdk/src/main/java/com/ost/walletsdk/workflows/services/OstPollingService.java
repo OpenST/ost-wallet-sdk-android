@@ -11,8 +11,6 @@
 package com.ost.walletsdk.workflows.services;
 
 import android.app.IntentService;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -36,10 +34,6 @@ public abstract class OstPollingService {
 
     public static final String EXTRA_USER_ID = "com.ost.mobilesdk.workflows.extra.USER_ID";
     public static final String EXTRA_ENTITY_ID = "com.ost.mobilesdk.workflows.extra.ENTITY_ID";
-    public static final String EXTRA_ENTITY_FAILURE_STATUS = "com.ost.mobilesdk.workflows.extra.ENTITY_FAILURE_STATUS";
-    public static final String EXTRA_ENTITY_SUCCESS_STATUS = "com.ost.mobilesdk.workflows.extra.ENTITY_SUCCESS_STATUS";
-    public static final String EXTRA_POLL_COUNT = "com.ost.mobilesdk.workflows.extra.POLL_COUNT";
-    public static final String ENTITY_UPDATE_MESSAGE = "com.ost.mobilesdk.workflows.extra.ENTITY_UPDATE";
     public static final String EXTRA_ENTITY_TYPE = "com.ost.mobilesdk.workflows.extra.ENTITY_TYPE";
     public static final String EXTRA_IS_POLLING_TIMEOUT = "com.ost.mobilesdk.workflows.extra.IS_POLLING_TIMEOUT";
     public static final String EXTRA_IS_VALID_RESPONSE = "com.ost.mobilesdk.workflows.extra.IS_VALID_RESPONSE";
@@ -180,11 +174,9 @@ public abstract class OstPollingService {
         }
     }
 
-    protected abstract Intent getServiceIntent(Context context);
-
     protected abstract String getEntityName();
 
     protected abstract JSONObject poll(String userId, String entityId) throws IOException;
 
-    protected abstract boolean validateParams(String entityId, String fromStatus, String toStatus);
+    protected abstract boolean validateParams(String entityId, String successStatus, String failedStatus);
 }

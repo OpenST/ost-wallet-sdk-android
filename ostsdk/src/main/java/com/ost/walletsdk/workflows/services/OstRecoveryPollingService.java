@@ -29,16 +29,10 @@ public class OstRecoveryPollingService extends OstPollingService {
 
     private static final String TAG = "OstRecoveryPollingService";
 
-    public OstRecoveryPollingService(String userId, String entityId, String successStatus, String failedStatus) {
+    private OstRecoveryPollingService(String userId, String entityId, String successStatus, String failedStatus) {
         super(userId, entityId, successStatus, failedStatus);
     }
 
-    /**
-     * Starts this service to perform polling with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
     public static Bundle startPolling(String userId, String entityId, String successStatus, String failedStatus) {
         OstRecoveryPollingService ostRecoveryPollingService = new OstRecoveryPollingService(userId, entityId, successStatus, failedStatus);
         return ostRecoveryPollingService.waitForUpdate();
@@ -47,11 +41,6 @@ public class OstRecoveryPollingService extends OstPollingService {
     @Override
     protected OstBaseEntity parseEntity(JSONObject entityObject) throws JSONException {
         return OstRecoveryOwner.parse(entityObject);
-    }
-
-    @Override
-    protected Intent getServiceIntent(Context context) {
-        return new Intent(context, OstRecoveryPollingService.class);
     }
 
     @Override

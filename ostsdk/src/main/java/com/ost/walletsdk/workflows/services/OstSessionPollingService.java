@@ -29,16 +29,10 @@ public class OstSessionPollingService extends OstPollingService {
 
     private static final String TAG = "OstSessionPollingService";
 
-    public OstSessionPollingService(String userId, String entityId, String successStatus, String failureStatus) {
+    private OstSessionPollingService(String userId, String entityId, String successStatus, String failureStatus) {
         super(userId, entityId, successStatus, failureStatus);
     }
 
-    /**
-     * Starts this service to perform polling with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
     public static Bundle startPolling(String userId, String entityId, String successStatus, String failureStatus) {
         OstSessionPollingService ostSessionPollingService = new OstSessionPollingService(userId, entityId, successStatus, failureStatus);
         return ostSessionPollingService.waitForUpdate();
@@ -50,18 +44,13 @@ public class OstSessionPollingService extends OstPollingService {
     }
 
     @Override
-    protected Intent getServiceIntent(Context context) {
-        return new Intent(context, OstSessionPollingService.class);
-    }
-
-    @Override
     protected String getEntityName() {
         return OstSdk.SESSION;
     }
 
     @Override
-    protected JSONObject poll(String sessionId, String entityId) throws IOException {
-        return new OstApiClient(sessionId).getSession(entityId);
+    protected JSONObject poll(String userId, String entityId) throws IOException {
+        return new OstApiClient(userId).getSession(entityId);
     }
 
     @Override

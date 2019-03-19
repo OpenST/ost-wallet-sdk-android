@@ -22,6 +22,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
+import java.util.Arrays;
+
+import static com.ost.walletsdk.models.entities.OstTokenHolder.CONST_STATUS.ACTIVE;
+import static com.ost.walletsdk.models.entities.OstTokenHolder.CONST_STATUS.LOGGED_OUT;
+import static com.ost.walletsdk.models.entities.OstTokenHolder.CONST_STATUS.LOGGING_OUT;
+
 
 @Entity(tableName = "token_holder")
 public class OstTokenHolder extends OstBaseEntity {
@@ -34,17 +40,23 @@ public class OstTokenHolder extends OstBaseEntity {
     }
 
     public static class CONST_STATUS {
-        public static final String INITIALIZING = "initializing";
-        public static final String ACTIVATED = "activated";
+        public static final String ACTIVE = "active";
+        public static final String LOGGING_OUT = "logging out";
+        public static final String LOGGED_OUT = "logged out";
     }
 
-    public OstTokenHolder getById(String id) {
+    public static boolean isValidStatus(String status) {
+        return Arrays.asList(ACTIVE, LOGGING_OUT, LOGGED_OUT).contains(status);
+    }
+
+    public static OstTokenHolder getById(String id) {
         if (TextUtils.isEmpty(id)) {
             return null;
         }
         id = Keys.toChecksumAddress(id);
         return OstModelFactory.getTokenHolderModel().getEntityById(id);
     }
+
     private static EntityFactory entityFactory;
     private static EntityFactory getEntityFactory() {
         if ( null == entityFactory ) {

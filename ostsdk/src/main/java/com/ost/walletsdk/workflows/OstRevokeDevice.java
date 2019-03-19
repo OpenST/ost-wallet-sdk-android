@@ -120,7 +120,9 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
         }
 
         Log.i(TAG, "Response received for Add device");
-        return postFlowComplete();
+        return postFlowComplete(
+                new OstContextEntity(OstDevice.getById(mDeviceToBeRevoked), OstSdk.DEVICE)
+        );
     }
 
     @Override

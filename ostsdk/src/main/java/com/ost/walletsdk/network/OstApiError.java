@@ -21,6 +21,14 @@ import java.util.ArrayList;
 public class OstApiError extends OstError {
 
 
+    public String getErrCode() {
+        return jsonApiError.optString("code");
+    }
+
+    public String getErrMsg() {
+        return jsonApiError.optString("msg");
+    }
+
     public JSONObject getJsonApiError() {
         return jsonApiError;
     }
@@ -40,20 +48,12 @@ public class OstApiError extends OstError {
         parseErrorData();
     }
 
-    public String getApiErrorCode() {
-        return jsonApiError.optString("code");
-    }
-
-    public String getApiErrorMessage() {
-        return jsonApiError.optString("msg");
-    }
-
     public String getApiInternalId() {
         return jsonApiError.optString("internal_id");
     }
 
     public boolean isBadRequest() {
-        return ApiErrorCodes.BAD_REQUEST.equalsIgnoreCase( getApiErrorCode() );
+        return ApiErrorCodes.BAD_REQUEST.equalsIgnoreCase( getErrCode() );
     }
 
     public boolean isDeviceTimeOutOfSync() {
@@ -94,6 +94,7 @@ public class OstApiError extends OstError {
         if ( null == jsonApiError ) {
             return;
         }
+
         JSONArray jsonErrorData = jsonApiError.optJSONArray("error_data");
         if ( null == jsonErrorData){
             return;
@@ -116,7 +117,7 @@ public class OstApiError extends OstError {
         }
     }
 
-    static class ApiErrorData {
+    public static class ApiErrorData {
         public String getParameter() {
             return parameter;
         }

@@ -89,4 +89,5 @@
     <string name="qr_perform">QR Perform</string>
     <string name="enter_40_char_address">Enter 40 character address</string>
     <string name="sync_user">Sync user</string>
+    <string name="logout_all_sessions">Logout all Sessions</string>
 </resources>

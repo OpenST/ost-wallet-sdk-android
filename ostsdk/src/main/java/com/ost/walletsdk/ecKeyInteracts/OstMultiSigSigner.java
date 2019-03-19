@@ -14,12 +14,14 @@ import com.ost.walletsdk.ecKeyInteracts.structs.BaseDeviceManagerOperationStruct
 import com.ost.walletsdk.ecKeyInteracts.structs.OstSignWithMnemonicsStruct;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedAddSessionStruct;
+import com.ost.walletsdk.ecKeyInteracts.structs.SignedLogoutSessionsStruct;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedRevokeDeviceStruct;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstDeviceManager;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.utils.EIP712;
 import com.ost.walletsdk.utils.GnosisSafe;
+import com.ost.walletsdk.utils.TokenHolder;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 
@@ -66,6 +68,49 @@ public class OstMultiSigSigner {
                 OstError ostError = new OstError("km_gss_as_6", ErrorCode.INVALID_SESSION_ADDRESS);
                 throw ostError;
             }
+
+            //Sign the data.
+            signData(struct, ikm);
+
+        } catch (Throwable throwable) {
+            throw throwable;
+        } finally {
+            ikm = null;
+        }
+
+        //All good
+        return struct;
+    }
+
+    public SignedLogoutSessionsStruct logoutAllSessions() {
+        OstUser user = OstUser.getById(mUserId);
+        SignedLogoutSessionsStruct struct = new SignedLogoutSessionsStruct();
+
+        //Set Executable Data
+        String executableData = new TokenHolder().getLogoutExecutableData();
+        struct.setCallData(executableData);
+
+        String rawCallData = new TokenHolder().getLogoutData();
+        struct.setRawCallData(rawCallData);
+
+        //Special Case: Change the To Address. TokenHolder is the to address in this case.
+        struct.setTokenHolderAddress(user.getTokenHolderAddress());
+
+        //Set Common Data.
+        setCommonData(struct);
+
+        //Compute Message Hash
+        try {
+            String messageHash = new EIP712(struct.getTypedData()).toEIP712TransactionHash();
+            struct.setMessageHash(messageHash);
+        } catch (Exception e) {
+            OstError ostError = new OstError("km_gss_los_5", ErrorCode.FAILED_TO_GENERATE_MESSAGE_HASH);
+            throw ostError;
+        }
+
+        InternalKeyManager ikm;
+        try {
+            ikm = new InternalKeyManager(mUserId);
 
             //Sign the data.
             signData(struct, ikm);

@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.network.OstApiError.ApiErrorData;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -26,6 +28,8 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 
+import java.util.List;
+
 import ost.com.sampleostsdkapplication.R;
 import ost.com.sampleostsdkapplication.UsersListActivity;
 
@@ -35,12 +39,14 @@ import ost.com.sampleostsdkapplication.UsersListActivity;
 public class BaseFragment extends Fragment implements View.OnClickListener, OstWorkFlowCallback {
 
     private static final String TAG = "OstBaseFragment";
-
-    public MaterialButton getNextButton() {
+    MaterialButton getNextButton() {
         return nextButton;
     }
+    MaterialButton getCancelButton() {
+        return cancelButton;
+    }
 
-
+    private MaterialButton cancelButton;
     private MaterialButton nextButton;
     private RelativeLayout mActionButtons;
     private FrameLayout mActionLoaders;
@@ -56,9 +62,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         mView = inflater.inflate(R.layout.common_base_fragment, container, false);
         TextView pageTitle = mView.findViewById(R.id.page_title);
         pageTitle.setText(getPageTitle());
-        MaterialButton cancelButton = mView.findViewById(R.id.cancel_button);
+        cancelButton = mView.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(this);
-
         nextButton = mView.findViewById(R.id.next_button);
         nextButton.setOnClickListener(this);
         mActionButtons = mView.findViewById(R.id.action_buttons);
@@ -205,11 +210,36 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
 
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        StringBuilder errorStringBuilder = new StringBuilder();
+
         String errorString = String.format("Work Flow %s Error: %s", ostWorkflowContext.getWorkflow_type(), ostError.getMessage());
         Toast.makeText(OstSdk.getContext(), errorString, Toast.LENGTH_SHORT).show();
 
+        errorStringBuilder.append(errorString);
+
+        if (ostError.isApiError()) {
+            OstApiError ostApiError = ((OstApiError)ostError);
+
+            String apiErrorCodeMsg = String.format(
+                    "\n%s: %s",
+                    ostApiError.getErrCode(),
+                    ostApiError.getErrMsg());
+
+            errorStringBuilder.append(apiErrorCodeMsg);
+
+            List<ApiErrorData> apiErrorDataList = ostApiError.getErrorData();
+            for (ApiErrorData apiErrorData : apiErrorDataList) {
+                String errorData = String.format(
+                        "\n%s: %s",
+                        apiErrorData.getParameter(),
+                        apiErrorData.getMsg());
+
+                errorStringBuilder.append(errorData);
+            }
+        }
+
         Log.d("Workflow", "Inside workflow interrupt");
-        addWorkflowTaskText(String.format("%s interrupted at: ", errorString));
+        addWorkflowTaskText(String.format("%s interrupted at: ", errorStringBuilder.toString() ));
         hideLoader();
     }
 

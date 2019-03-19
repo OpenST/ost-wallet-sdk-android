@@ -26,6 +26,13 @@ public class LogInUser {
         }
     }
 
+    public LogInUser(String userId, String appId, String tokenId, String userPinSalt) {
+        this.id = appId;
+        this.ostUserId = userId;
+        this.tokenId = tokenId;
+        this.passphrasePrefix = userPinSalt;
+    }
+
     public String getId() {
         return id;
     }

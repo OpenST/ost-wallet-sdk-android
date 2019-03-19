@@ -45,6 +45,7 @@ public class OstResetPin extends OstBaseWorkFlow {
 
     private String mNewRecoveryOwnerAddress;
     private OstResetPin.STATES mCurrentState = OstResetPin.STATES.INITIAL;
+    private OstRecoveryOwner mOstRecoveryOwner;
 
 
     public OstResetPin(String userId, UserPassphrase currentPassphrase, UserPassphrase newPassphrase, OstWorkFlowCallback workFlowCallback) {
@@ -124,7 +125,8 @@ public class OstResetPin extends OstBaseWorkFlow {
                         return postErrorInterrupt("wf_rp_pr_6", OstErrors.ErrorCode.POST_RESET_RECOVERY_API_FAILED);
                     }
 
-                    postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));
+                    mOstRecoveryOwner = ostRecoveryOwner;
+                    postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(mOstRecoveryOwner, OstSdk.RECOVERY_OWNER));
 
                 case POLLING:
 
@@ -138,7 +140,9 @@ public class OstResetPin extends OstBaseWorkFlow {
                     }
 
                     Log.i(TAG, "Response received for RecoveryOwner");
-                    postFlowComplete();
+                    postFlowComplete(
+                            new OstContextEntity(mOstRecoveryOwner, OstSdk.RECOVERY_OWNER)
+                    );
                     break;
                 case CANCELLED:
                     Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));

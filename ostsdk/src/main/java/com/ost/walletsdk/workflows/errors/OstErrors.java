@@ -200,6 +200,10 @@ public class OstErrors {
             case INVALID_REQUEST_TIMEOUT_DURATION:
                 return "Invalid configuration 'REQUEST_TIMEOUT_DURATION'. It must be Integer greater than zero.";
 
+            case LOGOUT_ALL_SESSIONS_FAILED:
+                return "Logout request of all sessions failed";
+            case TOKEN_HOLDER_API_FAILED:
+                return "Token holder get api returned failed response";
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -259,6 +263,8 @@ public class OstErrors {
         UNKNOWN_RULE_NAME,
         UNKNOWN_DATA_DEFINITION,
         NO_PENDING_RECOVERY,
+        LOGOUT_ALL_SESSIONS_FAILED,
+        TOKEN_HOLDER_API_FAILED,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,
@@ -299,6 +305,6 @@ public class OstErrors {
         DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY,
         KIT_API_ERROR,
-        CONFIG_READ_FAILED,
+        CONFIG_READ_FAILED,;
     }
 }
