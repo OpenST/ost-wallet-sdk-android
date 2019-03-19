@@ -100,7 +100,7 @@ public class OstDevice extends OstBaseEntity {
     public static OstDevice init(String address, String apiAddress, String userId) {
         OstDevice ostDevice = OstDevice.getById(address);
         if (null != ostDevice) {
-            Log.e(TAG, String.format("OstDevice with address %s already exist", address));
+            Log.i(TAG, String.format("OstDevice with address %s already exist", address));
             return ostDevice;
         }
 
