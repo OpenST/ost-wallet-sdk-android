@@ -58,6 +58,7 @@ public class LogoutFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         OstSdk.logoutAllSessions(mUserId, this);
+        flowStarted();
     }
 
     @Override

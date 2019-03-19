@@ -44,6 +44,11 @@ public class OstLogoutAllSessions extends OstBaseUserAuthenticatorWorkflow {
     }
 
     @Override
+    protected boolean shouldAskForAuthentication() {
+        return false;
+    }
+
+    @Override
     AsyncStatus performOnAuthenticated() {
 
         //Sync device Manager to get update nonce for multi-sig operation

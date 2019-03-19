@@ -61,6 +61,7 @@ public class AbortDeviceRecoveryFragment extends BaseFragment {
         String currentPin = mEditTextPassphrase.getText().toString();
         UserPassphrase passphrase = new UserPassphrase(mUserId, currentPin.getBytes(UTF_8), mAppSalt);
         OstSdk.revokeRecoverDevice(mUserId, passphrase, this);
+        flowStarted();
     }
 
     /**

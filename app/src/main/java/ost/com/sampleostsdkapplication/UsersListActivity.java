@@ -46,7 +46,6 @@ public class UsersListActivity extends MappyBaseActivity implements
 
     private static final String TAG = "OstUsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
-    private UserDetailsFragment userDetailsFragment;
     private SetUpUserFragment userSetupFragment;
     private PaperWalletFragment paperWalletFragment;
     private ResetPinFragment resetPinFragment;
@@ -180,7 +179,7 @@ public class UsersListActivity extends MappyBaseActivity implements
 
     private void loadUserDetailsFragment(String tokenId, String userId) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        userDetailsFragment = UserDetailsFragment.newInstance(tokenId, userId);
+        UserDetailsFragment userDetailsFragment = UserDetailsFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, userDetailsFragment, "user_details");
         transaction.addToBackStack("users_list");
