@@ -66,7 +66,8 @@ public class PaperWalletFragment extends BaseFragment {
             OstSdk.authorizeCurrentDeviceWithMnemonics(mUserId, mnemonicsText.getBytes(UTF_8), this);
         } else {
             showLoader();
-            OstSdk.getPaperWallet(mUserId, this);
+            OstSdk.getDeviceMnemonics(mUserId, this);
+            flowStarted();
         }
         flowStarted();
     }

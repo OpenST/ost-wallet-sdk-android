@@ -92,6 +92,13 @@ public class OstSdk {
         return INSTANCE;
     }
 
+    /**
+     * Call this method once you application launches.
+     * To perform config initialization and to run migrations if any.
+     *
+     * @param context Application context
+     * @param baseUrl base Url of kit
+     */
     public static void initialize(Context context, String baseUrl) {
         if (INSTANCE == null) {
             synchronized (OstSdk.class) {
@@ -133,7 +140,10 @@ public class OstSdk {
      * @param callback - A workflow callback handler.
      *
      */
-    public static void activateUser(UserPassphrase passphrase, long expiresAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback callback) {
+    public static void activateUser(UserPassphrase passphrase,
+                                    long expiresAfterInSecs,
+                                    String spendingLimitInWei,
+                                    OstWorkFlowCallback callback) {
         final OstActivateUser ostActivateUser = new OstActivateUser(passphrase, expiresAfterInSecs, spendingLimitInWei, callback);
         ostActivateUser.perform();
     }
@@ -143,32 +153,93 @@ public class OstSdk {
         ostRegisterDevice.perform();
     }
 
-    public static void setupDevice(String userId, String tokenId, OstWorkFlowCallback workFlowCallback) {
+    /**
+     * To ensures that the current device is registered before communicating with OST KIT server.
+     * Call this method every time app launches.
+     *
+     * @param userId           user Id
+     * @param tokenId          token Id
+     * @param workFlowCallback A workflow callback handler.
+     */
+    public static void setupDevice(String userId,
+                                   String tokenId,
+                                   OstWorkFlowCallback workFlowCallback) {
         registerDevice(userId, tokenId, false, workFlowCallback);
     }
 
-    public static void setupDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback workFlowCallback) {
+
+    /**
+     * To ensures that the current device is registered before communicating with OST KIT server.
+     * Call this method every time app launches.
+     *
+     * @param userId user Id
+     * @param tokenId token Id
+     * @param forceSync pass true if force sync of all the entities is needed.
+     * @param workFlowCallback A workflow callback handler.
+     */
+    public static void setupDevice(String userId,
+                                   String tokenId,
+                                   boolean forceSync,
+                                   OstWorkFlowCallback workFlowCallback) {
         registerDevice(userId, tokenId, forceSync, workFlowCallback);
     }
 
-    public static void performQRAction(String userId, String data, OstWorkFlowCallback workFlowCallback) throws JSONException {
+    /**
+     * To perform workflow operations by reading QR data.
+     * Method expects string retrieved from QR scan to be passed in data parameter.
+     * performQRAction can perform Execute Rule Transactions, Add Device and Revoke Device.
+     *
+     * @param userId           user Id
+     * @param data             data string retrieved  from QR scan
+     * @param workFlowCallback A workflow callback handler
+     * @throws JSONException Exception while parsing data string into JSON object
+     */
+    public static void performQRAction(String userId,
+                                       String data,
+                                       OstWorkFlowCallback workFlowCallback) throws JSONException {
         Log.i(TAG, String.format("Scanned text: %s", data));
         JSONObject payload = new JSONObject(data);
         final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
         ostPerform.perform();
     }
 
-    public static void addSession(String userId, String spendingLimitInWei, long expireAfterInSecs, OstWorkFlowCallback workFlowCallback) {
+    /**
+     * To do any rule execution transaction sessions needs to be added.
+     * Session is added to the user's current device with provided spec
+     * like spendingLimit and expiry time in secs.
+     * Session added are specific to device and can't be used from another device.
+     *
+     * @param userId             user id
+     * @param spendingLimitInWei spending limit of session in Wei
+     * @param expireAfterInSecs  time delta in sec from current time
+     * @param workFlowCallback   A workflow callback handler
+     */
+    public static void addSession(String userId,
+                                  String spendingLimitInWei,
+                                  long expireAfterInSecs,
+                                  OstWorkFlowCallback workFlowCallback) {
         final OstAddSession ostAddSession = new OstAddSession(userId, spendingLimitInWei, expireAfterInSecs, workFlowCallback);
         ostAddSession.perform();
     }
 
-    public static void getPaperWallet(String userId, OstWorkFlowCallback workFlowCallback) {
+    /**
+     * It return 12 words mnemonics of the current device key in flowComplete callback.
+     * In callback OstContextActivity should be used to get mnemonics as byte array.
+     *
+     * @param userId           user Id
+     * @param workFlowCallback A workflow callback handler.
+     */
+    public static void getDeviceMnemonics(String userId, OstWorkFlowCallback workFlowCallback) {
         final OstGetPaperWallet ostGetPaperWallet = new OstGetPaperWallet(userId, workFlowCallback);
         ostGetPaperWallet.perform();
     }
 
 
+    /**
+     * For Documentation refer
+     * {@link #executeTransaction(String, List, List, String, Map, OstWorkFlowCallback)}
+     *  Only difference is meta is passed as null
+     */
     public static void executeTransaction(String userId,
                                           List<String> tokenHolderAddresses,
                                           List<String> amounts,
@@ -220,6 +291,7 @@ public class OstSdk {
         ostExecuteTransaction.perform();
     }
 
+
     /**
      * Authorizes current device using mnemonics (12 words) of already authorized device.
      * IMPORTANT: The provided byte[] of mnemonics will be replaced with random bytes after user.
@@ -228,10 +300,13 @@ public class OstSdk {
      * @param mnemonics - UTF-8 encoded byte[] of mnemonics of the authorized device. The device must belong to the user.
      * @param ostWorkFlowCallback - Workflow callback interact.
      */
-    public static void authorizeCurrentDeviceWithMnemonics(String userId, byte[] mnemonics, OstWorkFlowCallback ostWorkFlowCallback) {
+    public static void authorizeCurrentDeviceWithMnemonics(String userId,
+                                                           byte[] mnemonics,
+                                                           OstWorkFlowCallback ostWorkFlowCallback) {
         OstAddCurrentDeviceWithMnemonics ostAddCurrentDeviceWithMnemonics = new OstAddCurrentDeviceWithMnemonics(userId, mnemonics, ostWorkFlowCallback);
         ostAddCurrentDeviceWithMnemonics.perform();
     }
+
 
     /**
      * Generates QR code, providing data of device for the given user Id
@@ -283,9 +358,9 @@ public class OstSdk {
      * @param workFlowCallback  Work flow interact
      */
     public static void resetPin(String userId,
-                                               UserPassphrase currentPassphrase,
-                                               UserPassphrase newPassphrase,
-                                               OstWorkFlowCallback workFlowCallback) {
+                                UserPassphrase currentPassphrase,
+                                UserPassphrase newPassphrase,
+                                OstWorkFlowCallback workFlowCallback) {
         final OstResetPin ostResetPin = new OstResetPin(userId,
                 currentPassphrase,
                 newPassphrase,
@@ -313,13 +388,13 @@ public class OstSdk {
     }
 
     /**
-     * If there are any ongoing initiate recovery in process, It will abort that recovery process
+     * If there are any on-going initiate recovery in process, It will abort that recovery process
      *
      * @param userId           userId of recovery user
      * @param passphrase       A simple struct to transport pin information via app and Sdk.
      * @param workFlowCallback Workflow callback Interact
      */
-    public static void revokeRecoverDevice(String userId,
+    public static void abortDeviceRecovery(String userId,
                                            UserPassphrase passphrase,
                                            OstWorkFlowCallback workFlowCallback) {
         final OstAbortDeviceRecovery ostAbortDeviceRecovery = new OstAbortDeviceRecovery(userId,

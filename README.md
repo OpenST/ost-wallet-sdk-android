@@ -113,14 +113,14 @@ Through QR, Add device and transaction operations can be performed.<br/><br/>
 OstSdk.performQRAction(userId, data, new OstWorkFlowCallbackImpl())
 ```
 
-### getPaperWallet
+### getDeviceMnemonics
 To get Paper wallet( 12 words used to generate wallet) of the current device.<br/>
 Paper wallet will be used to add new device incase device is lost<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void getPaperWallet(String userId, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.getPaperWallet(String userId, new OstWorkFlowCallbackImpl())
+OstSdk.getDeviceMnemonics(String userId, new OstWorkFlowCallbackImpl())
 ```
 
 ### executeTransaction
