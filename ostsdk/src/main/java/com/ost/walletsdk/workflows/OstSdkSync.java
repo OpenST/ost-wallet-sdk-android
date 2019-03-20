@@ -40,7 +40,7 @@ class OstSdkSync {
 
     private static final String TAG = "OstSdkSync";
 
-    private static final long WAIT_TIME = 20;
+    private static final long WAIT_TIME = 120;
 
     private final String mUserId;
     private final SYNC_ENTITY[] mSyncParams;

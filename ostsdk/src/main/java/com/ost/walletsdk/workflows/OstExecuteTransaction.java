@@ -19,6 +19,7 @@ import com.ost.walletsdk.ecKeyInteracts.OstTransactionSigner;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedTransactionStruct;
 import com.ost.walletsdk.models.entities.OstTransaction;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.utils.CommonUtils;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -72,8 +73,14 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
         Map<String, Object> map = buildTransactionRequest(signedTransactionStruct);
 
         Log.i(TAG, "post transaction execute api");
-        String entityId = postTransactionApi(map);
-        if (null == entityId) {
+        String entityId = null;
+        try {
+            entityId = postTransactionApi(map);
+        } catch (OstApiError ostApiError) {
+            new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.SESSION).perform();
+            throw ostApiError;
+        }
+        if ( null == entityId ) {
             return postErrorInterrupt("wf_et_pr_4", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
         }
 

@@ -67,7 +67,6 @@ public class PaperWalletFragment extends BaseFragment {
         } else {
             showLoader();
             OstSdk.getDeviceMnemonics(mUserId, this);
-            flowStarted();
         }
         flowStarted();
     }

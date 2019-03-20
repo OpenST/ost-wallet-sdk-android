@@ -12,6 +12,8 @@ package com.ost.walletsdk.network;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstApiSigner;
+import com.ost.walletsdk.models.Impls.OstModelFactory;
+import com.ost.walletsdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 
@@ -147,7 +149,18 @@ public class OstApiClient {
 
     public JSONObject getSession(String address) throws IOException {
         Map<String, Object> requestMap = getPrerequisiteMap();
-        return mOstHttpRequestClient.get(String.format("/users/%s/sessions/%s", mUserId, address), requestMap);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject =  mOstHttpRequestClient.get(String.format("/users/%s/sessions/%s", mUserId, address), requestMap);
+        } catch (OstApiError ostApiError) {
+            if (OstApiError.ApiErrorCodes.NOT_FOUND.equalsIgnoreCase(ostApiError.getErrCode())) {
+                // wipe session key which is not available in backend
+                OstModelFactory.getSessionModel().deleteEntity(address);
+                new OstSessionKeyModelRepository().deleteSessionKey(address);
+                throw ostApiError;
+            }
+        }
+        return jsonObject;
     }
 
     public JSONObject getDeviceManager() throws IOException {

@@ -68,4 +68,15 @@ public class OstSessionKeyModelRepository implements OstSessionKeyModel {
         insertSessionKey(ostSessionKey);
         return ostSessionKey;
     }
+
+    @Override
+    public Future<AsyncStatus> deleteSessionKey(String key) {
+        return DispatchAsync.dispatch(new DispatchAsync.Executor() {
+            @Override
+            public AsyncStatus call() {
+                getModel().delete(key);
+                return new AsyncStatus(true);
+            }
+        });
+    }
 }

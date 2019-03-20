@@ -24,6 +24,8 @@ public class OstWorkflowContext {
         ADD_DEVICE_WITH_MNEMONICS,
         PIN_RESET,
         RECOVER_DEVICE,
+        ABORT_RECOVER_DEVICE,
+        LOGOUT_ALL_SESSIONS;
     }
     private WORKFLOW_TYPE workflow_type;
 

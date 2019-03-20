@@ -135,4 +135,9 @@ public class OstLogoutAllSessions extends OstBaseUserAuthenticatorWorkflow {
                 .setNonce(logoutSessionsStruct.getNonce())
                 .build();
     }
+
+    @Override
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS;
+    }
 }

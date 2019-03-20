@@ -169,4 +169,9 @@ public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
         map.put("signer", dataHolder.getSignerAddress());
         return map;
     }
+
+    @Override
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.ABORT_RECOVER_DEVICE;
+    }
 }

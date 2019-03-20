@@ -257,10 +257,11 @@ public class OstDevice extends OstBaseEntity {
         if ( TextUtils.isEmpty(status) ) {
             return false;
         }
-        return OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.AUTHORIZING.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status);
+        return CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
+                || CONST_STATUS.REGISTERED.equalsIgnoreCase(status)
+                || CONST_STATUS.AUTHORIZING.equalsIgnoreCase(status)
+                || CONST_STATUS.RECOVERING.equalsIgnoreCase(status)
+                || CONST_STATUS.REVOKING.equalsIgnoreCase(status);
     }
 
     public boolean isAuthorized() {
