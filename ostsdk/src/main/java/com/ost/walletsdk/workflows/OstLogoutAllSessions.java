@@ -16,6 +16,8 @@ import android.util.Log;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstMultiSigSigner;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedLogoutSessionsStruct;
+import com.ost.walletsdk.models.Impls.OstModelFactory;
+import com.ost.walletsdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.walletsdk.models.entities.OstDeviceManager;
 import com.ost.walletsdk.models.entities.OstTokenHolder;
 import com.ost.walletsdk.utils.AsyncStatus;
@@ -70,6 +72,9 @@ public class OstLogoutAllSessions extends OstBaseUserAuthenticatorWorkflow {
                 new OstContextEntity(mOstUser.getTokenHolder(), OstSdk.TOKEN_HOLDER)
         );
 
+        Log.i(TAG, "wiping all local sessions");
+        wipeAllLocalSessions();
+
         Log.i(TAG, "Increment Nonce");
         OstDeviceManager manager = OstDeviceManager.getById(mOstUser.getDeviceManagerAddress());
         if (null != manager) manager.incrementNonce();
@@ -82,6 +87,11 @@ public class OstLogoutAllSessions extends OstBaseUserAuthenticatorWorkflow {
         );
 
         return super.performOnAuthenticated();
+    }
+
+    private void wipeAllLocalSessions() {
+        OstModelFactory.getSessionModel().deleteAllEntities();
+        new OstSessionKeyModelRepository().deleteAllSessionKeys();
     }
 
     private void waitForStatusUpdate() {
