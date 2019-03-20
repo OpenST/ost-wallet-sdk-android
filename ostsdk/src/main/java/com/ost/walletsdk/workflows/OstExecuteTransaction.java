@@ -259,7 +259,7 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
         public void validateDataParams() {
             String tokenId = dataObject.optString(OstConstants.QR_TOKEN_ID);
             if (!OstUser.getById(userId).getTokenId().equalsIgnoreCase(tokenId)) {
-                throw new OstError("wf_et_pr_1", OstErrors.ErrorCode.DIFFERENT_ECONOMY);
+                throw new OstError("wf_et_pr_1", OstErrors.ErrorCode.INVALID_TOKEN_ID);
             }
         }
 

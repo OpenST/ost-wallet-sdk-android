@@ -79,7 +79,7 @@ public class OstErrors {
             case RULE_NOT_FOUND:
                 return "Rule not found";
 
-            case DIFFERENT_ECONOMY:
+            case INVALID_TOKEN_ID:
                 return "Token Id is different";
 
             case USER_NOT_FOUND:
@@ -240,7 +240,7 @@ public class OstErrors {
         NO_SESSION_FOUND,
         TRANSACTION_API_FAILED,
         RULE_NOT_FOUND,
-        DIFFERENT_ECONOMY,
+        INVALID_TOKEN_ID,
         USER_NOT_FOUND,
         CURRENT_DEVICE_NOT_FOUND,
         POLLING_API_FAILED,
