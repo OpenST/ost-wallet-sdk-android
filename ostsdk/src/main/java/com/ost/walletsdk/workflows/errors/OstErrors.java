@@ -20,7 +20,7 @@ public class OstErrors {
     public static String getMessage(ErrorCode code) {
         switch (code) {
             case INVALID_USER_ID: return "Unable to recognize the user id. Please inspect for what is being sent, rectify and re-submit.";
-            case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be black.";
+            case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
             case KIT_API_ERROR: return "Kit Api returned error.";
             case GET_USER_API_FAILED:
                 return "Failed to fetch user information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
@@ -78,7 +78,7 @@ public class OstErrors {
                 return "Transaction api failed. Either OST server is unavailable temporarily OR The API request object sent cannot be executed. Please re-try and if the problem persists contact support@ost.com .";
 
             case RULE_NOT_FOUND:
-                return "Unable to recognize the Rule. Please inspect a valid rule name is passed and re-submit the request. ";
+                return "Unable to recognize the Rule. Please inspect a valid rule name that exists in your economy is passed and its not null.";
 
             case DIFFERENT_ECONOMY:
                 return "You are not authorized to access the data of the economy you are trying to fetch. Inspect if a correct value is being sent in token Id field and re-submit the request.";
@@ -96,7 +96,7 @@ public class OstErrors {
                 return "Unable to recognize the API request object sent and so cannot be executed.";
 
             case INVALID_QR_DEVICE_OPERATION_DATA:
-                return "The QR code for adding a new device is not well formed. To know the QR code data formation details based on type of operations please visit https://dev.ost.com/platform ";
+                return "The QR code for adding a new device is not well formed. To know the data definition for QR code based on type of operations please visit https://dev.ost.com/platform ";
 
             case INVALID_ADD_DEVICE_ADDRESS:
                 return "Invalid add device address. Please ensure the input is well formed or visit https://dev.ost.com/platform/docs/api for details on accepted datatypes for API parameters.";
@@ -116,7 +116,7 @@ public class OstErrors {
                 return "The 12 word passphrase you provided is incorrect. ";
 
             case INVALID_QR_TRANSACTION_DATA:
-                return "The QR code for executing a transaction is not well formed. To know the QR code data formation details based on type of operations please visit https://dev.ost.com/platform";
+                return "The QR code for executing a transaction is not well formed. To know the data definition for QR code based on type of operations please visit https://dev.ost.com/platform ";
 
             case INVALID_USER_PASSPHRASE:
                 return "The 6 digit PIN you entered is not correct.";
@@ -126,65 +126,66 @@ public class OstErrors {
 
 
             case MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED:
-                return "Max pin ask limit reached";
+                return "The maximum number of 'authenticating with PIN' attempts has been reached. Please try again a bit later.";
 
-            case RECOVERY_PASSPHRASE_OWNER_NOT_SET: return "Recovery owner is not set for this user";
+            case RECOVERY_PASSPHRASE_OWNER_NOT_SET: return "Recovery owner is not set for this user. This address is set during user activation. Please verify the user has been successfully activated.";
 
-            case RECOVERY_KEY_GENERATION_FAILED: return "Failed to generate Recovery key";
+            case RECOVERY_KEY_GENERATION_FAILED: return "Failed to generate Recovery key. Inspect if a correct input values required are being sent and re-submit the request. ";
 
             case POST_RESET_RECOVERY_API_FAILED:
-                return "Reset Recovery api failed";
+                return "Reset Recovery api failed. Either OST server is unavailable temporarily OR The API request object sent cannot be executed. Please inspect the input being sent and re-try. If the problem persists contact support@ost.com .";
 
-            case POST_RECOVER_DEVICE_API_FAILED: return "Recover Device API failed";
+            case POST_RECOVER_DEVICE_API_FAILED: return "Recover Device API failed. Either OST server is unavailable temporarily OR The API request object sent cannot be executed. Please inspect the input being sent and re-try. If the problem persists contact support@ost.com .";
 
-            case POST_ABORT_RECOVER_DEVICE_API_FAILED: return "Abort Recover Device API failed";
+            case POST_ABORT_RECOVER_DEVICE_API_FAILED: return "Abort Recover Device API failed. Either OST server is unavailable temporarily OR The API request object sent cannot be executed. Please inspect the input being sent and re-try. If the problem persists contact support@ost.com .";
 
-            case UNCAUGHT_EXCEPTION_HANDELED: return "Uncaught exception handeled";
+            case UNCAUGHT_EXCEPTION_HANDELED: return "Uncaught exception has been handeled. You can choose to report this exception to the OST team for fixing it in future releases.";
 
             case INSUFFICIENT_DATA: return "The device does not have sufficient data to perform this action.";
 
             case DEPRECATED: return "The method has been deprecated";
 
-            case SESSION_KEY_GENERATION_FAILED: return "Failed to create new session key";
+            case SESSION_KEY_GENERATION_FAILED: return "Failed to create new session key. Inspect if a correct input values required are being sent and re-submit the request.";
 
-            case FAILED_TO_GENERATE_MESSAGE_HASH: return "Failed to generate message hash needed to complete the action";
+            case FAILED_TO_GENERATE_MESSAGE_HASH: return "Failed to generate message hash needed to complete the action. Inspect if a correct input values required are being sent and re-submit the request.";
 
-            case INVALID_SESSION_ADDRESS: return "Invalid session address";
+            case INVALID_SESSION_ADDRESS: return "Unable to recognize the session address. Inspect if a correct value is being sent and its not null. ";
 
-            case FAILED_TO_SIGN_DATA: return "Failed to sign data.";
+            case FAILED_TO_SIGN_DATA: return "Unable to sign data. Visit https://dev.ost.com/platform/docs/sdk for detailed SDK references. Please ensure the input is well formed and re-submit the request.";
 
-            case DEVICE_CAN_NOT_BE_AUTHORIZED: return "Current device can not be authorized. Only devices with status 'Registered' can be authorized.";
+            case DEVICE_CAN_NOT_BE_AUTHORIZED: return "Unable to authorize this device. Please ensure the device is 'Registered' for this user with OST platform. Only a registered device can be authorized.";
 
-            case FAILED_TO_GENERATE_ETH_KEY: return "Failed to generate ethereum key.";
+            case FAILED_TO_GENERATE_ETH_KEY: return "Failed to generate API signer key for this device. This can be intermittent issue, please re-start the device setup workflow. If Problem persists contact support@ost.com .";
 
-            case INVALID_PASSPHRASE_PREFIX: return "Invalid Passphrase prefix. Passphrase prefix should be atleast " + OstConstants.RECOVERY_PHRASE_PREFIX_MIN_LENGTH + " long";
+            case INVALID_PASSPHRASE_PREFIX: return "Unable to recognize the Passphrase prefix. Passphrase prefix should be atleast " + OstConstants.RECOVERY_PHRASE_PREFIX_MIN_LENGTH + " long. Please ensure Passphrase prefix corresponding to the same user is being sent.";
 
-            case USER_ACTIVATING: return "User is already activating.";
+            case USER_ACTIVATING: return "User activation flow is already in progress. Please check the status a bit later";
 
             case USER_PASSPHRASE_VALIDATION_LOCKED: return "Can not validate user passphrase because of too many wrong attempts.";
 
             case DEVICE_CAN_NOT_BE_REVOKED:
-                return "Device can not be revoked";
+                return "Cannot complete the revoke device operation. Only an authorized device can be revoked. Please ensure you are trying to revoke a valid device and re-submit the request.";
 
             case EIP1077_FAILED:
                 return "EIP1077 failed";
 
             case UNKNOWN_RULE_NAME:
-                return "Unknown rule name";
+                return "Unable to recognize the Rule. Please inspect a valid rule name is passed and re-submit the request. ";
 
             case PRICE_POINTS_API_FAILED:
-                return "Price points api failed";
+                return "Price points api failed. Either OST server is unavailable temporarily OR The API request object sent cannot be executed. Please re-try a bit later.";
 
-            case WORKFLOW_CANCELLED:return "Workflow cancelled";
-            case UNKNOWN_DATA_DEFINITION: return "The QR code does not contain valid data definition";
+            case WORKFLOW_CANCELLED:return "Workflow got cancelled, possibly because one or more input parameters require a different type of information.";
+                
+            case UNKNOWN_DATA_DEFINITION: return "The QR code does not contain valid data definition. To know the data definition for QR code based on type of operations please visit https://dev.ost.com/platform";
 
             case DEVICE_ALREADY_REVOKED:
-                return "Device is already revoked";
+                return "Device is already in revoked state.";
 
             case INVALID_REVOKE_DEVICE_ADDRESS:
-                return "Invalid revoke device address";
+                return "Unable to recoznize revoke device address. Please ensure you are sending a null value and re-submit the request.";
             case NO_PENDING_RECOVERY:
-                return "There is no pending device recovery";
+                return "Could not find any pending device recovery request. For details on how to check the status of the recovery please vist https://dev.ost.com/platform/docs/sdk ";
             case CONFIG_READ_FAILED:
                 return "Failed to read config file. Please place the ost-sdk config file in main/assets folder.";
 
@@ -195,9 +196,9 @@ public class OstErrors {
             case INVALID_SESSION_BUFFER_TIME:
                 return "Invalid configuration 'SESSION_BUFFER_TIME'. It must be long greater than or equal to zero";
             case INVALID_PRICE_POINT_TOKEN_SYMBOL:
-                return "Invalid configuration 'PRICE_POINT_TOKEN_SYMBOL'.";
+                return "Unable to recognize 'PRICE_POINT_TOKEN_SYMBOL'. For details on how supported token symbols please vist https://dev.ost.com/platform/docs/api";
             case INVALID_PRICE_POINT_CURRENCY_SYMBOL:
-                return "Invalid configuration 'PRICE_POINT_CURRENCY_SYMBOL'.";
+                return "Unable to recognize 'PRICE_POINT_CURRENCY_SYMBOL'. For details on how supported currencies please vist https://dev.ost.com/platform/docs/api ";
             case INVALID_REQUEST_TIMEOUT_DURATION:
                 return "Invalid configuration 'REQUEST_TIMEOUT_DURATION'. It must be Integer greater than zero.";
 
