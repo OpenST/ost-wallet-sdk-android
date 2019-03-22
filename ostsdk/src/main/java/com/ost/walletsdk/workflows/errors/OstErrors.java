@@ -81,7 +81,7 @@ public class OstErrors {
                 return "Unable to recognize the Rule. Please inspect a valid rule name that exists in your economy is passed and its not null.";
 
             case DIFFERENT_ECONOMY:
-                return "You are not authorized to access the data of the economy you are trying to fetch. Inspect if a correct value is being sent in token Id field and re-submit the request.";
+                return "The token id sent in Transaction QR code is not matching with the current user's token id. Rectify the value is being sent in token Id field and re-submit the request.";
 
             case USER_NOT_FOUND:
                 return "Unable to find this user in your economy. Inspect if a correct value is being sent in user Id field and re-submit the request. ";
