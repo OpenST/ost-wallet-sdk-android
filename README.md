@@ -153,19 +153,6 @@ Use this methods to generate QR code of current device to be added from authoriz
 ```java
 OstSdk.getAddDeviceQRCode(userId)
 ```
-### startPolling
-To poll provided entity.<br/>
-Polling can be used when any entity is in transition status and desired status update is needed<br/><br/>
-&nbsp; parameter userId: Ost User id<br/>
-&nbsp; parameter entityId: entity id to be polled<br/>
-&nbsp; parameter entityType: entity type to be polled<br/>
-&nbsp; parameter successStatus: success status of transition<br/>
-&nbsp; parameter failureStatus: failure status of transition<br/>
-&nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void startPolling(String userId, String entityId, String entityType, String successStatus, String failureStatus, OstWorkFlowCallback workFlowCallback)**<br/>
-```java
-OstSdk.startPolling(userId, entityId, entityType, successStatus, failureStatus, new OstWorkFlowCallbackImpl())
-```
 
 ### resetPin
 To update current Pin with new Pin.<br/><br/>
@@ -178,6 +165,37 @@ To update current Pin with new Pin.<br/><br/>
 ```java
 OstSdk.resetPin(userId, appSalt, currentPin, newPin, new OstWorkFlowCallbackImpl())
 ```
+
+### initiateRecoverDevice
+To authorize the current device by revoking provided device address.<br/><br/>
+&nbsp; parameter userId                 user id of recovery user<br/>
+&nbsp; parameter passphrase             Struct of current passPhrase<br/>
+&nbsp; parameter deviceAddressToRecover Address of device to recover<br/>
+&nbsp; parameter workFlowCallback       Work flow interact<br/>
+&nbsp; **void initiateRecoverDevice(String userId, UserPassphrase passphrase, String deviceAddressToRecover, OstWorkFlowCallback workFlowCallback)**<br/>
+```java
+OstSdk.initiateRecoverDevice(userId, passphrase, deviceAddressToRecover, new OstWorkFlowCallbackImpl())
+```
+
+### abortRecoverDevice
+If there are any ongoing initiate recovery in process, It will abort that recovery process<br/><br/>
+&nbsp; parameter userId           userId of recovery user<br/>
+&nbsp; parameter passphrase       A simple struct to transport pin information via app and Sdk.<br/>
+&nbsp; parameter workFlowCallback Workflow callback Interact <br/>
+&nbsp; **void abortRecoverDevice(String userId, UserPassphrase passphrase, OstWorkFlowCallback workFlowCallback)**<br/>
+```java
+OstSdk.abortRecoverDevice(userId, passphrase, new OstWorkFlowCallbackImpl())
+```
+
+### logoutAllSessions
+It will revoke all the sessions associated with provided userId<br/><br/>
+&nbsp; parameter userId           user Id whose sessions to revoke<br/>
+&nbsp; parameter workFlowCallback Workflow callback interact<br/>
+&nbsp; **void logoutAllSessions(String userId, OstWorkFlowCallback workFlowCallback)**
+```java
+OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
+```
+
 
 ## WorkFlow Callbacks
 &nbsp; Callbacks to be implemented by application before calling any of the above WorkFlows.
