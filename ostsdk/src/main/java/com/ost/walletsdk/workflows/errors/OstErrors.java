@@ -155,7 +155,7 @@ public class OstErrors {
 
             case DEVICE_CAN_NOT_BE_AUTHORIZED: return "Unable to authorize this device. Please ensure the device is 'Registered' for this user with OST platform. Only a registered device can be authorized.";
 
-            case FAILED_TO_GENERATE_ETH_KEY: return "Failed to generate API signer key for this device. This can be intermittent issue, please re-start the device setup workflow. If Problem persists contact support@ost.com .";
+            case FAILED_TO_GENERATE_ETH_KEY: return "This is a generic error that occurs when sdk fails to generate any one of Api Key, Device Key or Session Key. This can be intermittent issue, please re-start the workflow. If Problem persists contact support@ost.com .";
 
             case INVALID_PASSPHRASE_PREFIX: return "Unable to recognize the Passphrase prefix. Passphrase prefix should be atleast " + OstConstants.RECOVERY_PHRASE_PREFIX_MIN_LENGTH + " long. Please ensure Passphrase prefix corresponding to the same user is being sent.";
 
