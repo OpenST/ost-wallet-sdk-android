@@ -45,7 +45,7 @@ public class OstErrors {
 ";
 
             case CREATE_DEVICE_FAILED:
-                return "Failed to create device. Please inspect the input is well formed and re-try.";
+                return "Failed to create device.";
 
             case ACTIVATE_USER_API_FAILED:
                 return "Unable to activate the user. Inspect if correct input values are being sent, the input is well formed and re-try. If the problem persists contact support@ost.com .";
