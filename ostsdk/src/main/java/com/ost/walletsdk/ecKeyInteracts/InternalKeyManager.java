@@ -720,7 +720,7 @@ class InternalKeyManager {
     /**
      * Validates user passphrase
      * @param passphrase - recovery passphrase.
-     * @param salt - SCript salt provided by Kit.
+     * @param salt - SCript salt provided by OST Platform.
      * @return true if provided inputs can prove userPassphrase validity.
      */
     boolean validateUserPassphrase(UserPassphrase passphrase, byte[] salt) {

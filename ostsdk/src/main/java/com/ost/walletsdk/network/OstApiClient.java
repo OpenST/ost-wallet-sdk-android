@@ -28,7 +28,7 @@ import java.util.Map;
  * Http api client over
  *
  * @see OstHttpRequestClient
- * specific for Kit calls
+ * specific for OST Platform calls
  */
 public class OstApiClient {
     private static final String TAG = "OstApiClient";

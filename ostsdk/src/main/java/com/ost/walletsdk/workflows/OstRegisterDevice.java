@@ -26,7 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * To Register device on kit through App
+ * To Register device on OST Platform through App
  */
 public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegisteredInterface {
 

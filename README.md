@@ -5,7 +5,7 @@ OST Client SDK for Android
 Wallet SDK is a mobile application development SDK that enables our partner companies to:</br>
 - Key Management: Safely generate and store keys on the mobile device.</br>
 - Recovery key generation: Assist in generating recovery key from user passphrase, appllication salt,
-and kit salt.</br>
+and OST Platform salt.</br>
 - Rule Execution: Sign ethereum transactions and data to exeute rule as defined by contracts using EIP-1077.</br>
 - Device Operations: Sign transactions using EIP-712 to perform activities such as adding, authorizing and revoking device keys.</br>
 - Data Signing: Signed data is needed to execute actions on the blockchain.
@@ -57,7 +57,7 @@ To get started with the SDK, you must first initialize SDK by calling initialize
 It initializes all the required instances and run migrations of db.<br/>
 Recommended location to call initialize() is in Application sub-class.<br/><br/>
 &nbsp; parameter context: ApplicationContext.<br/>
-&nbsp; parameter baseUrl: Kit endpoint.<br/>
+&nbsp; parameter baseUrl: OST Platform endpoint.<br/>
 &nbsp; **initialize(context, baseUrl)**<br/>
 ```java
 public void onCreate() {
@@ -67,7 +67,7 @@ public void onCreate() {
 ```
 ### setupDevice
 After init, setupDevice api should be called everytime the app launches.<br/>
-It ensures current device is in registered state before calling kit apis.<br/>
+It ensures current device is in registered state before calling OST Platform apis.<br/>
 Recommended location to call setupDevice() is in MainActivity.<br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter tokenId: Id assigned by Ost to token<br/>

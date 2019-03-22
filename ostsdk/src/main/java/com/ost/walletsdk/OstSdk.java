@@ -44,6 +44,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class is Single point to initiate all the OST Platform Work flows.
+ * Before using this class initialize it first using method {@link #initialize(Context, String)}
+ */
 public class OstSdk {
     public static final String RULES = "rules";
     public static final String USER = "user";
@@ -97,7 +101,7 @@ public class OstSdk {
      * To perform config initialization and to run migrations if any.
      *
      * @param context Application context
-     * @param baseUrl base Url of kit
+     * @param baseUrl base Url of OST Platform
      */
     public static void initialize(Context context, String baseUrl) {
         if (INSTANCE == null) {
@@ -154,7 +158,7 @@ public class OstSdk {
     }
 
     /**
-     * To ensures that the current device is registered before communicating with OST KIT server.
+     * To ensures that the current device is registered before communicating with OST Platform server.
      * Call this method every time app launches.
      *
      * @param userId           user Id
@@ -169,7 +173,7 @@ public class OstSdk {
 
 
     /**
-     * To ensures that the current device is registered before communicating with OST KIT server.
+     * To ensures that the current device is registered before communicating with OST Platform server.
      * Call this method every time app launches.
      *
      * @param userId user Id
@@ -296,7 +300,7 @@ public class OstSdk {
      * Authorizes current device using mnemonics (12 words) of already authorized device.
      * IMPORTANT: The provided byte[] of mnemonics will be replaced with random bytes after user.
      *
-     * @param userId - userId for current user provided by Kit.
+     * @param userId - userId for current user provided by OST Platform.
      * @param mnemonics - UTF-8 encoded byte[] of mnemonics of the authorized device. The device must belong to the user.
      * @param ostWorkFlowCallback - Workflow callback interact.
      */
