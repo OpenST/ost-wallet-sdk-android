@@ -89,8 +89,8 @@ public class PaperWalletFragment extends BaseFragment {
 
     @Override
     public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        if (OstWorkflowContext.WORKFLOW_TYPE.GET_PAPER_WALLET.equals(ostWorkflowContext.getWorkflow_type())) {
-            if (OstSdk.PAPER_WALLET.equals(ostContextEntity.getEntityType())) {
+        if (OstWorkflowContext.WORKFLOW_TYPE.GET_MNEMONICS.equals(ostWorkflowContext.getWorkflow_type())) {
+            if (OstSdk.MNEMONICS.equals(ostContextEntity.getEntityType())) {
                 byte[] mnemonics = (byte[]) ostContextEntity.getEntity();
                 showWalletWords(new String(mnemonics), "Please save these words carefully.");
             }

@@ -29,7 +29,10 @@ import com.ost.walletsdk.workflows.services.OstPollingService;
 
 import java.io.IOException;
 
-
+/**
+ * It adds current Device using provided mnemonics
+ * Current device should be in {@link OstDevice.CONST_STATUS#REGISTERED} state.
+ */
 public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWorkflow implements OstPinAcceptInterface {
 
     private static final String TAG = "OstADWithMnemonics";

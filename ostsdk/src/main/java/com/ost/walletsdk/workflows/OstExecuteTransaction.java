@@ -16,6 +16,7 @@ import android.util.Log;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstTransactionSigner;
+import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedTransactionStruct;
 import com.ost.walletsdk.models.entities.OstTransaction;
 import com.ost.walletsdk.models.entities.OstUser;
@@ -38,7 +39,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Execute Transaction
+ * It executes rule transaction.
+ * Before execute transactions make sure you have created Session, having sufficient spending limit
+ * and within the expiry limit,
+ * You can create session by
+ * {@link OstSdk#addSession(String, String, long, OstWorkFlowCallback)} every time you need sessions and
+ * {@link OstSdk#activateUser(UserPassphrase, long, String, OstWorkFlowCallback)} once you activate user.
+ * Rule should be passed to execute rule.
+ * {@link OstSdk#RULE_NAME_DIRECT_TRANSFER#RULE_NAME_PRICER}
+ * It can do multiple transfers by passing list of token holder receiver addresses with
+ * respective amounts.
  */
 public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
 

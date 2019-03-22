@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.Map;
 
 /**
- * Work flow to logout all the session of the provided user id.
+ * It will revoke all the sessions associated with provided userId
  */
 public class OstLogoutAllSessions extends OstBaseUserAuthenticatorWorkflow {
 

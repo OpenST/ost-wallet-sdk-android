@@ -35,6 +35,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class will abort any ongoing initiate recovery process.
+ * To initiate abort recovery device should be at least registered and
+ * the user must provide his device's user passphrase
+ */
 public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
 
     private static final String TAG = "OstAbortDeviceRecovery";
@@ -51,7 +56,7 @@ public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     protected boolean shouldAskForAuthentication() {
-        /**
+        /*
          * Workflow that have UserPassphrase as input shall not ask for pin again.
          */
         return false;
@@ -59,7 +64,7 @@ public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     boolean shouldCheckCurrentDeviceAuthorization() {
-        /**
+        /*
          * The recovery device flow can NOT be called by Authorized device.
          * It can only be called by a registered device.
          */

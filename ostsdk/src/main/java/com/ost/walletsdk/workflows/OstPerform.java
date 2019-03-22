@@ -30,7 +30,10 @@ import static com.ost.walletsdk.workflows.OstBaseUserAuthenticatorWorkflow.Workf
 import static com.ost.walletsdk.workflows.OstBaseUserAuthenticatorWorkflow.WorkflowStateManager.VERIFY_DATA;
 
 /**
- * Performs operations based on payload provided
+ * It perform workflow operations by reading QR data.
+ * QR data should be passes as JSON object in the constructor
+ * {@link #OstPerform(String, JSONObject, OstWorkFlowCallback)}
+ * It can perform Execute Rule Transactions, Add Device and Revoke Device.
  */
 public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstVerifyDataInterface {
 

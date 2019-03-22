@@ -49,7 +49,10 @@ import java.util.Map;
  * Before using this class initialize it first using method {@link #initialize(Context, String)}
  */
 public class OstSdk {
-    public static final String RULES = "rules";
+
+    private static final String TAG = "OstSdk";
+
+    // region - entity types
     public static final String USER = "user";
     public static final String TRANSACTION = "transaction";
     public static final String TOKEN_HOLDER = "token_holder";
@@ -59,20 +62,44 @@ public class OstSdk {
     public static final String DEVICE_OPERATION = "device_manager_operation";
     public static final String DEVICE_MANAGER = "device_manager";
     public static final String DEVICE = "device";
-    public static final String SESSIONS = "sessions";
     public static final String RECOVERY_OWNER = "recovery_owner";
-    public static final String JSON_OBJECT = "JSON";
-    public static final String PAPER_WALLET = "paper_wallet";
+    // endregion
+
+
+    // region - entity array types
+    public static final String RULES = "rules";
     public static final String DEVICES = "devices";
+    public static final String SESSIONS = "sessions";
+    // endregion
+
+
+    /**
+     * Type of verify data context entity for execute rule transaction
+     * In case of Direct Transfer
+     * {
+     * rule_name: "Direct Transfer",
+     * token_holder_addresses: ["0xadd58909f6ee94cce3c5e816dba983bbadfa6fc4",
+     * "0xadd23414f6ee94cce3c5e816dba983bbadfa6fc5"],
+     * amounts: [2, 3],
+     * token_id: 1055
+     * }
+     */
+    public static final String JSON_OBJECT = "JSON";
+
+    /**
+     * Type of context entity which is byte[] for work flow
+     * {@link #getDeviceMnemonics(String, OstWorkFlowCallback)}
+     */
+    public static final String MNEMONICS = "mnemonics";
 
     /**
      * Rule name to pass for workflow execute transactions
+     *
      * @see OstSdk#executeTransaction(String, List, List, String ruleName, OstWorkFlowCallback)
      */
     public static final String RULE_NAME_DIRECT_TRANSFER = "direct transfer";
     public static final String RULE_NAME_PRICER = "pricer";
 
-    private static final String TAG = "OstSdk";
     private static volatile OstSdk INSTANCE;
 
     private static Context mApplicationContext;
@@ -128,21 +155,22 @@ public class OstSdk {
         return OstModelFactory.getUserModel().getEntityById(id);
     }
 
+    // region - Work flows
+
     /**
      * Starts the workflow to activate the user.
      * User needs to be activated in order to transfer tokens.
      * This is the step where shall be setting their pin for the first time.
      * During this step User's token-holder is deployed on block-chain.
      * A session is also created. Sessions are needed to send tokens.
-     *
+     * <p>
      * Note: Information contained in UserPassphrase shall be wiped out after use by Sdk.
      * Do not retain it. It can not be used more than once.
      *
-     * @param passphrase - A simple struct to transport pin information via app and Sdk.
+     * @param passphrase         - A simple struct to transport pin information via app and Sdk.
      * @param expiresAfterInSecs - Time after which default user session should expire.
      * @param spendingLimitInWei - The maximum amount of Tokens user can transfer in 1 transaction using the default session key.
-     * @param callback - A workflow callback handler.
-     *
+     * @param callback           - A workflow callback handler.
      */
     public static void activateUser(UserPassphrase passphrase,
                                     long expiresAfterInSecs,
@@ -176,9 +204,9 @@ public class OstSdk {
      * To ensures that the current device is registered before communicating with OST Platform server.
      * Call this method every time app launches.
      *
-     * @param userId user Id
-     * @param tokenId token Id
-     * @param forceSync pass true if force sync of all the entities is needed.
+     * @param userId           user Id
+     * @param tokenId          token Id
+     * @param forceSync        pass true if force sync of all the entities is needed.
      * @param workFlowCallback A workflow callback handler.
      */
     public static void setupDevice(String userId,
@@ -242,7 +270,7 @@ public class OstSdk {
     /**
      * For Documentation refer
      * {@link #executeTransaction(String, List, List, String, Map, OstWorkFlowCallback)}
-     *  Only difference is meta is passed as null
+     * Only difference is meta is passed as null
      */
     public static void executeTransaction(String userId,
                                           List<String> tokenHolderAddresses,
@@ -269,15 +297,15 @@ public class OstSdk {
      * It can do multiple transfers by passing list of token holder receiver addresses with
      * respective amounts.
      *
-     * @param userId user Id of transaction addressee
+     * @param userId               user Id of transaction addressee
      * @param tokenHolderAddresses List<String> token holder addresses list to where amounts need to be sent
-     * @param amounts List<String> amounts list corresponding to token holder addresses
-     * @param ruleName rule name to execute in transaction
-     * @param meta data about transaction example:-
-     *             {name: "transaction name",
-     *             type "user-to-user",
-     *             details, "like"}
-     * @param workFlowCallback workflow callback handler.
+     * @param amounts              List<String> amounts list corresponding to token holder addresses
+     * @param ruleName             rule name to execute in transaction
+     * @param meta                 data about transaction example:-
+     *                             {name: "transaction name",
+     *                             type "user-to-user",
+     *                             details, "like"}
+     * @param workFlowCallback     workflow callback handler.
      */
     public static void executeTransaction(String userId,
                                           List<String> tokenHolderAddresses,
@@ -300,8 +328,8 @@ public class OstSdk {
      * Authorizes current device using mnemonics (12 words) of already authorized device.
      * IMPORTANT: The provided byte[] of mnemonics will be replaced with random bytes after user.
      *
-     * @param userId - userId for current user provided by OST Platform.
-     * @param mnemonics - UTF-8 encoded byte[] of mnemonics of the authorized device. The device must belong to the user.
+     * @param userId              - userId for current user provided by OST Platform.
+     * @param mnemonics           - UTF-8 encoded byte[] of mnemonics of the authorized device. The device must belong to the user.
      * @param ostWorkFlowCallback - Workflow callback interact.
      */
     public static void authorizeCurrentDeviceWithMnemonics(String userId,
@@ -418,4 +446,5 @@ public class OstSdk {
         final OstLogoutAllSessions ostLogoutAllSessions = new OstLogoutAllSessions(userId, workFlowCallback);
         ostLogoutAllSessions.perform();
     }
+    // endregion
 }

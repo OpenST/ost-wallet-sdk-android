@@ -10,6 +10,9 @@
 
 package com.ost.walletsdk.workflows;
 
+/**
+ * WorkflowContext to hold work flow type
+ */
 public class OstWorkflowContext {
     public enum WORKFLOW_TYPE {
         UNKNOWN,
@@ -17,7 +20,7 @@ public class OstWorkflowContext {
         ACTIVATE_USER,
         ADD_DEVICE,
         PERFORM,
-        GET_PAPER_WALLET,
+        GET_MNEMONICS,
         ADD_SESSION,
         EXECUTE_TRANSACTION,
         ADD_DEVICE_WITH_QR,
