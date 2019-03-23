@@ -53,7 +53,7 @@ import java.util.concurrent.TimeUnit;
 import static org.web3j.compat.Compat.UTF_8;
 
 class InternalKeyManager {
-    private static final int N = 19;
+    private static final int N = 20;
     private static final int SCryptMemoryCost = (int) Math.pow(2, N);
     private static final int SCryptBlockSize = 1;
     private static final int SCryptParallelization = 1;

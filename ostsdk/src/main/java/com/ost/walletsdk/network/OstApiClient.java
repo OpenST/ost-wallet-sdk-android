@@ -157,7 +157,6 @@ public class OstApiClient {
                 // wipe session key which is not available in backend
                 OstModelFactory.getSessionModel().deleteEntity(address);
                 new OstSessionKeyModelRepository().deleteSessionKey(address);
-                throw ostApiError;
             }
         }
         return jsonObject;
