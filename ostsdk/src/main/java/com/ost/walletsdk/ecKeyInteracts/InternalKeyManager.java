@@ -33,6 +33,7 @@ import org.spongycastle.crypto.generators.SCrypt;
 import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
+import org.web3j.crypto.Hash;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.MnemonicUtils;
 import org.web3j.crypto.Sign;
@@ -726,6 +727,10 @@ class InternalKeyManager {
     boolean validateUserPassphrase(UserPassphrase passphrase, byte[] salt) {
         // Get User Presence Info from DB
         boolean didValidateByRecoveryKey = false;
+        String providedUserPresenceInfoHash = null;
+        OstSecureKey ostSecureKey = null;
+        byte[] encryptedData = null;
+        byte[] decryptedData = null;
         try {
 
             if ( isUserPassphraseValidationLocked() ) {
@@ -739,17 +744,70 @@ class InternalKeyManager {
                 throw new OstError("km_ikm_vup_2", ErrorCode.USER_NOT_ACTIVATED);
             }
 
+
+
+            //region - Validation by Computing user presence info.
+            //Put another try catch just for safety.
+            // If user info validation code throws error, we can always
+            // validate user by re-generating key.
+            try {
+                // Create user presence info
+                providedUserPresenceInfoHash = createUserPresenceInfoHash(passphrase, salt, recoveryOwnerAddress);
+
+                // Check if we have known user presence info.
+                String userPresenceInfoId = getUserPresenceInfoId(recoveryOwnerAddress);
+                ostSecureKey = getByteStorageRepo().getByKey(userPresenceInfoId);
+                if (null != ostSecureKey) {
+
+                    // Get encrypted user presence info.
+                    encryptedData = ostSecureKey.getData();
+                    if ( encryptedData.length > 0) {
+
+                        //Decrypt it.
+                        decryptedData = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(encryptedData);
+                        if ( decryptedData.length > 0) {
+
+                            //Validate it.
+                            if( providedUserPresenceInfoHash.equalsIgnoreCase(new String(decryptedData)) ) {
+                                userPassphraseValidated();
+                                return true;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Exception while validating user presence info");
+            }
+            //endregion
+
+            //region - Validation by regenerating recovery key.
             String generatedKeyAddress = getRecoveryAddress(passphrase, salt);
             didValidateByRecoveryKey = true;
             if ( recoveryOwnerAddress.equalsIgnoreCase(generatedKeyAddress) ) {
                 // Let update user presence.
                 userPassphraseValidated();
+                if ( null != providedUserPresenceInfoHash ) {
+                    //Note: We can't recreate providedUserPresenceInfoHash.
+                    // As soon as recovery key is created,
+                    // createRecoveryKey method has already wiped out all bytes[].
+
+                    // Lets store the providedUserPresenceInfoHash.
+                    storeUserPresenceInfoInDb(providedUserPresenceInfoHash, recoveryOwnerAddress);
+                }
                 return true;
             } else {
                 userPassphraseInvalidated();
                 return false;
             }
+            //endregion
+
+        } catch (Exception e) {
+            Log.e(TAG, "IKM exception", e.getCause());
         } finally {
+            clearBytes(encryptedData);
+            clearBytes(decryptedData);
+            ostSecureKey = null;
+            providedUserPresenceInfoHash = null;
             passphrase.wipe();
 
             if ( !didValidateByRecoveryKey ) {
@@ -757,9 +815,81 @@ class InternalKeyManager {
                 clearBytes(salt);
             }
         }
+
+        return false;
     }
 
     //endregion
+
+
+    //region - User Presence Info - Information that can prove the presence of user via valid pin.
+    private String createUserPresenceInfoHash(UserPassphrase passphrase, byte[] salt, String recoveryOwnerAddress) {
+        // check if we can use passphrase.
+        if ( null == passphrase || passphrase.isWiped() || null == salt || salt.length < 1 || TextUtils.isEmpty(recoveryOwnerAddress)) {
+            userPassphraseInvalidated();
+            throw new IllegalArgumentException();
+        }
+
+        byte[] address = recoveryOwnerAddress.getBytes();
+        byte[] userId = mUserId.getBytes();
+        byte[] userInfo = new byte[salt.length + passphrase.getPassphrase().length + address.length + userId.length];
+        try {
+            //Copy Address
+            int cpyPosition = 0;
+            int cpyLength = address.length;
+            System.arraycopy(address, 0, userInfo, cpyPosition, cpyLength);
+
+            //Copy passphrase bytes
+            cpyPosition += cpyLength;
+            cpyLength = passphrase.getPassphrase().length;
+            System.arraycopy(passphrase.getPassphrase(), 0, userInfo, cpyPosition, cpyLength);
+
+            // Copy salt.
+            cpyPosition += cpyLength;
+            cpyLength = salt.length;
+            System.arraycopy(salt, 0, userInfo, cpyPosition, cpyLength);
+
+            // Copy user-id
+            cpyPosition += cpyLength;
+            cpyLength = userId.length;
+            System.arraycopy(userId, 0, userInfo, cpyPosition, cpyLength);
+
+            return Numeric.toHexString( Hash.sha256(userInfo) );
+        } finally {
+            clearBytes(userInfo);
+        }
+    }
+
+    /**
+     * Helper method to create id for User Presence Info.
+     * @param recoveryOwnerAddress
+     * @return
+     */
+    private String getUserPresenceInfoId(String recoveryOwnerAddress) {
+        return USER_PRESENCE_INFO_HASH_FOR_ + recoveryOwnerAddress;
+    }
+
+    /**
+     * Generates and stores encrypted user presence Info Hash in Database.
+     * @param userPresenceInfoHash - SCript salt provided by Kit.
+     * @param recoveryOwnerAddress - User's registered recovery key address.
+     * @return false if exceptions occurred while generating/storing UserPresenceInfoHash.
+     */
+    private void storeUserPresenceInfoInDb(String userPresenceInfoHash, String recoveryOwnerAddress) {
+        try {
+            byte[] encrypted = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(userPresenceInfoHash.getBytes());
+            String userPresenceInfoId = getUserPresenceInfoId(recoveryOwnerAddress);
+            Future f = getByteStorageRepo().insertSecureKey(new OstSecureKey(userPresenceInfoId, encrypted));
+            f.get(1, TimeUnit.SECONDS);
+        } catch (Exception ex) {
+            Log.e(TAG, "Failed to store user info");
+        }
+        Log.d(TAG, "User info updated");
+    }
+    //endregion
+
+
+
 
     // region - Passphrase Locker Utility Methods
     boolean isUserPassphraseValidationLocked() {
