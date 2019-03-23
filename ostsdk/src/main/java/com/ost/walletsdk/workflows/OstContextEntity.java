@@ -10,6 +10,9 @@
 
 package com.ost.walletsdk.workflows;
 
+/**
+ * Context Entity to hold entity associated in work flows
+ */
 public class OstContextEntity {
     private String message;
     private Object entity;

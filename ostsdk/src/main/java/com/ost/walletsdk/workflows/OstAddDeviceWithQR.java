@@ -31,7 +31,10 @@ import org.web3j.crypto.WalletUtils;
 
 import java.io.IOException;
 
-
+/**
+ * It authorize device address by adding it to Device Manager.
+ * Device to add should be in {@link OstDevice.CONST_STATUS#REGISTERED} state.
+ */
 public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
 
     private static final String TAG = "OstAddDeviceWithQR";
@@ -137,10 +140,11 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
             } catch (IOException e) {
                 throw new OstError("wf_pe_ad_3", ErrorCode.GET_DEVICE_API_FAILED);
             }
-            if (null == OstDevice.getById(deviceAddress)) {
+            OstDevice ostDevice = OstDevice.getById(deviceAddress);
+            if (null == ostDevice) {
                 throw new OstError("wf_pe_ad_4", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
             }
-            if (!OstDevice.getById(deviceAddress).canBeAuthorized()) {
+            if (!ostDevice.canBeAuthorized()) {
                 throw new OstError("wf_pe_ad_5", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
             }
         }

@@ -27,7 +27,11 @@ import com.ost.walletsdk.workflows.services.OstSessionPollingService;
 import com.ost.walletsdk.workflows.services.OstTransactionPollingService;
 import com.ost.walletsdk.workflows.services.OstUserPollingService;
 
-public class OstStartPolling extends OstBaseWorkFlow {
+/**
+ * Polling workflow for provided entity with its entity Id.
+ * It accepts success status and failure status to poll.
+ */
+class OstStartPolling extends OstBaseWorkFlow {
 
     private static final String TAG = "OstStartPolling";
     private final String mEntityId;

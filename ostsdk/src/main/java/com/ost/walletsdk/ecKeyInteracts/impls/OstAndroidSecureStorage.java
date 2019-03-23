@@ -113,11 +113,6 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
                 .setBlockModes(KeyProperties.BLOCK_MODE_ECB)
                 .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
                 .setUserAuthenticationRequired(false);
-        //Use strong box when available.
-        int strongBoxApiVersion = Build.VERSION_CODES.P;
-        if (strongBoxApiVersion <= Build.VERSION.SDK_INT) {
-            builder.setIsStrongBoxBacked(true);
-        }
 
         return builder.build();
     }

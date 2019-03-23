@@ -98,7 +98,7 @@ public class OstDevice extends OstBaseEntity {
     public static OstDevice init(String address, String apiAddress, String userId) {
         OstDevice ostDevice = OstDevice.getById(address);
         if (null != ostDevice) {
-            Log.e(TAG, String.format("OstDevice with address %s already exist", address));
+            Log.i(TAG, String.format("OstDevice with address %s already exist", address));
             return ostDevice;
         }
 
@@ -243,10 +243,11 @@ public class OstDevice extends OstBaseEntity {
         if ( TextUtils.isEmpty(status) ) {
             return false;
         }
-        return OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.AUTHORIZING.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status);
+        return CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
+                || CONST_STATUS.REGISTERED.equalsIgnoreCase(status)
+                || CONST_STATUS.AUTHORIZING.equalsIgnoreCase(status)
+                || CONST_STATUS.RECOVERING.equalsIgnoreCase(status)
+                || CONST_STATUS.REVOKING.equalsIgnoreCase(status);
     }
 
     public boolean isAuthorized() {

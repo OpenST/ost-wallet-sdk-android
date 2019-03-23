@@ -13,12 +13,11 @@ package com.ost.walletsdk.workflows;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.ost.walletsdk.OstConfigs;
-import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.ecKeyInteracts.OstRecoveryManager;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
+import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstApiClient;
 import com.ost.walletsdk.utils.AsyncStatus;
@@ -102,6 +101,10 @@ public class OstActivateUser extends OstBaseWorkFlow {
             OstWorkflowContext workflowContext = new OstWorkflowContext(getWorkflowType());
             OstContextEntity ostContextEntity = new OstContextEntity(OstUser.getById(mUserId), OstSdk.USER);
             postRequestAcknowledge(workflowContext, ostContextEntity);
+
+            // Create session locally if the request is accepted.
+            // For polling purpose
+            OstSession.init(sessionAddress, mUserId);
 
         } catch (OstError error) {
             return postErrorInterrupt(error);
