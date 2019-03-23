@@ -29,7 +29,7 @@ import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.params.KeyParameter;
-import org.spongycastle.crypto.generators.SCrypt;
+import com.ost.walletsdk.utils.scrypt.SCrypt;
 import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -53,9 +53,11 @@ import java.util.concurrent.TimeUnit;
 import static org.web3j.compat.Compat.UTF_8;
 
 class InternalKeyManager {
-    private static final int N = 14;
-    private static final int R = 8;
-    private static final int P = 1;
+    private static final int N = 19;
+    private static final int SCryptMemoryCost = (int) Math.pow(2, N);
+    private static final int SCryptBlockSize = 1;
+    private static final int SCryptParallelization = 1;
+    private static final int SCryptKeyLength = 32;
 
     private static OstSecureKeyModelRepository modelRepo = null;
     private static OstSecureKeyModelRepository getByteStorageRepo() {
@@ -624,11 +626,6 @@ class InternalKeyManager {
      * @return - Recovery Key. You need handle it properly.
      */
     private ECKeyPair createRecoveryKey(UserPassphrase userPassphrase, byte[] salt) {
-        int SCryptMemoryCost = (int) Math.pow(2, N);
-        int SCryptBlockSize = R;
-        int SCryptParallelization = P;
-        int SCryptKeyLength = 32;
-
         byte[] seed = null;
         byte[] passphrase = null;
         try{
@@ -636,7 +633,15 @@ class InternalKeyManager {
                 throw new IllegalArgumentException();
             }
             passphrase = userPassphrase.getPassphrase();
-            seed = SCrypt.generate(passphrase, salt, SCryptMemoryCost, SCryptBlockSize, SCryptParallelization, SCryptKeyLength);
+            long startTime = System.currentTimeMillis();
+            Log.d(TAG+"_CRK", "Starting SCrypt in CRK");
+            seed = SCrypt.scrypt(passphrase, salt,
+                    InternalKeyManager.SCryptMemoryCost,
+                    InternalKeyManager.SCryptBlockSize,
+                    InternalKeyManager.SCryptParallelization,
+                    InternalKeyManager.SCryptKeyLength);
+            long endTime = System.currentTimeMillis();
+            Log.d(TAG+"_CRK", "Ending SCrypt in CRK. Total Time in milliseconds = " + (endTime - startTime) );
             return Bip32ECKeyPair.generateKeyPair(seed);
         } catch (Throwable th) {
             //Suppress Error.
@@ -646,7 +651,9 @@ class InternalKeyManager {
             clearBytes(seed);
 
             //Wipe user passphrase.
-            userPassphrase.wipe();
+            if ( null != userPassphrase ) {
+                userPassphrase.wipe();
+            }
 
             //Make UserPassphrase unusable.
             clearBytes(passphrase);
@@ -701,8 +708,7 @@ class InternalKeyManager {
 
             // Sign the data.
             Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(hexStringToSign), ecKeyPair, false);
-            String signature = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
-            return signature;
+            return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
         } catch (Throwable th) {
             //Supress it.
             return null;
