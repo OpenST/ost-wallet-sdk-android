@@ -132,7 +132,6 @@ public class UserDetailsFragment extends Fragment {
         mUserRecoveryKeyEdit.setText(user.getRecoveryOwnerAddress());
         if (null != device) {
             mDeviceAddrEdit.setText(device.getAddress());
-            mDeviceNameEdit.setText(device.getDeviceName());
             mDeviceStatusEdit.setText(device.getStatus());
         }
     }
