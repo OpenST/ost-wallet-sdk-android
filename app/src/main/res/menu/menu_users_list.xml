@@ -10,12 +10,12 @@
     <item
         android:id="@+id/activate_user"
         android:orderInCategory="100"
-        android:title="Setup your Wallet"
+        android:title="@string/setup_your_wallet"
         app:showAsAction="never" />
     <item
         android:id="@+id/show_paper_wallet"
         android:orderInCategory="100"
-        android:title="See your paper wallet"
+        android:title="@string/see_your_paper_wallet"
         app:showAsAction="never" />
     <item
         android:id="@+id/add_session"
@@ -30,12 +30,12 @@
     <item
         android:id="@+id/add_device"
         android:orderInCategory="100"
-        android:title="Show QR Code to Authorize Device"
+        android:title="@string/show_qr_code_to_authorize_device"
         app:showAsAction="never" />
     <item
         android:id="@+id/device_words"
         android:orderInCategory="100"
-        android:title="Authorize device using mnemonics"
+        android:title="@string/authorize_device_using_mnemonics"
         app:showAsAction="never" />
     <item
         android:id="@+id/transactions"
@@ -65,8 +65,13 @@
         android:title="@string/device_abort_recovery"
         app:showAsAction="never" />
     <item
-        android:id="@+id/device_logout"
+        android:id="@+id/device_sessions_logout"
         android:orderInCategory="100"
         android:title="@string/logout_all_sessions"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/app_logout"
+        android:orderInCategory="100"
+        android:title="@string/app_logout"
         app:showAsAction="never" />
 </menu>

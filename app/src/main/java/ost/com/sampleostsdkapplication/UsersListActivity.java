@@ -42,7 +42,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class UsersListActivity extends MappyBaseActivity implements
         SetUpUserFragment.OnSetUpUserFragmentListener,
         ResetPinFragment.OnResetPinFragmentListener,
-        CreateSessionFragment.OnCreateSessionFragmentListener {
+        CreateSessionFragment.OnCreateSessionFragmentListener,
+        LogoutFragment.OnLogoutFragmentListener {
 
     private static final String TAG = "OstUsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
@@ -143,11 +144,26 @@ public class UsersListActivity extends MappyBaseActivity implements
             Log.d(TAG, "Device Recovery");
             byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
             AbortRecoveryFragment(logInUser.getTokenId(), userId, appSalt);
-        } else if (id == R.id.device_logout) {
-            Log.d(TAG, "Device Logout initiated");
+        } else if (id == R.id.device_sessions_logout) {
+            Log.d(TAG, "Device Session Logout initiated");
             loadLogoutFragment( userId );
+        } else if (id == R.id.app_logout) {
+            Log.d(TAG, "App Logout initiated");
+            relaunchApp();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void relaunchApp() {
+        App app = ((App) getApplicationContext());
+        //Clear local login user details;
+        app.setLoggedUser(null);
+
+        Intent i = new Intent(app, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        app.startActivity(i);
     }
 
     private void loadLogoutFragment(String userId) {

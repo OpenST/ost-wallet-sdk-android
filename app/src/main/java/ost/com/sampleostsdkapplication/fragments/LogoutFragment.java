@@ -1,9 +1,9 @@
 package ost.com.sampleostsdkapplication.fragments;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +13,6 @@ import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 
-import ost.com.sampleostsdkapplication.App;
-import ost.com.sampleostsdkapplication.MainActivity;
 import ost.com.sampleostsdkapplication.R;
 
 /**
@@ -24,6 +22,7 @@ public class LogoutFragment extends BaseFragment {
 
     private static final String TAG = "LogoutFragment";
     private String mUserId;
+    private OnLogoutFragmentListener mListener;
 
     public String getPageTitle() {
         return getResources().getString(R.string.logout_all_sessions);
@@ -38,6 +37,18 @@ public class LogoutFragment extends BaseFragment {
         getCancelButton().setVisibility(View.GONE);
 
         return parentView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Activity activity = getActivity();
+        if (!(activity instanceof OnLogoutFragmentListener)) {
+            throw new RuntimeException(
+                    "Activity using Logout Fragment does not implement OnLogoutFragmentListener"
+            );
+        }
+        mListener = (OnLogoutFragmentListener)activity;
     }
 
     /**
@@ -63,27 +74,17 @@ public class LogoutFragment extends BaseFragment {
 
     @Override
     public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        //Clear local login user details;
         super.flowComplete(ostWorkflowContext, ostContextEntity);
-        relaunchApp();
+        mListener.relaunchApp();
     }
 
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
         super.flowInterrupt(ostWorkflowContext, ostError);
-        relaunchApp();
+        mListener.relaunchApp();
     }
 
-    void relaunchApp() {
-        if (null == getActivity()) {
-            Log.e(TAG, "Get activity is null");
-        }
-        App app = ((App) getActivity().getApplicationContext());
-        app.setLoggedUser(null);
-
-        Intent i = new Intent(app, MainActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        app.startActivity(i);
+    public interface OnLogoutFragmentListener {
+        void relaunchApp();
     }
 }
