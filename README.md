@@ -1,4 +1,4 @@
-# ost-client-android-sdk
+# ost-wallet-sdk-android
 ## Introduction
 OST Client SDK for Android
 
