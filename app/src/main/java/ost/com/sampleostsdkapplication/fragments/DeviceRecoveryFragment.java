@@ -72,7 +72,7 @@ public class DeviceRecoveryFragment extends BaseFragment {
         String currentPin = mEditTextPassphrase.getText().toString();
         String address = mEditTextAddressToRecover.getText().toString();
         UserPassphrase passphrase = new UserPassphrase(mUserId, currentPin.getBytes(UTF_8), mAppSalt);
-        OstSdk.initiateRecoverDevice(mUserId, passphrase, address, this);
+        OstSdk.initiateDeviceRecovery(mUserId, passphrase, address, this);
         flowStarted();
     }
 

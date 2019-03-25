@@ -408,10 +408,10 @@ public class OstSdk {
      * @param deviceAddressToRecover Address of device to recover
      * @param workFlowCallback       Work flow interact
      */
-    public static void initiateRecoverDevice(String userId,
-                                             UserPassphrase passphrase,
-                                             String deviceAddressToRecover,
-                                             OstWorkFlowCallback workFlowCallback) {
+    public static void initiateDeviceRecovery(String userId,
+                                              UserPassphrase passphrase,
+                                              String deviceAddressToRecover,
+                                              OstWorkFlowCallback workFlowCallback) {
         final OstRecoverDeviceWorkflow ostRecoverDeviceWorkflow = new OstRecoverDeviceWorkflow(userId,
                 passphrase,
                 deviceAddressToRecover,
