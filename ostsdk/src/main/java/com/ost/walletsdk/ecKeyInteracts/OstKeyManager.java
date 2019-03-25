@@ -10,6 +10,8 @@
 
 package com.ost.walletsdk.ecKeyInteracts;
 
+import com.ost.walletsdk.models.Impls.OstModelFactory;
+import com.ost.walletsdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 
@@ -71,5 +73,10 @@ public class OstKeyManager {
             return null;
         }
         return mKeyMetaStruct.getDeviceAddress();
+    }
+
+    public void wipeSession(String address) {
+        OstModelFactory.getSessionModel().deleteEntity(address);
+        new OstSessionKeyModelRepository().deleteSessionKey(address);
     }
 }

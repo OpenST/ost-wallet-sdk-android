@@ -19,6 +19,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
+/**
+ * To hold rule info
+ */
 @Entity(tableName = "rule")
 public class OstRule extends OstBaseEntity {
 
@@ -74,6 +77,11 @@ public class OstRule extends OstBaseEntity {
             address = Keys.toChecksumAddress(address);
         }
         return address;
+    }
+
+    @Override
+    public String getId() {
+        return super.getId().toLowerCase();
     }
 
     public String getAbi() {

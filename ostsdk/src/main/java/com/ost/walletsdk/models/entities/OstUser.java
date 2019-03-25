@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * To store user entity
+ * To hold User info
  */
 @Entity(tableName = "user")
 public class OstUser extends OstBaseEntity {

@@ -166,25 +166,25 @@ To update current Pin with new Pin.<br/><br/>
 OstSdk.resetPin(userId, appSalt, currentPin, newPin, new OstWorkFlowCallbackImpl())
 ```
 
-### initiateRecoverDevice
+### initiateDeviceRecovery
 To authorize the current device by revoking provided device address.<br/><br/>
 &nbsp; parameter userId                 user id of recovery user<br/>
 &nbsp; parameter passphrase             Struct of current passPhrase<br/>
 &nbsp; parameter deviceAddressToRecover Address of device to recover<br/>
 &nbsp; parameter workFlowCallback       Work flow interact<br/>
-&nbsp; **void initiateRecoverDevice(String userId, UserPassphrase passphrase, String deviceAddressToRecover, OstWorkFlowCallback workFlowCallback)**<br/>
+&nbsp; **void initiateDeviceRecovery(String userId, UserPassphrase passphrase, String deviceAddressToRecover, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.initiateRecoverDevice(userId, passphrase, deviceAddressToRecover, new OstWorkFlowCallbackImpl())
+OstSdk.initiateDeviceRecovery(userId, passphrase, deviceAddressToRecover, new OstWorkFlowCallbackImpl())
 ```
 
-### abortRecoverDevice
+### abortDeviceRecovery
 If there are any ongoing initiate recovery in process, It will abort that recovery process<br/><br/>
 &nbsp; parameter userId           userId of recovery user<br/>
 &nbsp; parameter passphrase       A simple struct to transport pin information via app and Sdk.<br/>
 &nbsp; parameter workFlowCallback Workflow callback Interact <br/>
-&nbsp; **void abortRecoverDevice(String userId, UserPassphrase passphrase, OstWorkFlowCallback workFlowCallback)**<br/>
+&nbsp; **void abortDeviceRecovery(String userId, UserPassphrase passphrase, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.abortRecoverDevice(userId, passphrase, new OstWorkFlowCallbackImpl())
+OstSdk.abortDeviceRecovery(userId, passphrase, new OstWorkFlowCallbackImpl())
 ```
 
 ### logoutAllSessions

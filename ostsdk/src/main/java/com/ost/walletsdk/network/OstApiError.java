@@ -18,6 +18,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Sub class of {@link OstError}
+ * This class object contains Errors thrown from OST Platform.
+ */
 public class OstApiError extends OstError {
 
 
@@ -54,6 +58,10 @@ public class OstApiError extends OstError {
 
     public boolean isBadRequest() {
         return ApiErrorCodes.BAD_REQUEST.equalsIgnoreCase( getErrCode() );
+    }
+
+    public boolean isNotFound() {
+        return ApiErrorCodes.NOT_FOUND.equalsIgnoreCase( getErrCode() );
     }
 
     public boolean isDeviceTimeOutOfSync() {
