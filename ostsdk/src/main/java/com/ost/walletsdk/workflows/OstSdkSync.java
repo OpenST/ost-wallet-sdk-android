@@ -16,6 +16,7 @@ import android.util.Log;
 import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstApiClient;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.utils.DispatchAsync;
 
@@ -94,8 +95,12 @@ class OstSdkSync {
                         ostApiClient.getDevice(ostUser.getCurrentDevice().getAddress());
                     } else if (SYNC_ENTITY.SESSION == entity) {
                         List<OstSession> ostSessionList = OstSession.getSessionsToSync(mUserId);
-                        for (OstSession ostSession: ostSessionList) {
-                            ostApiClient.getSession(ostSession.getAddress());
+                        for (OstSession ostSession : ostSessionList) {
+                            try {
+                                ostApiClient.getSession(ostSession.getAddress());
+                            } catch (OstApiError ostApiError) {
+                                //Do nothing
+                            }
                         }
                     } else if (SYNC_ENTITY.DEVICE_MANAGER == entity) {
                         ostApiClient.getDeviceManager();

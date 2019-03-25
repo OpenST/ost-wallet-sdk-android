@@ -56,6 +56,10 @@ public class OstApiError extends OstError {
         return ApiErrorCodes.BAD_REQUEST.equalsIgnoreCase( getErrCode() );
     }
 
+    public boolean isNotFound() {
+        return ApiErrorCodes.NOT_FOUND.equalsIgnoreCase( getErrCode() );
+    }
+
     public boolean isDeviceTimeOutOfSync() {
         ApiErrorData apiRequestTimestamp = getApiErrorData("api_request_timestamp");
         if ( null == apiRequestTimestamp ) {

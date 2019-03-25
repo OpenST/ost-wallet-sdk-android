@@ -10,10 +10,10 @@
 
 package com.ost.walletsdk.network;
 
+import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstApiSigner;
-import com.ost.walletsdk.models.Impls.OstModelFactory;
-import com.ost.walletsdk.models.Impls.OstSessionKeyModelRepository;
+import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 
@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -151,13 +152,18 @@ public class OstApiClient {
         Map<String, Object> requestMap = getPrerequisiteMap();
         JSONObject jsonObject = null;
         try {
-            jsonObject =  mOstHttpRequestClient.get(String.format("/users/%s/sessions/%s", mUserId, address), requestMap);
+            jsonObject = mOstHttpRequestClient.get(String.format("/users/%s/sessions/%s", mUserId, address), requestMap);
         } catch (OstApiError ostApiError) {
-            if (OstApiError.ApiErrorCodes.NOT_FOUND.equalsIgnoreCase(ostApiError.getErrCode())) {
+            List<OstApiError.ApiErrorData> errorData = ostApiError.getErrorData();
+            if (ostApiError.isNotFound()
+                    && 0 < errorData.size()
+                    && OstConstants.SESSION_ADDRESS.equalsIgnoreCase(
+                    errorData.get(0).getParameter()
+            )) {
                 // wipe session key which is not available in backend
-                OstModelFactory.getSessionModel().deleteEntity(address);
-                new OstSessionKeyModelRepository().deleteSessionKey(address);
+                new OstKeyManager(mUserId).wipeSession(address);
             }
+            throw ostApiError;
         }
         return jsonObject;
     }
