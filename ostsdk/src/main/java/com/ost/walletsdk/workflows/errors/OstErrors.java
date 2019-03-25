@@ -14,6 +14,9 @@ import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
 
+/**
+ * Ost Error with error code and error message
+ */
 public class OstErrors {
     private static String TAG = "OstErrors";
 
