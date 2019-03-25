@@ -20,7 +20,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
-
+/**
+ * To hold Device Manager Operation Info
+ */
 @Entity(tableName = "device_operation")
 public class OstDeviceManagerOperation extends OstBaseEntity {
 

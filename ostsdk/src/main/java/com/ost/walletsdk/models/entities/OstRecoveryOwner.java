@@ -23,7 +23,9 @@ import static com.ost.walletsdk.models.entities.OstRecoveryOwner.CONST_STATUS.AU
 import static com.ost.walletsdk.models.entities.OstRecoveryOwner.CONST_STATUS.REVOKED;
 import static com.ost.walletsdk.models.entities.OstRecoveryOwner.CONST_STATUS.REVOKING;
 
-
+/**
+ * To hold RecoveryOwner info
+ */
 public class OstRecoveryOwner extends OstBaseEntity {
 
     public static final String USER_ID = "user_id";

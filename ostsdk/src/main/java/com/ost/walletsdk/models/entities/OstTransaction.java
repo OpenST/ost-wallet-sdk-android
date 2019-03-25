@@ -27,7 +27,9 @@ import static com.ost.walletsdk.models.entities.OstTransaction.CONST_STATUS.MINE
 import static com.ost.walletsdk.models.entities.OstTransaction.CONST_STATUS.SUBMITTED;
 import static com.ost.walletsdk.models.entities.OstTransaction.CONST_STATUS.SUCCESS;
 
-
+/**
+ * To hold Execute Rule Transaction info
+ */
 @Entity(tableName = "transaction")
 public class OstTransaction extends OstBaseEntity {
 

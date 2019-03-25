@@ -18,6 +18,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+/**
+ * Sub class of {@link OstError}
+ * This class object contains Errors thrown from OST Platform.
+ */
 public class OstApiError extends OstError {
 
 

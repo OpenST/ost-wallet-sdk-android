@@ -28,7 +28,7 @@ import org.web3j.crypto.Keys;
 import java.util.Arrays;
 
 /**
- * Transaction Signing
+ * To hold Device info
  */
 @Entity(tableName = "device")
 public class OstDevice extends OstBaseEntity {

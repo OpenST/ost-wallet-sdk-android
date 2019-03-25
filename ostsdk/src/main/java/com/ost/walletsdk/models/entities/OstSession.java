@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * EIP1077 Transaction Signing
+ * To hold Session info
  */
 @Entity(tableName = "session")
 public class OstSession extends OstBaseEntity {
