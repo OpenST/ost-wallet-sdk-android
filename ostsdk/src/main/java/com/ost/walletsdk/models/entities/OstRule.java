@@ -76,6 +76,11 @@ public class OstRule extends OstBaseEntity {
         return address;
     }
 
+    @Override
+    public String getId() {
+        return super.getId().toLowerCase();
+    }
+
     public String getAbi() {
         return this.getJsonDataPropertyAsString(OstRule.ABI);
     }

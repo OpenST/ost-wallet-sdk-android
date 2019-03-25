@@ -34,7 +34,7 @@ class OstRuleModelRepository extends OstBaseModelCacheRepository implements OstR
 
     @Override
     public OstRule getEntityById(String id) {
-        return (OstRule)super.getById(id);
+        return (OstRule)super.getById(id.toLowerCase());
     }
 
     @Override
