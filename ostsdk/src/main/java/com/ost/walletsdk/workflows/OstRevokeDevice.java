@@ -157,7 +157,7 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.ADD_DEVICE_WITH_QR;
+        return OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE;
     }
 
     static class RevokeDeviceDataDefinitionInstance extends OstDeviceDataDefinitionInstance {

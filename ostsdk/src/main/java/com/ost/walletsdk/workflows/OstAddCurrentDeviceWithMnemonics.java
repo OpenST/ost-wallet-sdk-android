@@ -56,7 +56,7 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.ADD_DEVICE_WITH_MNEMONICS;
+        return OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS;
     }
 
     protected AsyncStatus performUserDeviceValidation(Object stateObject) {

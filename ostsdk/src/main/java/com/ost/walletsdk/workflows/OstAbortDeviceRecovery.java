@@ -177,6 +177,6 @@ public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.ABORT_RECOVER_DEVICE;
+        return OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY;
     }
 }

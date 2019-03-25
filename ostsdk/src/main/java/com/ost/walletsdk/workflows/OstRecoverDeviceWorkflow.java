@@ -168,4 +168,9 @@ public class OstRecoverDeviceWorkflow extends OstBaseUserAuthenticatorWorkflow {
         map.put("signer", dataHolder.getSignerAddress());
         return map;
     }
+
+    @Override
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY;
+    }
 }

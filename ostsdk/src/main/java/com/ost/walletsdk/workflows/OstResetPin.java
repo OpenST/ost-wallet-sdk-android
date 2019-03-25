@@ -179,7 +179,7 @@ public class OstResetPin extends OstBaseWorkFlow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.PIN_RESET;
+        return OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN;
     }
 
     private enum STATES {

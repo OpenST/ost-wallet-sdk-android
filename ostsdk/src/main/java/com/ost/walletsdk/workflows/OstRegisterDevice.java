@@ -36,7 +36,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.REGISTER_DEVICE;
+        return OstWorkflowContext.WORKFLOW_TYPE.SETUP_DEVICE;
     }
 
     private enum STATES {

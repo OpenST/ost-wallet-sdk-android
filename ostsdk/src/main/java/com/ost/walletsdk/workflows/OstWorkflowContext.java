@@ -16,19 +16,19 @@ package com.ost.walletsdk.workflows;
 public class OstWorkflowContext {
     public enum WORKFLOW_TYPE {
         UNKNOWN,
-        REGISTER_DEVICE,
+        SETUP_DEVICE,
         ACTIVATE_USER,
-        ADD_DEVICE,
-        PERFORM,
-        GET_MNEMONICS,
         ADD_SESSION,
+        GET_DEVICE_MNEMONICS,
+        PERFORM_QR_ACTION,
         EXECUTE_TRANSACTION,
-        ADD_DEVICE_WITH_QR,
-        ADD_DEVICE_WITH_MNEMONICS,
-        PIN_RESET,
-        RECOVER_DEVICE,
-        ABORT_RECOVER_DEVICE,
-        LOGOUT_ALL_SESSIONS;
+        AUTHORIZE_DEVICE_WITH_QR_CODE,
+        AUTHORIZE_DEVICE_WITH_MNEMONICS,
+        INITIATE_DEVICE_RECOVERY,
+        ABORT_DEVICE_RECOVERY,
+        REVOKE_DEVICE_WITH_QR_CODE,
+        RESET_PIN,
+        LOGOUT_ALL_SESSIONS
     }
     private WORKFLOW_TYPE workflow_type;
 

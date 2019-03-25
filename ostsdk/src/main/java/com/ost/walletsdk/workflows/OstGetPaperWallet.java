@@ -47,6 +47,6 @@ public class OstGetPaperWallet extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.GET_MNEMONICS;
+        return OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS;
     }
 }

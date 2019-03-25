@@ -167,7 +167,7 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.PERFORM;
+        return OstWorkflowContext.WORKFLOW_TYPE.PERFORM_QR_ACTION;
     }
 
     interface DataDefinitionInstance {
