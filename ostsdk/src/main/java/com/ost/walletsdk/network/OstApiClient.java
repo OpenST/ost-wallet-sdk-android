@@ -10,7 +10,6 @@
 
 package com.ost.walletsdk.network;
 
-import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstApiSigner;
 import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
@@ -22,7 +21,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -154,14 +152,10 @@ public class OstApiClient {
         try {
             jsonObject = mOstHttpRequestClient.get(String.format("/users/%s/sessions/%s", mUserId, address), requestMap);
         } catch (OstApiError ostApiError) {
-            List<OstApiError.ApiErrorData> errorData = ostApiError.getErrorData();
-            if (ostApiError.isNotFound()
-                    && 0 < errorData.size()
-                    && OstConstants.SESSION_ADDRESS.equalsIgnoreCase(
-                    errorData.get(0).getParameter()
-            )) {
-                // wipe session key which is not available in backend
-                new OstKeyManager(mUserId).wipeSession(address);
+            try {
+                new OstKeyManager(mUserId).handleSessionApiError(ostApiError, address);
+            } catch (Throwable th) {
+                //Do nothing
             }
             throw ostApiError;
         }
