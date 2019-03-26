@@ -34,6 +34,7 @@ import ost.com.sampleostsdkapplication.fragments.LogoutFragment;
 import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
 import ost.com.sampleostsdkapplication.fragments.QRPerformFragment;
 import ost.com.sampleostsdkapplication.fragments.ResetPinFragment;
+import ost.com.sampleostsdkapplication.fragments.RuleTransactionFragment;
 import ost.com.sampleostsdkapplication.fragments.SetUpUserFragment;
 import ost.com.sampleostsdkapplication.fragments.UserDetailsFragment;
 import ost.com.sampleostsdkapplication.fragments.UserListFragment;
@@ -42,6 +43,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class UsersListActivity extends MappyBaseActivity implements
         BaseFragment.OnBaseFragmentListener,
+        UserAdapter.OnItemSelectedListener,
         LogoutFragment.OnLogoutFragmentListener {
 
     private static final String TAG = "OstUsersListActivity";
@@ -53,7 +55,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_list_activity);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        UserListFragment userListFragment = UserListFragment.newInstance();
+        UserListFragment userListFragment = UserListFragment.newInstance(this);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, userListFragment, "users_list");
         transaction.commit();
@@ -323,6 +325,22 @@ public class UsersListActivity extends MappyBaseActivity implements
                 Log.e(TAG, "JSONException while parsing");
             }
         }
+    }
+
+    @Override
+    public void onItemSelected(String tokenHolderAddress) {
+        loadRuleTransactionFragment(tokenHolderAddress);
+    }
+
+    private void loadRuleTransactionFragment(String tokenHolderAddress) {
+        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+        String currentUserId = logInUser.getOstUserId();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        RuleTransactionFragment ruleTransactionFragment = RuleTransactionFragment.newInstance(currentUserId, tokenHolderAddress);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, ruleTransactionFragment, "rule_transaction_fragment");
+        transaction.addToBackStack("rule_transaction_fragment");
+        transaction.commit();
     }
 
 

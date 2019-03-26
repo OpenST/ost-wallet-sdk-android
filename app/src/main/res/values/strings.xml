@@ -96,4 +96,5 @@
     <string name="show_qr_code_to_authorize_device">Show QR Code to Authorize Device</string>
     <string name="authorize_device_using_mnemonics">Authorize device using mnemonics</string>
     <string name="ost_user_recovery_address">Recovery Address</string>
+    <string name="rule_transaction">Rule Transaction</string>
 </resources>

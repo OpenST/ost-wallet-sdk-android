@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tokenHolderAddress"
+        style="@style/Widget.OstDemoApp.TextInputLayout"
+        android:layout_marginStart="20dp"
+        android:text="Token Holder Address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tokenHolderAddressValue"
+        style="@style/Widget.OstDemoApp.TextInputLayout"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/Amount"
+        style="@style/Widget.OstDemoApp.TextInputLayout"
+        android:layout_marginStart="20dp"
+        android:text="Amount in Wei"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/transferAmount"
+        style="@style/Widget.OstDemoApp.TextInputLayout"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <SeekBar
+        android:id="@+id/amountSlider"
+        android:max="1000"
+        android:progress="250"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
