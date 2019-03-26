@@ -25,7 +25,7 @@ import java.util.Collections;
 
 public class TokenHolder {
     private static final String TAG = "OstTokenHolder";
-    private static final String EXECUTABLE_CALL_STRING = "executeRule(address,bytes,uint256,uint8,bytes32,bytes32)";
+    private static final String EXECUTABLE_CALL_STRING = "executeRule(address,bytes,uint256,bytes32,bytes32,uint8)";
     private static final String LOGOUT_ALL_SESSIONS = "logout";
 
     public TokenHolder() {
