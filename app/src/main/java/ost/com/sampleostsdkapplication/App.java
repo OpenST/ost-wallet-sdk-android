@@ -9,16 +9,19 @@ import com.ost.walletsdk.OstSdk;
 public class App extends Application {
 
 
-    public static final String BASE_URL_MAPPY = "https://s5-mappy.stagingost.com/api/";
-    public static final String BASE_URL_OST_PLATFORM = "https://s6-api.stagingost.com/testnet/v2";
+    private static String BASE_URL_MAPPY;
+    private static String BASE_URL_OST_PLATFORM;
+
     private LogInUser loggedUser;
     private SharedPreferences sharedPreferences;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        BASE_URL_MAPPY = getString(R.string.base_url_mappy);
+        BASE_URL_OST_PLATFORM = getString(R.string.base_url_ost_platform);
 
-        OstSdk.initialize(getApplicationContext(), BASE_URL_OST_PLATFORM);
+        OstSdk.initialize(getApplicationContext(), getBaseUrlOstPlatform());
 
         sharedPreferences = getSharedPreferences("LoggedIn_user", Context.MODE_PRIVATE);
     }
@@ -61,5 +64,13 @@ public class App extends Application {
         }
 
         keyValuesEditor.apply();
+    }
+
+    public static String getBaseUrlOstPlatform() {
+        return BASE_URL_OST_PLATFORM;
+    }
+
+    public static String getBaseUrlMappy() {
+        return BASE_URL_MAPPY;
     }
 }

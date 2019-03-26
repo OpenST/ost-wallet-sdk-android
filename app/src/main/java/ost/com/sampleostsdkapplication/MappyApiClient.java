@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.network.OstHttpRequestClient;
 
 import org.json.JSONException;
@@ -21,7 +22,7 @@ public class MappyApiClient {
 
     public MappyApiClient() {
         mHandler = new Handler();
-        mOstHttpRequestClient = new OstHttpRequestClient(App.BASE_URL_MAPPY);
+        mOstHttpRequestClient = new OstHttpRequestClient(App.getBaseUrlMappy());
     }
 
     public void getUser(final String userId,final  Callback callback) {
