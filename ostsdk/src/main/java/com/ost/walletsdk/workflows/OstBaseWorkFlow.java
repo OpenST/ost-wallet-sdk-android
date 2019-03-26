@@ -403,19 +403,28 @@ abstract class OstBaseWorkFlow {
     }
 
     OstRule[] mOstRules;
-    OstRule[] ensureOstRules()  throws OstError {
+    OstRule[] ensureOstRules(String ruleName)  throws OstError {
         if ( null == mOstToken ) {  ensureOstToken(); }
 
         mOstRules = mOstToken.getAllRules();
-        if (null == mOstRules || mOstRules.length == 0) {
-            try {
-                mOstApiClient.getAllRules();
-            } catch (IOException e) {
-                OstError ostError = new OstError("wp_base_eot_1", ErrorCode.RULES_API_FAILED);
-                throw ostError;
+        if ( null != mOstRules && mOstRules.length > 0 ) {
+            int len = mOstRules.length;
+            for(int cnt = 0; cnt < len; cnt++ ) {
+                OstRule rule = mOstRules[cnt];
+                if ( rule.getName().equalsIgnoreCase(ruleName) ) {
+                    return mOstRules;
+                }
             }
-            mOstRules = mOstToken.getAllRules();
         }
+
+        //Fetch the rules.
+        try {
+            mOstApiClient.getAllRules();
+        } catch (IOException e) {
+            OstError ostError = new OstError("wp_base_eot_1", ErrorCode.RULES_API_FAILED);
+            throw ostError;
+        }
+        mOstRules = mOstToken.getAllRules();
         return mOstRules;
     }
 
@@ -444,16 +453,6 @@ abstract class OstBaseWorkFlow {
     AsyncStatus loadToken() {
         try {
             ensureOstToken();
-        } catch (OstError ostError) {
-            return postErrorInterrupt(ostError);
-        }
-        return new AsyncStatus(true);
-    }
-
-    @Deprecated
-    protected AsyncStatus loadRules() {
-        try {
-            ensureOstRules();
         } catch (OstError ostError) {
             return postErrorInterrupt(ostError);
         }
