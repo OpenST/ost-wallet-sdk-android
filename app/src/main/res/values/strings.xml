@@ -49,7 +49,7 @@
     <string name="ost_token_id">Token Id</string>
     <string name="ost_user_token_holder">Token Holder Address</string>
     <string name="ost_user_device_manager">Device Manager Address</string>
-    <string name="ost_user_recovery_key">Recovery Key Address</string>
+    <string name="ost_user_recovery_owner_address">Recovery Owner Address</string>
     <string name="ost_user_device_address">Device Address</string>
     <string name="device_name">Device Name</string>
     <string name="device_status">Device Status</string>
@@ -95,4 +95,5 @@
     <string name="setup_your_wallet">Setup your Wallet</string>
     <string name="show_qr_code_to_authorize_device">Show QR Code to Authorize Device</string>
     <string name="authorize_device_using_mnemonics">Authorize device using mnemonics</string>
+    <string name="ost_user_recovery_address">Recovery Address</string>
 </resources>

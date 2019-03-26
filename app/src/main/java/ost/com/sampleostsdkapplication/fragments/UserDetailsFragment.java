@@ -36,13 +36,13 @@ public class UserDetailsFragment extends Fragment {
     private EditText mTokenIdEdit;
     private EditText mUserTHEdit;
     private EditText mUserDMEdit;
-    private EditText mUserRecoveryKeyEdit;
+    private EditText mUserRecoveryOwnerAddressEdit;
     private EditText mDeviceAddrEdit;
-    private EditText mDeviceNameEdit;
     private EditText mDeviceStatusEdit;
     private Button mSyncUserButton;
     private ProgressBar mProgressView;
     private LinearLayout mUserDetailPage;
+    private EditText mUserRecoveryAddressEdit;
 
     @Override
     public View onCreateView(
@@ -56,9 +56,9 @@ public class UserDetailsFragment extends Fragment {
         mTokenIdEdit = view.findViewById(R.id.ost_token_id_edit);
         mUserTHEdit = view.findViewById(R.id.ost_user_token_holder_edit);
         mUserDMEdit = view.findViewById(R.id.ost_user_device_manager_edit);
-        mUserRecoveryKeyEdit = view.findViewById(R.id.ost_user_recovery_key_edit);
+        mUserRecoveryOwnerAddressEdit = view.findViewById(R.id.ost_user_recovery_owner_address_edit);
+        mUserRecoveryAddressEdit = view.findViewById(R.id.ost_user_recover_address_edit);
         mDeviceAddrEdit = view.findViewById(R.id.ost_user_device_address_edit);
-        mDeviceNameEdit = view.findViewById(R.id.ost_user_device_name_edit);
         mDeviceStatusEdit = view.findViewById(R.id.ost_user_device_status_edit);
         mSyncUserButton = view.findViewById(R.id.btn_sync_user);
         mSyncUserButton.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +129,8 @@ public class UserDetailsFragment extends Fragment {
         mTokenIdEdit.setText(mTokenId);
         mUserTHEdit.setText(user.getTokenHolderAddress());
         mUserDMEdit.setText(user.getDeviceManagerAddress());
-        mUserRecoveryKeyEdit.setText(user.getRecoveryOwnerAddress());
+        mUserRecoveryOwnerAddressEdit.setText(user.getRecoveryOwnerAddress());
+        mUserRecoveryAddressEdit.setText(user.getRecoveryAddress());
         if (null != device) {
             mDeviceAddrEdit.setText(device.getAddress());
             mDeviceStatusEdit.setText(device.getStatus());

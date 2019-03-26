@@ -46,14 +46,14 @@ public class CreateSessionFragment extends BaseFragment {
      * Perform operation on clicking next
      */
     public void onNextClick(){
-        if (TextUtils.isEmpty(mSpendingLimit.toString()) && mSpendingLimit.toString().length() < 1) {
+        if (TextUtils.isEmpty(mSpendingLimit.toString()) && mSpendingLimit.toString().length() < 0) {
             mSpendingLimit.setError(getResources().getString(R.string.valid_spending_limt));
             return;
         }
         if (TextUtils.isEmpty(mSessionExpirationEditBox.getText())
                 ||
                 (!TextUtils.isEmpty(mSessionExpirationEditBox.getText()) &&
-                        Integer.parseInt(mSessionExpirationEditBox.getText().toString()) < 1)) {
+                        Integer.parseInt(mSessionExpirationEditBox.getText().toString()) < 0)) {
             mSessionExpiration.setError(getResources().getString(R.string.valid_number_of_days));
             return;
         }
