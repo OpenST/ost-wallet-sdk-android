@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.ost.walletsdk.OstSdk;
 import ost.com.sampleostsdkapplication.R;
 
 /**
@@ -57,11 +58,13 @@ public class CreateSessionFragment extends BaseFragment {
             mSessionExpiration.setError(getResources().getString(R.string.valid_number_of_days));
             return;
         }
-        showLoader();
-        OnCreateSessionFragmentListener mListener = (OnCreateSessionFragmentListener) getFragmentListener();
+
         String spendingLimit = mSpendingLimitEditBox.getText().toString();
         long expiryAfterSecs = (Integer.parseInt(mSessionExpirationEditBox.getText().toString()) * 86400);
-        mListener.onCreateSessionSubmit(spendingLimit, expiryAfterSecs);
+
+        OstSdk.addSession(mUserId, spendingLimit, expiryAfterSecs, this);
+
+        super.onNextClick();
     }
 
     /**
@@ -77,9 +80,5 @@ public class CreateSessionFragment extends BaseFragment {
         fragment.mTokenId = tokenId;
         fragment.mUserId = userId;
         return fragment;
-    }
-
-    public interface OnCreateSessionFragmentListener extends OnBaseFragmentListener{
-        void onCreateSessionSubmit(String spendingLimit, long expiryAfterSecs);
     }
 }

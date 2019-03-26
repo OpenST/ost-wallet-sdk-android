@@ -120,6 +120,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
     }
 
     public void onNextClick() {
+        flowStarted();
+        showLoader();
     }
 
     public void showLoader() {
@@ -165,7 +167,6 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
 
     @Override
     public void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-        hideLoader();
         showWalletInstructionText("Invalid Pin.");
         UsersListActivity activity = (UsersListActivity) getActivity();
         if (null == activity) {
@@ -212,7 +213,16 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
         StringBuilder errorStringBuilder = new StringBuilder();
 
-        String errorString = String.format("Work Flow %s Error: %s", ostWorkflowContext.getWorkflow_type(), ostError.getMessage());
+        String errorString = String.format("Work Flow %s " +
+                        "\nError: %s " +
+                        "\nwith error code: %s" +
+                        "\ninternal error code: %s",
+                ostWorkflowContext.getWorkflow_type(),
+                ostError.getMessage(),
+                ostError.getErrorCode(),
+                ostError.getInternalErrorCode()
+        );
+
         Toast.makeText(OstSdk.getContext(), errorString, Toast.LENGTH_SHORT).show();
 
         errorStringBuilder.append(errorString);
