@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="base_url_mappy">https://s5-mappy.stagingost.com/api/</string>
-    <string name="base_url_ost_platform">https://s6-api.stagingost.com/testnet/v2</string>
-</resources>
