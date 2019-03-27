@@ -115,3 +115,4 @@ ostsdk/schemas/
 *.class
 app/release/output.json
 app/src/main/res/values/uris.xml
+app/src/main/res/values/.uris.xml
