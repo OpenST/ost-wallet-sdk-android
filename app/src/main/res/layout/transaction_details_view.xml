@@ -1,48 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/spinnerRuleName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="10dp" />
 
     <TextView
         android:id="@+id/tokenHolderAddress"
         style="@style/Widget.OstDemoApp.TextInputLayout"
-        android:layout_marginStart="20dp"
-        android:text="Token Holder Address"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Token Holder Address" />
 
     <TextView
         android:id="@+id/tokenHolderAddressValue"
         style="@style/Widget.OstDemoApp.TextInputLayout"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp" />
 
     <TextView
         android:id="@+id/Amount"
         style="@style/Widget.OstDemoApp.TextInputLayout"
-        android:layout_marginStart="20dp"
-        android:text="Amount in Wei"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="Amount in Wei" />
 
     <TextView
         android:id="@+id/transferAmount"
         style="@style/Widget.OstDemoApp.TextInputLayout"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="20dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="20dp" />
 
     <SeekBar
         android:id="@+id/amountSlider"
-        android:max="1000"
-        android:progress="250"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:max="1000"
+        android:progress="250" />
 </LinearLayout>

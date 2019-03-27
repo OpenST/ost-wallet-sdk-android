@@ -2,13 +2,13 @@ package ost.com.sampleostsdkapplication.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ost.walletsdk.OstSdk;
@@ -29,6 +29,9 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
     private TextView mTransferAmountView;
     private TextView mTokenHolderAddressView;
     private String mTokenHolderAddress;
+    private Spinner mSpinnerRuleName;
+
+    private String[] ruleType = { "BT", "USD"};
 
     @Override
     public View onCreateView(
@@ -40,6 +43,9 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
         mAmountSlider = view.findViewById(R.id.amountSlider);
         mAmountSlider.setOnSeekBarChangeListener(this);
 
+        mSpinnerRuleName = view.findViewById(R.id.spinnerRuleName);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, ruleType);
+        mSpinnerRuleName.setAdapter(arrayAdapter);
         mTokenHolderAddressView = view.findViewById(R.id.tokenHolderAddressValue);
         mTokenHolderAddressView.setText(mTokenHolderAddress);
 
@@ -57,15 +63,22 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
     @Override
     public void onNextClick() {
 
-        if (TextUtils.isEmpty(mTokenHolderAddress)) {
-            Log.e(TAG, "Token Holder Address is Empty");
-            return;
+        String transferType = (String)mSpinnerRuleName.getSelectedItem();
+        String ruleName = OstSdk.RULE_NAME_DIRECT_TRANSFER; // set default value
+
+        switch (transferType) {
+            case "BT":
+                ruleName = OstSdk.RULE_NAME_DIRECT_TRANSFER;
+                break;
+            case "USD":
+                ruleName = OstSdk.RULE_NAME_DIRECT_TRANSFER;
+                break;
         }
 
         OstSdk.executeTransaction(mUserId,
                 Arrays.asList(mTokenHolderAddress),
                 Arrays.asList(mTransferAmountView.getText().toString()),
-                OstSdk.RULE_NAME_DIRECT_TRANSFER,
+                ruleName,
                 this);
 
         super.onNextClick();
