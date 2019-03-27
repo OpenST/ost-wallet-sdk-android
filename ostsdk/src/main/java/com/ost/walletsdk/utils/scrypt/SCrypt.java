@@ -1,5 +1,3 @@
-// Copyright (C) 2011 - Will Glozer.  All rights reserved.
-
 /*
  * Copyright 2019 OST.com Inc
  *
@@ -9,6 +7,7 @@
  *
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
+
 /*
  *  We have made custom changes to this code in order to perform SCrypt operations on Android
  *  Devices. The code changes are marked with comments beginning with 'Ost Custom Change'.

@@ -131,7 +131,7 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
     @Override
     protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
         try {
-            ensureOstRules();
+            ensureOstRules( mRuleName );
         } catch (OstError error) {
             return postErrorInterrupt(error);
         }

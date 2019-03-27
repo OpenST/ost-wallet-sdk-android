@@ -32,7 +32,7 @@ public class OstRule extends OstBaseEntity {
     public static final String CALL_PREFIX = "call_prefix";
 
     public static String getIdentifier() {
-        return OstRule.NAME;
+        return OstRule.ADDRESS;
     }
 
     private static EntityFactory entityFactory;
@@ -81,7 +81,7 @@ public class OstRule extends OstBaseEntity {
 
     @Override
     public String getId() {
-        return super.getId().toLowerCase();
+        return getAddress();
     }
 
     public String getAbi() {

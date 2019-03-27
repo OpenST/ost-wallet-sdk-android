@@ -67,10 +67,10 @@ public class MockTest {
     public void testTokenHolderCALLPREFIX() {
 
         try {
-            byte[] feed = "executeRule(address,bytes,uint256,uint8,bytes32,bytes32)".getBytes();
+            byte[] feed = "executeRule(address,bytes,uint256,bytes32,bytes32,uint8)".getBytes();
             String hash = new SoliditySha3().soliditySha3(Numeric.toHexString(feed));
             hash = hash.substring(0,10);
-            Assert.assertEquals(hash, "0x59793b00");
+            Assert.assertEquals(hash, "0x97ebe030");
         } catch (Exception e) {
             e.printStackTrace();
         }
