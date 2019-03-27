@@ -33,6 +33,7 @@ import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstApiClient;
 import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.utils.AsyncStatus;
+import com.ost.walletsdk.utils.CommonUtils;
 import com.ost.walletsdk.utils.EIP712;
 import com.ost.walletsdk.utils.GnosisSafe;
 import com.ost.walletsdk.utils.OstPayloadBuilder;
@@ -43,6 +44,7 @@ import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -419,12 +421,21 @@ abstract class OstBaseWorkFlow {
 
         //Fetch the rules.
         try {
-            mOstApiClient.getAllRules();
-        } catch (IOException e) {
+            JSONObject rulesResponseObject = mOstApiClient.getAllRules();
+            JSONArray rulesJsonArray = (JSONArray)new CommonUtils().parseResponseForResultType(rulesResponseObject);
+
+            int numberOfRules = rulesJsonArray.length();
+            OstRule[] ostRules = new OstRule[numberOfRules];
+            for (int i=0; i<numberOfRules; i++) {
+                ostRules[i] = OstRule.parse(
+                        rulesJsonArray.getJSONObject(i)
+                );
+            }
+            mOstRules = ostRules;
+        } catch (Exception e) {
             OstError ostError = new OstError("wp_base_eot_1", ErrorCode.RULES_API_FAILED);
             throw ostError;
         }
-        mOstRules = mOstToken.getAllRules();
         return mOstRules;
     }
 

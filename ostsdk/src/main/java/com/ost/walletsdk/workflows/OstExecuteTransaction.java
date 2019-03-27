@@ -18,6 +18,7 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstTransactionSigner;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedTransactionStruct;
+import com.ost.walletsdk.models.entities.OstRule;
 import com.ost.walletsdk.models.entities.OstTransaction;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstApiError;
@@ -77,7 +78,7 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
 
         OstTransactionSigner ostTransactionSigner = new OstTransactionSigner(mUserId);
         SignedTransactionStruct signedTransactionStruct = ostTransactionSigner
-                .getSignedTransaction(mRuleName, mTokenHolderAddresses, mAmounts);
+                .getSignedTransaction(mRuleName, mTokenHolderAddresses, mAmounts, getRuleAddressFor(mRuleName));
 
         Log.i(TAG, "Building transaction request");
         Map<String, Object> map = buildTransactionRequest(signedTransactionStruct);
@@ -121,6 +122,16 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
                     new OstContextEntity(OstTransaction.getById(entityId), OstSdk.TRANSACTION)
             );
         }
+    }
+
+    private String getRuleAddressFor(String ruleName) {
+        OstRule[] ostRules = mOstRules;
+        for (int i = 0; i < ostRules.length; i++) {
+            if (ruleName.equalsIgnoreCase(ostRules[i].getName())) {
+                return ostRules[i].getAddress();
+            }
+        }
+        throw new OstError("wf_et_graf_1", OstErrors.ErrorCode.RULE_NOT_FOUND);
     }
 
     @Override
