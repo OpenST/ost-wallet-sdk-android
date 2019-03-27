@@ -131,7 +131,7 @@ The mnemonic phrase represents a human-readable way to authorize a new device. T
 **Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void getPaperWallet(String userId, OstWorkFlowCallback workFlowCallback)**<br/>
+&nbsp; **void getDeviceMnemonics(String userId, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
 OstSdk.getDeviceMnemonics(String userId, new OstWorkFlowCallbackImpl())
 ```
