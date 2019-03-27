@@ -37,7 +37,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-
+/**
+ * It revokes provided device address from device manager.
+ * Current device should be in {@link OstDevice.CONST_STATUS#AUTHORIZED} state.
+ */
 public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
 
     private static final String TAG = "OstRevokeDeviceWithQR";
@@ -154,7 +157,7 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.ADD_DEVICE_WITH_QR;
+        return OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE;
     }
 
     static class RevokeDeviceDataDefinitionInstance extends OstDeviceDataDefinitionInstance {

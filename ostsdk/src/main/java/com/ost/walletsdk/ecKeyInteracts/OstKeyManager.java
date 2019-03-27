@@ -10,8 +10,14 @@
 
 package com.ost.walletsdk.ecKeyInteracts;
 
+import com.ost.walletsdk.OstConstants;
+import com.ost.walletsdk.models.Impls.OstModelFactory;
+import com.ost.walletsdk.models.Impls.OstSessionKeyModelRepository;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
+
+import java.util.List;
 
 public class OstKeyManager {
     private static final String TAG = "OstKeyManager";
@@ -71,5 +77,22 @@ public class OstKeyManager {
             return null;
         }
         return mKeyMetaStruct.getDeviceAddress();
+    }
+
+    public void handleSessionApiError(OstApiError ostApiError, String sessionAddress) {
+        List<OstApiError.ApiErrorData> errorData = ostApiError.getErrorData();
+        if (ostApiError.isNotFound()
+                && 0 < errorData.size()
+                && OstConstants.SESSION_ADDRESS.equalsIgnoreCase(
+                errorData.get(0).getParameter()
+        )) {
+            // wipe session key which is not available in backend
+            wipeSession(sessionAddress);
+        }
+    }
+
+    private void wipeSession(String address) {
+        OstModelFactory.getSessionModel().deleteEntity(address);
+        new OstSessionKeyModelRepository().deleteSessionKey(address);
     }
 }

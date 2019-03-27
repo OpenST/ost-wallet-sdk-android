@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * To store user entity
+ * To hold User info
  */
 @Entity(tableName = "user")
 public class OstUser extends OstBaseEntity {
@@ -88,7 +88,7 @@ public class OstUser extends OstBaseEntity {
             String expirationTimestamp = ostSession.getExpirationTimestamp();
             BigInteger spendingLimitBI = new BigInteger(ostSession.getSpendingLimit());
             BigInteger spendingBtAmountInWeiBI = new BigInteger(spendingBtAmountInWei);
-            if (spendingLimitBI.compareTo(spendingBtAmountInWeiBI) > 0 && expirationTimestamp.compareTo(currentTime) > 0) {
+            if (spendingLimitBI.compareTo(spendingBtAmountInWeiBI) >= 0 && expirationTimestamp.compareTo(currentTime) > 0) {
                 return ostSession;
             }
         }

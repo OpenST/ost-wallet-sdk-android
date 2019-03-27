@@ -14,6 +14,9 @@ import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
 
+/**
+ * Ost Error with error code and error message
+ */
 public class OstErrors {
     private static String TAG = "OstErrors";
 
@@ -21,7 +24,7 @@ public class OstErrors {
         switch (code) {
             case INVALID_USER_ID: return "Invalid user Id";
             case INVALID_WORKFLOW_CALLBACK: return "Invalid Workflow Callback. Workflow callback can not be null.";
-            case KIT_API_ERROR: return "Kit Api returned error.";
+            case OST_PLATFORM_API_ERROR: return "OST Platform Api returned error.";
             case GET_USER_API_FAILED:
                 return "Failed to fetch user information";
 
@@ -304,7 +307,7 @@ public class OstErrors {
         UNCAUGHT_EXCEPTION_HANDELED,
         DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY,
-        KIT_API_ERROR,
+        OST_PLATFORM_API_ERROR,
         CONFIG_READ_FAILED,;
     }
 }

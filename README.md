@@ -1,4 +1,5 @@
 # OST Wallet SDK Android
+
 ## Introduction
 Wallet SDK is a mobile application development SDK that enables developers to integrate the functionality of a non-custodial crypto-wallet into consumer applications. The SDK:
 
@@ -57,7 +58,7 @@ initializes all the required instances and runs migrations of local databases.<b
 We recommended that you call initialize() in Application sub-class.<br/><br/>
 **Parameters**<br/>
 &nbsp; parameter context: ApplicationContext.<br/>
-&nbsp; parameter baseUrl: Kit endpoint.<br/>
+&nbsp; parameter baseUrl: OST Platform endpoint.<br/>
 &nbsp; **initialize(context, baseUrl)**<br/>
 ```java
 public void onCreate() {
@@ -65,6 +66,7 @@ public void onCreate() {
         OstSdk.initialize(getApplicationContext(), BASE_URL);
 }
 ```
+
 ### Set up the device
 The `setupDevice` API should be called each time the application is launched to confirm that the current device is in the `registered` state and therefore able to call the OST Platform APIs.<br/><br/>
 
@@ -129,7 +131,7 @@ The mnemonic phrase represents a human-readable way to authorize a new device. T
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void getPaperWallet(String userId, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.getPaperWallet(String userId, new OstWorkFlowCallbackImpl())
+OstSdk.getDeviceMnemonics(String userId, new OstWorkFlowCallbackImpl())
 ```
 
 
@@ -143,6 +145,7 @@ A user that has stored their mnemonic phrase can enter it into an appropriate us
 ```java
 OstSdk.authorizeCurrentDeviceWithMnemonics(userId, mnemonics, new OstWorkFlowCallbackImpl())
 ```
+
 ### getAddDeviceQRCode
 Getter method which return QR bitmap image for add device<br/>
 Use this methods to generate QR code of current device to be added from authorized device<br/><br/>
@@ -163,8 +166,6 @@ QR codes can be used to encode transaction data for authorizing devices, making 
 ```java
 OstSdk.performQRAction(userId, data, new OstWorkFlowCallbackImpl())
 ```
-
-
 
 ### startPolling
 To poll provided entity.<br/>
@@ -192,6 +193,37 @@ To update current Pin with new Pin.<br/><br/>
 ```java
 OstSdk.resetPin(userId, appSalt, currentPin, newPin, new OstWorkFlowCallbackImpl())
 ```
+
+### initiateDeviceRecovery
+To authorize the current device by revoking provided device address.<br/><br/>
+&nbsp; parameter userId                 user id of recovery user<br/>
+&nbsp; parameter passphrase             Struct of current passPhrase<br/>
+&nbsp; parameter deviceAddressToRecover Address of device to recover<br/>
+&nbsp; parameter workFlowCallback       Work flow interact<br/>
+&nbsp; **void initiateDeviceRecovery(String userId, UserPassphrase passphrase, String deviceAddressToRecover, OstWorkFlowCallback workFlowCallback)**<br/>
+```java
+OstSdk.initiateDeviceRecovery(userId, passphrase, deviceAddressToRecover, new OstWorkFlowCallbackImpl())
+```
+
+### abortDeviceRecovery
+If there are any ongoing initiate recovery in process, It will abort that recovery process<br/><br/>
+&nbsp; parameter userId           userId of recovery user<br/>
+&nbsp; parameter passphrase       A simple struct to transport pin information via app and Sdk.<br/>
+&nbsp; parameter workFlowCallback Workflow callback Interact <br/>
+&nbsp; **void abortDeviceRecovery(String userId, UserPassphrase passphrase, OstWorkFlowCallback workFlowCallback)**<br/>
+```java
+OstSdk.abortDeviceRecovery(userId, passphrase, new OstWorkFlowCallbackImpl())
+```
+
+### logoutAllSessions
+It will revoke all the sessions associated with provided userId<br/><br/>
+&nbsp; parameter userId           user Id whose sessions to revoke<br/>
+&nbsp; parameter workFlowCallback Workflow callback interact<br/>
+&nbsp; **void logoutAllSessions(String userId, OstWorkFlowCallback workFlowCallback)**
+```java
+OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
+```
+
 
 ## WorkFlow Callbacks
 &nbsp; Callbacks to be implemented by application before calling any of the above WorkFlows.

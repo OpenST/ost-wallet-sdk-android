@@ -16,9 +16,11 @@ import android.util.Log;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstTransactionSigner;
+import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedTransactionStruct;
 import com.ost.walletsdk.models.entities.OstTransaction;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.utils.CommonUtils;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -37,7 +39,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Execute Transaction
+ * It executes rule transaction.
+ * Before execute transactions make sure you have created Session, having sufficient spending limit
+ * and within the expiry limit,
+ * You can create session by
+ * {@link OstSdk#addSession(String, String, long, OstWorkFlowCallback)} every time you need sessions and
+ * {@link OstSdk#activateUser(UserPassphrase, long, String, OstWorkFlowCallback)} once you activate user.
+ * Rule should be passed to execute rule.
+ * {@link OstSdk#RULE_NAME_DIRECT_TRANSFER#RULE_NAME_PRICER}
+ * It can do multiple transfers by passing list of token holder receiver addresses with
+ * respective amounts.
  */
 public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
 
@@ -72,8 +83,14 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
         Map<String, Object> map = buildTransactionRequest(signedTransactionStruct);
 
         Log.i(TAG, "post transaction execute api");
-        String entityId = postTransactionApi(map);
-        if (null == entityId) {
+        String entityId = null;
+        try {
+            entityId = postTransactionApi(map);
+        } catch (OstApiError ostApiError) {
+            new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.SESSION).perform();
+            throw ostApiError;
+        }
+        if ( null == entityId ) {
             return postErrorInterrupt("wf_et_pr_4", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
         }
 

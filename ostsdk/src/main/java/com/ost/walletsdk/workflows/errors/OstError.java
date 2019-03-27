@@ -12,6 +12,10 @@ package com.ost.walletsdk.workflows.errors;
 
 import android.util.Log;
 
+/**
+ * This class defines object of Ost Errors which are thrown on unexpected behaviour of wallet SDK.
+ * This class object will provide Error code and  Internal error code
+ */
 public class OstError extends Error {
 
     private static String Tag = "OstError";

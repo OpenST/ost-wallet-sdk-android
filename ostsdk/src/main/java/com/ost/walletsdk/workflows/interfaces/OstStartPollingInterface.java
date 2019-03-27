@@ -17,7 +17,7 @@ package com.ost.walletsdk.workflows.interfaces;
  */
 public interface OstStartPollingInterface extends OstBaseInterface {
     /**
-     * SDK user will make SDK to start polling for status from kit.
+     * SDK user will make SDK to start polling for status from OST Platform.
      */
     void startPolling();
 }

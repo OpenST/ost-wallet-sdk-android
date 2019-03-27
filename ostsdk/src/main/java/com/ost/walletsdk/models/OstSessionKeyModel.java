@@ -24,4 +24,6 @@ public interface OstSessionKeyModel {
     Future<AsyncStatus> deleteAllSessionKeys();
 
     OstSessionKey initSessionKey(String key, byte[] data);
+
+    Future<AsyncStatus> deleteSessionKey(String key);
 }

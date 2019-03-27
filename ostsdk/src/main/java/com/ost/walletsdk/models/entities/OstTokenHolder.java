@@ -28,7 +28,9 @@ import static com.ost.walletsdk.models.entities.OstTokenHolder.CONST_STATUS.ACTI
 import static com.ost.walletsdk.models.entities.OstTokenHolder.CONST_STATUS.LOGGED_OUT;
 import static com.ost.walletsdk.models.entities.OstTokenHolder.CONST_STATUS.LOGGING_OUT;
 
-
+/**
+ * To hold Token Holder info
+ */
 @Entity(tableName = "token_holder")
 public class OstTokenHolder extends OstBaseEntity {
 

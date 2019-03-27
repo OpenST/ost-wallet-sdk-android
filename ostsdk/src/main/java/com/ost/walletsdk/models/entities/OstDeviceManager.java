@@ -23,6 +23,9 @@ import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
 
+/**
+ * To hold Device manager info
+ */
 @Entity(tableName = "device_manager")
 public class OstDeviceManager extends OstBaseEntity {
     private static final String TAG = "OstDeviceManagerEntity";

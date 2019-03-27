@@ -12,6 +12,7 @@ package com.ost.walletsdk.network;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstApiSigner;
+import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 
@@ -26,7 +27,7 @@ import java.util.Map;
  * Http api client over
  *
  * @see OstHttpRequestClient
- * specific for Kit calls
+ * specific for OST Platform calls
  */
 public class OstApiClient {
     private static final String TAG = "OstApiClient";
@@ -147,7 +148,18 @@ public class OstApiClient {
 
     public JSONObject getSession(String address) throws IOException {
         Map<String, Object> requestMap = getPrerequisiteMap();
-        return mOstHttpRequestClient.get(String.format("/users/%s/sessions/%s", mUserId, address), requestMap);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = mOstHttpRequestClient.get(String.format("/users/%s/sessions/%s", mUserId, address), requestMap);
+        } catch (OstApiError ostApiError) {
+            try {
+                new OstKeyManager(mUserId).handleSessionApiError(ostApiError, address);
+            } catch (Throwable th) {
+                //Do nothing
+            }
+            throw ostApiError;
+        }
+        return jsonObject;
     }
 
     public JSONObject getDeviceManager() throws IOException {

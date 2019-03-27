@@ -28,7 +28,7 @@ import org.web3j.crypto.Keys;
 import java.util.Arrays;
 
 /**
- * Transaction Signing
+ * To hold Device info
  */
 @Entity(tableName = "device")
 public class OstDevice extends OstBaseEntity {
@@ -38,8 +38,6 @@ public class OstDevice extends OstBaseEntity {
     public static final String ADDRESS = "address";
     public static final String DEVICE_MANAGER_ADDRESS = "device_manager_address";
     public static final String LINKED_ADDRESS = "linked_address";
-    public static final String DEVICE_NAME = "device_name";
-    public static final String DEVICE_UUID = "device_uuid";
     public static final String API_SIGNER_ADDRESS = "api_signer_address";
 
     public static OstDevice getById(String id) {
@@ -100,21 +98,15 @@ public class OstDevice extends OstBaseEntity {
     public static OstDevice init(String address, String apiAddress, String userId) {
         OstDevice ostDevice = OstDevice.getById(address);
         if (null != ostDevice) {
-            Log.e(TAG, String.format("OstDevice with address %s already exist", address));
+            Log.i(TAG, String.format("OstDevice with address %s already exist", address));
             return ostDevice;
         }
-
-        String uuid = getAdvertisementId();
-
-        String deviceName = android.os.Build.MANUFACTURER + android.os.Build.PRODUCT;
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(OstDevice.ADDRESS, address);
             jsonObject.put(OstDevice.API_SIGNER_ADDRESS, apiAddress);
             jsonObject.put(OstDevice.USER_ID, userId);
-            jsonObject.put(OstDevice.DEVICE_NAME, deviceName);
-            jsonObject.put(OstDevice.DEVICE_UUID, uuid);
             jsonObject.put(OstDevice.DEVICE_MANAGER_ADDRESS, "");
             jsonObject.put(OstDevice.UPDATED_TIMESTAMP, System.currentTimeMillis());
             jsonObject.put(OstDevice.STATUS, CONST_STATUS.CREATED);
@@ -205,9 +197,6 @@ public class OstDevice extends OstBaseEntity {
         return this.getId();
     }
 
-    public String getDeviceName() {
-        return this.getJsonDataPropertyAsString(OstDevice.DEVICE_NAME);
-    }
 
     public String getApiSignerAddress() {
         String apiSignerAddress = this.getJsonDataPropertyAsString(OstDevice.API_SIGNER_ADDRESS);
@@ -218,9 +207,6 @@ public class OstDevice extends OstBaseEntity {
 
     }
 
-    public String getDeviceUuid() {
-        return this.getJsonDataPropertyAsString(OstDevice.DEVICE_UUID);
-    }
 
     public String getLinkedAddress() {
         String linkedAddress = this.getJsonDataPropertyAsString(OstDevice.LINKED_ADDRESS);
@@ -257,10 +243,11 @@ public class OstDevice extends OstBaseEntity {
         if ( TextUtils.isEmpty(status) ) {
             return false;
         }
-        return OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.AUTHORIZING.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status);
+        return CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
+                || CONST_STATUS.REGISTERED.equalsIgnoreCase(status)
+                || CONST_STATUS.AUTHORIZING.equalsIgnoreCase(status)
+                || CONST_STATUS.RECOVERING.equalsIgnoreCase(status)
+                || CONST_STATUS.REVOKING.equalsIgnoreCase(status);
     }
 
     public boolean isAuthorized() {

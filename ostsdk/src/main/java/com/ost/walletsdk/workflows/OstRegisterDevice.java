@@ -26,7 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * To Register device on kit through App
+ * To Register current device on OST Platform through App
  */
 public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegisteredInterface {
 
@@ -36,7 +36,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.REGISTER_DEVICE;
+        return OstWorkflowContext.WORKFLOW_TYPE.SETUP_DEVICE;
     }
 
     private enum STATES {

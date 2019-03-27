@@ -45,7 +45,7 @@ class OstApiHelper implements OstHttpRequestClient.ResponseParser {
 
     synchronized private void updateWithApiResponse(JSONObject jsonObject) {
         if ( null == jsonObject || !jsonObject.optBoolean(OstConstants.RESPONSE_SUCCESS) ) {
-            OstApiError apiError =  new OstApiError("nw_api_helper_uwapir_1", OstErrors.ErrorCode.KIT_API_ERROR, jsonObject);
+            OstApiError apiError =  new OstApiError("nw_api_helper_uwapir_1", OstErrors.ErrorCode.OST_PLATFORM_API_ERROR, jsonObject);
             if ( apiError.isApiSignerUnauthorized() ) {
                 try {
                     OstApiSigner signer = new OstApiSigner(mUserId);

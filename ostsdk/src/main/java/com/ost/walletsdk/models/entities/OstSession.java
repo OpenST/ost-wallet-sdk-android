@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * EIP1077 Transaction Signing
+ * To hold Session info
  */
 @Entity(tableName = "session")
 public class OstSession extends OstBaseEntity {
@@ -64,12 +64,20 @@ public class OstSession extends OstBaseEntity {
     }
 
     public static boolean isValidStatus(String status) {
-        return Arrays.asList(CONST_STATUS.CREATED, CONST_STATUS.INITIALIZING, CONST_STATUS.AUTHORISED,CONST_STATUS.EXPIRED,
-                CONST_STATUS.REVOKED, CONST_STATUS.REVOKING).contains(status);
+        return Arrays.asList(CONST_STATUS.CREATED,
+                CONST_STATUS.INITIALIZING,
+                CONST_STATUS.AUTHORISED,
+                CONST_STATUS.EXPIRED,
+                CONST_STATUS.REVOKED,
+                CONST_STATUS.REVOKING)
+                .contains(status);
     }
 
     public static List<OstSession> getSessionsToSync(String parentId) {
-        return getSessions(parentId, CONST_STATUS.AUTHORISED, CONST_STATUS.INITIALIZING);
+        return getSessions(parentId,
+                CONST_STATUS.AUTHORISED,
+                CONST_STATUS.INITIALIZING,
+                CONST_STATUS.CREATED);
     }
 
     public static List<OstSession> getActiveSessions(String parentId) {
@@ -115,6 +123,38 @@ public class OstSession extends OstBaseEntity {
             };
         }
         return entityFactory;
+    }
+
+    /**
+     * Create Session entity locally with initializing status
+     *
+     * @param address session address
+     * @param userId  user id
+     * @return OstSession object
+     */
+    public static OstSession init(String address, String userId) {
+        OstSession ostSession = OstSession.getById(address);
+        if (null != ostSession) {
+            Log.i(TAG, String.format("OstSession with address %s already exist", address));
+            return ostSession;
+        }
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put(OstSession.ADDRESS, address);
+            jsonObject.put(OstSession.USER_ID, userId);
+            jsonObject.put(OstSession.SPENDING_LIMIT, "0");
+            jsonObject.put(OstSession.EXPIRATION_HEIGHT, "0");
+            jsonObject.put(OstSession.APPROX_EXPIRATION_TIMESTAMP, "0");
+            jsonObject.put(OstSession.NONCE, "0");
+            jsonObject.put(OstSession.UPDATED_TIMESTAMP, System.currentTimeMillis());
+            jsonObject.put(OstSession.STATUS, CONST_STATUS.CREATED);
+            return OstSession.parse(jsonObject);
+        } catch (JSONException e) {
+            Log.i(TAG, "Unexpected JSON exception" , e);
+        }
+
+        return null;
     }
 
     public static OstSession parse(JSONObject jsonObject) throws JSONException {

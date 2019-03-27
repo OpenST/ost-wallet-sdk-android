@@ -33,13 +33,18 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * It will change current passPhrase recoveryAddress with new passPhrase recoveryAddress.
+ */
 public class OstResetPin extends OstBaseWorkFlow {
 
     private static final String TAG = "OstResetPin";
+
     private static final String NEW_RECOVERY_OWNER_ADDRESS = "new_recovery_owner_address";
     private static final String TO = "to";
     private static final String SIGNER = "signer";
     private static final String SIGNATURE = "signature";
+
     private final UserPassphrase currentPassphrase;
     private final UserPassphrase newPassphrase;
 
@@ -174,7 +179,7 @@ public class OstResetPin extends OstBaseWorkFlow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.PIN_RESET;
+        return OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN;
     }
 
     private enum STATES {

@@ -77,8 +77,6 @@ public class KitApiTest {
                 jsonObject.put(OstDevice.ADDRESS, "0x60A20Cdf6a21a73Fb89475221D252865C695e302");
                 jsonObject.put(OstDevice.API_SIGNER_ADDRESS, "0xf65c7a49981db56AED34beA4617E32e326ACf977");
                 jsonObject.put(OstDevice.USER_ID, USER_ID);
-                jsonObject.put(OstDevice.DEVICE_NAME, "deviceName");
-                jsonObject.put(OstDevice.DEVICE_UUID, "uuid");
                 jsonObject.put(OstDevice.DEVICE_MANAGER_ADDRESS, "");
                 jsonObject.put(OstDevice.UPDATED_TIMESTAMP, System.currentTimeMillis());
                 jsonObject.put(OstDevice.STATUS, OstDevice.CONST_STATUS.CREATED);

@@ -227,6 +227,10 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
 
             errorStringBuilder.append(apiErrorCodeMsg);
 
+            errorStringBuilder.append(
+                    String.format("\napi_internal_id: %s", ostApiError.getApiInternalId())
+            );
+
             List<ApiErrorData> apiErrorDataList = ostApiError.getErrorData();
             for (ApiErrorData apiErrorData : apiErrorDataList) {
                 String errorData = String.format(

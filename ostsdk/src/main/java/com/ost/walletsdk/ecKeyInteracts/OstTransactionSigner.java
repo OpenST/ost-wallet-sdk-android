@@ -197,13 +197,11 @@ public class OstTransactionSigner {
         return weiInteger;
     }
 
-    private String getRuleAddressFor(String directTransfer) {
+    private String getRuleAddressFor(String ruleName) {
         OstToken ostToken = OstToken.getById(mTokenId);
-        OstRule[] ostRules = ostToken.getAllRules();
-        for (int i = 0; i < ostRules.length; i++) {
-            if (directTransfer.equalsIgnoreCase(ostRules[i].getName())) {
-                return ostRules[i].getAddress();
-            }
+        OstRule ostRule = ostToken.getRule(ruleName);
+        if (null != ostRule) {
+            return ostRule.getAddress();
         }
         return null;
     }

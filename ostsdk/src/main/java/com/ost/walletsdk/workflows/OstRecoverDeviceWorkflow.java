@@ -27,6 +27,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * It will authorize the current device address by revoking provided device address.
+ * Current device should be in registered state before initiating this work flow.
+ */
 public class OstRecoverDeviceWorkflow extends OstBaseUserAuthenticatorWorkflow {
 
     private SignedRecoverOperationStruct dataHolder;
@@ -43,7 +47,7 @@ public class OstRecoverDeviceWorkflow extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     protected boolean shouldAskForAuthentication() {
-        /**
+        /*
          * Workflow that have UserPassphrase as input shall not ask for pin again.
          */
         return false;
@@ -51,7 +55,7 @@ public class OstRecoverDeviceWorkflow extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     boolean shouldCheckCurrentDeviceAuthorization() {
-        /**
+        /*
          * The recovery device flow can NOT be called by Authorized device.
          * It can only be called by a registered device.
          */
@@ -165,7 +169,8 @@ public class OstRecoverDeviceWorkflow extends OstBaseUserAuthenticatorWorkflow {
         return map;
     }
 
-
-
-
+    @Override
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY;
+    }
 }
