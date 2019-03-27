@@ -53,9 +53,10 @@ android {
 ## OST SDK APIs
 
 ### Initialize the SDK
-The SDK can be initialized by calling the `initialize()` API which
-initializes all the required instances and runs migrations of local databases.<br/>
-We recommended that you call initialize() in Application sub-class.<br/><br/>
+
+SDK initialization should happen before calling any other workflow. To initialize the SDK, we need to call init workflow of wallet SDK. It initializes all the required instances and run db migrations.
+
+Recommended location to call init() is in Application sub-class.<br/><br/>
 **Parameters**<br/>
 &nbsp; parameter context: ApplicationContext.<br/>
 &nbsp; parameter baseUrl: OST Platform endpoint.<br/>
@@ -68,9 +69,9 @@ public void onCreate() {
 ```
 
 ### Set up the device
-The `setupDevice` API should be called each time the application is launched to confirm that the current device is in the `registered` state and therefore able to call the OST Platform APIs.<br/><br/>
+This workflow needs `userId` and `tokenId` so setupDevice may be called after the user logs in to the application. Using a mapping between userId in OST Platform and the app user, you have access to userId and tokenId.
 
-We recommended that you call `setupDevice()` in MainActivity.<br/><br/>
+If the user is logged in, then setupDevice should be called every time the app launches, this ensures that the current device is registered before communicating with OST Platform  server.<br/><br/>
 **Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter tokenId: Id assigned by Ost to token<br/>
@@ -81,7 +82,8 @@ OstSdk.setupDevice(userId, tokenId, new OstWorkFlowCallbackImpl());
 ```
 
 ### Activate the user
-User activation refers to the deployment of smart-contracts that form the user's Brand Token wallet. An activated user can engage with a Brand Token economy.<br/><br/>
+User activation refers to the deployment of smart-contracts that form the user's Brand Token wallet. An activated user can engage with a Brand Token economy.
+<br/><br/>
 **Parameters**<br/>
 &nbsp; parameter UserPassphrase: object which will contain user Id, user pin and passphrasePrefix<br/>
 &nbsp; parameter expiresAfterInSecs: session key expiry time<br/>
@@ -95,7 +97,7 @@ OstSdk.activateUser(userPassPhrase, expiresAfterInSecs, spendingLimitInWei, new 
 ```
 
 ### Authorize a session
-A session is a period of time during which a sessionKey is authorized to sign transactions under a pre-set limit on behalf of the user.
+A session is a period of time during which a `sessionKey` is authorized to sign transactions under a pre-set limit on behalf of the user.
 The device manager, which controls the tokens, authorizes sessions.
  <br/><br/>
 **Parameters**<br/>
@@ -129,7 +131,7 @@ The mnemonic phrase represents a human-readable way to authorize a new device. T
 **Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void getPaperWallet(String userId, OstWorkFlowCallback workFlowCallback)**<br/>
+&nbsp; **void getDeviceMnemonics(String userId, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
 OstSdk.getDeviceMnemonics(String userId, new OstWorkFlowCallbackImpl())
 ```
@@ -146,9 +148,10 @@ A user that has stored their mnemonic phrase can enter it into an appropriate us
 OstSdk.authorizeCurrentDeviceWithMnemonics(userId, mnemonics, new OstWorkFlowCallbackImpl())
 ```
 
-### getAddDeviceQRCode
-Getter method which return QR bitmap image for add device<br/>
-Use this methods to generate QR code of current device to be added from authorized device<br/><br/>
+### Generate a QR Code
+A developer can use this method to generate a QR code that displays the information pertinent to the mobile device it is generated on. Scanning this QR code with an authorized mobile device will result in the new device being authorized.
+
+<br/><br/>
 **Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; **Bitmap getAddDeviceQRCode(String userId)**<br/>
@@ -167,23 +170,8 @@ QR codes can be used to encode transaction data for authorizing devices, making 
 OstSdk.performQRAction(userId, data, new OstWorkFlowCallbackImpl())
 ```
 
-### startPolling
-To poll provided entity.<br/>
-Polling can be used when any entity is in transition status and desired status update is needed<br/><br/>
-**Parameters**<br/>
-&nbsp; parameter userId: Ost User id<br/>
-&nbsp; parameter entityId: entity id to be polled<br/>
-&nbsp; parameter entityType: entity type to be polled<br/>
-&nbsp; parameter successStatus: success status of transition<br/>
-&nbsp; parameter failureStatus: failure status of transition<br/>
-&nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp;** void startPolling(String userId, String entityId, String entityType, String successStatus, String failureStatus, OstWorkFlowCallback workFlowCallback)**<br/>
-```java
-OstSdk.startPolling(userId, entityId, entityType, successStatus, failureStatus, new OstWorkFlowCallbackImpl())
-```
-
-### resetPin
-To update current Pin with new Pin.<br/><br/>
+### Reset a User's PIN
+The user's PIN is set when activating the user. This method supports re-setting a PIN and re-creating the recoveryOwner. <br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter appSalt: Salt provided by app<br/>
 &nbsp; parameter currentPin: current pin to be change<br/>
@@ -194,8 +182,8 @@ To update current Pin with new Pin.<br/><br/>
 OstSdk.resetPin(userId, appSalt, currentPin, newPin, new OstWorkFlowCallbackImpl())
 ```
 
-### initiateDeviceRecovery
-To authorize the current device by revoking provided device address.<br/><br/>
+### Initialize Recovery
+A user can control their Brand Tokens using their authorized devices. If they lose their authorized device, they can recover access to their BrandTokens by authorizing a new device via the recovery process .<br/><br/>
 &nbsp; parameter userId                 user id of recovery user<br/>
 &nbsp; parameter passphrase             Struct of current passPhrase<br/>
 &nbsp; parameter deviceAddressToRecover Address of device to recover<br/>
@@ -205,8 +193,8 @@ To authorize the current device by revoking provided device address.<br/><br/>
 OstSdk.initiateDeviceRecovery(userId, passphrase, deviceAddressToRecover, new OstWorkFlowCallbackImpl())
 ```
 
-### abortDeviceRecovery
-If there are any ongoing initiate recovery in process, It will abort that recovery process<br/><br/>
+### Abort Device Recovery
+To abort initiated device recovery.<br/><br/>
 &nbsp; parameter userId           userId of recovery user<br/>
 &nbsp; parameter passphrase       A simple struct to transport pin information via app and Sdk.<br/>
 &nbsp; parameter workFlowCallback Workflow callback Interact <br/>
@@ -215,7 +203,7 @@ If there are any ongoing initiate recovery in process, It will abort that recove
 OstSdk.abortDeviceRecovery(userId, passphrase, new OstWorkFlowCallbackImpl())
 ```
 
-### logoutAllSessions
+### Log out
 It will revoke all the sessions associated with provided userId<br/><br/>
 &nbsp; parameter userId           user Id whose sessions to revoke<br/>
 &nbsp; parameter workFlowCallback Workflow callback interact<br/>
