@@ -138,7 +138,13 @@ public class UsersListActivity extends MappyBaseActivity implements
             startActivityForResult(intent, QR_REQUEST_CODE);
         } else if (id == R.id.pay_txn) {
             Log.d(TAG, "Execute Pay Transaction Clicked");
-            loadRuleTransactionFragment("");
+            loadRuleTransactionFragment(new UserData(
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+            ));
         } else if (id == R.id.reset_pin) {
             Log.d(TAG, "Reset pin");
             byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
@@ -334,15 +340,15 @@ public class UsersListActivity extends MappyBaseActivity implements
     }
 
     @Override
-    public void onItemSelected(String tokenHolderAddress) {
-        loadRuleTransactionFragment(tokenHolderAddress);
+    public void onItemSelected(UserData userData) {
+        loadRuleTransactionFragment(userData);
     }
 
-    private void loadRuleTransactionFragment(String tokenHolderAddress) {
+    private void loadRuleTransactionFragment(UserData userData) {
         LogInUser logInUser = ((App) getApplication()).getLoggedUser();
         String currentUserId = logInUser.getOstUserId();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        RuleTransactionFragment ruleTransactionFragment = RuleTransactionFragment.newInstance(currentUserId, tokenHolderAddress);
+        RuleTransactionFragment ruleTransactionFragment = RuleTransactionFragment.newInstance(currentUserId, userData);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, ruleTransactionFragment, "rule_transaction_fragment");
         transaction.addToBackStack("rule_transaction_fragment");

@@ -14,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -88,7 +87,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         holder.mProfilePic.setImageDrawable(drawable);
 
         View.OnClickListener onClickListener = getOnClickListener(
-                mDataset.get(position).getTokenHolderAddress()
+                mDataset.get(position)
         );
 
         holder.mProfilePic.setOnClickListener(onClickListener);
@@ -98,11 +97,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         holder.mMobile.setOnClickListener(onClickListener);
     }
 
-    private View.OnClickListener getOnClickListener(String tokenHolderAddress) {
+    private View.OnClickListener getOnClickListener(UserData userData) {
         if (null == mListener) {
             return null;
         }
-        return v -> mListener.onItemSelected(tokenHolderAddress);
+        return v -> mListener.onItemSelected(userData);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -112,6 +111,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
     }
 
     public interface OnItemSelectedListener {
-        void onItemSelected(String tokenHolderAddress);
+        void onItemSelected(UserData userData);
     }
 }

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ost.com.sampleostsdkapplication.R;
+import ost.com.sampleostsdkapplication.UserData;
 
 /**
  * Fragment representing the Create user session screen for OstDemoApp.
@@ -36,6 +37,7 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
 
     private String mTokenHolderAddress;
     private Spinner mSpinnerRuleName;
+    private String mUserName;
     private Spinner mSpinnerUnit;
 
 
@@ -56,6 +58,8 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
         mAmountSlider.setOnSeekBarChangeListener(this);
 
         mDescriptionEditText = view.findViewById(R.id.descriptionEditText);
+        mDescriptionEditText.setText(mUserName);
+
         mSpinnerRuleName = view.findViewById(R.id.spinnerRuleName);
         ArrayAdapter ruleArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, ruleType);
         mSpinnerRuleName.setAdapter(ruleArrayAdapter);
@@ -135,13 +139,18 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
      *
      * @return A new instance of fragment UserDetailsFragment.
      */
-    public static RuleTransactionFragment newInstance(String currentUserId, String tokenHolderAddress) {
+    public static RuleTransactionFragment newInstance(String currentUserId, String tokenHolderAddress, String userName) {
         RuleTransactionFragment fragment = new RuleTransactionFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         fragment.mUserId = currentUserId;
         fragment.mTokenHolderAddress = tokenHolderAddress;
+        fragment.mUserName = userName;
         return fragment;
+    }
+
+    public static RuleTransactionFragment newInstance(String currentUserId, UserData userData) {
+        return newInstance(currentUserId, userData.getTokenHolderAddress(), userData.getName());
     }
 
     @Override
