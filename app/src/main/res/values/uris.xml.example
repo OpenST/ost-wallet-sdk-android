@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="base_url_mappy">http://localhost:8080/api/</string>
+    <string name="base_url_ost_platform">http://localhost:9000/testnet/v2</string>
+</resources>
