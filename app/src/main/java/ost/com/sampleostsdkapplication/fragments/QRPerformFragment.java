@@ -125,12 +125,12 @@ public class QRPerformFragment extends BaseFragment {
     }
 
     private String createRevokeDeviceString(OstDevice ostDevice) {
-        return "Device Address To Add: " +
+        return "Device Address To Revoke: " +
                 ostDevice.getAddress();
     }
 
     private String createAuthorizeDeviceString(OstDevice ostDevice) {
-        return "Device Address To Revoke: " +
+        return "Device Address To Authorize: " +
                 ostDevice.getAddress();
     }
 }
