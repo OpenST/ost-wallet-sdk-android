@@ -2,6 +2,7 @@ package ost.com.sampleostsdkapplication.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +10,13 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.ost.walletsdk.OstSdk;
 
+import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import ost.com.sampleostsdkapplication.R;
 
@@ -26,12 +29,17 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
 
     private LinearLayout mExternalView;
     private SeekBar mAmountSlider;
-    private TextView mTransferAmountView;
-    private TextView mTokenHolderAddressView;
+    private TextInputEditText mTransferAmountView;
+    private TextInputEditText mTokenHolderAddressView;
+    private TextInputEditText mDescriptionEditText;
+
     private String mTokenHolderAddress;
     private Spinner mSpinnerRuleName;
+    private Spinner mSpinnerUnit;
+
 
     private String[] ruleType = { "BT", "USD"};
+    private String[] unitType = {  "WEI", "ETH"};
 
     @Override
     public View onCreateView(
@@ -40,17 +48,26 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
         View childLayout = inflater.inflate(R.layout.transaction_details_view, null);
         mExternalView = view.findViewById(R.id.external_view);
         mExternalView.addView(childLayout);
+
+        getOstImage().setVisibility(View.GONE);
+
         mAmountSlider = view.findViewById(R.id.amountSlider);
         mAmountSlider.setOnSeekBarChangeListener(this);
 
+        mDescriptionEditText = view.findViewById(R.id.descriptionEditText);
         mSpinnerRuleName = view.findViewById(R.id.spinnerRuleName);
-        ArrayAdapter arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, ruleType);
-        mSpinnerRuleName.setAdapter(arrayAdapter);
+        ArrayAdapter ruleArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, ruleType);
+        mSpinnerRuleName.setAdapter(ruleArrayAdapter);
+
+        mSpinnerUnit = view.findViewById(R.id.spinnerUnit);
+        ArrayAdapter unitArrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, unitType);
+        mSpinnerUnit.setAdapter(unitArrayAdapter);
+
         mTokenHolderAddressView = view.findViewById(R.id.tokenHolderAddressValue);
         mTokenHolderAddressView.setText(mTokenHolderAddress);
 
         mTransferAmountView = view.findViewById(R.id.transferAmount);
-        mTransferAmountView.setText("2500");
+        mTransferAmountView.setText("150");
 
         return view;
     }
@@ -75,13 +92,36 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
                 break;
         }
 
+        String transferAmount = mTransferAmountView.getText().toString();
+        BigInteger transferAmountBI = new BigInteger(transferAmount);
+        String unitType = (String)mSpinnerUnit.getSelectedItem();
+
+        switch (unitType) {
+            case "ETH":
+                BigInteger pow = new BigInteger("10").pow(18);
+                transferAmountBI = transferAmountBI.multiply(pow);
+                break;
+            case "WEI":
+                break;
+        }
+
+        Map<String, Object> map = getMeta();
         OstSdk.executeTransaction(mUserId,
                 Arrays.asList(mTokenHolderAddress),
-                Arrays.asList(mTransferAmountView.getText().toString()),
+                Arrays.asList(transferAmountBI.toString()),
                 ruleName,
+                map,
                 this);
 
         super.onNextClick();
+    }
+
+    private Map<String, Object> getMeta() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "known_user");
+        map.put("type", "user_to_user");
+        map.put("details", mDescriptionEditText.getText().toString());
+        return map;
     }
 
     /**
@@ -101,7 +141,7 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        long amountInWei = progress * 100;
+        long amountInWei = progress;
         mTransferAmountView.setText(String.valueOf(amountInWei));
     }
 

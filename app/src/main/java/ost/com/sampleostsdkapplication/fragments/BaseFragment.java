@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +50,8 @@ import ost.com.sampleostsdkapplication.UsersListActivity;
 public class BaseFragment extends Fragment implements View.OnClickListener, OstWorkFlowCallback {
 
     private static final String TAG = "OstBaseFragment";
+    private ImageView mImageOst;
+
     MaterialButton getNextButton() {
         return nextButton;
     }
@@ -80,6 +83,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         mActionLoaders = mView.findViewById(R.id.action_loader);
         mWalletInstructionText = mView.findViewById(R.id.wallet_instruction_text);
         mWorkflowDetailsBox = mView.findViewById(R.id.workflow_details_box);
+
+        mImageOst = mView.findViewById(R.id.image_ost);
         return mView;
     }
 
@@ -285,6 +290,10 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
         mWorkflowDetailsBox.setText(finalStr);
         mWorkflowDetailsBox.scrollTo(0, mWorkflowDetailsBox.getBottom());
         mWorkflowDetailsBox.setVisibility(View.VISIBLE);
+    }
+
+    public ImageView getOstImage() {
+        return mImageOst;
     }
 
     public interface OnBaseFragmentListener {
