@@ -56,8 +56,8 @@
     <item
         android:id="@+id/pay_txn"
         android:orderInCategory="100"
-        android:visible="false"
-        android:title="@string/pay_execute_txn"
+        android:visible="true"
+        android:title="@string/execute_txn"
         app:showAsAction="never" />
     <item
         android:id="@+id/reset_pin"

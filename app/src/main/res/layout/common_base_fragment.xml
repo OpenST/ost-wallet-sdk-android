@@ -41,6 +41,7 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 
             <ImageView
+                android:id="@+id/image_ost"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 app:srcCompat="@drawable/ostdemoapp300" />
@@ -117,7 +118,8 @@
                 android:textColor="@color/primaryButtonTextColor"
                 android:background="@color/colorPrimary"
                 android:maxLines="1000"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:textIsSelectable="true"/>
         </LinearLayout>
     </RelativeLayout>
 </ScrollView>

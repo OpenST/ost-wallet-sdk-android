@@ -94,7 +94,7 @@ public class LogoutFragment extends BaseFragment {
         mListener.relaunchApp();
     }
 
-    public interface OnLogoutFragmentListener {
+    public interface OnLogoutFragmentListener extends OnBaseFragmentListener{
         void relaunchApp();
     }
 }

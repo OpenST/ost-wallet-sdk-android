@@ -50,7 +50,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginBottom="5dp"
                 android:text="@string/ost_user_id" />
 
@@ -71,7 +71,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginBottom="5dp"
                 android:text="@string/ost_user_status" />
 
@@ -92,7 +92,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginBottom="5dp"
                 android:text="@string/ost_token_id" />
 
@@ -113,7 +113,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginBottom="5dp"
                 android:text="@string/ost_user_token_holder" />
 
@@ -134,7 +134,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginBottom="5dp"
                 android:text="@string/ost_user_device_manager" />
 
@@ -155,9 +155,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginBottom="5dp"
-                android:text="@string/ost_user_recovery_key" />
+                android:text="@string/ost_user_recovery_owner_address" />
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/ost_user_recovery_key"
@@ -166,7 +166,7 @@
                 android:layout_height="wrap_content">
 
                 <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_user_recovery_key_edit"
+                    android:id="@+id/ost_user_recovery_owner_address_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
@@ -176,7 +176,28 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
+                android:layout_marginBottom="5dp"
+                android:text="@string/ost_user_recovery_address" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ost_user_recovery_address"
+                style="@style/Widget.OstDemoApp.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/ost_user_recover_address_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="1" />
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
                 android:layout_marginBottom="5dp"
                 android:text="@string/ost_user_device_address" />
 
@@ -197,7 +218,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginBottom="5dp"
                 android:text="@string/device_name"
                 android:visibility="gone"/>
@@ -220,7 +241,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
+                android:layout_gravity="start"
                 android:layout_marginBottom="5dp"
                 android:text="@string/device_status" />
 

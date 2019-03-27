@@ -50,13 +50,13 @@ public class DeviceRecoveryFragment extends BaseFragment {
         mExternalView.addView(childLayout);
 
         ((TextView) view.findViewById(R.id.first_text_view)).setText("Input Pin");
-        ((TextView) view.findViewById(R.id.second_text_view)).setText("Input RecoveryAddress");
+        ((TextView) view.findViewById(R.id.second_text_view)).setText("Input Device Address");
 
         mPassphraseTextInput = view.findViewById(R.id.first_text_input);
         mEditTextPassphrase = view.findViewById(R.id.first_edit_box);
 
         mAddressToRecoverTextInput = view.findViewById(R.id.second_text_input);
-        mAddressToRecoverTextInput.setHint("Input Recovery Address");
+        mAddressToRecoverTextInput.setHint("Input Device Address");
         mEditTextAddressToRecover = view.findViewById(R.id.second_edit_box);
         mEditTextAddressToRecover.setInputType(InputType.TYPE_CLASS_TEXT);
         return view;

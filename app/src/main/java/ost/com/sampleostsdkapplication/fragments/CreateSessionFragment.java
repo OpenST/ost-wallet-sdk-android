@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.ost.walletsdk.OstSdk;
 import ost.com.sampleostsdkapplication.R;
 
 /**
@@ -56,22 +57,24 @@ public class CreateSessionFragment extends BaseFragment {
      * Perform operation on clicking next
      */
     public void onNextClick(){
-        if (TextUtils.isEmpty(mSpendingLimit.toString()) && mSpendingLimit.toString().length() < 1) {
+        if (TextUtils.isEmpty(mSpendingLimit.toString()) && mSpendingLimit.toString().length() < 0) {
             mSpendingLimit.setError(getResources().getString(R.string.valid_spending_limt));
             return;
         }
         if (TextUtils.isEmpty(mSessionExpirationEditBox.getText())
                 ||
                 (!TextUtils.isEmpty(mSessionExpirationEditBox.getText()) &&
-                        Integer.parseInt(mSessionExpirationEditBox.getText().toString()) < 1)) {
+                        Integer.parseInt(mSessionExpirationEditBox.getText().toString()) < 0)) {
             mSessionExpiration.setError(getResources().getString(R.string.valid_number_of_days));
             return;
         }
-        showLoader();
-        OnCreateSessionFragmentListener mListener = (OnCreateSessionFragmentListener) getFragmentListener();
+
         String spendingLimit = mSpendingLimitEditBox.getText().toString();
         long expiryAfterSecs = (Integer.parseInt(mSessionExpirationEditBox.getText().toString()) * 86400);
-        mListener.onCreateSessionSubmit(spendingLimit, expiryAfterSecs);
+
+        OstSdk.addSession(mUserId, spendingLimit, expiryAfterSecs, this);
+
+        super.onNextClick();
     }
 
     /**
@@ -87,9 +90,5 @@ public class CreateSessionFragment extends BaseFragment {
         fragment.mTokenId = tokenId;
         fragment.mUserId = userId;
         return fragment;
-    }
-
-    public interface OnCreateSessionFragmentListener extends OnBaseFragmentListener{
-        void onCreateSessionSubmit(String spendingLimit, long expiryAfterSecs);
     }
 }

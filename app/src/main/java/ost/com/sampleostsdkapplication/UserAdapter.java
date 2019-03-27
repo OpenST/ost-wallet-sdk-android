@@ -25,6 +25,11 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
     private List<UserData> mDataset;
     private TextDrawable.IBuilder mBuilder;
+    private OnItemSelectedListener mListener;
+
+    public void setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
+        this.mListener = onItemSelectedListener;
+    }
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -80,11 +85,32 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         int color = generator.getColor(mDataset.get(position).getId());
         TextDrawable drawable = mBuilder.build(mDataset.get(position).getName().substring(0,1).toUpperCase(), color);
         holder.mProfilePic.setImageDrawable(drawable);
+
+        View.OnClickListener onClickListener = getOnClickListener(
+                mDataset.get(position)
+        );
+
+        holder.mProfilePic.setOnClickListener(onClickListener);
+
+        holder.mName.setOnClickListener(onClickListener);
+
+        holder.mMobile.setOnClickListener(onClickListener);
+    }
+
+    private View.OnClickListener getOnClickListener(UserData userData) {
+        if (null == mListener) {
+            return null;
+        }
+        return v -> mListener.onItemSelected(userData);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    public interface OnItemSelectedListener {
+        void onItemSelected(UserData userData);
     }
 }

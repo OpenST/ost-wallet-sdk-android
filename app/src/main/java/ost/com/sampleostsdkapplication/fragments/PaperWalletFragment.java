@@ -72,13 +72,12 @@ public class PaperWalletFragment extends BaseFragment {
                 showWalletInstructionText("Invalid Mnemonics String. It should be 12 space seperated words");
                 return;
             }
-            showLoader();
             OstSdk.authorizeCurrentDeviceWithMnemonics(mUserId, mnemonicsText.getBytes(UTF_8), this);
         } else {
-            showLoader();
             OstSdk.getDeviceMnemonics(mUserId, this);
         }
-        flowStarted();
+
+        super.onNextClick();
     }
 
     /**
