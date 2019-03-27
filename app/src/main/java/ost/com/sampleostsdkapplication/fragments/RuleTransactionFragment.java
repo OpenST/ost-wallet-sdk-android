@@ -3,6 +3,7 @@ package ost.com.sampleostsdkapplication.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,7 +121,11 @@ public class RuleTransactionFragment extends BaseFragment implements SeekBar.OnS
         Map<String, Object> map = new HashMap<>();
         map.put("name", "known_user");
         map.put("type", "user_to_user");
-        map.put("details", mDescriptionEditText.getText().toString());
+        String details = "Description ";
+        if (!TextUtils.isEmpty(mDescriptionEditText.getText())) {
+            details += mDescriptionEditText.getText().toString();
+        }
+        map.put("details", details);
         return map;
     }
 
