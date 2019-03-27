@@ -199,9 +199,11 @@ public class OstTransactionSigner {
 
     private String getRuleAddressFor(String ruleName) {
         OstToken ostToken = OstToken.getById(mTokenId);
-        OstRule ostRule = ostToken.getRule(ruleName);
-        if (null != ostRule) {
-            return ostRule.getAddress();
+        OstRule[] ostRules = ostToken.getAllRules();
+        for (int i = 0; i < ostRules.length; i++) {
+            if (ruleName.equalsIgnoreCase(ostRules[i].getName())) {
+                return ostRules[i].getAddress();
+            }
         }
         return null;
     }
