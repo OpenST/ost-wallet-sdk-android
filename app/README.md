@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Demo App is representation of how developer can use OstWalletSdk in their application.
+The Demo App is reference implementation of the OstWalletSdk. This App is meant to be a technical reference- please refer to [dev.ost.com](dev.ost.com) for full SDK references and workflows.
 
 
 
@@ -19,9 +19,9 @@ Urls config file is needed to provide endpoints of Mappy Applcation and Ost Plat
 Place uris.xml file in <b>app/src/main/res/values/</b>
 
 
-## Demo-App: Mappy Server Api Specifications 
+## Demo-App: Application Server API Specifications 
 
-### Create User Api Call
+### Create User API Call
 
 | Details      |            |
 |--------------|------------|
@@ -54,7 +54,7 @@ Place uris.xml file in <b>app/src/main/res/values/</b>
 }
 ```
 
-### Validate User Api Call (Login)
+### Validate User API Call (Login)
 
 | Details      |                                  |
 |--------------|----------------------------------|
@@ -82,7 +82,7 @@ Place uris.xml file in <b>app/src/main/res/values/</b>
 }
 ```
 
-### List Users Api Call
+### List Users API Call
 | Details      |            |
 |--------------|------------|
 | Request Type | **GET**    |
@@ -129,7 +129,7 @@ Place uris.xml file in <b>app/src/main/res/values/</b>
 
 
 
-### Register Device Api Call
+### Register Device API Call
 | Details      |                                  |
 |--------------|----------------------------------|
 | Request Type | **POST**                         |
