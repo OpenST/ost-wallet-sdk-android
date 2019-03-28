@@ -44,8 +44,7 @@ public class OstErrors {
             case DEVICE_MANAGER_API_FAILED: return "Failed to fetch device manager information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
             case INVALID_WORKFLOW_PARAMS:
-                return "Invalid workflow params. Please ensure the input is well formed or visit https://dev.ost.com/platform/docs/sdk/references for details on workflow parameters.
-";
+                return "Invalid workflow params. Please ensure the input is well formed or visit https://dev.ost.com/platform/docs/sdk/references for details on workflow parameters.";
 
             case CREATE_DEVICE_FAILED:
                 return "Failed to create device.";
