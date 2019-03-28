@@ -19,7 +19,7 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 
-class OstDeviceDataDefinitionInstance implements OstPerform.DataDefinitionInstance {
+abstract class OstDeviceDataDefinitionInstance implements OstPerform.DataDefinitionInstance {
     private static final String TAG = "DeviceDDInstance";
     final JSONObject dataObject;
     final String userId;

@@ -24,6 +24,7 @@ import com.ost.walletsdk.models.entities.OstDeviceManagerOperation;
 import com.ost.walletsdk.network.OstApiClient;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.utils.OstPayloadBuilder;
+import com.ost.walletsdk.workflows.OstWorkflowContext.WORKFLOW_TYPE;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -188,6 +189,11 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
             if (!OstDevice.getById(deviceAddress).canBeRevoked()) {
                 throw new OstError("wf_pe_rd_5", ErrorCode.DEVICE_CAN_NOT_BE_REVOKED);
             }
+        }
+
+        @Override
+        public WORKFLOW_TYPE getWorkFlowType() {
+            return WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE;
         }
     }
 }
