@@ -189,7 +189,6 @@ public class LoginFragment extends BaseFragment implements
                 }
             }
         });
-        super.registerDevice(apiParams, ostDeviceRegisteredInterface);
     }
 
     @Override
