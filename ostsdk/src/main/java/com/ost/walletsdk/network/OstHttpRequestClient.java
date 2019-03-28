@@ -315,6 +315,12 @@ public class OstHttpRequestClient {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        try {
+            return new JSONObject(SOMETHING_WRONG_RESPONSE);
+        } catch (JSONException e) {
+            //I promise to never be here.
+            e.printStackTrace();
+        }
         return null;
     }
 
