@@ -223,6 +223,11 @@ public class LoginFragment extends BaseFragment implements
     private int deviceUnauthorizedCount = 0;
     @Override
     void deviceUnauthorized(OstError ostError) {
+
+        Log.e(TAG, "Received OstError. internal_id:" + ostError.getInternalErrorCode()
+                + ". Error Code:" + ostError.getErrorCode()
+                + ". Error Message:" + ostError.getMessage());
+
         // User can not be logged-out (as they are already logged-out).
         // This may happen because the device has been revoked by other device.
         // Let's check
