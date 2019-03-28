@@ -71,7 +71,7 @@ abstract class OstBaseWorkFlow {
     protected OstWorkFlowCallback getCallback() {
         return workFlowCallbackWeakReference.get();
     }
-    final OstApiClient mOstApiClient;
+    OstApiClient mOstApiClient;
     private OstBiometricAuthentication.Callback mBioMetricCallBack;
 
     /**
@@ -90,6 +90,10 @@ abstract class OstBaseWorkFlow {
 
         mHandler = new Handler(Looper.getMainLooper());
         workFlowCallbackWeakReference = new WeakReference<>(callback);
+        initApiClient();
+    }
+
+    void initApiClient() {
         mOstApiClient = new OstApiClient(mUserId);
     }
 

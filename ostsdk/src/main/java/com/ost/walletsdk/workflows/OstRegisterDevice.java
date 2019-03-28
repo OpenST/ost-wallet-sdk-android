@@ -75,6 +75,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                 OstUser ostUser;
                 ostUser = OstUser.init(mUserId, mTokenId);
                 OstToken.init(mTokenId);
+                initApiClient();
 
                 Log.i(TAG, "Creating current device if does not exist");
                 OstDevice ostDevice = createOrGetCurrentDevice(ostUser);
