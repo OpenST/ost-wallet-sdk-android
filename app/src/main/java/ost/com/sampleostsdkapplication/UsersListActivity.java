@@ -11,6 +11,7 @@
 package ost.com.sampleostsdkapplication;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -320,6 +321,25 @@ public class UsersListActivity extends MappyBaseActivity implements
             }
         };
         getPinDialog(callback, "Enter Pin : ");
+    }
+
+    public void showLogoutDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                relaunchApp();
+            }});
+
+        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }});
+
+
+        builder.create().show();
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
@@ -167,6 +168,20 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
     @Override
     public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
 
+        // The device is in created state.
+        // Sdk has asked Test-App to register it.
+        // As this fragment is only shown when user-is logged in,
+        // This could mean that:
+        // Either user has deleted data, which deletes keys
+        // OR
+        // Device Key that we assumed was present with Sdk is no longer valid (revoked or deleted).
+        //
+
+        // For Test-App use-case, lets call cancelFlow and show what ever we can.
+        // Ideally, app should logout if they believe this is an unexpected callback.
+        // Note: Calling cancelFlow will trigger flowInterrupt callback.
+        ostDeviceRegisteredInterface.cancelFlow();
+
     }
 
     @Override
@@ -194,7 +209,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
 
     @Override
     public void pinValidated(OstWorkflowContext ostWorkflowContext, String userId) {
-
+        // User has entered correct pin
+        Log.i(TAG, "User entered correct pin");
     }
 
 
@@ -225,7 +241,38 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
     }
 
     @Override
-    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(OstWorkflowContext workflowContext, OstError ostError) {
+        Log.d("Workflow", "Inside workflow interrupt");
+        hideLoader();
+
+        //region Sdk Error Handling
+        if ( OstErrors.ErrorCode.WORKFLOW_CANCELLED == ostError.getErrorCode() ) {
+            //Test-App has cancelled the workflow
+            Log.i(TAG, "Interrupt Reason: Test-App cancelled the workflow." );
+        } else if ( ostError.isApiError() ) {
+            OstApiError apiError = (OstApiError) ostError;
+            if ( apiError.isApiSignerUnauthorized() ) {
+                // The device has been revoked and can not make any more calls to OST Platform.
+                // Apps must logout users at this point.
+                // For purpose of testing the sdk, lets give users an option.
+                deviceUnauthorized(apiError);
+            } else {
+                //Let's log the error
+                logSdkError( workflowContext, ostError );
+            }
+        } else if (OstErrors.ErrorCode.DEVICE_NOT_SETUP == ostError.getErrorCode() ) {
+            // Device needs to be registered or new device keys need to be created.
+            // To perform this operation, Test-App needs to call OstSdk.setupDevice()
+            // If app believe that user is authenticated, they should logout user here.
+            deviceUnauthorized(ostError);
+        } else {
+            //Let's log the error
+            logSdkError( workflowContext, ostError );
+        }
+        //endregion
+    }
+
+    private String logSdkError(OstWorkflowContext ostWorkflowContext, OstError ostError) {
         StringBuilder errorStringBuilder = new StringBuilder();
 
         String errorString = String.format("Work Flow %s " +
@@ -237,14 +284,10 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
                 ostError.getErrorCode(),
                 ostError.getInternalErrorCode()
         );
-
-        Toast.makeText(OstSdk.getContext(), errorString, Toast.LENGTH_SHORT).show();
-
         errorStringBuilder.append(errorString);
 
         if (ostError.isApiError()) {
             OstApiError ostApiError = ((OstApiError)ostError);
-
             String apiErrorCodeMsg = String.format(
                     "\n%s: %s",
                     ostApiError.getErrCode(),
@@ -256,8 +299,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
                     String.format("\napi_internal_id: %s", ostApiError.getApiInternalId())
             );
 
-            List<ApiErrorData> apiErrorDataList = ostApiError.getErrorData();
-            for (ApiErrorData apiErrorData : apiErrorDataList) {
+            List<OstApiError.ApiErrorData> apiErrorDataList = ostApiError.getErrorData();
+            for (OstApiError.ApiErrorData apiErrorData : apiErrorDataList) {
                 String errorData = String.format(
                         "\n%s: %s",
                         apiErrorData.getParameter(),
@@ -266,10 +309,13 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
                 errorStringBuilder.append(errorData);
             }
         }
+        String stringFormattedError = errorStringBuilder.toString();
+        Log.e(TAG, stringFormattedError);
 
-        Log.d("Workflow", "Inside workflow interrupt");
-        addWorkflowTaskText(String.format("%s interrupted at: ", errorStringBuilder.toString() ));
-        hideLoader();
+        // Show error on UI.
+        addWorkflowTaskText(String.format("%s interrupted at: ", stringFormattedError ));
+
+        return stringFormattedError;
     }
 
     public void showWalletWords(String mnemonics, String showText) {
@@ -298,5 +344,19 @@ public class BaseFragment extends Fragment implements View.OnClickListener, OstW
 
     public interface OnBaseFragmentListener {
         void onBack();
+    }
+
+
+    void deviceUnauthorized(OstError ostError) {
+        String title = "Device not registered";
+        String message = "Please login again to register your device.";
+        if (ostError.isApiError()) {
+            OstApiError apiError = (OstApiError) ostError;
+            if ( apiError.isApiSignerUnauthorized() ) {
+                title = "Device Revoked";
+            }
+        }
+        UsersListActivity activity = (UsersListActivity) getActivity();
+        activity.showLogoutDialog(title, message);
     }
 }
