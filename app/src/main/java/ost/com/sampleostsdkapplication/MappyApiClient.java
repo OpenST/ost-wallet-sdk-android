@@ -1,3 +1,13 @@
+/*
+ * Copyright 2019 OST.com Inc
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package ost.com.sampleostsdkapplication;
 
 import android.os.Handler;
@@ -5,6 +15,7 @@ import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.network.OstHttpRequestClient;
 
 import org.json.JSONException;
@@ -21,7 +32,7 @@ public class MappyApiClient {
 
     public MappyApiClient() {
         mHandler = new Handler();
-        mOstHttpRequestClient = new OstHttpRequestClient(App.BASE_URL_MAPPY);
+        mOstHttpRequestClient = new OstHttpRequestClient(App.getBaseUrlMappy());
     }
 
     public void getUser(final String userId,final  Callback callback) {
@@ -76,8 +87,8 @@ public class MappyApiClient {
             JSONObject deviceObject = jsonObject.getJSONObject(OstSdk.DEVICE);
             map.put("address", deviceObject.getString(OstDevice.ADDRESS));
             map.put("api_signer_address", deviceObject.getString(OstDevice.API_SIGNER_ADDRESS));
-            map.put("device_name", deviceObject.getString(OstDevice.DEVICE_NAME));
-            map.put("device_uuid", deviceObject.getString(OstDevice.DEVICE_UUID));
+            map.put("device_name", "Device Name");
+            map.put("device_uuid", "Device UUID");
         } catch (JSONException e) {
             e.printStackTrace();
             runOnUI(callback, false, new JSONObject());

@@ -16,11 +16,15 @@ import android.util.Log;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstTransactionSigner;
+import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedTransactionStruct;
+import com.ost.walletsdk.models.entities.OstRule;
 import com.ost.walletsdk.models.entities.OstTransaction;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.utils.CommonUtils;
+import com.ost.walletsdk.workflows.OstWorkflowContext.WORKFLOW_TYPE;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -37,7 +41,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Execute Transaction
+ * It executes rule transaction.
+ * Before execute transactions make sure you have created Session, having sufficient spending limit
+ * and within the expiry limit,
+ * You can create session by
+ * {@link OstSdk#addSession(String, String, long, OstWorkFlowCallback)} every time you need sessions and
+ * {@link OstSdk#activateUser(UserPassphrase, long, String, OstWorkFlowCallback)} once you activate user.
+ * Rule should be passed to execute rule.
+ * {@link OstSdk#RULE_NAME_DIRECT_TRANSFER#RULE_NAME_PRICER}
+ * It can do multiple transfers by passing list of token holder receiver addresses with
+ * respective amounts.
  */
 public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
 
@@ -66,14 +79,20 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
 
         OstTransactionSigner ostTransactionSigner = new OstTransactionSigner(mUserId);
         SignedTransactionStruct signedTransactionStruct = ostTransactionSigner
-                .getSignedTransaction(mRuleName, mTokenHolderAddresses, mAmounts);
+                .getSignedTransaction(mRuleName, mTokenHolderAddresses, mAmounts, getRuleAddressFor(mRuleName));
 
         Log.i(TAG, "Building transaction request");
         Map<String, Object> map = buildTransactionRequest(signedTransactionStruct);
 
         Log.i(TAG, "post transaction execute api");
-        String entityId = postTransactionApi(map);
-        if (null == entityId) {
+        String entityId = null;
+        try {
+            entityId = postTransactionApi(map);
+        } catch (OstApiError ostApiError) {
+            new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.SESSION).perform();
+            throw ostApiError;
+        }
+        if ( null == entityId ) {
             return postErrorInterrupt("wf_et_pr_4", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
         }
 
@@ -100,8 +119,20 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
             }
             return postErrorInterrupt("wf_et_pr_6", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
         } else {
-            return postFlowComplete();
+            return postFlowComplete(
+                    new OstContextEntity(OstTransaction.getById(entityId), OstSdk.TRANSACTION)
+            );
         }
+    }
+
+    private String getRuleAddressFor(String ruleName) {
+        OstRule[] ostRules = mOstRules;
+        for (int i = 0; i < ostRules.length; i++) {
+            if (ruleName.equalsIgnoreCase(ostRules[i].getName())) {
+                return ostRules[i].getAddress();
+            }
+        }
+        throw new OstError("wf_et_graf_1", OstErrors.ErrorCode.RULE_NOT_FOUND);
     }
 
     @Override
@@ -112,7 +143,7 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
     @Override
     protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
         try {
-            ensureOstRules();
+            ensureOstRules( mRuleName );
         } catch (OstError error) {
             return postErrorInterrupt(error);
         }
@@ -257,7 +288,7 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
         public void validateDataParams() {
             String tokenId = dataObject.optString(OstConstants.QR_TOKEN_ID);
             if (!OstUser.getById(userId).getTokenId().equalsIgnoreCase(tokenId)) {
-                throw new OstError("wf_et_pr_1", OstErrors.ErrorCode.DIFFERENT_ECONOMY);
+                throw new OstError("wf_et_pr_1", OstErrors.ErrorCode.INVALID_TOKEN_ID);
             }
         }
 
@@ -335,6 +366,11 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
         @Override
         public void validateApiDependentParams() {
 
+        }
+
+        @Override
+        public WORKFLOW_TYPE getWorkFlowType() {
+            return WORKFLOW_TYPE.EXECUTE_TRANSACTION;
         }
     }
 }

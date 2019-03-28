@@ -20,7 +20,7 @@ import org.json.JSONObject;
 public interface OstDeviceRegisteredInterface extends OstBaseInterface {
     /**
      * SDK user will use it to acknowledge device registration.
-     * @param apiResponse Kit API response.
+     * @param apiResponse OST Platform API response.
      */
     void deviceRegistered(JSONObject apiResponse);
 }

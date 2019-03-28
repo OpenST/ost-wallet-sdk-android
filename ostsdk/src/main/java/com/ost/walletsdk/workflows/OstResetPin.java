@@ -33,18 +33,24 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * It will change current passPhrase recoveryAddress with new passPhrase recoveryAddress.
+ */
 public class OstResetPin extends OstBaseWorkFlow {
 
     private static final String TAG = "OstResetPin";
+
     private static final String NEW_RECOVERY_OWNER_ADDRESS = "new_recovery_owner_address";
     private static final String TO = "to";
     private static final String SIGNER = "signer";
     private static final String SIGNATURE = "signature";
+
     private final UserPassphrase currentPassphrase;
     private final UserPassphrase newPassphrase;
 
     private String mNewRecoveryOwnerAddress;
     private OstResetPin.STATES mCurrentState = OstResetPin.STATES.INITIAL;
+    private OstRecoveryOwner mOstRecoveryOwner;
 
 
     public OstResetPin(String userId, UserPassphrase currentPassphrase, UserPassphrase newPassphrase, OstWorkFlowCallback workFlowCallback) {
@@ -124,7 +130,8 @@ public class OstResetPin extends OstBaseWorkFlow {
                         return postErrorInterrupt("wf_rp_pr_6", OstErrors.ErrorCode.POST_RESET_RECOVERY_API_FAILED);
                     }
 
-                    postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));
+                    mOstRecoveryOwner = ostRecoveryOwner;
+                    postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(mOstRecoveryOwner, OstSdk.RECOVERY_OWNER));
 
                 case POLLING:
 
@@ -138,7 +145,9 @@ public class OstResetPin extends OstBaseWorkFlow {
                     }
 
                     Log.i(TAG, "Response received for RecoveryOwner");
-                    postFlowComplete();
+                    postFlowComplete(
+                            new OstContextEntity(mOstRecoveryOwner, OstSdk.RECOVERY_OWNER)
+                    );
                     break;
                 case CANCELLED:
                     Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
@@ -170,7 +179,7 @@ public class OstResetPin extends OstBaseWorkFlow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.PIN_RESET;
+        return OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN;
     }
 
     private enum STATES {

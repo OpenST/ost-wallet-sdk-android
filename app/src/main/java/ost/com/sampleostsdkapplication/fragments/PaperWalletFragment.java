@@ -1,3 +1,13 @@
+/*
+ * Copyright 2019 OST.com Inc
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package ost.com.sampleostsdkapplication.fragments;
 
 import android.os.Bundle;
@@ -62,13 +72,12 @@ public class PaperWalletFragment extends BaseFragment {
                 showWalletInstructionText("Invalid Mnemonics String. It should be 12 space seperated words");
                 return;
             }
-            showLoader();
             OstSdk.authorizeCurrentDeviceWithMnemonics(mUserId, mnemonicsText.getBytes(UTF_8), this);
         } else {
-            showLoader();
-            OstSdk.getPaperWallet(mUserId, this);
+            OstSdk.getDeviceMnemonics(mUserId, this);
         }
-        flowStarted();
+
+        super.onNextClick();
     }
 
     /**
@@ -89,8 +98,8 @@ public class PaperWalletFragment extends BaseFragment {
 
     @Override
     public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        if (OstWorkflowContext.WORKFLOW_TYPE.GET_PAPER_WALLET.equals(ostWorkflowContext.getWorkflow_type())) {
-            if (OstSdk.PAPER_WALLET.equals(ostContextEntity.getEntityType())) {
+        if (OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS.equals(ostWorkflowContext.getWorkflow_type())) {
+            if (OstSdk.MNEMONICS.equals(ostContextEntity.getEntityType())) {
                 byte[] mnemonics = (byte[]) ostContextEntity.getEntity();
                 showWalletWords(new String(mnemonics), "Please save these words carefully.");
             }

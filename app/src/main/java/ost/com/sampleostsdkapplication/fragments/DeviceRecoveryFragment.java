@@ -1,3 +1,13 @@
+/*
+ * Copyright 2019 OST.com Inc
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package ost.com.sampleostsdkapplication.fragments;
 
 import android.os.Bundle;
@@ -40,13 +50,13 @@ public class DeviceRecoveryFragment extends BaseFragment {
         mExternalView.addView(childLayout);
 
         ((TextView) view.findViewById(R.id.first_text_view)).setText("Input Pin");
-        ((TextView) view.findViewById(R.id.second_text_view)).setText("Input RecoveryAddress");
+        ((TextView) view.findViewById(R.id.second_text_view)).setText("Input Device Address");
 
         mPassphraseTextInput = view.findViewById(R.id.first_text_input);
         mEditTextPassphrase = view.findViewById(R.id.first_edit_box);
 
         mAddressToRecoverTextInput = view.findViewById(R.id.second_text_input);
-        mAddressToRecoverTextInput.setHint("Input Recovery Address");
+        mAddressToRecoverTextInput.setHint("Input Device Address");
         mEditTextAddressToRecover = view.findViewById(R.id.second_edit_box);
         mEditTextAddressToRecover.setInputType(InputType.TYPE_CLASS_TEXT);
         return view;
@@ -72,7 +82,8 @@ public class DeviceRecoveryFragment extends BaseFragment {
         String currentPin = mEditTextPassphrase.getText().toString();
         String address = mEditTextAddressToRecover.getText().toString();
         UserPassphrase passphrase = new UserPassphrase(mUserId, currentPin.getBytes(UTF_8), mAppSalt);
-        OstSdk.initiateRecoverDevice(mUserId, passphrase, address, this);
+        OstSdk.initiateDeviceRecovery(mUserId, passphrase, address, this);
+        flowStarted();
     }
 
     /**

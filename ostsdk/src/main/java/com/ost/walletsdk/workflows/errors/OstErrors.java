@@ -14,6 +14,9 @@ import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
 
+/**
+ * Ost Error with error code and error message
+ */
 public class OstErrors {
     private static String TAG = "OstErrors";
 
@@ -21,7 +24,7 @@ public class OstErrors {
         switch (code) {
             case INVALID_USER_ID: return "Unable to recognize the user id. Please inspect for what is being sent, rectify and re-submit.";
             case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
-            case KIT_API_ERROR: return "Kit Api returned error.";
+            case OST_PLATFORM_API_ERROR: return "OST Platform Api returned error.";
             case GET_USER_API_FAILED:
                 return "Failed to fetch user information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
@@ -80,7 +83,7 @@ public class OstErrors {
             case RULE_NOT_FOUND:
                 return "Unable to recognize the Rule. Please inspect a valid rule name that exists in your economy is passed and its not null.";
 
-            case DIFFERENT_ECONOMY:
+            case INVALID_TOKEN_ID:
                 return "The token id sent in Transaction QR code is not matching with the current user's token id. Rectify the value is being sent in token Id field and re-submit the request.";
 
             case USER_NOT_FOUND:
@@ -202,6 +205,10 @@ public class OstErrors {
             case INVALID_REQUEST_TIMEOUT_DURATION:
                 return "Invalid configuration 'REQUEST_TIMEOUT_DURATION'. It must be Integer greater than zero.";
 
+            case LOGOUT_ALL_SESSIONS_FAILED:
+                return "Logout request of all sessions failed";
+            case TOKEN_HOLDER_API_FAILED:
+                return "Token holder get api returned failed response";
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -238,7 +245,7 @@ public class OstErrors {
         NO_SESSION_FOUND,
         TRANSACTION_API_FAILED,
         RULE_NOT_FOUND,
-        DIFFERENT_ECONOMY,
+        INVALID_TOKEN_ID,
         USER_NOT_FOUND,
         CURRENT_DEVICE_NOT_FOUND,
         POLLING_API_FAILED,
@@ -261,6 +268,8 @@ public class OstErrors {
         UNKNOWN_RULE_NAME,
         UNKNOWN_DATA_DEFINITION,
         NO_PENDING_RECOVERY,
+        LOGOUT_ALL_SESSIONS_FAILED,
+        TOKEN_HOLDER_API_FAILED,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,
@@ -300,7 +309,7 @@ public class OstErrors {
         UNCAUGHT_EXCEPTION_HANDELED,
         DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY,
-        KIT_API_ERROR,
-        CONFIG_READ_FAILED,
+        OST_PLATFORM_API_ERROR,
+        CONFIG_READ_FAILED,;
     }
 }

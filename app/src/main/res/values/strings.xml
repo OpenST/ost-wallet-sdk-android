@@ -1,3 +1,13 @@
+<!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
 <resources tools:ignore="ExtraTranslation" xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SampleOstSdkApplication</string>
     <string name="title_activity_login_sign_up">Sign in</string>
@@ -49,7 +59,7 @@
     <string name="ost_token_id">Token Id</string>
     <string name="ost_user_token_holder">Token Holder Address</string>
     <string name="ost_user_device_manager">Device Manager Address</string>
-    <string name="ost_user_recovery_key">Recovery Key Address</string>
+    <string name="ost_user_recovery_owner_address">Recovery Owner Address</string>
     <string name="ost_user_device_address">Device Address</string>
     <string name="device_name">Device Name</string>
     <string name="device_status">Device Status</string>
@@ -89,4 +99,12 @@
     <string name="qr_perform">QR Perform</string>
     <string name="enter_40_char_address">Enter 40 character address</string>
     <string name="sync_user">Sync user</string>
+    <string name="logout_all_sessions">Logout all Sessions</string>
+    <string name="app_logout">App logout</string>
+    <string name="see_your_paper_wallet">See your paper wallet</string>
+    <string name="setup_your_wallet">Setup your Wallet</string>
+    <string name="show_qr_code_to_authorize_device">Show QR Code to Authorize Device</string>
+    <string name="authorize_device_using_mnemonics">Authorize device using mnemonics</string>
+    <string name="ost_user_recovery_address">Recovery Address</string>
+    <string name="rule_transaction">Rule Transaction</string>
 </resources>

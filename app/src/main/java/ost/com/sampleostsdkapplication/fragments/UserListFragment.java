@@ -1,3 +1,13 @@
+/*
+ * Copyright 2019 OST.com Inc
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package ost.com.sampleostsdkapplication.fragments;
 
 import android.os.Bundle;
@@ -28,6 +38,7 @@ import ost.com.sampleostsdkapplication.UserData;
  */
 public class UserListFragment extends Fragment {
 
+    private UserAdapter.OnItemSelectedListener mOnItemSelectedListener;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private UserAdapter mAdapter;
@@ -52,6 +63,7 @@ public class UserListFragment extends Fragment {
 
         // specify an adapter (see also next example)
         mAdapter = new UserAdapter(mDataList);
+        mAdapter.setOnItemSelectedListener(mOnItemSelectedListener);
         mRecyclerView.setAdapter(mAdapter);
         new MappyApiClient().getUserList(new MappyApiClient.Callback() {
             @Override
@@ -69,7 +81,7 @@ public class UserListFragment extends Fragment {
                         e.printStackTrace();
                     }
                 } else {
-                    mDataList.add(new UserData("", "Network Error", "", ""));
+                    mDataList.add(new UserData("", "Network Error", "", "", ""));
                 }
                 mAdapter.notifyDataSetChanged();
             }
@@ -100,11 +112,13 @@ public class UserListFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @return A new instance of fragment UserDetailsFragment.
+     * @param onItemSelectedListener
      */
-    public static UserListFragment newInstance() {
+    public static UserListFragment newInstance(UserAdapter.OnItemSelectedListener onItemSelectedListener) {
         UserListFragment fragment = new UserListFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+        fragment.mOnItemSelectedListener = onItemSelectedListener;
         return fragment;
     }
 }

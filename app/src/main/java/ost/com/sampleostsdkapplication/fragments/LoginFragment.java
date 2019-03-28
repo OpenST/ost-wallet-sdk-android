@@ -1,3 +1,13 @@
+/*
+ * Copyright 2019 OST.com Inc
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package ost.com.sampleostsdkapplication.fragments;
 
 import android.animation.Animator;
@@ -18,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -148,12 +159,13 @@ public class LoginFragment extends BaseFragment implements
         if (null == getActivity()) {
             Log.e(TAG, "Activity is null");
         }
+        setupUserDevice();
+    }
+
+    void setupUserDevice() {
         Activity activity = getActivity();
         LogInUser logInUser = ((App) activity.getApplicationContext()).getLoggedUser();
-
-        //show progress for setup device flow
         showProgress(true);
-
         OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), LoginFragment.this);
     }
 
@@ -208,4 +220,24 @@ public class LoginFragment extends BaseFragment implements
         //hide progress after flow interrupt
         showProgress(false);
     }
+
+    private int deviceUnauthorizedCount = 0;
+    @Override
+    void deviceUnauthorized(OstError ostError) {
+        // User can not be logged-out (as they are already logged-out).
+        // This may happen because the device has been revoked by other device.
+        // Let's check
+        if ( ostError instanceof OstApiError && ((OstApiError) ostError).isApiSignerUnauthorized() ) {
+
+            // Keeping count will ensure Test-App will not run into infinite loop.
+            if ( deviceUnauthorizedCount < 1 ) {
+                // If setup device is called again, Sdk should create
+                // new device keys, and ask Test-App to register them.
+                deviceUnauthorizedCount++;
+                setupUserDevice();
+            }
+
+        }
+    }
+
 }

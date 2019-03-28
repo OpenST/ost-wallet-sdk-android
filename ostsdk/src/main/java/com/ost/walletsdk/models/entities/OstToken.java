@@ -20,6 +20,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * To hold Token info
+ */
 @Entity(tableName = "token")
 public class OstToken extends OstBaseEntity {
 

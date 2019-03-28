@@ -1,32 +1,30 @@
-# ost-client-android-sdk
+# OST Wallet SDK Android
+
 ## Introduction
-OST Client SDK for Android
+Wallet SDK is a mobile application development SDK that enables developers to integrate the functionality of a non-custodial crypto-wallet into consumer applications. The SDK:
 
-Wallet SDK is a mobile application development SDK that enables our partner companies to:</br>
-- Key Management: Safely generate and store keys on the mobile device.</br>
-- Recovery key generation: Assist in generating recovery key from user passphrase, appllication salt,
-and kit salt.</br>
-- Rule Execution: Sign ethereum transactions and data to exeute rule as defined by contracts using EIP-1077.</br>
-- Device Operations: Sign transactions using EIP-712 to perform activities such as adding, authorizing and revoking device keys.</br>
-- Data Signing: Signed data is needed to execute actions on the blockchain.
-These digital signatures ensure that users have complete control of there tokens and these tokens can only be transferred with their explicit or implicit consent.</br>
+- Safely generates and stores keys on the user's mobile device
+- Signs ethereum transactions and data as defined by contracts using EIP-1077
+- Enables users to recover access to their Brand Tokens in case the user loses their authorized device</br>
 
-Java Compile version: 1.7
-Android version support: 22 and above
+## Support
+- Java Compile version: 1.7
+- Android version support: 22 and above
 
-Refer [Sample app](app) for SDK usage
 
-## Add sdk dependency in build.gradle
+
+## Setup
+Add the OST SDK as a dependency in build.gradle
 ```
 dependencies {
-        implementation 'com.ost:ost-client-android-sdk:0.1.0.beta.10'
+        implementation 'com.ost:ost-wallet-sdk-android:0.1.0.beta.11'
 }
 ```
 
-## Add mobile sdk config file
- Config file is needed for application specific configuration of ost sdk.</br>
- - Create file "ost-mobilesdk.json"
- - Refer below json example and update values with your app specific configuration.
+### Add mobile sdk config file
+ A config file is needed for application-specific configuration of OST  SDK.</br>
+ - Create file "ost-mobilesdk.json" with application specific configurations using  the json below as an example
+
  ```json
   {
         "BLOCK_GENERATION_TIME": 3,
@@ -37,11 +35,12 @@ dependencies {
         "PRICE_POINT_CURRENCY_SYMBOL": "USD"
   }
  ```
-- Place you file under main directory assets folder, if not present create one.</br>
+- Place the file under main directory's assets folder <br>
+
   File path example: app -> src -> main -> assets -> ost-mobilesdk.json</br>
 
-## Update build.gradle files
-In you app build.gradle files add compile options for java 1.8 version
+### Update build.gradle files
+Add compile options for Java 1.8 version in the Application's `build.gradle` files
 ```
 android {
     compileOptions {
@@ -50,14 +49,17 @@ android {
     }
 }
 ```
- 
-## OstSdk apis
-### initialize
-To get started with the SDK, you must first initialize SDK by calling initialize() api.<br/>
-It initializes all the required instances and run migrations of db.<br/>
-Recommended location to call initialize() is in Application sub-class.<br/><br/>
+
+## OST SDK APIs
+
+### Initialize the SDK
+
+SDK initialization should happen before calling any other workflow. To initialize the SDK, we need to call init workflow of wallet SDK. It initializes all the required instances and run db migrations.
+
+Recommended location to call init() is in Application sub-class.<br/><br/>
+**Parameters**<br/>
 &nbsp; parameter context: ApplicationContext.<br/>
-&nbsp; parameter baseUrl: Kit endpoint.<br/>
+&nbsp; parameter baseUrl: OST Platform endpoint.<br/>
 &nbsp; **initialize(context, baseUrl)**<br/>
 ```java
 public void onCreate() {
@@ -65,10 +67,12 @@ public void onCreate() {
         OstSdk.initialize(getApplicationContext(), BASE_URL);
 }
 ```
-### setupDevice
-After init, setupDevice api should be called everytime the app launches.<br/>
-It ensures current device is in registered state before calling kit apis.<br/>
-Recommended location to call setupDevice() is in MainActivity.<br/><br/>
+
+### Set up the device
+This workflow needs `userId` and `tokenId` so setupDevice may be called after the user logs in to the application. Using a mapping between userId in OST Platform and the app user, you have access to userId and tokenId.
+
+If the user is logged in, then setupDevice should be called every time the app launches, this ensures that the current device is registered before communicating with OST Platform  server.<br/><br/>
+**Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter tokenId: Id assigned by Ost to token<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
@@ -77,54 +81,40 @@ Recommended location to call setupDevice() is in MainActivity.<br/><br/>
 OstSdk.setupDevice(userId, tokenId, new OstWorkFlowCallbackImpl());
 ```
 
-### activateUser
-It Authorizes the Registered device and Activate the user.<br/>
-It makes user eligible to do device operations and transactions.<br/><br/>
+### Activate the user
+User activation refers to the deployment of smart-contracts that form the user's Brand Token wallet. An activated user can engage with a Brand Token economy.
+<br/><br/>
+**Parameters**<br/>
 &nbsp; parameter UserPassphrase: object which will contain user Id, user pin and passphrasePrefix<br/>
 &nbsp; parameter expiresAfterInSecs: session key expiry time<br/>
 &nbsp; parameter spendingLimitInWei: spending limit once in a transaction of session<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void activateUser(UserPassphrase passphrase, long expiresAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback callback)**<br/>
+
 ```java
 UserPassphrase userPassPhrase = new UserPassphrase(userId, pin, passphrasePrefix)
 OstSdk.activateUser(userPassPhrase, expiresAfterInSecs, spendingLimitInWei, new OstWorkFlowCallbackImpl())
 ```
 
-### addSession
-To add new Session to device manager.<br/>
-Will be used when there are no current session available to do transactions.<br/><br/>
+### Authorize a session
+A session is a period of time during which a `sessionKey` is authorized to sign transactions under a pre-set limit on behalf of the user.
+The device manager, which controls the tokens, authorizes sessions.
+ <br/><br/>
+**Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter expiresAfterInSecs: sessions key expiry time<br/>
 &nbsp; parameter spendingLimitInWei: spending limit once in a transaction of session<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void addSession(String userId, long expireAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback workFlowCallback)**<br/>
+
 ```java
 OstSdk.addSession(userId, expireAfterInSecs, spendingLimitInWei, new OstWorkFlowCallbackImpl())
-```
 
-### performQRAction
-To perform operations based on QR data provided.<br/>
-Through QR, Add device and transaction operations can be performed.<br/><br/>
-&nbsp; parameter userId: Ost User id<br/>
-&nbsp; parameter data: JSON object string scanned from QR code<br/>
-&nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void performQRAction(String userId, String data, OstWorkFlowCallback workFlowCallback)**<br/>
-```java
-OstSdk.performQRAction(userId, data, new OstWorkFlowCallbackImpl())
 ```
+### Execute a transaction
+A transaction where Brand Tokens are transferred from a user to another actor within the Brand Token economy are signed using `sessionKey` if there is an active session. In the absence of an active session, a new session is authorized.<br/><br/>
 
-### getPaperWallet
-To get Paper wallet( 12 words used to generate wallet) of the current device.<br/>
-Paper wallet will be used to add new device incase device is lost<br/><br/>
-&nbsp; parameter userId: Ost User id<br/>
-&nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void getPaperWallet(String userId, OstWorkFlowCallback workFlowCallback)**<br/>
-```java
-OstSdk.getPaperWallet(String userId, new OstWorkFlowCallbackImpl())
-```
-
-### executeTransaction
-To execute Rule.<br/><br/>
+**Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter tokenHolderAddresses: Token holder addresses of amount receiver<br/>
 &nbsp; parameter amounts: Amounts corresponding to tokenHolderAddresses in wei to be transfered<br/>
@@ -133,10 +123,23 @@ To execute Rule.<br/><br/>
 &nbsp; **void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
 OstSdk.executeTransaction(userId, tokenHolderAddresses, amounts, ruleName, new OstWorkFlowCallbackImpl())
+````
+
+### Get Mnemonic Phrase
+The mnemonic phrase represents a human-readable way to authorize a new device. This phrase is 12 words long.
+ <br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: Ost User id<br/>
+&nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
+&nbsp; **void getDeviceMnemonics(String userId, OstWorkFlowCallback workFlowCallback)**<br/>
+```java
+OstSdk.getDeviceMnemonics(String userId, new OstWorkFlowCallbackImpl())
 ```
-### authorizeCurrentDeviceWithMnemonics
-It authorize current device using mnemonics provided.<br/>
-Using mnemonics it generates wallet key to add new current device.<br/><br/>
+
+
+### Add a device using mnemonics
+A user that has stored their mnemonic phrase can enter it into an appropriate user interface on a new mobile device and authorize that device to be able to control their Brand Tokens.<br/><br/>
+**Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter mnemonics: byte array of paper wallet<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
@@ -145,30 +148,30 @@ Using mnemonics it generates wallet key to add new current device.<br/><br/>
 OstSdk.authorizeCurrentDeviceWithMnemonics(userId, mnemonics, new OstWorkFlowCallbackImpl())
 ```
 
-### getAddDeviceQRCode
-Getter method which return QR bitmap image for add device<br/>
-Use this methods to generate QR code of current device to be added from authorized device<br/><br/>
+### Generate a QR Code
+A developer can use this method to generate a QR code that displays the information pertinent to the mobile device it is generated on. Scanning this QR code with an authorized mobile device will result in the new device being authorized.
+
+<br/><br/>
+**Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; **Bitmap getAddDeviceQRCode(String userId)**<br/>
 ```java
 OstSdk.getAddDeviceQRCode(userId)
 ```
-### startPolling
-To poll provided entity.<br/>
-Polling can be used when any entity is in transition status and desired status update is needed<br/><br/>
+
+### Perform QR action
+QR codes can be used to encode transaction data for authorizing devices, making purchases via webstores, etc.This method can be  used to process the information scanned off a QR code and act on it.<br/><br/>
+**Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
-&nbsp; parameter entityId: entity id to be polled<br/>
-&nbsp; parameter entityType: entity type to be polled<br/>
-&nbsp; parameter successStatus: success status of transition<br/>
-&nbsp; parameter failureStatus: failure status of transition<br/>
+&nbsp; parameter data: JSON object string scanned from QR code<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void startPolling(String userId, String entityId, String entityType, String successStatus, String failureStatus, OstWorkFlowCallback workFlowCallback)**<br/>
+&nbsp; **void performQRAction(String userId, String data, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.startPolling(userId, entityId, entityType, successStatus, failureStatus, new OstWorkFlowCallbackImpl())
+OstSdk.performQRAction(userId, data, new OstWorkFlowCallbackImpl())
 ```
 
-### resetPin
-To update current Pin with new Pin.<br/><br/>
+### Reset a User's PIN
+The user's PIN is set when activating the user. This method supports re-setting a PIN and re-creating the recoveryOwner. <br/><br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter appSalt: Salt provided by app<br/>
 &nbsp; parameter currentPin: current pin to be change<br/>
@@ -178,6 +181,37 @@ To update current Pin with new Pin.<br/><br/>
 ```java
 OstSdk.resetPin(userId, appSalt, currentPin, newPin, new OstWorkFlowCallbackImpl())
 ```
+
+### Initialize Recovery
+A user can control their Brand Tokens using their authorized devices. If they lose their authorized device, they can recover access to their BrandTokens by authorizing a new device via the recovery process .<br/><br/>
+&nbsp; parameter userId                 user id of recovery user<br/>
+&nbsp; parameter passphrase             Struct of current passPhrase<br/>
+&nbsp; parameter deviceAddressToRecover Address of device to recover<br/>
+&nbsp; parameter workFlowCallback       Work flow interact<br/>
+&nbsp; **void initiateDeviceRecovery(String userId, UserPassphrase passphrase, String deviceAddressToRecover, OstWorkFlowCallback workFlowCallback)**<br/>
+```java
+OstSdk.initiateDeviceRecovery(userId, passphrase, deviceAddressToRecover, new OstWorkFlowCallbackImpl())
+```
+
+### Abort Device Recovery
+To abort initiated device recovery.<br/><br/>
+&nbsp; parameter userId           userId of recovery user<br/>
+&nbsp; parameter passphrase       A simple struct to transport pin information via app and Sdk.<br/>
+&nbsp; parameter workFlowCallback Workflow callback Interact <br/>
+&nbsp; **void abortDeviceRecovery(String userId, UserPassphrase passphrase, OstWorkFlowCallback workFlowCallback)**<br/>
+```java
+OstSdk.abortDeviceRecovery(userId, passphrase, new OstWorkFlowCallbackImpl())
+```
+
+### Log out
+It will revoke all the sessions associated with provided userId<br/><br/>
+&nbsp; parameter userId           user Id whose sessions to revoke<br/>
+&nbsp; parameter workFlowCallback Workflow callback interact<br/>
+&nbsp; **void logoutAllSessions(String userId, OstWorkFlowCallback workFlowCallback)**
+```java
+OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
+```
+
 
 ## WorkFlow Callbacks
 &nbsp; Callbacks to be implemented by application before calling any of the above WorkFlows.
@@ -304,4 +338,3 @@ dependencies {
 ```
 
 - Clean and then Build your Android project.
-

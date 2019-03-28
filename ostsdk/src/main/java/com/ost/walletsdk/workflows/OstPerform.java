@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.utils.AsyncStatus;
+import com.ost.walletsdk.workflows.OstWorkflowContext.WORKFLOW_TYPE;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
@@ -30,7 +31,10 @@ import static com.ost.walletsdk.workflows.OstBaseUserAuthenticatorWorkflow.Workf
 import static com.ost.walletsdk.workflows.OstBaseUserAuthenticatorWorkflow.WorkflowStateManager.VERIFY_DATA;
 
 /**
- * Performs operations based on payload provided
+ * It perform workflow operations by reading QR data.
+ * QR data should be passes as JSON object in the constructor
+ * {@link #OstPerform(String, JSONObject, OstWorkFlowCallback)}
+ * It can perform Execute Rule Transactions, Add Device and Revoke Device.
  */
 public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstVerifyDataInterface {
 
@@ -65,7 +69,11 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
                     return performNext();
                 case VERIFY_DATA:
                     OstContextEntity ostContextEntity = dataDefinitionInstance.getContextEntity();
-                    postVerifyData(ostContextEntity, OstPerform.this);
+                    postVerifyData(
+                            dataDefinitionInstance.getWorkFlowType(),
+                            ostContextEntity,
+                            OstPerform.this
+                    );
                     return new AsyncStatus(true);
                 case DATA_VERIFIED:
                     dataDefinitionInstance.startDataDefinitionFlow();
@@ -164,7 +172,7 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.PERFORM;
+        return OstWorkflowContext.WORKFLOW_TYPE.PERFORM_QR_ACTION;
     }
 
     interface DataDefinitionInstance {
@@ -177,5 +185,7 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
         void startDataDefinitionFlow();
 
         void validateApiDependentParams();
+
+        WORKFLOW_TYPE getWorkFlowType();
     }
 }

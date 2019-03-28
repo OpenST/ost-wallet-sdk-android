@@ -1,3 +1,13 @@
+/*
+ * Copyright 2019 OST.com Inc
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package ost.com.sampleostsdkapplication;
 
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +25,11 @@ import java.util.List;
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> {
     private List<UserData> mDataset;
     private TextDrawable.IBuilder mBuilder;
+    private OnItemSelectedListener mListener;
+
+    public void setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
+        this.mListener = onItemSelectedListener;
+    }
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -70,11 +85,32 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.MyViewHolder> 
         int color = generator.getColor(mDataset.get(position).getId());
         TextDrawable drawable = mBuilder.build(mDataset.get(position).getName().substring(0,1).toUpperCase(), color);
         holder.mProfilePic.setImageDrawable(drawable);
+
+        View.OnClickListener onClickListener = getOnClickListener(
+                mDataset.get(position)
+        );
+
+        holder.mProfilePic.setOnClickListener(onClickListener);
+
+        holder.mName.setOnClickListener(onClickListener);
+
+        holder.mMobile.setOnClickListener(onClickListener);
+    }
+
+    private View.OnClickListener getOnClickListener(UserData userData) {
+        if (null == mListener) {
+            return null;
+        }
+        return v -> mListener.onItemSelected(userData);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.size();
+    }
+
+    public interface OnItemSelectedListener {
+        void onItemSelected(UserData userData);
     }
 }

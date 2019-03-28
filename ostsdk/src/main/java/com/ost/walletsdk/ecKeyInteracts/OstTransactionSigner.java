@@ -50,7 +50,10 @@ public class OstTransactionSigner {
         mTokenId = OstUser.getById(userId).getTokenId();
     }
 
-    public SignedTransactionStruct getSignedTransaction(String ruleName, List<String> tokenHolderAddresses, List<String> amounts) {
+    public SignedTransactionStruct getSignedTransaction(String ruleName,
+                                                        List<String> tokenHolderAddresses,
+                                                        List<String> amounts,
+                                                        String ruleAddress) {
         OstUser user = OstUser.getById(mUserId);
 
         tokenHolderAddresses = new CommonUtils().toCheckSumAddresses(tokenHolderAddresses);
@@ -131,7 +134,6 @@ public class OstTransactionSigner {
 
         }
 
-        String ruleAddress = getRuleAddressFor(ruleName);
         if (null == ruleAddress) {
             OstError ostError = new OstError("km_ts_st_1", OstErrors.ErrorCode.RULE_NOT_FOUND);
             throw ostError;
@@ -195,17 +197,6 @@ public class OstTransactionSigner {
         BigInteger weiInteger = weiDecimal.toBigInteger();
 
         return weiInteger;
-    }
-
-    private String getRuleAddressFor(String directTransfer) {
-        OstToken ostToken = OstToken.getById(mTokenId);
-        OstRule[] ostRules = ostToken.getAllRules();
-        for (int i = 0; i < ostRules.length; i++) {
-            if (directTransfer.equalsIgnoreCase(ostRules[i].getName())) {
-                return ostRules[i].getAddress();
-            }
-        }
-        return null;
     }
 
     /**

@@ -24,6 +24,7 @@ import com.ost.walletsdk.models.entities.OstDeviceManagerOperation;
 import com.ost.walletsdk.network.OstApiClient;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.utils.OstPayloadBuilder;
+import com.ost.walletsdk.workflows.OstWorkflowContext.WORKFLOW_TYPE;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -37,7 +38,10 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-
+/**
+ * It revokes provided device address from device manager.
+ * Current device should be in {@link OstDevice.CONST_STATUS#AUTHORIZED} state.
+ */
 public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
 
     private static final String TAG = "OstRevokeDeviceWithQR";
@@ -120,7 +124,9 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
         }
 
         Log.i(TAG, "Response received for Add device");
-        return postFlowComplete();
+        return postFlowComplete(
+                new OstContextEntity(OstDevice.getById(mDeviceToBeRevoked), OstSdk.DEVICE)
+        );
     }
 
     @Override
@@ -152,7 +158,7 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.ADD_DEVICE_WITH_QR;
+        return OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE;
     }
 
     static class RevokeDeviceDataDefinitionInstance extends OstDeviceDataDefinitionInstance {
@@ -183,6 +189,11 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
             if (!OstDevice.getById(deviceAddress).canBeRevoked()) {
                 throw new OstError("wf_pe_rd_5", ErrorCode.DEVICE_CAN_NOT_BE_REVOKED);
             }
+        }
+
+        @Override
+        public WORKFLOW_TYPE getWorkFlowType() {
+            return WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE;
         }
     }
 }

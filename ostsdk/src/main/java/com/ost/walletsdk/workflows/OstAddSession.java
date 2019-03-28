@@ -35,18 +35,14 @@ import com.ost.walletsdk.workflows.services.OstSessionPollingService;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Map;
 
 /**
- * To Add Session
- * 1. param validation
- * 2. user activated and device authorized
- * 3. create session keys
- * 4. create payload
- * 5. api post call
- * 6. polling
+ * It adds Session to the user's current device with provided spec
+ * like spendingLimit and expiry time in secs.
+ * To do any rule execution transaction sessions needs to be added.
+ * Session added are specific to device and can't be used from another device.
  */
 public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements OstPinAcceptInterface {
 
@@ -75,14 +71,9 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
             return postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.BLOCK_NUMBER_API_FAILED);
         }
 
-        OstUser ostUser = OstUser.getById(mUserId);
-        String tokenHolderAddress = ostUser.getTokenHolderAddress();
-        String deviceManagerAddress = ostUser.getDeviceManagerAddress();
+        OstUser ostUser = mOstUser;
 
-
-        //TODO: FIX-ME: Divide mExpiresAfterInSec by Block generation time
-        String expiryHeight = new BigInteger(blockNumber).add(new BigInteger(String
-                .valueOf(mExpiresAfterInSecs))).toString();
+        String expiryHeight = calculateExpirationHeight(mExpiresAfterInSecs);
 
         try {
             ostApiClient.getDeviceManager();
@@ -142,7 +133,9 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         new OstSdkSync(mUserId,OstSdkSync.SYNC_ENTITY.SESSION).perform();
 
         Log.i(TAG, "Response received for Add session");
-        return postFlowComplete();
+        return postFlowComplete(
+                new OstContextEntity(OstSession.getById(sessionAddress), OstSdk.SESSION)
+        );
     }
 
     private String getCurrentBlockNumber(OstApiClient ostApiClient) {

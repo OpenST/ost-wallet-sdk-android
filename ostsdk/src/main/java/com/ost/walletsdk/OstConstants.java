@@ -15,6 +15,8 @@ public interface OstConstants {
     String RESPONSE_DATA = "data";
     String RESULT_TYPE = "result_type";
 
+    String SESSION_ADDRESS = "session_address";
+
     int THREAD_POOL_SIZE = 5;
     String BLOCK_HEIGHT = "block_height";
     String BLOCK_TIME = "block_time";

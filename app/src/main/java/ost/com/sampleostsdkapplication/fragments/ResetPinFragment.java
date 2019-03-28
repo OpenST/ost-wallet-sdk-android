@@ -1,34 +1,51 @@
+/*
+ * Copyright 2019 OST.com Inc
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package ost.com.sampleostsdkapplication.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
+
 import ost.com.sampleostsdkapplication.R;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Fragment representing the Reset User Pin screen for OstDemoApp.
  */
 public class ResetPinFragment extends BaseFragment {
+    private static final String TAG = "ResetPinFragment";
     private String mUserId;
     private String mTokenId;
     private TextInputLayout mOldPinTextInput;
     private EditText mOldPinEditBox;
     private TextInputLayout mNewPinTextInput;
     private EditText mNewPinEditBox;
-    private LinearLayout mExternalView;
+    private byte[] mAppSalt;
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         View childLayout = inflater.inflate(R.layout.two_input_fragment, null);
-        mExternalView = view.findViewById(R.id.external_view);
+        LinearLayout mExternalView = view.findViewById(R.id.external_view);
         mExternalView.addView(childLayout);
         mOldPinTextInput = view.findViewById(R.id.first_text_input);
         mOldPinEditBox = view.findViewById(R.id.first_edit_box);
@@ -58,8 +75,16 @@ public class ResetPinFragment extends BaseFragment {
             return;
         }
         showLoader();
-        OnResetPinFragmentListener mListener = (OnResetPinFragmentListener) getFragmentListener();
-        mListener.onResetPinSubmit(mOldPinEditBox.getText().toString(), mNewPinEditBox.getText().toString());
+
+        Log.d(TAG, "Start Reset pin process");
+        String oldPin = mOldPinEditBox.getText().toString();
+        String newPin = mNewPinEditBox.getText().toString();
+        UserPassphrase currentPassphrase = new UserPassphrase(mUserId, oldPin.getBytes(UTF_8), mAppSalt.clone());
+        UserPassphrase newPassphrase = new UserPassphrase(mUserId, newPin.getBytes(UTF_8), mAppSalt.clone());
+
+        OstSdk.resetPin(mUserId, currentPassphrase, newPassphrase, this);
+
+        super.onNextClick();
     }
 
     /**
@@ -68,16 +93,13 @@ public class ResetPinFragment extends BaseFragment {
      *
      * @return A new instance of fragment UserDetailsFragment.
      */
-    public static ResetPinFragment newInstance(String tokenId, String userId) {
+    public static ResetPinFragment newInstance(String tokenId, String userId, byte[] appSalt) {
         ResetPinFragment fragment = new ResetPinFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         fragment.mTokenId = tokenId;
         fragment.mUserId = userId;
+        fragment.mAppSalt = appSalt;
         return fragment;
-    }
-
-    public interface OnResetPinFragmentListener extends OnBaseFragmentListener{
-        void onResetPinSubmit(String OldPin, String NewPin);
     }
 }

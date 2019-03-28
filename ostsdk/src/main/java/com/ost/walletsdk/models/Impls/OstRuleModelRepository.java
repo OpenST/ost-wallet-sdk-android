@@ -16,6 +16,8 @@ import com.ost.walletsdk.database.daos.OstRuleDao;
 import com.ost.walletsdk.models.OstRuleModel;
 import com.ost.walletsdk.models.entities.OstRule;
 
+import org.web3j.crypto.Keys;
+
 class OstRuleModelRepository extends OstBaseModelCacheRepository implements OstRuleModel {
 
     private static final int LRU_CACHE_SIZE = 5;
@@ -34,7 +36,7 @@ class OstRuleModelRepository extends OstBaseModelCacheRepository implements OstR
 
     @Override
     public OstRule getEntityById(String id) {
-        return (OstRule)super.getById(id);
+        return (OstRule)super.getById(Keys.toChecksumAddress(id));
     }
 
     @Override

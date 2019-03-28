@@ -20,6 +20,7 @@ import com.ost.walletsdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.network.OstApiClient;
 import com.ost.walletsdk.utils.AsyncStatus;
+import com.ost.walletsdk.workflows.OstWorkflowContext.WORKFLOW_TYPE;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -31,7 +32,10 @@ import org.web3j.crypto.WalletUtils;
 
 import java.io.IOException;
 
-
+/**
+ * It authorize device address by adding it to Device Manager.
+ * Device to add should be in {@link OstDevice.CONST_STATUS#REGISTERED} state.
+ */
 public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
 
     private static final String TAG = "OstAddDeviceWithQR";
@@ -78,7 +82,9 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
         }
 
         Log.i(TAG, "Response received for Add device");
-        return postFlowComplete();
+        return postFlowComplete(
+                new OstContextEntity(OstDevice.getById(mDeviceAddressToBeAdded), OstSdk.DEVICE)
+        );
     }
 
     @Override
@@ -110,7 +116,7 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.ADD_DEVICE_WITH_QR;
+        return OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_QR_CODE;
     }
 
     static class AddDeviceDataDefinitionInstance extends OstDeviceDataDefinitionInstance {
@@ -135,12 +141,18 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
             } catch (IOException e) {
                 throw new OstError("wf_pe_ad_3", ErrorCode.GET_DEVICE_API_FAILED);
             }
-            if (null == OstDevice.getById(deviceAddress)) {
+            OstDevice ostDevice = OstDevice.getById(deviceAddress);
+            if (null == ostDevice) {
                 throw new OstError("wf_pe_ad_4", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
             }
-            if (!OstDevice.getById(deviceAddress).canBeAuthorized()) {
+            if (!ostDevice.canBeAuthorized()) {
                 throw new OstError("wf_pe_ad_5", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
             }
+        }
+
+        @Override
+        public WORKFLOW_TYPE getWorkFlowType() {
+            return WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_QR_CODE;
         }
     }
 }

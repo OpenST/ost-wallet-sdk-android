@@ -1,3 +1,13 @@
+/*
+ * Copyright 2019 OST.com Inc
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package ost.com.sampleostsdkapplication;
 
 public interface Constants {
@@ -12,4 +22,5 @@ public interface Constants {
     String APP_USER_ID = "app_user_id";
     String USER_PIN_SALT = "user_pin_salt";
     String CREATE_OST_USER = "create_ost_user";
+    String TOKEN_HOLDER_ADDRESS = "token_holder_address";
 }

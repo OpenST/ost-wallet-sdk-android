@@ -47,8 +47,6 @@ public class OstDeviceTest {
         //Test without any OstDevice  attribute
         jsonObject = new JSONObject();
         jsonObject.put(OstDevice.USER_ID, "1234");
-        jsonObject.put(OstDevice.DEVICE_NAME, "Device");
-        jsonObject.put(OstDevice.DEVICE_UUID, "221");
         jsonObject.put(OstDevice.API_SIGNER_ADDRESS, "0x12345567");
         jsonObject.put(OstDevice.ADDRESS, "0x2901239");
         jsonObject.put(OstDevice.DEVICE_MANAGER_ADDRESS, "123");
@@ -61,8 +59,6 @@ public class OstDeviceTest {
         assertEquals("123", ostDevice.getDeviceManagerAddress());
         assertEquals("0x2901239", ostDevice.getId());
         assertEquals("1234", ostDevice.getUserId());
-        assertEquals("221", ostDevice.getDeviceUuid());
-        assertEquals("Device", ostDevice.getDeviceName());
         assertEquals("0x12345567", ostDevice.getApiSignerAddress());
 
     }

@@ -1,5 +1,16 @@
+/*
+ * Copyright 2019 OST.com Inc
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package ost.com.sampleostsdkapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -7,6 +18,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import ost.com.sampleostsdkapplication.fragments.BaseFragment;
 import ost.com.sampleostsdkapplication.fragments.LoginFragment;
+
+import static ost.com.sampleostsdkapplication.Constants.OST_USER_ID;
 
 public class MainActivity extends AppCompatActivity implements NavigationHost,
         BaseFragment.OnBaseFragmentListener {
@@ -16,11 +29,22 @@ public class MainActivity extends AppCompatActivity implements NavigationHost,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mappy_main_activity);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.container, new LoginFragment())
-                    .commit();
+        LogInUser logInUser = ((App) getApplicationContext()).getLoggedUser();
+        if (null != logInUser) {
+            String userId = logInUser.getOstUserId();
+
+            Intent userListIntent = new Intent(getApplicationContext(), UsersListActivity.class);
+            userListIntent.putExtra(OST_USER_ID, userId);
+            userListIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            getApplicationContext().startActivity(userListIntent);
+
+        } else {
+            if (savedInstanceState == null) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.container, new LoginFragment())
+                        .commit();
+            }
         }
     }
 

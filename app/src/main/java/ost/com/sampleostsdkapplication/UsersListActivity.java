@@ -1,6 +1,17 @@
+/*
+ * Copyright 2019 OST.com Inc
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 package ost.com.sampleostsdkapplication;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -18,6 +29,7 @@ import android.widget.Toast;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
+import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 
 import org.json.JSONException;
@@ -26,11 +38,14 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 import ost.com.sampleostsdkapplication.fragments.AbortDeviceRecoveryFragment;
+import ost.com.sampleostsdkapplication.fragments.BaseFragment;
 import ost.com.sampleostsdkapplication.fragments.CreateSessionFragment;
 import ost.com.sampleostsdkapplication.fragments.DeviceRecoveryFragment;
+import ost.com.sampleostsdkapplication.fragments.LogoutFragment;
 import ost.com.sampleostsdkapplication.fragments.PaperWalletFragment;
 import ost.com.sampleostsdkapplication.fragments.QRPerformFragment;
 import ost.com.sampleostsdkapplication.fragments.ResetPinFragment;
+import ost.com.sampleostsdkapplication.fragments.RuleTransactionFragment;
 import ost.com.sampleostsdkapplication.fragments.SetUpUserFragment;
 import ost.com.sampleostsdkapplication.fragments.UserDetailsFragment;
 import ost.com.sampleostsdkapplication.fragments.UserListFragment;
@@ -38,17 +53,12 @@ import ost.com.sampleostsdkapplication.fragments.UserListFragment;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class UsersListActivity extends MappyBaseActivity implements
-        SetUpUserFragment.OnSetUpUserFragmentListener,
-        ResetPinFragment.OnResetPinFragmentListener,
-        CreateSessionFragment.OnCreateSessionFragmentListener {
+        BaseFragment.OnBaseFragmentListener,
+        UserAdapter.OnItemSelectedListener,
+        LogoutFragment.OnLogoutFragmentListener {
 
-    private static final String TAG = "UsersListActivity";
+    private static final String TAG = "OstUsersListActivity";
     private static final int QR_REQUEST_CODE = 2;
-    private UserDetailsFragment userDetailsFragment;
-    private SetUpUserFragment userSetupFragment;
-    private PaperWalletFragment paperWalletFragment;
-    private ResetPinFragment resetPinFragment;
-    private CreateSessionFragment createSessionFragment;
     private QRPerformFragment qrPerformFragment;
 
     @Override
@@ -56,7 +66,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_list_activity);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        UserListFragment userListFragment = UserListFragment.newInstance();
+        UserListFragment userListFragment = UserListFragment.newInstance(this);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, userListFragment, "users_list");
         transaction.commit();
@@ -69,6 +79,16 @@ public class UsersListActivity extends MappyBaseActivity implements
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LogInUser logInUser = ((App) getApplicationContext()).getLoggedUser();
+        if (OstUser.CONST_STATUS.CREATED
+                .equalsIgnoreCase(
+                        logInUser.getOstUser().getStatus())) {
+            loadSetUpUserFragment(logInUser.getTokenId(), logInUser.getOstUserId(), logInUser.getPassphrasePrefix());
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -82,12 +102,15 @@ public class UsersListActivity extends MappyBaseActivity implements
             loadUserDetailsFragment(logInUser.getTokenId(), userId);
         } else if (id == R.id.activate_user) {
             Log.d(TAG, "Activate User Clicked");
-            loadSetUpUserFragment(logInUser.getTokenId(), userId);
+            loadSetUpUserFragment(logInUser.getTokenId(), userId, logInUser.getPassphrasePrefix());
         } else if (id == R.id.add_device) {
             Log.d(TAG, "Add device clicked");
             Bitmap qrImage = OstSdk.getAddDeviceQRCode(userId);
             if (null == qrImage) {
-                Toast.makeText(getApplicationContext(), "QR building issue... Please check Logs", Toast.LENGTH_SHORT);
+                Toast.makeText(getApplicationContext(),
+                        "QR building issue... Please check Logs",
+                        Toast.LENGTH_SHORT)
+                        .show();
                 return false;
             }
             Log.i(TAG, "showing QR code");
@@ -116,14 +139,17 @@ public class UsersListActivity extends MappyBaseActivity implements
             startActivityForResult(intent, QR_REQUEST_CODE);
         } else if (id == R.id.pay_txn) {
             Log.d(TAG, "Execute Pay Transaction Clicked");
-            String tokenHolderAddress = "0x3530b7d78132ff484f4a1fe7b6d7a1dd0c94fd2c";
-            String amount = "1";
-            String ruleName = "Pricer";
-            OstSdk.executeTransaction(userId, Arrays.asList(tokenHolderAddress), Arrays.asList(amount), ruleName, new WorkFlowHelper() {
-            });
+            loadRuleTransactionFragment(new UserData(
+                    "",
+                    "",
+                    "",
+                    "",
+                    ""
+            ));
         } else if (id == R.id.reset_pin) {
             Log.d(TAG, "Reset pin");
-            loadResetPinFragment(logInUser.getTokenId(), userId);
+            byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
+            loadResetPinFragment(logInUser.getTokenId(), userId, appSalt);
         } else if (id == R.id.device_recovery) {
             Log.d(TAG, "Device Recovery");
             byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
@@ -132,8 +158,35 @@ public class UsersListActivity extends MappyBaseActivity implements
             Log.d(TAG, "Device Recovery");
             byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
             AbortRecoveryFragment(logInUser.getTokenId(), userId, appSalt);
+        } else if (id == R.id.device_sessions_logout) {
+            Log.d(TAG, "Device Session Logout initiated");
+            loadLogoutFragment( userId );
+        } else if (id == R.id.app_logout) {
+            Log.d(TAG, "App Logout initiated");
+            relaunchApp();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void relaunchApp() {
+        App app = ((App) getApplicationContext());
+        //Clear local login user details;
+        app.setLoggedUser(null);
+
+        Intent i = new Intent(app, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        app.startActivity(i);
+    }
+
+    private void loadLogoutFragment(String userId) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        LogoutFragment logoutFragment = LogoutFragment.newInstance(userId);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, logoutFragment, "device_logout");
+        transaction.addToBackStack("device_logout");
+        transaction.commit();
     }
 
     private void AbortRecoveryFragment(String tokenId, String userId, byte[] appSalt) {
@@ -156,46 +209,46 @@ public class UsersListActivity extends MappyBaseActivity implements
 
     private void loadUserDetailsFragment(String tokenId, String userId) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        userDetailsFragment = UserDetailsFragment.newInstance(tokenId, userId);
+        UserDetailsFragment userDetailsFragment = UserDetailsFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, userDetailsFragment, "user_details");
         transaction.addToBackStack("users_list");
         transaction.commit();
     }
 
-    private void loadSetUpUserFragment(String tokenId, String userId) {
+    private void loadSetUpUserFragment(String tokenId, String userId, String passphrasePrefix) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        userSetupFragment = SetUpUserFragment.newInstance(tokenId, userId);
+        SetUpUserFragment userSetupFragment = SetUpUserFragment.newInstance(tokenId, userId, passphrasePrefix);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, userSetupFragment, "user_setup");
-        transaction.addToBackStack("users_list");
+        transaction.addToBackStack("user_setup");
         transaction.commit();
     }
 
     private void loadPaperWalletFragment(String tokenId, String userId, boolean loadForAuthorize) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        paperWalletFragment = PaperWalletFragment.newInstance(tokenId, userId, loadForAuthorize);
+        PaperWalletFragment paperWalletFragment = PaperWalletFragment.newInstance(tokenId, userId, loadForAuthorize);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, paperWalletFragment, "paper_wallet");
-        transaction.addToBackStack("users_list");
+        transaction.addToBackStack("paper_wallet");
         transaction.commit();
     }
 
-    private void loadResetPinFragment(String tokenId, String userId) {
+    private void loadResetPinFragment(String tokenId, String userId, byte[] appSalt) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        resetPinFragment = ResetPinFragment.newInstance(tokenId, userId);
+        ResetPinFragment resetPinFragment = ResetPinFragment.newInstance(tokenId, userId, appSalt);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, resetPinFragment, "reset_pin");
-        transaction.addToBackStack("users_list");
+        transaction.addToBackStack("reset_pin");
         transaction.commit();
     }
 
     private void loadCreateSessionFragment(String tokenId, String userId) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        createSessionFragment = CreateSessionFragment.newInstance(tokenId, userId);
+        CreateSessionFragment createSessionFragment = CreateSessionFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, createSessionFragment, "create_session");
-        transaction.addToBackStack("users_list");
+        transaction.addToBackStack("create_session");
         transaction.commit();
     }
 
@@ -204,7 +257,7 @@ public class UsersListActivity extends MappyBaseActivity implements
         qrPerformFragment = QRPerformFragment.newInstance(tokenId, userId);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(R.id.container, qrPerformFragment, "qr_perform");
-        transaction.addToBackStack("users_list");
+        transaction.addToBackStack("qr_perform");
         transaction.commit();
     }
 
@@ -219,7 +272,6 @@ public class UsersListActivity extends MappyBaseActivity implements
         label.setText(message);
         final EditText userInput = promptsView.findViewById(R.id.editTextDialogUserInput);
 
-        boolean errorFlag = false;
         // set dialog message
         alertDialogBuilder
                 .setCancelable(false);
@@ -229,26 +281,20 @@ public class UsersListActivity extends MappyBaseActivity implements
 
         final Button cancelButton = promptsView.findViewById(R.id.buttonCancel);
 
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-                callback.onCancel();
-            }
+        cancelButton.setOnClickListener(v -> {
+            alertDialog.dismiss();
+            callback.onCancel();
         });
         final Button doneButton = promptsView.findViewById(R.id.buttonDone);
 
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String pin = userInput.getText().toString();
-                if (pin.length() < 6) {
-                    Log.w(TAG, "Pin length to small");
-                    getPinDialog(callback, "Pin size less than 6 char enter again:");
-                } else {
-                    alertDialog.dismiss();
-                    callback.onSubmit(pin);
-                }
+        doneButton.setOnClickListener(v -> {
+            String pin = userInput.getText().toString();
+            if (pin.length() < 6) {
+                Log.w(TAG, "Pin length to small");
+                getPinDialog(callback, "Pin size less than 6 char enter again:");
+            } else {
+                alertDialog.dismiss();
+                callback.onSubmit(pin);
             }
         });
 
@@ -277,6 +323,25 @@ public class UsersListActivity extends MappyBaseActivity implements
         getPinDialog(callback, "Enter Pin : ");
     }
 
+    public void showLogoutDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                relaunchApp();
+            }});
+
+        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }});
+
+
+        builder.create().show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -294,6 +359,22 @@ public class UsersListActivity extends MappyBaseActivity implements
         }
     }
 
+    @Override
+    public void onItemSelected(UserData userData) {
+        loadRuleTransactionFragment(userData);
+    }
+
+    private void loadRuleTransactionFragment(UserData userData) {
+        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
+        String currentUserId = logInUser.getOstUserId();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        RuleTransactionFragment ruleTransactionFragment = RuleTransactionFragment.newInstance(currentUserId, userData);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.container, ruleTransactionFragment, "rule_transaction_fragment");
+        transaction.addToBackStack("rule_transaction_fragment");
+        transaction.commit();
+    }
+
 
     public interface DialogCallback {
         void onSubmit(String pin);
@@ -304,45 +385,5 @@ public class UsersListActivity extends MappyBaseActivity implements
     @Override
     public void onBack() {
         super.onBackPressed();
-    }
-
-    @Override
-    public void onSetupUserSubmit(String pin) {
-        Log.d(TAG, "Start user activation process");
-        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-        String userId = logInUser.getOstUserId();
-        String passphrasePrefix = logInUser.getPassphrasePrefix();
-        long expiresAfterInSecs = 2 * 7 * 24 * 60 * 60; //2 weeks
-        String spendingLimit = "1000000000000";
-
-        if (userSetupFragment != null) {
-            OstSdk.activateUser(new UserPassphrase(userId, pin, passphrasePrefix), expiresAfterInSecs, spendingLimit,
-                    userSetupFragment);
-            userSetupFragment.flowStarted();
-        }
-    }
-
-    @Override
-    public void onResetPinSubmit(String oldPin, String newPin) {
-        Log.d(TAG, "Start Reset pin process");
-        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-        byte[] appSalt = logInUser.getPassphrasePrefix().getBytes(UTF_8);
-        UserPassphrase currentPassphrase = new UserPassphrase(logInUser.getOstUserId(), oldPin.getBytes(UTF_8), appSalt.clone());
-        UserPassphrase newPassphrase = new UserPassphrase(logInUser.getOstUserId(), newPin.getBytes(UTF_8), appSalt.clone());
-        if (resetPinFragment != null) {
-            OstSdk.resetPin(logInUser.getOstUserId(), currentPassphrase, newPassphrase,
-                    resetPinFragment);
-            resetPinFragment.flowStarted();
-        }
-    }
-
-    @Override
-    public void onCreateSessionSubmit(String spendingLimit, long expiryAfterSecs) {
-        LogInUser logInUser = ((App) getApplication()).getLoggedUser();
-        if (createSessionFragment != null) {
-            OstSdk.addSession(logInUser.getOstUserId(), spendingLimit,
-                    expiryAfterSecs, createSessionFragment);
-            createSessionFragment.flowStarted();
-        }
     }
 }
