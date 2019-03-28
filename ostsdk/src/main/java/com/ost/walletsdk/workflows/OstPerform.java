@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.utils.AsyncStatus;
+import com.ost.walletsdk.workflows.OstWorkflowContext.WORKFLOW_TYPE;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
@@ -68,7 +69,11 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
                     return performNext();
                 case VERIFY_DATA:
                     OstContextEntity ostContextEntity = dataDefinitionInstance.getContextEntity();
-                    postVerifyData(ostContextEntity, OstPerform.this);
+                    postVerifyData(
+                            dataDefinitionInstance.getWorkFlowType(),
+                            ostContextEntity,
+                            OstPerform.this
+                    );
                     return new AsyncStatus(true);
                 case DATA_VERIFIED:
                     dataDefinitionInstance.startDataDefinitionFlow();
@@ -180,5 +185,7 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
         void startDataDefinitionFlow();
 
         void validateApiDependentParams();
+
+        WORKFLOW_TYPE getWorkFlowType();
     }
 }

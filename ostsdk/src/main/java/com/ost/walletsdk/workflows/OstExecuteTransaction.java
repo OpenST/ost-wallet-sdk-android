@@ -24,6 +24,7 @@ import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.utils.CommonUtils;
+import com.ost.walletsdk.workflows.OstWorkflowContext.WORKFLOW_TYPE;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -365,6 +366,11 @@ public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
         @Override
         public void validateApiDependentParams() {
 
+        }
+
+        @Override
+        public WORKFLOW_TYPE getWorkFlowType() {
+            return WORKFLOW_TYPE.EXECUTE_TRANSACTION;
         }
     }
 }

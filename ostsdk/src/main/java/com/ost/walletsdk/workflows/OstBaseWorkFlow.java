@@ -37,6 +37,7 @@ import com.ost.walletsdk.utils.CommonUtils;
 import com.ost.walletsdk.utils.EIP712;
 import com.ost.walletsdk.utils.GnosisSafe;
 import com.ost.walletsdk.utils.OstPayloadBuilder;
+import com.ost.walletsdk.workflows.OstWorkflowContext.WORKFLOW_TYPE;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
@@ -186,14 +187,21 @@ abstract class OstBaseWorkFlow {
         });
     }
 
-    void postVerifyData(OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+    void postVerifyData(WORKFLOW_TYPE workFlowType,
+                        OstContextEntity ostContextEntity,
+                        OstVerifyDataInterface ostVerifyDataInterface) {
+
         Log.i(TAG, "Post Verify data");
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 OstWorkFlowCallback callback = getCallback();
                 if ( null != callback ) {
-                    callback.verifyData(new OstWorkflowContext(getWorkflowType()), ostContextEntity, ostVerifyDataInterface);
+                    callback.verifyData(
+                            new OstWorkflowContext(workFlowType),
+                            ostContextEntity,
+                            ostVerifyDataInterface
+                    );
                 }
             }
         });

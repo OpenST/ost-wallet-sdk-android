@@ -20,6 +20,7 @@ import com.ost.walletsdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.network.OstApiClient;
 import com.ost.walletsdk.utils.AsyncStatus;
+import com.ost.walletsdk.workflows.OstWorkflowContext.WORKFLOW_TYPE;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -147,6 +148,11 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
             if (!ostDevice.canBeAuthorized()) {
                 throw new OstError("wf_pe_ad_5", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
             }
+        }
+
+        @Override
+        public WORKFLOW_TYPE getWorkFlowType() {
+            return WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_QR_CODE;
         }
     }
 }
