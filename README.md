@@ -87,13 +87,13 @@ User activation refers to the deployment of smart-contracts that form the user's
 **Parameters**<br/>
 &nbsp; parameter UserPassphrase: object which will contain user Id, user pin and passphrasePrefix<br/>
 &nbsp; parameter expiresAfterInSecs: session key expiry time<br/>
-&nbsp; parameter spendingLimitInWei: spending limit once in a transaction of session<br/>
+&nbsp; parameter spendingLimit: spending limit once in a transaction of session<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void activateUser(UserPassphrase passphrase, long expiresAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback callback)**<br/>
+&nbsp; **void activateUser(UserPassphrase passphrase, long expiresAfterInSecs, String spendingLimit, OstWorkFlowCallback callback)**<br/>
 
 ```java
 UserPassphrase userPassPhrase = new UserPassphrase(userId, pin, passphrasePrefix)
-OstSdk.activateUser(userPassPhrase, expiresAfterInSecs, spendingLimitInWei, new OstWorkFlowCallbackImpl())
+OstSdk.activateUser(userPassPhrase, expiresAfterInSecs, spendingLimit, new OstWorkFlowCallbackImpl())
 ```
 
 ### Authorize a session
@@ -103,12 +103,12 @@ The device manager, which controls the tokens, authorizes sessions.
 **Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter expiresAfterInSecs: sessions key expiry time<br/>
-&nbsp; parameter spendingLimitInWei: spending limit once in a transaction of session<br/>
+&nbsp; parameter spendingLimit: spending limit once in a transaction of session<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void addSession(String userId, long expireAfterInSecs, String spendingLimitInWei, OstWorkFlowCallback workFlowCallback)**<br/>
+&nbsp; **void addSession(String userId, long expireAfterInSecs, String spendingLimit, OstWorkFlowCallback workFlowCallback)**<br/>
 
 ```java
-OstSdk.addSession(userId, expireAfterInSecs, spendingLimitInWei, new OstWorkFlowCallbackImpl())
+OstSdk.addSession(userId, expireAfterInSecs, spendingLimit, new OstWorkFlowCallbackImpl())
 
 ```
 ### Execute a transaction
@@ -117,7 +117,7 @@ A transaction where Brand Tokens are transferred from a user to another actor wi
 **Parameters**<br/>
 &nbsp; parameter userId: Ost User id<br/>
 &nbsp; parameter tokenHolderAddresses: Token holder addresses of amount receiver<br/>
-&nbsp; parameter amounts: Amounts corresponding to tokenHolderAddresses in wei to be transfered<br/>
+&nbsp; parameter amounts: Amounts corresponding to tokenHolderAddresses to be transfered<br/>
 &nbsp; parameter ruleName: Rule name to be executed<br/>
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback workFlowCallback)**<br/>

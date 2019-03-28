@@ -169,14 +169,14 @@ public class OstSdk {
      *
      * @param passphrase         - A simple struct to transport pin information via app and Sdk.
      * @param expiresAfterInSecs - Time after which default user session should expire.
-     * @param spendingLimitInWei - The maximum amount of Tokens user can transfer in 1 transaction using the default session key.
+     * @param spendingLimit - The maximum amount of Tokens user can transfer in 1 transaction using the default session key.
      * @param callback           - A workflow callback handler.
      */
     public static void activateUser(UserPassphrase passphrase,
                                     long expiresAfterInSecs,
-                                    String spendingLimitInWei,
+                                    String spendingLimit,
                                     OstWorkFlowCallback callback) {
-        final OstActivateUser ostActivateUser = new OstActivateUser(passphrase, expiresAfterInSecs, spendingLimitInWei, callback);
+        final OstActivateUser ostActivateUser = new OstActivateUser(passphrase, expiresAfterInSecs, spendingLimit, callback);
         ostActivateUser.perform();
     }
 
@@ -242,15 +242,15 @@ public class OstSdk {
      * Session added are specific to device and can't be used from another device.
      *
      * @param userId             user id
-     * @param spendingLimitInWei spending limit of session in Wei
+     * @param spendingLimit spending limit of session
      * @param expireAfterInSecs  time delta in sec from current time
      * @param workFlowCallback   A workflow callback handler
      */
     public static void addSession(String userId,
-                                  String spendingLimitInWei,
+                                  String spendingLimit,
                                   long expireAfterInSecs,
                                   OstWorkFlowCallback workFlowCallback) {
-        final OstAddSession ostAddSession = new OstAddSession(userId, spendingLimitInWei, expireAfterInSecs, workFlowCallback);
+        final OstAddSession ostAddSession = new OstAddSession(userId, spendingLimit, expireAfterInSecs, workFlowCallback);
         ostAddSession.perform();
     }
 
