@@ -217,9 +217,6 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
             //Catch all unexpected errors.
             OstError error = new OstError("wf_rd_vdr_1", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
             error.setStackTrace( ex.getStackTrace() );
-            Log.e("Ost-Rachin", "-----------------------------------------");
-            ex.printStackTrace();
-            Log.e("Ost-Rachin", "-----------------------------------------");
             return postErrorInterrupt( error );
         }
     }
