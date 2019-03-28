@@ -1,4 +1,4 @@
-Java implementation of scrypt
+# Java implementation of scrypt
 
   A pure Java implementation of the scrypt key derivation function and a JNI
   interface to the C implementations, including the SSE2 optimized version.
