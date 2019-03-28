@@ -18,6 +18,7 @@ import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.utils.AsyncStatus;
+import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.walletsdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -93,23 +94,30 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                     return new AsyncStatus(true);
                 }
                 Log.i(TAG, "Device is already registered. ostDevice.status:" + ostDevice.getStatus() );
-                sync();
-                postFlowComplete(
-                        new OstContextEntity(ostDevice, OstSdk.DEVICE)
-                );
 
-                break;
+                // Verify Device Registration before sync.
+                AsyncStatus status = verifyDeviceRegistered();
+
+                //Sync if needed.
+                if ( status.isSuccess() ) {
+                    sync();
+                }
+
+                //Lets verify if device was registered.
+                return status;
 
             case REGISTERED:
                 Log.i(TAG, "Device registered");
-                syncRegisteredEntities();
-                postFlowComplete(
-                        new OstContextEntity(
-                                OstUser.getById(mUserId).getCurrentDevice(),
-                                OstSdk.DEVICE
-                        )
-                );
-                break;
+                // Verify Device Registration before sync.
+                AsyncStatus verificationStatus = verifyDeviceRegistered();
+
+                if ( verificationStatus.isSuccess() ) {
+                    //Sync Registered Entities.
+                    syncRegisteredEntities();
+                }
+
+                //Lets verify if device was registered.
+                return verificationStatus;
 
             case CANCELED:
                 return postErrorInterrupt("wf_rd_pr_3" , ErrorCode.WORKFLOW_CANCELLED);
@@ -119,6 +127,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
 
     private void syncRegisteredEntities() {
         Log.i(TAG, "Syncing registered entities.");
+        //To-Do: [Future] Check if we really need to sync device here.
         new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.DEVICE, OstSdkSync.SYNC_ENTITY.TOKEN).perform();
     }
 
@@ -184,5 +193,34 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
     public void cancelFlow() {
         setFlowState(OstRegisterDevice.STATES.CANCELED, null);
         perform();
+    }
+
+    private AsyncStatus verifyDeviceRegistered() {
+        try {
+            //Just sync current device.
+            syncCurrentDevice();
+
+            //Get the currentDevice
+            OstUser ostUser = OstUser.getById(mUserId);
+            OstDevice device = ostUser.getCurrentDevice();
+
+            //Forward it.
+            return postFlowComplete( new OstContextEntity(
+                device,
+                OstSdk.DEVICE
+            ));
+
+        } catch (OstError error) {
+            //This could happen.
+            return postErrorInterrupt( error );
+        } catch (Exception ex) {
+            //Catch all unexpected errors.
+            OstError error = new OstError("wf_rd_vdr_1", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+            error.setStackTrace( ex.getStackTrace() );
+            Log.e("Ost-Rachin", "-----------------------------------------");
+            ex.printStackTrace();
+            Log.e("Ost-Rachin", "-----------------------------------------");
+            return postErrorInterrupt( error );
+        }
     }
 }

@@ -366,11 +366,14 @@ abstract class OstBaseWorkFlow {
             throw new OstError("wp_base_scd_1", ErrorCode.DEVICE_NOT_SETUP);
         }
         OstDevice device = ostUser.getCurrentDevice();
+        if ( null == device ) {
+            throw new OstError("wp_base_scd_1", ErrorCode.DEVICE_NOT_SETUP);
+        }
         String currentDeviceAddress = device.getAddress();
         try {
             mOstApiClient.getDevice( currentDeviceAddress );
         } catch (IOException e) {
-            throw new OstError("wp_base_scd_2", ErrorCode.GET_DEVICE_API_FAILED);
+            throw new OstError("wp_base_scd_3", ErrorCode.GET_DEVICE_API_FAILED);
         }
     }
 
