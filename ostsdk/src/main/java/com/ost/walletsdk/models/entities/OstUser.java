@@ -96,11 +96,6 @@ public class OstUser extends OstBaseEntity {
         return null;
     }
 
-    @Deprecated
-    public String sign(String messageToSign) {
-        return "";
-    }
-
     public static class CONST_STATUS {
         public static final String CREATED = "created";
         public static final String ACTIVATING = "activating";
