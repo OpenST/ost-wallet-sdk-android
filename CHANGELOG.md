@@ -1,4 +1,4 @@
-#Change Log
+# OST Wallet SDK Change Log.
 
 ## Version 2.0.1
 * Added CHANGELOG.md
