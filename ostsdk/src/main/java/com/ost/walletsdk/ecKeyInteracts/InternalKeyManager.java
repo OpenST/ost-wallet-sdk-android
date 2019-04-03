@@ -513,7 +513,7 @@ class InternalKeyManager {
 
 
     // region - External Mnemonics Signing Method
-    void sign(OstSignWithMnemonicsStruct ostSignWithMnemonicsStruct) {
+    void signWithExternalDevice(OstSignWithMnemonicsStruct ostSignWithMnemonicsStruct) {
         String messageHash = ostSignWithMnemonicsStruct.getMessageHash();
         byte[] mnemonics = ostSignWithMnemonicsStruct.getMnemonics();
         if ( null == messageHash || null == mnemonics) {

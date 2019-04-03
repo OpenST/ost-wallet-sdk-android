@@ -165,7 +165,7 @@ public class OstMultiSigSigner {
         try {
             ikm = new InternalKeyManager(mUserId);
             //Sign the data.
-            ikm.sign(ostSignWithMnemonicsStruct);
+            ikm.signWithExternalDevice(ostSignWithMnemonicsStruct);
             String signerAddress =  ostSignWithMnemonicsStruct.getSigner();
             String signature = ostSignWithMnemonicsStruct.getSignature();
             if (null == signature || null == signerAddress ) {
