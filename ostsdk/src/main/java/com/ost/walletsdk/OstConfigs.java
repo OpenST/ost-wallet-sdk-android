@@ -39,6 +39,7 @@ public class OstConfigs {
     public final String PRICE_POINT_CURRENCY_SYMBOL;
     public final long REQUEST_TIMEOUT_DURATION;
     public final long SESSION_BUFFER_TIME;
+    public final boolean USE_SEED_PASSWORD;
 
 
     private OstConfigs(final Context context) {
@@ -72,6 +73,8 @@ public class OstConfigs {
         if (SESSION_BUFFER_TIME < 0) {
             throw new OstError("Ost_config_sc_sbt", ErrorCode.INVALID_SESSION_BUFFER_TIME);
         }
+
+        USE_SEED_PASSWORD = config.optBoolean("USE_SEED_PASSWORD", true);
     }
 
     private JSONObject readConfig(final Context context) {

@@ -13,6 +13,7 @@ package com.ost.walletsdk.ecKeyInteracts;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
 import com.ost.walletsdk.ecKeyInteracts.structs.OstSignWithMnemonicsStruct;
@@ -582,7 +583,10 @@ class InternalKeyManager {
         byte[] seed = null;
         Bip32ECKeyPair hdMasterKey = null;
         try {
-            seed = generateSeedFromMnemonicBytes(mnemonics, buildSeedPassword(keyType) );
+            boolean shouldUseSeedPassword = OstConfigs.getInstance().USE_SEED_PASSWORD;
+            seed = generateSeedFromMnemonicBytes(mnemonics,
+                    shouldUseSeedPassword ? buildSeedPassword(keyType) : ""
+            );
             hdMasterKey = Bip32ECKeyPair.generateKeyPair(seed);
             return Bip32ECKeyPair.deriveKeyPair(hdMasterKey,HD_DERIVATION_PATH_FIRST_CHILD );
         } catch (Throwable th ){
