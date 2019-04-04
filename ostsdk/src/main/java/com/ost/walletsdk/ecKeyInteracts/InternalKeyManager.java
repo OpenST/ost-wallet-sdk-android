@@ -13,6 +13,7 @@ package com.ost.walletsdk.ecKeyInteracts;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
 import com.ost.walletsdk.ecKeyInteracts.structs.OstSignWithMnemonicsStruct;
@@ -47,6 +48,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +60,12 @@ class InternalKeyManager {
     private static final int SCryptBlockSize = 1;
     private static final int SCryptParallelization = 1;
     private static final int SCryptKeyLength = 32;
+    private enum KeyType {
+        API,
+        DEVICE,
+        SESSION,
+        RECOVERY
+    };
 
     private static OstSecureKeyModelRepository modelRepo = null;
     private static OstSecureKeyModelRepository getByteStorageRepo() {
@@ -117,7 +125,7 @@ class InternalKeyManager {
         byte[] encryptedKey = null;
         try {
             // Create a private key.
-            ecKeyPair = generateECKeyPair();
+            ecKeyPair = generateECKeyPair(KeyType.API);
             privateKey = ecKeyPair.getPrivateKey().toByteArray();
             encryptedKey = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(privateKey);
             String apiKeyAddress = getKeyAddress(ecKeyPair);
@@ -212,7 +220,7 @@ class InternalKeyManager {
 
 
             //Create ECKeyPair and encrypt it.
-            ecKeyPair = generateECKeyPairWithMnemonics(mnemonics);
+            ecKeyPair = generateECKeyPairWithMnemonics(mnemonics, KeyType.DEVICE);
             String deviceAddress = getKeyAddress(ecKeyPair);
 
             // Clear the mnemonics - set to null to avoid double clearing.
@@ -321,7 +329,7 @@ class InternalKeyManager {
         byte[] privateKey = null;
         byte[] encryptedKey = null;
         try {
-            ecKeyPair = generateECKeyPair();
+            ecKeyPair = generateECKeyPair(KeyType.SESSION);
             String address = getKeyAddress(ecKeyPair);
 
             //Fetch the private key and encrypt it.
@@ -513,7 +521,7 @@ class InternalKeyManager {
 
 
     // region - External Mnemonics Signing Method
-    void sign(OstSignWithMnemonicsStruct ostSignWithMnemonicsStruct) {
+    void signWithExternalDevice(OstSignWithMnemonicsStruct ostSignWithMnemonicsStruct) {
         String messageHash = ostSignWithMnemonicsStruct.getMessageHash();
         byte[] mnemonics = ostSignWithMnemonicsStruct.getMnemonics();
         if ( null == messageHash || null == mnemonics) {
@@ -526,7 +534,7 @@ class InternalKeyManager {
         Bip32ECKeyPair ecKeyPair = null;
         try {
             //Create ecKeyPair
-            ecKeyPair = generateECKeyPairWithMnemonics(mnemonics);
+            ecKeyPair = generateECKeyPairWithMnemonics(mnemonics, KeyType.DEVICE);
             signerAddress = getKeyAddress(ecKeyPair);
 
             Sign.SignatureData signatureData = Sign.signMessage(dataToSign, ecKeyPair, false);
@@ -550,11 +558,11 @@ class InternalKeyManager {
 
 
     //region - Key Generators
-    private ECKeyPair generateECKeyPair() {
+    private ECKeyPair generateECKeyPair(KeyType keyType) {
         byte[] mnemonics = null;
         try {
             mnemonics = generateMnemonics();
-            return generateECKeyPairWithMnemonics(mnemonics);
+            return generateECKeyPairWithMnemonics(mnemonics, keyType);
         } catch (Throwable th ) {
             throw new OstError("ikm_geckp_1", ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
         } finally {
@@ -571,11 +579,14 @@ class InternalKeyManager {
 
     private static final int HARDENED_BIT= 0x80000000;
     private static final int[] HD_DERIVATION_PATH_FIRST_CHILD = (new int[]{44 | HARDENED_BIT,60 | HARDENED_BIT, HARDENED_BIT, 0, 0});
-    private Bip32ECKeyPair generateECKeyPairWithMnemonics(byte[] mnemonics) {
+    private Bip32ECKeyPair generateECKeyPairWithMnemonics(byte[] mnemonics, KeyType keyType) {
         byte[] seed = null;
         Bip32ECKeyPair hdMasterKey = null;
         try {
-            seed = generateSeedFromMnemonicBytes(mnemonics, "");
+            boolean shouldUseSeedPassword = OstConfigs.getInstance().USE_SEED_PASSWORD;
+            seed = generateSeedFromMnemonicBytes(mnemonics,
+                    shouldUseSeedPassword ? buildSeedPassword(keyType) : ""
+            );
             hdMasterKey = Bip32ECKeyPair.generateKeyPair(seed);
             return Bip32ECKeyPair.deriveKeyPair(hdMasterKey,HD_DERIVATION_PATH_FIRST_CHILD );
         } catch (Throwable th ){
@@ -584,6 +595,15 @@ class InternalKeyManager {
             clearBytes(seed);
             hdMasterKey = null;
         }
+    }
+
+    private String buildSeedPassword(KeyType keyType) {
+        ArrayList<String> components = new ArrayList<>();
+        components.add("OstSdk");
+        components.add(keyType.name());
+        components.add(this.mUserId);
+        String strToHash = TextUtils.join("-", components);
+        return Numeric.toHexString( Hash.sha3( strToHash.getBytes() ) );
     }
 
     private static final int SEED_ITERATIONS = 2048;
