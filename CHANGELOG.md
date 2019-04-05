@@ -11,7 +11,6 @@
 * Removed unused method OstUser.sign() 
 * Removed OstSdkCrypto class & OstCrypto interface
 * Removed utils.KeyGenProcess class & KeyGenProcessTest test-case
-* Use a deterministic password along with Mnemonics to generate keys. Using a deterministic password not only increases security, but, 
-also ensures that no two users can accidentally generate the same key.
-*`USE_SEED_PASSWORD` configuration added to support backwards compatibility with v2.0.0
+* Use a deterministic password along with Mnemonics to generate keys. Using a deterministic password not only increases security, but also ensures that no two users can accidentally generate the same key.
+* `USE_SEED_PASSWORD` configuration added to support backwards compatibility with v2.0.0
 
