@@ -73,13 +73,8 @@ public class OstResetPin extends OstBaseWorkFlow {
                     }
 
                     Log.i(TAG, "Loading device and user entities");
-                    AsyncStatus status = super.loadCurrentDevice();
-                    status = status.isSuccess() ? super.loadUser() : status;
-
-                    if (!status.isSuccess()) {
-                        Log.e(TAG, String.format("Fetching of basic entities failed for user id: %s", mUserId));
-                        return status;
-                    }
+                    ensureApiCommunication();
+                    ensureOstUser();
 
                     if (!hasActivatedUser()) {
                         Log.e(TAG, String.format("User is not activated of user id: %s", mUserId));

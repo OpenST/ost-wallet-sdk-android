@@ -16,8 +16,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -59,6 +61,10 @@ public class LoginFragment extends BaseFragment implements
     private TextInputLayout mUserNameTextInput;
     private ProgressBar mProgressView;
     private LinearLayout mLoginFormView;
+
+    public static Fragment newInstance() {
+        return new LoginFragment();
+    }
 
     @Override
     public View onCreateView(
@@ -103,6 +109,12 @@ public class LoginFragment extends BaseFragment implements
             }
         });
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setupUserDevice();
     }
 
     @Override
@@ -165,8 +177,10 @@ public class LoginFragment extends BaseFragment implements
     void setupUserDevice() {
         Activity activity = getActivity();
         LogInUser logInUser = ((App) activity.getApplicationContext()).getLoggedUser();
-        showProgress(true);
-        OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), LoginFragment.this);
+        if (null != logInUser) {
+            showProgress(true);
+            OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), LoginFragment.this);
+        }
     }
 
     @Override
