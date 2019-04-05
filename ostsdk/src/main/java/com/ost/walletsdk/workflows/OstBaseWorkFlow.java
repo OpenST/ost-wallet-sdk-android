@@ -75,16 +75,9 @@ abstract class OstBaseWorkFlow {
     private OstBiometricAuthentication.Callback mBioMetricCallBack;
 
     /**
-     * @param userId
-     * @param handler
-     * @param callback
-     * @Depricated
+     * @param userId - Ost Platform user-id
+     * @param callback - callback handler of the application.
      */
-    @Deprecated
-    OstBaseWorkFlow(String userId, Handler handler, OstWorkFlowCallback callback) {
-        this(userId, callback);
-    }
-
     OstBaseWorkFlow(String userId, OstWorkFlowCallback callback) {
         mUserId = userId;
 
@@ -452,37 +445,6 @@ abstract class OstBaseWorkFlow {
             throw ostError;
         }
         return mOstRules;
-    }
-
-
-    @Deprecated
-    AsyncStatus loadCurrentDevice() {
-        try {
-            ensureApiCommunication();
-        } catch (OstError ostError) {
-            return postErrorInterrupt(ostError);
-        }
-        return new AsyncStatus(true);
-    }
-
-    @Deprecated
-    AsyncStatus loadUser() {
-        try {
-            ensureOstUser();
-        } catch (OstError ostError) {
-            return postErrorInterrupt(ostError);
-        }
-        return new AsyncStatus(true);
-    }
-
-    @Deprecated
-    AsyncStatus loadToken() {
-        try {
-            ensureOstToken();
-        } catch (OstError ostError) {
-            return postErrorInterrupt(ostError);
-        }
-        return new AsyncStatus(true);
     }
 
     boolean shouldAskForBioMetric() {

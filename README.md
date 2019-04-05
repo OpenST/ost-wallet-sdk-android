@@ -17,7 +17,7 @@ Wallet SDK is a mobile application development SDK that enables developers to in
 Add the OST SDK as a dependency in build.gradle
 ```
 dependencies {
-        implementation 'com.ost:ost-wallet-sdk-android:2.0.0'
+        implementation 'com.ost:ost-wallet-sdk-android:2.0.1'
 }
 ```
 
@@ -32,7 +32,8 @@ dependencies {
         "REQUEST_TIMEOUT_DURATION": 60,
         "SESSION_BUFFER_TIME": 3600,
         "PRICE_POINT_TOKEN_SYMBOL": "OST",
-        "PRICE_POINT_CURRENCY_SYMBOL": "USD"
+        "PRICE_POINT_CURRENCY_SYMBOL": "USD",
+        "USE_SEED_PASSWORD": true
   }
  ```
 - Place the file under main directory's assets folder <br>
