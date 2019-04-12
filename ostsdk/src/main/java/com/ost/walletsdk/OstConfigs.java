@@ -74,7 +74,7 @@ public class OstConfigs {
             throw new OstError("Ost_config_sc_sbt", ErrorCode.INVALID_SESSION_BUFFER_TIME);
         }
 
-        USE_SEED_PASSWORD = config.optBoolean("USE_SEED_PASSWORD", true);
+        USE_SEED_PASSWORD = config.optBoolean("USE_SEED_PASSWORD", false);
     }
 
     private JSONObject readConfig(final Context context) {
