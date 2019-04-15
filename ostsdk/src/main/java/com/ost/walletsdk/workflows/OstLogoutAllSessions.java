@@ -37,7 +37,7 @@ import java.util.Map;
 /**
  * It will revoke all the sessions associated with provided userId
  */
-public class OstLogoutAllSessions extends OstBaseUserAuthenticatorWorkflow {
+public class OstLogoutAllSessions extends OstBaseWorkFlow {
 
     private static final String TAG = "OstLogoutAllSessions";
 

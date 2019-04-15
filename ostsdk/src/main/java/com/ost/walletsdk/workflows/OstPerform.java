@@ -26,9 +26,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.ost.walletsdk.workflows.OstBaseUserAuthenticatorWorkflow.WorkflowStateManager.DATA_VERIFIED;
-import static com.ost.walletsdk.workflows.OstBaseUserAuthenticatorWorkflow.WorkflowStateManager.PARAMS_VALIDATED;
-import static com.ost.walletsdk.workflows.OstBaseUserAuthenticatorWorkflow.WorkflowStateManager.VERIFY_DATA;
+import static com.ost.walletsdk.workflows.WorkflowStateManager.DATA_VERIFIED;
+import static com.ost.walletsdk.workflows.WorkflowStateManager.PARAMS_VALIDATED;
 
 /**
  * It perform workflow operations by reading QR data.
@@ -36,7 +35,7 @@ import static com.ost.walletsdk.workflows.OstBaseUserAuthenticatorWorkflow.Workf
  * {@link #OstPerform(String, JSONObject, OstWorkFlowCallback)}
  * It can perform Execute Rule Transactions, Add Device and Revoke Device.
  */
-public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstVerifyDataInterface {
+public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterface {
 
     private static final String TAG = "OstPerform";
     private final JSONObject mPayload;
@@ -53,10 +52,10 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
     protected void setStateManager() {
         super.setStateManager();
         ArrayList<String> orderedStates = stateManager.orderedStates;
-        int paramsValidationIndx = orderedStates.indexOf(OstBaseUserAuthenticatorWorkflow.WorkflowStateManager.PARAMS_VALIDATED);
+        int paramsValidationIndx = orderedStates.indexOf(PARAMS_VALIDATED);
         //Add custom states.
-        orderedStates.add(paramsValidationIndx + 1, VERIFY_DATA);
-        orderedStates.add(paramsValidationIndx + 2, DATA_VERIFIED);
+        orderedStates.add(paramsValidationIndx + 1, WorkflowStateManager.VERIFY_DATA);
+        orderedStates.add(paramsValidationIndx + 2, WorkflowStateManager.DATA_VERIFIED);
     }
 
 
@@ -64,10 +63,10 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
     protected AsyncStatus onStateChanged(String state, Object stateObject) {
         try {
             switch (state) {
-                case PARAMS_VALIDATED:
+                case WorkflowStateManager.PARAMS_VALIDATED:
                     dataDefinitionInstance.validateApiDependentParams();
                     return performNext();
-                case VERIFY_DATA:
+                case WorkflowStateManager.VERIFY_DATA:
                     OstContextEntity ostContextEntity = dataDefinitionInstance.getContextEntity();
                     postVerifyData(
                             dataDefinitionInstance.getWorkFlowType(),
@@ -75,7 +74,7 @@ public class OstPerform extends OstBaseUserAuthenticatorWorkflow implements OstV
                             OstPerform.this
                     );
                     return new AsyncStatus(true);
-                case DATA_VERIFIED:
+                case WorkflowStateManager.DATA_VERIFIED:
                     dataDefinitionInstance.startDataDefinitionFlow();
                     return new AsyncStatus(true);
             }

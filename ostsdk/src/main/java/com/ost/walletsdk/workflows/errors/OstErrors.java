@@ -58,6 +58,9 @@ public class OstErrors {
             case DEVICE_NOT_SETUP:
                 return "Unable to recognize the device. Please setup this device for the user using workflow provided at https://dev.ost.com/platform/docs/sdk/references";
 
+            case DEVICE_NOT_REGISTERED:
+                return "Device is not registered. To make any api to OST server device need to be registered";
+
             case USER_NOT_ACTIVATED:
                 return "The user is not activated yet. Please setup user's wallet to enable their participation in your economy. ";
 
@@ -269,6 +272,7 @@ public class OstErrors {
         NO_PENDING_RECOVERY,
         LOGOUT_ALL_SESSIONS_FAILED,
         TOKEN_HOLDER_API_FAILED,
+        DEVICE_NOT_REGISTERED,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,
@@ -309,6 +313,6 @@ public class OstErrors {
         DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY,
         OST_PLATFORM_API_ERROR,
-        CONFIG_READ_FAILED,;
+        CONFIG_READ_FAILED,
     }
 }

@@ -31,7 +31,7 @@ import java.util.Map;
  * It will authorize the current device address by revoking provided device address.
  * Current device should be in registered state before initiating this work flow.
  */
-public class OstRecoverDeviceWorkflow extends OstBaseUserAuthenticatorWorkflow {
+public class OstRecoverDeviceWorkflow extends OstBaseWorkFlow {
 
     private SignedRecoverOperationStruct dataHolder;
     private String deviceAddressToRecover;

@@ -21,7 +21,7 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
  * It return 12 words mnemonics of the current device key in flowComplete callback.
  * In callback OstContextActivity should be used to get mnemonics as byte array.
  */
-public class OstGetPaperWallet extends OstBaseUserAuthenticatorWorkflow {
+public class OstGetPaperWallet extends OstBaseWorkFlow {
 
     private static final String TAG = "OstGetPaperWallet";
 
