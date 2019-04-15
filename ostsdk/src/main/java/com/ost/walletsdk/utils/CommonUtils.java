@@ -10,6 +10,7 @@
 
 package com.ost.walletsdk.utils;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -19,6 +20,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,5 +109,21 @@ public class CommonUtils {
             Log.e(TAG, "JSON Exception");
         }
         return null;
+    }
+
+    public String validateSdkUrl(String baseUrl) {
+        if (TextUtils.isEmpty(baseUrl)) {
+            throw new RuntimeException("OstSdk: Invalid URL");
+        }
+        try {
+            new URL(baseUrl);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("OstSdk: MalformedURL", e);
+        }
+        baseUrl = baseUrl.trim();
+        if ('/' == baseUrl.charAt(baseUrl.length() - 1)) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+        return baseUrl;
     }
 }

@@ -22,6 +22,7 @@ import com.ost.walletsdk.models.Impls.OstModelFactory;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.utils.CommonUtils;
 import com.ost.walletsdk.utils.QRCode;
 import com.ost.walletsdk.workflows.OstAbortDeviceRecovery;
 import com.ost.walletsdk.workflows.OstActivateUser;
@@ -113,7 +114,7 @@ public class OstSdk {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
-        BASE_URL = baseUrl;
+        BASE_URL = new CommonUtils().validateSdkUrl(baseUrl);
     }
 
     public static OstSdk get() {
