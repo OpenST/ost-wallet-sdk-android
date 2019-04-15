@@ -425,6 +425,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         } catch (IOException e) {
             throw new OstError("wp_base_scd_3", ErrorCode.GET_DEVICE_API_FAILED);
         }
+        mCurrentDevice = ostUser.getCurrentDevice();
     }
 
     OstDeviceManager mDeviceManager;

@@ -21,7 +21,6 @@ import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.utils.AsyncStatus;
-import com.ost.walletsdk.utils.CommonUtils;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -68,16 +67,24 @@ public class OstActivateUser extends OstBaseWorkFlow {
         if (null == mPassphrase) {
             throw new OstError("wf_au_evp_1", ErrorCode.INVALID_USER_PASSPHRASE);
         }
-        if (TextUtils.isEmpty(mSpendingLimit) || mExpiresAfterInSecs < 0) {
-            throw new OstError("wf_au_evp_2", ErrorCode.INVALID_WORKFLOW_PARAMS);
+        if (TextUtils.isEmpty(mSpendingLimit)) {
+            throw new OstError("wf_au_evp_2", ErrorCode.INVALID_SPENDING_LIMIT);
         }
+        if (mExpiresAfterInSecs < 0) {
+            throw new OstError("wf_au_evp_3", ErrorCode.INVALID_EXPIRY_TIME);
+        }
+    }
+
+    @Override
+    void ensureOstUser(boolean forceSync) throws OstError {
+        super.ensureOstUser(true);
     }
 
     @Override
     protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
         try {
             if (hasActivatingUser()) {
-                throw new OstError("wf_au_udvp_0", ErrorCode.USER_ACTIVATING);
+                throw new OstError("wf_au_udvp_1", ErrorCode.USER_ACTIVATING);
             }
 
             String expirationHeight = calculateExpirationHeight(mExpiresAfterInSecs);
@@ -96,10 +103,6 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
             JSONObject response = mOstApiClient.postUserActivate(sessionAddress,
                     expirationHeight, mSpendingLimit, recoveryAddress);
-
-            if ( !new CommonUtils().isValidResponse(response)) {
-                throw new OstError("wf_au_udvp_1", ErrorCode.ACTIVATE_USER_API_FAILED);
-            }
 
             // Let the app know that kit has accepted the request.
             OstWorkflowContext workflowContext = new OstWorkflowContext(getWorkflowType());

@@ -23,6 +23,7 @@ public class OstErrors {
     public static String getMessage(ErrorCode code) {
         switch (code) {
             case INVALID_USER_ID: return "Unable to recognize the user id. Please inspect for what is being sent, rectify and re-submit.";
+            case INVALID_SDK_URL: return "Invalid OST server url";
             case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
             case OST_PLATFORM_API_ERROR: return "OST Platform Api returned error.";
             case GET_USER_API_FAILED:
@@ -129,6 +130,11 @@ public class OstErrors {
             case INVALID_NEW_USER_PASSPHRASE:
                 return "The new 6 digit PIN you entered is not correct.";
 
+            case INVALID_EXPIRY_TIME:
+                return "The expiry time provided is invalid";
+
+            case INVALID_SPENDING_LIMIT:
+                return "The spending limit provided is invalid should be more than 0";
 
             case MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED:
                 return "The maximum number of 'authenticating with PIN' attempts has been reached. Please try again a bit later.";
@@ -223,6 +229,7 @@ public class OstErrors {
 
     public enum ErrorCode {
         INVALID_USER_ID,
+        INVALID_SDK_URL,
         INVALID_WORKFLOW_CALLBACK,
         GET_USER_API_FAILED,
         TOKEN_API_FAILED,
@@ -273,6 +280,8 @@ public class OstErrors {
         LOGOUT_ALL_SESSIONS_FAILED,
         TOKEN_HOLDER_API_FAILED,
         DEVICE_NOT_REGISTERED,
+        INVALID_SPENDING_LIMIT,
+        INVALID_EXPIRY_TIME,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,
@@ -313,6 +322,6 @@ public class OstErrors {
         DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY,
         OST_PLATFORM_API_ERROR,
-        CONFIG_READ_FAILED,
+        CONFIG_READ_FAILED,;
     }
 }
