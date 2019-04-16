@@ -364,14 +364,18 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     void ensureOstUser(boolean forceSync) throws OstError {
         mOstUser = OstUser.getById(mUserId);
         if ( forceSync || null == mOstUser || TextUtils.isEmpty(mOstUser.getTokenHolderAddress()) || TextUtils.isEmpty(mOstUser.getDeviceManagerAddress())) {
-            try {
-                mOstApiClient.getUser();
-                mOstUser = OstUser.getById(mUserId);
-            } catch (IOException e) {
-                Log.d(TAG, "Encountered IOException while fetching user.");
-                OstError ostError = new OstError("wp_base_eou_1", ErrorCode.GET_USER_API_FAILED);
-                throw ostError;
-            }
+            syncOstUser();
+        }
+    }
+
+    void syncOstUser() throws OstError {
+        try {
+            mOstApiClient.getUser();
+            mOstUser = OstUser.getById(mUserId);
+        } catch (IOException e) {
+            Log.d(TAG, "Encountered IOException while fetching user.");
+            OstError ostError = new OstError("wp_base_sou_1", ErrorCode.GET_USER_API_FAILED);
+            throw ostError;
         }
     }
 

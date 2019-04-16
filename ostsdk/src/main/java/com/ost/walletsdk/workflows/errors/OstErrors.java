@@ -12,8 +12,6 @@ package com.ost.walletsdk.workflows.errors;
 
 import android.util.Log;
 
-import com.ost.walletsdk.OstConstants;
-
 /**
  * Ost Error with error code and error message
  */
@@ -130,10 +128,10 @@ public class OstErrors {
             case INVALID_NEW_USER_PASSPHRASE:
                 return "The new 6 digit PIN you entered is not correct.";
 
-            case INVALID_EXPIRY_TIME:
+            case INVALID_SESSION_EXPIRY_TIME:
                 return "The expiry time provided is invalid";
 
-            case INVALID_SPENDING_LIMIT:
+            case INVALID_SESSION_SPENDING_LIMIT:
                 return "The spending limit provided is invalid should be more than 0";
 
             case MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED:
@@ -280,8 +278,8 @@ public class OstErrors {
         LOGOUT_ALL_SESSIONS_FAILED,
         TOKEN_HOLDER_API_FAILED,
         DEVICE_NOT_REGISTERED,
-        INVALID_SPENDING_LIMIT,
-        INVALID_EXPIRY_TIME,
+        INVALID_SESSION_SPENDING_LIMIT,
+        INVALID_SESSION_EXPIRY_TIME,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,

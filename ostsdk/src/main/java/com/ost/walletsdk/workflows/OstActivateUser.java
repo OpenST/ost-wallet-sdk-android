@@ -68,24 +68,19 @@ public class OstActivateUser extends OstBaseWorkFlow {
             throw new OstError("wf_au_evp_1", ErrorCode.INVALID_USER_PASSPHRASE);
         }
         if (TextUtils.isEmpty(mSpendingLimit)) {
-            throw new OstError("wf_au_evp_2", ErrorCode.INVALID_SPENDING_LIMIT);
+            throw new OstError("wf_au_evp_2", ErrorCode.INVALID_SESSION_SPENDING_LIMIT);
         }
         if (mExpiresAfterInSecs < 0) {
-            throw new OstError("wf_au_evp_3", ErrorCode.INVALID_EXPIRY_TIME);
+            throw new OstError("wf_au_evp_3", ErrorCode.INVALID_SESSION_EXPIRY_TIME);
         }
     }
 
-    @Override
-    void ensureOstUser(boolean forceSync) throws OstError {
-        super.ensureOstUser(true);
-    }
 
     @Override
     protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
         try {
-            if (hasActivatingUser()) {
-                throw new OstError("wf_au_udvp_1", ErrorCode.USER_ACTIVATING);
-            }
+
+            assertUserInCreatedState();
 
             String expirationHeight = calculateExpirationHeight(mExpiresAfterInSecs);
 
@@ -139,7 +134,12 @@ public class OstActivateUser extends OstBaseWorkFlow {
         return postFlowComplete( new OstContextEntity(mOstUser, OstSdk.USER) );
     }
 
-    private boolean hasActivatingUser() {
-        return OstSdk.getUser(mUserId).isActivating();
+    private void assertUserInCreatedState() {
+        OstUser ostUser = OstUser.getById(mUserId);
+        if (ostUser.isActivated()) {
+            throw new OstError("wf_ac_nua_1", ErrorCode.USER_ALREADY_ACTIVATED);
+        } else if (ostUser.isActivating()) {
+            throw new OstError("wf_ac_nua_1", ErrorCode.USER_ACTIVATING);
+        }
     }
 }
