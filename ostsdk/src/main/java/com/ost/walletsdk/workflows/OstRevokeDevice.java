@@ -42,7 +42,7 @@ import java.util.Map;
  * It revokes provided device address from device manager.
  * Current device should be in {@link OstDevice.CONST_STATUS#AUTHORIZED} state.
  */
-public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
+public class OstRevokeDevice extends OstBaseWorkFlow {
 
     private static final String TAG = "OstRevokeDeviceWithQR";
     private final String mDeviceToBeRevoked;

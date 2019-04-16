@@ -34,12 +34,15 @@ import com.ost.walletsdk.workflows.OstPerform;
 import com.ost.walletsdk.workflows.OstRecoverDeviceWorkflow;
 import com.ost.walletsdk.workflows.OstRegisterDevice;
 import com.ost.walletsdk.workflows.OstResetPin;
+import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +116,7 @@ public class OstSdk {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
-        BASE_URL = baseUrl;
+        BASE_URL = validateSdkUrl(baseUrl);
     }
 
     public static OstSdk get() {
@@ -447,4 +450,28 @@ public class OstSdk {
         ostLogoutAllSessions.perform();
     }
     // endregion
+
+    private String validateSdkUrl(String baseUrl) {
+        try {
+            new URL(baseUrl);
+        } catch (MalformedURLException e) {
+            throw new OstError("cu_vsu_1", OstErrors.ErrorCode.INVALID_SDK_URL);
+        }
+
+        baseUrl = baseUrl.trim();
+        if ('/' == baseUrl.charAt(baseUrl.length() - 1)) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+
+        String[] endPointSplits = baseUrl.split("/");
+        if (endPointSplits.length < 5) {
+            throw new OstError("cu_vsu_2", OstErrors.ErrorCode.INVALID_SDK_URL);
+        }
+        String providedApiVersion = endPointSplits[4].toLowerCase();
+        String expectedApiVersions = String.format("v%s", OstConstants.OST_API_VERSION).toLowerCase();
+        if ( !providedApiVersion.equalsIgnoreCase(expectedApiVersions) ) {
+            throw new OstError("cu_vsu_3", OstErrors.ErrorCode.INVALID_SDK_URL);
+        }
+        return baseUrl;
+    }
 }

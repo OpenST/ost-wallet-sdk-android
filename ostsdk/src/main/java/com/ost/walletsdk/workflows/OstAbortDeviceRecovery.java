@@ -40,7 +40,7 @@ import java.util.Map;
  * To initiate abort recovery device should be at least registered and
  * the user must provide his device's user passphrase
  */
-public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
+public class OstAbortDeviceRecovery extends OstBaseWorkFlow {
 
     private static final String TAG = "OstAbortDeviceRecovery";
     private SignedRecoverOperationStruct dataHolder;

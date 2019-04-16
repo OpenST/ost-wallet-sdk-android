@@ -52,7 +52,7 @@ import java.util.Map;
  * It can do multiple transfers by passing list of token holder receiver addresses with
  * respective amounts.
  */
-public class OstExecuteTransaction extends OstBaseUserAuthenticatorWorkflow {
+public class OstExecuteTransaction extends OstBaseWorkFlow {
 
     private static final String TAG = "OstExecuteTransaction";
     private final List<String> mTokenHolderAddresses;

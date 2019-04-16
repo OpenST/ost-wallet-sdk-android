@@ -11,6 +11,7 @@
 package com.ost.walletsdk.workflows;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
@@ -19,7 +20,6 @@ import com.ost.walletsdk.ecKeyInteracts.OstRecoveryManager;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstUser;
-import com.ost.walletsdk.network.OstApiClient;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
@@ -35,7 +35,6 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
     private static final String TAG = "OstActivateUser";
     private final UserPassphrase mPassphrase;
-    private String expirationHeight;
     private final String mSpendingLimit;
     private final long mExpiresAfterInSecs;
 
@@ -53,28 +52,37 @@ public class OstActivateUser extends OstBaseWorkFlow {
     }
 
     @Override
-    synchronized protected AsyncStatus process() {
-        if (!hasValidParams()) {
-            Log.i(TAG, "Work flow has invalid params");
-            return postErrorInterrupt("wf_au_pr_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
+    boolean shouldCheckCurrentDeviceAuthorization() {
+        return false;
+    }
+
+    @Override
+    protected boolean shouldAskForAuthentication() {
+        return false;
+    }
+
+    @Override
+    void ensureValidParams() {
+        super.ensureValidParams();
+        if (null == mPassphrase) {
+            throw new OstError("wf_au_evp_1", ErrorCode.INVALID_USER_PASSPHRASE);
         }
+        if (TextUtils.isEmpty(mSpendingLimit)) {
+            throw new OstError("wf_au_evp_2", ErrorCode.INVALID_SESSION_SPENDING_LIMIT);
+        }
+        if (mExpiresAfterInSecs < 0) {
+            throw new OstError("wf_au_evp_3", ErrorCode.INVALID_SESSION_EXPIRY_TIME);
+        }
+    }
 
-        //Load Current Device.
+
+    @Override
+    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
         try {
-            //Perform Validations.
-            ensureApiCommunication();
-            ensureOstUser();
-            if ( mOstUser.isActivated() ) {
-                throw new OstError("wf_au_pr_2", ErrorCode.USER_ALREADY_ACTIVATED);
-            } else if ( mOstUser.isActivating() ) {
-                throw new OstError("wf_au_pr_3", ErrorCode.USER_ACTIVATING);
-            }
 
-            ensureOstToken();
+            assertUserInCreatedState();
 
-            String expirationHeight = this.calculateExpirationHeight(mExpiresAfterInSecs);
-
-
+            String expirationHeight = calculateExpirationHeight(mExpiresAfterInSecs);
 
             // Compute recovery address.
             String recoveryAddress = new OstRecoveryManager(mUserId).getRecoveryAddressFor(mPassphrase);
@@ -88,14 +96,8 @@ public class OstActivateUser extends OstBaseWorkFlow {
                             + " SpendingLimit: %s, RecoveryAddress: %s", sessionAddress,
                     expirationHeight, mSpendingLimit, recoveryAddress));
 
-            OstApiClient ostApiClient = this.mOstApiClient;
-
-            JSONObject response = ostApiClient.postUserActivate(sessionAddress,
+            JSONObject response = mOstApiClient.postUserActivate(sessionAddress,
                     expirationHeight, mSpendingLimit, recoveryAddress);
-
-            if ( !isValidResponse(response)) {
-                throw new OstError("wf_au_pr_4", ErrorCode.ACTIVATE_USER_API_FAILED);
-            }
 
             // Let the app know that kit has accepted the request.
             OstWorkflowContext workflowContext = new OstWorkflowContext(getWorkflowType());
@@ -109,7 +111,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
         } catch (OstError error) {
             return postErrorInterrupt(error);
         } catch (IOException e) {
-            OstError error = new OstError("wf_au_pr_4", ErrorCode.ACTIVATE_USER_API_FAILED);
+            OstError error = new OstError("wf_au_udvp_2", ErrorCode.ACTIVATE_USER_API_FAILED);
             return postErrorInterrupt(error);
         } finally {
             mPassphrase.wipe();
@@ -122,19 +124,22 @@ public class OstActivateUser extends OstBaseWorkFlow {
                 OstUser.CONST_STATUS.CREATED);
         if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
             Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
-            return postErrorInterrupt("wf_au_pr_5", ErrorCode.ACTIVATE_USER_API_POLLING_FAILED);
+            return postErrorInterrupt("wf_au_udvp_3", ErrorCode.ACTIVATE_USER_API_POLLING_FAILED);
         }
         Log.i(TAG, "Syncing Entities: User, Device, Sessions");
         new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.DEVICE,
                 OstSdkSync.SYNC_ENTITY.SESSION).perform();
 
         Log.i(TAG, "Response received for post Token deployment");
-        postFlowComplete( new OstContextEntity(mOstUser, OstSdk.USER) );
-
-        return new AsyncStatus(true);
+        return postFlowComplete( new OstContextEntity(mOstUser, OstSdk.USER) );
     }
 
-    private boolean hasActivatingUser() {
-        return OstSdk.getUser(mUserId).isActivating();
+    private void assertUserInCreatedState() {
+        OstUser ostUser = OstUser.getById(mUserId);
+        if (ostUser.isActivated()) {
+            throw new OstError("wf_ac_nua_1", ErrorCode.USER_ALREADY_ACTIVATED);
+        } else if (ostUser.isActivating()) {
+            throw new OstError("wf_ac_nua_1", ErrorCode.USER_ACTIVATING);
+        }
     }
 }

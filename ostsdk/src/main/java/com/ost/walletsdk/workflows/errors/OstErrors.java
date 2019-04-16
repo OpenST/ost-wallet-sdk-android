@@ -12,8 +12,6 @@ package com.ost.walletsdk.workflows.errors;
 
 import android.util.Log;
 
-import com.ost.walletsdk.OstConstants;
-
 /**
  * Ost Error with error code and error message
  */
@@ -23,6 +21,7 @@ public class OstErrors {
     public static String getMessage(ErrorCode code) {
         switch (code) {
             case INVALID_USER_ID: return "Unable to recognize the user id. Please inspect for what is being sent, rectify and re-submit.";
+            case INVALID_SDK_URL: return "Invalid OST server url";
             case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
             case OST_PLATFORM_API_ERROR: return "OST Platform Api returned error.";
             case GET_USER_API_FAILED:
@@ -57,6 +56,9 @@ public class OstErrors {
 
             case DEVICE_NOT_SETUP:
                 return "Unable to recognize the device. Please setup this device for the user using workflow provided at https://dev.ost.com/platform/docs/sdk/references";
+
+            case DEVICE_NOT_REGISTERED:
+                return "Device is not registered. To make any api to OST server device need to be registered";
 
             case USER_NOT_ACTIVATED:
                 return "The user is not activated yet. Please setup user's wallet to enable their participation in your economy. ";
@@ -126,6 +128,11 @@ public class OstErrors {
             case INVALID_NEW_USER_PASSPHRASE:
                 return "The new 6 digit PIN you entered is not correct.";
 
+            case INVALID_SESSION_EXPIRY_TIME:
+                return "The expiry time provided is invalid";
+
+            case INVALID_SESSION_SPENDING_LIMIT:
+                return "The spending limit provided is invalid should be more than 0";
 
             case MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED:
                 return "The maximum number of 'authenticating with PIN' attempts has been reached. Please try again a bit later.";
@@ -220,6 +227,7 @@ public class OstErrors {
 
     public enum ErrorCode {
         INVALID_USER_ID,
+        INVALID_SDK_URL,
         INVALID_WORKFLOW_CALLBACK,
         GET_USER_API_FAILED,
         TOKEN_API_FAILED,
@@ -269,6 +277,9 @@ public class OstErrors {
         NO_PENDING_RECOVERY,
         LOGOUT_ALL_SESSIONS_FAILED,
         TOKEN_HOLDER_API_FAILED,
+        DEVICE_NOT_REGISTERED,
+        INVALID_SESSION_SPENDING_LIMIT,
+        INVALID_SESSION_EXPIRY_TIME,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,

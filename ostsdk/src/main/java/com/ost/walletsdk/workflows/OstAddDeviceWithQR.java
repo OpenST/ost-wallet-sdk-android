@@ -36,7 +36,7 @@ import java.io.IOException;
  * It authorize device address by adding it to Device Manager.
  * Device to add should be in {@link OstDevice.CONST_STATUS#REGISTERED} state.
  */
-public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
+public class OstAddDeviceWithQR extends OstBaseWorkFlow {
 
     private static final String TAG = "OstAddDeviceWithQR";
     private final String mDeviceAddressToBeAdded;
