@@ -120,7 +120,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
 
                     //Sync if needed.
                     if ( status.isSuccess() ) {
-                        sync();
+                        sync(mForceSync);
                         //Forward it.
                         return postFlowComplete(new OstContextEntity(
                                 ostUser.getCurrentDevice(),
@@ -136,10 +136,8 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                     AsyncStatus verificationStatus = verifyDeviceRegistered();
 
                     if ( verificationStatus.isSuccess() ) {
-                        //Sync Registered Entities.
-                        ensureApiCommunication();
-                        ensureOstUser(true);
-                        ensureOstToken();
+                        //Force Sync Registered Entities.
+                        sync(true);
                         //Forward it.
                         return postFlowComplete(new OstContextEntity(
                                 mOstUser.getCurrentDevice(),
@@ -166,13 +164,11 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
     }
 
     //region - Helper methods
-    private void sync() {
+    private void sync(boolean forceSync) {
         Log.i(TAG, String.format("Syncing sdk: %b", mForceSync));
-        if (mForceSync) {
-            ensureApiCommunication();
-            ensureOstUser(true);
-            ensureDeviceManager();
-            ensureOstToken();
+        if (forceSync) {
+            syncOstUser();
+            syncOstToken();
         }
     }
 
