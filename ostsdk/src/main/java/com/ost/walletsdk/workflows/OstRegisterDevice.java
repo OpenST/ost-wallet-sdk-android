@@ -227,11 +227,10 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
         OstUser ostUser = OstUser.getById(mUserId);
         OstDevice device = ostUser.getCurrentDevice();
 
-        if (device.canMakeApiCall()) {
-            return new AsyncStatus(true);
-        } else {
+        if (!device.canMakeApiCall()) {
             throw new OstError("wf_rd_vdr_1", ErrorCode.DEVICE_NOT_REGISTERED);
         }
+        return new AsyncStatus(true);
     }
     //endregion
 }
