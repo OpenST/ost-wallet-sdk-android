@@ -115,40 +115,12 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                     }
                     Log.i(TAG, "Device is already registered. ostDevice.status:" + ostDevice.getStatus() );
 
-                    // Verify Device Registration before sync.
-                    AsyncStatus status = verifyDeviceRegistered();
+                    return handleRegisteredDevice();
 
-                    //Sync if needed.
-                    if ( status.isSuccess() ) {
-                        sync();
-                        //Forward it.
-                        return postFlowComplete(new OstContextEntity(
-                                ostUser.getCurrentDevice(),
-                                OstSdk.DEVICE
-                        ));
-                    }
-
-                    //Lets verify if device was registered.
-                    return status;
                 case WorkflowStateManager.REGISTERED:
                     Log.i(TAG, "Device registered");
-                    // Verify Device Registration before sync.
-                    AsyncStatus verificationStatus = verifyDeviceRegistered();
 
-                    if ( verificationStatus.isSuccess() ) {
-                        //Sync Registered Entities.
-                        ensureApiCommunication();
-                        ensureOstUser(true);
-                        ensureOstToken();
-                        //Forward it.
-                        return postFlowComplete(new OstContextEntity(
-                                mOstUser.getCurrentDevice(),
-                                OstSdk.DEVICE
-                        ));
-                    }
-
-                    //Lets verify if device was registered.
-                    return verificationStatus;
+                    return handleRegisteredDevice();
             }
         } catch (OstError ostError) {
             return postErrorInterrupt(ostError);
@@ -160,6 +132,24 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
         return super.onStateChanged(state, stateObject);
     }
 
+    private AsyncStatus handleRegisteredDevice() {
+        // Verify Device Registration before sync.
+        AsyncStatus verificationStatus = verifyDeviceRegistered();
+
+        if ( verificationStatus.isSuccess() ) {
+            //Force Sync Registered Entities.
+            sync();
+            //Forward it.
+            return postFlowComplete(new OstContextEntity(
+                    mOstUser.getCurrentDevice(),
+                    OstSdk.DEVICE
+            ));
+        }
+
+        //Lets verify if device was registered.
+        return verificationStatus;
+    }
+
     @Override
     public void deviceRegistered(JSONObject apiResponse) {
         performWithState(WorkflowStateManager.REGISTERED, apiResponse);
@@ -168,11 +158,19 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
     //region - Helper methods
     private void sync() {
         Log.i(TAG, String.format("Syncing sdk: %b", mForceSync));
+        ensureApiCommunication();
         if (mForceSync) {
-            ensureApiCommunication();
-            ensureOstUser(true);
-            ensureDeviceManager();
+            syncOstUser();
+            syncOstToken();
+            if (mOstUser.isActivated()) {
+                syncDeviceManager();
+            }
+        } else {
+            ensureOstUser();
             ensureOstToken();
+            if (mOstUser.isActivated()) {
+                ensureDeviceManager();
+            }
         }
     }
 
@@ -183,7 +181,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
             @Override
             public void run() {
                 OstWorkFlowCallback callback = getCallback();
-                if ( null != callback ) {
+                if (null != callback) {
                     callback.registerDevice(apiResponse, OstRegisterDevice.this);
                 } else {
                     //Do Nothing, let the workflow die.
@@ -222,28 +220,17 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
     }
 
     private AsyncStatus verifyDeviceRegistered() {
-        try {
-            //Just sync current device.
-            syncCurrentDevice();
+        //Just sync current device.
+        syncCurrentDevice();
 
-            //Get the currentDevice
-            OstUser ostUser = OstUser.getById(mUserId);
-            OstDevice device = ostUser.getCurrentDevice();
+        //Get the currentDevice
+        OstUser ostUser = OstUser.getById(mUserId);
+        OstDevice device = ostUser.getCurrentDevice();
 
-            if (device.canMakeApiCall()) {
-                return new AsyncStatus(true);
-            } else {
-                throw new OstError("wf_rd_vdr_1", ErrorCode.DEVICE_NOT_REGISTERED);
-            }
-        } catch (OstError error) {
-            //This could happen.
-            return postErrorInterrupt( error );
-        } catch (Exception ex) {
-            //Catch all unexpected errors.
-            OstError error = new OstError("wf_rd_vdr_1", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
-            error.setStackTrace( ex.getStackTrace() );
-            return postErrorInterrupt( error );
+        if (!device.canMakeApiCall()) {
+            throw new OstError("wf_rd_vdr_1", ErrorCode.DEVICE_NOT_REGISTERED);
         }
+        return new AsyncStatus(true);
     }
     //endregion
 }

@@ -389,13 +389,17 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         if (null == mOstToken || TextUtils.isEmpty(mOstToken.getChainId()) ||
                 TextUtils.isEmpty(mOstToken.getBtDecimals())) {
             //Make API Call.
-            try {
-                mOstApiClient.getToken();
-                mOstToken = OstToken.getById(tokenId);
-            } catch (IOException e) {
-                Log.i(TAG, "Encountered IOException while fetching token.");
-                throw new OstError("wp_base_eot_1", ErrorCode.TOKEN_API_FAILED);
-            }
+            syncOstToken();
+        }
+    }
+
+    void syncOstToken() {
+        try {
+            mOstApiClient.getToken();
+            mOstToken = OstToken.getById(mOstUser.getTokenId());
+        } catch (IOException e) {
+            Log.i(TAG, "Encountered IOException while fetching token.");
+            throw new OstError("wp_base_sot_1", ErrorCode.TOKEN_API_FAILED);
         }
     }
 
