@@ -162,9 +162,15 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
         if (mForceSync) {
             syncOstUser();
             syncOstToken();
+            if (mOstUser.isActivated()) {
+                syncDeviceManager();
+            }
         } else {
             ensureOstUser();
             ensureOstToken();
+            if (mOstUser.isActivated()) {
+                ensureDeviceManager();
+            }
         }
     }
 
@@ -175,7 +181,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
             @Override
             public void run() {
                 OstWorkFlowCallback callback = getCallback();
-                if ( null != callback ) {
+                if (null != callback) {
                     callback.registerDevice(apiResponse, OstRegisterDevice.this);
                 } else {
                     //Do Nothing, let the workflow die.
@@ -214,27 +220,17 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
     }
 
     private AsyncStatus verifyDeviceRegistered() {
-        try {
-            //Just sync current device.
-            syncCurrentDevice();
+        //Just sync current device.
+        syncCurrentDevice();
 
-            //Get the currentDevice
-            OstUser ostUser = OstUser.getById(mUserId);
-            OstDevice device = ostUser.getCurrentDevice();
+        //Get the currentDevice
+        OstUser ostUser = OstUser.getById(mUserId);
+        OstDevice device = ostUser.getCurrentDevice();
 
-            if (device.canMakeApiCall()) {
-                return new AsyncStatus(true);
-            } else {
-                throw new OstError("wf_rd_vdr_1", ErrorCode.DEVICE_NOT_REGISTERED);
-            }
-        } catch (OstError error) {
-            //This could happen.
-            return postErrorInterrupt( error );
-        } catch (Exception ex) {
-            //Catch all unexpected errors.
-            OstError error = new OstError("wf_rd_vdr_1", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
-            error.setStackTrace( ex.getStackTrace() );
-            return postErrorInterrupt( error );
+        if (device.canMakeApiCall()) {
+            return new AsyncStatus(true);
+        } else {
+            throw new OstError("wf_rd_vdr_1", ErrorCode.DEVICE_NOT_REGISTERED);
         }
     }
     //endregion
