@@ -57,6 +57,9 @@ public class OstErrors {
             case DEVICE_NOT_SETUP:
                 return "Unable to recognize the device. Please setup this device for the user using workflow provided at https://dev.ost.com/platform/docs/sdk/references";
 
+            case API_BELOW_22:
+                return "Wallet sdk is not supported for api less than 22(Lollipop)";
+
             case DEVICE_NOT_REGISTERED:
                 return "Device is not registered. To make any api to OST server device need to be registered";
 
@@ -280,6 +283,8 @@ public class OstErrors {
         DEVICE_NOT_REGISTERED,
         INVALID_SESSION_SPENDING_LIMIT,
         INVALID_SESSION_EXPIRY_TIME,
+
+        API_BELOW_22,
 
         //SESSION KEY
         SESSION_KEY_GENERATION_FAILED,

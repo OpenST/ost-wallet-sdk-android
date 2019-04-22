@@ -65,7 +65,7 @@ public class UserListFragment extends Fragment {
         mAdapter = new UserAdapter(mDataList);
         mAdapter.setOnItemSelectedListener(mOnItemSelectedListener);
         mRecyclerView.setAdapter(mAdapter);
-        new MappyApiClient().getUserList(new MappyApiClient.Callback() {
+        new MappyApiClient(getActivity()).getUserList(new MappyApiClient.Callback() {
             @Override
             public void onResponse(boolean success, JSONObject response) {
                 mDataList.clear();

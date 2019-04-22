@@ -193,7 +193,7 @@ public class LoginFragment extends BaseFragment implements
         }
         LogInUser logInUser = ((App) getActivity().getApplicationContext()).getLoggedUser();
         String mUserId = logInUser.getId();
-        new MappyApiClient().registerDevice(mUserId, apiParams, new MappyApiClient.Callback() {
+        new MappyApiClient(getContext()).registerDevice(mUserId, apiParams, new MappyApiClient.Callback() {
             @Override
             public void onResponse(boolean success, JSONObject response) {
                 if (success) {

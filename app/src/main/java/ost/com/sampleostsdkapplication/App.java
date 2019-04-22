@@ -13,6 +13,8 @@ package ost.com.sampleostsdkapplication;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.support.multidex.MultiDex;
 
 import com.ost.walletsdk.OstSdk;
 
@@ -31,7 +33,9 @@ public class App extends Application {
         BASE_URL_MAPPY = getString(R.string.base_url_mappy);
         BASE_URL_OST_PLATFORM = getString(R.string.base_url_ost_platform);
 
-        OstSdk.initialize(getApplicationContext(), getBaseUrlOstPlatform());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            OstSdk.initialize(getApplicationContext(), getBaseUrlOstPlatform());
+        }
 
         sharedPreferences = getSharedPreferences("LoggedIn_user", Context.MODE_PRIVATE);
     }
@@ -45,6 +49,12 @@ public class App extends Application {
         loggedUser = getLoggedUserFromPref();
 
         return loggedUser;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private LogInUser getLoggedUserFromPref() {

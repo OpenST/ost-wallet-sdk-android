@@ -46,7 +46,7 @@ public class LoginViewController {
             mLoginFragment.resetUserNameError();
             mLoginFragment.showProgress(true);
             if (isRegister) {
-                new MappyApiClient().createUser(userName.toString(), mobileNumber.toString(), "description", new MappyApiClient.Callback() {
+                new MappyApiClient(mLoginFragment.getActivity()).createUser(userName.toString(), mobileNumber.toString(), "description", new MappyApiClient.Callback() {
                     @Override
                     public void onResponse(boolean success, JSONObject response) {
                         Log.i(TAG, "On User Register response");
@@ -54,7 +54,7 @@ public class LoginViewController {
                     }
                 });
             } else {
-                new MappyApiClient().loginUser(userName.toString(), mobileNumber.toString(), new MappyApiClient.Callback() {
+                new MappyApiClient(mLoginFragment.getActivity()).loginUser(userName.toString(), mobileNumber.toString(), new MappyApiClient.Callback() {
                     @Override
                     public void onResponse(boolean success, JSONObject response) {
                         Log.i(TAG, "On User Login response");

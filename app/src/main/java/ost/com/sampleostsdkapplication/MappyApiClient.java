@@ -10,13 +10,12 @@
 
 package ost.com.sampleostsdkapplication;
 
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
-import com.ost.walletsdk.network.OstApiError;
-import com.ost.walletsdk.network.OstHttpRequestClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,9 +29,9 @@ public class MappyApiClient {
     private final OstHttpRequestClient mOstHttpRequestClient;
     private final Handler mHandler;
 
-    public MappyApiClient() {
+    public MappyApiClient(Context context) {
         mHandler = new Handler();
-        mOstHttpRequestClient = new OstHttpRequestClient(App.getBaseUrlMappy());
+        mOstHttpRequestClient = new OstHttpRequestClient(context.getApplicationContext(), App.getBaseUrlMappy());
     }
 
     public void getUser(final String userId,final  Callback callback) {

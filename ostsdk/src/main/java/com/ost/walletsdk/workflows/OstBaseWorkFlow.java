@@ -65,6 +65,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     
     private final static ThreadPoolExecutor THREAD_POOL_EXECUTOR = (ThreadPoolExecutor) Executors
             .newFixedThreadPool(1);
+    private final boolean isBelowApi22;
 
     //region - Variables
     OstApiClient mOstApiClient;
@@ -114,8 +115,13 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
         mHandler = new Handler(Looper.getMainLooper());
         workFlowCallbackWeakReference = new WeakReference<>(callback);
-        initApiClient();
         setStateManager();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            isBelowApi22 = false;
+            initApiClient();
+        } else {
+            isBelowApi22 = true;
+        }
     }
 
     
@@ -169,6 +175,9 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         return getAsyncQueue().submit(new Callable<AsyncStatus>() {
             @Override
             public AsyncStatus call() {
+                if (isBelowApi22) {
+                    return postErrorInterrupt(new OstError("wf_b_p", OstErrors.ErrorCode.API_BELOW_22));
+                }
                 return process();
             }
         });
