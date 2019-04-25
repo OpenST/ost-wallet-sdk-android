@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import ost.com.demoapp.App;
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.ui.BaseActivity;
@@ -76,12 +77,12 @@ public class OnBoardingActivity extends BaseActivity implements
 
     @Override
     public void createAccount(String economy, String userName, String password) {
-        mOnBoardingPresenter.createAccount(economy, userName, password);
+        mOnBoardingPresenter.createAccount(userName, password);
     }
 
     @Override
     public void logIn(String economy, String userName, String password) {
-        mOnBoardingPresenter.logIn(economy, userName, password);
+        mOnBoardingPresenter.logIn(userName, password);
     }
 
     @Override
@@ -98,7 +99,7 @@ public class OnBoardingActivity extends BaseActivity implements
             try {
                 Log.w(LOG_TAG, returnedResult);
                 CurrentEconomy currentEconomy = CurrentEconomy.newInstance(returnedResult);
-                ((App)getApplicationContext()).setCurrentEconomy(currentEconomy);
+                AppProvider.get().setCurrentEconomy(currentEconomy);
                 ((CreateAccountFragment)FragmentUtils.getTopFragment(this,R.id.layout_container)).updateToken();
             } catch (Exception e) {
                 Log.e(LOG_TAG, "JSONException while parsing");

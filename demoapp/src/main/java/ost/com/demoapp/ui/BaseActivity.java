@@ -11,6 +11,7 @@
 package ost.com.demoapp.ui;
 
 
+import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -20,13 +21,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.Optional;
+
 import ost.com.demoapp.R;
 import ost.com.demoapp.customView.AppBar;
+import ost.com.demoapp.util.DialogFactory;
 
 
 public abstract class BaseActivity extends AppCompatActivity implements BaseView {
 
     private boolean isRestored;
+    private ProgressDialog progressDlg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +98,15 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     @Override
     public void showProgress(boolean show) {
-        //show progress
+        if (show) {
+            ProgressDialog dialog = DialogFactory.createProgressDialog(this, R.string.dialog_progress_msg);
+            dialog.show();
+            progressDlg = dialog;
+        } else {
+            if (null != progressDlg) {
+                progressDlg.dismiss();
+            }
+        }
     }
 
     public boolean isPortrait() {

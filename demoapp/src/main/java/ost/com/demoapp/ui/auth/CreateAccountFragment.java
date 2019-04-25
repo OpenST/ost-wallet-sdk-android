@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import ost.com.demoapp.App;
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.customView.AppBar;
 import ost.com.demoapp.customView.PrimaryEditTextView;
@@ -123,7 +124,7 @@ public class CreateAccountFragment extends BaseFragment {
     }
 
     public void updateToken() {
-        CurrentEconomy currentEconomy = ((App)getBaseActivity().getApplicationContext()).getCurrentEconomy();
+        CurrentEconomy currentEconomy = AppProvider.get().getCurrentEconomy();
         if (null != currentEconomy) {
             editTextViewEconomy.setText(currentEconomy.getTokenName());
         }
