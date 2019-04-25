@@ -9,9 +9,10 @@
   ~       http://www.apache.org/licenses/LICENSE-2.0
   -->
 
-<resources>
-    <dimen name="sp_17">17sp</dimen>
-    <dimen name="sp_5">5sp</dimen>
-    <dimen name="sp_18">18sp</dimen>
-    <dimen name="dp_30">30dp</dimen>
-</resources>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/linear_interpolator">
+    <translate
+        android:duration="@integer/activity_animation_duration"
+        android:fromXDelta="-100%p"
+        android:toXDelta="0"/>
+</set>

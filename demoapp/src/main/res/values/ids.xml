@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2019 OST.com Inc
   ~
@@ -9,11 +10,7 @@
   -->
 
 <resources>
-    <string name="app_name">DemoApp</string>
-
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <item name="app_bar" type="id" />
+    <item name="layout_container" type="id" />
+    <item name="app_bar_title" type="id" />
 </resources>

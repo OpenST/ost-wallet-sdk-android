@@ -38,7 +38,7 @@ public class PrimaryTextView extends DemoAppTextView {
         setTextColor(res.getColor(R.color.text_view_primary));
         setTextAlignment(TEXT_ALIGNMENT_CENTER);
         setGravity(Gravity.CENTER_HORIZONTAL);
-        setLineSpacing(0, (float)2);
+        setLineSpacing(0, (float)1.5);
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
     }
 }

@@ -37,4 +37,14 @@
         <item name="android:gravity">center</item>
         <item name="android:textAlignment">gravity</item>
     </style>
+
+    <style name="Widget.DemoApp.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextAppearance">@style/TextAppearance.DemoApp.TextInputLayout.HintText
+        </item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+
+    <style name="TextAppearance.DemoApp.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
 </resources>

@@ -19,16 +19,16 @@ import android.view.Gravity;
 
 import ost.com.demoapp.R;
 
-public class HollowButton extends DemoAppButton {
-    public HollowButton(Context context) {
+public class SecondaryButton extends DemoAppButton {
+    public SecondaryButton(Context context) {
         super(context);
     }
 
-    public HollowButton(Context context, AttributeSet attrs) {
+    public SecondaryButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public HollowButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SecondaryButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

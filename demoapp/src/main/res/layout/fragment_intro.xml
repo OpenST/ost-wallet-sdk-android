@@ -8,14 +8,12 @@
   ~
   ~       http://www.apache.org/licenses/LICENSE-2.0
   -->
-
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/bg"
-    tools:context=".SplashActivity">
+    android:background="@drawable/bg">
 
     <ImageView
         android:id="@+id/img_ost_logo"
@@ -39,7 +37,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="Test your Brand Token Economy deployed on OST Platform" />
+        android:text="Test your Brand Token Economy\n deployed on OST Platform" />
 
     <ImageView
         android:id="@+id/img_ost_kit_logo"
@@ -65,7 +63,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:text="Create Account"/>
 
-    <ost.com.demoapp.customView.HollowButton
+    <ost.com.demoapp.customView.SecondaryButton
         android:id="@+id/tv_log_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -78,6 +76,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:text="Log in"
-         />
+        />
 
 </android.support.constraint.ConstraintLayout>

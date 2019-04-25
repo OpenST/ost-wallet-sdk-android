@@ -8,7 +8,7 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.utils;
+package ost.com.demoapp.util;
 
 import android.content.Context;
 import android.graphics.Typeface;

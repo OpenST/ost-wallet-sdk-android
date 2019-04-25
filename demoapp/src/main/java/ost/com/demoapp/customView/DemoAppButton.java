@@ -13,7 +13,7 @@ package ost.com.demoapp.customView;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import ost.com.demoapp.utils.FontCache;
+import ost.com.demoapp.util.FontCache;
 
 public class DemoAppButton extends android.support.v7.widget.AppCompatButton {
     public DemoAppButton(Context context) {
