@@ -98,12 +98,15 @@ public class OnBoardingActivity extends BaseActivity implements
             String returnedResult = data.getData().toString();
             try {
                 Log.w(LOG_TAG, returnedResult);
-                CurrentEconomy currentEconomy = CurrentEconomy.newInstance(returnedResult);
-                AppProvider.get().setCurrentEconomy(currentEconomy);
-                ((CreateAccountFragment)FragmentUtils.getTopFragment(this,R.id.layout_container)).updateToken();
+                mOnBoardingPresenter.onScanEconomyResult(returnedResult);
             } catch (Exception e) {
                 Log.e(LOG_TAG, "JSONException while parsing");
             }
         }
+    }
+
+    @Override
+    public void refreshToken() {
+        ((CreateAccountFragment)FragmentUtils.getTopFragment(this,R.id.layout_container)).updateToken();
     }
 }

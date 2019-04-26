@@ -14,4 +14,5 @@ import ost.com.demoapp.ui.BaseView;
 
 interface OnBoardingView extends BaseView {
 
+    void refreshToken();
 }

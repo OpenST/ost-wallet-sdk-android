@@ -22,6 +22,9 @@ public class MappyNetworkClient {
 
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
+    private static final String DEVICE_ADDRESS = "address";
+    private static final String API_SIGNER_ADDRESS = "api_signer_address";
+
     private final String mUrl;
     private final RequestQueue mRequestQueue;
 
@@ -47,6 +50,17 @@ public class MappyNetworkClient {
             params.put(USERNAME, userName);
             params.put(PASSWORD, password);
             sendRequest(Request.Method.POST, "login", params, callback);
+        } catch (Exception ex) {
+            callback.onFailure(ex);
+        }
+    }
+
+    public void registerDevice(String deviceAddress, String apiSignerAddress, ResponseCallback callback) {
+        try {
+            JSONObject params = new JSONObject();
+            params.put(DEVICE_ADDRESS, deviceAddress);
+            params.put(API_SIGNER_ADDRESS, apiSignerAddress);
+            sendRequest(Request.Method.POST, "devices", params, callback);
         } catch (Exception ex) {
             callback.onFailure(ex);
         }

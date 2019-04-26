@@ -134,15 +134,11 @@ public class OstSdk {
      * @param baseUrl base Url of OST Platform
      */
     public static void initialize(Context context, String baseUrl) {
-        if (INSTANCE == null) {
-            synchronized (OstSdk.class) {
-                if (INSTANCE == null) {
-                    //Create Config.
-                    OstConfigs.init(context);
-                    //Create instance.
-                    INSTANCE = new OstSdk(context, baseUrl);
-                }
-            }
+        synchronized (OstSdk.class) {
+            //Create Config.
+            OstConfigs.init(context);
+            //Create instance.
+            INSTANCE = new OstSdk(context, baseUrl);
         }
     }
 

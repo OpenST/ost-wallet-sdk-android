@@ -13,7 +13,10 @@ package ost.com.demoapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.ost.walletsdk.OstSdk;
+
 import ost.com.demoapp.entity.CurrentEconomy;
+import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.network.NetworkClient;
 
@@ -30,6 +33,7 @@ public class AppProvider {
     private final Context mApplicationContext;
     private final SharedPreferences sharedPreferences;
     private CurrentEconomy currentEconomy;
+    private LogInUser logInUser;
 
     private AppProvider(Context context) {
         mApplicationContext = context;
@@ -112,5 +116,20 @@ public class AppProvider {
         }
 
         keyValuesEditor.apply();
+
+        //Initialize SDK
+        OstSdk.initialize(mApplicationContext, this.currentEconomy.getSaasApiEndpoint());
+    }
+
+    public Context getApplicationContext() {
+        return mApplicationContext;
+    }
+
+    public void setCurrentUser(LogInUser logInUser) {
+        this.logInUser = logInUser;
+    }
+
+    public void getCurrentUser() {
+        this.logInUser = logInUser;
     }
 }

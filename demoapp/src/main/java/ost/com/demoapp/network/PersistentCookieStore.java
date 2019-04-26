@@ -20,7 +20,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -155,21 +154,21 @@ public class PersistentCookieStore implements java.net.CookieStore {
         }
 
         // Check it there are expired cookies and remove them
-        if (!targetCookies.isEmpty()) {
-            List<HttpCookie> cookiesToRemoveFromPersistence = new ArrayList<HttpCookie>();
-            for (Iterator<HttpCookie> it = targetCookies.iterator(); it
-                    .hasNext(); ) {
-                HttpCookie currentCookie = it.next();
-                if (currentCookie != null && currentCookie.hasExpired()) {
-                    cookiesToRemoveFromPersistence.add(currentCookie);
-                    it.remove();
-                }
-            }
-
-            if (!cookiesToRemoveFromPersistence.isEmpty()) {
-                removeFromPersistence(uri, cookiesToRemoveFromPersistence);
-            }
-        }
+//        if (!targetCookies.isEmpty()) {
+//            List<HttpCookie> cookiesToRemoveFromPersistence = new ArrayList<HttpCookie>();
+//            for (Iterator<HttpCookie> it = targetCookies.iterator(); it
+//                    .hasNext(); ) {
+//                HttpCookie currentCookie = it.next();
+//                if (currentCookie != null && currentCookie.hasExpired()) {
+//                    cookiesToRemoveFromPersistence.add(currentCookie);
+//                    it.remove();
+//                }
+//            }
+//
+//            if (!cookiesToRemoveFromPersistence.isEmpty()) {
+//                removeFromPersistence(uri, cookiesToRemoveFromPersistence);
+//            }
+//        }
         return targetCookies;
     }
 
