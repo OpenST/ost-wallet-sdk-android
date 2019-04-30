@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.workflow.walletsetup.PinFragment">
+
+    <ost.com.demoapp.customView.PinEntryEditText
+        android:id="@+id/txt_pin_entry"
+        android:layout_marginStart="60dp"
+        android:layout_marginEnd="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:background="@null"
+        android:cursorVisible="false"
+        android:digits="1234567890"
+        android:inputType="number"
+        android:maxLength="6"
+        android:imeOptions="actionDone"
+        android:maxLines="1"
+        android:textColor="@android:color/transparent"
+        android:textIsSelectable="false"
+        android:textSize="0px"
+        android:visibility="visible"
+        app:pinBackgroundDrawable="@drawable/bg_pin_round"
+        app:pinBackgroundIsSquare="false"
+        app:pinCharacterSpacing="40dp"
+        app:pinTextBottomPadding="5dp" />
+
+</LinearLayout>

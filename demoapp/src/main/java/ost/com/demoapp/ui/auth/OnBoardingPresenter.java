@@ -55,12 +55,16 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
                     try {
                         JSONObject loginUserObject = (JSONObject) new CommonUtils().parseResponseForResultType(jsonObject);
                         LogInUser logInUser = LogInUser.newInstance(loginUserObject);
+
                         AppProvider.get().setCurrentUser(logInUser);
+
                         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
                         Log.i(LOG_TAG, String.format("Workflow id: %d", workFlowListener.getId()));
-                        OstSdk.setupDevice(logInUser.getOstUserId(),logInUser.getTokenId(), workFlowListener);
+                        OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), workFlowListener);
+
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -91,7 +95,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
                         AppProvider.get().setCurrentUser(logInUser);
                         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
                         Log.i(LOG_TAG, String.format("Workflow id: %d", workFlowListener.getId()));
-                        OstSdk.setupDevice(logInUser.getOstUserId(),logInUser.getTokenId(), workFlowListener);
+                        OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), workFlowListener);
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
                     } catch (JSONException e) {
@@ -110,6 +114,31 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
         });
     }
 
+    void checkLoggedInUser() {
+        getMvpView().showProgress(true);
+        AppProvider.get().getMappyClient().getLoggedInUser(new MappyNetworkClient.ResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                if (new CommonUtils().isValidResponse(jsonObject)) {
+                    try {
+                        JSONObject loginUserObject = (JSONObject) new CommonUtils().parseResponseForResultType(jsonObject);
+                        LogInUser logInUser = LogInUser.newInstance(loginUserObject);
+                        AppProvider.get().setCurrentUser(logInUser);
+                        getMvpView().goToDashBoard();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                getMvpView().showProgress(false);
+                Log.e(LOG_TAG, null != throwable ? throwable.getMessage() : "");
+            }
+        });
+    }
+
     void onScanEconomyResult(String returnedResult) throws JSONException {
         CurrentEconomy currentEconomy = CurrentEconomy.newInstance(returnedResult);
         AppProvider.get().setCurrentEconomy(currentEconomy);
@@ -119,6 +148,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     @Override
     public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.i(LOG_TAG, String.format("%d Flow Complete", workflowId));
+        getMvpView().goToDashBoard();
     }
 
     @Override

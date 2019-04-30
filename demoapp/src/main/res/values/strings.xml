@@ -19,4 +19,8 @@
     <string name="dialog_progress_msg">Loading...</string>
     <string name="dialog_action_ok">Ok</string>
     <string name="dialog_error_title">Error</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_users">Users</string>
+    <string name="title_wallet">Wallet</string>
+    <string name="title_settings">Settings</string>
 </resources>

@@ -116,28 +116,33 @@ public class SdkInteract {
         switch (callback_type) {
 
             case FLOW_COMPLETE:
-                ((FlowComplete)sdkInteractListener).flowComplete(
-                        workflowId,
-                        (OstWorkflowContext)objects[0],
-                        (OstContextEntity) objects[1]
-                );
+                if (sdkInteractListener instanceof FlowComplete) {
+                    ((FlowComplete) sdkInteractListener).flowComplete(
+                            workflowId,
+                            (OstWorkflowContext) objects[0],
+                            (OstContextEntity) objects[1]
+                    );
+                }
 
                 break;
             case FLOW_INTERRUPT:
-                ((FlowInterrupt)sdkInteractListener).flowInterrupt(
-                        workflowId,
-                        (OstWorkflowContext)objects[0],
-                        (OstError) objects[1]
-                );
-
+                if (sdkInteractListener instanceof FlowInterrupt) {
+                    ((FlowInterrupt) sdkInteractListener).flowInterrupt(
+                            workflowId,
+                            (OstWorkflowContext) objects[0],
+                            (OstError) objects[1]
+                    );
+                }
                 break;
 
             case REQUEST_ACK:
-                ((RequestAcknowledged)sdkInteractListener).requestAcknowledged(
-                        workflowId,
-                        (OstWorkflowContext)objects[0],
-                        (OstContextEntity) objects[1]
-                );
+                if (sdkInteractListener instanceof RequestAcknowledged) {
+                    ((RequestAcknowledged) sdkInteractListener).requestAcknowledged(
+                            workflowId,
+                            (OstWorkflowContext) objects[0],
+                            (OstContextEntity) objects[1]
+                    );
+                }
                 break;
         }
     }

@@ -8,13 +8,15 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.ui.auth;
+package ost.com.demoapp.ui.workflow.walletsetup;
 
 import ost.com.demoapp.ui.BaseView;
 
-interface OnBoardingView extends BaseView {
+interface SetUpView extends BaseView {
 
-    void refreshToken();
+    void showAddPin();
 
-    void goToDashBoard();
+    void showRetypePin();
+
+    void gotoDashboard();
 }

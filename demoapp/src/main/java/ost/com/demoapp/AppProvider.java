@@ -129,7 +129,7 @@ public class AppProvider {
         this.logInUser = logInUser;
     }
 
-    public void getCurrentUser() {
-        this.logInUser = logInUser;
+    public LogInUser getCurrentUser() {
+        return logInUser;
     }
 }

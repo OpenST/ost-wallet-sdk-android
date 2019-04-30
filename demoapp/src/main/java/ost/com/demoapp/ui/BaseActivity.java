@@ -15,16 +15,11 @@ import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
-import java.util.Optional;
-
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
 import ost.com.demoapp.util.DialogFactory;
 
 
@@ -37,6 +32,13 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     protected void onCreate(Bundle savedInstanceState) {
         isRestored = savedInstanceState != null;
         setupOrientation();
+
+        //Hide action bar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+
         super.onCreate(savedInstanceState);
     }
 

@@ -18,4 +18,6 @@
     <color name="colorButton">#e4b030</color>
     <color name="button_border">#34445b</color>
     <color name="text_view_primary">#34445b</color>
+
+    <color name="pin_normal">#6B767E</color>
 </resources>

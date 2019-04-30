@@ -11,16 +11,12 @@
 package ost.com.demoapp.ui.auth;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.util.Log;
 
-import ost.com.demoapp.App;
-import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
-import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.ui.BaseActivity;
+import ost.com.demoapp.ui.dashboard.DashboardActivity;
 import ost.com.demoapp.ui.qrscanner.QRScannerActivity;
 import ost.com.demoapp.util.FragmentUtils;
 
@@ -43,12 +39,9 @@ public class OnBoardingActivity extends BaseActivity implements
 //        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_onboarding);
 
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
         mOnBoardingPresenter.attachView(this);
 
+        mOnBoardingPresenter.checkLoggedInUser();
         FragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 IntroFragment.newInstance(),
                 this);
@@ -108,5 +101,13 @@ public class OnBoardingActivity extends BaseActivity implements
     @Override
     public void refreshToken() {
         ((CreateAccountFragment)FragmentUtils.getTopFragment(this,R.id.layout_container)).updateToken();
+    }
+
+    @Override
+    public void goToDashBoard() {
+        Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+        startActivity(intent);
+        animateActivityChangingToRight();
+        finish();
     }
 }

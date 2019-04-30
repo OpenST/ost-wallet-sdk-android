@@ -8,13 +8,14 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.ui.auth;
+package ost.com.demoapp.ui.dashboard;
 
-import ost.com.demoapp.ui.BaseView;
+import android.support.v4.app.Fragment;
 
-interface OnBoardingView extends BaseView {
+import ost.com.demoapp.ui.BaseFragment;
 
-    void refreshToken();
-
-    void goToDashBoard();
+public class SettingsFragment extends BaseFragment {
+    public static Fragment newInstance() {
+        return null;
+    }
 }

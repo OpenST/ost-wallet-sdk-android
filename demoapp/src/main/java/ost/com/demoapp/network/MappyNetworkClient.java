@@ -66,6 +66,15 @@ public class MappyNetworkClient {
         }
     }
 
+    public void getLoggedInUser(ResponseCallback callback) {
+        try {
+            JSONObject params = new JSONObject();
+            sendRequest(Request.Method.GET, "users/current-user", params, callback);
+        } catch (Exception ex) {
+            callback.onFailure(ex);
+        }
+    }
+
     private void sendRequest(int method, final String resource, JSONObject params , final ResponseCallback callback) {
         String logInUrl = String.format("%s%s", mUrl, resource);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
