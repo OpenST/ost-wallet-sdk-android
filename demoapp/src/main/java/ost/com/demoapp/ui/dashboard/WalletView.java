@@ -8,15 +8,10 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.ui.workflow.walletsetup;
+package ost.com.demoapp.ui.dashboard;
 
 import ost.com.demoapp.ui.BaseView;
 
-interface SetUpView extends BaseView {
-
-    void showAddPin();
-
-    void showRetypePin();
-
-    void gotoDashboard(long workflowId);
+interface WalletView extends BaseView {
+    void updateBalance(String balance);
 }

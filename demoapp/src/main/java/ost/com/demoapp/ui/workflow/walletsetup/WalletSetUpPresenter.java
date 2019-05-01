@@ -23,7 +23,7 @@ import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BasePresenter;
 
-class WalletSetUpPresenter extends BasePresenter implements SdkInteract.RequestAcknowledged {
+class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkInteract.RequestAcknowledged {
 
     private static final String LOG_TAG = "WalletSetUpPresenter";
     private String mFirstPin;
@@ -38,13 +38,13 @@ class WalletSetUpPresenter extends BasePresenter implements SdkInteract.RequestA
     }
 
     void onCreateView() {
-        ((SetUpView)getMvpView()).showAddPin();
+        (getMvpView()).showAddPin();
     }
 
     void onPinEntered(String pin) {
         if (0 == pinCounter) {
             mFirstPin = pin;
-            ((SetUpView) getMvpView()).showRetypePin();
+            (getMvpView()).showRetypePin();
             pinCounter++;
         } else {
             if (mFirstPin.equals(pin)) {
@@ -66,7 +66,7 @@ class WalletSetUpPresenter extends BasePresenter implements SdkInteract.RequestA
                 );
             } else {
                 pinCounter = 0;
-                ((SetUpView)getMvpView()).showAddPin();
+                (getMvpView()).showAddPin();
             }
         }
     }
@@ -75,6 +75,6 @@ class WalletSetUpPresenter extends BasePresenter implements SdkInteract.RequestA
     public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for Activate user");
         getMvpView().showProgress(false);
-        ((SetUpView)getMvpView()).gotoDashboard();
+        (getMvpView()).gotoDashboard(workflowId);
     }
 }

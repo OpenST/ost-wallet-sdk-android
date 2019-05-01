@@ -18,6 +18,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
+import ost.com.demoapp.AppProvider;
+
 public class MappyNetworkClient {
 
     private static final String USERNAME = "username";
@@ -70,6 +72,27 @@ public class MappyNetworkClient {
         try {
             JSONObject params = new JSONObject();
             sendRequest(Request.Method.GET, "users/current-user", params, callback);
+        } catch (Exception ex) {
+            callback.onFailure(ex);
+        }
+    }
+
+    public void notifyUserActivate(final ResponseCallback callback) {
+        try {
+            JSONObject params = new JSONObject();
+            sendRequest(Request.Method.POST, "notify/user-activate", params, callback);
+        } catch (Exception ex) {
+            callback.onFailure(ex);
+        }
+    }
+
+    public void getCurrentUserBalance(final ResponseCallback callback) {
+        try {
+            JSONObject params = new JSONObject();
+            sendRequest(Request.Method.GET,
+                    String.format("users/%s/balance", AppProvider.get().getCurrentUser().getOstUserId()),
+                    params,
+                    callback);
         } catch (Exception ex) {
             callback.onFailure(ex);
         }

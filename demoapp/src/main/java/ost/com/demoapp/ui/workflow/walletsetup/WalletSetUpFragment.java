@@ -98,8 +98,8 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     }
 
     @Override
-    public void gotoDashboard() {
-        mListener.removeTopFragment();
+    public void gotoDashboard(long workflowId) {
+        mListener.activateAcknowledged(workflowId);
     }
 
     @Override
@@ -109,6 +109,6 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
 
     public interface OnFragmentInteractionListener {
 
-        void removeTopFragment();
+        void activateAcknowledged(long workflowId);
     }
 }

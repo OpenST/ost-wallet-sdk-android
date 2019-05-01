@@ -10,12 +10,12 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#34445b</color>
-    <color name="colorPrimaryDark">#34445b</color>
+    <color name="colorPrimary">#168dc1</color>
+    <color name="colorPrimaryDark">#168dc1</color>
     <color name="colorAccent">#D81B60</color>
 
     <color name="black_overlay">#66000000</color>
-    <color name="colorButton">#e4b030</color>
+    <color name="colorButton">#9accd7</color>
     <color name="button_border">#34445b</color>
     <color name="text_view_primary">#34445b</color>
 

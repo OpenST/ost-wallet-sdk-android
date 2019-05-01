@@ -12,7 +12,7 @@
     <item android:state_pressed="true" >
         <shape android:shape="rectangle"  >
             <corners android:radius="10dp" />
-            <stroke android:width="1dp" android:color="#e4b030" />
+            <stroke android:width="1dp" android:color="@color/colorButton" />
             <gradient android:angle="-90" android:startColor="@color/colorButton" android:endColor="@color/colorButton"  />
         </shape>
     </item>
