@@ -17,11 +17,6 @@
     android:background="@android:color/white"
     tools:context=".ui.dashboard.DashboardActivity">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/home_viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <android.support.design.widget.TabLayout
         android:id="@+id/home_navigation"
         app:tabTextAppearance="@style/TabLayoutTextAppearance"
@@ -33,5 +28,11 @@
         android:background="?android:attr/windowBackground"
         android:tabStripEnabled="false"
         app:tabIndicatorHeight="0dp" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/home_viewpager"
+        android:layout_width="match_parent"
+        android:layout_above="@id/home_navigation"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

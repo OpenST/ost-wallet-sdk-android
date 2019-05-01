@@ -49,7 +49,8 @@ public class DashboardActivity extends BaseActivity implements
         SdkInteract.FlowComplete,
         SdkInteract.FlowInterrupt,
         UserFragment.OnListFragmentInteractionListener,
-        WalletSetUpFragment.OnFragmentInteractionListener {
+        WalletSetUpFragment.OnFragmentInteractionListener,
+        SettingsFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = "DashboardActivity";
     private ViewPager mViewPager;
@@ -65,7 +66,7 @@ public class DashboardActivity extends BaseActivity implements
         HomePagerAdapter homePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         homePagerAdapter.addFragment(UserFragment.newInstance(), "Users");
         homePagerAdapter.addFragment(WalletFragment.newInstance(), "Wallet");
-        homePagerAdapter.addFragment(WalletFragment.newInstance(), "Settings");
+        homePagerAdapter.addFragment(SettingsFragment.newInstance(), "Wallet Settings");
 
         mViewPager.setAdapter(homePagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.home_navigation);
@@ -160,5 +161,12 @@ public class DashboardActivity extends BaseActivity implements
             Log.e(LOG_TAG, "User Activate failed");
             checkForActivateUser();
         }
+    }
+
+    @Override
+    public void launchFeatureFragment(Fragment fragment) {
+        FragmentUtils.addFragment(R.id.layout_container,
+                fragment,
+                this);
     }
 }
