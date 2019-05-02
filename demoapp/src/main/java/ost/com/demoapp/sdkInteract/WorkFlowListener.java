@@ -87,38 +87,52 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
     @Override
     public void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+        Log.d(LOG_TAG, String.format("Get Pin: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
+        mSdkInteract.getPinCallbackListener().getPin(getId(), ostWorkflowContext, userId ,ostPinAcceptInterface);
     }
 
     @Override
     public void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+        Log.d(LOG_TAG, String.format("Invalid Pin: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
+        mSdkInteract.getPinCallbackListener().invalidPin(getId(), ostWorkflowContext, userId ,ostPinAcceptInterface);
     }
 
     @Override
     public void pinValidated(OstWorkflowContext ostWorkflowContext, String userId) {
+        Log.d(LOG_TAG, String.format("Pin Validated: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
+        mSdkInteract.getPinCallbackListener().pinValidated(getId(), ostWorkflowContext, userId);
     }
 
     @Override
     public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        Log.d(LOG_TAG, String.format("Flow Complete: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
+
         mSdkInteract.notifyEvent(getId(), CALLBACK_TYPE.FLOW_COMPLETE, ostWorkflowContext, ostContextEntity);
         mSdkInteract.unRegister(this);
     }
 
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        Log.d(LOG_TAG, String.format("Flow Interrupted: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
+
         mSdkInteract.notifyEvent(getId(), CALLBACK_TYPE.FLOW_INTERRUPT, ostWorkflowContext, ostError);
         mSdkInteract.unRegister(this);
     }
 
     @Override
     public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        Log.d(LOG_TAG, String.format("Request Acknowledged: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
+
         mSdkInteract.notifyEvent(getId(), CALLBACK_TYPE.REQUEST_ACK, ostWorkflowContext, ostContextEntity);
     }
 
     @Override
     public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+        Log.d(LOG_TAG, String.format("Verify Data: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
+        mSdkInteract.getVerifyDataCallbackListener().verifyData(getId(), ostWorkflowContext, ostContextEntity, ostVerifyDataInterface);
     }
 }

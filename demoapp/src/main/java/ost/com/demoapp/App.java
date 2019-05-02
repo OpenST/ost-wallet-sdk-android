@@ -28,7 +28,7 @@ public class App extends Application {
         super.onCreate();
         CurrentEconomy currentEconomy;
         try {
-            currentEconomy = CurrentEconomy.newInstance("{\"token_id\":1254,\"token_name\":\"BANDIT TOKEN\",\"token_symbol\":\"BADT\",\"url_id\":\"6f2faf38c90c8689c767207d5e5bcb3a2f8c5ec7d711c6ff544e904e06f13781\",\"mappy_api_endpoint\":\"https://demo-mappy.stagingost.com/demo/\",\"saas_api_endpoint\":\"https://s6-api.stagingost.com/testnet/v2/\",\"view_api_endpoint\":\"https://s6-view.stagingost.com/testnet/\"}");
+            currentEconomy = CurrentEconomy.newInstance("{\"token_id\":1009,\"token_name\":\"BYTE BANDIT\",\"token_symbol\":\"BANT\",\"url_id\":\"f9ac2d85b0663bbd52925098db2e7c2851ff50ce97eebc2fb20f56b89a72a500\",\"mappy_api_endpoint\":\"https://demo-mappy.stagingost.com/demo/\",\"saas_api_endpoint\":\"https://api.stagingost.com/testnet/v2/\",\"view_api_endpoint\":\"https://view.stagingost.com/testnet/\"}");
         } catch (JSONException e) {
             throw  new RuntimeException("In App");
         }

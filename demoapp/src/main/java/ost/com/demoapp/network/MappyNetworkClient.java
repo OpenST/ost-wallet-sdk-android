@@ -90,7 +90,7 @@ public class MappyNetworkClient {
         try {
             JSONObject params = new JSONObject();
             sendRequest(Request.Method.GET,
-                    String.format("users/%s/balance", AppProvider.get().getCurrentUser().getOstUserId()),
+                    String.format("users/%s/balance", AppProvider.get().getCurrentUser().getId()),
                     params,
                     callback);
         } catch (Exception ex) {

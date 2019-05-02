@@ -13,6 +13,8 @@ package ost.com.demoapp.sdkInteract;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
+import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
@@ -28,6 +30,17 @@ public class SdkInteract {
 
     //It holds all the subscribed callbacks
     private WeakHashMap<Long, List<WeakReference<SdkInteractListener>>> sdkListeners = new WeakHashMap<>();
+
+    private SdkInteractListener mPinCallbackListener;
+    private SdkInteractListener mVerifyDataCallbackListener;
+
+    PinCallback getPinCallbackListener() {
+        return (PinCallback) mPinCallbackListener;
+    }
+
+    public VerifyDataCallback getVerifyDataCallbackListener() {
+        return (VerifyDataCallback) mVerifyDataCallbackListener;
+    }
 
     enum CALLBACK_TYPE {
         ALL,
@@ -97,6 +110,14 @@ public class SdkInteract {
         }
     }
 
+    public void setPinCallbackListener(PinCallback listener) {
+        mPinCallbackListener = listener;
+    }
+
+    public void setVerifyDataCallbackListener(VerifyDataCallback listener) {
+        mVerifyDataCallbackListener = listener;
+    }
+
     void notifyEvent(long workflowId, CALLBACK_TYPE callback_type, Object... objects) {
         List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
         if (null != weakList) {
@@ -111,6 +132,7 @@ public class SdkInteract {
             }
         }
     }
+
 
     private void fireEventForCallbackType(long workflowId, SdkInteractListener sdkInteractListener, CALLBACK_TYPE callback_type, Object... objects) {
         switch (callback_type) {
@@ -148,6 +170,31 @@ public class SdkInteract {
     }
 
     private SdkInteract() {
+        /*
+         * To avoid null pointer exception
+         */
+        mVerifyDataCallbackListener = new VerifyDataCallback() {
+            @Override
+            public void verifyData(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+
+            }
+        };
+        mPinCallbackListener = new PinCallback() {
+            @Override
+            public void getPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+
+            }
+
+            @Override
+            public void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+
+            }
+
+            @Override
+            public void pinValidated(long workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
+
+            }
+        };
     }
 
     interface SdkInteractListener {
@@ -164,5 +211,19 @@ public class SdkInteract {
 
     public interface RequestAcknowledged extends SdkInteractListener {
         void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
+    }
+
+    public interface PinCallback extends SdkInteractListener {
+
+        void getPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
+
+        void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
+
+        void pinValidated(long workflowId, OstWorkflowContext ostWorkflowContext, String userId);
+    }
+
+    public interface VerifyDataCallback extends SdkInteractListener {
+
+        void verifyData(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface);
     }
 }

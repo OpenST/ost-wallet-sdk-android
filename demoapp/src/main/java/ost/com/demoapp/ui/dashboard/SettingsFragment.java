@@ -25,6 +25,8 @@ import ost.com.demoapp.R;
 import ost.com.demoapp.customView.AppBar;
 import ost.com.demoapp.customView.DemoAppTextView;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.ui.workflow.createsession.CreateSessionFragment;
+import ost.com.demoapp.ui.workflow.viewmnemonics.ViewMnemonicsFragment;
 import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
 
 public class SettingsFragment extends BaseFragment {
@@ -67,7 +69,8 @@ public class SettingsFragment extends BaseFragment {
         addSessionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Fragment fragment = CreateSessionFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(addSessionView);
@@ -85,7 +88,8 @@ public class SettingsFragment extends BaseFragment {
         viewMnemonicsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Fragment fragment = ViewMnemonicsFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(viewMnemonicsView);

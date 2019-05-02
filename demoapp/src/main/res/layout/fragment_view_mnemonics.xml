@@ -8,25 +8,20 @@
   ~
   ~       http://www.apache.org/licenses/LICENSE-2.0
   -->
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical"
     android:clickable="true"
     android:focusable="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    tools:context=".ui.workflow.viewmnemonics.ViewMnemonicsFragment">
 
     <ost.com.demoapp.customView.PrimaryTextView
-        android:id="@+id/ptv_wallet_balance"
+        android:id="@+id/ptv_mnemonics"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:padding="@dimen/dp_30"
-        android:textSize="32sp"
-        android:textColor="@android:color/white"
-        android:background="@drawable/bg_button_solid_round"
-        android:text="Tokens"/>
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

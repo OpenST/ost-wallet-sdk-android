@@ -30,10 +30,10 @@ import ost.com.demoapp.ui.BaseFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PinFragment extends BaseFragment {
+public class PinFragment extends BaseFragment implements TextView.OnEditorActionListener {
 
 
-    private static final String TITLE = "title";
+    protected static final String TITLE = "title";
     private String mTitle;
     private PinEntryEditText mPinEntryEditText;
     private OnFragmentInteractionListener mListener;
@@ -61,6 +61,10 @@ public class PinFragment extends BaseFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        setListener(context);
+    }
+
+    protected void setListener(Context context) {
         android.support.v4.app.Fragment parentFragment = getParentFragment();
         if (parentFragment instanceof PinFragment.OnFragmentInteractionListener) {
             mListener = (PinFragment.OnFragmentInteractionListener) parentFragment;
@@ -76,24 +80,23 @@ public class PinFragment extends BaseFragment {
         // Inflate the layout for this fragment
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_pin, container, false);
         mPinEntryEditText = (PinEntryEditText) viewGroup.findViewById(R.id.txt_pin_entry);
-        mPinEntryEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    mListener.onPinEntered(v.getText().toString());
-                    return true;
-                }
-                return false;
-            }
-        });
+        mPinEntryEditText.setOnEditorActionListener(this);
         AppBar appBar = AppBar.newInstance(getContext(), mTitle, true);
         setUpAppBar(viewGroup, appBar);
 
         return viewGroup;
     }
 
-    interface OnFragmentInteractionListener {
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            mListener.onPinEntered(v.getText().toString());
+            return true;
+        }
+        return false;
+    }
 
+    interface OnFragmentInteractionListener {
         void onPinEntered(String pin);
     }
 }
