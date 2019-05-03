@@ -9,12 +9,80 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
-android:id="@+id/layout_holder"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:background="@android:color/white"
-android:orientation="vertical"
-tools:context=".ui.workflow.createsession.CreateSessionFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    tools:context=".ui.workflow.createsession.CreateSessionFragment">
 
+    <ost.com.demoapp.customView.PrimaryTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        android:text="Set Spending Limit and Expiry for a session"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <ost.com.demoapp.customView.PrimaryEditTextView
+            android:id="@+id/etv_spending_limit"
+            style="@style/Widget.DemoApp.TextInputLayout"
+            android:layout_width="220dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/layout_user_view"
+            android:hint="Spending Limit for Session"
+            android:textColorHint="@android:color/black"
+            android:inputType="text">
+        </ost.com.demoapp.customView.PrimaryEditTextView>
+
+        <ost.com.demoapp.customView.PrimaryEditTextView
+            android:id="@+id/etv_unit"
+            style="@style/Widget.DemoApp.TextInputLayout"
+            android:layout_marginStart="30dp"
+            android:layout_width="210dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:hint="Unit"
+            android:inputType="text"
+            android:textColorHint="@android:color/black"
+            android:layout_toEndOf="@id/etv_spending_limit"
+            android:layout_below="@id/layout_user_view"/>
+
+        <ost.com.demoapp.customView.PrimaryEditTextView
+            android:id="@+id/etv_expiry_days"
+            style="@style/Widget.DemoApp.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:hint="Set Expiry for Session in Days"
+            android:inputType="text"
+            android:textColorHint="@android:color/black"
+            android:layout_below="@id/etv_unit"/>
+
+
+        <ost.com.demoapp.customView.PrimaryButton
+            android:id="@+id/pbtn_create_session"
+            android:layout_below="@id/etv_expiry_days"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Session"/>
+
+        <ost.com.demoapp.customView.LinkButton
+            android:id="@+id/linkbtn_cancel"
+            android:layout_below="@id/pbtn_create_session"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"/>
+    </RelativeLayout>
 </LinearLayout>
