@@ -11,6 +11,9 @@
 package ost.com.demoapp.ui.dashboard;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,10 @@ public class WalletFragment extends BaseFragment implements WalletView {
     private TextView mWalletBalance;
 
     private WalletPresenter mWalletPresenter = WalletPresenter.newInstance();
+    private RecyclerView mRecyclerView;
+    private TransactionRecyclerViewAdapter mTransactionRecyclerViewAdapter;
+    private SwipeRefreshLayout mPullToRefresh;
+
     public WalletFragment() {
     }
 
@@ -47,11 +54,23 @@ public class WalletFragment extends BaseFragment implements WalletView {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_wallet, container, false);
 
         mWalletBalance = view.findViewById(R.id.ptv_wallet_balance);
+        mRecyclerView = view.findViewById(R.id.rv_transactions);
+        mPullToRefresh = view.findViewById(R.id.pullToRefresh);
         AppBar appBar = AppBar.newInstance(getContext(),
                 "Your Wallet",
                 false);
         setUpAppBar(view, appBar);
         mWalletPresenter.attachView(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setAdapter(mWalletPresenter.getTransactionRecyclerViewAdapter());
+        mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mWalletPresenter.updateBalance();
+                mWalletPresenter.updateTransactionHistory();
+                mPullToRefresh.setRefreshing(false);
+            }
+        });
         return view;
     }
 
@@ -59,4 +78,5 @@ public class WalletFragment extends BaseFragment implements WalletView {
     public void updateBalance(String balance) {
         mWalletBalance.setText(balance);
     }
+
 }

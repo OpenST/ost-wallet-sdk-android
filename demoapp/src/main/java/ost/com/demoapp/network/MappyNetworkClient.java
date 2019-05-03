@@ -16,7 +16,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Iterator;
 
 import ost.com.demoapp.AppProvider;
 
@@ -96,6 +99,36 @@ public class MappyNetworkClient {
         } catch (Exception ex) {
             callback.onFailure(ex);
         }
+    }
+
+
+    public void getCurrentUserTransactions(final JSONObject nextPayload, final ResponseCallback callback) {
+        try {
+            JSONObject params = new JSONObject();
+            processRequestPayload(params, nextPayload);
+            sendRequest(Request.Method.GET,
+                    String.format("users/ledger", AppProvider.get().getCurrentUser().getId()),
+                    params,
+                    callback);
+        } catch (Exception ex) {
+            callback.onFailure(ex);
+        }
+    }
+
+    private void processRequestPayload(JSONObject request, JSONObject payload) {
+        try {
+            if (payload != null) {
+                Iterator<?> keys = payload.keys();
+                while (keys.hasNext()) {
+                    String key = (String) keys.next();
+                    Object value = payload.get(key);
+                    request.put(key, value);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void sendRequest(int method, final String resource, JSONObject params , final ResponseCallback callback) {

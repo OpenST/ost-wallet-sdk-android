@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp">
+
+        <ImageView
+            android:id="@+id/iv_transfer_image"
+            android:src="@drawable/ic_arrow_forward_black_24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="value transfer image" />
+
+        <ost.com.demoapp.customView.DemoAppTextView
+            android:id="@+id/tv_transfer_type"
+            android:layout_toEndOf="@id/iv_transfer_image"
+            android:textSize="@dimen/sp_17"
+            android:textColor="@android:color/black"
+            android:text="TIP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ost.com.demoapp.customView.DemoAppTextView
+            android:id="@+id/tv_timestamp"
+            android:layout_toEndOf="@id/iv_transfer_image"
+            android:textSize="@dimen/sp_10"
+            android:textColor="@android:color/darker_gray"
+            android:text="Welcome To Demo Wallet"
+            android:layout_below="@id/tv_transfer_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ost.com.demoapp.customView.DemoAppTextView
+            android:id="@+id/tv_value"
+            android:layout_alignParentEnd="true"
+            android:textSize="@dimen/sp_17"
+            android:textColor="@android:color/black"
+            android:text="+10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

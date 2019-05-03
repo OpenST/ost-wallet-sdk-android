@@ -56,10 +56,12 @@ public class CommonUtils {
         return addressList;
     }
 
-    private static final byte[] nonSecret = ("LETS_CLEAR_BYTES" + String.valueOf((int) (System.currentTimeMillis()))  ).getBytes();
+    private static final byte[] nonSecret = ("LETS_CLEAR_BYTES" + String.valueOf((int) (System.currentTimeMillis()))).getBytes();
 
     public static void clearBytes(byte[] secret) {
-        if ( null == secret ) { return; }
+        if (null == secret) {
+            return;
+        }
         for (int i = 0; i < secret.length; i++) {
             secret[i] = nonSecret[i % nonSecret.length];
         }
@@ -68,8 +70,7 @@ public class CommonUtils {
     public String parseStringResponseForKey(JSONObject jsonObject, String key) {
         try {
             JSONObject resultType = (JSONObject) parseResponseForResultType(jsonObject);
-            String stringValue = resultType.getString(key);
-            return stringValue;
+            return resultType.getString(key);
         } catch (JSONException e) {
             Log.e(LOG_TAG, "JSON Exception");
         }
@@ -93,15 +94,13 @@ public class CommonUtils {
             return null;
         }
         JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
-        Object resultTypeObject = jsonData.get(jsonData.getString(OstConstants.RESULT_TYPE));
-        return resultTypeObject;
+        return jsonData.get(jsonData.getString(OstConstants.RESULT_TYPE));
     }
 
-    public JSONObject parseObjectResponseForKey(JSONObject jsonObject, String key) {
+    public Object parseObjectResponseForKey(JSONObject jsonObject, String key) {
         try {
             JSONObject resultType = (JSONObject) parseResponseForResultType(jsonObject);
-            JSONObject keyObject = resultType.getJSONObject(key);
-            return keyObject;
+            return resultType.get(key);
         } catch (JSONException e) {
             Log.e(LOG_TAG, "JSON Exception");
         }

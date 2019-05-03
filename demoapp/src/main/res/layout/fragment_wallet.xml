@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2019 OST.com Inc
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
@@ -9,24 +8,51 @@
   ~       http://www.apache.org/licenses/LICENSE-2.0
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_holder"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
-    <ost.com.demoapp.customView.PrimaryTextView
-        android:id="@+id/ptv_wallet_balance"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="match_parent"
         android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:padding="@dimen/dp_30"
-        android:textSize="32sp"
-        android:textColor="@android:color/white"
-        android:background="@drawable/bg_button_solid_round"
-        android:text="Tokens"/>
+        android:layout_marginEnd="12dp">
+
+        <ost.com.demoapp.customView.PrimaryTextView
+            android:id="@+id/ptv_wallet_balance"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:background="@drawable/bg_button_solid_round"
+            android:padding="@dimen/dp_30"
+            android:text="Tokens"
+            android:textColor="@android:color/white"
+            android:textSize="32sp" />
+
+        <ost.com.demoapp.customView.DemoAppTextView
+            android:id="@+id/tv_transaction_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ptv_wallet_balance"
+            android:layout_marginTop="20dp"
+            android:text="TRANSACTION HISTORY"
+            android:textSize="13sp" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/pullToRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/tv_transaction_history">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_transactions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                 />
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </RelativeLayout>
 </LinearLayout>
