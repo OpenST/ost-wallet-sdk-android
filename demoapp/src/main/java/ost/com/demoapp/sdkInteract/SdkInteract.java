@@ -17,6 +17,7 @@ import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -100,12 +101,15 @@ public class SdkInteract {
     public void unSubscribe(long workflowId, SdkInteractListener listener) {
         List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
         if (null != weakList) {
-            ListIterator<WeakReference<SdkInteractListener>> iter = weakList.listIterator();
-            while(iter.hasNext()){
-                WeakReference<SdkInteractListener> weakSdkListener = iter.next();
-                if(weakSdkListener.get().equals(listener)){
-                    iter.remove();
+            List<Integer> listToRemove = new ArrayList<>();
+            for (int i = 0; i<weakList.size(); i++) {
+                WeakReference<SdkInteractListener> weakSdkListener = weakList.get(i);
+                if (weakSdkListener.get() == null || weakSdkListener.get().equals(listener)) {
+                    listToRemove.add(i);
                 }
+            }
+            for (int index: listToRemove) {
+                weakList.remove(index);
             }
         }
     }
@@ -121,14 +125,17 @@ public class SdkInteract {
     void notifyEvent(long workflowId, CALLBACK_TYPE callback_type, Object... objects) {
         List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
         if (null != weakList) {
-            ListIterator<WeakReference<SdkInteractListener>> iter = weakList.listIterator();
-            while(iter.hasNext()){
-                WeakReference<SdkInteractListener> weakSdkListener = iter.next();
-                if(weakSdkListener.get() == null){
-                    iter.remove();
+            List<Integer> listToRemove = new ArrayList<>();
+            for (int i = 0; i<weakList.size(); i++) {
+                WeakReference<SdkInteractListener> weakSdkListener = weakList.get(i);
+                if (weakSdkListener.get() == null) {
+                    listToRemove.add(i);
                 } else {
                     fireEventForCallbackType(workflowId, weakSdkListener.get(), callback_type, objects);
                 }
+            }
+            for (int index: listToRemove) {
+                weakList.remove(index);
             }
         }
     }
