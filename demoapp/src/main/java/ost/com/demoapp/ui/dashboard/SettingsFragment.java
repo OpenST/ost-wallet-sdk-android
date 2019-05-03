@@ -28,6 +28,7 @@ import ost.com.demoapp.customView.DemoAppTextView;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.ui.workflow.createsession.CreateSessionFragment;
+import ost.com.demoapp.ui.workflow.qrfragment.QRFragment;
 import ost.com.demoapp.ui.workflow.viewmnemonics.ViewMnemonicsFragment;
 import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
 
@@ -102,7 +103,17 @@ public class SettingsFragment extends BaseFragment {
         mScrollViewSettings.addView(getCategoryView("DEVICE"));
         mScrollViewSettings.addView(getFeatureView("Authorize Device via QR"));
         mScrollViewSettings.addView(getFeatureView("Authorize Device via Mnemonics"));
-        mScrollViewSettings.addView(getFeatureView("Show Device QR"));
+
+        View viewShowDeviceQR = getFeatureView("Show Device QR");
+        viewShowDeviceQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = QRFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
+        mScrollViewSettings.addView(viewShowDeviceQR);
+
         mScrollViewSettings.addView(getFeatureView("Manage Devices"));
         mScrollViewSettings.addView(getFeatureView("Transaction via QR"));
         mScrollViewSettings.addView(getFeatureView("Initiate Recovery"));
