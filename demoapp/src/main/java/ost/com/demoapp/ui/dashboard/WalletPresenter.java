@@ -59,8 +59,10 @@ class WalletPresenter extends BasePresenter<WalletView> implements
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 if (new CommonUtils().isValidResponse(jsonObject)) {
-                    nextPayload = jsonObject.optJSONObject("meta");
                     try {
+                        JSONObject dataJSONObject =  new CommonUtils().parseJSONData(jsonObject);
+                        nextPayload = dataJSONObject.optJSONObject("meta");
+
                         JSONArray transactionJSONArray = (JSONArray) new CommonUtils()
                                 .parseResponseForResultType(jsonObject);
 

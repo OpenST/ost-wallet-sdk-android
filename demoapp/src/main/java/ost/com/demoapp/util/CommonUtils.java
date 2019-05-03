@@ -24,6 +24,7 @@ import java.util.List;
 
 public class CommonUtils {
     private static final String LOG_TAG = "OstCommonUtils";
+    private static final String DATA = "data";
 
     public CommonUtils() {
     }
@@ -105,5 +106,13 @@ public class CommonUtils {
             Log.e(LOG_TAG, "JSON Exception");
         }
         return null;
+    }
+
+    public JSONObject parseJSONData(JSONObject jsonObject) {
+        try {
+            return jsonObject.getJSONObject(DATA);
+        } catch (JSONException e) {
+            return null;
+        }
     }
 }

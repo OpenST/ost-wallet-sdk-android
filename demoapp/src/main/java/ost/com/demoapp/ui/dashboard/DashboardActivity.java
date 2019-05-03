@@ -30,11 +30,12 @@ import java.util.Objects;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.entity.User;
 import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.ui.BaseActivity;
-import ost.com.demoapp.ui.dashboard.dummy.DummyContent;
 import ost.com.demoapp.ui.workflow.WorkFlowPinFragment;
+import ost.com.demoapp.ui.workflow.transactions.TransactionFragment;
 import ost.com.demoapp.ui.workflow.walletsetup.WalletSetUpFragment;
 import ost.com.demoapp.util.FragmentUtils;
 
@@ -44,10 +45,11 @@ public class DashboardActivity extends BaseActivity implements
         SdkInteract.FlowInterrupt,
         SdkInteract.PinCallback,
         SdkInteract.VerifyDataCallback,
-        UserFragment.OnListFragmentInteractionListener,
+        UserListFragment.OnListFragmentInteractionListener,
         WalletSetUpFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
-        WorkFlowPinFragment.OnFragmentInteractionListener {
+        WorkFlowPinFragment.OnFragmentInteractionListener,
+        TransactionFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = "DashboardActivity";
     private ViewPager mViewPager;
@@ -61,7 +63,7 @@ public class DashboardActivity extends BaseActivity implements
         mViewPager = (ViewPager) findViewById(R.id.home_viewpager);
 
         HomePagerAdapter homePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
-        homePagerAdapter.addFragment(UserFragment.newInstance(), "Users");
+        homePagerAdapter.addFragment(UserListFragment.newInstance(), "Users");
         homePagerAdapter.addFragment(WalletFragment.newInstance(), "Wallet");
         homePagerAdapter.addFragment(SettingsFragment.newInstance(), "Wallet Settings");
 
@@ -90,11 +92,6 @@ public class DashboardActivity extends BaseActivity implements
                     WalletSetUpFragment.newInstance(),
                     this);
         }
-    }
-
-    @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-
     }
 
     @Override
@@ -204,5 +201,13 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void popTopFragment() {
         FragmentUtils.goBack(this);
+    }
+
+    @Override
+    public void onListFragmentInteraction(User user) {
+        Fragment fragment = TransactionFragment.newInstance(user);
+        FragmentUtils.addFragment(R.id.layout_container,
+                fragment,
+                this);
     }
 }

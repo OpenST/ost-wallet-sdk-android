@@ -22,11 +22,10 @@ import java.util.List;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.entity.Transaction;
-import ost.com.demoapp.ui.dashboard.UserFragment.OnListFragmentInteractionListener;
-import ost.com.demoapp.ui.dashboard.dummy.DummyContent.DummyItem;
+import ost.com.demoapp.ui.dashboard.UserListFragment.OnListFragmentInteractionListener;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link ost.com.demoapp.entity.User} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */

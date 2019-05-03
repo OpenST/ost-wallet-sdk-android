@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="10dp">
+
+    <ImageView
+        android:id="@+id/iv_user_image"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="User image"
+        android:src="@drawable/ic_arrow_forward_black_24dp" />
+
+    <ost.com.demoapp.customView.DemoAppTextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/iv_user_image"
+        android:text="TIP"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/sp_17" />
+
+    <ost.com.demoapp.customView.DemoAppTextView
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_below="@id/tv_user_name"
+        android:layout_toEndOf="@id/iv_user_image"
+        android:text="Welcome To Demo Wallet"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="@dimen/sp_10" />
+
+    <ost.com.demoapp.customView.DemoAppButton
+        android:id="@+id/btn_send_token"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:text="Send"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/sp_17" />
+</RelativeLayout>

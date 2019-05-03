@@ -8,20 +8,39 @@
   ~       http://www.apache.org/licenses/LICENSE-2.0
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_holder"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    tools:context=".ui.dashboard.UserListFragment">
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/list"
-        android:name="ost.com.demoapp.ui.dashboard.UserFragment"
+    <ost.com.demoapp.customView.DemoAppTextView
+        android:id="@+id/tv_heading"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:context=".ui.dashboard.UserFragment"
-        tools:listitem="@layout/fragment_user" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:text="Spend you tokens"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/sp_17" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/pullToRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_users"
+            android:name="ost.com.demoapp.ui.dashboard.UserFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            tools:listitem="@layout/view_user" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

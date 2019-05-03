@@ -17,6 +17,7 @@ import org.json.JSONException;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.net.CookieStore;
 
 import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.network.PersistentCookieStore;
@@ -33,11 +34,13 @@ public class App extends Application {
             throw  new RuntimeException("In App");
         }
         //Initialize persistent cookie storage
-        CookieManager cookieManager = new CookieManager(new PersistentCookieStore(this),
+        CookieStore persistentCookieStore = new PersistentCookieStore(this);
+        CookieManager cookieManager = new CookieManager(persistentCookieStore,
                 CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
         AppProvider.init(getApplicationContext());
+        AppProvider.get().setPersistentCookieStore(persistentCookieStore);
         AppProvider.get().setCurrentEconomy(currentEconomy);
     }
 }

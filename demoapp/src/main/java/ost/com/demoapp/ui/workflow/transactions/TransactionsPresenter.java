@@ -8,57 +8,62 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.ui.workflow.viewmnemonics;
+package ost.com.demoapp.ui.workflow.transactions;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 
+import java.util.Arrays;
+
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BasePresenter;
 
-class ViewMnemonicsPresenter extends BasePresenter<ViewMnemonicsView> implements
-        SdkInteract.FlowComplete,
+class TransactionsPresenter extends BasePresenter<TransactionsView> implements
+        SdkInteract.RequestAcknowledged,
         SdkInteract.FlowInterrupt {
 
-    private static final String LOG_TAG = "ViewMnemonicsPresenter";
+    private static final String LOG_TAG = "OstTransactionsPresenter";
+    private static final String DIRECT_TRANSFER = "DT";
 
 
-    private ViewMnemonicsPresenter() {
+    private TransactionsPresenter() {
     }
 
-    static ViewMnemonicsPresenter getInstance() {
-        return new ViewMnemonicsPresenter();
+    static TransactionsPresenter getInstance() {
+        return new TransactionsPresenter();
     }
 
     @Override
-    public void attachView(ViewMnemonicsView mvpView) {
+    public void attachView(TransactionsView mvpView) {
         super.attachView(mvpView);
+    }
+
+    void sendTokens(String tokenHolderAddress, String tokens, String unit) {
         getMvpView().showProgress(true);
+
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
-        OstSdk.getDeviceMnemonics(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);
+
+        OstSdk.executeTransaction(
+                AppProvider.get().getCurrentUser().getOstUserId(),
+                Arrays.asList(tokenHolderAddress),
+                Arrays.asList(tokens),
+                DIRECT_TRANSFER.equalsIgnoreCase(unit) ? OstSdk.RULE_NAME_DIRECT_TRANSFER : OstSdk.RULE_NAME_PRICER,
+                workFlowListener
+        );
     }
 
     @Override
-    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         getMvpView().showProgress(false);
-        if (OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS.equals(ostWorkflowContext.getWorkflow_type())) {
-            if (OstSdk.MNEMONICS.equals(ostContextEntity.getEntityType())) {
-                byte[] mnemonics = (byte[]) ostContextEntity.getEntity();
-                getMvpView().showMnemonics(new String(mnemonics));
-            }
-        }
     }
 
     @Override
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         getMvpView().showProgress(false);
-        if (OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS.equals(ostWorkflowContext.getWorkflow_type())) {
-            getMvpView().showError(ostError.getMessage());
-        }
     }
 }

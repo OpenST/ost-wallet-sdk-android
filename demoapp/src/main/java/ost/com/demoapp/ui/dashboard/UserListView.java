@@ -8,12 +8,10 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.ui.workflow.viewmnemonics;
+package ost.com.demoapp.ui.dashboard;
 
 import ost.com.demoapp.ui.BaseView;
 
-interface ViewMnemonicsView extends BaseView {
-    void showMnemonics(String string);
-
-    void showError(String message);
+interface UserListView extends BaseView {
+    void notifyDataSetChanged();
 }

@@ -11,6 +11,7 @@
 package ost.com.demoapp.ui.dashboard;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,9 +26,12 @@ import ost.com.demoapp.R;
 import ost.com.demoapp.customView.AppBar;
 import ost.com.demoapp.customView.DemoAppTextView;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.ui.workflow.createsession.CreateSessionFragment;
 import ost.com.demoapp.ui.workflow.viewmnemonics.ViewMnemonicsFragment;
 import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class SettingsFragment extends BaseFragment {
     private LinearLayout mScrollViewSettings;
@@ -103,6 +107,19 @@ public class SettingsFragment extends BaseFragment {
         mScrollViewSettings.addView(getFeatureView("Transaction via QR"));
         mScrollViewSettings.addView(getFeatureView("Initiate Recovery"));
         mScrollViewSettings.addView(getFeatureView("Abort Recovery"));
+
+        View viewLogOut = getFeatureView("Log out");
+        viewLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppProvider.get().getCookieStore().removeAll();
+                Intent intent = new Intent(getContext(), OnBoardingActivity.class);
+                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+                getActivity().startActivity(intent);
+                getActivity().finish();
+            }
+        });
+        mScrollViewSettings.addView(viewLogOut);
 
         AppBar appBar = AppBar.newInstance(getContext(),
                 "Wallet Settings",

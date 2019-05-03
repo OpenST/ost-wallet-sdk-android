@@ -15,6 +15,8 @@ import android.content.SharedPreferences;
 
 import com.ost.walletsdk.OstSdk;
 
+import java.net.CookieStore;
+
 import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.network.MappyNetworkClient;
@@ -34,6 +36,7 @@ public class AppProvider {
     private final SharedPreferences sharedPreferences;
     private CurrentEconomy currentEconomy;
     private LogInUser logInUser;
+    private CookieStore mCookieStore;
 
     private AppProvider(Context context) {
         mApplicationContext = context;
@@ -131,5 +134,13 @@ public class AppProvider {
 
     public LogInUser getCurrentUser() {
         return logInUser;
+    }
+
+    public void setPersistentCookieStore(CookieStore persistentCookieStore) {
+        mCookieStore = persistentCookieStore;
+    }
+
+    public CookieStore getCookieStore() {
+        return mCookieStore;
     }
 }

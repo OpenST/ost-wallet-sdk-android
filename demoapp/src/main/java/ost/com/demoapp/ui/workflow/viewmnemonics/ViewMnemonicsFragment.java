@@ -12,6 +12,7 @@ package ost.com.demoapp.ui.workflow.viewmnemonics;
 
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,5 +75,11 @@ public class ViewMnemonicsFragment extends BaseFragment implements ViewMnemonics
     @Override
     public void showMnemonics(String string) {
         mPrimaryTextView.setText(string);
+    }
+
+    @Override
+    public void showError(String message) {
+        mPrimaryTextView.setTextColor(Color.RED);
+        mPrimaryTextView.setText(message);
     }
 }

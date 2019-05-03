@@ -12,19 +12,22 @@ package ost.com.demoapp.ui.dashboard;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.customView.AppBar;
+import ost.com.demoapp.entity.User;
 import ost.com.demoapp.ui.BaseFragment;
-import ost.com.demoapp.ui.dashboard.dummy.DummyContent;
-import ost.com.demoapp.ui.dashboard.dummy.DummyContent.DummyItem;
 
 /**
  * A fragment representing a list of Items.
@@ -32,25 +35,27 @@ import ost.com.demoapp.ui.dashboard.dummy.DummyContent.DummyItem;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class UserFragment extends BaseFragment {
+public class UserListFragment extends BaseFragment implements UserListView,
+        UserListRecyclerViewAdapter.OnUserListInteractionListener {
 
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mPullToRefresh;
+
+    private UserListPresenter mUserListPresenter = UserListPresenter.newInstance();
+    private UserListRecyclerViewAdapter mUserListRecyclerViewAdapter;
+    private List<User> mUserList;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public UserFragment() {
+    public UserListFragment() {
     }
 
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static UserFragment newInstance() {
-        UserFragment fragment = new UserFragment();
+
+    public static UserListFragment newInstance() {
+        UserListFragment fragment = new UserListFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -59,9 +64,7 @@ public class UserFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
     }
 
@@ -70,21 +73,38 @@ public class UserFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_user_list, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new UsersRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
+        ((TextView)view.findViewById(R.id.tv_heading)).setText(
+                String.format(
+                        "Send %s tokens to users from the economy.",
+                        AppProvider.get().getCurrentEconomy().getTokenName().toUpperCase()
+                )
+        );
+
+        Context context = view.getContext();
+
         AppBar appBar = AppBar.newInstance(getContext(),
                 String.format("%s Users", AppProvider.get().getCurrentEconomy().getTokenName()),
                 false);
         setUpAppBar(view, appBar);
+
+        mRecyclerView = view.findViewById(R.id.rv_users);
+        mPullToRefresh = view.findViewById(R.id.pullToRefresh);
+
+        mUserList = new ArrayList<User>();
+        mUserListPresenter.setUserList(mUserList);
+        mUserListRecyclerViewAdapter = UserListRecyclerViewAdapter.newInstance(mUserList, this);
+
+        mUserListPresenter.attachView(this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mRecyclerView.setAdapter(mUserListRecyclerViewAdapter);
+        mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mUserListPresenter.updateUserList();
+                mPullToRefresh.setRefreshing(false);
+            }
+        });
         return view;
     }
 
@@ -106,6 +126,16 @@ public class UserFragment extends BaseFragment {
         mListener = null;
     }
 
+    @Override
+    public void onListViewInteraction(User user) {
+        mListener.onListFragmentInteraction(user);
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        mUserListRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -117,7 +147,7 @@ public class UserFragment extends BaseFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+
+        void onListFragmentInteraction(User user);
     }
 }

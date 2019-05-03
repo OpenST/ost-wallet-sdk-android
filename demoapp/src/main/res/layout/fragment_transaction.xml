@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <ost.com.demoapp.customView.DemoAppTextView
+            android:id="@+id/tv_send_tokens"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="#000000"
+            android:text="Send Tokens To"/>
+
+        <ost.com.demoapp.customView.DemoAppTextView
+            android:id="@+id/tv_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#34445b"
+            android:letterSpacing="-0.01"
+            android:lineSpacingExtra="6sp"
+            android:layout_alignParentEnd="true"
+            android:text="Balance:"
+            />
+
+        <include layout="@layout/view_user"
+            android:id="@+id/layout_user_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/tv_send_tokens"/>
+
+        <ost.com.demoapp.customView.PrimaryEditTextView
+            android:id="@+id/etv_tokens_number"
+            style="@style/Widget.DemoApp.TextInputLayout"
+            android:layout_width="220dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/layout_user_view"
+            android:hint="Amount"
+            android:textColorHint="@android:color/black"
+            android:inputType="text">
+        </ost.com.demoapp.customView.PrimaryEditTextView>
+
+        <ost.com.demoapp.customView.PrimaryEditTextView
+            android:id="@+id/etv_tokens_unit"
+            style="@style/Widget.DemoApp.TextInputLayout"
+            android:layout_marginStart="10dp"
+            android:layout_width="210dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="30dp"
+            android:hint="Unit"
+            android:inputType="text"
+            android:textColorHint="@android:color/black"
+            android:layout_toEndOf="@id/etv_tokens_number"
+            android:layout_below="@id/layout_user_view"/>
+
+        <ost.com.demoapp.customView.PrimaryButton
+            android:id="@+id/pbtn_send_tokens"
+            android:layout_below="@id/etv_tokens_number"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Tokens"/>
+
+        <ost.com.demoapp.customView.LinkButton
+            android:id="@+id/linkbtn_cancel"
+            android:layout_below="@id/pbtn_send_tokens"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"/>
+    </RelativeLayout>
+
+</LinearLayout>

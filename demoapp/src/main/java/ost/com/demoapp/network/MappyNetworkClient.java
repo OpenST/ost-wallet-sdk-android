@@ -115,6 +115,19 @@ public class MappyNetworkClient {
         }
     }
 
+    public void getUserList(JSONObject nextPayload, ResponseCallback callback) {
+        try {
+            JSONObject params = new JSONObject();
+            processRequestPayload(params, nextPayload);
+            sendRequest(Request.Method.GET,
+                    "users",
+                    params,
+                    callback);
+        } catch (Exception ex) {
+            callback.onFailure(ex);
+        }
+    }
+
     private void processRequestPayload(JSONObject request, JSONObject payload) {
         try {
             if (payload != null) {
@@ -131,7 +144,7 @@ public class MappyNetworkClient {
 
     }
 
-    private void sendRequest(int method, final String resource, JSONObject params , final ResponseCallback callback) {
+    private void sendRequest(int method, final String resource, JSONObject params, final ResponseCallback callback) {
         String logInUrl = String.format("%s%s", mUrl, resource);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 method,
