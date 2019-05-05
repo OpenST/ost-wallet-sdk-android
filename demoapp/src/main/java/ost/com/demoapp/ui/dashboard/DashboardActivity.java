@@ -195,7 +195,7 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void verifyData(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
-
+        ostVerifyDataInterface.dataVerified();
     }
 
     @Override

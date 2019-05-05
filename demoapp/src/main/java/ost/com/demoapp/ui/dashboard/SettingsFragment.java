@@ -27,7 +27,9 @@ import ost.com.demoapp.customView.AppBar;
 import ost.com.demoapp.customView.DemoAppTextView;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
+import ost.com.demoapp.ui.workflow.authrorizedeviceqr.AuthorizeDeviceQRFragment;
 import ost.com.demoapp.ui.workflow.createsession.CreateSessionFragment;
+import ost.com.demoapp.ui.workflow.entermnemonics.EnterMnemonicsFragment;
 import ost.com.demoapp.ui.workflow.qrfragment.QRFragment;
 import ost.com.demoapp.ui.workflow.resetpin.ResetPinFragment;
 import ost.com.demoapp.ui.workflow.viewmnemonics.ViewMnemonicsFragment;
@@ -103,8 +105,26 @@ public class SettingsFragment extends BaseFragment {
 
 
         mScrollViewSettings.addView(getCategoryView("DEVICE"));
-        mScrollViewSettings.addView(getFeatureView("Authorize Device via QR"));
-        mScrollViewSettings.addView(getFeatureView("Authorize Device via Mnemonics"));
+
+        View authorizeDeviceViaQR = getFeatureView("Authorize Device via QR");
+        authorizeDeviceViaQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = AuthorizeDeviceQRFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
+        mScrollViewSettings.addView(authorizeDeviceViaQR);
+
+        View authorizeDeviceViaMnemonics = getFeatureView("Authorize Device via Mnemonics");
+        authorizeDeviceViaMnemonics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = EnterMnemonicsFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
+        mScrollViewSettings.addView(authorizeDeviceViaMnemonics);
 
         View viewShowDeviceQR = getFeatureView("Show Device QR");
         viewShowDeviceQR.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +137,16 @@ public class SettingsFragment extends BaseFragment {
         mScrollViewSettings.addView(viewShowDeviceQR);
 
         mScrollViewSettings.addView(getFeatureView("Manage Devices"));
+
+        View transactionViaQR = getFeatureView("Transaction via QR");
+        transactionViaQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //QR scanning is independent of workflow so AuthorizeDeviceQRFragment is used as generic for qr workflow
+                Fragment fragment = AuthorizeDeviceQRFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
         mScrollViewSettings.addView(getFeatureView("Transaction via QR"));
         mScrollViewSettings.addView(getFeatureView("Initiate Recovery"));
         mScrollViewSettings.addView(getFeatureView("Abort Recovery"));

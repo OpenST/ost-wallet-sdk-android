@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ost.com.demoapp.customView.PrimaryTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_30"
+        android:text="@string/enter_mnemonics_sub_heading" />
+
+    <EditText
+        android:id="@+id/et_mnemonics_phrase"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="@string/enter_mnemonics_hint_phrase"
+        android:inputType="text" />
+
+    <ost.com.demoapp.customView.PrimaryButton
+        android:id="@+id/pbtn_recover_wallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/enter_mnemonics_recover_wallet" />
+</merge>
