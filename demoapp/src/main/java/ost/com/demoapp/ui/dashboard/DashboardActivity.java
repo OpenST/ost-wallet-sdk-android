@@ -38,6 +38,8 @@ import ost.com.demoapp.entity.User;
 import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.ui.BaseActivity;
+import ost.com.demoapp.ui.managedevices.DeviceListFragment;
+import ost.com.demoapp.ui.managedevices.DeviceListRecyclerViewAdapter;
 import ost.com.demoapp.ui.workflow.WorkFlowPinFragment;
 import ost.com.demoapp.ui.workflow.WorkFlowVerifyDataFragment;
 import ost.com.demoapp.ui.workflow.transactions.TransactionFragment;
@@ -54,7 +56,8 @@ public class DashboardActivity extends BaseActivity implements
         WalletSetUpFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
         WorkFlowPinFragment.OnFragmentInteractionListener,
-        TransactionFragment.OnFragmentInteractionListener {
+        TransactionFragment.OnFragmentInteractionListener,
+        DeviceListFragment.OnListFragmentInteractionListener {
 
     private static final String LOG_TAG = "DashboardActivity";
     private ViewPager mViewPager;
@@ -267,5 +270,10 @@ public class DashboardActivity extends BaseActivity implements
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
+    }
+
+    @Override
+    public void onListFragmentInteraction(OstDevice device) {
+
     }
 }

@@ -27,6 +27,7 @@ import ost.com.demoapp.customView.AppBar;
 import ost.com.demoapp.customView.DemoAppTextView;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
+import ost.com.demoapp.ui.managedevices.DeviceListFragment;
 import ost.com.demoapp.ui.workflow.authrorizedeviceqr.AuthorizeDeviceQRFragment;
 import ost.com.demoapp.ui.workflow.createsession.CreateSessionFragment;
 import ost.com.demoapp.ui.workflow.entermnemonics.EnterMnemonicsFragment;
@@ -136,7 +137,15 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(viewShowDeviceQR);
 
-        mScrollViewSettings.addView(getFeatureView("Manage Devices"));
+        View manageDevices = getFeatureView("Manage Devices");
+        manageDevices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = DeviceListFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
+        mScrollViewSettings.addView(manageDevices);
 
         View transactionViaQR = getFeatureView("Transaction via QR");
         transactionViaQR.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +156,8 @@ public class SettingsFragment extends BaseFragment {
                 mListener.launchFeatureFragment(fragment);
             }
         });
-        mScrollViewSettings.addView(getFeatureView("Transaction via QR"));
+        mScrollViewSettings.addView(transactionViaQR);
+
         mScrollViewSettings.addView(getFeatureView("Initiate Recovery"));
         mScrollViewSettings.addView(getFeatureView("Abort Recovery"));
 

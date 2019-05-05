@@ -128,6 +128,19 @@ public class MappyNetworkClient {
         }
     }
 
+    public void getCurrentUserDevices(JSONObject nextPayload, ResponseCallback callback) {
+        try {
+            JSONObject params = new JSONObject();
+            processRequestPayload(params, nextPayload);
+            sendRequest(Request.Method.GET,
+                    "devices",
+                    params,
+                    callback);
+        } catch (Exception ex) {
+            callback.onFailure(ex);
+        }
+    }
+
     private void processRequestPayload(JSONObject request, JSONObject payload) {
         try {
             if (payload != null) {
