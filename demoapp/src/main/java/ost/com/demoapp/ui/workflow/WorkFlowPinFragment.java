@@ -69,6 +69,12 @@ public class WorkFlowPinFragment extends PinFragment {
         return false;
     }
 
+    @Override
+    public void goBack() {
+        mOstPinAcceptInterface.cancelFlow();
+        super.goBack();
+    }
+
     public WorkFlowPinFragment() {
         // Required empty public constructor
     }

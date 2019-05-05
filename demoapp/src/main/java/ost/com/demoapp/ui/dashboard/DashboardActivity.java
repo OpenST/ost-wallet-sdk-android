@@ -17,6 +17,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 
+import com.ost.walletsdk.OstConstants;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -24,6 +27,7 @@ import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Objects;
@@ -35,6 +39,7 @@ import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.ui.BaseActivity;
 import ost.com.demoapp.ui.workflow.WorkFlowPinFragment;
+import ost.com.demoapp.ui.workflow.WorkFlowVerifyDataFragment;
 import ost.com.demoapp.ui.workflow.transactions.TransactionFragment;
 import ost.com.demoapp.ui.workflow.walletsetup.WalletSetUpFragment;
 import ost.com.demoapp.util.FragmentUtils;
@@ -195,7 +200,60 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void verifyData(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
-        ostVerifyDataInterface.dataVerified();
+        showProgress(false);
+        JSONObject jsonObject;
+        String dataToVerify = null;
+        if (OstSdk.DEVICE.equalsIgnoreCase(ostContextEntity.getEntityType())) {
+            OstDevice ostDevice = ((OstDevice) ostContextEntity.getEntity());
+            if (OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE.equals(
+                    ostWorkflowContext.getWorkflow_type()
+            )) {
+                dataToVerify = createRevokeDeviceString(ostDevice);
+            } else {
+                dataToVerify = createAuthorizeDeviceString(ostDevice);
+            }
+        } else {
+            jsonObject = (JSONObject) ostContextEntity.getEntity();
+            dataToVerify = createTransactionString(jsonObject);
+        }
+        WorkFlowVerifyDataFragment fragment = WorkFlowVerifyDataFragment.newInstance();
+        fragment.setDataToVerify(dataToVerify);
+        fragment.setVerifyDataCallback(ostVerifyDataInterface);
+        FragmentUtils.addFragment(R.id.layout_container,
+                fragment,
+                this);
+    }
+
+    private String createTransactionString(JSONObject jsonObject) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Rule Name: ");
+        stringBuilder.append(
+                jsonObject.optString(OstConstants.RULE_NAME)
+        );
+
+        JSONArray tokenHolderAddressesList = jsonObject.optJSONArray(OstConstants.TOKEN_HOLDER_ADDRESSES);
+        JSONArray tokenHolderAmountsList = jsonObject.optJSONArray(OstConstants.AMOUNTS);
+        for (int i=0; i<tokenHolderAddressesList.length(); i++) {
+            String tokenHolderAddress = tokenHolderAddressesList.optString(i);
+            String tokenHolderAmount = tokenHolderAmountsList.optString(i);
+
+            stringBuilder.append("\nToken Holder Address: ");
+            stringBuilder.append(tokenHolderAddress);
+
+            stringBuilder.append("\nToken Holder Amount: ");
+            stringBuilder.append(tokenHolderAmount);
+        }
+        return stringBuilder.toString();
+    }
+
+    private String createRevokeDeviceString(OstDevice ostDevice) {
+        return "Device Address To Revoke: " +
+                ostDevice.getAddress();
+    }
+
+    private String createAuthorizeDeviceString(OstDevice ostDevice) {
+        return "Device Address To Authorize: " +
+                ostDevice.getAddress();
     }
 
     @Override
