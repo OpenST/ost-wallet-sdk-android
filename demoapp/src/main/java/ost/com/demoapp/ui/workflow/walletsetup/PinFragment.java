@@ -96,7 +96,7 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         return false;
     }
 
-    interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener {
         void onPinEntered(String pin);
     }
 }

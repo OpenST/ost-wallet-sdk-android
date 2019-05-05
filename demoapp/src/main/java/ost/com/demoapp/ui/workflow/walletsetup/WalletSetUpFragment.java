@@ -65,7 +65,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
-        View view =  inflater.inflate(R.layout.fragment_wallet_set_up, container, false);
+        View view =  inflater.inflate(R.layout.fragment_workflow_holder, container, false);
 
         mWalletSetupPresenter.attachView(this);
         mWalletSetupPresenter.onCreateView();

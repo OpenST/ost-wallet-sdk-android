@@ -29,6 +29,7 @@ import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.ui.workflow.createsession.CreateSessionFragment;
 import ost.com.demoapp.ui.workflow.qrfragment.QRFragment;
+import ost.com.demoapp.ui.workflow.resetpin.ResetPinFragment;
 import ost.com.demoapp.ui.workflow.viewmnemonics.ViewMnemonicsFragment;
 import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
 
@@ -84,7 +85,8 @@ public class SettingsFragment extends BaseFragment {
         resetPinView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Fragment fragment = ResetPinFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(resetPinView);
