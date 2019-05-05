@@ -10,7 +10,6 @@
 
 package ost.com.demoapp.ui.managedevices;
 
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +18,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.ost.walletsdk.models.entities.OstDevice;
-import com.ost.walletsdk.models.entities.OstUser;
 
 import java.util.List;
 
-import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.entity.User;
 
@@ -65,6 +60,18 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
         holder.mStatus.setText(holder.mDevice.getApiSignerAddress());
         holder.mSendButton.setText(holder.mDevice.getStatus());
         holder.mSendButton.setVisibility(View.VISIBLE);
+        String status = holder.mDevice.getStatus();
+        if (OstDevice.CONST_STATUS.AUTHORIZED
+                .equalsIgnoreCase(status) ||
+                OstDevice.CONST_STATUS.RECOVERING
+                        .equalsIgnoreCase(status)) {
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onListViewInteraction(holder.mDevice);
+                }
+            });
+        }
     }
 
     @Override

@@ -37,9 +37,9 @@ import ost.com.demoapp.R;
 import ost.com.demoapp.entity.User;
 import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
+import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BaseActivity;
 import ost.com.demoapp.ui.managedevices.DeviceListFragment;
-import ost.com.demoapp.ui.managedevices.DeviceListRecyclerViewAdapter;
 import ost.com.demoapp.ui.workflow.WorkFlowPinFragment;
 import ost.com.demoapp.ui.workflow.WorkFlowVerifyDataFragment;
 import ost.com.demoapp.ui.workflow.transactions.TransactionFragment;
@@ -274,6 +274,24 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void onListFragmentInteraction(OstDevice device) {
+        WorkFlowListener revokeDeviceWorkflowListener = SdkInteract.getInstance().newWorkFlowListener();
 
+        SdkInteract.getInstance().subscribe(revokeDeviceWorkflowListener.getId(), this);
+
+        if (OstDevice.CONST_STATUS.AUTHORIZED
+                .equalsIgnoreCase(
+                        device.getStatus()
+                )) {
+            OstSdk.revokeDevice(
+                    AppProvider.get().getCurrentUser().getOstUserId(),
+                    device.getAddress(),
+                    revokeDeviceWorkflowListener
+            );
+        } else if (OstDevice.CONST_STATUS.RECOVERING
+                .equalsIgnoreCase(
+                        device.getStatus()
+                        )) {
+                //Todo:: abort recovery flow
+        }
     }
 }
