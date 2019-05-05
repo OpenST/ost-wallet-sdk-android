@@ -28,7 +28,7 @@ import ost.com.demoapp.ui.BaseFragment;
  * Use the {@link ViewMnemonicsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ViewMnemonicsFragment extends BaseFragment implements ViewMnemonicsView{
+public class ViewMnemonicsFragment extends BaseFragment implements ViewMnemonicsView {
 
 
     ViewMnemonicsPresenter mViewMnemonicsPresenter = ViewMnemonicsPresenter.getInstance();
@@ -59,17 +59,15 @@ public class ViewMnemonicsFragment extends BaseFragment implements ViewMnemonics
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_view_mnemonics, container, false);
+        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_view_mnemonics, container, true);
 
         mPrimaryTextView = viewGroup.findViewById(R.id.ptv_mnemonics);
         AppBar appBar = AppBar.newInstance(getContext(), "View Mnemonics", true);
         setUpAppBar(viewGroup, appBar);
 
         mViewMnemonicsPresenter.attachView(this);
-        return viewGroup;
     }
 
     @Override

@@ -58,10 +58,9 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_create_session, container, false);
+        ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_create_session, container, true);
 
         final PrimaryEditTextView spendingLimitEditText = ((PrimaryEditTextView)viewGroup.findViewById(R.id.etv_spending_limit));
         final PrimaryEditTextView unitEditText = ((PrimaryEditTextView)viewGroup.findViewById(R.id.etv_unit));
@@ -87,8 +86,6 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
         mCreateSessionPresenter.attachView(this);
         AppBar appBar = AppBar.newInstance(getContext(), "Create Session", true);
         setUpAppBar(viewGroup, appBar);
-
-        return viewGroup;
     }
 
     @Override

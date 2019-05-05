@@ -83,10 +83,9 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_transaction, container, false);
+        ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_transaction, container, true);
 
         ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: %s", mUser.getBalance()));
 
@@ -131,7 +130,6 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         setUpAppBar(viewGroup, appBar);
 
         mTransactionPresenter.attachView(this);
-        return viewGroup;
     }
 
     @Override

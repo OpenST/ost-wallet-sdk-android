@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -40,6 +41,18 @@ public abstract class BaseFragment extends Fragment implements BaseView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_base, container, false);
+        onCreateViewDelegate(inflater, viewGroup, savedInstanceState);
+        return viewGroup;
+    }
+
+    protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
     }
 
     protected void setUpAppBar(@NonNull ViewGroup view) {
