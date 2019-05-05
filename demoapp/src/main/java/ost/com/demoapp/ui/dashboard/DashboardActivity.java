@@ -34,6 +34,7 @@ import java.util.Objects;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.entity.Device;
 import ost.com.demoapp.entity.User;
 import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
@@ -140,6 +141,7 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        showProgress(false);
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(
                         ostWorkflowContext.getWorkflow_type()
@@ -160,6 +162,7 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        showProgress(false);
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(
                         ostWorkflowContext.getWorkflow_type()
@@ -273,7 +276,7 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void onListFragmentInteraction(OstDevice device) {
+    public void onListFragmentInteraction(Device device) {
         WorkFlowListener revokeDeviceWorkflowListener = SdkInteract.getInstance().newWorkFlowListener();
 
         SdkInteract.getInstance().subscribe(revokeDeviceWorkflowListener.getId(), this);
@@ -284,7 +287,7 @@ public class DashboardActivity extends BaseActivity implements
                 )) {
             OstSdk.revokeDevice(
                     AppProvider.get().getCurrentUser().getOstUserId(),
-                    device.getAddress(),
+                    device.getDeviceAddress(),
                     revokeDeviceWorkflowListener
             );
         } else if (OstDevice.CONST_STATUS.RECOVERING

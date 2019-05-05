@@ -20,14 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ost.walletsdk.models.entities.OstDevice;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.customView.AppBar;
+import ost.com.demoapp.entity.Device;
 import ost.com.demoapp.ui.BaseFragment;
 
 /**
@@ -45,7 +44,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView,
 
     private DeviceListPresenter mDeviceListPresenter = DeviceListPresenter.newInstance();
     private DeviceListRecyclerViewAdapter mDeviceListRecyclerViewAdapter;
-    private List<OstDevice> mDeviceList;
+    private List<Device> mDeviceList;
     private TextView mHeadingTextView;
 
     /**
@@ -87,8 +86,8 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView,
         mRecyclerView = view.findViewById(R.id.rv_users);
         mPullToRefresh = view.findViewById(R.id.pullToRefresh);
 
-        mDeviceList = new ArrayList<OstDevice>();
-        mDeviceListPresenter.setOstDeviceList(mDeviceList);
+        mDeviceList = new ArrayList<Device>();
+        mDeviceListPresenter.setDeviceList(mDeviceList);
         mDeviceListRecyclerViewAdapter = DeviceListRecyclerViewAdapter.newInstance(mDeviceList, this);
 
         mDeviceListPresenter.attachView(this);
@@ -137,22 +136,11 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView,
     }
 
     @Override
-    public void onListViewInteraction(OstDevice device) {
+    public void onListViewInteraction(Device device) {
         mListener.onListFragmentInteraction(device);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnListFragmentInteractionListener {
-
-        void onListFragmentInteraction(OstDevice device);
+        void onListFragmentInteraction(Device device);
     }
 }

@@ -12,8 +12,6 @@ package ost.com.demoapp.ui.managedevices;
 
 import android.util.Log;
 
-import com.ost.walletsdk.models.entities.OstDevice;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ost.com.demoapp.AppProvider;
+import ost.com.demoapp.entity.Device;
 import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.ui.BasePresenter;
 import ost.com.demoapp.util.CommonUtils;
@@ -37,7 +36,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
 
     private JSONObject nextPayload = new JSONObject();
 
-    private List<OstDevice> ostDeviceList = new ArrayList<>();
+    private List<Device> ostDeviceList = new ArrayList<>();
 
     @Override
     public void attachView(DeviceListView mvpView) {
@@ -61,8 +60,8 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
 
                         for (int i = 0; i < deviceJSONArray.length(); i++) {
                             JSONObject deviceJSONObject = deviceJSONArray.getJSONObject(i);
-                            OstDevice ostDevice = OstDevice.parse(deviceJSONObject);
-                            ostDeviceList.add(ostDevice);
+                            Device device = Device.newInstance(deviceJSONObject);
+                            ostDeviceList.add(device);
                         }
                     } catch (JSONException e) {
                         //Exception not expected
@@ -76,13 +75,13 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.e(LOG_TAG, String.format("Get Current User list error: %s", throwable.toString()));
+                Log.e(LOG_TAG, String.format("Get Current User list error:"));
                 getMvpView().notifyDataSetChanged();
             }
         });
     }
 
-    void setOstDeviceList(List<OstDevice> ostDeviceList) {
+    void setDeviceList(List<Device> ostDeviceList) {
         this.ostDeviceList = ostDeviceList;
     }
 }

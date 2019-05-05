@@ -23,6 +23,7 @@ import com.ost.walletsdk.models.entities.OstDevice;
 import java.util.List;
 
 import ost.com.demoapp.R;
+import ost.com.demoapp.entity.Device;
 import ost.com.demoapp.entity.User;
 
 /**
@@ -31,15 +32,15 @@ import ost.com.demoapp.entity.User;
  */
 public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceListRecyclerViewAdapter.ViewHolder> {
 
-    private final List<OstDevice> mValues;
+    private final List<Device> mValues;
     private final OnDeviceListInteractionListener mListener;
 
-    private DeviceListRecyclerViewAdapter(List<OstDevice> items, OnDeviceListInteractionListener listener) {
+    private DeviceListRecyclerViewAdapter(List<Device> items, OnDeviceListInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
 
-    public static DeviceListRecyclerViewAdapter newInstance(List<OstDevice> deviceList, OnDeviceListInteractionListener deviceListPresenter) {
+    public static DeviceListRecyclerViewAdapter newInstance(List<Device> deviceList, OnDeviceListInteractionListener deviceListPresenter) {
         return new DeviceListRecyclerViewAdapter(deviceList, deviceListPresenter);
     }
 
@@ -56,7 +57,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
         holder.mDevice = mValues.get(position);
 
 
-        holder.mUserName.setText(holder.mDevice.getAddress());
+        holder.mUserName.setText(holder.mDevice.getDeviceAddress());
         holder.mStatus.setText(holder.mDevice.getApiSignerAddress());
         holder.mSendButton.setText(holder.mDevice.getStatus());
         holder.mSendButton.setVisibility(View.VISIBLE);
@@ -86,7 +87,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
         private final TextView mStatus;
         private final Button mSendButton;
 
-        public OstDevice mDevice;
+        public Device mDevice;
 
         public ViewHolder(View view) {
             super(view);
@@ -104,6 +105,6 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
     }
 
     public interface OnDeviceListInteractionListener {
-        void onListViewInteraction(OstDevice device);
+        void onListViewInteraction(Device device);
     }
 }
