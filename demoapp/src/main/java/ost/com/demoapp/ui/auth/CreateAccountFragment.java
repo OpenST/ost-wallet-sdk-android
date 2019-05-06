@@ -10,9 +10,9 @@
 
 package ost.com.demoapp.ui.auth;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.InputType;
@@ -23,10 +23,10 @@ import android.widget.Button;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
-import ost.com.demoapp.uicomponents.AppBar;
-import ost.com.demoapp.uicomponents.PrimaryEditTextView;
 import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.PrimaryEditTextView;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -68,7 +68,8 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
                         e.printStackTrace();
                     }
                 } else {
-
+                    Log.e(LOG_TAG, "Error while logging");
+                    getMvpView().showProgress(false);
                 }
             }
 
@@ -100,7 +101,8 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
                         e.printStackTrace();
                     }
                 } else {
-
+                    Log.e(LOG_TAG, "Error while logging");
+                    getMvpView().showProgress(false);
                 }
             }
 
@@ -126,6 +128,9 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                } else {
+                    Log.e(LOG_TAG, "Error while logging");
+                    getMvpView().showProgress(false);
                 }
             }
 

@@ -25,6 +25,7 @@ import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.PinEntryEditText;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.util.KeyBoard;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -84,6 +85,12 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         setUpAppBar(viewGroup, appBar);
 
         return viewGroup;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        KeyBoard.showSoftKeyboard(mPinEntryEditText);
     }
 
     @Override

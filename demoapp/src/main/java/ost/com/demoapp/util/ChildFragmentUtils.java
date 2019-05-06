@@ -26,6 +26,7 @@ public class ChildFragmentUtils {
 
     public static void addFragment(int contId, Fragment fg,
                                    Fragment fragmentAct) {
+        KeyBoard.hideKeyboard(fragmentAct.getContext());
         FragmentTransaction transaction = fragmentAct
                 .getChildFragmentManager().beginTransaction();
         transaction.add(contId, fg);
@@ -35,6 +36,7 @@ public class ChildFragmentUtils {
 
     public static void addFragmentWithoutBackStack(int contId, Fragment fg,
                                                    Fragment fragmentAct) {
+        KeyBoard.hideKeyboard(fragmentAct.getContext());
         FragmentTransaction transaction = fragmentAct
                 .getChildFragmentManager().beginTransaction();
         transaction.add(contId, fg);
@@ -112,6 +114,7 @@ public class ChildFragmentUtils {
     }
 
     public static void goBack(Fragment fragmentAct) {
+        KeyBoard.hideKeyboard(fragmentAct.getContext());
         FragmentTransaction transaction = fragmentAct.getChildFragmentManager().beginTransaction();
         transaction.remove(ChildFragmentUtils.getTopFragment(fragmentAct, R.id.layout_container));
         transaction.commit();
