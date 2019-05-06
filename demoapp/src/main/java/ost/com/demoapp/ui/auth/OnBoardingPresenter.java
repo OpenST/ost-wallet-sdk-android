@@ -49,7 +49,6 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
         AppProvider.get().getMappyClient().createAccount(userName, password, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
-                getMvpView().showProgress(false);
                 Log.d(LOG_TAG, jsonObject.toString());
                 if (new CommonUtils().isValidResponse(jsonObject)) {
                     try {
@@ -86,7 +85,6 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
         AppProvider.get().getMappyClient().logIn(userName, password, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
-                getMvpView().showProgress(false);
                 Log.d(LOG_TAG, jsonObject.toString());
                 if (new CommonUtils().isValidResponse(jsonObject)) {
                     try {
@@ -148,11 +146,13 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     @Override
     public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.i(LOG_TAG, String.format("%d Flow Complete", workflowId));
+        getMvpView().showProgress(false);
         getMvpView().goToDashBoard();
     }
 
     @Override
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         Log.i(LOG_TAG, String.format("%d Flow Interrupt", workflowId));
+        getMvpView().showProgress(false);
     }
 }

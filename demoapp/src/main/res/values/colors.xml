@@ -25,16 +25,17 @@
     <color name="primary_button_text">#ffffff</color>
     <color name="primary_button_text_disabled">#efefef</color>
     <color name="primary_button_disabled">#e0e0e0</color>
+    <color name="primary_button_pressed">#80b4bf</color>
 
     <!--Secondary Button-->
     <color name="secondary_button">#168dc1</color>
     <color name="secondary_button_text">#168dc1</color>
     <color name="secondary_button_text_disabled">#e0e0e0</color>
     <color name="secondary_button_disabled">#e0e0e0</color>
+    <color name="secondary_button_pressed">#168dc1</color>
 
     <!--Link Button-->
     <color name="link_button_text">#168dc1</color>
     <color name="link_button">#0000</color>
     <color name="link_button_text_disabled">#efefef</color>
-
 </resources>
