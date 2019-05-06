@@ -44,6 +44,7 @@ import ost.com.demoapp.ui.managedevices.DeviceListFragment;
 import ost.com.demoapp.ui.workflow.WorkFlowPinFragment;
 import ost.com.demoapp.ui.workflow.WorkFlowVerifyDataFragment;
 import ost.com.demoapp.ui.workflow.transactions.TransactionFragment;
+import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
 import ost.com.demoapp.ui.workflow.walletsetup.WalletSetUpFragment;
 import ost.com.demoapp.util.FragmentUtils;
 
@@ -58,7 +59,9 @@ public class DashboardActivity extends BaseActivity implements
         SettingsFragment.OnFragmentInteractionListener,
         WorkFlowPinFragment.OnFragmentInteractionListener,
         TransactionFragment.OnFragmentInteractionListener,
-        DeviceListFragment.OnListFragmentInteractionListener {
+        DeviceListFragment.OnListFragmentInteractionListener,
+        WalletDetailsFragment.OnWalletDetailsFragmentListener,
+        WebViewFragment.OnWebViewFragmentInteractionListener {
 
     private static final String LOG_TAG = "DashboardActivity";
     private ViewPager mViewPager;
@@ -296,5 +299,13 @@ public class DashboardActivity extends BaseActivity implements
                         )) {
                 //Todo:: abort recovery flow
         }
+    }
+
+    @Override
+    public void openWebView(String url) {
+        WebViewFragment fragment = WebViewFragment.newInstance(url);
+        FragmentUtils.addFragment(R.id.layout_container,
+                fragment,
+                this);
     }
 }

@@ -31,210 +31,295 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:padding="24dp"
             android:paddingTop="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
                 android:text="OST User Id" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/ost_user_id_input"
+            <TextView
+                android:id="@+id/ost_user_id"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:drawableRight="@drawable/icon_copy"
+                android:drawablePadding="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_15"
+                android:textColor="#34445b" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_user_id_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="#e3e3e3"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
                 android:text="User Status" />
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
                 android:id="@+id/ost_user_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textColor="#0f9d58" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_user_status_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="#e3e3e3"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
                 android:text="Token ID" />
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
                 android:id="@+id/ost_token_id"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textColor="#34445b" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_token_id_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="#e3e3e3"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
                 android:text="Token Holder Address" />
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
                 android:id="@+id/ost_user_token_holder"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="@dimen/sp_15"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:drawableRight="@drawable/icon_view"
+                android:drawablePadding="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_15"
+                android:textColor="#438bad" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_user_token_holder_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="#e3e3e3"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
                 android:text="Device Address" />
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
                 android:id="@+id/ost_user_device_address"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:drawableRight="@drawable/icon_copy"
+                android:drawablePadding="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_15"
+                android:textColor="#34445b" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_user_device_address_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="#e3e3e3"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
                 android:text="Device Status" />
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
                 android:id="@+id/ost_user_device_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textColor="#0f9d58" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_user_device_status_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="#e3e3e3"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
                 android:text="Device Manager Address" />
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
                 android:id="@+id/ost_user_device_manager_address"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:drawableRight="@drawable/icon_view"
+                android:drawablePadding="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_15"
+                android:textColor="#438bad" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_user_device_manager_address_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="#e3e3e3"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
                 android:text="Recovery Key Address" />
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
                 android:id="@+id/ost_user_recovery_key_address"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:drawableRight="@drawable/icon_copy"
+                android:drawablePadding="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_15"
+                android:textColor="#34445b" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_user_recovery_key_address_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="#e3e3e3"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
                 android:text="Recovery Owner Address"
                 android:visibility="visible" />
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
                 android:id="@+id/ost_user_recovery_owner_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="visible">
+                android:layout_gravity="start"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:drawableRight="@drawable/icon_view"
+                android:drawablePadding="@dimen/dp_24"
+                android:layout_marginRight="@dimen/dp_15"
+                android:textColor="#438bad" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_user_recovery_owner_address_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="@dimen/dp_15"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="#e3e3e3"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textSize="@dimen/sp_13"
+                android:textStyle="bold"
                 android:text="Platform End Point" />
 
-            <android.support.design.widget.TextInputLayout
+            <TextView
                 android:id="@+id/ost_user_platform_endpoint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textSize="@dimen/sp_15"
+                android:layout_marginLeft="@dimen/dp_20"
+                android:textColor="#34445b" />
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/ost_user_platform_endpoint_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dp_15"
+                android:background="#e3e3e3"/>
         </LinearLayout>
     </ScrollView>
 

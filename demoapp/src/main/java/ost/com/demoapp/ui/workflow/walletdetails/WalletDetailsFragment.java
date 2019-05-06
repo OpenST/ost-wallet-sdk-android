@@ -10,13 +10,23 @@
 
 package ost.com.demoapp.ui.workflow.walletdetails;
 
-
 import android.app.Fragment;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.ost.walletsdk.OstSdk;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
@@ -29,7 +39,10 @@ import ost.com.demoapp.ui.BaseFragment;
  * Use the {@link WalletDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WalletDetailsFragment extends BaseFragment {
+public class WalletDetailsFragment extends BaseFragment implements View.OnClickListener {
+    private OnWalletDetailsFragmentListener mListener;
+    private LogInUser logInUser = AppProvider.get().getCurrentUser();
+    private String viewEndPoint = AppProvider.get().getCurrentEconomy().getViewApiEndpoint();
 
     public WalletDetailsFragment() {
         // Required empty public constructor
@@ -55,34 +68,120 @@ public class WalletDetailsFragment extends BaseFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnWalletDetailsFragmentListener) {
+            mListener = (OnWalletDetailsFragmentListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnWalletDetailsFragmentListener");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_wallet_details, container, false);
         AppBar appBar = AppBar.newInstance(getContext(), "Wallet Details", true);
         setUpAppBar(viewGroup, appBar);
-        LogInUser logInUser = AppProvider.get().getCurrentUser();
 
-        ((EditText)viewGroup.findViewById(R.id.ost_user_id_edit)).setText(logInUser.getOstUserId());
+        TextView mOstUserId = (TextView)viewGroup.findViewById(R.id.ost_user_id);
+        mOstUserId.setText(logInUser.getOstUserId());
+        mOstUserId.setOnClickListener(this);
 
-        ((EditText)viewGroup.findViewById(R.id.ost_user_status_edit)).setText(logInUser.getOstUser().getStatus());
+        ((TextView)viewGroup.findViewById(R.id.ost_user_status)).setText(logInUser.getOstUser().getStatus());
 
-        ((EditText)viewGroup.findViewById(R.id.ost_token_id_edit)).setText(logInUser.getTokenId());
+        ((TextView)viewGroup.findViewById(R.id.ost_token_id)).setText(logInUser.getTokenId());
 
-        ((EditText)viewGroup.findViewById(R.id.ost_user_token_holder_edit)).setText(logInUser.getOstUser().getTokenHolderAddress());
+        TextView tokenHolderView = (TextView) viewGroup.findViewById(R.id.ost_user_token_holder);
+        tokenHolderView.setText(logInUser.getOstUser().getTokenHolderAddress());
+        tokenHolderView.setPaintFlags(tokenHolderView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        tokenHolderView.setOnClickListener(this);
 
-        ((EditText)viewGroup.findViewById(R.id.ost_user_device_address_edit)).setText(logInUser.getOstUser().getCurrentDevice().getAddress());
+        TextView mOstUserDevice = (TextView)viewGroup.findViewById(R.id.ost_user_device_address);
+        mOstUserDevice.setText(logInUser.getOstUser().getCurrentDevice().getAddress());
+        mOstUserDevice.setOnClickListener(this);
 
-        ((EditText)viewGroup.findViewById(R.id.ost_user_device_status_edit)).setText(logInUser.getOstUser().getCurrentDevice().getStatus());
+        ((TextView)viewGroup.findViewById(R.id.ost_user_device_status)).setText(logInUser.getOstUser().getCurrentDevice().getStatus());
 
-        ((EditText)viewGroup.findViewById(R.id.ost_user_device_manager_address_edit)).setText(logInUser.getOstUser().getDeviceManagerAddress());
+        TextView deviceManagerView = (TextView) viewGroup.findViewById(R.id.ost_user_device_manager_address);
+        deviceManagerView.setText(logInUser.getOstUser().getDeviceManagerAddress());
+        deviceManagerView.setPaintFlags(deviceManagerView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        deviceManagerView.setOnClickListener(this);
 
-        ((EditText)viewGroup.findViewById(R.id.ost_user_recovery_key_address_edit)).setText(logInUser.getOstUser().getRecoveryAddress());
+        TextView mOstUserRecoveryKey = (TextView)viewGroup.findViewById(R.id.ost_user_recovery_key_address);
+        mOstUserRecoveryKey.setText(logInUser.getOstUser().getRecoveryAddress());
+        mOstUserRecoveryKey.setOnClickListener(this);
 
-        ((EditText)viewGroup.findViewById(R.id.ost_user_recovery_owner_address_edit)).setText(logInUser.getOstUser().getRecoveryOwnerAddress());
+        TextView recoveryOwnerView = (TextView) viewGroup.findViewById(R.id.ost_user_recovery_owner_address);
+        recoveryOwnerView.setText(logInUser.getOstUser().getRecoveryOwnerAddress());
+        recoveryOwnerView.setPaintFlags(recoveryOwnerView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        recoveryOwnerView.setOnClickListener(this);
 
-        ((EditText)viewGroup.findViewById(R.id.ost_user_platform_endpoint_edit)).setText(AppProvider.get().getCurrentEconomy().getSaasApiEndpoint());
+        ((TextView)viewGroup.findViewById(R.id.ost_user_platform_endpoint)).setText(AppProvider.get().getCurrentEconomy().getSaasApiEndpoint());
 
         return viewGroup;
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.ost_user_id: {
+                if(!logInUser.getOstUserId().equals("")){
+                    copyTextToClipboard(logInUser.getOstUserId());
+                }
+                break;
+            }
+            case R.id.ost_user_device_address: {
+                if(!logInUser.getOstUser().getCurrentDevice().getAddress().equals("")){
+                    copyTextToClipboard(logInUser.getOstUser().getCurrentDevice().getAddress());
+                }
+                break;
+            }
+            case R.id.ost_user_recovery_key_address: {
+                if(!logInUser.getOstUser().getRecoveryAddress().equals("")){
+                    copyTextToClipboard(logInUser.getOstUser().getRecoveryAddress());
+                }
+                break;
+            }
+            case R.id.ost_user_token_holder: {
+                try {
+                    JSONArray auxChains = OstSdk.getToken(logInUser.getTokenId()).getAuxiliaryChain();
+                    JSONObject jsonObject = auxChains.getJSONObject(0);
+                    String tokenAddr = jsonObject.getString("utility_branded_token");
+                    String url = viewEndPoint + "token/th-" + logInUser.getTokenId() + "-" +
+                            tokenAddr + "-" +
+                            logInUser.getOstUser().getTokenHolderAddress();
+                    mListener.openWebView(url);
+                } catch (Exception e) {
+                    Log.e("Exception", "Exception while getting chainId", e);
+                }
+                break;
+            }
+            case R.id.ost_user_device_manager_address: {
+                String url = viewEndPoint + "address/ad-" + logInUser.getTokenId() + "-" +
+                        logInUser.getOstUser().getDeviceManagerAddress();
+                mListener.openWebView(url);
+                break;
+            }
+            case R.id.ost_user_recovery_owner_address: {
+                String url = viewEndPoint + "address/ad-" + logInUser.getTokenId() + "-" +
+                        logInUser.getOstUser().getRecoveryOwnerAddress();
+                mListener.openWebView(url);
+                break;
+            }
+        }
+    }
+
+    public interface OnWalletDetailsFragmentListener {
+        void openWebView(String url);
+    }
+
+    private void copyTextToClipboard(String text){
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Copied Text", text);
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(getContext(), "Copied to Clipboard", Toast.LENGTH_SHORT).show();
     }
 }
