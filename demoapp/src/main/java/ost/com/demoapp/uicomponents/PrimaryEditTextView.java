@@ -14,9 +14,9 @@ import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 
 import ost.com.demoapp.uicomponents.uiutils.Font;
-import ost.com.demoapp.uicomponents.uiutils.FontCache;
 import ost.com.demoapp.uicomponents.uiutils.FontFactory;
 
 public class PrimaryEditTextView extends TextInputLayout {
@@ -40,8 +40,9 @@ public class PrimaryEditTextView extends TextInputLayout {
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
         Font font = FontFactory.getInstance(context, FontFactory.FONT.LATO);
         this.setTypeface(font.getRegular());
-        mTextInputEditText = new TextInputEditText(context, attrs);
-        mTextInputEditText.setPadding(20,50,20,50);
+        mTextInputEditText = new TextInputEditText(context);
+        mTextInputEditText.setTypeface(font.getRegular());
+        mTextInputEditText.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         addView(mTextInputEditText);
     }
 

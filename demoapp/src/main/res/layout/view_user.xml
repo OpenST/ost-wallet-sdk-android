@@ -46,12 +46,10 @@
         android:textColor="@android:color/darker_gray"
         android:textSize="@dimen/sp_10" />
 
-    <ost.com.demoapp.uicomponents.OstButton
+    <ost.com.demoapp.uicomponents.OstPrimaryButton
         android:id="@+id/btn_send_token"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:text="Send"
-        android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/sp_17" />
+        android:text="Send"/>
 </RelativeLayout>
