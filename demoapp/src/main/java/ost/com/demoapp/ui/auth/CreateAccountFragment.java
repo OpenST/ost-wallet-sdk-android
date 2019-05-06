@@ -10,6 +10,7 @@
 
 package ost.com.demoapp.ui.auth;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -70,6 +72,7 @@ public class CreateAccountFragment extends BaseFragment {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,6 +80,7 @@ public class CreateAccountFragment extends BaseFragment {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_create_account, container, false);
         editTextViewEconomy = view.findViewById(R.id.edv_economy);
         editTextViewEconomy.setRightDrawable(getResources().getDrawable(R.drawable.qr_icon, null));
+        editTextViewEconomy.setHintText(getResources().getString(R.string.create_account_economy_hint));
         updateToken();
         editTextViewEconomy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +89,10 @@ public class CreateAccountFragment extends BaseFragment {
             }
         });
         final PrimaryEditTextView editTextViewUserName = view.findViewById(R.id.edv_username);
+        editTextViewUserName.setHintText(getResources().getString(R.string.create_account_username_hint));
+
         final PrimaryEditTextView editTextViewPassword = view.findViewById(R.id.edv_password);
+        editTextViewPassword.setHintText(getResources().getString(R.string.create_account_password_hint));
         editTextViewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         final Button button = ((Button) view.findViewById(R.id.pb_create_account));

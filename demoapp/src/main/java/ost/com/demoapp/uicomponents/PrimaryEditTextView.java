@@ -12,18 +12,21 @@ package ost.com.demoapp.uicomponents;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.uiutils.Font;
 import ost.com.demoapp.uicomponents.uiutils.FontFactory;
-import ost.com.demoapp.uicomponents.uiutils.SizeUtil;
 
-public class PrimaryEditTextView extends TextInputLayout {
+public class PrimaryEditTextView extends RelativeLayout {
     private TextInputEditText mTextInputEditText;
+    private TextInputLayout mTextInputLayout;
 
     public PrimaryEditTextView(Context context) {
         super(context);
@@ -41,24 +44,15 @@ public class PrimaryEditTextView extends TextInputLayout {
     }
 
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View inflatedLayoutView = inflater.inflate(R.layout.material_edit_text, this, true);
+
+        mTextInputLayout = inflatedLayoutView.findViewById(R.id.text_input_layout);
+        mTextInputEditText = inflatedLayoutView.findViewById(R.id.text_input_edit_text);
+
         Font font = FontFactory.getInstance(context, FontFactory.FONT.LATO);
-        setTypeface(font.getRegular());
-
-        float cornerRadius = SizeUtil.getTextSize(getResources(), R.dimen.primary_edit_text_radius);
-        setBoxCornerRadii(cornerRadius, cornerRadius, cornerRadius, cornerRadius);
-        setBoxStrokeColor(getResources().getColor(R.color.colorPrimary));
-
-        mTextInputEditText = new TextInputEditText(context);
+        mTextInputLayout.setTypeface(font.getRegular());
         mTextInputEditText.setTypeface(font.getRegular());
-        mTextInputEditText.setTextSize(SizeUtil.getTextSize(getResources(), R.dimen.primary_edit_text_size));
-        mTextInputEditText.setTextColor(getResources().getColor(R.color.primary_edittext_text));
-        mTextInputEditText.setLetterSpacing((float) -0.02);
-        mTextInputEditText.setLineSpacing(0, (float) 0.3);
-        ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mTextInputEditText.setHeight((int) getResources().getDimension(R.dimen.primary_edittext_height));
-        mTextInputEditText.setLayoutParams(params);
-        mTextInputEditText.setHintTextColor(getResources().getColor(R.color.primary_edittext_hint_text));
-        addView(mTextInputEditText);
     }
 
     public String getText() {
@@ -80,5 +74,16 @@ public class PrimaryEditTextView extends TextInputLayout {
 
     public void setInputType(int inputType) {
        mTextInputEditText.setInputType(inputType);
+    }
+
+    public void setHintText(String hintText) {
+        mTextInputLayout.setHint(hintText);
+    }
+
+    @Override
+    public void setOnClickListener(@Nullable View.OnClickListener l) {
+        super.setOnClickListener(l);
+        mTextInputLayout.setOnClickListener(l);
+        mTextInputEditText.setOnClickListener(l);
     }
 }
