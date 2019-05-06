@@ -110,4 +110,9 @@ public class OnBoardingActivity extends BaseActivity implements
         animateActivityChangingToRight();
         finish();
     }
+
+    @Override
+    public void showError(String errorString) {
+        ((CreateAccountFragment)FragmentUtils.getTopFragment(this,R.id.layout_container)).showError(errorString);
+    }
 }

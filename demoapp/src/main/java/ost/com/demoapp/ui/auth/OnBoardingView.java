@@ -17,4 +17,6 @@ interface OnBoardingView extends BaseView {
     void refreshToken();
 
     void goToDashBoard();
+
+    void showError(String errorString);
 }

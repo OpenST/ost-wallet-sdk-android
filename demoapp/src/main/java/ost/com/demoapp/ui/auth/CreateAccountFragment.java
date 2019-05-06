@@ -18,7 +18,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -44,6 +43,8 @@ public class CreateAccountFragment extends BaseFragment {
     private OnFragmentInteractionListener mListener;
     private boolean mIsCreateAccountFragment = false;
     private PrimaryEditTextView editTextViewEconomy;
+    private PrimaryEditTextView mEditTextViewUserName;
+    private PrimaryEditTextView mEditTextViewPassword;
 
     public CreateAccountFragment() {
         // Required empty public constructor
@@ -88,12 +89,12 @@ public class CreateAccountFragment extends BaseFragment {
                 mListener.scanForEconomy();
             }
         });
-        final PrimaryEditTextView editTextViewUserName = view.findViewById(R.id.edv_username);
-        editTextViewUserName.setHintText(getResources().getString(R.string.create_account_username_hint));
+        mEditTextViewUserName = view.findViewById(R.id.edv_username);
+        mEditTextViewUserName.setHintText(getResources().getString(R.string.create_account_username_hint));
 
-        final PrimaryEditTextView editTextViewPassword = view.findViewById(R.id.edv_password);
-        editTextViewPassword.setHintText(getResources().getString(R.string.create_account_password_hint));
-        editTextViewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        mEditTextViewPassword = view.findViewById(R.id.edv_password);
+        mEditTextViewPassword.setHintText(getResources().getString(R.string.create_account_password_hint));
+        mEditTextViewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         final Button button = ((Button) view.findViewById(R.id.pb_create_account));
 
@@ -102,9 +103,9 @@ public class CreateAccountFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 if (mIsCreateAccountFragment) {
-                    mListener.createAccount(editTextViewEconomy.getText(), editTextViewUserName.getText(), editTextViewPassword.getText());
+                    mListener.createAccount(editTextViewEconomy.getText(), mEditTextViewUserName.getText(), mEditTextViewPassword.getText());
                 } else {
-                    mListener.logIn(editTextViewEconomy.getText(), editTextViewUserName.getText(), editTextViewPassword.getText());
+                    mListener.logIn(editTextViewEconomy.getText(), mEditTextViewUserName.getText(), mEditTextViewPassword.getText());
                 }
             }
         });
@@ -136,6 +137,10 @@ public class CreateAccountFragment extends BaseFragment {
         if (null != currentEconomy) {
             editTextViewEconomy.setText(currentEconomy.getTokenName());
         }
+    }
+
+    public void showError(String errorString) {
+        mEditTextViewUserName.showErrorString(errorString);
     }
 
     public interface OnFragmentInteractionListener {

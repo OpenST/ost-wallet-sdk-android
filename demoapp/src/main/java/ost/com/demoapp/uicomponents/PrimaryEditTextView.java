@@ -86,4 +86,9 @@ public class PrimaryEditTextView extends RelativeLayout {
         mTextInputLayout.setOnClickListener(l);
         mTextInputEditText.setOnClickListener(l);
     }
+
+    public void showErrorString(String errorString) {
+        mTextInputLayout.setErrorEnabled(true);
+        mTextInputLayout.setError(errorString);
+    }
 }
