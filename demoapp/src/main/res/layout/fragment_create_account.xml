@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2019 OST.com Inc
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
@@ -10,56 +9,52 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_holder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.auth.CreateAccountFragment">
 
-
-   <ost.com.demoapp.uicomponents.PrimaryEditTextView
-        android:id="@+id/edv_economy"
-        style="@style/Widget.DemoApp.TextInputLayout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:hint="Test Economy"
-        android:textColorHint="@android:color/black"
-        android:inputType="number"
-        app:errorEnabled="true">
-    </ost.com.demoapp.uicomponents.PrimaryEditTextView>
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="vertical">
 
-    <ost.com.demoapp.uicomponents.PrimaryEditTextView
-        android:id="@+id/edv_username"
-        style="@style/Widget.DemoApp.TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:hint="Username"
-        android:textColorHint="@android:color/black"
-        android:inputType="text"
-        app:errorEnabled="true">
-    </ost.com.demoapp.uicomponents.PrimaryEditTextView>
+        <ost.com.demoapp.uicomponents.PrimaryEditTextView
+            android:id="@+id/edv_economy"
+            style="@style/Widget.DemoApp.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Test Economy"
+            app:errorEnabled="true" />
 
-    <ost.com.demoapp.uicomponents.PrimaryEditTextView
-        android:id="@+id/edv_password"
-        style="@style/Widget.DemoApp.TextInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:hint="Password"
-        android:textColorHint="@android:color/black"
-        android:inputType="textPassword"
-        app:errorEnabled="true">
-    </ost.com.demoapp.uicomponents.PrimaryEditTextView>
+        <ost.com.demoapp.uicomponents.PrimaryEditTextView
+            android:id="@+id/edv_username"
+            style="@style/Widget.DemoApp.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+            app:errorEnabled="true" />
 
-    <ost.com.demoapp.uicomponents.OstSecondaryButton
-        android:id="@+id/pb_create_account"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Create Account" />
+        <ost.com.demoapp.uicomponents.PrimaryEditTextView
+            android:id="@+id/edv_password"
+            style="@style/Widget.DemoApp.TextInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            app:errorEnabled="true" />
+
+        <ost.com.demoapp.uicomponents.OstSecondaryButton
+            android:id="@+id/pb_create_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Create Account" />
+    </LinearLayout>
 </LinearLayout>

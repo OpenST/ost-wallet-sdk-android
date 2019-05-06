@@ -38,4 +38,8 @@
     <color name="link_button_text">#168dc1</color>
     <color name="link_button">#0000</color>
     <color name="link_button_text_disabled">#efefef</color>
+
+    <!--Primary Edit Text-->
+    <color name="primary_edittext_hint_text">#8034445b</color>
+    <color name="primary_edittext_text">#4a4a4a</color>
 </resources>

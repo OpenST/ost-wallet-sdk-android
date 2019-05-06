@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,6 +76,7 @@ public class CreateAccountFragment extends BaseFragment {
         // Inflate the layout for this fragment
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_create_account, container, false);
         editTextViewEconomy = view.findViewById(R.id.edv_economy);
+        editTextViewEconomy.setRightDrawable(getResources().getDrawable(R.drawable.qr_icon, null));
         updateToken();
         editTextViewEconomy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,9 +86,11 @@ public class CreateAccountFragment extends BaseFragment {
         });
         final PrimaryEditTextView editTextViewUserName = view.findViewById(R.id.edv_username);
         final PrimaryEditTextView editTextViewPassword = view.findViewById(R.id.edv_password);
-        final Button button = ((Button)view.findViewById(R.id.pb_create_account));
+        editTextViewPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        button.setText(mIsCreateAccountFragment? "Create Account": "Log In");
+        final Button button = ((Button) view.findViewById(R.id.pb_create_account));
+
+        button.setText(mIsCreateAccountFragment ? "Create Account" : "Log In");
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +102,7 @@ public class CreateAccountFragment extends BaseFragment {
             }
         });
 
-        AppBar appBar = AppBar.newInstance(getContext(), mIsCreateAccountFragment? "Create Account": "Log In", true);
+        AppBar appBar = AppBar.newInstance(getContext(), mIsCreateAccountFragment ? "Create Account" : "Log In", true);
         setUpAppBar(view, appBar);
         return view;
     }
@@ -127,16 +131,6 @@ public class CreateAccountFragment extends BaseFragment {
         }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
 
         void createAccount(String economy, String userName, String password);

@@ -34,4 +34,9 @@
 
     <!--Link Button-->
     <dimen name="link_button_text_size">17sp</dimen>
+
+    <!--Primary Edit Text-->
+    <dimen name="primary_edit_text_radius">20dp</dimen>
+    <dimen name="primary_edit_text_size">15sp</dimen>
+    <dimen name="primary_edittext_height">45dp</dimen>
 </resources>
