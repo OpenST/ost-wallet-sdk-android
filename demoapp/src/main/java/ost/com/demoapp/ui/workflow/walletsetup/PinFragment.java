@@ -19,12 +19,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
-import ost.com.demoapp.customView.PinEntryEditText;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.PinEntryEditText;
 import ost.com.demoapp.ui.BaseFragment;
 
 /**

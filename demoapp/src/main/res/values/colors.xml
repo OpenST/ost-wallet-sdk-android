@@ -15,9 +15,19 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="black_overlay">#66000000</color>
-    <color name="colorButton">#9accd7</color>
+
     <color name="button_border">#34445b</color>
     <color name="text_view_primary">#34445b</color>
 
     <color name="pin_normal">#6B767E</color>
+
+    <!--Primary Button colors-->
+    <color name="primary_button">#9accd7</color>
+    <color name="primary_button_text">#ffffff</color>
+
+    <!--Secondary Button-->
+    <color name="secondary_button">#168dc1</color>
+    <color name="secondary_button_text">#168dc1</color>
+
+
 </resources>

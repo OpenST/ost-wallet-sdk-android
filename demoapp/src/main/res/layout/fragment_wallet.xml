@@ -22,17 +22,17 @@
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp">
 
-        <ost.com.demoapp.customView.PrimaryTextView
+        <ost.com.demoapp.uicomponents.PrimaryTextView
             android:id="@+id/ptv_wallet_balance"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:background="@drawable/bg_button_solid_round"
+            android:background="@drawable/bg_primary_button"
             android:padding="@dimen/dp_30"
             android:text="Tokens"
             android:textColor="@android:color/white"
             android:textSize="32sp" />
 
-        <ost.com.demoapp.customView.DemoAppTextView
+        <ost.com.demoapp.uicomponents.DemoAppTextView
             android:id="@+id/tv_transaction_history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

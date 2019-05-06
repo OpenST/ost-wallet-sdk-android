@@ -10,14 +10,14 @@
   -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <ost.com.demoapp.customView.PrimaryTextView
+    <ost.com.demoapp.uicomponents.PrimaryTextView
         android:id="@+id/ptv_data"
         android:layout_marginTop="@dimen/dp_30"
         android:layout_width="match_parent"
         android:singleLine="false"
         android:layout_height="wrap_content"/>
 
-    <ost.com.demoapp.customView.PrimaryButton
+    <ost.com.demoapp.uicomponents.OstPrimaryButton
         android:id="@+id/pbtn_verified"
         android:layout_marginTop="10dp"
         android:text="@string/btn_text_verify_data"

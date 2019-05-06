@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/dp_30"
         android:layout_marginEnd="16dp">
 
-        <ost.com.demoapp.customView.DemoAppTextView
+        <ost.com.demoapp.uicomponents.DemoAppTextView
             android:id="@+id/tv_send_tokens"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             android:textColor="#000000"
             android:textSize="15sp" />
 
-        <ost.com.demoapp.customView.DemoAppTextView
+        <ost.com.demoapp.uicomponents.DemoAppTextView
             android:id="@+id/tv_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             android:layout_below="@id/tv_send_tokens"
             android:layout_marginTop="15dp" />
 
-        <ost.com.demoapp.customView.PrimaryEditTextView
+        <ost.com.demoapp.uicomponents.PrimaryEditTextView
             android:id="@+id/etv_tokens_number"
             style="@style/Widget.DemoApp.TextInputLayout"
             android:layout_width="220dp"
@@ -55,7 +55,7 @@
             android:inputType="text"
             android:textColorHint="@android:color/black"/>
 
-        <ost.com.demoapp.customView.PrimaryEditTextView
+        <ost.com.demoapp.uicomponents.PrimaryEditTextView
             android:id="@+id/etv_tokens_unit"
             style="@style/Widget.DemoApp.TextInputLayout"
             android:layout_width="210dp"
@@ -68,7 +68,7 @@
             android:inputType="text"
             android:textColorHint="@android:color/black" />
 
-        <ost.com.demoapp.customView.PrimaryButton
+        <ost.com.demoapp.uicomponents.OstPrimaryButton
             android:id="@+id/pbtn_send_tokens"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
             android:layout_marginTop="20dp"
             android:text="Send Tokens" />
 
-        <ost.com.demoapp.customView.LinkButton
+        <ost.com.demoapp.uicomponents.LinkButton
             android:id="@+id/linkbtn_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -20,7 +20,7 @@
     tools:context=".ui.auth.CreateAccountFragment">
 
 
-   <ost.com.demoapp.customView.PrimaryEditTextView
+   <ost.com.demoapp.uicomponents.PrimaryEditTextView
         android:id="@+id/edv_economy"
         style="@style/Widget.DemoApp.TextInputLayout"
         android:layout_width="match_parent"
@@ -30,9 +30,9 @@
         android:textColorHint="@android:color/black"
         android:inputType="number"
         app:errorEnabled="true">
-    </ost.com.demoapp.customView.PrimaryEditTextView>
+    </ost.com.demoapp.uicomponents.PrimaryEditTextView>
 
-    <ost.com.demoapp.customView.PrimaryEditTextView
+    <ost.com.demoapp.uicomponents.PrimaryEditTextView
         android:id="@+id/edv_username"
         style="@style/Widget.DemoApp.TextInputLayout"
         android:layout_width="match_parent"
@@ -42,9 +42,9 @@
         android:textColorHint="@android:color/black"
         android:inputType="text"
         app:errorEnabled="true">
-    </ost.com.demoapp.customView.PrimaryEditTextView>
+    </ost.com.demoapp.uicomponents.PrimaryEditTextView>
 
-    <ost.com.demoapp.customView.PrimaryEditTextView
+    <ost.com.demoapp.uicomponents.PrimaryEditTextView
         android:id="@+id/edv_password"
         style="@style/Widget.DemoApp.TextInputLayout"
         android:layout_width="match_parent"
@@ -54,9 +54,9 @@
         android:textColorHint="@android:color/black"
         android:inputType="textPassword"
         app:errorEnabled="true">
-    </ost.com.demoapp.customView.PrimaryEditTextView>
+    </ost.com.demoapp.uicomponents.PrimaryEditTextView>
 
-    <ost.com.demoapp.customView.SecondaryButton
+    <ost.com.demoapp.uicomponents.OstSecondaryButton
         android:id="@+id/pb_create_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

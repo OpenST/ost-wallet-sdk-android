@@ -20,8 +20,8 @@ import android.view.ViewGroup;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
-import ost.com.demoapp.customView.PrimaryTextView;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.PrimaryTextView;
 import ost.com.demoapp.ui.BaseFragment;
 
 /**

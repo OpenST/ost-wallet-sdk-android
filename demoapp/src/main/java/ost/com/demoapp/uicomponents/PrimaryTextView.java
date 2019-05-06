@@ -8,27 +8,26 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.customView;
+package ost.com.demoapp.uicomponents;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 
 import ost.com.demoapp.R;
 
-public class PrimaryButton extends DemoAppButton {
-    public PrimaryButton(Context context) {
+public class PrimaryTextView extends DemoAppTextView {
+    public PrimaryTextView(Context context) {
         super(context);
     }
 
-    public PrimaryButton(Context context, AttributeSet attrs) {
+    public PrimaryTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public PrimaryButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PrimaryTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -36,13 +35,10 @@ public class PrimaryButton extends DemoAppButton {
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
         super.defineUi(context, attrs, defStyleAttr);
         Resources res = getResources();
-        setAllCaps(false);
-        setTextColor(Color.WHITE);
-        setLetterSpacing((float)-0.02);
-        setLineSpacing(0, (float)0.3);
-        setGravity(Gravity.CENTER);
+        setTextColor(res.getColor(R.color.text_view_primary));
         setTextAlignment(TEXT_ALIGNMENT_CENTER);
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
-        setBackground(res.getDrawable(R.drawable.bg_button_solid_round, null));
+        setGravity(Gravity.CENTER_HORIZONTAL);
+        setLineSpacing(0, (float)1.5);
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
     }
 }

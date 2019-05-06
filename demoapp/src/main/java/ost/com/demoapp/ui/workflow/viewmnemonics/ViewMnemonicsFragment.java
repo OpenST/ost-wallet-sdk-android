@@ -15,12 +15,11 @@ import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
-import ost.com.demoapp.customView.PrimaryTextView;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.PrimaryTextView;
 import ost.com.demoapp.ui.BaseFragment;
 
 /**

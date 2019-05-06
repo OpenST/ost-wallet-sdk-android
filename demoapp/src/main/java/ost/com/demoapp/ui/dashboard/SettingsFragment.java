@@ -23,8 +23,8 @@ import android.widget.TextView;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
-import ost.com.demoapp.customView.DemoAppTextView;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.DemoAppTextView;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.ui.managedevices.DeviceListFragment;

@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
+import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.ui.BaseFragment;
 
 public class WalletFragment extends BaseFragment implements WalletView {

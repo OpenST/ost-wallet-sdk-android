@@ -24,7 +24,7 @@ import com.ost.walletsdk.OstSdk;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
+import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.ui.BaseFragment;
 

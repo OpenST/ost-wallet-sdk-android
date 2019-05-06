@@ -15,7 +15,7 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <ost.com.demoapp.customView.PrimaryTextView
+    <ost.com.demoapp.uicomponents.PrimaryTextView
         android:id="@+id/ptv_username"
         android:padding="20dp"
         android:layout_width="match_parent"

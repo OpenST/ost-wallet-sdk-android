@@ -8,7 +8,7 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.customView;
+package ost.com.demoapp.uicomponents;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -19,7 +19,7 @@ import android.view.Gravity;
 
 import ost.com.demoapp.R;
 
-public class LinkButton extends DemoAppButton {
+public class LinkButton extends OstButton {
     public LinkButton(Context context) {
         super(context);
     }

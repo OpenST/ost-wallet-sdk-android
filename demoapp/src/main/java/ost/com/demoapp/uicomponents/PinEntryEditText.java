@@ -8,7 +8,7 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.customView;
+package ost.com.demoapp.uicomponents;
 
 
 import android.animation.Animator;

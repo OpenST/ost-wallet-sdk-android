@@ -20,8 +20,8 @@
     </item>
     <item android:state_checked="true" android:state_focused="true">
         <shape android:shape="oval">
-            <stroke android:width="1dp" android:color="@color/colorButton" />
-            <solid android:color="@color/colorButton" />
+            <stroke android:width="1dp" android:color="@color/primary_button" />
+            <solid android:color="@color/primary_button" />
         </shape>
     </item>
     <!--Space is the next space for character input -->
@@ -34,8 +34,8 @@
     <!--Space contains text and not focused -->
     <item android:state_focused="false" android:state_checked="true">
         <shape android:shape="oval">
-            <stroke android:width="1dp" android:color="@color/colorButton" />
-            <solid android:color="@color/colorButton" />
+            <stroke android:width="1dp" android:color="@color/primary_button" />
+            <solid android:color="@color/primary_button" />
         </shape>
     </item>
     <!-- PinEntryEditText is focused -->

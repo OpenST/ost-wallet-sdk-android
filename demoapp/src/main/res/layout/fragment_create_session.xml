@@ -10,7 +10,7 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ost.com.demoapp.customView.PrimaryTextView
+    <ost.com.demoapp.uicomponents.PrimaryTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_30"
@@ -23,7 +23,7 @@
         android:layout_marginTop="@dimen/dp_30"
         android:layout_marginEnd="16dp">
 
-        <ost.com.demoapp.customView.PrimaryEditTextView
+        <ost.com.demoapp.uicomponents.PrimaryEditTextView
             android:id="@+id/etv_spending_limit"
             style="@style/Widget.DemoApp.TextInputLayout"
             android:layout_width="220dp"
@@ -34,7 +34,7 @@
             android:inputType="text"
             android:textColorHint="@android:color/black"/>
 
-        <ost.com.demoapp.customView.PrimaryEditTextView
+        <ost.com.demoapp.uicomponents.PrimaryEditTextView
             android:id="@+id/etv_unit"
             style="@style/Widget.DemoApp.TextInputLayout"
             android:layout_width="210dp"
@@ -47,7 +47,7 @@
             android:inputType="text"
             android:textColorHint="@android:color/black" />
 
-        <ost.com.demoapp.customView.PrimaryEditTextView
+        <ost.com.demoapp.uicomponents.PrimaryEditTextView
             android:id="@+id/etv_expiry_days"
             style="@style/Widget.DemoApp.TextInputLayout"
             android:layout_width="match_parent"
@@ -59,7 +59,7 @@
             android:textColorHint="@android:color/black" />
 
 
-        <ost.com.demoapp.customView.PrimaryButton
+        <ost.com.demoapp.uicomponents.OstPrimaryButton
             android:id="@+id/pbtn_create_session"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
             android:layout_marginTop="20dp"
             android:text="Create Session" />
 
-        <ost.com.demoapp.customView.LinkButton
+        <ost.com.demoapp.uicomponents.LinkButton
             android:id="@+id/linkbtn_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

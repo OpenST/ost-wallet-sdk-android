@@ -20,7 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
+import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.ui.BaseFragment;
 
 /**

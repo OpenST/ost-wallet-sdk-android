@@ -24,7 +24,7 @@
         android:contentDescription="User image"
         android:src="@drawable/ic_arrow_forward_black_24dp" />
 
-    <ost.com.demoapp.customView.DemoAppTextView
+    <ost.com.demoapp.uicomponents.DemoAppTextView
         android:id="@+id/tv_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/sp_17" />
 
-    <ost.com.demoapp.customView.DemoAppTextView
+    <ost.com.demoapp.uicomponents.DemoAppTextView
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         android:textColor="@android:color/darker_gray"
         android:textSize="@dimen/sp_10" />
 
-    <ost.com.demoapp.customView.DemoAppButton
+    <ost.com.demoapp.uicomponents.OstButton
         android:id="@+id/btn_send_token"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

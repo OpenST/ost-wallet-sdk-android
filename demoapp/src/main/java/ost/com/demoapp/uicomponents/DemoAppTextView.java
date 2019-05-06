@@ -8,13 +8,15 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.customView;
+package ost.com.demoapp.uicomponents;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
-import ost.com.demoapp.util.FontCache;
+import ost.com.demoapp.uicomponents.uiutils.Font;
+import ost.com.demoapp.uicomponents.uiutils.FontCache;
+import ost.com.demoapp.uicomponents.uiutils.FontFactory;
 
 public class DemoAppTextView extends AppCompatTextView {
     public DemoAppTextView(Context context) {
@@ -33,6 +35,7 @@ public class DemoAppTextView extends AppCompatTextView {
     }
 
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
-        this.setTypeface(FontCache.get(context, "fonts/Quasimoda-semi-bold"));
+        Font font = FontFactory.getInstance(context, FontFactory.FONT.LATO);
+        this.setTypeface(font.getRegular());
     }
 }

@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import com.google.zxing.Result;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-import ost.com.demoapp.customView.AppBar;
+import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.ui.BaseFragment;
 
 /**

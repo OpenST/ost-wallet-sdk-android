@@ -12,21 +12,21 @@
     <item android:state_pressed="true" >
         <shape android:shape="rectangle"  >
             <corners android:radius="10dp" />
-            <stroke android:width="2dp" android:color="@color/button_border" />
+            <stroke android:width="2dp" android:color="@color/secondary_button" />
             <gradient android:angle="-90" />
         </shape>
     </item>
     <item android:state_focused="true">
         <shape android:shape="rectangle"  >
             <corners android:radius="10dp" />
-            <stroke android:width="2dp" android:color="@color/button_border" />
-            <solid android:color="@color/button_border"/>
+            <stroke android:width="2dp" android:color="@color/secondary_button" />
+            <solid android:color="@color/secondary_button"/>
         </shape>
     </item>
     <item >
         <shape android:shape="rectangle"  >
             <corners android:radius="10dp" />
-            <stroke android:width="2dp" android:color="@color/button_border" />
+            <stroke android:width="2dp" android:color="@color/secondary_button" />
             <gradient android:angle="-90" />
         </shape>
     </item>

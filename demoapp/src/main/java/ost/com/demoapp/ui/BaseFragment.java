@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
+import ost.com.demoapp.uicomponents.AppBar;
 
 /*
  * Abstract Fragment that every other Fragment in this application must implement.

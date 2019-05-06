@@ -8,7 +8,7 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.customView;
+package ost.com.demoapp.uicomponents;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -18,17 +18,19 @@ import android.util.TypedValue;
 import android.view.Gravity;
 
 import ost.com.demoapp.R;
+import ost.com.demoapp.uicomponents.uiutils.SizeUtil;
 
-public class SecondaryButton extends DemoAppButton {
-    public SecondaryButton(Context context) {
+public class OstPrimaryButton extends OstButton {
+
+    public OstPrimaryButton(Context context) {
         super(context);
     }
 
-    public SecondaryButton(Context context, AttributeSet attrs) {
+    public OstPrimaryButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SecondaryButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public OstPrimaryButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -36,13 +38,8 @@ public class SecondaryButton extends DemoAppButton {
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
         super.defineUi(context, attrs, defStyleAttr);
         Resources res = getResources();
-        setAllCaps(false);
-        setTextColor(Color.parseColor("#34445b"));
-        setLetterSpacing((float)-0.02);
-        setLineSpacing(0, (float)0.3);
-        setGravity(Gravity.CENTER);
-        setTextAlignment(TEXT_ALIGNMENT_CENTER);
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
-        setBackground(res.getDrawable(R.drawable.bg_button_hollow_round, null));
+        setTextColor(res.getColor(R.color.primary_button_text));
+        setTextSize(SizeUtil.getTextSize(res, R.dimen.primary_button_text_size));
+        setBackground(res.getDrawable(R.drawable.bg_primary_button, null));
     }
 }

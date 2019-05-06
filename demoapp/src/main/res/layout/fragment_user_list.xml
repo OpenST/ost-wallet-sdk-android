@@ -18,7 +18,7 @@
     android:orientation="vertical"
     tools:context=".ui.dashboard.UserListFragment">
 
-    <ost.com.demoapp.customView.DemoAppTextView
+    <ost.com.demoapp.uicomponents.DemoAppTextView
         android:id="@+id/tv_heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

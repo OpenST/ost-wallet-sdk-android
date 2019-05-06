@@ -19,8 +19,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
-import ost.com.demoapp.customView.PrimaryEditTextView;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.PrimaryEditTextView;
 import ost.com.demoapp.ui.BaseFragment;
 
 /**

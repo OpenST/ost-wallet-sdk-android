@@ -8,14 +8,16 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-package ost.com.demoapp.customView;
+package ost.com.demoapp.uicomponents;
 
 import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
 
-import ost.com.demoapp.util.FontCache;
+import ost.com.demoapp.uicomponents.uiutils.Font;
+import ost.com.demoapp.uicomponents.uiutils.FontCache;
+import ost.com.demoapp.uicomponents.uiutils.FontFactory;
 
 public class PrimaryEditTextView extends TextInputLayout {
     private TextInputEditText mTextInputEditText;
@@ -36,7 +38,8 @@ public class PrimaryEditTextView extends TextInputLayout {
     }
 
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
-        this.setTypeface(FontCache.get(context, "fonts/Quasimoda-semi-bold"));
+        Font font = FontFactory.getInstance(context, FontFactory.FONT.LATO);
+        this.setTypeface(font.getRegular());
         mTextInputEditText = new TextInputEditText(context, attrs);
         mTextInputEditText.setPadding(20,50,20,50);
         addView(mTextInputEditText);

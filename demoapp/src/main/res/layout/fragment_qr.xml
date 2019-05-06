@@ -17,7 +17,7 @@
     android:clickable="true"
     android:focusable="true">
 
-    <ost.com.demoapp.customView.PrimaryTextView
+    <ost.com.demoapp.uicomponents.PrimaryTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_30"
@@ -37,11 +37,11 @@
         android:layout_gravity="center"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
-        android:background="@drawable/bg_button_solid_round"
+        android:background="@drawable/bg_primary_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ost.com.demoapp.customView.DemoAppTextView
+        <ost.com.demoapp.uicomponents.DemoAppTextView
             android:id="@+id/lbl_device_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:layout_centerHorizontal="true"
             android:textColor="@android:color/darker_gray"/>
 
-        <ost.com.demoapp.customView.DemoAppTextView
+        <ost.com.demoapp.uicomponents.DemoAppTextView
             android:id="@+id/atv_device_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

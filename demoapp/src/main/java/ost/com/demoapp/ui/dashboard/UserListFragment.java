@@ -25,7 +25,7 @@ import java.util.List;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
+import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.entity.User;
 import ost.com.demoapp.ui.BaseFragment;
 

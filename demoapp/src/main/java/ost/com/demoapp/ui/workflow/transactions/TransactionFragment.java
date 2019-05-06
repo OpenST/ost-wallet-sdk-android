@@ -25,8 +25,8 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import ost.com.demoapp.R;
-import ost.com.demoapp.customView.AppBar;
-import ost.com.demoapp.customView.PrimaryEditTextView;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.PrimaryEditTextView;
 import ost.com.demoapp.entity.User;
 import ost.com.demoapp.ui.BaseFragment;
 

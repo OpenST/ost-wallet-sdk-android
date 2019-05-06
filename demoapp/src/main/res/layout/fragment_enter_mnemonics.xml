@@ -10,7 +10,7 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ost.com.demoapp.customView.PrimaryTextView
+    <ost.com.demoapp.uicomponents.PrimaryTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_30"
@@ -23,7 +23,7 @@
         android:hint="@string/enter_mnemonics_hint_phrase"
         android:inputType="text" />
 
-    <ost.com.demoapp.customView.PrimaryButton
+    <ost.com.demoapp.uicomponents.OstPrimaryButton
         android:id="@+id/pbtn_recover_wallet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
