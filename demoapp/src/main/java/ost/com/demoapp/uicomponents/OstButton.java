@@ -11,16 +11,15 @@
 package ost.com.demoapp.uicomponents;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.Gravity;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.uiutils.Font;
-import ost.com.demoapp.uicomponents.uiutils.FontCache;
 import ost.com.demoapp.uicomponents.uiutils.FontFactory;
 
-public class OstButton extends android.support.v7.widget.AppCompatButton {
+public abstract class OstButton extends android.support.v7.widget.AppCompatButton {
     public OstButton(Context context) {
         super(context);
         defineUi(context, null, 0);
@@ -41,9 +40,24 @@ public class OstButton extends android.support.v7.widget.AppCompatButton {
         setTextAppearance(context, R.style.Widget_AppCompat_Button);
         setTypeface(font.getBold());
         setAllCaps(false);
-        setLetterSpacing((float)-0.02);
-        setLineSpacing(0, (float)0.3);
+        setLetterSpacing((float) -0.02);
+        setLineSpacing(0, (float) 0.3);
         setGravity(Gravity.CENTER);
         setTextAlignment(TEXT_ALIGNMENT_CENTER);
     }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        setBackground(enabled ? getEnabledBackground() : getDisabledBackground());
+        setTextColor(enabled ? getEnabledTextColor() : getDisabledTextColor());
+    }
+
+    protected abstract int getDisabledTextColor();
+
+    protected abstract int getEnabledTextColor();
+
+    protected abstract Drawable getDisabledBackground();
+
+    protected abstract Drawable getEnabledBackground();
 }

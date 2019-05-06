@@ -12,10 +12,8 @@ package ost.com.demoapp.uicomponents;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.Gravity;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.uiutils.SizeUtil;
@@ -38,8 +36,28 @@ public class OstPrimaryButton extends OstButton {
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
         super.defineUi(context, attrs, defStyleAttr);
         Resources res = getResources();
-        setTextColor(res.getColor(R.color.primary_button_text));
+        setTextColor(getEnabledTextColor());
         setTextSize(SizeUtil.getTextSize(res, R.dimen.primary_button_text_size));
-        setBackground(res.getDrawable(R.drawable.bg_primary_button, null));
+        setBackground(getEnabledBackground());
+    }
+
+    @Override
+    protected int getDisabledTextColor() {
+        return getResources().getColor(R.color.primary_button_text_disabled);
+    }
+
+    @Override
+    protected int getEnabledTextColor() {
+        return getResources().getColor(R.color.primary_button_text);
+    }
+
+    @Override
+    protected Drawable getDisabledBackground() {
+        return getResources().getDrawable(R.drawable.bg_primary_button_disabled, null);
+    }
+
+    @Override
+    protected Drawable getEnabledBackground() {
+        return getResources().getDrawable(R.drawable.bg_primary_button, null);
     }
 }

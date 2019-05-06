@@ -76,7 +76,7 @@
             android:layout_marginTop="20dp"
             android:text="Send Tokens" />
 
-        <ost.com.demoapp.uicomponents.LinkButton
+        <ost.com.demoapp.uicomponents.OstLinkButton
             android:id="@+id/linkbtn_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

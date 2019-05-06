@@ -18,17 +18,16 @@ import android.util.AttributeSet;
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.uiutils.SizeUtil;
 
-public class OstSecondaryButton extends OstButton {
-
-    public OstSecondaryButton(Context context) {
+public class OstLinkButton extends OstButton {
+    public OstLinkButton(Context context) {
         super(context);
     }
 
-    public OstSecondaryButton(Context context, AttributeSet attrs) {
+    public OstLinkButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public OstSecondaryButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public OstLinkButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -37,27 +36,27 @@ public class OstSecondaryButton extends OstButton {
         super.defineUi(context, attrs, defStyleAttr);
         Resources res = getResources();
         setTextColor(getEnabledTextColor());
-        setTextSize(SizeUtil.getTextSize(res, R.dimen.secondary_button_text_size));
-        setBackground(getEnabledBackground());
+        setTextSize(SizeUtil.getTextSize(res, R.dimen.link_button_text_size));
+        setBackgroundColor(res.getColor(R.color.link_button));
     }
 
     @Override
     protected int getDisabledTextColor() {
-        return getResources().getColor(R.color.secondary_button_text_disabled);
+        return getResources().getColor(R.color.link_button_text_disabled);
     }
 
     @Override
     protected int getEnabledTextColor() {
-        return getResources().getColor(R.color.secondary_button_text);
+        return getResources().getColor(R.color.link_button_text);
     }
 
     @Override
     protected Drawable getDisabledBackground() {
-        return getResources().getDrawable(R.drawable.bg_secondary_button_disabled, null);
+        return null;
     }
 
     @Override
     protected Drawable getEnabledBackground() {
-        return getResources().getDrawable(R.drawable.bg_secondary_button, null);
+        return null;
     }
 }

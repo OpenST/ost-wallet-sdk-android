@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2019 OST.com Inc
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,10 +23,18 @@
     <!--Primary Button colors-->
     <color name="primary_button">#9accd7</color>
     <color name="primary_button_text">#ffffff</color>
+    <color name="primary_button_text_disabled">#efefef</color>
+    <color name="primary_button_disabled">#e0e0e0</color>
 
     <!--Secondary Button-->
     <color name="secondary_button">#168dc1</color>
     <color name="secondary_button_text">#168dc1</color>
+    <color name="secondary_button_text_disabled">#e0e0e0</color>
+    <color name="secondary_button_disabled">#e0e0e0</color>
 
+    <!--Link Button-->
+    <color name="link_button_text">#168dc1</color>
+    <color name="link_button">#0000</color>
+    <color name="link_button_text_disabled">#efefef</color>
 
 </resources>

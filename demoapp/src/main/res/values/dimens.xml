@@ -24,4 +24,7 @@
 
     <!--Secondary Button-->
     <dimen name="secondary_button_text_size">17sp</dimen>
+
+    <!--Link Button-->
+    <dimen name="link_button_text_size">17sp</dimen>
 </resources>
