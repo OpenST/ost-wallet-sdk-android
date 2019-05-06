@@ -17,7 +17,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.PrimaryEditTextView;
@@ -66,14 +68,20 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
         final PrimaryEditTextView unitEditText = ((PrimaryEditTextView)viewGroup.findViewById(R.id.etv_unit));
         final PrimaryEditTextView expiryDaysEditText = ((PrimaryEditTextView)viewGroup.findViewById(R.id.etv_expiry_days));
 
+        unitEditText.setText(AppProvider.get().getCurrentEconomy().getTokenSymbol());
+
         ((Button)viewGroup.findViewById(R.id.pbtn_create_session)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCreateSessionPresenter.createSession(
-                        spendingLimitEditText.getText(),
-                        unitEditText.getText(),
-                        expiryDaysEditText.getText()
-                );
+                if(spendingLimitEditText.getText().equals("") || expiryDaysEditText.getText().equals("")){
+                    Toast.makeText(getContext(), "Add Mandatory Input", Toast.LENGTH_SHORT).show();
+                } else {
+                    mCreateSessionPresenter.createSession(
+                            spendingLimitEditText.getText(),
+                            unitEditText.getText(),
+                            expiryDaysEditText.getText()
+                    );
+                }
             }
         });
 
