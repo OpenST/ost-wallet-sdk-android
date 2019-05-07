@@ -14,8 +14,13 @@ package ost.com.demoapp.ui.workflow.viewmnemonics;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
+import org.json.JSONArray;
+
+import java.lang.reflect.Array;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseFragment;
@@ -31,7 +36,8 @@ public class ViewMnemonicsFragment extends BaseFragment implements ViewMnemonics
 
 
     ViewMnemonicsPresenter mViewMnemonicsPresenter = ViewMnemonicsPresenter.getInstance();
-    private OstTextView mOstTextView;
+    private OstTextView mOstTextView1;
+    private OstTextView mOstTextView2;
 
     public ViewMnemonicsFragment() {
         // Required empty public constructor
@@ -62,7 +68,8 @@ public class ViewMnemonicsFragment extends BaseFragment implements ViewMnemonics
         // Inflate the layout for this fragment
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_view_mnemonics, container, true);
 
-        mOstTextView = viewGroup.findViewById(R.id.ptv_mnemonics);
+        mOstTextView1 = viewGroup.findViewById(R.id.mnemonics_tv_1);
+        mOstTextView2 = viewGroup.findViewById(R.id.mnemonics_tv_2);
         AppBar appBar = AppBar.newInstance(getContext(), "View Mnemonics", true);
         setUpAppBar(viewGroup, appBar);
 
@@ -71,12 +78,22 @@ public class ViewMnemonicsFragment extends BaseFragment implements ViewMnemonics
 
     @Override
     public void showMnemonics(String string) {
-        mOstTextView.setText(string);
+        String[] arr = string.split(" ");
+        String str1 = "";
+        String str2 = "";
+        for(int i=0; i <arr.length; i++){
+            if(i<6){
+                str1 += String.format("%s. %s\n\n", i+1, arr[i]);
+            } else {
+                str2 += String.format("%s. %s\n\n", i+1, arr[i]);
+            }
+        }
+        mOstTextView1.setText(str1);
+        mOstTextView2.setText(str2);
     }
 
     @Override
     public void showError(String message) {
-        mOstTextView.setTextColor(Color.RED);
-        mOstTextView.setText(message);
+
     }
 }

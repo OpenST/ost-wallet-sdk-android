@@ -41,4 +41,7 @@
     <!--Transaction-->
     <string name="transaction_amount">Amount</string>
     <string name="transaction_unit">Unit</string>
+
+    <string name="view_mnemonics_heading">Write down your 12-word mnemonic phrase and store them securely</string>
+    <string name="view_mnemonics_tip">Tip: \nYou can write the phrases down in a piece of paper or save in a password manager. Don’t email them or screenshot them. The order of words are important too.</string>
 </resources>
