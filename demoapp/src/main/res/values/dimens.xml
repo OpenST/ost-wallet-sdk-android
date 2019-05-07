@@ -43,4 +43,7 @@
     <!--Wallet Settings-->
     <dimen name="setting_user_name">17sp</dimen>
     <dimen name="sub_header_text">16sp</dimen>
+
+    <!--Device recycler view cell-->
+    <dimen name="view_cell_sub_text">13sp</dimen>
 </resources>

@@ -61,7 +61,9 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
                         for (int i = 0; i < deviceJSONArray.length(); i++) {
                             JSONObject deviceJSONObject = deviceJSONArray.getJSONObject(i);
                             Device device = Device.newInstance(deviceJSONObject);
-                            ostDeviceList.add(device);
+                            if (device.isAuthorized()) {
+                                ostDeviceList.add(device);
+                            }
                         }
                     } catch (JSONException e) {
                         //Exception not expected

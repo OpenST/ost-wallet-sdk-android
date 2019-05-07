@@ -12,6 +12,7 @@ package ost.com.demoapp.ui.managedevices;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,13 +33,16 @@ import ost.com.demoapp.ui.BaseFragment;
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
+ * Activities containing this fragment MUST implement the {@link ost.com.demoapp.ui.managedevices.DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener}
  * interface.
  */
-public class DeviceListFragment extends BaseFragment implements DeviceListView,
-        DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener {
+public class DeviceListFragment extends BaseFragment implements DeviceListView {
 
-    private OnListFragmentInteractionListener mListener;
+    private static final String ACTION_NAME = "action_name";
+    private static final String INITIATED_RECOVERY = "initiate_recovery";
+    private static final String MANAGE_DEVICE = "manage_device";
+
+    private DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener mListener;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mPullToRefresh;
 
@@ -46,6 +50,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView,
     private DeviceListRecyclerViewAdapter mDeviceListRecyclerViewAdapter;
     private List<Device> mDeviceList;
     private TextView mHeadingTextView;
+    private String mAction;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -55,9 +60,18 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView,
     }
 
 
-    public static DeviceListFragment newInstance() {
+    public static DeviceListFragment manageDeviceInstance() {
         DeviceListFragment fragment = new DeviceListFragment();
         Bundle args = new Bundle();
+        args.putString(ACTION_NAME, MANAGE_DEVICE);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static Fragment initiateRecoveryInstance() {
+        DeviceListFragment fragment = new DeviceListFragment();
+        Bundle args = new Bundle();
+        args.putString(ACTION_NAME, INITIATED_RECOVERY);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,6 +80,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView,
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mAction = getArguments().getString(ACTION_NAME);
         }
     }
 
@@ -79,7 +94,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView,
         Context context = view.getContext();
 
         AppBar appBar = AppBar.newInstance(getContext(),
-                "Manage Devices",
+                "View Devices",
                 true);
         setUpAppBar(view, appBar);
 
@@ -88,7 +103,9 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView,
 
         mDeviceList = new ArrayList<Device>();
         mDeviceListPresenter.setDeviceList(mDeviceList);
-        mDeviceListRecyclerViewAdapter = DeviceListRecyclerViewAdapter.newInstance(mDeviceList, this);
+        mDeviceListRecyclerViewAdapter = MANAGE_DEVICE.equalsIgnoreCase(mAction)
+                ? DeviceListRecyclerViewAdapter.newInstance(mDeviceList ,mListener)
+                : InitiateRecoveryRecyclerViewAdapter.newInstance(mDeviceList, mListener);
 
         mDeviceListPresenter.attachView(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -114,8 +131,8 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView,
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
+        if (context instanceof DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener) {
+            mListener = (DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -128,19 +145,9 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView,
         mListener = null;
     }
 
-
     @Override
     public void notifyDataSetChanged() {
         mDeviceListRecyclerViewAdapter.notifyDataSetChanged();
         updateDeviceCount(mDeviceListRecyclerViewAdapter.getItemCount());
-    }
-
-    @Override
-    public void onListViewInteraction(Device device) {
-        mListener.onListFragmentInteraction(device);
-    }
-
-    public interface OnListFragmentInteractionListener {
-        void onListFragmentInteraction(Device device);
     }
 }

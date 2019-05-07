@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.ui.workflow.recovery.AbortRecoveryFragment;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.OstTextView;
 import ost.com.demoapp.ui.BaseFragment;
@@ -141,7 +142,7 @@ public class SettingsFragment extends BaseFragment {
         manageDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = DeviceListFragment.newInstance();
+                Fragment fragment = DeviceListFragment.manageDeviceInstance();
                 mListener.launchFeatureFragment(fragment);
             }
         });
@@ -158,8 +159,25 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(transactionViaQR);
 
-        mScrollViewSettings.addView(getFeatureView("Initiate Recovery"));
-        mScrollViewSettings.addView(getFeatureView("Abort Recovery"));
+        View initiateRecovery = getFeatureView("Initiate Recovery");
+        initiateRecovery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = DeviceListFragment.initiateRecoveryInstance();
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
+        mScrollViewSettings.addView(initiateRecovery);
+
+        View abortRecovery = getFeatureView("Abort Recovery");
+        abortRecovery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = AbortRecoveryFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
+        mScrollViewSettings.addView(abortRecovery);
 
         View viewLogOut = getFeatureView("Log out");
         viewLogOut.setOnClickListener(new View.OnClickListener() {

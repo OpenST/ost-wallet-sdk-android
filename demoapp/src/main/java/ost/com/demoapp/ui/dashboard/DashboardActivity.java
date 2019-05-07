@@ -40,9 +40,11 @@ import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BaseActivity;
-import ost.com.demoapp.ui.managedevices.DeviceListFragment;
+import ost.com.demoapp.ui.managedevices.DeviceListRecyclerViewAdapter;
 import ost.com.demoapp.ui.workflow.WorkFlowPinFragment;
 import ost.com.demoapp.ui.workflow.WorkFlowVerifyDataFragment;
+import ost.com.demoapp.ui.workflow.recovery.AbortRecoveryFragment;
+import ost.com.demoapp.ui.workflow.recovery.InitiateRecoveryFragment;
 import ost.com.demoapp.ui.workflow.transactions.TransactionFragment;
 import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
 import ost.com.demoapp.ui.workflow.walletsetup.WalletSetUpFragment;
@@ -59,7 +61,7 @@ public class DashboardActivity extends BaseActivity implements
         SettingsFragment.OnFragmentInteractionListener,
         WorkFlowPinFragment.OnFragmentInteractionListener,
         TransactionFragment.OnFragmentInteractionListener,
-        DeviceListFragment.OnListFragmentInteractionListener,
+        DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener,
         WalletDetailsFragment.OnWalletDetailsFragmentListener,
         WebViewFragment.OnWebViewFragmentInteractionListener {
 
@@ -279,31 +281,37 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void onListFragmentInteraction(Device device) {
+    public void openWebView(String url) {
+        WebViewFragment fragment = WebViewFragment.newInstance(url);
+        FragmentUtils.addFragment(R.id.layout_container,
+                fragment,
+                this);
+    }
+
+    @Override
+    public void onDeviceSelectToRevoke(Device device) {
         WorkFlowListener revokeDeviceWorkflowListener = SdkInteract.getInstance().newWorkFlowListener();
 
         SdkInteract.getInstance().subscribe(revokeDeviceWorkflowListener.getId(), this);
 
-        if (OstDevice.CONST_STATUS.AUTHORIZED
-                .equalsIgnoreCase(
-                        device.getStatus()
-                )) {
-            OstSdk.revokeDevice(
-                    AppProvider.get().getCurrentUser().getOstUserId(),
-                    device.getDeviceAddress(),
-                    revokeDeviceWorkflowListener
-            );
-        } else if (OstDevice.CONST_STATUS.RECOVERING
-                .equalsIgnoreCase(
-                        device.getStatus()
-                        )) {
-                //Todo:: abort recovery flow
-        }
+        OstSdk.revokeDevice(
+                AppProvider.get().getCurrentUser().getOstUserId(),
+                device.getDeviceAddress(),
+                revokeDeviceWorkflowListener
+        );
     }
 
     @Override
-    public void openWebView(String url) {
-        WebViewFragment fragment = WebViewFragment.newInstance(url);
+    public void onDeviceSelectedForRecovery(Device device) {
+        Fragment fragment = InitiateRecoveryFragment.newInstance(device.getDeviceAddress());
+        FragmentUtils.addFragment(R.id.layout_container,
+                fragment,
+                this);
+    }
+
+    @Override
+    public void onDeviceSelectedToAbortRecovery(Device device) {
+        Fragment fragment = AbortRecoveryFragment.newInstance(device.getDeviceAddress());
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);

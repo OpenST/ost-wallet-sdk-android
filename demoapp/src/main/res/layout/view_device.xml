@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="10dp"
+    android:background="@android:color/white">
+
+    <ImageView
+        android:id="@+id/iv_device_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Device image"
+        android:src="@drawable/device_icon" />
+
+    <RelativeLayout
+        android:id="@+id/ll_content_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:orientation="vertical"
+        android:layout_toEndOf="@id/iv_device_image">
+
+        <ost.com.demoapp.uicomponents.OstSubHeaderTextView
+            android:id="@+id/tv_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Device 1" />
+
+        <ost.com.demoapp.uicomponents.OstTextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:padding="5dp"
+            android:text="This device"
+            android:textColor="#34445b"
+            android:textSize="11sp"
+            android:background="@drawable/bg_primary_button"
+            android:layout_toEndOf="@id/tv_device_name"
+
+            android:visibility="gone"/>
+
+        <ost.com.demoapp.uicomponents.OstTextView
+            android:id="@+id/tv_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_below="@id/tv_device_name"
+            android:text="0x0000000000000000000000000000000000000000"
+            android:textColor="@color/view_cell_sub_text"
+            android:textSize="@dimen/view_cell_sub_text" />
+
+        <ost.com.demoapp.uicomponents.OstListButton
+            android:id="@+id/btn_list_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/tv_address"
+            android:text="Send" />
+    </RelativeLayout>
+
+    <View
+        android:layout_below="@id/ll_content_holder"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+</RelativeLayout>

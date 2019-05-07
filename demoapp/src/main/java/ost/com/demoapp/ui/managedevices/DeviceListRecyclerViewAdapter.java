@@ -21,7 +21,9 @@ import android.widget.TextView;
 import com.ost.walletsdk.models.entities.OstDevice;
 
 import java.util.List;
+import java.util.Locale;
 
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.entity.Device;
 import ost.com.demoapp.entity.User;
@@ -33,11 +35,13 @@ import ost.com.demoapp.entity.User;
 public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceListRecyclerViewAdapter.ViewHolder> {
 
     private final List<Device> mValues;
-    private final OnDeviceListInteractionListener mListener;
+    final OnDeviceListInteractionListener mListener;
+    private final String mCurrentDeviceAddress;
 
-    private DeviceListRecyclerViewAdapter(List<Device> items, OnDeviceListInteractionListener listener) {
+    DeviceListRecyclerViewAdapter(List<Device> items, OnDeviceListInteractionListener listener) {
         mValues = items;
         mListener = listener;
+        mCurrentDeviceAddress = AppProvider.get().getCurrentUser().getOstUser().getCurrentDevice().getAddress();
     }
 
     public static DeviceListRecyclerViewAdapter newInstance(List<Device> deviceList, OnDeviceListInteractionListener deviceListPresenter) {
@@ -47,7 +51,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.view_user, parent, false);
+                .inflate(R.layout.view_device, parent, false);
 
         return new ViewHolder(view);
     }
@@ -57,21 +61,41 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
         holder.mDevice = mValues.get(position);
 
 
-        holder.mUserName.setText(holder.mDevice.getDeviceAddress());
-        holder.mStatus.setText(holder.mDevice.getApiSignerAddress());
-        holder.mSendButton.setText(holder.mDevice.getStatus());
-        holder.mSendButton.setVisibility(View.VISIBLE);
+        holder.mUserName.setText(String.format(Locale.getDefault(), "Device %d", position + 1));
+        holder.mAddress.setText(holder.mDevice.getDeviceAddress());
+        holder.mActionButton.setVisibility(View.VISIBLE);
+        holder.mStatus.setVisibility(View.GONE);
+        handleView(holder);
+    }
+
+    void handleView(final ViewHolder holder) {
         String status = holder.mDevice.getStatus();
-        if (OstDevice.CONST_STATUS.AUTHORIZED
-                .equalsIgnoreCase(status) ||
-                OstDevice.CONST_STATUS.RECOVERING
-                        .equalsIgnoreCase(status)) {
-            holder.mView.setOnClickListener(new View.OnClickListener() {
+        if (OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)) {
+            holder.mActionButton.setText("Remove");
+            holder.mActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onListViewInteraction(holder.mDevice);
+                    mListener.onDeviceSelectToRevoke(holder.mDevice);
                 }
             });
+        }
+
+        if (OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status)) {
+            holder.mStatus.setVisibility(View.VISIBLE);
+            holder.mStatus.setText("Recovery in progress");
+            holder.mActionButton.setText("Abort recovery");
+            holder.mActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onDeviceSelectedToAbortRecovery(holder.mDevice);
+                }
+            });
+        }
+
+        if (mCurrentDeviceAddress.equalsIgnoreCase(holder.mDevice.getDeviceAddress())) {
+            holder.mStatus.setVisibility(View.VISIBLE);
+            holder.mActionButton.setVisibility(View.GONE);
+            holder.mStatus.setText("This device");
         }
     }
 
@@ -84,18 +108,20 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
         public final View mView;
         private final ImageView mImageView;
         private final TextView mUserName;
+        private final TextView mAddress;
         private final TextView mStatus;
-        private final Button mSendButton;
+        final Button mActionButton;
 
         public Device mDevice;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mImageView = (ImageView) view.findViewById(R.id.iv_user_image);
-            mUserName = (TextView) view.findViewById(R.id.tv_user_name);
+            mImageView = (ImageView) view.findViewById(R.id.iv_device_image);
+            mUserName = (TextView) view.findViewById(R.id.tv_device_name);
+            mAddress = (TextView) view.findViewById(R.id.tv_address);
+            mActionButton = (Button) view.findViewById(R.id.btn_list_view);
             mStatus = (TextView) view.findViewById(R.id.tv_status);
-            mSendButton = (Button) view.findViewById(R.id.btn_send_token);
         }
 
         @Override
@@ -105,6 +131,8 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
     }
 
     public interface OnDeviceListInteractionListener {
-        void onListViewInteraction(Device device);
+        void onDeviceSelectToRevoke(Device device);
+        void onDeviceSelectedForRecovery(Device device);
+        void onDeviceSelectedToAbortRecovery(Device device);
     }
 }

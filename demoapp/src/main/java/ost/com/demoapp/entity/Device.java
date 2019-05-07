@@ -10,6 +10,8 @@
 
 package ost.com.demoapp.entity;
 
+import com.ost.walletsdk.models.entities.OstDevice;
+
 import org.json.JSONObject;
 
 public class Device {
@@ -62,5 +64,13 @@ public class Device {
         this.deviceAddress = deviceAddress;
         this.apiSignerAddress = apiSignerAddress;
         this.status = status;
+    }
+
+    public boolean isAuthorized() {
+        return (OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
+                || OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status)
+                || OstDevice.CONST_STATUS.REVOKING.equalsIgnoreCase(status)
+                || OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status)
+                );
     }
 }

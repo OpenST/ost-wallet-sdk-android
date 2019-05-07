@@ -43,4 +43,7 @@
     <color name="primary_edittext_hint_text">#8034445b</color>
     <color name="primary_edittext_text">#4a4a4a</color>
     <color name="sub_header_text">#4a4a4a</color>
+
+    <!--Device Recycler View cell -->
+    <color name="view_cell_sub_text">#9b9b9b</color>
 </resources>
