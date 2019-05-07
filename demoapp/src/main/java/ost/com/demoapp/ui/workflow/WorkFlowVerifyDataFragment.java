@@ -11,8 +11,8 @@
 package ost.com.demoapp.ui.workflow;
 
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +20,9 @@ import android.view.ViewGroup;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
 import ost.com.demoapp.R;
-import ost.com.demoapp.uicomponents.AppBar;
-import ost.com.demoapp.uicomponents.PrimaryTextView;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.OstTextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,7 +62,7 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
     protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_work_flow_verify_data, container, true);
 
-        ((PrimaryTextView)viewGroup.findViewById(R.id.ptv_data)).setText(mDataToVerify);
+        ((OstTextView)viewGroup.findViewById(R.id.ptv_data)).setText(mDataToVerify);
         viewGroup.findViewById(R.id.pbtn_verified).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

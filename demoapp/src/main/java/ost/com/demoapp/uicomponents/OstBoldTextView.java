@@ -12,22 +12,24 @@ package ost.com.demoapp.uicomponents;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Typeface;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.Gravity;
 
-import ost.com.demoapp.R;
+import ost.com.demoapp.uicomponents.uiutils.Font;
+import ost.com.demoapp.uicomponents.uiutils.FontFactory;
 
-public class PrimaryTextView extends DemoAppTextView {
-    public PrimaryTextView(Context context) {
+public class OstBoldTextView extends OstTextView {
+    public OstBoldTextView(Context context) {
         super(context);
     }
 
-    public PrimaryTextView(Context context, AttributeSet attrs) {
+    public OstBoldTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public PrimaryTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public OstBoldTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -35,10 +37,14 @@ public class PrimaryTextView extends DemoAppTextView {
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
         super.defineUi(context, attrs, defStyleAttr);
         Resources res = getResources();
-        setTextColor(res.getColor(R.color.text_view_primary));
         setTextAlignment(TEXT_ALIGNMENT_CENTER);
         setGravity(Gravity.CENTER_HORIZONTAL);
         setLineSpacing(0, (float)1.5);
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+    }
+
+    @Override
+    public void setTypeface(@Nullable Typeface tf) {
+        Font font = FontFactory.getInstance(getContext(), FontFactory.FONT.LATO);
+        super.setTypeface(font.getBold());
     }
 }

@@ -10,7 +10,7 @@
   -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <ost.com.demoapp.uicomponents.PrimaryTextView
+    <ost.com.demoapp.uicomponents.OstTextView
         android:id="@+id/ptv_data"
         android:layout_marginTop="@dimen/dp_30"
         android:layout_width="match_parent"

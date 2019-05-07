@@ -18,15 +18,12 @@
     android:orientation="vertical"
     tools:context=".ui.dashboard.UserListFragment">
 
-    <ost.com.demoapp.uicomponents.DemoAppTextView
+    <ost.com.demoapp.uicomponents.OstSubHeaderTextView
         android:id="@+id/tv_heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:textAlignment="center"
-        android:text="Spend you tokens"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/sp_17" />
+        android:text="Spend you tokens" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/pullToRefresh"

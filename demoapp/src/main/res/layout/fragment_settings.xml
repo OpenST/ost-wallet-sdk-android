@@ -15,9 +15,11 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <ost.com.demoapp.uicomponents.PrimaryTextView
+    <ost.com.demoapp.uicomponents.OstBoldTextView
         android:id="@+id/ptv_username"
         android:padding="20dp"
+        android:textSize="@dimen/setting_user_name"
+        android:textAlignment="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

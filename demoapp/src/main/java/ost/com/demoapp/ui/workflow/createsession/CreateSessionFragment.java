@@ -22,7 +22,7 @@ import android.widget.Toast;
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.AppBar;
-import ost.com.demoapp.uicomponents.PrimaryEditTextView;
+import ost.com.demoapp.uicomponents.OstPrimaryEditTextView;
 import ost.com.demoapp.ui.BaseFragment;
 
 /**
@@ -64,9 +64,14 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
         // Inflate the layout for this fragment
         ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_create_session, container, true);
 
-        final PrimaryEditTextView spendingLimitEditText = ((PrimaryEditTextView)viewGroup.findViewById(R.id.etv_spending_limit));
-        final PrimaryEditTextView unitEditText = ((PrimaryEditTextView)viewGroup.findViewById(R.id.etv_unit));
-        final PrimaryEditTextView expiryDaysEditText = ((PrimaryEditTextView)viewGroup.findViewById(R.id.etv_expiry_days));
+        final OstPrimaryEditTextView spendingLimitEditText = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_spending_limit));
+        spendingLimitEditText.setHintText(getResources().getString(R.string.create_session_spending_limit));
+
+        final OstPrimaryEditTextView unitEditText = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_unit));
+        unitEditText.setHintText(getResources().getString(R.string.create_session_unit));
+
+        final OstPrimaryEditTextView expiryDaysEditText = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_expiry_days));
+        expiryDaysEditText.setHintText(getResources().getString(R.string.create_session_expiry_days));
 
         unitEditText.setText(AppProvider.get().getCurrentEconomy().getTokenSymbol());
 

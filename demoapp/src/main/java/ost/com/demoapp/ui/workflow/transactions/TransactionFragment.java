@@ -26,7 +26,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.AppBar;
-import ost.com.demoapp.uicomponents.PrimaryEditTextView;
+import ost.com.demoapp.uicomponents.OstPrimaryEditTextView;
 import ost.com.demoapp.entity.User;
 import ost.com.demoapp.ui.BaseFragment;
 
@@ -106,8 +106,11 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         ((TextView)viewGroup.findViewById(R.id.tv_status)).setText(mUser.getTokenHolderAddress());
         /*************End*************/
 
-        final PrimaryEditTextView tokensEditTextView = ((PrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_number));
-        final PrimaryEditTextView unitEditTextView = ((PrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_unit));
+        final OstPrimaryEditTextView tokensEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_number));
+        tokensEditTextView.setHintText(getResources().getString(R.string.transaction_amount));
+
+        final OstPrimaryEditTextView unitEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_unit));
+        unitEditTextView.setHintText(getResources().getString(R.string.transaction_unit));
 
         ((Button)viewGroup.findViewById(R.id.pbtn_send_tokens)).setOnClickListener(new View.OnClickListener() {
             @Override

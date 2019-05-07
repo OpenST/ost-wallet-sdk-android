@@ -81,7 +81,7 @@ public class AppBar extends LinearLayout {
     }
 
     private TextView getTitleView(Context context) {
-        TextView textView = new DemoAppTextView(context);
+        TextView textView = new OstTextView(context);
         textView.setId(R.id.app_bar_title);
         textView.setText(getResources().getText(R.string.app_name));
         textView.setTextColor(Color.WHITE);

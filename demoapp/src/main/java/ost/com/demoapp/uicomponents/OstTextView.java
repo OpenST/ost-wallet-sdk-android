@@ -18,18 +18,18 @@ import ost.com.demoapp.uicomponents.uiutils.Font;
 import ost.com.demoapp.uicomponents.uiutils.FontCache;
 import ost.com.demoapp.uicomponents.uiutils.FontFactory;
 
-public class DemoAppTextView extends AppCompatTextView {
-    public DemoAppTextView(Context context) {
+public class OstTextView extends AppCompatTextView {
+    public OstTextView(Context context) {
         super(context);
         defineUi(context, null, 0);
     }
 
-    public DemoAppTextView(Context context, AttributeSet attrs) {
+    public OstTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         defineUi(context, attrs, 0);
     }
 
-    public DemoAppTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public OstTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         defineUi(context, attrs, defStyleAttr);
     }

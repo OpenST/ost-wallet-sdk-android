@@ -10,7 +10,7 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ost.com.demoapp.uicomponents.PrimaryTextView
+    <ost.com.demoapp.uicomponents.OstSubHeaderTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_30"
@@ -23,40 +23,25 @@
         android:layout_marginTop="@dimen/dp_30"
         android:layout_marginEnd="16dp">
 
-        <ost.com.demoapp.uicomponents.PrimaryEditTextView
+        <ost.com.demoapp.uicomponents.OstPrimaryEditTextView
             android:id="@+id/etv_spending_limit"
-            style="@style/Widget.DemoApp.TextInputLayout"
             android:layout_width="220dp"
-            android:layout_height="80dp"
-            android:layout_below="@id/layout_user_view"
-            android:layout_marginTop="10dp"
-            android:hint="Spending Limit for Session"
-            android:inputType="text"
-            android:textColorHint="@android:color/black"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_user_view"/>
 
-        <ost.com.demoapp.uicomponents.PrimaryEditTextView
+        <ost.com.demoapp.uicomponents.OstPrimaryEditTextView
             android:id="@+id/etv_unit"
-            style="@style/Widget.DemoApp.TextInputLayout"
             android:layout_width="210dp"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/layout_user_view"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_toEndOf="@id/etv_spending_limit"
-            android:hint="Unit"
-            android:inputType="text"
-            android:textColorHint="@android:color/black" />
+            android:layout_toEndOf="@id/etv_spending_limit" />
 
-        <ost.com.demoapp.uicomponents.PrimaryEditTextView
+        <ost.com.demoapp.uicomponents.OstPrimaryEditTextView
             android:id="@+id/etv_expiry_days"
-            style="@style/Widget.DemoApp.TextInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_below="@id/etv_unit"
-            android:layout_marginTop="10dp"
-            android:hint="Set Expiry for Session in Days"
-            android:inputType="text"
-            android:textColorHint="@android:color/black" />
+            android:layout_height="wrap_content"
+            android:layout_below="@id/etv_unit" />
 
 
         <ost.com.demoapp.uicomponents.OstPrimaryButton

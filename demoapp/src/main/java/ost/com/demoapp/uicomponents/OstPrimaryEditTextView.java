@@ -24,21 +24,21 @@ import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.uiutils.Font;
 import ost.com.demoapp.uicomponents.uiutils.FontFactory;
 
-public class PrimaryEditTextView extends RelativeLayout {
+public class OstPrimaryEditTextView extends RelativeLayout {
     private TextInputEditText mTextInputEditText;
     private TextInputLayout mTextInputLayout;
 
-    public PrimaryEditTextView(Context context) {
+    public OstPrimaryEditTextView(Context context) {
         super(context);
         defineUi(context, null, 0);
     }
 
-    public PrimaryEditTextView(Context context, AttributeSet attrs) {
+    public OstPrimaryEditTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
         defineUi(context, attrs, 0);
     }
 
-    public PrimaryEditTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public OstPrimaryEditTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         defineUi(context, attrs, defStyleAttr);
     }

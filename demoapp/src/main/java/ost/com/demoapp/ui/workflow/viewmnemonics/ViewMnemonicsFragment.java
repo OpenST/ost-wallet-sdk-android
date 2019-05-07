@@ -18,9 +18,9 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import ost.com.demoapp.R;
-import ost.com.demoapp.uicomponents.AppBar;
-import ost.com.demoapp.uicomponents.PrimaryTextView;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.OstTextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +31,7 @@ public class ViewMnemonicsFragment extends BaseFragment implements ViewMnemonics
 
 
     ViewMnemonicsPresenter mViewMnemonicsPresenter = ViewMnemonicsPresenter.getInstance();
-    private PrimaryTextView mPrimaryTextView;
+    private OstTextView mOstTextView;
 
     public ViewMnemonicsFragment() {
         // Required empty public constructor
@@ -62,7 +62,7 @@ public class ViewMnemonicsFragment extends BaseFragment implements ViewMnemonics
         // Inflate the layout for this fragment
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_view_mnemonics, container, true);
 
-        mPrimaryTextView = viewGroup.findViewById(R.id.ptv_mnemonics);
+        mOstTextView = viewGroup.findViewById(R.id.ptv_mnemonics);
         AppBar appBar = AppBar.newInstance(getContext(), "View Mnemonics", true);
         setUpAppBar(viewGroup, appBar);
 
@@ -71,12 +71,12 @@ public class ViewMnemonicsFragment extends BaseFragment implements ViewMnemonics
 
     @Override
     public void showMnemonics(String string) {
-        mPrimaryTextView.setText(string);
+        mOstTextView.setText(string);
     }
 
     @Override
     public void showError(String message) {
-        mPrimaryTextView.setTextColor(Color.RED);
-        mPrimaryTextView.setText(message);
+        mOstTextView.setTextColor(Color.RED);
+        mOstTextView.setText(message);
     }
 }

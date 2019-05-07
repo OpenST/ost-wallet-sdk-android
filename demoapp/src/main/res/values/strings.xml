@@ -32,4 +32,13 @@
     <string name="create_account_economy_hint">Test Economy</string>
     <string name="create_account_username_hint">Username</string>
     <string name="create_account_password_hint">Password</string>
+
+    <!--Create Session-->
+    <string name="create_session_spending_limit">Spending Limit for Session</string>
+    <string name="create_session_unit">Unit</string>
+    <string name="create_session_expiry_days">Set Expiry for Session in Days</string>
+
+    <!--Transaction-->
+    <string name="transaction_amount">Amount</string>
+    <string name="transaction_unit">Unit</string>
 </resources>

@@ -27,7 +27,7 @@ import ost.com.demoapp.R;
 import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.uicomponents.AppBar;
-import ost.com.demoapp.uicomponents.PrimaryEditTextView;
+import ost.com.demoapp.uicomponents.OstPrimaryEditTextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,9 +42,9 @@ public class CreateAccountFragment extends BaseFragment {
     private static final String KEY_ID = "key_id";
     private OnFragmentInteractionListener mListener;
     private boolean mIsCreateAccountFragment = false;
-    private PrimaryEditTextView editTextViewEconomy;
-    private PrimaryEditTextView mEditTextViewUserName;
-    private PrimaryEditTextView mEditTextViewPassword;
+    private OstPrimaryEditTextView editTextViewEconomy;
+    private OstPrimaryEditTextView mEditTextViewUserName;
+    private OstPrimaryEditTextView mEditTextViewPassword;
 
     public CreateAccountFragment() {
         // Required empty public constructor

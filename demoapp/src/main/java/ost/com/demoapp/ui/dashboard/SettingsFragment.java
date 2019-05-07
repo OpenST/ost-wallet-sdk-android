@@ -24,7 +24,7 @@ import android.widget.TextView;
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.AppBar;
-import ost.com.demoapp.uicomponents.DemoAppTextView;
+import ost.com.demoapp.uicomponents.OstTextView;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.ui.managedevices.DeviceListFragment;
@@ -200,7 +200,7 @@ public class SettingsFragment extends BaseFragment {
     }
 
     private View getFeatureView(String featureTitle) {
-        DemoAppTextView demoAppTextView = new DemoAppTextView(getContext());
+        OstTextView demoAppTextView = new OstTextView(getContext());
         demoAppTextView.setText(featureTitle);
         demoAppTextView.setTextSize(15);
         demoAppTextView.setPadding(10,30,10,30);
@@ -210,7 +210,7 @@ public class SettingsFragment extends BaseFragment {
     }
 
     private View getCategoryView(String categoryHeading) {
-        DemoAppTextView demoAppTextView = new DemoAppTextView(getContext());
+        OstTextView demoAppTextView = new OstTextView(getContext());
         demoAppTextView.setText(categoryHeading);
         demoAppTextView.setPadding(10,20,10,20);
         demoAppTextView.setTextSize(13);

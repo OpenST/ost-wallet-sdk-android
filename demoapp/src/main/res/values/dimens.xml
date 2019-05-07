@@ -39,4 +39,8 @@
     <dimen name="primary_edit_text_radius">20dp</dimen>
     <dimen name="primary_edit_text_size">15sp</dimen>
     <dimen name="primary_edittext_height">45dp</dimen>
+
+    <!--Wallet Settings-->
+    <dimen name="setting_user_name">17sp</dimen>
+    <dimen name="sub_header_text">16sp</dimen>
 </resources>

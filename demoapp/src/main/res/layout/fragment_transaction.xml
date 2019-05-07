@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/dp_30"
         android:layout_marginEnd="16dp">
 
-        <ost.com.demoapp.uicomponents.DemoAppTextView
+        <ost.com.demoapp.uicomponents.OstTextView
             android:id="@+id/tv_send_tokens"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
             android:textColor="#000000"
             android:textSize="15sp" />
 
-        <ost.com.demoapp.uicomponents.DemoAppTextView
+        <ost.com.demoapp.uicomponents.OstTextView
             android:id="@+id/tv_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,29 +44,21 @@
             android:layout_below="@id/tv_send_tokens"
             android:layout_marginTop="15dp" />
 
-        <ost.com.demoapp.uicomponents.PrimaryEditTextView
+        <ost.com.demoapp.uicomponents.OstPrimaryEditTextView
             android:id="@+id/etv_tokens_number"
-            style="@style/Widget.DemoApp.TextInputLayout"
             android:layout_width="220dp"
-            android:layout_height="100dp"
-            android:layout_below="@id/layout_user_view"
+            android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:hint="Amount"
-            android:inputType="text"
-            android:textColorHint="@android:color/black"/>
+            android:layout_below="@id/layout_user_view" />
 
-        <ost.com.demoapp.uicomponents.PrimaryEditTextView
+        <ost.com.demoapp.uicomponents.OstPrimaryEditTextView
             android:id="@+id/etv_tokens_unit"
-            style="@style/Widget.DemoApp.TextInputLayout"
             android:layout_width="210dp"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:layout_below="@id/layout_user_view"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_toEndOf="@id/etv_tokens_number"
-            android:hint="Unit"
-            android:inputType="text"
-            android:textColorHint="@android:color/black" />
+            android:layout_toEndOf="@id/etv_tokens_number" />
 
         <ost.com.demoapp.uicomponents.OstPrimaryButton
             android:id="@+id/pbtn_send_tokens"

@@ -33,17 +33,16 @@
             android:orientation="vertical"
             android:paddingTop="16dp">
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:textSize="@dimen/sp_13"
-                android:textStyle="bold"
                 android:text="OST User Id" />
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstTextView
                 android:id="@+id/ost_user_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,17 +61,16 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:textSize="@dimen/sp_13"
-                android:textStyle="bold"
                 android:text="User Status" />
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstTextView
                 android:id="@+id/ost_user_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -88,17 +86,16 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:textSize="@dimen/sp_13"
-                android:textStyle="bold"
                 android:text="Token ID" />
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstTextView
                 android:id="@+id/ost_token_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,17 +111,16 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:textSize="@dimen/sp_13"
-                android:textStyle="bold"
                 android:text="Token Holder Address" />
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstTextView
                 android:id="@+id/ost_user_token_holder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -145,17 +141,16 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:textSize="@dimen/sp_13"
-                android:textStyle="bold"
                 android:text="Device Address" />
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstTextView
                 android:id="@+id/ost_user_device_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -176,17 +171,16 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:textSize="@dimen/sp_13"
-                android:textStyle="bold"
                 android:text="Device Status" />
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstTextView
                 android:id="@+id/ost_user_device_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -202,17 +196,16 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:textSize="@dimen/sp_13"
-                android:textStyle="bold"
                 android:text="Device Manager Address" />
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstTextView
                 android:id="@+id/ost_user_device_manager_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -233,17 +226,16 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:textSize="@dimen/sp_13"
-                android:textStyle="bold"
                 android:text="Recovery Key Address" />
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstTextView
                 android:id="@+id/ost_user_recovery_key_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -264,18 +256,17 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:textSize="@dimen/sp_13"
-                android:textStyle="bold"
                 android:text="Recovery Owner Address"
                 android:visibility="visible" />
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstTextView
                 android:id="@+id/ost_user_recovery_owner_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -296,17 +287,16 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_marginBottom="@dimen/dp_10"
                 android:layout_marginLeft="@dimen/dp_20"
                 android:textSize="@dimen/sp_13"
-                android:textStyle="bold"
                 android:text="Platform End Point" />
 
-            <TextView
+            <ost.com.demoapp.uicomponents.OstTextView
                 android:id="@+id/ost_user_platform_endpoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
