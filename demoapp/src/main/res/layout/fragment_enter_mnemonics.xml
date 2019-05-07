@@ -13,20 +13,29 @@
     <ost.com.demoapp.uicomponents.OstSubHeaderTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_margin="@dimen/dp_30"
         android:text="@string/enter_mnemonics_sub_heading" />
 
     <EditText
         android:id="@+id/et_mnemonics_phrase"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:hint="@string/enter_mnemonics_hint_phrase"
-        android:inputType="text" />
+        android:background="@drawable/rounded_corner_edittext_bg"
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/dp_10"
+        android:gravity="left"
+        android:inputType="textMultiLine"
+        android:letterSpacing="-0.02"
+        android:lineSpacingExtra="7sp"
+        android:textColorHint="@color/primary_edittext_hint_text"
+        android:textSize="16sp"
+        android:textColor="@color/primary_edittext_text"
+        android:hint="@string/enter_mnemonics_hint_phrase" />
 
     <ost.com.demoapp.uicomponents.OstPrimaryButton
         android:id="@+id/pbtn_recover_wallet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_margin="@dimen/dp_20"
         android:text="@string/enter_mnemonics_recover_wallet" />
 </merge>
