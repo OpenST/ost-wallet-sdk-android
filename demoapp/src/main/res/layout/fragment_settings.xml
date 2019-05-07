@@ -15,13 +15,38 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <ost.com.demoapp.uicomponents.OstBoldTextView
-        android:id="@+id/ptv_username"
-        android:padding="20dp"
-        android:textSize="@dimen/setting_user_name"
-        android:textAlignment="center"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="75dp"
+        android:background="#ebfbfb">
+
+        <ImageView
+            android:id="@+id/ptv_image"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_15"/>
+
+        <ost.com.demoapp.uicomponents.OstBoldTextView
+            android:id="@+id/ptv_username"
+            android:textSize="@dimen/setting_user_name"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_toRightOf="@id/ptv_image"
+            android:textColor="#34445b"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_height="wrap_content" />
+
+        <ost.com.demoapp.uicomponents.OstTextView
+            android:id="@+id/ptv_userid"
+            android:textSize="@dimen/sp_14"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@id/ptv_image"
+            android:layout_below="@id/ptv_username"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
 
 
     <ScrollView

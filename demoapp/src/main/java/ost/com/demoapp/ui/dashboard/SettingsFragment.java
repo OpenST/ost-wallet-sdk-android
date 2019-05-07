@@ -12,14 +12,18 @@ package ost.com.demoapp.ui.dashboard;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.amulyakhare.textdrawable.TextDrawable;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
@@ -58,14 +62,29 @@ public class SettingsFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_settings, container, false);
 
+        String mUserName = AppProvider.get().getCurrentUser().getUserName();
+
+        TextDrawable.IBuilder mBuilder = TextDrawable.builder()
+                .beginConfig()
+                .withBorder(4)
+                .textColor(getResources().getColor(R.color.color_9b9b9b))
+                .endConfig()
+                .round();
+        TextDrawable drawable = mBuilder.build(mUserName.substring(0,1).toUpperCase(), getResources().getColor(R.color.color_f4f4f4));
+
+        ((ImageView) view.findViewById(R.id.ptv_image)).setImageDrawable(drawable);
+
         TextView textView = view.findViewById(R.id.ptv_username);
-        textView.setText(AppProvider.get().getCurrentUser().getUserName());
+        textView.setText((mUserName.substring(0,1).toUpperCase() + mUserName.substring(1)));
+
+        TextView mUserIdTv = view.findViewById(R.id.ptv_userid);
+        mUserIdTv.setText(AppProvider.get().getCurrentUser().getOstUserId());
 
         mScrollViewSettings = view.findViewById(R.id.ll_settings_list);
 
-        mScrollViewSettings.addView(getCategoryView("GENERAL"));
+        mScrollViewSettings.addView(getCategoryView("DEVICE"));
 
-        View walletDetailsView = getFeatureView("View Wallet Details");
+        View walletDetailsView = getFeatureView("View Wallet Details", inflater);
         walletDetailsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +94,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(walletDetailsView);
 
-        View addSessionView = getFeatureView("Add Session");
+        View addSessionView = getFeatureView("Add Session", inflater);
         addSessionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +104,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(addSessionView);
 
-        View resetPinView = getFeatureView("Reset Pin");
+        View resetPinView = getFeatureView("Reset PIN", inflater);
         resetPinView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,7 +114,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(resetPinView);
 
-        View viewMnemonicsView = getFeatureView("View Mnemonics");
+        View viewMnemonicsView = getFeatureView("View Mnemonics", inflater);
         viewMnemonicsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,9 +125,9 @@ public class SettingsFragment extends BaseFragment {
         mScrollViewSettings.addView(viewMnemonicsView);
 
 
-        mScrollViewSettings.addView(getCategoryView("DEVICE"));
+        mScrollViewSettings.addView(getCategoryView("ADD & Recovery"));
 
-        View authorizeDeviceViaQR = getFeatureView("Authorize Device via QR");
+        View authorizeDeviceViaQR = getFeatureView("Authorize Device via QR", inflater);
         authorizeDeviceViaQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,7 +137,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(authorizeDeviceViaQR);
 
-        View authorizeDeviceViaMnemonics = getFeatureView("Authorize Device via Mnemonics");
+        View authorizeDeviceViaMnemonics = getFeatureView("Authorize Device via Mnemonics", inflater);
         authorizeDeviceViaMnemonics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,7 +147,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(authorizeDeviceViaMnemonics);
 
-        View viewShowDeviceQR = getFeatureView("Show Device QR");
+        View viewShowDeviceQR = getFeatureView("Show Device QR", inflater);
         viewShowDeviceQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,7 +157,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(viewShowDeviceQR);
 
-        View manageDevices = getFeatureView("Manage Devices");
+        View manageDevices = getFeatureView("Manage Devices", inflater);
         manageDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +167,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(manageDevices);
 
-        View transactionViaQR = getFeatureView("Transaction via QR");
+        View transactionViaQR = getFeatureView("Transaction via QR", inflater);
         transactionViaQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,7 +178,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(transactionViaQR);
 
-        View initiateRecovery = getFeatureView("Initiate Recovery");
+        View initiateRecovery = getFeatureView("Initiate Recovery", inflater);
         initiateRecovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,7 +188,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(initiateRecovery);
 
-        View abortRecovery = getFeatureView("Abort Recovery");
+        View abortRecovery = getFeatureView("Abort Recovery", inflater);
         abortRecovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,7 +198,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(abortRecovery);
 
-        View viewLogOut = getFeatureView("Log out");
+        View viewLogOut = getFeatureView("Log out", inflater);
         viewLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,22 +236,24 @@ public class SettingsFragment extends BaseFragment {
         mListener = null;
     }
 
-    private View getFeatureView(String featureTitle) {
-        OstTextView demoAppTextView = new OstTextView(getContext());
-        demoAppTextView.setText(featureTitle);
-        demoAppTextView.setTextSize(15);
-        demoAppTextView.setPadding(10,30,10,30);
-        Drawable drawableRightArrow = getResources().getDrawable(R.drawable.ic_arrow_forward_black_24dp, null);
-        demoAppTextView.setCompoundDrawablesWithIntrinsicBounds(null,null, drawableRightArrow,null);
-        return demoAppTextView;
+    private View getFeatureView(String featureTitle, LayoutInflater inflater) {
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.wallet_settings_item, null, false);
+        OstTextView mTextView = view.findViewById(R.id.ws_item);
+        mTextView.setText(featureTitle);
+        return view;
     }
 
     private View getCategoryView(String categoryHeading) {
         OstTextView demoAppTextView = new OstTextView(getContext());
         demoAppTextView.setText(categoryHeading);
-        demoAppTextView.setPadding(10,20,10,20);
+        demoAppTextView.setPadding(dpToPx(20),dpToPx(10),dpToPx(10),dpToPx(10));
         demoAppTextView.setTextSize(13);
+        demoAppTextView.setTypeface(Typeface.DEFAULT_BOLD);
         return demoAppTextView;
+    }
+
+    private int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
     interface OnFragmentInteractionListener {
