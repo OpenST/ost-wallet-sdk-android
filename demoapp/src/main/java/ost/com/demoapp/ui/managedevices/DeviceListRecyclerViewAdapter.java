@@ -95,7 +95,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
         if (mCurrentDeviceAddress.equalsIgnoreCase(holder.mDevice.getDeviceAddress())) {
             holder.mStatus.setVisibility(View.VISIBLE);
             holder.mActionButton.setVisibility(View.GONE);
-            holder.mStatus.setText("This device");
+            holder.mStatus.setText("This Device");
         }
     }
 

@@ -90,6 +90,9 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_user_list, container, false);
 
         mHeadingTextView = ((TextView) view.findViewById(R.id.tv_heading));
+        mHeadingTextView.setText(
+                String.format(Locale.getDefault(), "Here are your authorized devices")
+        );
 
         Context context = view.getContext();
 
@@ -123,10 +126,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
 
 
     private void updateDeviceCount(int count) {
-        mHeadingTextView.setText(
-                String.format(Locale.getDefault(), "You’ve %d authorized devices", count
-                )
-        );
+
     }
     @Override
     public void onAttach(Context context) {
