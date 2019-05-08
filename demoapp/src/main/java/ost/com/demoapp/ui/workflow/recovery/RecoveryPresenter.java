@@ -53,8 +53,6 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
 
-        getMvpView().showProgress(true);
-
         startWorkFlow(logInUser.getOstUserId(),
                 currentUserPassPhrase,
                 mDeviceAddress,

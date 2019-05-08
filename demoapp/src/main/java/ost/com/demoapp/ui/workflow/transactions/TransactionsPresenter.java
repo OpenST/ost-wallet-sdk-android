@@ -43,7 +43,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
     }
 
     void sendTokens(String tokenHolderAddress, String tokens, String unit) {
-        getMvpView().showProgress(true);
+        getMvpView().showProgress(true, "Transaction in progress...");
 
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);

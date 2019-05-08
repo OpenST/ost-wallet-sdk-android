@@ -106,6 +106,11 @@ public abstract class BaseFragment extends Fragment implements BaseView {
         if (null != baseActivity) baseActivity.showProgress(show);
     }
 
+    @Override
+    public void showProgress(boolean show, String progressString) {
+        if (null != baseActivity) baseActivity.showProgress(show, progressString);
+    }
+
     public BaseActivity getBaseActivity() {
         return baseActivity;
     }

@@ -79,7 +79,7 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
                 WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
                 SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
 
-                getMvpView().showProgress(true);
+                getMvpView().showProgress(true, "Reset pin in progress...");
 
                 OstSdk.resetPin(
                         logInUser.getOstUserId(),

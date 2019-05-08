@@ -28,6 +28,7 @@ class InitiateRecoveryPresenter extends RecoveryPresenter {
 
     @Override
     void startWorkFlow(String ostUserId, UserPassphrase currentUserPassPhrase, String deviceAddress, WorkFlowListener workFlowListener) {
+        getMvpView().showProgress(true, "Initiating recovery...");
         OstSdk.initiateDeviceRecovery(
                 ostUserId,
                 currentUserPassPhrase,

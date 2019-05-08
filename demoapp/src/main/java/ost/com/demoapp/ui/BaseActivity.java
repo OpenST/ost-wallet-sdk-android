@@ -100,8 +100,13 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     @Override
     public void showProgress(boolean show) {
+        showProgress(show, getResources().getString(R.string.dialog_progress_msg));
+    }
+
+    @Override
+    public void showProgress(boolean show, String progressString) {
         if (show) {
-            ProgressDialog dialog = DialogFactory.createProgressDialog(this, R.string.dialog_progress_msg);
+            ProgressDialog dialog = DialogFactory.createProgressDialog(this, progressString);
             dialog.setCancelable(false);
             dialog.show();
             progressDlg = dialog;

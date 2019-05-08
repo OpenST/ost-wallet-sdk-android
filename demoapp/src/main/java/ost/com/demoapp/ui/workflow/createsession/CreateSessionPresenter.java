@@ -37,7 +37,7 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
     }
 
     void createSession(String spendingLimit, String unit, String expiryDays) {
-        getMvpView().showProgress(true);
+        getMvpView().showProgress(true, "Creating session...");
 
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);

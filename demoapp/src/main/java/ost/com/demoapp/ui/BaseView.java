@@ -21,5 +21,7 @@ public interface BaseView {
     void close();
 
     void showProgress(boolean show);
+
+    void showProgress(boolean show, String progressString);
 }
 

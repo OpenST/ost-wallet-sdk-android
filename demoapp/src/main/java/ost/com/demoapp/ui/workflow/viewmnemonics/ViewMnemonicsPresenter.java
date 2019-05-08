@@ -37,7 +37,7 @@ class ViewMnemonicsPresenter extends BasePresenter<ViewMnemonicsView> implements
     @Override
     public void attachView(ViewMnemonicsView mvpView) {
         super.attachView(mvpView);
-        getMvpView().showProgress(true);
+        getMvpView().showProgress(true, "Getting device mnemonics...");
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
         OstSdk.getDeviceMnemonics(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);

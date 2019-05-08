@@ -36,7 +36,7 @@ class EnterMnemonicsPresenter extends BasePresenter<EnterMnemonicsView> implemen
     }
 
     void recoverWallet(String mnemonicsPhrase) {
-        getMvpView().showProgress(true);
+        getMvpView().showProgress(true, "Recovering device...");
 
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);

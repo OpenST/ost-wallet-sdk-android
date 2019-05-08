@@ -61,7 +61,7 @@ class AuthorizeDeviceQRPresenter extends BasePresenter<AuthorizeDeviceQRView> im
     void processQRResult(Intent data) {
         Log.d(LOG_TAG, String.format("QR process result %s", data));
         getMvpView().goBack();
-        getMvpView().showProgress(true);
+        getMvpView().showProgress(true, "Authorizing device...");
         if (data != null && data.getData() != null) {
             String returnedResult = data.getData().toString();
             WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();

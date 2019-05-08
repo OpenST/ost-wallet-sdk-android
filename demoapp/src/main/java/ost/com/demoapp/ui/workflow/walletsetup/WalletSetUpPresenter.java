@@ -56,7 +56,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
                 WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
                 SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
 
-                getMvpView().showProgress(true);
+                getMvpView().showProgress(true, "Activating user...");
 
                 OstSdk.activateUser(
                         userPassphrase,

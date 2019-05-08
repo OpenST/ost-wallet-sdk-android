@@ -44,8 +44,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     }
 
     void createAccount(String userName, String password) {
-
-        getMvpView().showProgress(true);
+        getMvpView().showProgress(true, "Creating account...");
         AppProvider.get().getMappyClient().createAccount(userName, password, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -64,6 +63,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
 
+                        getMvpView().showProgress(true, "Registering device...");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -83,7 +83,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     }
 
     void logIn(String userName, String password) {
-        getMvpView().showProgress(true);
+        getMvpView().showProgress(true, "Logging In");
         AppProvider.get().getMappyClient().logIn(userName, password, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -117,7 +117,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     }
 
     void checkLoggedInUser() {
-        getMvpView().showProgress(true);
+        getMvpView().showProgress(true, "Checking auto login..");
         AppProvider.get().getMappyClient().getLoggedInUser(new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
