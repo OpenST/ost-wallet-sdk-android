@@ -14,6 +14,7 @@ package ost.com.demoapp.ui.workflow.transactions;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,6 +109,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
 
         final OstPrimaryEditTextView tokensEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_number));
         tokensEditTextView.setHintText(getResources().getString(R.string.transaction_amount));
+        tokensEditTextView.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         final OstPrimaryEditTextView unitEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_unit));
         unitEditTextView.setHintText(getResources().getString(R.string.transaction_unit));

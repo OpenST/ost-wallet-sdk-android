@@ -33,10 +33,15 @@ public class WorkFlowPinFragment extends PinFragment {
     private OstPinAcceptInterface mOstPinAcceptInterface;
     private OnFragmentInteractionListener mListener;
 
-    public static WorkFlowPinFragment newInstance(String title) {
+    public static WorkFlowPinFragment newInstance(String heading) {
+        return newInstance(heading, null);
+    }
+
+    public static WorkFlowPinFragment newInstance(String heading, String subHeading) {
         WorkFlowPinFragment fragment = new WorkFlowPinFragment();
         Bundle args = new Bundle();
-        args.putString(TITLE, title);
+        args.putString(HEADING, heading);
+        args.putString(SUB_HEADING, subHeading);
         fragment.setArguments(args);
         return fragment;
     }

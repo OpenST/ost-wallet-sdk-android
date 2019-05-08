@@ -33,19 +33,26 @@ import ost.com.demoapp.util.KeyBoard;
 public class PinFragment extends BaseFragment implements TextView.OnEditorActionListener {
 
 
-    protected static final String TITLE = "title";
-    private String mTitle;
+    protected static final String HEADING = "heading";
+    protected static final String SUB_HEADING = "sub_heading";
+    private String mHeading;
     private PinEntryEditText mPinEntryEditText;
     private OnFragmentInteractionListener mListener;
+    private String mSubHeading;
 
     public PinFragment() {
         // Required empty public constructor
     }
 
-    public static PinFragment newInstance(String title) {
+    public static PinFragment newInstance(String heading) {
+        return newInstance(heading, null);
+    }
+
+    public static PinFragment newInstance(String heading, String subHeading) {
         PinFragment fragment = new PinFragment();
         Bundle args = new Bundle();
-        args.putString(TITLE, title);
+        args.putString(HEADING, heading);
+        args.putString(SUB_HEADING, subHeading);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,7 +61,8 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mTitle = getArguments().getString(TITLE);
+            mHeading = getArguments().getString(HEADING);
+            mSubHeading = getArguments().getString(SUB_HEADING);
         }
     }
 
@@ -81,7 +89,11 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_pin, container, false);
         mPinEntryEditText = (PinEntryEditText) viewGroup.findViewById(R.id.txt_pin_entry);
         mPinEntryEditText.setOnEditorActionListener(this);
-        AppBar appBar = AppBar.newInstance(getContext(), mTitle, true);
+
+        TextView pinSubHeadingTextView = (TextView) viewGroup.findViewById(R.id.shtv_pin_sub_heading);
+        pinSubHeadingTextView.setText(mSubHeading);
+
+        AppBar appBar = AppBar.newInstance(getContext(), mHeading, true);
         setUpAppBar(viewGroup, appBar);
 
         return viewGroup;

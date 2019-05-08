@@ -70,21 +70,21 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
     @Override
     public void showSetNewPin() {
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
-                PinFragment.newInstance("Set New Pin"),
+                PinFragment.newInstance("Add New Pin", getResources().getString(R.string.pin_sub_heading_add_pin)),
                 this);
     }
 
     @Override
     public void showRetypePin() {
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
-                PinFragment.newInstance("Retype New Pin"),
+                PinFragment.newInstance("Confirm New Pin", getResources().getString(R.string.pin_sub_heading_confirm_pin)),
                 this);
     }
 
     @Override
     public void showEnterCurrentPin() {
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
-                PinFragment.newInstance("Enter Current Pin"),
+                PinFragment.newInstance("Enter Current Pin", getResources().getString(R.string.pin_sub_heading_current_pin)),
                 this);
     }
 

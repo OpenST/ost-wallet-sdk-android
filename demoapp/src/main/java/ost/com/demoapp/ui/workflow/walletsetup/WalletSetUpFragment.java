@@ -86,14 +86,14 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     @Override
     public void showAddPin() {
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
-                PinFragment.newInstance("Add Pin"),
+                PinFragment.newInstance("Add Pin", getResources().getString(R.string.pin_sub_heading_add_pin)),
                 this);
     }
 
     @Override
     public void showRetypePin() {
         ChildFragmentUtils.addFragment(R.id.layout_container,
-                PinFragment.newInstance("Retype Pin"),
+                PinFragment.newInstance("Confirm Pin", getResources().getString(R.string.pin_sub_heading_confirm_pin)),
                 this);
     }
 

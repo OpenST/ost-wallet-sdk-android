@@ -13,6 +13,7 @@ package ost.com.demoapp.ui.workflow.createsession;
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,12 +67,14 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
 
         final OstPrimaryEditTextView spendingLimitEditText = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_spending_limit));
         spendingLimitEditText.setHintText(getResources().getString(R.string.create_session_spending_limit));
+        spendingLimitEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         final OstPrimaryEditTextView unitEditText = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_unit));
         unitEditText.setHintText(getResources().getString(R.string.create_session_unit));
 
         final OstPrimaryEditTextView expiryDaysEditText = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_expiry_days));
         expiryDaysEditText.setHintText(getResources().getString(R.string.create_session_expiry_days));
+        expiryDaysEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         unitEditText.setText(AppProvider.get().getCurrentEconomy().getTokenSymbol());
 

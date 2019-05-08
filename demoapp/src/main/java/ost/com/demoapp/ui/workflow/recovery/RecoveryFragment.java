@@ -81,7 +81,7 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
     @Override
     public void showEnterPin() {
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
-                PinFragment.newInstance("Enter PIN"),
+                PinFragment.newInstance("Enter PIN", getResources().getString(R.string.pin_sub_heading_get_pin)),
                 this);
     }
 

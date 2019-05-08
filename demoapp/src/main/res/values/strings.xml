@@ -44,4 +44,10 @@
 
     <string name="view_mnemonics_heading">Write down your 12-word mnemonic phrase and store them securely</string>
     <string name="view_mnemonics_tip">Tip: \nYou can write the phrases down in a piece of paper or save in a password manager. Don’t email them or screenshot them. The order of words are important too.</string>
+
+    <!--Pin fragment -->
+    <string name="pin_sub_heading_add_pin">Add a 6-digit PIN to secure your wallet.\n The PIN is required to recover your\n wallet if you lose your phone.</string>
+    <string name="pin_sub_heading_confirm_pin">If you forget your PIN, you cannot\n recover your Wallet. So please be sure\n to remember it.</string>
+    <string name="pin_sub_heading_current_pin">Enter your 6-digit PIN to authorize\n Reset Pin.</string>
+    <string name="pin_sub_heading_get_pin" >Enter your 6-digit PIN to authorize</string>
 </resources>

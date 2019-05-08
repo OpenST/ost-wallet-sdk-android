@@ -21,6 +21,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.workflow.walletsetup.PinFragment">
 
+    <ost.com.demoapp.uicomponents.OstSubHeaderTextView
+        android:id="@+id/shtv_pin_sub_heading"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ost.com.demoapp.uicomponents.PinEntryEditText
         android:id="@+id/txt_pin_entry"
         android:layout_marginStart="60dp"
@@ -28,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="5dp"
         android:background="@null"
         android:cursorVisible="false"
         android:digits="1234567890"
@@ -41,8 +47,6 @@
         android:textSize="0px"
         android:visibility="visible"
         app:pinBackgroundDrawable="@drawable/bg_pin_round"
-        app:pinBackgroundIsSquare="false"
-        app:pinCharacterSpacing="40dp"
-        app:pinTextBottomPadding="5dp" />
+        app:pinBackgroundIsSquare="false" />
 
 </LinearLayout>

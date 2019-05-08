@@ -150,16 +150,16 @@ public class DashboardActivity extends BaseActivity implements
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(
                         ostWorkflowContext.getWorkflow_type()
-                )){
+                )) {
             AppProvider.get().getMappyClient().notifyUserActivate(new MappyNetworkClient.ResponseCallback() {
                 @Override
                 public void onSuccess(JSONObject jsonObject) {
-                    Log.d(LOG_TAG,"Activate User Sync Succeded");
+                    Log.d(LOG_TAG, "Activate User Sync Succeded");
                 }
 
                 @Override
                 public void onFailure(Throwable throwable) {
-                    Log.d(LOG_TAG,"Activate User Sync Failed");
+                    Log.d(LOG_TAG, "Activate User Sync Failed");
                 }
             });
         }
@@ -171,7 +171,7 @@ public class DashboardActivity extends BaseActivity implements
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(
                         ostWorkflowContext.getWorkflow_type()
-                )){
+                )) {
             Log.e(LOG_TAG, "User Activate failed");
             checkForActivateUser();
         }
@@ -187,7 +187,7 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void getPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
-        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin");
+        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin));
         fragment.setPinCallback(ostPinAcceptInterface);
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
@@ -197,7 +197,7 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
-        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Invalid Pin Try Again");
+        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Invalid Pin Try Again", getResources().getString(R.string.pin_sub_heading_get_pin));
         fragment.setPinCallback(ostPinAcceptInterface);
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
