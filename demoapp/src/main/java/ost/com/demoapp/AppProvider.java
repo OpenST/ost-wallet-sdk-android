@@ -17,10 +17,12 @@ import com.ost.walletsdk.OstSdk;
 
 import java.net.CookieStore;
 
+import ost.com.demoapp.database.OstAppDatabase;
 import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.network.NetworkClient;
+import ost.com.demoapp.util.DBLog;
 
 import static ost.com.demoapp.entity.CurrentEconomy.MAPPY_API_ENDPOINT;
 import static ost.com.demoapp.entity.CurrentEconomy.SAAS_API_ENDPOINT;
@@ -47,6 +49,7 @@ public class AppProvider {
 
     public static void init(Context context) {
         INSTANCE = new AppProvider(context);
+        OstAppDatabase.initDatabase(context);
     }
 
     public static AppProvider get() {
@@ -142,5 +145,9 @@ public class AppProvider {
 
     public CookieStore getCookieStore() {
         return mCookieStore;
+    }
+
+    public DBLog getDBLogger() {
+        return new DBLog();
     }
 }

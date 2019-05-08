@@ -68,6 +68,10 @@ dependencies {
     // Zxing barcode dependency
     api 'me.dm7.barcodescanner:zxing:1.9.8'
 
+    // Room components
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
     implementation 'com.android.volley:volley:1.1.0'

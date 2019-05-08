@@ -27,6 +27,8 @@ import com.amulyakhare.textdrawable.TextDrawable;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.ui.logging.WalletEventFragment;
+import ost.com.demoapp.ui.logging.WalletEventFragment;
 import ost.com.demoapp.ui.workflow.recovery.AbortRecoveryFragment;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.OstTextView;
@@ -197,6 +199,16 @@ public class SettingsFragment extends BaseFragment {
             }
         });
         mScrollViewSettings.addView(abortRecovery);
+
+        View evenLogs = getFeatureView("Wallet events", inflater);
+        evenLogs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = WalletEventFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
+        mScrollViewSettings.addView(evenLogs);
 
         View viewLogOut = getFeatureView("Log out", inflater);
         viewLogOut.setOnClickListener(new View.OnClickListener() {
