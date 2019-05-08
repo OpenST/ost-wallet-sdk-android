@@ -10,7 +10,9 @@
 
 package ost.com.demoapp.ui.dashboard;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.ost.walletsdk.models.entities.OstUser;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.List;
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.entity.User;
+import ost.com.demoapp.uicomponents.uiutils.FontFactory;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link User} and makes a call to the
@@ -53,9 +55,15 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.view_user, parent, false);
 
+        Context context = AppProvider.get().getApplicationContext();
+        Typeface font = FontFactory.getInstance(context, FontFactory.FONT.LATO).getBold();
+
         mBuilder = TextDrawable.builder()
                 .beginConfig()
                 .withBorder(4)
+                .textColor(
+                        context.getResources().getColor(R.color.color_9b9b9b))
+                .useFont(font)
                 .endConfig()
                 .round();
 
@@ -66,9 +74,9 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mUser = mValues.get(position);
 
-        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
-        int color = generator.getColor(holder.mUser.getId());
-        TextDrawable drawable = mBuilder.build(holder.mUser.getUserName().substring(0,1).toUpperCase(), color);
+        TextDrawable drawable = mBuilder.build(holder.mUser.getUserName().substring(0, 1).toUpperCase(),
+                AppProvider.get().getApplicationContext()
+                        .getResources().getColor(R.color.color_f4f4f4));
         holder.mImageView.setImageDrawable(drawable);
 
         holder.mUserName.setText(holder.mUser.getUserName());
@@ -86,7 +94,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
                             AppProvider.get().getCurrentEconomy().getTokenName()
                     )
             );
-            holder.mView.setOnClickListener(new View.OnClickListener() {
+            holder.mSendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (null != mListener) {
@@ -98,7 +106,6 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
             });
             holder.mSendButton.setVisibility(View.VISIBLE);
         }
-
 
 
     }

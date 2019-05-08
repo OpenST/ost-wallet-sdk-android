@@ -49,4 +49,8 @@
 
     <!--Device recycler view cell-->
     <dimen name="view_cell_sub_text">13sp</dimen>
+
+    <!--User List cell-->
+    <dimen name="user_list_user_name">16sp</dimen>
+    <dimen name="user_list_sub_header">13sp</dimen>
 </resources>

@@ -27,21 +27,20 @@ import com.amulyakhare.textdrawable.TextDrawable;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
-import ost.com.demoapp.ui.logging.WalletEventFragment;
-import ost.com.demoapp.ui.logging.WalletEventFragment;
-import ost.com.demoapp.ui.workflow.recovery.AbortRecoveryFragment;
-import ost.com.demoapp.uicomponents.AppBar;
-import ost.com.demoapp.uicomponents.OstTextView;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
+import ost.com.demoapp.ui.logging.WalletEventFragment;
 import ost.com.demoapp.ui.managedevices.DeviceListFragment;
 import ost.com.demoapp.ui.workflow.authrorizedeviceqr.AuthorizeDeviceQRFragment;
 import ost.com.demoapp.ui.workflow.createsession.CreateSessionFragment;
 import ost.com.demoapp.ui.workflow.entermnemonics.EnterMnemonicsFragment;
 import ost.com.demoapp.ui.workflow.qrfragment.QRFragment;
+import ost.com.demoapp.ui.workflow.recovery.AbortRecoveryFragment;
 import ost.com.demoapp.ui.workflow.resetpin.ResetPinFragment;
 import ost.com.demoapp.ui.workflow.viewmnemonics.ViewMnemonicsFragment;
 import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.OstTextView;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -77,7 +76,7 @@ public class SettingsFragment extends BaseFragment {
         ((ImageView) view.findViewById(R.id.ptv_image)).setImageDrawable(drawable);
 
         TextView textView = view.findViewById(R.id.ptv_username);
-        textView.setText((mUserName.substring(0,1).toUpperCase() + mUserName.substring(1)));
+        textView.setText((mUserName.substring(0, 1).toUpperCase() + mUserName.substring(1)));
 
         TextView mUserIdTv = view.findViewById(R.id.ptv_userid);
         mUserIdTv.setText(AppProvider.get().getCurrentUser().getOstUserId());
@@ -258,7 +257,7 @@ public class SettingsFragment extends BaseFragment {
     private View getCategoryView(String categoryHeading) {
         OstTextView demoAppTextView = new OstTextView(getContext());
         demoAppTextView.setText(categoryHeading);
-        demoAppTextView.setPadding(dpToPx(20),dpToPx(10),dpToPx(10),dpToPx(10));
+        demoAppTextView.setPadding(dpToPx(20), dpToPx(10), dpToPx(10), dpToPx(10));
         demoAppTextView.setTextSize(13);
         demoAppTextView.setTypeface(Typeface.DEFAULT_BOLD);
         return demoAppTextView;

@@ -19,37 +19,44 @@
 
     <ImageView
         android:id="@+id/iv_user_image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:contentDescription="User image"
         android:src="@drawable/ic_arrow_forward_black_24dp" />
 
-    <ost.com.demoapp.uicomponents.OstTextView
+    <ost.com.demoapp.uicomponents.OstBoldTextView
         android:id="@+id/tv_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/iv_user_image"
         android:text="TIP"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/sp_17" />
+        android:textColor="@color/user_list_user_name"
+        android:textSize="@dimen/user_list_user_name" />
 
     <ost.com.demoapp.uicomponents.OstTextView
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="5dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginStart="10dp"
         android:layout_below="@id/tv_user_name"
         android:layout_toEndOf="@id/iv_user_image"
         android:text="Welcome To Demo Wallet"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="@dimen/sp_10" />
+        android:textColor="@color/user_list_sub_header"
+        android:textSize="@dimen/user_list_sub_header" />
 
-    <ost.com.demoapp.uicomponents.OstPrimaryButton
+    <ost.com.demoapp.uicomponents.OstListButton
         android:id="@+id/btn_send_token"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:text="Send"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/iv_user_image"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 </RelativeLayout>
