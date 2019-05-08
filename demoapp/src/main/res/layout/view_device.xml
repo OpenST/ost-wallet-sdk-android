@@ -9,33 +9,30 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginBottom="10dp"
     android:background="@android:color/white">
-
-    <ImageView
-        android:id="@+id/iv_device_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="Device image"
-        android:src="@drawable/device_icon" />
 
     <RelativeLayout
         android:id="@+id/ll_content_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="17dp"
-        android:orientation="vertical"
-        android:layout_toEndOf="@id/iv_device_image">
+        android:layout_marginStart="17dp">
+
+        <ImageView
+            android:id="@+id/iv_device_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Device image"
+            android:layout_margin="@dimen/dp_10"
+            android:src="@drawable/device_icon" />
 
         <ost.com.demoapp.uicomponents.OstSubHeaderTextView
             android:id="@+id/tv_device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_15"
+            android:layout_toRightOf="@id/iv_device_image"
             android:text="Device 1" />
 
         <ost.com.demoapp.uicomponents.OstTextView
@@ -43,13 +40,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:padding="5dp"
-            android:text="This device"
+            android:layout_marginTop="@dimen/dp_15"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingTop="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_5"
+            android:text="This Device"
             android:textColor="#34445b"
             android:textSize="11sp"
-            android:background="@drawable/bg_primary_button"
+            android:background="@drawable/rounded_corner_bg"
             android:layout_toEndOf="@id/tv_device_name"
-
             android:visibility="gone"/>
 
         <ost.com.demoapp.uicomponents.OstTextView
@@ -57,7 +57,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
+            android:layout_marginRight="@dimen/dp_15"
             android:layout_below="@id/tv_device_name"
+            android:layout_toRightOf="@id/iv_device_image"
             android:text="0x0000000000000000000000000000000000000000"
             android:textColor="@color/view_cell_sub_text"
             android:textSize="@dimen/view_cell_sub_text" />
@@ -68,6 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_below="@id/tv_address"
+            android:layout_toRightOf="@id/iv_device_image"
             android:text="Send" />
     </RelativeLayout>
 
@@ -76,5 +79,5 @@
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="#e3e3e3"/>
 </RelativeLayout>
