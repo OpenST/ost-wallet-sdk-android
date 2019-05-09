@@ -16,6 +16,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
@@ -315,5 +316,10 @@ public class DashboardActivity extends BaseActivity implements
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
+    }
+
+    @Override
+    protected View getRootView() {
+        return findViewById(R.id.layout_container);
     }
 }

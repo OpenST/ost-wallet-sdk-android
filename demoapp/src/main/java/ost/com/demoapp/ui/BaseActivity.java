@@ -15,9 +15,10 @@ import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.view.View;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.util.DialogFactory;
@@ -55,12 +56,12 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     @Override
     public void showToastMessage(String text) {
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+        Snackbar.make(getRootView(), text, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void showToastMessage(int textRes) {
-        Toast.makeText(this, getString(textRes), Toast.LENGTH_LONG).show();
+        Snackbar.make(getRootView(), textRes, Snackbar.LENGTH_LONG).show();
     }
 
     public void animateActivityChangingToRight() {
@@ -132,4 +133,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     protected boolean doNotRestoreFragments() {
         return false;
     }
+
+    protected abstract View getRootView();
 }

@@ -13,6 +13,7 @@ package ost.com.demoapp.ui.auth;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseActivity;
@@ -115,5 +116,10 @@ public class OnBoardingActivity extends BaseActivity implements
                 Log.e(LOG_TAG, "JSONException while parsing");
             }
         }
+    }
+
+    @Override
+    protected View getRootView() {
+        return findViewById(R.id.layout_holder);
     }
 }
