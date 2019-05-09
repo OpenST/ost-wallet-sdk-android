@@ -132,6 +132,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
             mUserName = (TextView) view.findViewById(R.id.tv_user_name);
             mStatus = (TextView) view.findViewById(R.id.tv_status);
             mSendButton = (Button) view.findViewById(R.id.btn_send_token);
+            view.findViewById(R.id.list_item_seperator).setVisibility(View.VISIBLE);
         }
 
         @Override

@@ -52,8 +52,10 @@
         android:text="Send"/>
 
     <View
+        android:id="@+id/list_item_seperator"
         android:layout_width="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_height="1dp"
+        android:visibility="gone"
         android:background="#ededed"/>
 </RelativeLayout>
