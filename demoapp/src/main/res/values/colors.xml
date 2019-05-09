@@ -57,4 +57,8 @@
     <!--QR fragment-->
     <color name="qr_footer_bg">#34445b</color>
     <color name="qr_header_text">#34445b</color>
+
+    <!--Transaction amount-->
+    <color name="received_token_amount">#438bad</color>
+    <color name="sent_token_amount">#9b9b9b</color>
 </resources>

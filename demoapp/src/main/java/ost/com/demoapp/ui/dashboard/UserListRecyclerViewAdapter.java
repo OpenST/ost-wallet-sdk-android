@@ -30,6 +30,7 @@ import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.entity.User;
 import ost.com.demoapp.uicomponents.uiutils.FontFactory;
+import ost.com.demoapp.util.CommonUtils;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link User} and makes a call to the
@@ -74,9 +75,9 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mUser = mValues.get(position);
 
+        Context context = AppProvider.get().getApplicationContext();
         TextDrawable drawable = mBuilder.build(holder.mUser.getUserName().substring(0, 1).toUpperCase(),
-                AppProvider.get().getApplicationContext()
-                        .getResources().getColor(R.color.color_f4f4f4));
+                context.getResources().getColor(R.color.color_f4f4f4));
         holder.mImageView.setImageDrawable(drawable);
 
         holder.mUserName.setText(holder.mUser.getUserName());
@@ -87,11 +88,11 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
             holder.mSendButton.setVisibility(View.GONE);
             holder.mView.setOnClickListener(null);
         } else {
-            holder.mStatus.setTextColor(Color.parseColor("#aaaaaa"));
+            holder.mStatus.setTextColor(context.getResources().getColor(R.color.color_34445b));
             holder.mStatus.setText(
                     String.format(
-                            "Balance: %s %s", holder.mUser.getBalance(),
-                            AppProvider.get().getCurrentEconomy().getTokenName()
+                            "Balance: %s %s", CommonUtils.convertWeiToTokenCurrency(holder.mUser.getBalance()),
+                            AppProvider.get().getCurrentEconomy().getTokenSymbol()
                     )
             );
             holder.mSendButton.setOnClickListener(new View.OnClickListener() {

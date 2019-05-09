@@ -14,32 +14,34 @@
     android:background="@android:color/white">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp">
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
 
         <ImageView
             android:id="@+id/iv_transfer_image"
-            android:src="@drawable/ic_arrow_forward_black_24dp"
+            android:src="@drawable/ost_logo_small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_10"
             android:contentDescription="value transfer image" />
 
-        <ost.com.demoapp.uicomponents.OstTextView
+        <TextView
             android:id="@+id/tv_transfer_type"
+            android:layout_marginTop="@dimen/dp_15"
             android:layout_toEndOf="@id/iv_transfer_image"
-            android:textSize="@dimen/sp_17"
-            android:textColor="@android:color/black"
+            android:textSize="@dimen/sp_16"
+            android:textColor="#597a84"
             android:text="TIP"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <ost.com.demoapp.uicomponents.OstTextView
             android:id="@+id/tv_timestamp"
-            android:layout_toEndOf="@id/iv_transfer_image"
-            android:textSize="@dimen/sp_10"
-            android:textColor="@android:color/darker_gray"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_toRightOf="@id/iv_transfer_image"
+            android:textSize="@dimen/sp_13"
+            android:textColor="@color/color_34445b"
             android:text="Welcome To Demo Wallet"
             android:layout_below="@id/tv_transfer_type"
             android:layout_width="wrap_content"
@@ -47,12 +49,20 @@
 
         <ost.com.demoapp.uicomponents.OstTextView
             android:id="@+id/tv_value"
+            android:textSize="@dimen/sp_15"
+            android:textColor="@color/received_token_amount"
+            android:layout_marginRight="@dimen/dp_10"
             android:layout_alignParentEnd="true"
-            android:textSize="@dimen/sp_17"
-            android:textColor="@android:color/black"
+            android:layout_marginTop="@dimen/dp_24"
             android:text="+10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
+        <View
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e3e3e3"/>
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

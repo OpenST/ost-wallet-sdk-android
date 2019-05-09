@@ -30,6 +30,7 @@ import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.OstPrimaryEditTextView;
 import ost.com.demoapp.entity.User;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.util.CommonUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -88,7 +89,8 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         // Inflate the layout for this fragment
         ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_transaction, container, true);
 
-        ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: %s", mUser.getBalance()));
+        ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: %s",
+                CommonUtils.convertWeiToTokenCurrency(mUser.getBalance())));
 
         /*********User View***********/
         viewGroup.findViewById(R.id.btn_send_token).setVisibility(View.GONE);

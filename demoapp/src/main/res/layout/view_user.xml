@@ -10,25 +10,22 @@
 
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginBottom="10dp">
+    android:layout_width="match_parent"
+    android:layout_height="70dp">
 
     <ImageView
         android:id="@+id/iv_user_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:contentDescription="User image"
+        android:layout_margin="@dimen/dp_10"
         android:src="@drawable/ic_arrow_forward_black_24dp" />
 
     <ost.com.demoapp.uicomponents.OstBoldTextView
         android:id="@+id/tv_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_marginTop="@dimen/dp_15"
         android:layout_toEndOf="@id/iv_user_image"
         android:text="TIP"
         android:textColor="@color/user_list_user_name"
@@ -38,8 +35,7 @@
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="1dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/tv_user_name"
         android:layout_toEndOf="@id/iv_user_image"
         android:text="Welcome To Demo Wallet"
@@ -50,13 +46,14 @@
         android:id="@+id/btn_send_token"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
         android:layout_alignParentEnd="true"
         android:text="Send"/>
 
     <View
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_below="@id/iv_user_image"
+        android:layout_alignParentBottom="true"
         android:layout_height="1dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="#ededed"/>
 </RelativeLayout>

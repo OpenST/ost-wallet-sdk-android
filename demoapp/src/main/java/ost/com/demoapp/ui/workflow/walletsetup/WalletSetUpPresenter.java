@@ -52,7 +52,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
                 LogInUser logInUser = AppProvider.get().getCurrentUser();
                 UserPassphrase userPassphrase = new UserPassphrase(logInUser.getOstUserId(), pin, logInUser.getUserPinSalt());
                 long expiredAfterInSecs = 30*24*60*60;
-                String spendingLimit = "1000000000";
+                String spendingLimit = "100000000000000000000";
                 WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
                 SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
 

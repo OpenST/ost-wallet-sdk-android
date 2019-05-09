@@ -10,19 +10,24 @@
 
 package ost.com.demoapp.ui.dashboard;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.entity.Transaction;
 import ost.com.demoapp.ui.dashboard.UserListFragment.OnListFragmentInteractionListener;
+import ost.com.demoapp.util.CommonUtils;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link ost.com.demoapp.entity.User} and makes a call to the
@@ -53,11 +58,25 @@ class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<TransactionRec
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mTransaction = mValues.get(position);
+        String date = DateFormat.format("dd/MM/yyyy hh:mm:ss", new Date((long)holder.mTransaction.getTimestamp() * 1000)).toString();
+        holder.mDate.setText(date);
+        BigDecimal transferValue = CommonUtils.convertWeiToTokenCurrency(holder.mTransaction.getValue());
+
         holder.mTransferType.setText(holder.mTransaction.getMetaName());
-        holder.mDate.setText(new Date((long)holder.mTransaction.getTimestamp()).toString());
-        holder.mTransferValue.setText(
-                holder.mTransaction.isIn() ? holder.mTransaction.getValue(): "-" + holder.mTransaction.getValue()
-        );
+        Context context = AppProvider.get().getApplicationContext();
+        if(holder.mTransaction.isIn()){
+            if(holder.mTransaction.getMetaType().equals("user_to_user")){
+                holder.mTransferType.setText("Received Tokens");
+                holder.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.token_receive_icon, null));
+            }
+            holder.mTransferValue.setTextColor(context.getResources().getColor(R.color.received_token_amount));
+            holder.mTransferValue.setText(String.format("+%s", transferValue));
+        } else {
+            holder.mTransferType.setText("Sent Tokens");
+            holder.mTransferValue.setTextColor(context.getResources().getColor(R.color.sent_token_amount));
+            holder.mTransferValue.setText(String.format("-%s", transferValue));
+            holder.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.token_sent_icon, null));
+        }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

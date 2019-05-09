@@ -93,11 +93,12 @@ class WalletPresenter extends BasePresenter<WalletView> implements
         AppProvider.get().getMappyClient().getCurrentUserBalance(new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
-                String balance = "Not able to fetch Error";
+                String balance = "0";
                 if (new CommonUtils().isValidResponse(jsonObject)) {
                     balance = new CommonUtils().parseStringResponseForKey(jsonObject, "available_balance");
                 }
-                getMvpView().updateBalance(balance);
+                getMvpView().updateBalance(String.format("%s %s", AppProvider.get().getCurrentEconomy().getTokenSymbol(),
+                        CommonUtils.convertWeiToTokenCurrency(balance).toString()));
             }
 
             @Override

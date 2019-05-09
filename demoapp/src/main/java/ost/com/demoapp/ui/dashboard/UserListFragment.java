@@ -75,15 +75,15 @@ public class UserListFragment extends BaseFragment implements UserListView,
 
         ((TextView)view.findViewById(R.id.tv_heading)).setText(
                 String.format(
-                        "Spend %s tokens to users from\n the economy.",
-                        AppProvider.get().getCurrentEconomy().getTokenName().toUpperCase()
+                        "Send %s tokens to users from\n the economy.",
+                        AppProvider.get().getCurrentEconomy().getTokenSymbol()
                 )
         );
 
         Context context = view.getContext();
 
         AppBar appBar = AppBar.newInstance(getContext(),
-                String.format("%s Users", AppProvider.get().getCurrentEconomy().getTokenName()),
+                String.format("%s Users", AppProvider.get().getCurrentEconomy().getTokenSymbol()),
                 false);
         setUpAppBar(view, appBar);
 

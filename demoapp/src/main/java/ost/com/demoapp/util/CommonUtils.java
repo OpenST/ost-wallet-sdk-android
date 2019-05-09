@@ -13,14 +13,19 @@ package ost.com.demoapp.util;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import ost.com.demoapp.AppProvider;
 
 public class CommonUtils {
     private static final String LOG_TAG = "OstCommonUtils";
@@ -114,5 +119,13 @@ public class CommonUtils {
         } catch (JSONException e) {
             return null;
         }
+    }
+
+    public static BigDecimal convertWeiToTokenCurrency(String balance) {
+        OstToken token = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
+        Integer decimals = Integer.parseInt(token.getBtDecimals());
+        BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
+        BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
+        return bal;
     }
 }
