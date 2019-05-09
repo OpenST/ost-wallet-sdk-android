@@ -13,4 +13,5 @@
     <item name="app_bar" type="id" />
     <item name="layout_container" type="id" />
     <item name="app_bar_title" type="id" />
+    <item name="btv_heading" type="id" />
 </resources>

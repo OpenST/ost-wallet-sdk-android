@@ -82,6 +82,8 @@ public class CreateAccountFragment extends BaseFragment {
         editTextViewEconomy = view.findViewById(R.id.edv_economy);
         editTextViewEconomy.setRightDrawable(getResources().getDrawable(R.drawable.qr_icon, null));
         editTextViewEconomy.setHintText(getResources().getString(R.string.create_account_economy_hint));
+        editTextViewEconomy.setInputType(InputType.TYPE_NULL);
+        editTextViewEconomy.setEnabled(false);
         updateToken();
         editTextViewEconomy.setOnClickListener(new View.OnClickListener() {
             @Override

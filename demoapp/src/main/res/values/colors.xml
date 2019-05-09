@@ -53,4 +53,8 @@
     <!--User list-->
     <color name="user_list_user_name">#597a84</color>
     <color name="user_list_sub_header">#34445b</color>
+
+    <!--QR fragment-->
+    <color name="qr_footer_bg">#34445b</color>
+    <color name="qr_header_text">#34445b</color>
 </resources>

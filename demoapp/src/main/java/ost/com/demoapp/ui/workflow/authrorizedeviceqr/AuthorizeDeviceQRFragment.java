@@ -76,7 +76,7 @@ public class AuthorizeDeviceQRFragment extends BaseFragment implements Authorize
     @Override
     public void launchQRScanner() {
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
-                QRScannerFragment.newInstance("Scan QR"),
+                QRScannerFragment.newInstance("Scan QR", getResources().getString(R.string.qr_sub_heading_authorize_scan)),
                 this);
     }
 

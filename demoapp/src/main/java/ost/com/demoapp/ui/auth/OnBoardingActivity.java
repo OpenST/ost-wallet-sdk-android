@@ -17,7 +17,7 @@ import android.util.Log;
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseActivity;
 import ost.com.demoapp.ui.dashboard.DashboardActivity;
-import ost.com.demoapp.ui.qrscanner.QRScannerActivity;
+import ost.com.demoapp.ui.qrscanner.QRScannerFragment;
 import ost.com.demoapp.util.FragmentUtils;
 
 /**
@@ -27,7 +27,8 @@ import ost.com.demoapp.util.FragmentUtils;
 public class OnBoardingActivity extends BaseActivity implements
         OnBoardingView,
         IntroFragment.OnFragmentInteractionListener,
-        CreateAccountFragment.OnFragmentInteractionListener {
+        CreateAccountFragment.OnFragmentInteractionListener,
+        QRScannerFragment.OnFragmentInteractionListener {
 
     private static final int QR_REQUEST_CODE = 2;
     private static final String LOG_TAG = "OstOnBoardingActivity";
@@ -80,22 +81,9 @@ public class OnBoardingActivity extends BaseActivity implements
 
     @Override
     public void scanForEconomy() {
-        Intent intent = new Intent(getApplicationContext(), QRScannerActivity.class);
-        startActivityForResult(intent, QR_REQUEST_CODE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == QR_REQUEST_CODE && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            String returnedResult = data.getData().toString();
-            try {
-                Log.w(LOG_TAG, returnedResult);
-                mOnBoardingPresenter.onScanEconomyResult(returnedResult);
-            } catch (Exception e) {
-                Log.e(LOG_TAG, "JSONException while parsing");
-            }
-        }
+        FragmentUtils.addFragment(R.id.layout_container,
+                QRScannerFragment.newInstance("Select your Economy", getResources().getString(R.string.qr_sub_heading_economy_scan)),
+                this);
     }
 
     @Override
@@ -114,5 +102,18 @@ public class OnBoardingActivity extends BaseActivity implements
     @Override
     public void showError(String errorString) {
         ((CreateAccountFragment)FragmentUtils.getTopFragment(this,R.id.layout_container)).showError(errorString);
+    }
+
+    @Override
+    public void onResultString(Intent resultString) {
+        if (resultString != null && resultString.getData() != null) {
+            String returnedResult = resultString.getData().toString();
+            try {
+                Log.w(LOG_TAG, returnedResult);
+                mOnBoardingPresenter.onScanEconomyResult(returnedResult);
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "JSONException while parsing");
+            }
+        }
     }
 }
