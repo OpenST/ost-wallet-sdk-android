@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,11 +122,12 @@ public class CommonUtils {
         }
     }
 
-    public static BigDecimal convertWeiToTokenCurrency(String balance) {
+    public static String convertWeiToTokenCurrency(String balance) {
         OstToken token = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
         Integer decimals = Integer.parseInt(token.getBtDecimals());
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
         BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
-        return bal;
+        BigDecimal newBal = bal.setScale(5, RoundingMode.DOWN);
+        return newBal.toString().replace(".00000", "");
     }
 }

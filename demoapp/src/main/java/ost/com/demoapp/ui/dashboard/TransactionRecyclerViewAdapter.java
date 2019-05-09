@@ -60,7 +60,7 @@ class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<TransactionRec
         holder.mTransaction = mValues.get(position);
         String date = DateFormat.format("dd/MM/yyyy hh:mm:ss", new Date((long)holder.mTransaction.getTimestamp() * 1000)).toString();
         holder.mDate.setText(date);
-        BigDecimal transferValue = CommonUtils.convertWeiToTokenCurrency(holder.mTransaction.getValue());
+        String transferValue = CommonUtils.convertWeiToTokenCurrency(holder.mTransaction.getValue());
 
         holder.mTransferType.setText(holder.mTransaction.getMetaName());
         Context context = AppProvider.get().getApplicationContext();

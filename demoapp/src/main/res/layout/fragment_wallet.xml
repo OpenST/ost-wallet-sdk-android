@@ -19,9 +19,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp">
+        android:layout_marginTop="@dimen/dp_20">
 
         <ost.com.demoapp.uicomponents.OstTextView
             android:id="@+id/ptv_wallet_balance"
@@ -30,6 +28,8 @@
             android:background="@drawable/bg_primary_button"
             android:gravity="center"
             android:text="Tokens"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:textColor="@android:color/white"
             android:textSize="32sp" />
 
@@ -39,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/ptv_wallet_balance"
             android:layout_marginTop="20dp"
+            android:layout_marginStart="12dp"
             android:text="TRANSACTION HISTORY"
             android:textColor="@color/color_34445b"
             android:textStyle="bold"

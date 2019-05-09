@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.OstPrimaryEditTextView;
@@ -89,8 +90,9 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         // Inflate the layout for this fragment
         ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_transaction, container, true);
 
-        ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: %s",
-                CommonUtils.convertWeiToTokenCurrency(mUser.getBalance())));
+        ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: %s %s",
+                CommonUtils.convertWeiToTokenCurrency(mUser.getBalance()),
+                AppProvider.get().getCurrentEconomy().getTokenSymbol()));
 
         /*********User View***********/
         viewGroup.findViewById(R.id.btn_send_token).setVisibility(View.GONE);
