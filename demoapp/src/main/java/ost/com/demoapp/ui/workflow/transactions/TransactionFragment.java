@@ -14,16 +14,21 @@ package ost.com.demoapp.ui.workflow.transactions;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatSpinner;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+
+import java.util.Arrays;
+import java.util.List;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
@@ -115,16 +120,18 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         tokensEditTextView.setHintText(getResources().getString(R.string.transaction_amount));
         tokensEditTextView.setInputType(InputType.TYPE_CLASS_NUMBER);
 
-        final OstPrimaryEditTextView unitEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_unit));
-        unitEditTextView.setHintText(getResources().getString(R.string.transaction_unit));
-        unitEditTextView.setEnabled(false);
-        unitEditTextView.setInputType(InputType.TYPE_NULL);
+        final AppCompatSpinner unitSpinner = ((AppCompatSpinner)viewGroup.findViewById(R.id.etv_tokens_unit));
+        ArrayAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, mTransactionPresenter.getUnitList());
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        unitSpinner.setAdapter(adapter);
+        unitSpinner.setSelection(0);
+
         ((Button)viewGroup.findViewById(R.id.pbtn_send_tokens)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mTransactionPresenter.sendTokens(mUser.getTokenHolderAddress(),
                         tokensEditTextView.getText(),
-                        unitEditTextView.getText()
+                        mTransactionPresenter.getUnitList().get(unitSpinner.getSelectedItemPosition())
                 );
             }
         });

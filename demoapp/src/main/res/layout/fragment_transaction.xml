@@ -51,11 +51,11 @@
             android:layout_marginTop="30dp"
             android:layout_below="@id/layout_user_view" />
 
-        <ost.com.demoapp.uicomponents.OstPrimaryEditTextView
+        <android.support.v7.widget.AppCompatSpinner
             android:id="@+id/etv_tokens_unit"
             android:layout_width="210dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="45dp"
             android:layout_below="@id/layout_user_view"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@id/etv_tokens_number" />

@@ -77,6 +77,8 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
         expiryDaysEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         unitEditText.setText(AppProvider.get().getCurrentEconomy().getTokenSymbol());
+        unitEditText.setEnabled(false);
+        unitEditText.setInputType(InputType.TYPE_NULL);
 
         ((Button)viewGroup.findViewById(R.id.pbtn_create_session)).setOnClickListener(new View.OnClickListener() {
             @Override
