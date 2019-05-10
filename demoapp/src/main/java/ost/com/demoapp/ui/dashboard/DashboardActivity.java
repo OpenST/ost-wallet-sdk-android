@@ -41,6 +41,7 @@ import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BaseActivity;
+import ost.com.demoapp.ui.managedevices.AuthorizeDeviceOptionsFragment;
 import ost.com.demoapp.ui.managedevices.DeviceListRecyclerViewAdapter;
 import ost.com.demoapp.ui.workflow.WorkFlowPinFragment;
 import ost.com.demoapp.ui.workflow.WorkFlowVerifyDataFragment;
@@ -64,11 +65,13 @@ public class DashboardActivity extends BaseActivity implements
         TransactionFragment.OnFragmentInteractionListener,
         DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener,
         WalletDetailsFragment.OnWalletDetailsFragmentListener,
-        WebViewFragment.OnWebViewFragmentInteractionListener {
+        WebViewFragment.OnWebViewFragmentInteractionListener,
+        AuthorizeDeviceOptionsFragment.OnAuthorizeDeviceOptionsFragmentListener {
 
     private static final String LOG_TAG = "DashboardActivity";
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
+    private SettingsFragment mSettingsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +79,12 @@ public class DashboardActivity extends BaseActivity implements
         setContentView(R.layout.activity_dashboard);
 
         mViewPager = (ViewPager) findViewById(R.id.home_viewpager);
+        mSettingsFragment = SettingsFragment.newInstance();
 
         HomePagerAdapter homePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         homePagerAdapter.addFragment(UserListFragment.newInstance(), "Users");
         homePagerAdapter.addFragment(WalletFragment.newInstance(), "Wallet");
-        homePagerAdapter.addFragment(SettingsFragment.newInstance(), "Wallet Settings");
+        homePagerAdapter.addFragment(mSettingsFragment, "Wallet Settings");
 
         mViewPager.setAdapter(homePagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.home_navigation);
@@ -91,21 +95,25 @@ public class DashboardActivity extends BaseActivity implements
         Objects.requireNonNull(mTabLayout.getTabAt(1)).setIcon(R.drawable.wallet_icon);
         Objects.requireNonNull(mTabLayout.getTabAt(2)).setIcon(R.drawable.settings_icon);
 
-        mViewPager.setCurrentItem(1);
-
         //Set SdkInteract Pin and verify data listeners
         SdkInteract.getInstance().setPinCallbackListener(this);
         SdkInteract.getInstance().setVerifyDataCallbackListener(this);
 
-        checkForActivateUser();
+        checkForActiveUserAndDevice();
     }
 
-    private void checkForActivateUser() {
+    private void checkForActiveUserAndDevice() {
         OstUser ostUser = AppProvider.get().getCurrentUser().getOstUser();
         if (!(ostUser.isActivated() || ostUser.isActivating())) {
             FragmentUtils.addFragmentWithoutBackStack(R.id.layout_container,
                     WalletSetUpFragment.newInstance(),
                     this);
+            mViewPager.setCurrentItem(1);
+        } else if(ostUser.getCurrentDevice().canBeAuthorized()) {
+            mSettingsFragment.setOpenDeviceAuthorization(true);
+            mViewPager.setCurrentItem(2);
+        } else {
+            mViewPager.setCurrentItem(1);
         }
     }
 
@@ -174,7 +182,7 @@ public class DashboardActivity extends BaseActivity implements
                         ostWorkflowContext.getWorkflow_type()
                 )) {
             Log.e(LOG_TAG, "User Activate failed");
-            checkForActivateUser();
+            checkForActiveUserAndDevice();
         }
     }
 

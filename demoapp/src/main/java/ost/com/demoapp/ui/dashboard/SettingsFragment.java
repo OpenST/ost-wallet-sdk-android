@@ -30,6 +30,7 @@ import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.ui.logging.WalletEventFragment;
+import ost.com.demoapp.ui.managedevices.AuthorizeDeviceOptionsFragment;
 import ost.com.demoapp.ui.managedevices.DeviceListFragment;
 import ost.com.demoapp.ui.workflow.authrorizedeviceqr.AuthorizeDeviceQRFragment;
 import ost.com.demoapp.ui.workflow.createsession.CreateSessionFragment;
@@ -47,6 +48,7 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 public class SettingsFragment extends BaseFragment {
     private LinearLayout mScrollViewSettings;
     private OnFragmentInteractionListener mListener;
+    public Boolean openDeviceAuthorization = false;
 
     public SettingsFragment() {
     }
@@ -56,6 +58,10 @@ public class SettingsFragment extends BaseFragment {
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public void setOpenDeviceAuthorization(Boolean flagToOpen){
+        openDeviceAuthorization = flagToOpen;
     }
 
     @Override
@@ -239,6 +245,9 @@ public class SettingsFragment extends BaseFragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        if(openDeviceAuthorization){
+            openDeviceAuthorizationFragment();
+        }
     }
 
     @Override
@@ -261,6 +270,11 @@ public class SettingsFragment extends BaseFragment {
         demoAppTextView.setTextSize(13);
         demoAppTextView.setTypeface(Typeface.DEFAULT_BOLD);
         return demoAppTextView;
+    }
+
+    private void openDeviceAuthorizationFragment(){
+        Fragment fragment = AuthorizeDeviceOptionsFragment.newInstance();
+        mListener.launchFeatureFragment(fragment);
     }
 
     private int dpToPx(int dp) {
