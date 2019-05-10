@@ -97,6 +97,7 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                 if (new CommonUtils().isValidResponse(jsonObject)) {
                     balance = new CommonUtils().parseStringResponseForKey(jsonObject, "available_balance");
                 }
+                AppProvider.get().getCurrentUser().updateBalance(balance);
                 getMvpView().updateBalance(String.format("%s %s", AppProvider.get().getCurrentEconomy().getTokenSymbol(),
                         CommonUtils.convertWeiToTokenCurrency(balance).toString()));
             }

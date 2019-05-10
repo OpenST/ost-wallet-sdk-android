@@ -27,10 +27,10 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
-import ost.com.demoapp.uicomponents.AppBar;
-import ost.com.demoapp.uicomponents.OstPrimaryEditTextView;
 import ost.com.demoapp.entity.User;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.OstPrimaryEditTextView;
 import ost.com.demoapp.util.CommonUtils;
 
 /**
@@ -91,7 +91,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_transaction, container, true);
 
         ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: %s %s",
-                CommonUtils.convertWeiToTokenCurrency(mUser.getBalance()),
+                CommonUtils.convertWeiToTokenCurrency(AppProvider.get().getCurrentUser().getBalance()),
                 AppProvider.get().getCurrentEconomy().getTokenSymbol()));
 
         /*********User View***********/
@@ -117,7 +117,8 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
 
         final OstPrimaryEditTextView unitEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_unit));
         unitEditTextView.setHintText(getResources().getString(R.string.transaction_unit));
-
+        unitEditTextView.setEnabled(false);
+        unitEditTextView.setInputType(InputType.TYPE_NULL);
         ((Button)viewGroup.findViewById(R.id.pbtn_send_tokens)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

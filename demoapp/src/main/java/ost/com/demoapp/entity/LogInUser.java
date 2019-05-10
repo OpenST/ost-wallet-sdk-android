@@ -31,6 +31,7 @@ public class LogInUser {
     private String tokenId;
     private String userPinSalt;
     private String userName;
+    private String balance = "0";
 
     public static LogInUser newInstance(JSONObject jsonObject) {
         try {
@@ -77,5 +78,13 @@ public class LogInUser {
 
     public String getUserName() {
         return userName;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void updateBalance(String balance) {
+        this.balance = balance;
     }
 }
