@@ -11,6 +11,7 @@
 package ost.com.demoapp.ui.dashboard;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
     private RecyclerView mRecyclerView;
     private TransactionRecyclerViewAdapter mTransactionRecyclerViewAdapter;
     private SwipeRefreshLayout mPullToRefresh;
+    private Boolean paginationRequestSent = false;
 
     public WalletFragment() {
     }
@@ -61,13 +63,31 @@ public class WalletFragment extends BaseFragment implements WalletView {
                 false);
         setUpAppBar(view, appBar);
         mWalletPresenter.attachView(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(layoutManager);
+
         mRecyclerView.setAdapter(mWalletPresenter.getTransactionRecyclerViewAdapter());
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                if (!paginationRequestSent && (visibleItemCount + firstVisibleItemPosition) >=
+                        totalItemCount && firstVisibleItemPosition >= 0) {
+                    paginationRequestSent = true;
+                    mWalletPresenter.updateTransactionHistory(false);
+                }
+            }
+        });
+
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mWalletPresenter.updateBalance();
-                mWalletPresenter.updateTransactionHistory();
+                mWalletPresenter.updateTransactionHistory(true);
                 mPullToRefresh.setRefreshing(false);
             }
         });
@@ -77,6 +97,12 @@ public class WalletFragment extends BaseFragment implements WalletView {
     @Override
     public void updateBalance(String balance) {
         mWalletBalance.setText(balance);
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        paginationRequestSent = false;
+        mWalletPresenter.getTransactionRecyclerViewAdapter().notifyDataSetChanged();
     }
 
 }

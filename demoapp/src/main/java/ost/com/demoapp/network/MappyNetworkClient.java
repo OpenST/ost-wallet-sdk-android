@@ -104,11 +104,12 @@ public class MappyNetworkClient {
 
     public void getCurrentUserTransactions(final JSONObject nextPayload, final ResponseCallback callback) {
         try {
-            JSONObject params = new JSONObject();
-            processRequestPayload(params, nextPayload);
+            String urlResource = String.format("users/ledger", AppProvider.get().getCurrentUser().getId());
+            String nextPageParams = addNextPagePayload(nextPayload);
+            urlResource += nextPageParams.equals("") ? "" : String.format("?%s", nextPageParams);
             sendRequest(Request.Method.GET,
-                    String.format("users/ledger", AppProvider.get().getCurrentUser().getId()),
-                    params,
+                    urlResource,
+                    null,
                     callback);
         } catch (Exception ex) {
             callback.onFailure(ex);
@@ -117,11 +118,12 @@ public class MappyNetworkClient {
 
     public void getUserList(JSONObject nextPayload, ResponseCallback callback) {
         try {
-            JSONObject params = new JSONObject();
-            processRequestPayload(params, nextPayload);
+            String urlResource = "users";
+            String nextPageParams = addNextPagePayload(nextPayload);
+            urlResource += nextPageParams.equals("") ? "" : String.format("?%s", nextPageParams);
             sendRequest(Request.Method.GET,
-                    "users",
-                    params,
+                    urlResource,
+                    null,
                     callback);
         } catch (Exception ex) {
             callback.onFailure(ex);
@@ -130,31 +132,34 @@ public class MappyNetworkClient {
 
     public void getCurrentUserDevices(JSONObject nextPayload, ResponseCallback callback) {
         try {
-            JSONObject params = new JSONObject();
-            processRequestPayload(params, nextPayload);
+            String urlResource = "devices";
+            String nextPageParams = addNextPagePayload(nextPayload);
+            urlResource += nextPageParams.equals("") ? "" : String.format("?%s", nextPageParams);
             sendRequest(Request.Method.GET,
-                    "devices",
-                    params,
+                    urlResource,
+                    null,
                     callback);
         } catch (Exception ex) {
             callback.onFailure(ex);
         }
     }
 
-    private void processRequestPayload(JSONObject request, JSONObject payload) {
+    private String addNextPagePayload(JSONObject payload) {
+        String payloadParams = "";
         try {
-            if (payload != null) {
-                Iterator<?> keys = payload.keys();
+            if (payload != null && !payload.toString().equals("{}")) {
+                JSONObject nextPagePayload = payload.getJSONObject("next_page_payload");
+                Iterator<?> keys = nextPagePayload.keys();
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
-                    Object value = payload.get(key);
-                    request.put(key, value);
+                    Object value = nextPagePayload.get(key);
+                    payloadParams += String.format("%s=%s&", key, value);
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        return payloadParams;
     }
 
     private void sendRequest(int method, final String resource, JSONObject params, final ResponseCallback callback) {

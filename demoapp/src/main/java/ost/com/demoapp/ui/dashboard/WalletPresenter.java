@@ -36,6 +36,7 @@ class WalletPresenter extends BasePresenter<WalletView> implements
     }
 
     private JSONObject nextPayload = new JSONObject();
+    private Boolean hasMoreData = false;
 
     private List<Transaction> transactionList;
 
@@ -46,15 +47,20 @@ class WalletPresenter extends BasePresenter<WalletView> implements
         //update balance as soon as the view gets attached
         updateBalance();
         createRecyclerViewAdapter();
-        updateTransactionHistory();
+        updateTransactionHistory(true);
     }
 
     private void createRecyclerViewAdapter() {
         mTransactionRecyclerViewAdapter = TransactionRecyclerViewAdapter.newInstance(transactionList, this);
     }
 
-    void updateTransactionHistory() {
-        transactionList.clear();
+    void updateTransactionHistory(Boolean clearList) {
+        if(clearList){
+            transactionList.clear();
+            nextPayload = new JSONObject();
+        } else if(!hasMoreData){
+            return;
+        }
         AppProvider.get().getMappyClient().getCurrentUserTransactions(nextPayload, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -62,7 +68,7 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                     try {
                         JSONObject dataJSONObject =  new CommonUtils().parseJSONData(jsonObject);
                         nextPayload = dataJSONObject.optJSONObject("meta");
-
+                        hasMoreData = (nextPayload != null && !nextPayload.getJSONObject("next_page_payload").toString().equals("{}"));
                         JSONArray transactionJSONArray = (JSONArray) new CommonUtils()
                                 .parseResponseForResultType(jsonObject);
 
@@ -74,17 +80,17 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                     } catch (JSONException e) {
                         //Exception not expected
                     }
-                    mTransactionRecyclerViewAdapter.notifyDataSetChanged();
+                    getMvpView().notifyDataSetChanged();
                 } else {
                     Log.e(LOG_TAG, String.format("Get Current User Transaction response false: %s", jsonObject.toString()));
-                    mTransactionRecyclerViewAdapter.notifyDataSetChanged();
+                    getMvpView().notifyDataSetChanged();
                 }
             }
 
             @Override
             public void onFailure(Throwable throwable) {
                 Log.e(LOG_TAG, String.format("Get Current User Transaction error: %s", throwable.toString()));
-                mTransactionRecyclerViewAdapter.notifyDataSetChanged();
+                getMvpView().notifyDataSetChanged();
             }
         });
     }

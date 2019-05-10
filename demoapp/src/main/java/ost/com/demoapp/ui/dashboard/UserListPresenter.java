@@ -35,17 +35,23 @@ class UserListPresenter extends BasePresenter<UserListView> {
     }
 
     private JSONObject nextPayload = new JSONObject();
+    private Boolean hasMoreData = false;
 
     private List<User> userList = new ArrayList<>();
 
     @Override
     public void attachView(UserListView mvpView) {
         super.attachView(mvpView);
-        updateUserList();
+        updateUserList(true);
     }
 
-    void updateUserList() {
-        userList.clear();
+    void updateUserList(Boolean clearList) {
+        if(clearList){
+            userList.clear();
+            nextPayload = new JSONObject();
+        } else if(!hasMoreData){
+            return;
+        }
         AppProvider.get().getMappyClient().getUserList(nextPayload, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -53,6 +59,7 @@ class UserListPresenter extends BasePresenter<UserListView> {
                     try {
                         JSONObject dataJSONObject =  new CommonUtils().parseJSONData(jsonObject);
                         nextPayload = dataJSONObject.optJSONObject("meta");
+                        hasMoreData = (nextPayload != null && !nextPayload.getJSONObject("next_page_payload").toString().equals("{}"));
                         JSONObject balancesJSONObject = dataJSONObject.optJSONObject("balances");
                         if (null == balancesJSONObject) balancesJSONObject = new JSONObject();
 

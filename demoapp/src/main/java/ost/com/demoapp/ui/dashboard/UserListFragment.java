@@ -12,9 +12,11 @@ package ost.com.demoapp.ui.dashboard;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +47,7 @@ public class UserListFragment extends BaseFragment implements UserListView,
     private UserListPresenter mUserListPresenter = UserListPresenter.newInstance();
     private UserListRecyclerViewAdapter mUserListRecyclerViewAdapter;
     private List<User> mUserList;
+    private Boolean paginationRequestSent = false;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -95,13 +98,29 @@ public class UserListFragment extends BaseFragment implements UserListView,
         mUserListRecyclerViewAdapter = UserListRecyclerViewAdapter.newInstance(mUserList, this);
 
         mUserListPresenter.attachView(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setAdapter(mUserListRecyclerViewAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                if (!paginationRequestSent && (visibleItemCount + firstVisibleItemPosition) >=
+                        totalItemCount && firstVisibleItemPosition >= 0) {
+                    paginationRequestSent = true;
+                    mUserListPresenter.updateUserList(false);
+                }
+            }
+        });
+
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mUserListPresenter.updateUserList();
+                mUserListPresenter.updateUserList(true);
                 mPullToRefresh.setRefreshing(false);
             }
         });
@@ -133,6 +152,7 @@ public class UserListFragment extends BaseFragment implements UserListView,
 
     @Override
     public void notifyDataSetChanged() {
+        paginationRequestSent = false;
         mUserListRecyclerViewAdapter.notifyDataSetChanged();
     }
 
