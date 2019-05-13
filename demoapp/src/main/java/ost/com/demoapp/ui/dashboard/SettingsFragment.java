@@ -11,7 +11,6 @@
 package ost.com.demoapp.ui.dashboard;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -24,11 +23,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.ost.walletsdk.OstSdk;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.sdkInteract.SdkInteract;
+import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BaseFragment;
-import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.ui.logging.WalletEventFragment;
 import ost.com.demoapp.ui.managedevices.AuthorizeDeviceOptionsFragment;
 import ost.com.demoapp.ui.managedevices.DeviceListFragment;
@@ -43,8 +44,6 @@ import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.OstTextView;
 import ost.com.demoapp.util.CommonUtils;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class SettingsFragment extends BaseFragment {
     private LinearLayout mScrollViewSettings;
@@ -251,11 +250,9 @@ public class SettingsFragment extends BaseFragment {
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                AppProvider.get().getCookieStore().removeAll();
-                Intent intent = new Intent(getContext(), OnBoardingActivity.class);
-                intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                getActivity().startActivity(intent);
-                getActivity().finish();
+                showProgress(true, "Logging Out");
+                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+                OstSdk.logoutAllSessions(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);
             }
         });
         mScrollViewSettings.addView(viewLogOut);

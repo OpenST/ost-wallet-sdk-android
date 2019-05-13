@@ -10,6 +10,7 @@
 
 package ost.com.demoapp.ui.dashboard;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -41,6 +42,7 @@ import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BaseActivity;
+import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.ui.managedevices.AuthorizeDeviceOptionsFragment;
 import ost.com.demoapp.ui.managedevices.DeviceListRecyclerViewAdapter;
 import ost.com.demoapp.ui.workflow.WorkFlowPinFragment;
@@ -52,6 +54,8 @@ import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
 import ost.com.demoapp.ui.workflow.walletsetup.WalletSetUpFragment;
 import ost.com.demoapp.util.CommonUtils;
 import ost.com.demoapp.util.FragmentUtils;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class DashboardActivity extends BaseActivity implements
         TabLayout.OnTabSelectedListener,
@@ -167,6 +171,11 @@ public class DashboardActivity extends BaseActivity implements
                     Log.d(LOG_TAG, "Activate User Sync Failed");
                 }
             });
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS
+                .equals(
+                        ostWorkflowContext.getWorkflow_type()
+                )) {
+            relaunchApp();
         }
     }
 
@@ -181,6 +190,11 @@ public class DashboardActivity extends BaseActivity implements
                 )) {
             Log.e(LOG_TAG, "User Activate failed");
             checkForActiveUserAndDevice();
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS
+                .equals(
+                        ostWorkflowContext.getWorkflow_type()
+                )) {
+           relaunchApp();
         }
     }
 
@@ -328,5 +342,13 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     protected View getRootView() {
         return findViewById(R.id.layout_container);
+    }
+
+    private void relaunchApp() {
+        AppProvider.get().getCookieStore().removeAll();
+        Intent intent = new Intent(DashboardActivity.this, OnBoardingActivity.class);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+        DashboardActivity.this.startActivity(intent);
+        DashboardActivity.this.finish();
     }
 }
