@@ -50,6 +50,7 @@ import ost.com.demoapp.ui.workflow.recovery.InitiateRecoveryFragment;
 import ost.com.demoapp.ui.workflow.transactions.TransactionFragment;
 import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
 import ost.com.demoapp.ui.workflow.walletsetup.WalletSetUpFragment;
+import ost.com.demoapp.util.CommonUtils;
 import ost.com.demoapp.util.FragmentUtils;
 
 public class DashboardActivity extends BaseActivity implements
@@ -279,6 +280,9 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void onListFragmentInteraction(User user) {
+
+        if (new CommonUtils().handleActionEligibilityCheck(DashboardActivity.this)) return;
+
         Fragment fragment = TransactionFragment.newInstance(user);
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,

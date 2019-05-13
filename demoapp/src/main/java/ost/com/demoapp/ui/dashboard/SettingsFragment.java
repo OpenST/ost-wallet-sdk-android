@@ -42,6 +42,7 @@ import ost.com.demoapp.ui.workflow.viewmnemonics.ViewMnemonicsFragment;
 import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.OstTextView;
+import ost.com.demoapp.util.CommonUtils;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -105,6 +106,9 @@ public class SettingsFragment extends BaseFragment {
         addSessionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
                 Fragment fragment = CreateSessionFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -115,6 +119,9 @@ public class SettingsFragment extends BaseFragment {
         resetPinView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
                 Fragment fragment = ResetPinFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -125,6 +132,9 @@ public class SettingsFragment extends BaseFragment {
         viewMnemonicsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
                 Fragment fragment = ViewMnemonicsFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -138,6 +148,9 @@ public class SettingsFragment extends BaseFragment {
         authorizeDeviceViaQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
                 Fragment fragment = AuthorizeDeviceQRFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -148,6 +161,9 @@ public class SettingsFragment extends BaseFragment {
         authorizeDeviceViaMnemonics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
                 Fragment fragment = EnterMnemonicsFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -158,6 +174,9 @@ public class SettingsFragment extends BaseFragment {
         viewShowDeviceQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
                 Fragment fragment = QRFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -168,6 +187,9 @@ public class SettingsFragment extends BaseFragment {
         manageDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
                 Fragment fragment = DeviceListFragment.manageDeviceInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -178,6 +200,9 @@ public class SettingsFragment extends BaseFragment {
         transactionViaQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
                 //QR scanning is independent of workflow so AuthorizeDeviceQRFragment is used as generic for qr workflow
                 Fragment fragment = AuthorizeDeviceQRFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
@@ -189,6 +214,9 @@ public class SettingsFragment extends BaseFragment {
         initiateRecovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
                 Fragment fragment = DeviceListFragment.initiateRecoveryInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -199,6 +227,7 @@ public class SettingsFragment extends BaseFragment {
         abortRecovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Fragment fragment = AbortRecoveryFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -219,6 +248,9 @@ public class SettingsFragment extends BaseFragment {
         viewLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
                 AppProvider.get().getCookieStore().removeAll();
                 Intent intent = new Intent(getContext(), OnBoardingActivity.class);
                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK);

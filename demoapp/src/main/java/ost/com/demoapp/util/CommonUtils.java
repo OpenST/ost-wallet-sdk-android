@@ -10,11 +10,15 @@
 
 package ost.com.demoapp.util;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstToken;
+import com.ost.walletsdk.models.entities.OstUser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -129,5 +133,27 @@ public class CommonUtils {
         BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
         BigDecimal newBal = bal.setScale(5, RoundingMode.DOWN);
         return newBal.toString().replace(".00000", "");
+    }
+
+    public boolean handleActionEligibilityCheck(Context activityContext) {
+        OstUser currentOstUser = AppProvider.get().getCurrentUser().getOstUser();
+        if (currentOstUser.isActivating()) {
+            Dialog dialog = DialogFactory.createSimpleOkErrorDialog(
+                    activityContext,
+                    "Your Wallet is being Setup",
+                    "The Wallet setup process takes about 30 seconds. You can continue to use the app and we’ll notify when the wallet is ready to use.");
+            dialog.show();
+            return true;
+        }
+        OstDevice currentDevice = currentOstUser.getCurrentDevice();
+        if (currentDevice.isRecovering()) {
+            Dialog dialog = DialogFactory.createSimpleOkErrorDialog(
+                    activityContext,
+                    "Your Wallet is recovering",
+                    "The Wallet setup process takes about 12 hours. You can continue to use the app and we’ll notify when the wallet is ready to use.");
+            dialog.show();
+            return true;
+        }
+        return false;
     }
 }
