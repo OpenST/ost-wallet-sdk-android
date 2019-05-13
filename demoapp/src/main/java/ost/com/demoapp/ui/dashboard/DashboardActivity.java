@@ -107,7 +107,7 @@ public class DashboardActivity extends BaseActivity implements
     private void checkForActiveUserAndDevice() {
         OstUser ostUser = AppProvider.get().getCurrentUser().getOstUser();
         if (!(ostUser.isActivated() || ostUser.isActivating())) {
-            FragmentUtils.addFragmentWithoutBackStack(R.id.layout_container,
+            FragmentUtils.addFragment(R.id.layout_container,
                     WalletSetUpFragment.newInstance(),
                     this);
             mViewPager.setCurrentItem(1);
@@ -121,7 +121,8 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void goBack() {
-        if (!FragmentUtils.isBackStackEmpty(this)) {
+        if (!FragmentUtils.isBackStackEmpty(this) &&
+                !(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
             FragmentUtils.goBack(this);
         }
     }

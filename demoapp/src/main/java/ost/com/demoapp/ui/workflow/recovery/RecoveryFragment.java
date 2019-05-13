@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.ui.dashboard.WebViewFragment;
 import ost.com.demoapp.ui.workflow.walletsetup.PinFragment;
 import ost.com.demoapp.util.ChildFragmentUtils;
 
@@ -93,5 +94,13 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
     @Override
     public void onPinEntered(String pin) {
         recoveryPresenter.onPinEntered(pin);
+    }
+
+    @Override
+    public void openWebView(String url) {
+        WebViewFragment fragment = WebViewFragment.newInstance(url);
+        ChildFragmentUtils.addFragment(R.id.layout_container,
+                fragment,
+                this);
     }
 }

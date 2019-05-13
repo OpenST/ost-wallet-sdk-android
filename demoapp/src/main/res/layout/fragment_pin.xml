@@ -9,9 +9,8 @@
   ~       http://www.apache.org/licenses/LICENSE-2.0
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_holder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -21,20 +20,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.workflow.walletsetup.PinFragment">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_holder" />
+
     <ost.com.demoapp.uicomponents.OstSubHeaderTextView
         android:id="@+id/shtv_pin_sub_heading"
-        android:layout_marginTop="30dp"
+        android:layout_below="@id/layout_holder"
+        android:layout_margin="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <ost.com.demoapp.uicomponents.PinEntryEditText
         android:id="@+id/txt_pin_entry"
-        android:layout_marginStart="60dp"
-        android:layout_marginEnd="60dp"
+        android:layout_below="@id/shtv_pin_sub_heading"
+        android:layout_marginStart="90dp"
+        android:layout_marginEnd="90dp"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="5dp"
         android:background="@null"
         android:cursorVisible="false"
         android:digits="1234567890"
@@ -49,4 +54,14 @@
         app:pinBackgroundDrawable="@drawable/bg_pin_round"
         app:pinBackgroundIsSquare="false" />
 
-</LinearLayout>
+    <ost.com.demoapp.uicomponents.OstTextView
+        android:id="@+id/pin_terms_privacy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_12"
+        android:layout_margin="@dimen/dp_20"
+        android:gravity="center"
+        android:textColor="#888888"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

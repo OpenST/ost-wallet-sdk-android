@@ -13,7 +13,16 @@ package ost.com.demoapp.ui.workflow.walletsetup;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +30,13 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.OstTextView;
 import ost.com.demoapp.uicomponents.PinEntryEditText;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.uicomponents.uiutils.FontCache;
 import ost.com.demoapp.util.KeyBoard;
 
 /**
@@ -39,6 +51,7 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
     private PinEntryEditText mPinEntryEditText;
     private OnFragmentInteractionListener mListener;
     private String mSubHeading;
+    public boolean showTermsLine;
 
     public PinFragment() {
         // Required empty public constructor
@@ -96,6 +109,10 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         AppBar appBar = AppBar.newInstance(getContext(), mHeading, true);
         setUpAppBar(viewGroup, appBar);
 
+        if(showTermsLine){
+            showTermsAndPolicyText((OstTextView) viewGroup.findViewById(R.id.pin_terms_privacy));
+        }
+
         return viewGroup;
     }
 
@@ -116,5 +133,39 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
 
     public interface OnFragmentInteractionListener {
         void onPinEntered(String pin);
+        void openWebView(String url);
+    }
+
+    private void showTermsAndPolicyText(OstTextView textView){
+        SpannableString byContinuing = new SpannableString(getResources().getString(R.string.terms_policies));
+        SpannableString termsOfService = new SpannableString(getResources().getString(R.string.terms_of_service));
+        ClickableSpan termsClickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                if (mListener != null) {
+                    mListener.openWebView("https://ost.com/terms");
+                }
+            }
+        };
+        Typeface bold = FontCache.get(getActivity(), "fonts/SourceSansPro-Bold.ttf");
+        int length = termsOfService.length();
+        termsOfService.setSpan(termsClickableSpan,0,termsOfService.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
+        termsOfService.setSpan(boldSpan, 0, length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        SpannableString and = new SpannableString(getResources().getString(R.string.and));
+        SpannableString policies = new SpannableString(getResources().getString(R.string.privacy_policy));
+        ClickableSpan policiesClickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                if (mListener != null) {
+                    mListener.openWebView("https://ost.com/privacy");
+                }
+            }
+        };
+        length = policies.length();
+        policies.setSpan(policiesClickableSpan,0,length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        policies.setSpan(boldSpan, 0, length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        textView.setText(TextUtils.concat(byContinuing,"\n",termsOfService," ", and, " ", policies));
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

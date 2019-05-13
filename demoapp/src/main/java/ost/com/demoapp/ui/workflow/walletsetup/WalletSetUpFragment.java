@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.ui.dashboard.WebViewFragment;
 import ost.com.demoapp.util.ChildFragmentUtils;
 
 /**
@@ -85,15 +86,19 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
 
     @Override
     public void showAddPin() {
+        PinFragment fragment = PinFragment.newInstance("Add PIN", getResources().getString(R.string.pin_sub_heading_add_pin));
+        fragment.showTermsLine = true;
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
-                PinFragment.newInstance("Add Pin", getResources().getString(R.string.pin_sub_heading_add_pin)),
+                fragment,
                 this);
     }
 
     @Override
     public void showRetypePin() {
+        PinFragment fragment = PinFragment.newInstance("Confirm PIN", getResources().getString(R.string.pin_sub_heading_confirm_pin));
+        fragment.showTermsLine = true;
         ChildFragmentUtils.addFragment(R.id.layout_container,
-                PinFragment.newInstance("Confirm Pin", getResources().getString(R.string.pin_sub_heading_confirm_pin)),
+                fragment,
                 this);
     }
 
@@ -107,8 +112,15 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
         mWalletSetupPresenter.onPinEntered(pin);
     }
 
+    @Override
+    public void openWebView(String url) {
+        mListener.openWebView(url);
+    }
+
     public interface OnFragmentInteractionListener {
 
         void activateAcknowledged(long workflowId);
+
+        void openWebView(String url);
     }
 }

@@ -50,6 +50,11 @@
     <string name="pin_sub_heading_confirm_pin">If you forget your PIN, you cannot\n recover your Wallet. So please be sure\n to remember it.</string>
     <string name="pin_sub_heading_current_pin">Enter your 6-digit PIN to authorize\n Reset Pin.</string>
     <string name="pin_sub_heading_get_pin" >Enter your 6-digit PIN to authorize</string>
+    <string name="terms_policies" >By Creating Your Wallet, you Agree to our</string>
+    <string name="terms_of_service" >Terms Of Service</string>
+    <string name="and" > and </string>
+    <string name="privacy_policy" >Privacy Policy</string>
+
 
     <!--QR fragment-->
     <string name="qr_sub_heading_economy_scan">Scan the QR code available on the OST\n Platform to select your economy.\n (Your app won’t require this step)</string>
