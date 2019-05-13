@@ -98,6 +98,7 @@ public class DashboardActivity extends BaseActivity implements
         //Set SdkInteract Pin and verify data listeners
         SdkInteract.getInstance().setPinCallbackListener(this);
         SdkInteract.getInstance().setVerifyDataCallbackListener(this);
+        SdkInteract.getInstance().setFlowListeners(this);
 
         checkForActiveUserAndDevice();
     }
@@ -142,20 +143,13 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void activateAcknowledged(long workflowId) {
         FragmentUtils.goBack(this);
-        SdkInteract.getInstance().subscribe(
-                workflowId,
-                this
-        );
-
-        SdkInteract.getInstance().subscribe(
-                workflowId,
-                this
-        );
     }
 
     @Override
     public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
+        showToastMessage(String.format("%s workflow is successful",ostWorkflowContext.getWorkflow_type().toString()));
+
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(
                         ostWorkflowContext.getWorkflow_type()
@@ -177,6 +171,8 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         showProgress(false);
+        showToastMessage(String.format("%s workflow failed",ostWorkflowContext.getWorkflow_type().toString()));
+
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(
                         ostWorkflowContext.getWorkflow_type()
@@ -300,8 +296,6 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void onDeviceSelectToRevoke(Device device) {
         WorkFlowListener revokeDeviceWorkflowListener = SdkInteract.getInstance().newWorkFlowListener();
-
-        SdkInteract.getInstance().subscribe(revokeDeviceWorkflowListener.getId(), this);
 
         OstSdk.revokeDevice(
                 AppProvider.get().getCurrentUser().getOstUserId(),

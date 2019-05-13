@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.WeakHashMap;
 
+import ost.com.demoapp.ui.dashboard.DashboardActivity;
+
 public class SdkInteract {
     private static final SdkInteract INSTANCE = new SdkInteract();
 
@@ -34,6 +36,7 @@ public class SdkInteract {
 
     private SdkInteractListener mPinCallbackListener;
     private SdkInteractListener mVerifyDataCallbackListener;
+    private SdkInteractListener mFlowListener;
 
     PinCallback getPinCallbackListener() {
         return (PinCallback) mPinCallbackListener;
@@ -41,6 +44,14 @@ public class SdkInteract {
 
     public VerifyDataCallback getVerifyDataCallbackListener() {
         return (VerifyDataCallback) mVerifyDataCallbackListener;
+    }
+
+    public void setFlowListeners(SdkInteractListener sdkInteractListener) {
+        mFlowListener = sdkInteractListener;
+    }
+
+    public SdkInteractListener getFlowListener() {
+        return mFlowListener;
     }
 
     enum CALLBACK_TYPE {
@@ -123,6 +134,9 @@ public class SdkInteract {
     }
 
     void notifyEvent(long workflowId, CALLBACK_TYPE callback_type, Object... objects) {
+        //Generic notification
+        fireEventForCallbackType(workflowId, getFlowListener(), callback_type, objects);
+
         List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
         if (null != weakList) {
             List<Integer> listToRemove = new ArrayList<>();
