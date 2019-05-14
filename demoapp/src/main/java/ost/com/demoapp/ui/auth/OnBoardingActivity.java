@@ -31,7 +31,7 @@ public class OnBoardingActivity extends BaseActivity implements
         CreateAccountFragment.OnFragmentInteractionListener,
         QRScannerFragment.OnFragmentInteractionListener {
 
-    private static final int QR_REQUEST_CODE = 2;
+    private static final String CREATE_ACCOUNT_TAG = "ca_tag";
     private static final String LOG_TAG = "OstOnBoardingActivity";
     OnBoardingPresenter mOnBoardingPresenter = OnBoardingPresenter.getInstance();
 
@@ -53,14 +53,14 @@ public class OnBoardingActivity extends BaseActivity implements
     public void launchCreateAccountView() {
         FragmentUtils.addFragment(R.id.layout_container,
                 CreateAccountFragment.newInstance(true),
-                this);
+                this, CREATE_ACCOUNT_TAG);
     }
 
     @Override
     public void launchLoginView() {
         FragmentUtils.addFragment(R.id.layout_container,
                 CreateAccountFragment.newInstance(false),
-                this);
+                this, CREATE_ACCOUNT_TAG);
     }
 
     @Override
@@ -82,14 +82,16 @@ public class OnBoardingActivity extends BaseActivity implements
 
     @Override
     public void scanForEconomy() {
-        FragmentUtils.addFragment(R.id.layout_container,
-                QRScannerFragment.newInstance("Select your Economy", getResources().getString(R.string.qr_sub_heading_economy_scan)),
-                this);
+        if (!(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof QRScannerFragment)) {
+            FragmentUtils.addFragment(R.id.layout_container,
+                    QRScannerFragment.newInstance("Select your Economy", getResources().getString(R.string.qr_sub_heading_economy_scan)),
+                    this);
+        }
     }
 
     @Override
     public void refreshToken() {
-        ((CreateAccountFragment)FragmentUtils.getTopFragment(this,R.id.layout_container)).updateToken();
+        ((CreateAccountFragment)FragmentUtils.getFragmentByTag(this,CREATE_ACCOUNT_TAG)).updateToken();
     }
 
     @Override
@@ -113,6 +115,7 @@ public class OnBoardingActivity extends BaseActivity implements
                 Log.w(LOG_TAG, returnedResult);
                 mOnBoardingPresenter.onScanEconomyResult(returnedResult);
             } catch (Exception e) {
+                showToastMessage("QR Reading failed.. Try Again");
                 Log.e(LOG_TAG, "JSONException while parsing");
             }
         }

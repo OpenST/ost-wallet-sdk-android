@@ -27,11 +27,16 @@ public class FragmentUtils {
 
     public static void addFragment(int contId, Fragment fg,
                                    FragmentActivity fragmentAct) {
+        addFragment(contId, fg, fragmentAct, null);
+    }
+
+    public static void addFragment(int contId, Fragment fg,
+                                   FragmentActivity fragmentAct, String tag) {
         KeyBoard.hideKeyboard(fragmentAct);
         FragmentTransaction transaction = fragmentAct
                 .getSupportFragmentManager().beginTransaction();
-        transaction.add(contId, fg);
-        transaction.addToBackStack(null);
+        transaction.add(contId, fg, tag);
+        transaction.addToBackStack(tag);
         transaction.commit();
     }
 
@@ -112,6 +117,10 @@ public class FragmentUtils {
 
     public static Fragment getTopFragment(FragmentActivity fragmentAct, int contId) {
         return fragmentAct.getSupportFragmentManager().findFragmentById(contId);
+    }
+
+    public static Fragment getFragmentByTag(FragmentActivity fragmentAct, String tag) {
+        return fragmentAct.getSupportFragmentManager().findFragmentByTag(tag);
     }
 
     public static void goBack(FragmentActivity fragmentAct) {

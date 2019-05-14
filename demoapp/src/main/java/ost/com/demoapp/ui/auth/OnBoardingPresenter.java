@@ -145,6 +145,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     }
 
     void onScanEconomyResult(String returnedResult) throws JSONException {
+        getMvpView().goBack();
         CurrentEconomy currentEconomy = CurrentEconomy.newInstance(returnedResult);
         AppProvider.get().setCurrentEconomy(currentEconomy);
         getMvpView().refreshToken();
