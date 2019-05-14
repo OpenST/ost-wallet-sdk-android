@@ -82,13 +82,13 @@ public abstract class BaseFragment extends Fragment implements BaseView {
     }
 
     @Override
-    public void showToastMessage(String text) {
-        if (null != baseActivity) baseActivity.showToastMessage(text);
+    public void showToastMessage(String text, Boolean isSuccess) {
+        if (null != baseActivity) baseActivity.showToastMessage(text, isSuccess);
     }
 
     @Override
-    public void showToastMessage(int textRes) {
-        if (null != baseActivity) baseActivity.showToastMessage(textRes);
+    public void showToastMessage(int textRes, Boolean isSuccess) {
+        if (null != baseActivity) baseActivity.showToastMessage(textRes, isSuccess);
     }
 
     @Override

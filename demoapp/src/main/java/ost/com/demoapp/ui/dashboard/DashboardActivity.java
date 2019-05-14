@@ -154,7 +154,7 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
-        showToastMessage(String.format("%s workflow is successful",ostWorkflowContext.getWorkflow_type().toString()));
+        showToastMessage(String.format("%s workflow is successful",ostWorkflowContext.getWorkflow_type().toString()), true);
 
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(
@@ -182,7 +182,7 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         showProgress(false);
-        showToastMessage(String.format("%s workflow failed",ostWorkflowContext.getWorkflow_type().toString()));
+        showToastMessage(String.format("%s workflow failed",ostWorkflowContext.getWorkflow_type().toString()), false);
 
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(

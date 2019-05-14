@@ -49,6 +49,8 @@
     <color name="color_34445b">#34445b</color>
     <color name="color_f4f4f4">#f4f4f4</color>
     <color name="color_9b9b9b">#9b9b9b</color>
+    <color name="color_b9d18f">#B9D18F</color>
+    <color name="color_ff8485">#ff8485</color>
 
     <!--User list-->
     <color name="user_list_user_name">#597a84</color>

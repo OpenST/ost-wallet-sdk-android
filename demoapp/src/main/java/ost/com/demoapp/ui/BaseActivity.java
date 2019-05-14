@@ -18,7 +18,9 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.util.DialogFactory;
@@ -55,13 +57,29 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
-    public void showToastMessage(String text) {
-        Snackbar.make(getRootView(), text, Snackbar.LENGTH_LONG).show();
+    public void showToastMessage(String text, Boolean isSuccess) {
+        showSnackBar(text, isSuccess);
     }
 
     @Override
-    public void showToastMessage(int textRes) {
-        Snackbar.make(getRootView(), textRes, Snackbar.LENGTH_LONG).show();
+    public void showToastMessage(int textRes, Boolean isSuccess) {
+        showSnackBar(getResources().getString(textRes), isSuccess);
+    }
+
+    private void showSnackBar(String text, Boolean isSuccess){
+        Snackbar snack = Snackbar.make(getRootView(), text, Snackbar.LENGTH_LONG);
+        View view = snack.getView();
+        if(isSuccess){
+            view.setBackground(getResources().getDrawable(R.drawable.green_rounded_rectangle, null));
+        } else {
+            view.setBackground(getResources().getDrawable(R.drawable.red_rounded_rectangle, null));
+        }
+        FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view.getLayoutParams();
+        params.leftMargin = 30;
+        params.rightMargin = 30;
+        params.bottomMargin = 50;
+        view.setLayoutParams(params);
+        snack.show();
     }
 
     public void animateActivityChangingToRight() {

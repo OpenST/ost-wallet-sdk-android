@@ -12,9 +12,9 @@ package ost.com.demoapp.ui;
 
 public interface BaseView {
 
-    void showToastMessage(String text);
+    void showToastMessage(String text, Boolean isSuccess);
 
-    void showToastMessage(int textRes);
+    void showToastMessage(int textRes, Boolean isSuccess);
 
     void goBack();
 

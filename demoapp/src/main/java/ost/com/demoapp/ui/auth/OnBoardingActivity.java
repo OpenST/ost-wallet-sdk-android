@@ -115,7 +115,7 @@ public class OnBoardingActivity extends BaseActivity implements
                 Log.w(LOG_TAG, returnedResult);
                 mOnBoardingPresenter.onScanEconomyResult(returnedResult);
             } catch (Exception e) {
-                showToastMessage("QR Reading failed.. Try Again");
+                showToastMessage("QR Reading failed.. Try Again", false);
                 Log.e(LOG_TAG, "JSONException while parsing");
             }
         }
