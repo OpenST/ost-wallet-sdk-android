@@ -63,4 +63,8 @@
     <dimen name="qr_scanner_footer_text">18sp</dimen>
     <dimen name="list_item_spacing">16dp</dimen>
     <dimen name="list_item_spacing_half">8dp</dimen>
+
+    <!--Pin entry text box-->
+    <dimen name="type_your_pin_margins">20dp</dimen>
+    <dimen name="type_your_pin_size">20dp</dimen>
 </resources>

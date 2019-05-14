@@ -124,9 +124,14 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        mPinEntryEditText.setError(false);
         if (actionId == EditorInfo.IME_ACTION_DONE) {
-            mListener.onPinEntered(v.getText().toString());
-            return true;
+            if (v.getText().toString().length() < 6) {
+                mPinEntryEditText.setError(true);
+            } else {
+                mListener.onPinEntered(v.getText().toString());
+                return true;
+            }
         }
         return false;
     }

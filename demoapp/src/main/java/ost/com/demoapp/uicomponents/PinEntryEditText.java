@@ -11,617 +11,193 @@
 package ost.com.demoapp.uicomponents;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
 import android.text.InputFilter;
-import android.text.InputType;
-import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.Gravity;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import ost.com.demoapp.R;
 
+import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
-public class PinEntryEditText extends AppCompatEditText {
-    private static final String XML_NAMESPACE_ANDROID = "http://schemas.android.com/apk/res/android";
 
-    public static final String DEFAULT_MASK = "\u25CF";
+public class PinEntryEditText extends LinearLayout {
 
-    protected String mMask = null;
-    protected StringBuilder mMaskChars = null;
-    protected String mSingleCharHint = null;
-    protected int mAnimatedType = 0;
-    protected float mSpace = 24; //24 dp by default, space between the lines
-    protected float mCharSize;
-    protected float mNumChars = 4;
-    protected float mTextBottomPadding = 8; //8dp by default, height of the text from our lines
-    protected int mMaxLength = 4;
-    protected RectF[] mLineCoords;
-    protected float[] mCharBottom;
-    protected Paint mCharPaint;
-    protected Paint mLastCharPaint;
-    protected Paint mSingleCharPaint;
-    protected Drawable mPinBackground;
-    protected Rect mTextHeight = new Rect();
-    protected boolean mIsDigitSquare = false;
-
-    protected OnClickListener mClickListener;
-    protected OnPinEnteredListener mOnPinEnteredListener = null;
-
-    protected float mLineStroke = 1; //1dp by default
-    protected float mLineStrokeSelected = 2; //2dp by default
-    protected Paint mLinesPaint;
-    protected boolean mAnimate = false;
-    protected boolean mHasError = false;
-    protected ColorStateList mOriginalTextColors;
-    protected int[][] mStates = new int[][]{
-            new int[]{android.R.attr.state_selected}, // selected
-            new int[]{android.R.attr.state_active}, // error
-            new int[]{android.R.attr.state_focused}, // focused
-            new int[]{-android.R.attr.state_focused}, // unfocused
-    };
-
-    protected int[] mColors = new int[]{
-            Color.GREEN,
-            Color.RED,
-            Color.BLACK,
-            Color.GRAY
-    };
-
-    protected ColorStateList mColorStates = new ColorStateList(mStates, mColors);
+    List<View> pins = new ArrayList<>();
+    private EditText invisiblePinEditText;
+    private int pinLenght;
 
     public PinEntryEditText(Context context) {
         super(context);
+        init();
     }
 
-    public PinEntryEditText(Context context, AttributeSet attrs) {
+    public PinEntryEditText(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
+        init();
     }
 
-    public PinEntryEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public PinEntryEditText(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context, attrs);
+        init();
     }
 
-    public void setMaxLength(final int maxLength) {
-        mMaxLength = maxLength;
-        mNumChars = maxLength;
+    private void init() {
+        pinLenght = getResources().getInteger(R.integer.type_your_pin_lenght);
+        int inputType = getResources().getInteger(R.integer.type_your_pin_input_type);
+        int marginSize = getResources().getDimensionPixelSize(R.dimen.type_your_pin_margins);
+        int height = getResources().getDimensionPixelSize(R.dimen.type_your_pin_size);
+        int width = getResources().getDimensionPixelSize(R.dimen.type_your_pin_size);
 
-        setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+        setOrientation(HORIZONTAL);
+        setGravity(Gravity.CENTER);
+        setSize(this, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        setupOnClickListener();
+        setFocusableInTouchMode(false);
 
-        setText(null);
-        invalidate();
-    }
+        setInvisibleEditText(pinLenght, inputType);
 
-    public void setMask(String mask) {
-        mMask = mask;
-        mMaskChars = null;
-        invalidate();
-    }
+        for (int i = 1; i <= pinLenght; i++) {
+            View pin = new View(getContext());
+            setSize(pin, width, height);
+            setMarginLeft(pin, marginSize);
 
-    public void setSingleCharHint(String hint) {
-        mSingleCharHint = hint;
-        invalidate();
-    }
-
-    private void init(Context context, AttributeSet attrs) {
-        float multi = context.getResources().getDisplayMetrics().density;
-        mLineStroke = multi * mLineStroke;
-        mLineStrokeSelected = multi * mLineStrokeSelected;
-        mSpace = multi * mSpace; //convert to pixels for our density
-        mTextBottomPadding = multi * mTextBottomPadding; //convert to pixels for our density
-
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PinEntryEditText, 0, 0);
-        try {
-            TypedValue outValue = new TypedValue();
-            ta.getValue(R.styleable.PinEntryEditText_pinAnimationType, outValue);
-            mAnimatedType = outValue.data;
-            mMask = ta.getString(R.styleable.PinEntryEditText_pinCharacterMask);
-            mSingleCharHint = ta.getString(R.styleable.PinEntryEditText_pinRepeatedHint);
-            mLineStroke = ta.getDimension(R.styleable.PinEntryEditText_pinLineStroke, mLineStroke);
-            mLineStrokeSelected = ta.getDimension(R.styleable.PinEntryEditText_pinLineStrokeSelected, mLineStrokeSelected);
-            mSpace = ta.getDimension(R.styleable.PinEntryEditText_pinCharacterSpacing, mSpace);
-            mTextBottomPadding = ta.getDimension(R.styleable.PinEntryEditText_pinTextBottomPadding, mTextBottomPadding);
-            mIsDigitSquare = ta.getBoolean(R.styleable.PinEntryEditText_pinBackgroundIsSquare, mIsDigitSquare);
-            mPinBackground = ta.getDrawable(R.styleable.PinEntryEditText_pinBackgroundDrawable);
-            ColorStateList colors = ta.getColorStateList(R.styleable.PinEntryEditText_pinLineColors);
-            if (colors != null) {
-                mColorStates = colors;
+            if (isLastPin(i, pinLenght)) {
+                setMarginRight(pin, marginSize);
             }
-        } finally {
-            ta.recycle();
+            pins.add(pin);
+            unfillPin(pin);
+            addView(pin);
         }
+    }
 
-        mCharPaint = new Paint(getPaint());
-        mLastCharPaint = new Paint(getPaint());
-        mSingleCharPaint = new Paint(getPaint());
-        mLinesPaint = new Paint(getPaint());
-        mLinesPaint.setStrokeWidth(mLineStroke);
-
-        TypedValue outValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorControlActivated,
-                outValue, true);
-        int colorSelected = outValue.data;
-        mColors[0] = colorSelected;
-
-        int colorFocused = isInEditMode() ? Color.GRAY : ContextCompat.getColor(context, R.color.pin_normal);
-        mColors[1] = colorFocused;
-
-        int colorUnfocused = isInEditMode() ? Color.GRAY : ContextCompat.getColor(context, R.color.pin_normal);
-        mColors[2] = colorUnfocused;
-
-        setBackgroundResource(0);
-
-        mMaxLength = attrs.getAttributeIntValue(XML_NAMESPACE_ANDROID, "maxLength", 4);
-        mNumChars = mMaxLength;
-
-        //Disable copy paste
-        super.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public void onDestroyActionMode(ActionMode mode) {
-            }
-
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                return false;
-            }
-
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return false;
-            }
-        });
-        // When tapped, move cursor to end of text.
-        super.setOnClickListener(new OnClickListener() {
+    private void setupOnClickListener() {
+        setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v) {
-                setSelection(getText().length());
-                if (mClickListener != null) {
-                    mClickListener.onClick(v);
-                }
+            public void onClick(View view) {
+                requestPinEditTextFocus();
+                updatePinView();
             }
         });
+    }
 
-        super.setOnLongClickListener(new OnLongClickListener() {
+    private void requestPinEditTextFocus() {
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null && invisiblePinEditText != null) {
+            imm.showSoftInput(invisiblePinEditText, 0);
+            invisiblePinEditText.requestFocus();
+        }
+    }
+
+    private void setInvisibleEditText(int pinLenght, int inputType) {
+        invisiblePinEditText = new EditText(getContext());
+        setSize(invisiblePinEditText, 0, 0);
+        invisiblePinEditText.setInputType(inputType);
+        invisiblePinEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(pinLenght)});
+        invisiblePinEditText.setImeOptions(IME_ACTION_DONE);
+        addView(invisiblePinEditText);
+        setupEditTextPinListener(invisiblePinEditText);
+        requestPinEditTextFocus();
+    }
+
+    public String getText() {
+        return invisiblePinEditText.getText().toString();
+    }
+    private void setSize(View v, int width, int height) {
+        v.setLayoutParams(new LayoutParams(width, height));
+    }
+
+    public static void setMarginLeft(View v, int left) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            setMargins(v, left, p.topMargin, p.rightMargin, p.bottomMargin);
+        }
+    }
+
+    public static void setMarginRight(View v, int right) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            setMargins(v, p.leftMargin, p.topMargin, right, p.bottomMargin);
+        }
+    }
+
+    public static void setMargins(View v, int left, int top, int right, int bottom) {
+        if (v.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            p.setMargins(left, top, right, bottom);
+            v.requestLayout();
+        }
+    }
+
+    private boolean isLastPin(int i, int pinSize) {
+        return i == pinSize;
+    }
+
+
+    private void setupEditTextPinListener(EditText editText) {
+        editText.addTextChangedListener(new TextWatcher() {
+            int lastTextLenght = 0;
+
             @Override
-            public boolean onLongClick(View v) {
-                setSelection(getText().length());
-                return true;
-            }
-        });
-
-        //If input type is password and no mask is set, use a default mask
-        if ((getInputType() & InputType.TYPE_TEXT_VARIATION_PASSWORD) == InputType.TYPE_TEXT_VARIATION_PASSWORD && TextUtils.isEmpty(mMask)) {
-            mMask = DEFAULT_MASK;
-        } else if ((getInputType() & InputType.TYPE_NUMBER_VARIATION_PASSWORD) == InputType.TYPE_NUMBER_VARIATION_PASSWORD && TextUtils.isEmpty(mMask)) {
-            mMask = DEFAULT_MASK;
-        }
-
-        if (!TextUtils.isEmpty(mMask)) {
-            mMaskChars = getMaskChars();
-        }
-
-        //Height of the characters, used if there is a background drawable
-        getPaint().getTextBounds("|", 0, 1, mTextHeight);
-
-        mAnimate = mAnimatedType > -1;
-    }
-
-    @Override
-    public void setInputType(int type) {
-        super.setInputType(type);
-
-        if ((type & InputType.TYPE_TEXT_VARIATION_PASSWORD) == InputType.TYPE_TEXT_VARIATION_PASSWORD
-                || (type & InputType.TYPE_NUMBER_VARIATION_PASSWORD) == InputType.TYPE_NUMBER_VARIATION_PASSWORD) {
-            // If input type is password and no mask is set, use a default mask
-            if (TextUtils.isEmpty(mMask)) {
-                setMask(DEFAULT_MASK);
-            }
-        } else {
-            // If input type is not password, remove mask
-            setMask(null);
-        }
-
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        mOriginalTextColors = getTextColors();
-        if (mOriginalTextColors != null) {
-            mLastCharPaint.setColor(mOriginalTextColors.getDefaultColor());
-            mCharPaint.setColor(mOriginalTextColors.getDefaultColor());
-            mSingleCharPaint.setColor(getCurrentHintTextColor());
-        }
-        int availableWidth = getWidth() - ViewCompat.getPaddingEnd(this) - ViewCompat.getPaddingStart(this);
-        if (mSpace < 0) {
-            mCharSize = (availableWidth / (mNumChars * 2 - 1));
-        } else {
-            mCharSize = (availableWidth - (mSpace * (mNumChars - 1))) / mNumChars;
-        }
-        mLineCoords = new RectF[(int) mNumChars];
-        mCharBottom = new float[(int) mNumChars];
-        int startX;
-        int bottom = getHeight() - getPaddingBottom();
-        int rtlFlag;
-        final boolean isLayoutRtl = ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL;
-        if (isLayoutRtl) {
-            rtlFlag = -1;
-            startX = (int) (getWidth() - ViewCompat.getPaddingStart(this) - mCharSize);
-        } else {
-            rtlFlag = 1;
-            startX = ViewCompat.getPaddingStart(this);
-        }
-        for (int i = 0; i < mNumChars; i++) {
-            mLineCoords[i] = new RectF(startX, bottom, startX + mCharSize, bottom);
-            if (mPinBackground != null) {
-                if (mIsDigitSquare) {
-                    mLineCoords[i].top = getPaddingTop();
-                    mLineCoords[i].right = startX + mLineCoords[i].width();
-                } else {
-                    mLineCoords[i].top -= mTextHeight.height() + mTextBottomPadding * 2;
-                }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                lastTextLenght = charSequence.length();
             }
 
-            if (mSpace < 0) {
-                startX += rtlFlag * mCharSize * 2;
-            } else {
-                startX += rtlFlag * (mCharSize + mSpace);
-            }
-            mCharBottom[i] = mLineCoords[i].bottom - mTextBottomPadding;
-        }
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (mIsDigitSquare) {
-            int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-            int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-            int measuredWidth = 0;
-            int measuredHeight = 0;
-            // If we want a square or circle pin box, we might be able
-            // to figure out the dimensions outselves
-            // if width and height are set to wrap_content or match_parent
-            if (widthMode == MeasureSpec.EXACTLY) {
-                measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
-                measuredHeight = (int) ((measuredWidth - (mNumChars - 1 * mSpace)) / mNumChars);
-            } else if (heightMode == MeasureSpec.EXACTLY) {
-                measuredHeight = MeasureSpec.getSize(heightMeasureSpec);
-                measuredWidth = (int) ((measuredHeight * mNumChars) + (mSpace * mNumChars - 1));
-            } else if (widthMode == MeasureSpec.AT_MOST) {
-                measuredWidth = MeasureSpec.getSize(widthMeasureSpec);
-                measuredHeight = (int) ((measuredWidth - (mNumChars - 1 * mSpace)) / mNumChars);
-            } else if (heightMode == MeasureSpec.AT_MOST) {
-                measuredHeight = MeasureSpec.getSize(heightMeasureSpec);
-                measuredWidth = (int) ((measuredHeight * mNumChars) + (mSpace * mNumChars - 1));
-            } else {
-                // Both unspecific
-                // Try for a width based on our minimum
-                measuredWidth = getPaddingLeft() + getPaddingRight() + getSuggestedMinimumWidth();
-
-                // Whatever the width ends up being, ask for a height that would let the pie
-                // get as big as it can
-                measuredHeight = (int) ((measuredWidth - (mNumChars - 1 * mSpace)) / mNumChars);
-            }
-
-            setMeasuredDimension(
-                    resolveSizeAndState(measuredWidth, widthMeasureSpec, 1), resolveSizeAndState(measuredHeight, heightMeasureSpec, 0));
-        } else {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
-    }
-
-    @Override
-    public void setOnClickListener(OnClickListener l) {
-        mClickListener = l;
-    }
-
-    @Override
-    public void setCustomSelectionActionModeCallback(ActionMode.Callback actionModeCallback) {
-        throw new RuntimeException("setCustomSelectionActionModeCallback() not supported.");
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        //super.onDraw(canvas);
-        CharSequence text = getFullText();
-        int textLength = text.length();
-        float[] textWidths = new float[textLength];
-        getPaint().getTextWidths(text, 0, textLength, textWidths);
-
-        float hintWidth = 0;
-        if (mSingleCharHint != null) {
-            float[] hintWidths = new float[mSingleCharHint.length()];
-            getPaint().getTextWidths(mSingleCharHint, hintWidths);
-            for (float i : hintWidths) {
-                hintWidth += i;
-            }
-        }
-        for (int i = 0; i < mNumChars; i++) {
-            //If a background for the pin characters is specified, it should be behind the characters.
-            if (mPinBackground != null) {
-                updateDrawableState(i < textLength, i == textLength);
-                mPinBackground.setBounds((int) mLineCoords[i].left, (int) mLineCoords[i].top, (int) mLineCoords[i].right, (int) mLineCoords[i].bottom);
-                mPinBackground.draw(canvas);
-            }
-            float middle = mLineCoords[i].left + mCharSize / 2;
-            if (textLength > i) {
-                if (!mAnimate || i != textLength - 1) {
-                    canvas.drawText(text, i, i + 1, middle - textWidths[i] / 2, mCharBottom[i], mCharPaint);
-                } else {
-                    canvas.drawText(text, i, i + 1, middle - textWidths[i] / 2, mCharBottom[i], mLastCharPaint);
-                }
-            } else if (mSingleCharHint != null) {
-                canvas.drawText(mSingleCharHint, middle - hintWidth / 2, mCharBottom[i], mSingleCharPaint);
-            }
-            //The lines should be in front of the text (because that's how I want it).
-            if (mPinBackground == null) {
-                updateColorForLines(i <= textLength);
-                canvas.drawLine(mLineCoords[i].left, mLineCoords[i].top, mLineCoords[i].right, mLineCoords[i].bottom, mLinesPaint);
-            }
-        }
-    }
-
-    private CharSequence getFullText() {
-        if (TextUtils.isEmpty(mMask)) {
-            return getText();
-        } else {
-            return getMaskChars();
-        }
-    }
-
-    private StringBuilder getMaskChars() {
-        if (mMaskChars == null) {
-            mMaskChars = new StringBuilder();
-        }
-        int textLength = getText().length();
-        while (mMaskChars.length() != textLength) {
-            if (mMaskChars.length() < textLength) {
-                mMaskChars.append(mMask);
-            } else {
-                mMaskChars.deleteCharAt(mMaskChars.length() - 1);
-            }
-        }
-        return mMaskChars;
-    }
-
-
-    private int getColorForState(int... states) {
-        return mColorStates.getColorForState(states, Color.GRAY);
-    }
-
-    /**
-     * @param hasTextOrIsNext Is the color for a character that has been typed or is
-     *                        the next character to be typed?
-     */
-    protected void updateColorForLines(boolean hasTextOrIsNext) {
-        if (mHasError) {
-            mLinesPaint.setColor(getColorForState(android.R.attr.state_active));
-        } else if (isFocused()) {
-            mLinesPaint.setStrokeWidth(mLineStrokeSelected);
-            mLinesPaint.setColor(getColorForState(android.R.attr.state_focused));
-            if (hasTextOrIsNext) {
-                mLinesPaint.setColor(getColorForState(android.R.attr.state_selected));
-            }
-        } else {
-            mLinesPaint.setStrokeWidth(mLineStroke);
-            mLinesPaint.setColor(getColorForState(-android.R.attr.state_focused));
-        }
-    }
-
-    protected void updateDrawableState(boolean hasText, boolean isNext) {
-        if (mHasError) {
-            mPinBackground.setState(new int[]{android.R.attr.state_active});
-        } else if (isFocused()) {
-            mPinBackground.setState(new int[]{android.R.attr.state_focused});
-            if (isNext) {
-                mPinBackground.setState(new int[]{android.R.attr.state_focused, android.R.attr.state_selected});
-            } else if (hasText) {
-                mPinBackground.setState(new int[]{android.R.attr.state_focused, android.R.attr.state_checked});
-            }
-        } else {
-            if (hasText) {
-                mPinBackground.setState(new int[]{-android.R.attr.state_focused, android.R.attr.state_checked});
-            } else {
-                mPinBackground.setState(new int[]{-android.R.attr.state_focused});
-            }
-        }
-    }
-
-    public void setError(boolean hasError) {
-        mHasError = hasError;
-        invalidate();
-    }
-
-    public boolean isError() {
-        return mHasError;
-    }
-
-    /**
-     * Request focus on this PinEntryEditText
-     */
-    public void focus() {
-        requestFocus();
-
-        // Show keyboard
-        InputMethodManager inputMethodManager = (InputMethodManager) getContext()
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.showSoftInput(this, 0);
-    }
-
-    @Override
-    public void setTypeface(@Nullable Typeface tf) {
-        super.setTypeface(tf);
-        setCustomTypeface(tf);
-    }
-
-    @Override
-    public void setTypeface(@Nullable Typeface tf, int style) {
-        super.setTypeface(tf, style);
-        setCustomTypeface(tf);
-    }
-
-    private void setCustomTypeface(@Nullable Typeface tf) {
-        if (mCharPaint != null) {
-            mCharPaint.setTypeface(tf);
-            mLastCharPaint.setTypeface(tf);
-            mSingleCharPaint.setTypeface(tf);
-            mLinesPaint.setTypeface(tf);
-        }
-    }
-
-    public void setPinLineColors(ColorStateList colors) {
-        mColorStates = colors;
-        invalidate();
-    }
-
-    public void setPinBackground(Drawable pinBackground) {
-        mPinBackground = pinBackground;
-        invalidate();
-    }
-
-    @Override
-    protected void onTextChanged(CharSequence text, final int start, int lengthBefore, final int lengthAfter) {
-        setError(false);
-        if (mLineCoords == null || !mAnimate) {
-            if (mOnPinEnteredListener != null && text.length() == mMaxLength) {
-                mOnPinEnteredListener.onPinEntered(text);
-            }
-            return;
-        }
-
-        if (mAnimatedType == -1) {
-            invalidate();
-            return;
-        }
-
-        if (lengthAfter > lengthBefore) {
-            if (mAnimatedType == 0) {
-                animatePopIn();
-            } else {
-                animateBottomUp(text, start);
-            }
-        }
-    }
-
-    private void animatePopIn() {
-        ValueAnimator va = ValueAnimator.ofFloat(1, getPaint().getTextSize());
-        va.setDuration(200);
-        va.setInterpolator(new OvershootInterpolator());
-        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mLastCharPaint.setTextSize((Float) animation.getAnimatedValue());
-                PinEntryEditText.this.invalidate();
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                updatePinView();
             }
-        });
-        if (getText().length() == mMaxLength && mOnPinEnteredListener != null) {
-            va.addListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mOnPinEnteredListener.onPinEntered(getText());
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-                }
-            });
-        }
-        va.start();
-    }
-
-    private void animateBottomUp(CharSequence text, final int start) {
-        mCharBottom[start] = mLineCoords[start].bottom - mTextBottomPadding;
-        ValueAnimator animUp = ValueAnimator.ofFloat(mCharBottom[start] + getPaint().getTextSize(), mCharBottom[start]);
-        animUp.setDuration(300);
-        animUp.setInterpolator(new OvershootInterpolator());
-        animUp.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Float value = (Float) animation.getAnimatedValue();
-                mCharBottom[start] = value;
-                PinEntryEditText.this.invalidate();
+            public void afterTextChanged(Editable editable) {
             }
         });
+    }
 
-        mLastCharPaint.setAlpha(255);
-        ValueAnimator animAlpha = ValueAnimator.ofInt(0, 255);
-        animAlpha.setDuration(300);
-        animAlpha.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                Integer value = (Integer) animation.getAnimatedValue();
-                mLastCharPaint.setAlpha(value);
-            }
-        });
-
-        AnimatorSet set = new AnimatorSet();
-        if (text.length() == mMaxLength && mOnPinEnteredListener != null) {
-            set.addListener(new Animator.AnimatorListener() {
-
-                @Override
-                public void onAnimationStart(Animator animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mOnPinEnteredListener.onPinEntered(getText());
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
+    private void updatePinView() {
+        int textLengthAfter = invisiblePinEditText.length();
+        int index = 0;
+        for (;index < textLengthAfter;index++) {
+            fillPin(pins.get(index));
         }
-        set.playTogether(animUp, animAlpha);
-        set.start();
+        for (;index < pinLenght; index++) {
+            unfillPin(pins.get(index));
+        }
     }
 
-    public void setAnimateText(boolean animate) {
-        mAnimate = animate;
+    private boolean hasFinishedTyping(int textLenghtAfter) {
+        return textLenghtAfter == pinLenght;
     }
 
-    public void setOnPinEnteredListener(OnPinEnteredListener l) {
-        mOnPinEnteredListener = l;
+    private boolean hasNewPin(int textSizeBefore, int size) {
+        return textSizeBefore < size;
     }
 
-    public interface OnPinEnteredListener {
-        void onPinEntered(CharSequence str);
+    private void fillPin(View pin) {
+        pin.setBackground(getResources().getDrawable(R.drawable.bg_pin_round_fill, null));
+    }
+
+    private void unfillPin(View pin) {
+        pin.setBackground(getResources().getDrawable(R.drawable.bg_pin_round_unfill, null));
+    }
+
+    public void setOnEditorActionListener(TextView.OnEditorActionListener onEditorActionListener) {
+        invisiblePinEditText.setOnEditorActionListener(onEditorActionListener);
+    }
+
+    public void setError(boolean b) {
+
     }
 }
