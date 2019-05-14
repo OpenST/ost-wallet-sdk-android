@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ost.com.demoapp.AppProvider;
+import ost.com.demoapp.R;
 
 public class CommonUtils {
     private static final String LOG_TAG = "OstCommonUtils";
@@ -140,8 +141,8 @@ public class CommonUtils {
         if (currentOstUser.isActivating()) {
             Dialog dialog = DialogFactory.createSimpleOkErrorDialog(
                     activityContext,
-                    "Your Wallet is being Setup",
-                    "The Wallet setup process takes about 30 seconds. You can continue to use the app and we’ll notify when the wallet is ready to use.");
+                    activityContext.getResources().getString(R.string.wallet_being_setup),
+                    activityContext.getResources().getString(R.string.wallet_setup_text));
             dialog.show();
             return true;
         }

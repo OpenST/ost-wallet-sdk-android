@@ -45,6 +45,38 @@
             android:textStyle="bold"
             android:textSize="13sp" />
 
+        <LinearLayout
+            android:id="@+id/empty_wallet_text"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:layout_below="@id/tv_transaction_history"
+            android:background="#fafafa"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_20"
+                android:textStyle="bold"
+                android:textColor="@color/color_34445b"
+                android:layout_gravity="center"
+                android:text="@string/wallet_being_setup"
+                />
+
+            <ost.com.demoapp.uicomponents.OstTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_15"
+                android:textColor="#597a84"
+                android:gravity="center"
+                android:layout_margin="@dimen/dp_10"
+                android:text="@string/wallet_setup_text"
+                />
+
+        </LinearLayout>
+
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/pullToRefresh"
             android:layout_width="match_parent"

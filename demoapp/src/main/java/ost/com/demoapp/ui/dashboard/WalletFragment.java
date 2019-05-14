@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import ost.com.demoapp.R;
@@ -33,6 +34,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
     private TransactionRecyclerViewAdapter mTransactionRecyclerViewAdapter;
     private SwipeRefreshLayout mPullToRefresh;
     private Boolean paginationRequestSent = false;
+    private LinearLayout mEmptyWalletLL;
 
     public WalletFragment() {
     }
@@ -56,6 +58,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_wallet, container, false);
 
         mWalletBalance = view.findViewById(R.id.ptv_wallet_balance);
+        mEmptyWalletLL = view.findViewById(R.id.empty_wallet_text);
         mRecyclerView = view.findViewById(R.id.rv_transactions);
         mPullToRefresh = view.findViewById(R.id.pullToRefresh);
         AppBar appBar = AppBar.newInstance(getContext(),
@@ -103,6 +106,9 @@ public class WalletFragment extends BaseFragment implements WalletView {
     public void notifyDataSetChanged() {
         paginationRequestSent = false;
         mWalletPresenter.getTransactionRecyclerViewAdapter().notifyDataSetChanged();
+        if(mWalletPresenter.getTransactionRecyclerViewAdapter().getItemCount() > 0){
+            mEmptyWalletLL.setVisibility(View.GONE);
+        }
     }
 
 }

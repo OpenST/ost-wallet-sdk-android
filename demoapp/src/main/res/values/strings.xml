@@ -59,4 +59,8 @@
     <!--QR fragment-->
     <string name="qr_sub_heading_economy_scan">Scan the QR code available on the OST\n Platform to select your economy.\n (Your app won’t require this step)</string>
     <string name="qr_sub_heading_authorize_scan">Scan the QR code to complete action</string>
+
+    <!-- Wallet Setup -->
+    <string name="wallet_being_setup">Your Wallet is being Setup</string>
+    <string name="wallet_setup_text">The Wallet setup process takes about 30 seconds. You can continue to use the app and we’ll notify when the wallet is ready to use.</string>
 </resources>
