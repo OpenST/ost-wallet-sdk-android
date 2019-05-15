@@ -128,5 +128,6 @@ public class FragmentUtils {
         FragmentTransaction transaction = fragmentAct.getSupportFragmentManager().beginTransaction();
         transaction.remove(FragmentUtils.getTopFragment(fragmentAct, R.id.layout_container));
         transaction.commit();
+        fragmentAct.getSupportFragmentManager().popBackStack();
     }
 }

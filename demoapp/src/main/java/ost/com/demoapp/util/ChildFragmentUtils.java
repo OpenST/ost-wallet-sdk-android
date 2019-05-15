@@ -118,5 +118,6 @@ public class ChildFragmentUtils {
         FragmentTransaction transaction = fragmentAct.getChildFragmentManager().beginTransaction();
         transaction.remove(ChildFragmentUtils.getTopFragment(fragmentAct, R.id.layout_container));
         transaction.commit();
+        fragmentAct.getChildFragmentManager().popBackStack();
     }
 }

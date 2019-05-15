@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseFragment;
-import ost.com.demoapp.ui.dashboard.WebViewFragment;
+import ost.com.demoapp.ui.workflow.ChildFragmentStack;
 import ost.com.demoapp.util.ChildFragmentUtils;
 
 /**
@@ -29,7 +29,8 @@ import ost.com.demoapp.util.ChildFragmentUtils;
  * create an instance of this fragment.
  */
 public class WalletSetUpFragment extends BaseFragment implements SetUpView,
-    PinFragment.OnFragmentInteractionListener {
+    PinFragment.OnFragmentInteractionListener,
+        ChildFragmentStack {
 
 
     WalletSetUpPresenter mWalletSetupPresenter = WalletSetUpPresenter.getInstance();
@@ -115,6 +116,16 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     @Override
     public void openWebView(String url) {
         mListener.openWebView(url);
+    }
+
+    @Override
+    public boolean popBack() {
+        if (this.getChildFragmentManager().getBackStackEntryCount() > 1) {
+            mWalletSetupPresenter.popBack();
+            ChildFragmentUtils.goBack(this);
+            return true;
+        }
+        return false;
     }
 
     public interface OnFragmentInteractionListener {

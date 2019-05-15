@@ -45,6 +45,7 @@ import ost.com.demoapp.ui.BaseActivity;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.ui.managedevices.AuthorizeDeviceOptionsFragment;
 import ost.com.demoapp.ui.managedevices.DeviceListRecyclerViewAdapter;
+import ost.com.demoapp.ui.workflow.ChildFragmentStack;
 import ost.com.demoapp.ui.workflow.WorkFlowPinFragment;
 import ost.com.demoapp.ui.workflow.WorkFlowVerifyDataFragment;
 import ost.com.demoapp.ui.workflow.recovery.AbortRecoveryFragment;
@@ -125,7 +126,12 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void goBack() {
-        if (!FragmentUtils.isBackStackEmpty(this) &&
+        Fragment topFragment = FragmentUtils.getTopFragment(this, R.id.layout_container);
+        boolean consumed = false;
+        if (topFragment instanceof ChildFragmentStack) {
+             consumed = ((ChildFragmentStack)topFragment).popBack();
+        }
+        if (!consumed && !FragmentUtils.isBackStackEmpty(this) &&
                 !(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
             FragmentUtils.goBack(this);
         }

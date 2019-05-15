@@ -77,4 +77,10 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
         getMvpView().showProgress(false);
         (getMvpView()).gotoDashboard(workflowId);
     }
+
+    void popBack() {
+        if (pinCounter > 0) {
+            pinCounter--;
+        }
+    }
 }
