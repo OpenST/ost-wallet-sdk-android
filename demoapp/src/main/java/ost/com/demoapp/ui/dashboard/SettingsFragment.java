@@ -50,6 +50,7 @@ public class SettingsFragment extends BaseFragment {
     private LinearLayout mScrollViewSettings;
     private OnFragmentInteractionListener mListener;
     public Boolean openDeviceAuthorization = false;
+    private LayoutInflater mInflater;
 
     public SettingsFragment() {
     }
@@ -90,9 +91,26 @@ public class SettingsFragment extends BaseFragment {
 
         mScrollViewSettings = view.findViewById(R.id.ll_settings_list);
 
+        mInflater = inflater;
+
+        drawListItems();
+
+        AppBar appBar = AppBar.newInstance(getContext(),
+                "Wallet Settings",
+                false);
+        setUpAppBar(view, appBar);
+
+        return view;
+    }
+
+    private void drawListItems(){
+        mScrollViewSettings.removeAllViews();
         mScrollViewSettings.addView(getCategoryView("DEVICE"));
 
-        View walletDetailsView = getFeatureView("View Wallet Details", inflater);
+        OstUser ostUser = AppProvider.get().getCurrentUser().getOstUser();
+        Boolean isUserActive = ostUser.isActivated();
+
+        View walletDetailsView = getFeatureView("View Wallet Details", true);
         walletDetailsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +120,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(walletDetailsView);
 
-        View addSessionView = getFeatureView("Add Session", inflater);
+        View addSessionView = getFeatureView("Add Session", isUserActive);
         addSessionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +137,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(addSessionView);
 
-        View resetPinView = getFeatureView("Reset PIN", inflater);
+        View resetPinView = getFeatureView("Reset PIN", isUserActive);
         resetPinView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,14 +150,14 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(resetPinView);
 
-        View viewMnemonicsView = getFeatureView("View Mnemonics", inflater);
+        View viewMnemonicsView = getFeatureView("View Mnemonics", isUserActive);
         viewMnemonicsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                if(userDeviceNotAuthorized()){
+                if (userDeviceNotAuthorized()) {
                     openDeviceAuthorizationFragment();
                 } else {
                     Fragment fragment = ViewMnemonicsFragment.newInstance();
@@ -152,7 +170,7 @@ public class SettingsFragment extends BaseFragment {
 
         mScrollViewSettings.addView(getCategoryView("ADD & Recovery"));
 
-        View authorizeDeviceViaQR = getFeatureView("Authorize Device via QR", inflater);
+        View authorizeDeviceViaQR = getFeatureView("Authorize Device via QR", isUserActive);
         authorizeDeviceViaQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,7 +183,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(authorizeDeviceViaQR);
 
-        View authorizeDeviceViaMnemonics = getFeatureView("Authorize Device via Mnemonics", inflater);
+        View authorizeDeviceViaMnemonics = getFeatureView("Authorize Device via Mnemonics", isUserActive);
         authorizeDeviceViaMnemonics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,12 +196,10 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(authorizeDeviceViaMnemonics);
 
-        View viewShowDeviceQR = getFeatureView("Show Device QR", inflater);
+        View viewShowDeviceQR = getFeatureView("Show Device QR", true);
         viewShowDeviceQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
                 Fragment fragment = QRFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
@@ -191,12 +207,10 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(viewShowDeviceQR);
 
-        View manageDevices = getFeatureView("Manage Devices", inflater);
+        View manageDevices = getFeatureView("Manage Devices", true);
         manageDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
                 Fragment fragment = DeviceListFragment.manageDeviceInstance();
                 mListener.launchFeatureFragment(fragment);
@@ -204,14 +218,14 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(manageDevices);
 
-        View transactionViaQR = getFeatureView("Transaction via QR", inflater);
+        View transactionViaQR = getFeatureView("Transaction via QR", isUserActive);
         transactionViaQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                if(userDeviceNotAuthorized()){
+                if (userDeviceNotAuthorized()) {
                     openDeviceAuthorizationFragment();
                 } else {
                     //QR scanning is independent of workflow so AuthorizeDeviceQRFragment is used as generic for qr workflow
@@ -222,7 +236,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(transactionViaQR);
 
-        View initiateRecovery = getFeatureView("Initiate Recovery", inflater);
+        View initiateRecovery = getFeatureView("Initiate Recovery", isUserActive);
         initiateRecovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -235,10 +249,12 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(initiateRecovery);
 
-        View abortRecovery = getFeatureView("Abort Recovery", inflater);
+        View abortRecovery = getFeatureView("Abort Recovery", isUserActive);
         abortRecovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
                 Fragment fragment = AbortRecoveryFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
@@ -246,7 +262,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(abortRecovery);
 
-        View evenLogs = getFeatureView("Wallet events", inflater);
+        View evenLogs = getFeatureView("Wallet events", true);
         evenLogs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -256,14 +272,14 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(evenLogs);
 
-        View viewLogOut = getFeatureView("Log out all sessions", inflater);
+        View viewLogOut = getFeatureView("Log out all sessions", isUserActive);
         viewLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                if(userDeviceNotAuthorized()){
+                if (userDeviceNotAuthorized()) {
                     openDeviceAuthorizationFragment();
                 } else {
                     showProgress(true, "Logging Out");
@@ -273,13 +289,6 @@ public class SettingsFragment extends BaseFragment {
             }
         });
         mScrollViewSettings.addView(viewLogOut);
-
-        AppBar appBar = AppBar.newInstance(getContext(),
-                "Wallet Settings",
-                false);
-        setUpAppBar(view, appBar);
-
-        return view;
     }
 
     @Override
@@ -297,16 +306,25 @@ public class SettingsFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        drawListItems();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-    private View getFeatureView(String featureTitle, LayoutInflater inflater) {
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.wallet_settings_item, null, false);
-        OstTextView mTextView = view.findViewById(R.id.ws_item);
+    private View getFeatureView(String featureTitle, Boolean isEnabled) {
+        ViewGroup mWalletSettingsItem = (ViewGroup) mInflater.inflate(R.layout.wallet_settings_item, null, false);
+        OstTextView mTextView = mWalletSettingsItem.findViewById(R.id.ws_item);
         mTextView.setText(featureTitle);
-        return view;
+        if(!isEnabled){
+            mTextView.setDisabled();
+        }
+        return mWalletSettingsItem;
     }
 
     private View getCategoryView(String categoryHeading) {

@@ -14,6 +14,7 @@ import android.content.Context;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
+import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.uiutils.Font;
 import ost.com.demoapp.uicomponents.uiutils.FontCache;
 import ost.com.demoapp.uicomponents.uiutils.FontFactory;
@@ -37,5 +38,9 @@ public class OstTextView extends AppCompatTextView {
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
         Font font = FontFactory.getInstance(context, FontFactory.FONT.LATO);
         this.setTypeface(font.getRegular());
+    }
+
+    public void setDisabled(){
+        this.setTextColor(getResources().getColor(R.color.primary_button_disabled));
     }
 }
