@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstUser;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
@@ -108,8 +109,12 @@ public class SettingsFragment extends BaseFragment {
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                Fragment fragment = CreateSessionFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
+                if(userDeviceNotAuthorized()){
+                    openDeviceAuthorizationFragment();
+                } else {
+                    Fragment fragment = CreateSessionFragment.newInstance();
+                    mListener.launchFeatureFragment(fragment);
+                }
             }
         });
         mScrollViewSettings.addView(addSessionView);
@@ -134,8 +139,12 @@ public class SettingsFragment extends BaseFragment {
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                Fragment fragment = ViewMnemonicsFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
+                if(userDeviceNotAuthorized()){
+                    openDeviceAuthorizationFragment();
+                } else {
+                    Fragment fragment = ViewMnemonicsFragment.newInstance();
+                    mListener.launchFeatureFragment(fragment);
+                }
             }
         });
         mScrollViewSettings.addView(viewMnemonicsView);
@@ -202,9 +211,13 @@ public class SettingsFragment extends BaseFragment {
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                //QR scanning is independent of workflow so AuthorizeDeviceQRFragment is used as generic for qr workflow
-                Fragment fragment = AuthorizeDeviceQRFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
+                if(userDeviceNotAuthorized()){
+                    openDeviceAuthorizationFragment();
+                } else {
+                    //QR scanning is independent of workflow so AuthorizeDeviceQRFragment is used as generic for qr workflow
+                    Fragment fragment = AuthorizeDeviceQRFragment.newInstance();
+                    mListener.launchFeatureFragment(fragment);
+                }
             }
         });
         mScrollViewSettings.addView(transactionViaQR);
@@ -250,9 +263,13 @@ public class SettingsFragment extends BaseFragment {
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                showProgress(true, "Logging Out");
-                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-                OstSdk.logoutAllSessions(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);
+                if(userDeviceNotAuthorized()){
+                    openDeviceAuthorizationFragment();
+                } else {
+                    showProgress(true, "Logging Out");
+                    WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+                    OstSdk.logoutAllSessions(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);
+                }
             }
         });
         mScrollViewSettings.addView(viewLogOut);
@@ -299,6 +316,11 @@ public class SettingsFragment extends BaseFragment {
         demoAppTextView.setTextSize(13);
         demoAppTextView.setTypeface(Typeface.DEFAULT_BOLD);
         return demoAppTextView;
+    }
+
+    private Boolean userDeviceNotAuthorized(){
+        OstUser ostUser = AppProvider.get().getCurrentUser().getOstUser();
+        return ostUser.getCurrentDevice().canBeAuthorized();
     }
 
     private void openDeviceAuthorizationFragment(){

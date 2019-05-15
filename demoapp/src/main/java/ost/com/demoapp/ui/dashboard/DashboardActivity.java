@@ -304,10 +304,19 @@ public class DashboardActivity extends BaseActivity implements
 
         if (new CommonUtils().handleActionEligibilityCheck(DashboardActivity.this)) return;
 
-        Fragment fragment = TransactionFragment.newInstance(user);
-        FragmentUtils.addFragment(R.id.layout_container,
-                fragment,
-                this);
+        OstUser ostUser = AppProvider.get().getCurrentUser().getOstUser();
+        if(!ostUser.getCurrentDevice().isAuthorized()){
+            mViewPager.setCurrentItem(2);
+            Fragment fragment = AuthorizeDeviceOptionsFragment.newInstance();
+            FragmentUtils.addFragment(R.id.layout_container,
+                    fragment,
+                    this);
+        } else {
+            Fragment fragment = TransactionFragment.newInstance(user);
+            FragmentUtils.addFragment(R.id.layout_container,
+                    fragment,
+                    this);
+        }
     }
 
     @Override
