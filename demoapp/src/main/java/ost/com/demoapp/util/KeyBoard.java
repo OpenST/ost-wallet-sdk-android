@@ -12,6 +12,7 @@ package ost.com.demoapp.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -29,14 +30,25 @@ public class KeyBoard {
         }
     }
 
-    public static void showKeyboard(Context context) {
-        ((InputMethodManager) (context).getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+    public static void showKeyboard(final Context context) {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                ((InputMethodManager) (context).getSystemService(Context.INPUT_METHOD_SERVICE)).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+            }
+        });
+
     }
 
-    public static void showSoftKeyboard(View view) {
-        if (view.requestFocus()) {
-            InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
-        }
+    public static void showSoftKeyboard(final View view) {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (view.requestFocus()) {
+                    InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
+                }
+            }
+        });
     }
 }

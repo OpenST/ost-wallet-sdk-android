@@ -22,7 +22,6 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,12 +29,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
-import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.OstTextView;
 import ost.com.demoapp.uicomponents.PinEntryEditText;
-import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.uicomponents.uiutils.FontCache;
 import ost.com.demoapp.util.KeyBoard;
 
@@ -119,7 +117,7 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
     @Override
     public void onResume() {
         super.onResume();
-        KeyBoard.showSoftKeyboard(mPinEntryEditText);
+        KeyBoard.showKeyboard(mPinEntryEditText.getContext());
     }
 
     @Override
@@ -129,11 +127,15 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
             if (v.getText().toString().length() < 6) {
                 mPinEntryEditText.setError(true);
             } else {
-                mListener.onPinEntered(v.getText().toString());
-                return true;
+                return onValidPin(v.getText().toString());
             }
         }
         return false;
+    }
+
+    protected boolean onValidPin(String pin) {
+        mListener.onPinEntered(pin);
+        return true;
     }
 
     public interface OnFragmentInteractionListener {

@@ -60,18 +60,15 @@ public class WorkFlowPinFragment extends PinFragment {
     }
 
     @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (actionId == EditorInfo.IME_ACTION_DONE) {
-            LogInUser logInUser = AppProvider.get().getCurrentUser();
-            UserPassphrase userPassphrase = new UserPassphrase(logInUser.getOstUserId(),v.getText().toString(), logInUser.getUserPinSalt() );
-            showProgress(true);
-            mOstPinAcceptInterface.pinEntered(userPassphrase);
-            mListener.popTopFragment();
+    protected boolean onValidPin(String pin) {
+        LogInUser logInUser = AppProvider.get().getCurrentUser();
+        UserPassphrase userPassphrase = new UserPassphrase(logInUser.getOstUserId(), pin, logInUser.getUserPinSalt() );
+        showProgress(true);
+        mOstPinAcceptInterface.pinEntered(userPassphrase);
 
-            //Close fragment by notifying DashBoard activity
-            return true;
-        }
-        return false;
+        //Close fragment by notifying DashBoard activity
+        mListener.popTopFragment();
+        return true;
     }
 
     @Override
