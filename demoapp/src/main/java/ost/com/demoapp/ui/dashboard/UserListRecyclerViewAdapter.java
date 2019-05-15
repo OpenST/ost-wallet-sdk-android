@@ -106,6 +106,13 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
                 }
             });
             holder.mSendButton.setVisibility(View.VISIBLE);
+            holder.mSendButton.setEnabled(
+                    !holder.mUser.getUserName()
+                            .equalsIgnoreCase(
+                                    AppProvider.get().getCurrentUser().getUserName()
+                            )
+            );
+
         }
 
 
