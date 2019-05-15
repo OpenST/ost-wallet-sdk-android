@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
@@ -31,8 +32,8 @@ import ost.com.demoapp.uicomponents.OstTextView;
  */
 public class WorkFlowVerifyDataFragment extends BaseFragment {
 
-    private String mDataToVerify;
     private OstVerifyDataInterface mOstVerifyDataInterface;
+    private String mDataToVerify;
 
     public WorkFlowVerifyDataFragment() {
         // Required empty public constructor
@@ -62,7 +63,8 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
     protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_work_flow_verify_data, container, true);
 
-        ((OstTextView)viewGroup.findViewById(R.id.ptv_data)).setText(mDataToVerify);
+        ((OstTextView)viewGroup.findViewById(R.id.ptv_data)).setText(getSubHeading());
+        ((Button)viewGroup.findViewById(R.id.pbtn_verified)).setText(getPositiveButtonText());
         viewGroup.findViewById(R.id.pbtn_verified).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,9 +72,39 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
                 showProgress(true);
             }
         });
+        viewGroup.findViewById(R.id.pbtn_deny).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goBack();
+            }
+        });
 
-        AppBar appBar = AppBar.newInstance(getContext(), "Verify Data", true);
+        ((OstTextView)viewGroup.findViewById(R.id.lbl_verify_data_heading)).setText(getVerifyDataHeading());
+
+        ((OstTextView)viewGroup.findViewById(R.id.atv_verify_data)).setText(getVerifyData());
+
+        AppBar appBar = AppBar.newInstance(getContext(), getTitle(), true);
         setUpAppBar(viewGroup, appBar);
+    }
+
+    String getVerifyData() {
+        return mDataToVerify;
+    }
+
+    String getVerifyDataHeading() {
+        return "Data";
+    }
+
+    String getPositiveButtonText() {
+        return "Authorize";
+    }
+
+    String getSubHeading() {
+        return "You’ve a authorization request";
+    }
+
+    String getTitle() {
+        return "Verify Data";
     }
 
     @Override

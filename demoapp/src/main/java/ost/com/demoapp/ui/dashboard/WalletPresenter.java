@@ -89,7 +89,7 @@ class WalletPresenter extends BasePresenter<WalletView> implements
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.e(LOG_TAG, String.format("Get Current User Transaction error: %s", throwable.toString()));
+                Log.e(LOG_TAG, "Get Current User Transaction error");
                 getMvpView().notifyDataSetChanged();
             }
         });

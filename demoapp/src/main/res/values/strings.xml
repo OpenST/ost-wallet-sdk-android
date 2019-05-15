@@ -27,6 +27,7 @@
     <string name="enter_mnemonics_hint_phrase">Enter mnemonic Phrase...</string>
     <string name="enter_mnemonics_recover_wallet">Recover Wallet</string>
     <string name="btn_text_verify_data">Verified</string>
+    <string name="btn_deny_request">Deny Request</string>
 
     <!--Create Account Fragment-->
     <string name="create_account_economy_hint">Test Economy</string>

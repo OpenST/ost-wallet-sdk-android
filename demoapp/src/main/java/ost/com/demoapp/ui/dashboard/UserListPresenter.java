@@ -84,7 +84,7 @@ class UserListPresenter extends BasePresenter<UserListView> {
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.e(LOG_TAG, String.format("Get Current User list error: %s", throwable.toString()));
+                Log.e(LOG_TAG, "Get Current User list error");
                 getMvpView().notifyDataSetChanged();
             }
         });

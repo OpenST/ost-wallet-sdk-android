@@ -256,7 +256,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(evenLogs);
 
-        View viewLogOut = getFeatureView("Log out", inflater);
+        View viewLogOut = getFeatureView("Log out all sessions", inflater);
         viewLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

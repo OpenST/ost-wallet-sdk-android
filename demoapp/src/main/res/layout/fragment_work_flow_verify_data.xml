@@ -10,17 +10,61 @@
   -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-    <ost.com.demoapp.uicomponents.OstTextView
+    <ost.com.demoapp.uicomponents.OstSubHeaderTextView
         android:id="@+id/ptv_data"
         android:layout_marginTop="@dimen/dp_30"
         android:layout_width="match_parent"
         android:singleLine="false"
         android:layout_height="wrap_content"/>
 
+    <RelativeLayout
+        android:id="@+id/rl_verify_data"
+        android:layout_marginTop="22dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/bg_data_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ost.com.demoapp.uicomponents.OstTextView
+            android:id="@+id/lbl_verify_data_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Device Address"
+            android:textSize="12sp"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/darker_gray"/>
+
+        <ost.com.demoapp.uicomponents.OstTextView
+            android:id="@+id/atv_verify_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/lbl_verify_data_heading"
+            android:textSize="13sp"
+            android:text="0xbbfb321ba9531Ca0a8dE212f364A24b5dA1d7794"
+            android:textColor="@android:color/black"/>
+    </RelativeLayout>
+
     <ost.com.demoapp.uicomponents.OstPrimaryButton
         android:id="@+id/pbtn_verified"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:text="@string/btn_text_verify_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ost.com.demoapp.uicomponents.OstLinkButton
+        android:id="@+id/pbtn_deny"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/btn_deny_request"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </merge>

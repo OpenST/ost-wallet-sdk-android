@@ -46,6 +46,8 @@ import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.ui.managedevices.AuthorizeDeviceOptionsFragment;
 import ost.com.demoapp.ui.managedevices.DeviceListRecyclerViewAdapter;
 import ost.com.demoapp.ui.workflow.ChildFragmentStack;
+import ost.com.demoapp.ui.workflow.VerifyDeviceDataFragment;
+import ost.com.demoapp.ui.workflow.VerifyTransactionDataFragment;
 import ost.com.demoapp.ui.workflow.WorkFlowPinFragment;
 import ost.com.demoapp.ui.workflow.WorkFlowVerifyDataFragment;
 import ost.com.demoapp.ui.workflow.recovery.AbortRecoveryFragment;
@@ -241,7 +243,9 @@ public class DashboardActivity extends BaseActivity implements
         showProgress(false);
         JSONObject jsonObject;
         String dataToVerify = null;
+        WorkFlowVerifyDataFragment fragment = null;
         if (OstSdk.DEVICE.equalsIgnoreCase(ostContextEntity.getEntityType())) {
+            fragment = VerifyDeviceDataFragment.newInstance();
             OstDevice ostDevice = ((OstDevice) ostContextEntity.getEntity());
             if (OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE.equals(
                     ostWorkflowContext.getWorkflow_type()
@@ -250,12 +254,14 @@ public class DashboardActivity extends BaseActivity implements
             } else {
                 dataToVerify = createAuthorizeDeviceString(ostDevice);
             }
+            fragment.setDataToVerify(dataToVerify);
         } else {
+            fragment = VerifyTransactionDataFragment.newInstance();
             jsonObject = (JSONObject) ostContextEntity.getEntity();
             dataToVerify = createTransactionString(jsonObject);
+            fragment.setDataToVerify(dataToVerify);
         }
-        WorkFlowVerifyDataFragment fragment = WorkFlowVerifyDataFragment.newInstance();
-        fragment.setDataToVerify(dataToVerify);
+
         fragment.setVerifyDataCallback(ostVerifyDataInterface);
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
@@ -285,13 +291,11 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     private String createRevokeDeviceString(OstDevice ostDevice) {
-        return "Device Address To Revoke: " +
-                ostDevice.getAddress();
+        return ostDevice.getAddress();
     }
 
     private String createAuthorizeDeviceString(OstDevice ostDevice) {
-        return "Device Address To Authorize: " +
-                ostDevice.getAddress();
+        return ostDevice.getAddress();
     }
 
     @Override
