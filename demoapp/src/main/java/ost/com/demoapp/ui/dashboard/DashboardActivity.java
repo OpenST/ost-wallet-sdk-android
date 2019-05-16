@@ -28,6 +28,7 @@ import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
+import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,6 +38,7 @@ import java.util.Objects;
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.entity.Device;
+import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.entity.User;
 import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
@@ -108,7 +110,16 @@ public class DashboardActivity extends BaseActivity implements
         SdkInteract.getInstance().setVerifyDataCallbackListener(this);
         SdkInteract.getInstance().setFlowListeners(this);
 
+        setUpDevice();
+
         checkForActiveUserAndDevice();
+
+    }
+
+    private void setUpDevice() {
+        OstWorkFlowCallback workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        LogInUser logInUser = AppProvider.get().getCurrentUser();
+        OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), workFlowListener);
     }
 
     private void checkForActiveUserAndDevice() {
@@ -123,6 +134,12 @@ public class DashboardActivity extends BaseActivity implements
             mViewPager.setCurrentItem(2);
         } else {
             mViewPager.setCurrentItem(1);
+            if (OstUser.CONST_STATUS.CREATED
+                    .equalsIgnoreCase(
+                            AppProvider.get().getCurrentUser().getStatus()
+                    )) {
+                notifyActivate();
+            }
         }
     }
 
@@ -168,23 +185,27 @@ public class DashboardActivity extends BaseActivity implements
                 .equals(
                         ostWorkflowContext.getWorkflow_type()
                 )) {
-            AppProvider.get().getMappyClient().notifyUserActivate(new MappyNetworkClient.ResponseCallback() {
-                @Override
-                public void onSuccess(JSONObject jsonObject) {
-                    Log.d(LOG_TAG, "Activate User Sync Succeded");
-                }
-
-                @Override
-                public void onFailure(Throwable throwable) {
-                    Log.d(LOG_TAG, "Activate User Sync Failed");
-                }
-            });
+            notifyActivate();
         } else if (OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS
                 .equals(
                         ostWorkflowContext.getWorkflow_type()
                 )) {
             relaunchApp();
         }
+    }
+
+    private void notifyActivate() {
+        AppProvider.get().getMappyClient().notifyUserActivate(new MappyNetworkClient.ResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                Log.d(LOG_TAG, "Activate User Sync Succeded");
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                Log.d(LOG_TAG, "Activate User Sync Failed");
+            }
+        });
     }
 
     @Override

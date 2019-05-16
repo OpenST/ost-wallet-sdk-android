@@ -85,7 +85,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         if (OstUser.CONST_STATUS.CREATED.equalsIgnoreCase(holder.mUser.getStatus())) {
             holder.mStatus.setTextColor(Color.RED);
             holder.mStatus.setText("Wallet Setup Incomplete");
-            holder.mSendButton.setVisibility(View.GONE);
+            holder.mSendButton.setEnabled(false);
             holder.mView.setOnClickListener(null);
         } else {
             holder.mStatus.setTextColor(context.getResources().getColor(R.color.color_34445b));
@@ -106,13 +106,6 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
                 }
             });
             holder.mSendButton.setVisibility(View.VISIBLE);
-            holder.mSendButton.setEnabled(
-                    !holder.mUser.getUserName()
-                            .equalsIgnoreCase(
-                                    AppProvider.get().getCurrentUser().getUserName()
-                            )
-            );
-
         }
 
 

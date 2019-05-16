@@ -25,6 +25,7 @@ public class LogInUser {
     private static final String USER_NAME = "username";
     private static final String USER_ID = "user_id";
     private static final String USER_PIN_SALT = "user_pin_salt";
+    private static final String STATUS = "status";
 
     private String id;
     private String ostUserId;
@@ -32,6 +33,7 @@ public class LogInUser {
     private String userPinSalt;
     private String userName;
     private String balance = "0";
+    private String status;
 
     public static LogInUser newInstance(JSONObject jsonObject) {
         try {
@@ -40,19 +42,21 @@ public class LogInUser {
             String tokenId = jsonObject.getString(TOKEN_ID);
             String ostUserId = jsonObject.getString(USER_ID);
             String userPinSalt = jsonObject.getString(USER_PIN_SALT);
-            return new LogInUser(id, userName, tokenId, ostUserId, userPinSalt);
+            String status = jsonObject.getString(STATUS);
+            return new LogInUser(id, userName, tokenId, ostUserId, userPinSalt, status);
         } catch (JSONException e) {
             Log.e(TAG, "JSON exception", e.getCause());
         }
         return null;
     }
 
-    public LogInUser(String id, String userName, String tokenId, String ostUserId, String userPinSalt) {
+    public LogInUser(String id, String userName, String tokenId, String ostUserId, String userPinSalt, String status) {
         this.id = id;
         this.userName = userName;
         this.tokenId = tokenId;
         this.ostUserId = ostUserId;
-        this.userPinSalt = ostUserId;
+        this.userPinSalt = userPinSalt;
+        this.status = status;
     }
 
     public String getId() {
@@ -86,5 +90,9 @@ public class LogInUser {
 
     public void updateBalance(String balance) {
         this.balance = balance;
+    }
+
+    public String getStatus() {
+        return this.status;
     }
 }
