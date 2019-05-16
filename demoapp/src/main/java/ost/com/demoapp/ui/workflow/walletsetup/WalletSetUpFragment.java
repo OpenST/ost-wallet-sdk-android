@@ -113,8 +113,8 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     @Override
     public void showPinErrorDialog() {
         Dialog dialog = DialogFactory.createSimpleOkErrorDialog(getContext(),
-                "Incorrect PIN",
-                "Please enter your valid PIN to\nauthorize",
+                "",
+                "PIN doesn’t match.\n Please try again.",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

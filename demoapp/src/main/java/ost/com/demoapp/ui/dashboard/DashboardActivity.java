@@ -10,6 +10,7 @@
 
 package ost.com.demoapp.ui.dashboard;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -58,6 +59,7 @@ import ost.com.demoapp.ui.workflow.transactions.TransactionFragment;
 import ost.com.demoapp.ui.workflow.walletdetails.WalletDetailsFragment;
 import ost.com.demoapp.ui.workflow.walletsetup.WalletSetUpFragment;
 import ost.com.demoapp.util.CommonUtils;
+import ost.com.demoapp.util.DialogFactory;
 import ost.com.demoapp.util.FragmentUtils;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -153,6 +155,8 @@ public class DashboardActivity extends BaseActivity implements
         if (!consumed && !FragmentUtils.isBackStackEmpty(this) &&
                 !(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
             FragmentUtils.goBack(this);
+        } else {
+            super.goBack();
         }
     }
 
@@ -248,17 +252,23 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void getPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
-        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin));
-        fragment.setPinCallback(ostPinAcceptInterface);
-        FragmentUtils.addFragment(R.id.layout_container,
-                fragment,
-                this);
+        showGetPinFragment(ostPinAcceptInterface);
     }
 
     @Override
     public void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
-        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Invalid Pin Try Again", getResources().getString(R.string.pin_sub_heading_get_pin));
+        showGetPinFragment(ostPinAcceptInterface);
+
+        Dialog dialog = DialogFactory.createSimpleOkErrorDialog(DashboardActivity.this,
+                "Incorrect PIN",
+                "Please enter your valid PIN to\nauthorize");
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    private void showGetPinFragment(OstPinAcceptInterface ostPinAcceptInterface) {
+        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin));
         fragment.setPinCallback(ostPinAcceptInterface);
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
