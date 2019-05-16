@@ -19,8 +19,8 @@ import android.view.ViewGroup;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseFragment;
-import ost.com.demoapp.ui.workflow.authrorizedeviceqr.AuthorizeDeviceQRFragment;
 import ost.com.demoapp.ui.workflow.entermnemonics.EnterMnemonicsFragment;
+import ost.com.demoapp.ui.workflow.qrfragment.QRFragment;
 import ost.com.demoapp.uicomponents.AppBar;
 
 /**
@@ -85,7 +85,7 @@ public class AuthorizeDeviceOptionsFragment extends BaseFragment implements View
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.authorize_qr_btn: {
-                mListener.launchFeatureFragment(AuthorizeDeviceQRFragment.newInstance());
+                mListener.launchFeatureFragment(QRFragment.newInstance());
                 break;
             }
             case R.id.authorize_mnemonics_btn: {
