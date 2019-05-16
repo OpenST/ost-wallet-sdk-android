@@ -61,6 +61,7 @@ import ost.com.demoapp.ui.workflow.walletsetup.WalletSetUpFragment;
 import ost.com.demoapp.util.CommonUtils;
 import ost.com.demoapp.util.DialogFactory;
 import ost.com.demoapp.util.FragmentUtils;
+import ost.com.demoapp.util.KeyBoard;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -156,6 +157,8 @@ public class DashboardActivity extends BaseActivity implements
                 !(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
             FragmentUtils.goBack(this);
         } else {
+            //hide keyboard if open
+            KeyBoard.hideKeyboard(DashboardActivity.this);
             super.goBack();
         }
     }
