@@ -48,10 +48,10 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
             pinCounter++;
         } else {
             if (mFirstPin.equals(pin)) {
-                Log.d(LOG_TAG,"Activate user");
+                Log.d(LOG_TAG, "Activate user");
                 LogInUser logInUser = AppProvider.get().getCurrentUser();
                 UserPassphrase userPassphrase = new UserPassphrase(logInUser.getOstUserId(), pin, logInUser.getUserPinSalt());
-                long expiredAfterInSecs = 30*24*60*60;
+                long expiredAfterInSecs = 30 * 24 * 60 * 60;
                 String spendingLimit = "100000000000000000000";
                 WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
                 SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
@@ -65,8 +65,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
                         workFlowListener
                 );
             } else {
-                pinCounter = 0;
-                (getMvpView()).showAddPin();
+                getMvpView().showPinErrorDialog();
             }
         }
     }
@@ -82,5 +81,10 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
         if (pinCounter > 0) {
             pinCounter--;
         }
+    }
+
+    void resetWalletSetUp() {
+        pinCounter = 0;
+        (getMvpView()).showAddPin();
     }
 }

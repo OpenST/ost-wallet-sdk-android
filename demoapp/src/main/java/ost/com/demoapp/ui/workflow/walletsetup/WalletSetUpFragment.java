@@ -11,8 +11,10 @@
 package ost.com.demoapp.ui.workflow.walletsetup;
 
 
+import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.ui.workflow.ChildFragmentStack;
 import ost.com.demoapp.util.ChildFragmentUtils;
+import ost.com.demoapp.util.DialogFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,7 +49,6 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
      *
      * @return A new instance of fragment WalletSetUpFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static WalletSetUpFragment newInstance() {
         WalletSetUpFragment fragment = new WalletSetUpFragment();
         Bundle args = new Bundle();
@@ -106,6 +108,22 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     @Override
     public void gotoDashboard(long workflowId) {
         mListener.activateAcknowledged(workflowId);
+    }
+
+    @Override
+    public void showPinErrorDialog() {
+        Dialog dialog = DialogFactory.createSimpleOkErrorDialog(getContext(),
+                "Incorrect PIN",
+                "Please enter your valid PIN to\nauthorize",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mWalletSetupPresenter.resetWalletSetUp();
+                    }
+                });
+        dialog.setCancelable(false);
+        dialog.show();
+
     }
 
     @Override

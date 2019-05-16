@@ -89,8 +89,7 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
                 );
             } else {
                 Log.d(LOG_TAG,"Retype Pin is not equal");
-                pinCounter = 1;
-                (getMvpView()).showSetNewPin();
+                getMvpView().showPinErrorDialog();
             }
         }
     }
@@ -98,5 +97,10 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
     @Override
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
 
+    }
+
+    void resetResetPin() {
+        pinCounter = 1;
+        (getMvpView()).showSetNewPin();
     }
 }

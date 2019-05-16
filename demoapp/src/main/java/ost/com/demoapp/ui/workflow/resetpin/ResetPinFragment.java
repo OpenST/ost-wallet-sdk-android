@@ -11,7 +11,9 @@
 package ost.com.demoapp.ui.workflow.resetpin;
 
 
+import android.app.Dialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.ui.dashboard.WebViewFragment;
 import ost.com.demoapp.ui.workflow.walletsetup.PinFragment;
 import ost.com.demoapp.util.ChildFragmentUtils;
+import ost.com.demoapp.util.DialogFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -92,6 +95,21 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
     @Override
     public void gotoDashboard(long workflowId) {
         goBack();
+    }
+
+    @Override
+    public void showPinErrorDialog() {
+        Dialog dialog = DialogFactory.createSimpleOkErrorDialog(getContext(),
+                "Incorrect PIN",
+                "Please enter your valid PIN to\nproceed",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mResetPinPresenter.resetResetPin();
+                    }
+                });
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
     @Override

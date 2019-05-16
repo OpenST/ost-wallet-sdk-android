@@ -197,7 +197,7 @@ public class PinEntryEditText extends LinearLayout {
         invisiblePinEditText.setOnEditorActionListener(onEditorActionListener);
     }
 
-    public void setError(boolean b) {
+    public void setError(boolean show) {
 
     }
 }
