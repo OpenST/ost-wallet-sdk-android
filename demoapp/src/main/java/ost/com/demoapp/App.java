@@ -12,14 +12,13 @@ package ost.com.demoapp;
 
 import android.app.Application;
 
-import org.json.JSONException;
+import com.ost.walletsdk.OstSdk;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.CookieStore;
 
-import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.network.PersistentCookieStore;
 
 public class App extends Application {
@@ -35,5 +34,9 @@ public class App extends Application {
 
         AppProvider.init(getApplicationContext());
         AppProvider.get().setPersistentCookieStore(persistentCookieStore);
+
+        if (null != AppProvider.get().getCurrentEconomy()) {
+            OstSdk.initialize(getApplicationContext(), AppProvider.get().getCurrentEconomy().getSaasApiEndpoint());
+        }
     }
 }

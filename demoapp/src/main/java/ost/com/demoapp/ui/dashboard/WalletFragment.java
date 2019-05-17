@@ -66,7 +66,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
                 false);
         setUpAppBar(view, appBar);
         mWalletPresenter.attachView(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setAdapter(mWalletPresenter.getTransactionRecyclerViewAdapter());
