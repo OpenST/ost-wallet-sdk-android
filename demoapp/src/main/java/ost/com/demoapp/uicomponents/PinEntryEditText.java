@@ -15,6 +15,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -104,7 +105,7 @@ public class PinEntryEditText extends LinearLayout {
     private void setInvisibleEditText(int pinLenght, int inputType) {
         invisiblePinEditText = new EditText(getContext());
         setSize(invisiblePinEditText, 0, 0);
-        invisiblePinEditText.setInputType(inputType);
+        invisiblePinEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
         invisiblePinEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(pinLenght)});
         invisiblePinEditText.setImeOptions(IME_ACTION_DONE);
         addView(invisiblePinEditText);

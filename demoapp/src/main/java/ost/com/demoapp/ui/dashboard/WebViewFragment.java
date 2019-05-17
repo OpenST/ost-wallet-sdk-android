@@ -27,6 +27,7 @@ import java.util.Locale;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.uicomponents.AppBar;
 
 /**
  * A fragment representing a list of Items.
@@ -65,9 +66,12 @@ public class WebViewFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_web_view, container, false);
+    protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateViewDelegate(inflater, container, savedInstanceState);
+        ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_web_view, container, true);
+
+        AppBar appBar = AppBar.newInstance(getContext(), "Web View", true);
+        setUpAppBar(view, appBar);
 
         mWebView = (WebView) view.findViewById(R.id.activity_main_webview);
 
@@ -75,10 +79,7 @@ public class WebViewFragment extends BaseFragment {
         webViewClient = new WebViewClient();
 
         loadWebView();
-
-        return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
