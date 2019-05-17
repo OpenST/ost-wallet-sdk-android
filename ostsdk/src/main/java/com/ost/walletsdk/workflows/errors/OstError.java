@@ -20,8 +20,8 @@ public class OstError extends Error {
 
     private static String Tag = "OstError";
 
-    private final OstErrors.ErrorCode mErrorCode;
-    private final String mInternalErrorCode;
+    private  OstErrors.ErrorCode mErrorCode;
+    private  String mInternalErrorCode;
     private boolean isApiError = false;
 
     public OstError(String internalErrorCode, OstErrors.ErrorCode errorCode) {
@@ -35,8 +35,16 @@ public class OstError extends Error {
         return mErrorCode;
     }
 
+    public void setErrorCode( OstErrors.ErrorCode code ){
+        this.mErrorCode = code ;
+    }
+
     public String getInternalErrorCode() {
         return mInternalErrorCode;
+    }
+
+    public void setInternalErrorCode( String code ){
+        this.mInternalErrorCode = code ;
     }
 
     public boolean isApiError() {
