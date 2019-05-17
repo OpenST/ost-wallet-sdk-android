@@ -14,12 +14,15 @@ package ost.com.demoapp.ui;
 import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.util.DialogFactory;
@@ -66,19 +69,28 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     private void showSnackBar(String text, Boolean isSuccess){
+        Snackbar snack = generateSnackBar(text, isSuccess);
+        snack.show();
+    }
+
+    public Snackbar generateSnackBar(String text, Boolean isSuccess){
         Snackbar snack = Snackbar.make(getRootView(), text, Snackbar.LENGTH_LONG);
         View view = snack.getView();
+        FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view.getLayoutParams();
         if(isSuccess){
             view.setBackground(getResources().getDrawable(R.drawable.green_rounded_rectangle, null));
         } else {
             view.setBackground(getResources().getDrawable(R.drawable.red_rounded_rectangle, null));
+            params.height = dpToPx(120);
         }
-        FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view.getLayoutParams();
         params.leftMargin = 30;
         params.rightMargin = 30;
         params.bottomMargin = 50;
         view.setLayoutParams(params);
-        snack.show();
+        TextView textViewNoAct = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
+        textViewNoAct.setTextSize(15);
+        textViewNoAct.setMaxLines(4);
+        return snack;
     }
 
     public void animateActivityChangingToRight() {
@@ -152,4 +164,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     protected abstract View getRootView();
+
+    private int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
 }

@@ -33,6 +33,7 @@ import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.util.CommonUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -147,13 +148,7 @@ public class WalletDetailsFragment extends BaseFragment implements View.OnClickL
             }
             case R.id.ost_user_token_holder: {
                 try {
-                    JSONArray auxChains = OstSdk.getToken(logInUser.getTokenId()).getAuxiliaryChain();
-                    JSONObject jsonObject = auxChains.getJSONObject(0);
-                    String tokenAddr = jsonObject.getString("utility_branded_token");
-                    String url = viewEndPoint + "token/th-" + logInUser.getTokenId() + "-" +
-                            tokenAddr + "-" +
-                            logInUser.getOstUser().getTokenHolderAddress();
-                    mListener.openWebView(url);
+                    mListener.openWebView(new CommonUtils().getCurrentUserViewAddress());
                 } catch (Exception e) {
                     Log.e("Exception", "Exception while getting chainId", e);
                 }

@@ -27,6 +27,8 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -129,10 +131,14 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         ((Button)viewGroup.findViewById(R.id.pbtn_send_tokens)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTransactionPresenter.sendTokens(mUser.getTokenHolderAddress(),
-                        tokensEditTextView.getText(),
-                        mTransactionPresenter.getUnitList().get(unitSpinner.getSelectedItemPosition())
-                );
+                try {
+                    JSONObject transactionDetails = mTransactionPresenter.sendTokens(mUser.getTokenHolderAddress(),
+                            tokensEditTextView.getText(),
+                            mTransactionPresenter.getUnitList().get(unitSpinner.getSelectedItemPosition())
+                    );
+                    transactionDetails.put("userName", mUser.getUserName());
+                    mListener.setTransactionWorkflow(transactionDetails);
+                } catch (Exception e){}
             }
         });
 
@@ -157,5 +163,6 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
 
     public interface OnFragmentInteractionListener {
         void popTopFragment();
+        void setTransactionWorkflow(JSONObject transactionDetails);
     }
 }

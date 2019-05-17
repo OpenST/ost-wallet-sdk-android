@@ -15,6 +15,9 @@ import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,19 +52,30 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
         super.attachView(mvpView);
     }
 
-    void sendTokens(String tokenHolderAddress, String tokens, String unit) {
+    JSONObject sendTokens(String tokenHolderAddress, String tokens, String unit) {
         getMvpView().showProgress(true, "Transaction in progress...");
 
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
+        String transferRule = mCurrentTokenSymbol.equalsIgnoreCase(unit) ? OstSdk.RULE_NAME_DIRECT_TRANSFER : OstSdk.RULE_NAME_PRICER;
+        JSONObject transactionDetails = new JSONObject();
+
+        try{
+            transactionDetails.put("workflowId", workFlowListener.getId());
+            transactionDetails.put("amount", tokens);
+            transactionDetails.put("transferRule", transferRule);
+        } catch (JSONException e){
+
+        }
 
         OstSdk.executeTransaction(
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 Arrays.asList(tokenHolderAddress),
                 Arrays.asList(tokens),
-                mCurrentTokenSymbol.equalsIgnoreCase(unit) ? OstSdk.RULE_NAME_DIRECT_TRANSFER : OstSdk.RULE_NAME_PRICER,
+                transferRule,
                 workFlowListener
         );
+        return transactionDetails;
     }
 
     @Override

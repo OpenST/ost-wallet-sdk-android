@@ -14,11 +14,13 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
@@ -34,6 +36,7 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 import ost.com.demoapp.AppProvider;
@@ -84,6 +87,7 @@ public class DashboardActivity extends BaseActivity implements
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private SettingsFragment mSettingsFragment;
+    private JSONObject transactionWorkflows = new JSONObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,11 +189,17 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
-        if (!OstWorkflowContext.WORKFLOW_TYPE.SETUP_DEVICE
-                .equals(
-                        ostWorkflowContext.getWorkflow_type()
-                )) {
-            showToastMessage(String.format("%s workflow is successful", ostWorkflowContext.getWorkflow_type().toString()), true);
+        JSONObject trxWorkflow = null;
+        try{
+            trxWorkflow = transactionWorkflows.getJSONObject(String.format("%s", workflowId));
+        } catch (Exception e){}
+        String successMessage = new CommonUtils().formatWorkflowSuccessToast(ostWorkflowContext.getWorkflow_type(), trxWorkflow);
+        if(successMessage != null){
+            if(trxWorkflow != null){
+                showActionSnackBar(successMessage);
+            } else {
+                showToastMessage(successMessage, true);
+            }
         }
 
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
@@ -222,11 +232,13 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         showProgress(false);
-        if (!OstWorkflowContext.WORKFLOW_TYPE.SETUP_DEVICE
-                .equals(
-                        ostWorkflowContext.getWorkflow_type()
-                )) {
-            showToastMessage(String.format("%s workflow failed",ostWorkflowContext.getWorkflow_type().toString()), false);
+        JSONObject trxWorkflow = null;
+        try{
+            trxWorkflow = transactionWorkflows.getJSONObject(String.format("%s", workflowId));
+        } catch (Exception e){}
+        String failMessage = new CommonUtils().formatWorkflowFailedToast(ostWorkflowContext.getWorkflow_type(), ostError, trxWorkflow);
+        if(failMessage != null){
+            showToastMessage(failMessage, false);
         }
 
 
@@ -403,8 +415,29 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
+    public void setTransactionWorkflow(JSONObject transactionDetails){
+        try{
+            transactionWorkflows.put(transactionDetails.getString("workflowId"), transactionDetails);
+        } catch (Exception e){}
+    }
+
+    @Override
     protected View getRootView() {
         return findViewById(R.id.layout_container);
+    }
+
+    private void showActionSnackBar(String text){
+        Snackbar snack = generateSnackBar(text, true);
+        TextView textViewNoAct = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_action);
+        textViewNoAct.setTextSize(15);
+        textViewNoAct.setTextColor(getResources().getColor(R.color.primary_button_text));
+        snack.setAction("VIEW TX", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openWebView(new CommonUtils().getCurrentUserViewAddress());
+            }
+        });
+        snack.show();
     }
 
     private void relaunchApp() {
