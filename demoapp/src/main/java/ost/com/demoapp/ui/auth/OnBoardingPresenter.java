@@ -44,6 +44,9 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     }
 
     void createAccount(String userName, String password) {
+        if (!assertEconomy()) {
+            return;
+        }
         getMvpView().showProgress(true, "Creating account...");
         AppProvider.get().getMappyClient().createAccount(userName, password, new MappyNetworkClient.ResponseCallback() {
             @Override
@@ -83,6 +86,9 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     }
 
     void logIn(String userName, String password) {
+        if (!assertEconomy()) {
+            return;
+        }
         getMvpView().showProgress(true, "Logging In");
         AppProvider.get().getMappyClient().logIn(userName, password, new MappyNetworkClient.ResponseCallback() {
             @Override
@@ -164,10 +170,12 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
         getMvpView().showProgress(false);
     }
 
-    public void checkForEconomy() {
+    public boolean assertEconomy() {
         CurrentEconomy currentEconomy = AppProvider.get().getCurrentEconomy();
         if (null == currentEconomy) {
             getMvpView().scanForEconomy();
+            return false;
         }
+        return true;
     }
 }

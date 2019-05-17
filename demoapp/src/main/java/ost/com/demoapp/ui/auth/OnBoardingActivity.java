@@ -24,6 +24,7 @@ import ost.com.demoapp.ui.BaseActivity;
 import ost.com.demoapp.ui.dashboard.DashboardActivity;
 import ost.com.demoapp.ui.qrscanner.QRScannerFragment;
 import ost.com.demoapp.util.FragmentUtils;
+import ost.com.demoapp.util.KeyBoard;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -61,7 +62,7 @@ public class OnBoardingActivity extends BaseActivity implements
         FragmentUtils.addFragment(R.id.layout_container,
                 CreateAccountFragment.newInstance(true),
                 this, CREATE_ACCOUNT_TAG);
-        mOnBoardingPresenter.checkForEconomy();
+        mOnBoardingPresenter.assertEconomy();
     }
 
     @Override
@@ -69,13 +70,16 @@ public class OnBoardingActivity extends BaseActivity implements
         FragmentUtils.addFragment(R.id.layout_container,
                 CreateAccountFragment.newInstance(false),
                 this, CREATE_ACCOUNT_TAG);
-        mOnBoardingPresenter.checkForEconomy();
+        mOnBoardingPresenter.assertEconomy();
     }
 
     @Override
     public void goBack() {
-        if (!FragmentUtils.isBackStackEmpty(this)) {
+        if (this.getSupportFragmentManager().getBackStackEntryCount() > 1) {
             FragmentUtils.goBack(this);
+        } else {
+            KeyBoard.hideKeyboard(OnBoardingActivity.this);
+            super.goBack();
         }
     }
 
