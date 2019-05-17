@@ -61,7 +61,7 @@ class AuthorizeDeviceQRPresenter extends BasePresenter<AuthorizeDeviceQRView> im
     void processQRResult(Intent data) {
         Log.d(LOG_TAG, String.format("QR process result %s", data));
         getMvpView().goBack();
-        getMvpView().showProgress(true, "Authorizing device...");
+        getMvpView().showProgress(true, "Authorizing...");
         if (data != null && data.getData() != null) {
             String returnedResult = data.getData().toString();
             WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
@@ -76,6 +76,7 @@ class AuthorizeDeviceQRPresenter extends BasePresenter<AuthorizeDeviceQRView> im
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "Exception in Data;");
                 getMvpView().showProgress(false);
+                getMvpView().showToastMessage("QR Reading failed.. Try Again", false);
             }
         }
     }
