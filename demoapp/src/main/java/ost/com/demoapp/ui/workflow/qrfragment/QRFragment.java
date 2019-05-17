@@ -17,23 +17,33 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstDevice;
+import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
 
+import ost.com.demoapp.App;
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.sdkInteract.SdkInteract;
+import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.ui.BaseFragment;
+import ost.com.demoapp.uicomponents.OstPrimaryButton;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link QRFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class QRFragment extends BaseFragment {
+public class QRFragment extends BaseFragment implements SdkInteract.FlowComplete, SdkInteract.FlowInterrupt {
 
     public QRFragment() {
         // Required empty public constructor
@@ -72,6 +82,53 @@ public class QRFragment extends BaseFragment {
 
         ((TextView)viewGroup.findViewById(R.id.atv_device_address)).setText(logInUser.getOstUser().getCurrentDevice().getAddress());
 
+        final WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
+
+        ((Button)viewGroup.findViewById(R.id.pbtn_check_device_status)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showProgress(true, "Checking...");
+                OstSdk.setupDevice(AppProvider.get().getCurrentUser().getOstUserId(),
+                        AppProvider.get().getCurrentUser().getTokenId(),
+                        true,
+                        workFlowListener
+                );
+            }
+        });
+
         return viewGroup;
+    }
+
+    @Override
+    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        showFeedback();
+    }
+
+    @Override
+    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        showFeedback();
+    }
+
+    private void showFeedback() {
+        showProgress(false);
+        if (OstDevice.CONST_STATUS.AUTHORIZED
+                .equalsIgnoreCase(
+                        AppProvider.get().getCurrentUser().getOstUser().getCurrentDevice().getStatus()
+                )) {
+            showToastMessage("Device is Authorized", true);
+        } else if (OstDevice.CONST_STATUS.AUTHORIZING
+                .equalsIgnoreCase(
+                        AppProvider.get().getCurrentUser().getOstUser().getCurrentDevice().getStatus()
+                )) {
+            showToastMessage("Device is still Authorizing", false);
+        } else if (OstDevice.CONST_STATUS.REGISTERED
+                .equalsIgnoreCase(
+                        AppProvider.get().getCurrentUser().getOstUser().getCurrentDevice().getStatus()
+                )) {
+            showToastMessage("Device is still in Registered state", false);
+        } else {
+            showToastMessage("Device is still in InConsistent state", false);
+        }
     }
 }

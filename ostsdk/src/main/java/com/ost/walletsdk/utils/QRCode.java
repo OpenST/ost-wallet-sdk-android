@@ -154,7 +154,7 @@ public class QRCode {
                 }
             }
             MultiFormatReader multiFormatReader = new MultiFormatReader();
-            return Bitmap.createBitmap(pixels, mWidth, mHeight, Bitmap.Config.ARGB_8888);
+            return Bitmap.createBitmap(pixels, mWidth, mHeight, Bitmap.Config.ALPHA_8);
         } catch (WriterException e) {
             e.printStackTrace();
         }

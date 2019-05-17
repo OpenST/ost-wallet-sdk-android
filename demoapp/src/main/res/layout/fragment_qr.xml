@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_30"
-        android:text="Please scan the QR Code from your old device to authorize this device"/>
+        android:text="Please scan the QR Code from your\n old device to authorize this device"/>
 
     <ImageView
         android:id="@+id/iv_qr_view"
@@ -29,7 +29,7 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
-        android:background="@android:color/black"
+        android:background="@android:color/white"
         android:src="@drawable/qr_icon"/>
 
     <RelativeLayout
@@ -37,7 +37,7 @@
         android:layout_gravity="center"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
-        android:background="@drawable/bg_primary_button"
+        android:background="@drawable/bg_data_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -59,9 +59,21 @@
             android:layout_marginBottom="10dp"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/lbl_device_address"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:text="0xbbfb321ba9531Ca0a8dE212f364A24b5dA1d7794"
             android:textColor="@android:color/black"/>
     </RelativeLayout>
+
+    <ost.com.demoapp.uicomponents.OstPrimaryButton
+        android:id="@+id/pbtn_check_device_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:text="Check Device Status"
+        android:textColor="@android:color/black"/>
 
 </LinearLayout>

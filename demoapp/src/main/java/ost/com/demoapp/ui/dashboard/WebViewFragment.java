@@ -10,10 +10,8 @@
 
 package ost.com.demoapp.ui.dashboard;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
@@ -36,7 +34,6 @@ import ost.com.demoapp.uicomponents.AppBar;
  */
 public class WebViewFragment extends BaseFragment {
 
-    private OnWebViewFragmentInteractionListener mListener;
     private WebView mWebView;
     private WebChromeClient webChromeClient;
     private WebViewClient webViewClient;
@@ -59,13 +56,6 @@ public class WebViewFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
-    }
-
-    @Override
     protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateViewDelegate(inflater, container, savedInstanceState);
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_web_view, container, true);
@@ -81,23 +71,6 @@ public class WebViewFragment extends BaseFragment {
         loadWebView();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnWebViewFragmentInteractionListener) {
-            mListener = (OnWebViewFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
     private void loadWebView() {
         mWebView.setWebViewClient(webViewClient);
         mWebView.setWebChromeClient(webChromeClient);
@@ -109,18 +82,5 @@ public class WebViewFragment extends BaseFragment {
             cookieManager.setCookie(eachCookie.getDomain(), String.format(Locale.US,"%s=%s", eachCookie.getName(), eachCookie.getValue()));
         }
         mWebView.loadUrl(mUrl);
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnWebViewFragmentInteractionListener {
     }
 }
