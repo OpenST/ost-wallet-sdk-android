@@ -19,4 +19,6 @@ interface OnBoardingView extends BaseView {
     void goToDashBoard();
 
     void showError(String errorString);
+
+    void scanForEconomy();
 }

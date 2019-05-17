@@ -163,4 +163,11 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
         Log.i(LOG_TAG, String.format("%d Flow Interrupt", workflowId));
         getMvpView().showProgress(false);
     }
+
+    public void checkForEconomy() {
+        CurrentEconomy currentEconomy = AppProvider.get().getCurrentEconomy();
+        if (null == currentEconomy) {
+            getMvpView().scanForEconomy();
+        }
+    }
 }

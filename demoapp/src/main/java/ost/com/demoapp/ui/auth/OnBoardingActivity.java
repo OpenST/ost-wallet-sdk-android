@@ -18,6 +18,7 @@ import android.view.View;
 import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseActivity;
 import ost.com.demoapp.ui.dashboard.DashboardActivity;
@@ -46,7 +47,10 @@ public class OnBoardingActivity extends BaseActivity implements
 
         mOnBoardingPresenter.attachView(this);
 
-        mOnBoardingPresenter.checkLoggedInUser();
+        if (null != AppProvider.get().getCurrentEconomy() ) {
+            mOnBoardingPresenter.checkLoggedInUser();
+        }
+
         FragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 IntroFragment.newInstance(),
                 this);
@@ -57,6 +61,7 @@ public class OnBoardingActivity extends BaseActivity implements
         FragmentUtils.addFragment(R.id.layout_container,
                 CreateAccountFragment.newInstance(true),
                 this, CREATE_ACCOUNT_TAG);
+        mOnBoardingPresenter.checkForEconomy();
     }
 
     @Override
@@ -64,6 +69,7 @@ public class OnBoardingActivity extends BaseActivity implements
         FragmentUtils.addFragment(R.id.layout_container,
                 CreateAccountFragment.newInstance(false),
                 this, CREATE_ACCOUNT_TAG);
+        mOnBoardingPresenter.checkForEconomy();
     }
 
     @Override
@@ -94,7 +100,9 @@ public class OnBoardingActivity extends BaseActivity implements
 
     @Override
     public void refreshToken() {
-        ((CreateAccountFragment)FragmentUtils.getFragmentByTag(this,CREATE_ACCOUNT_TAG)).updateToken();
+        if (FragmentUtils.getFragmentByTag(this, CREATE_ACCOUNT_TAG) instanceof CreateAccountFragment) {
+            ((CreateAccountFragment) FragmentUtils.getFragmentByTag(this, CREATE_ACCOUNT_TAG)).updateToken();
+        }
     }
 
     @Override

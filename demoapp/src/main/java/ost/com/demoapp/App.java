@@ -27,12 +27,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        CurrentEconomy currentEconomy;
-        try {
-            currentEconomy = CurrentEconomy.newInstance("{\"token_id\":1009,\"token_name\":\"BYTE BANDIT\",\"token_symbol\":\"BANT\",\"url_id\":\"f9ac2d85b0663bbd52925098db2e7c2851ff50ce97eebc2fb20f56b89a72a500\",\"mappy_api_endpoint\":\"https://demo-mappy.stagingost.com/demo/\",\"saas_api_endpoint\":\"https://api.stagingost.com/testnet/v2/\",\"view_api_endpoint\":\"https://view.stagingost.com/testnet/\"}");
-        } catch (JSONException e) {
-            throw  new RuntimeException("In App");
-        }
         //Initialize persistent cookie storage
         CookieStore persistentCookieStore = new PersistentCookieStore(this);
         CookieManager cookieManager = new CookieManager(persistentCookieStore,
@@ -41,6 +35,5 @@ public class App extends Application {
 
         AppProvider.init(getApplicationContext());
         AppProvider.get().setPersistentCookieStore(persistentCookieStore);
-        AppProvider.get().setCurrentEconomy(currentEconomy);
     }
 }
