@@ -95,6 +95,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
                             AppProvider.get().getCurrentEconomy().getTokenSymbol()
                     )
             );
+            holder.mSendButton.setEnabled(true);
             holder.mSendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -105,7 +106,6 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
                     }
                 }
             });
-            holder.mSendButton.setVisibility(View.VISIBLE);
         }
 
 

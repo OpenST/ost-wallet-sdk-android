@@ -89,8 +89,11 @@ public class WalletFragment extends BaseFragment implements WalletView {
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mWalletPresenter.updateBalance();
-                mWalletPresenter.updateTransactionHistory(true);
+                if (!paginationRequestSent) {
+                    mWalletPresenter.updateBalance();
+                    mWalletPresenter.updateTransactionHistory(true);
+                    paginationRequestSent = true;
+                }
                 mPullToRefresh.setRefreshing(false);
             }
         });
