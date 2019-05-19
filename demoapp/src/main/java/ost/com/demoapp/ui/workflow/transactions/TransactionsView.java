@@ -13,4 +13,7 @@ package ost.com.demoapp.ui.workflow.transactions;
 import ost.com.demoapp.ui.BaseView;
 
 interface TransactionsView extends BaseView {
+    void invalidTokenValue();
+
+    void insufficientBalance();
 }

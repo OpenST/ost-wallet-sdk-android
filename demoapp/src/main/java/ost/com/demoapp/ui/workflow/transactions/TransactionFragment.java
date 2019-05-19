@@ -29,9 +29,6 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import org.json.JSONObject;
 
-import java.util.Arrays;
-import java.util.List;
-
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.entity.User;
@@ -51,6 +48,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
     TransactionsPresenter mTransactionPresenter = TransactionsPresenter.getInstance();
     private User mUser;
     private OnFragmentInteractionListener mListener;
+    private OstPrimaryEditTextView mTokensEditTextView;
 
     public TransactionFragment() {
         // Required empty public constructor
@@ -118,9 +116,9 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         ((TextView)viewGroup.findViewById(R.id.tv_status)).setText(mUser.getTokenHolderAddress());
         /*************End*************/
 
-        final OstPrimaryEditTextView tokensEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_number));
-        tokensEditTextView.setHintText(getResources().getString(R.string.transaction_amount));
-        tokensEditTextView.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mTokensEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_number));
+        mTokensEditTextView.setHintText(getResources().getString(R.string.transaction_amount));
+        mTokensEditTextView.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         final AppCompatSpinner unitSpinner = ((AppCompatSpinner)viewGroup.findViewById(R.id.etv_tokens_unit));
         ArrayAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, mTransactionPresenter.getUnitList());
@@ -132,12 +130,15 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
             @Override
             public void onClick(View v) {
                 try {
+                    mTokensEditTextView.showErrorString(null);
                     JSONObject transactionDetails = mTransactionPresenter.sendTokens(mUser.getTokenHolderAddress(),
-                            tokensEditTextView.getText(),
+                            mTokensEditTextView.getText(),
                             mTransactionPresenter.getUnitList().get(unitSpinner.getSelectedItemPosition())
                     );
-                    transactionDetails.put("userName", mUser.getUserName());
-                    mListener.setTransactionWorkflow(transactionDetails);
+                    if (null != transactionDetails) {
+                        transactionDetails.put("userName", mUser.getUserName());
+                        mListener.setTransactionWorkflow(transactionDetails);
+                    }
                 } catch (Exception e){}
             }
         });
@@ -159,6 +160,16 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
     public void onDestroyView() {
         super.onDestroyView();
         mTransactionPresenter.detachView();
+    }
+
+    @Override
+    public void invalidTokenValue() {
+        mTokensEditTextView.showErrorString("Invalid Token Number");
+    }
+
+    @Override
+    public void insufficientBalance() {
+        mTokensEditTextView.showErrorString("Not enough token balance");
     }
 
     public interface OnFragmentInteractionListener {

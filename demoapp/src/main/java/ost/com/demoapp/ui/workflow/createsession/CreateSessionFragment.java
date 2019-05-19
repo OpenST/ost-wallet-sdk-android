@@ -35,6 +35,7 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
 
 
     CreateSessionPresenter mCreateSessionPresenter = CreateSessionPresenter.getInstance();
+    private OstPrimaryEditTextView mSpendingLimitEditText;
 
     public CreateSessionFragment() {
         // Required empty public constructor
@@ -65,9 +66,9 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
         // Inflate the layout for this fragment
         ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_create_session, container, true);
 
-        final OstPrimaryEditTextView spendingLimitEditText = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_spending_limit));
-        spendingLimitEditText.setHintText(getResources().getString(R.string.create_session_spending_limit));
-        spendingLimitEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mSpendingLimitEditText = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_spending_limit));
+        mSpendingLimitEditText.setHintText(getResources().getString(R.string.create_session_spending_limit));
+        mSpendingLimitEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         final OstPrimaryEditTextView unitEditText = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_unit));
         unitEditText.setHintText(getResources().getString(R.string.create_session_unit));
@@ -83,11 +84,12 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
         ((Button)viewGroup.findViewById(R.id.pbtn_create_session)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(spendingLimitEditText.getText().equals("") || expiryDaysEditText.getText().equals("")){
+                mSpendingLimitEditText.showErrorString(null);
+                if(mSpendingLimitEditText.getText().equals("") || expiryDaysEditText.getText().equals("")){
                     Toast.makeText(getContext(), "Add Mandatory Input", Toast.LENGTH_SHORT).show();
                 } else {
                     mCreateSessionPresenter.createSession(
-                            spendingLimitEditText.getText(),
+                            mSpendingLimitEditText.getText(),
                             unitEditText.getText(),
                             expiryDaysEditText.getText()
                     );
@@ -110,5 +112,10 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
     public void onDestroyView() {
         super.onDestroyView();
         mCreateSessionPresenter.detachView();
+    }
+
+    @Override
+    public void invalidSpendingLimit() {
+        mSpendingLimitEditText.showErrorString("Invalid Spending limit");
     }
 }

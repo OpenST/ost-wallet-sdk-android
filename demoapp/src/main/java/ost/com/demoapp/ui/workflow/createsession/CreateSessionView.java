@@ -13,4 +13,5 @@ package ost.com.demoapp.ui.workflow.createsession;
 import ost.com.demoapp.ui.BaseView;
 
 interface CreateSessionView extends BaseView {
+    void invalidSpendingLimit();
 }
