@@ -45,7 +45,7 @@ import ost.com.demoapp.util.CommonUtils;
 public class TransactionFragment extends BaseFragment implements TransactionsView {
 
 
-    TransactionsPresenter mTransactionPresenter = TransactionsPresenter.getInstance();
+    TransactionsPresenter mTransactionPresenter;
     private User mUser;
     private OnFragmentInteractionListener mListener;
     private OstPrimaryEditTextView mTokensEditTextView;
@@ -94,6 +94,9 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
     protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.fragment_transaction, container, true);
+
+        mTransactionPresenter = TransactionsPresenter.getInstance();
+        mTransactionPresenter.attachView(this);
 
         ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: %s %s",
                 CommonUtils.convertWeiToTokenCurrency(AppProvider.get().getCurrentUser().getBalance()),
@@ -152,14 +155,13 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
 
         AppBar appBar = AppBar.newInstance(getContext(), "Send Tokens", true);
         setUpAppBar(viewGroup, appBar);
-
-        mTransactionPresenter.attachView(this);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mTransactionPresenter.detachView();
+        mTransactionPresenter = null;
     }
 
     @Override

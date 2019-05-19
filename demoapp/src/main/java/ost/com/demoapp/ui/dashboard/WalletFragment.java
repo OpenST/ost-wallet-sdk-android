@@ -29,9 +29,8 @@ public class WalletFragment extends BaseFragment implements WalletView {
 
     private TextView mWalletBalance;
 
-    private WalletPresenter mWalletPresenter = WalletPresenter.newInstance();
+    private WalletPresenter mWalletPresenter;
     private RecyclerView mRecyclerView;
-    private TransactionRecyclerViewAdapter mTransactionRecyclerViewAdapter;
     private SwipeRefreshLayout mPullToRefresh;
     private Boolean paginationRequestSent = false;
     private LinearLayout mEmptyWalletLL;
@@ -65,7 +64,10 @@ public class WalletFragment extends BaseFragment implements WalletView {
                 "Your Wallet",
                 false);
         setUpAppBar(view, appBar);
+
+        mWalletPresenter = WalletPresenter.newInstance();
         mWalletPresenter.attachView(this);
+
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -73,12 +75,12 @@ public class WalletFragment extends BaseFragment implements WalletView {
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
                 int visibleItemCount = layoutManager.getChildCount();
                 int totalItemCount = layoutManager.getItemCount();
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                if (!paginationRequestSent && (visibleItemCount + firstVisibleItemPosition) >=
+                if (!paginationRequestSent && dy > 0 && (visibleItemCount + firstVisibleItemPosition) >=
                         totalItemCount && firstVisibleItemPosition >= 0) {
                     paginationRequestSent = true;
                     mWalletPresenter.updateTransactionHistory(false);
@@ -114,4 +116,10 @@ public class WalletFragment extends BaseFragment implements WalletView {
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mWalletPresenter.detachView();
+        mWalletPresenter = null;
+    }
 }

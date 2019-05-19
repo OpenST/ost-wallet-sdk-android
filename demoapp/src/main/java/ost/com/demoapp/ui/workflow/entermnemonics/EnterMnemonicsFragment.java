@@ -31,7 +31,7 @@ import ost.com.demoapp.ui.BaseFragment;
 public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemonicsView {
 
 
-    EnterMnemonicsPresenter mEnterMnemonicsPresenter = EnterMnemonicsPresenter.getInstance();
+    EnterMnemonicsPresenter mEnterMnemonicsPresenter;
 
     public EnterMnemonicsFragment() {
         // Required empty public constructor
@@ -71,6 +71,7 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
             }
         });
 
+        mEnterMnemonicsPresenter = EnterMnemonicsPresenter.getInstance();
         mEnterMnemonicsPresenter.attachView(this);
         AppBar appBar = AppBar.newInstance(getContext(), "Enter 12-word Mnemonic", true);
         setUpAppBar(viewGroup, appBar);
@@ -80,5 +81,6 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
     public void onDestroyView() {
         super.onDestroyView();
         mEnterMnemonicsPresenter.detachView();
+        mEnterMnemonicsPresenter = null;
     }
 }

@@ -34,7 +34,7 @@ import ost.com.demoapp.ui.BaseFragment;
 public class CreateSessionFragment extends BaseFragment implements CreateSessionView {
 
 
-    CreateSessionPresenter mCreateSessionPresenter = CreateSessionPresenter.getInstance();
+    CreateSessionPresenter mCreateSessionPresenter;
     private OstPrimaryEditTextView mSpendingLimitEditText;
 
     public CreateSessionFragment() {
@@ -103,6 +103,7 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
                 goBack();
             }
         });
+        mCreateSessionPresenter = CreateSessionPresenter.getInstance();
         mCreateSessionPresenter.attachView(this);
         AppBar appBar = AppBar.newInstance(getContext(), "Create Session", true);
         setUpAppBar(viewGroup, appBar);
@@ -112,6 +113,7 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
     public void onDestroyView() {
         super.onDestroyView();
         mCreateSessionPresenter.detachView();
+        mCreateSessionPresenter = null;
     }
 
     @Override

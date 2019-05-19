@@ -50,6 +50,7 @@ class UserListPresenter extends BasePresenter<UserListView> {
             userList.clear();
             nextPayload = new JSONObject();
         } else if(!hasMoreData){
+            getMvpView().notifyDataSetChanged();
             return;
         }
         AppProvider.get().getMappyClient().getUserList(nextPayload, new MappyNetworkClient.ResponseCallback() {
