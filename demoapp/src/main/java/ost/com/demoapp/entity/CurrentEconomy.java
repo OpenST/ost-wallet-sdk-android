@@ -51,13 +51,13 @@ public class CurrentEconomy {
     public static CurrentEconomy newInstance(String jsonString) throws JSONException {
         JSONObject jsonObject = new JSONObject(jsonString);
         return new CurrentEconomy(
-                jsonObject.optString(TOKEN_NAME),
-                jsonObject.optString(TOKEN_ID),
-                jsonObject.optString(TOKEN_SYMBOL),
-                jsonObject.optString(URL_ID),
-                jsonObject.optString(MAPPY_API_ENDPOINT),
-                jsonObject.optString(SAAS_API_ENDPOINT),
-                jsonObject.optString(VIEW_API_ENDPOINT)
+                jsonObject.getString(TOKEN_NAME),
+                jsonObject.getString(TOKEN_ID),
+                jsonObject.getString(TOKEN_SYMBOL),
+                jsonObject.getString(URL_ID),
+                jsonObject.getString(MAPPY_API_ENDPOINT),
+                jsonObject.getString(SAAS_API_ENDPOINT),
+                jsonObject.getString(VIEW_API_ENDPOINT)
 
         );
     }

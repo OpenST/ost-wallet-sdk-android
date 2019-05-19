@@ -21,7 +21,6 @@ import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BasePresenter;
 
 class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
-        SdkInteract.FlowComplete,
         SdkInteract.FlowInterrupt,
         SdkInteract.RequestAcknowledged {
 
@@ -48,11 +47,6 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
                 Long.parseLong(expiryDays) * 24 * 60 * 60,
                 workFlowListener
         );
-    }
-
-    @Override
-    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        getMvpView().showProgress(false);
     }
 
     @Override

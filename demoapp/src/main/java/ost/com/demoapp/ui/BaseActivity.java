@@ -81,7 +81,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
             view.setBackground(getResources().getDrawable(R.drawable.green_rounded_rectangle, null));
         } else {
             view.setBackground(getResources().getDrawable(R.drawable.red_rounded_rectangle, null));
-            params.height = dpToPx(120);
+            params.height = FrameLayout.LayoutParams.WRAP_CONTENT;
         }
         params.leftMargin = 30;
         params.rightMargin = 30;

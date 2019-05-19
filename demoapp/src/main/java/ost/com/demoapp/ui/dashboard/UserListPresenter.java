@@ -87,7 +87,7 @@ class UserListPresenter extends BasePresenter<UserListView> {
                 Log.e(LOG_TAG, "Get Current User list error");
                 userList.clear();
                 nextPayload = new JSONObject();
-                getMvpView().showToastMessage("Something went wrong", true);
+                getMvpView().showToastMessage("Something went wrong", false);
                 getMvpView().notifyDataSetChanged();
             }
         });

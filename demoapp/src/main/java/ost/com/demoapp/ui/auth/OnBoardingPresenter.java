@@ -152,7 +152,16 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
 
     void onScanEconomyResult(String returnedResult) throws JSONException {
         getMvpView().goBack();
-        CurrentEconomy currentEconomy = CurrentEconomy.newInstance(returnedResult);
+        CurrentEconomy currentEconomy = null;
+        try {
+            currentEconomy = CurrentEconomy.newInstance(returnedResult);
+        } catch (JSONException e) {
+            //Nothing to be done
+        }
+        if (null == currentEconomy) {
+            getMvpView().showToastMessage("Invalid Economy QR code! Try again.", false);
+            return;
+        }
         AppProvider.get().setCurrentEconomy(currentEconomy);
         getMvpView().refreshToken();
     }
