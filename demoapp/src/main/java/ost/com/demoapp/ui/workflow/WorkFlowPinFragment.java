@@ -73,7 +73,9 @@ public class WorkFlowPinFragment extends PinFragment {
 
     @Override
     public void goBack() {
-        mOstPinAcceptInterface.cancelFlow();
+        if (null != mOstPinAcceptInterface) {
+            mOstPinAcceptInterface.cancelFlow();
+        }
         super.goBack();
     }
 

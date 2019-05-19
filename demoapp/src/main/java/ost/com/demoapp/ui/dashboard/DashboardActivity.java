@@ -276,7 +276,7 @@ public class DashboardActivity extends BaseActivity implements
 
         Dialog dialog = DialogFactory.createSimpleOkErrorDialog(DashboardActivity.this,
                 "Incorrect PIN",
-                "Please enter your valid PIN to\nauthorize");
+                "Please enter your valid PIN to authorize");
         dialog.setCancelable(false);
         dialog.show();
     }

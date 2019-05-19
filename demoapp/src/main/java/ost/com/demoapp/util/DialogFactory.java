@@ -16,6 +16,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import ost.com.demoapp.R;
 
@@ -29,11 +32,27 @@ public final class DialogFactory {
     }
 
     public static Dialog createSimpleOkErrorDialog(Context context, String title, String message, DialogInterface.OnClickListener onClickListener) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context)
-                .setTitle(title)
-                .setMessage(message)
-                .setNeutralButton(R.string.dialog_action_ok, onClickListener);
-        return alertDialog.create();
+
+        final Dialog dialog = new Dialog(context);
+        // Include dialog.xml file
+        dialog.setContentView(R.layout.simple_dialog_view);
+
+        TextView headingTextView = (TextView) dialog.findViewById(R.id.tv_heading);
+        headingTextView.setText(title);
+
+        TextView messageTextView = (TextView) dialog.findViewById(R.id.tv_sub_heading);
+        messageTextView.setText(message);
+
+        Button okButton = (Button) dialog.findViewById(R.id.buttonOk);
+        // if decline button is clicked, close the custom dialog
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Close dialog
+                dialog.dismiss();
+            }
+        });
+        return dialog;
     }
 
     public static Dialog createSimpleOkErrorDialog(Context context,

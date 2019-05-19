@@ -100,8 +100,8 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
     @Override
     public void showPinErrorDialog() {
         Dialog dialog = DialogFactory.createSimpleOkErrorDialog(getContext(),
-                "",
                 "PIN doesn’t match.\n Please try again.",
+                "",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
