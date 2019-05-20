@@ -10,7 +10,10 @@
 
 package ost.com.demoapp;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.ost.walletsdk.OstSdk;
@@ -22,6 +25,7 @@ import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.network.NetworkClient;
+import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.util.DBLog;
 
 import static ost.com.demoapp.entity.CurrentEconomy.MAPPY_API_ENDPOINT;
@@ -149,5 +153,16 @@ public class AppProvider {
 
     public DBLog getDBLogger() {
         return new DBLog();
+    }
+
+    public void relaunchApp() {
+        AppProvider.get().getCookieStore().removeAll();
+
+        Intent intent = new Intent(mApplicationContext, OnBoardingActivity.class);
+        int mPendingIntentId = 123456;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(mApplicationContext, mPendingIntentId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager)mApplicationContext.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0);
     }
 }

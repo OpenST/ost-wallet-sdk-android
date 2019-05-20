@@ -285,6 +285,8 @@ public class SettingsFragment extends BaseFragment {
                     showProgress(true, "Logging Out");
                     WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
                     OstSdk.logoutAllSessions(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);
+                    //Remove all cookies
+                    AppProvider.get().getCookieStore().removeAll();
                 }
             }
         });

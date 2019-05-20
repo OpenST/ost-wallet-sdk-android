@@ -29,6 +29,7 @@ public class MappyNetworkClient {
     private static final String PASSWORD = "password";
     private static final String DEVICE_ADDRESS = "address";
     private static final String API_SIGNER_ADDRESS = "api_signer_address";
+    private static final String UNAUTHORIZED = "401 Unauthorized";
 
     private final String mUrl;
     private final RequestQueue mRequestQueue;
@@ -177,7 +178,15 @@ public class MappyNetworkClient {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        callback.onFailure(error.getCause());
+                        if (!(resource.equalsIgnoreCase("users/current-user"))
+                                && UNAUTHORIZED
+                                .equalsIgnoreCase(
+                                        error.networkResponse.headers.get("Status")
+                                )) {
+                            AppProvider.get().relaunchApp();
+                        } else {
+                            callback.onFailure(error.getCause());
+                        }
                     }
                 }
         );
