@@ -57,6 +57,7 @@ class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<TransactionRec
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        clearViewHolder(holder);
         holder.mTransaction = mValues.get(position);
         String date = DateFormat.format("dd/MM/yyyy hh:mm:ss", new Date((long)holder.mTransaction.getTimestamp() * 1000)).toString();
         holder.mDate.setText(date);
@@ -65,7 +66,7 @@ class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<TransactionRec
         holder.mTransferType.setText(holder.mTransaction.getMetaName());
         Context context = AppProvider.get().getApplicationContext();
         if(holder.mTransaction.isIn()){
-            if(holder.mTransaction.getMetaType().equals("user_to_user")){
+            if(!holder.mTransaction.getMetaType().equals("company_to_user")){
                 holder.mTransferType.setText("Received Tokens");
                 holder.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.token_receive_icon, null));
             }
@@ -116,6 +117,15 @@ class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<TransactionRec
         public String toString() {
             return super.toString() + " '" + mDate.getText() + "'";
         }
+    }
+
+    private void clearViewHolder(ViewHolder holder){
+        holder.mTransaction = null;
+        holder.mTransferType.setText("");
+        holder.mDate.setText("");
+        holder.mTransferValue.setText("");
+        holder.mImageView.setImageDrawable(AppProvider.get().getApplicationContext().
+                getResources().getDrawable(R.drawable.ost_logo_small, null));
     }
 
     public interface OnListInteractionListener {

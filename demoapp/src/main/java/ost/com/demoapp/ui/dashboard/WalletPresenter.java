@@ -59,7 +59,6 @@ class WalletPresenter extends BasePresenter<WalletView> implements
             transactionList.clear();
             nextPayload = new JSONObject();
         } else if(!hasMoreData){
-            getMvpView().notifyDataSetChanged();
             return;
         }
         AppProvider.get().getMappyClient().getCurrentUserTransactions(nextPayload, new MappyNetworkClient.ResponseCallback() {
