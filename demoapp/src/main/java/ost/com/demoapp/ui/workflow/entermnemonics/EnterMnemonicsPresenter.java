@@ -36,6 +36,13 @@ class EnterMnemonicsPresenter extends BasePresenter<EnterMnemonicsView> implemen
     }
 
     void recoverWallet(String mnemonicsPhrase) {
+        //mnemonics validation
+        String[] mnemonicsArray = mnemonicsPhrase.split(" ");
+        if (mnemonicsArray.length != 12) {
+            getMvpView().showToastMessage("Mnemonics length should be of 12 words", false);
+            return;
+        }
+
         getMvpView().showProgress(true, "Recovering device...");
 
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
