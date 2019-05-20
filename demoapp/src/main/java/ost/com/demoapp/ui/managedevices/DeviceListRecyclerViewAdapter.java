@@ -36,7 +36,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
 
     private final List<Device> mValues;
     final OnDeviceListInteractionListener mListener;
-    private final String mCurrentDeviceAddress;
+    final String mCurrentDeviceAddress;
 
     DeviceListRecyclerViewAdapter(List<Device> items, OnDeviceListInteractionListener listener) {
         mValues = items;
@@ -109,7 +109,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
         private final ImageView mImageView;
         private final TextView mUserName;
         private final TextView mAddress;
-        private final TextView mStatus;
+        final TextView mStatus;
         final Button mActionButton;
 
         public Device mDevice;

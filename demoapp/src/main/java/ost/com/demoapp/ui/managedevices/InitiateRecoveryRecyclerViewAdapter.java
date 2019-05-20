@@ -27,12 +27,18 @@ class InitiateRecoveryRecyclerViewAdapter extends DeviceListRecyclerViewAdapter 
 
     @Override
     void handleView(ViewHolder holder) {
-        holder.mActionButton.setText("Select");
-        holder.mActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mListener.onDeviceSelectedForRecovery(holder.mDevice);
-            }
-        });
+        if (mCurrentDeviceAddress.equalsIgnoreCase(holder.mDevice.getDeviceAddress())) {
+            holder.mStatus.setVisibility(View.VISIBLE);
+            holder.mActionButton.setVisibility(View.GONE);
+            holder.mStatus.setText("This Device");
+        } else {
+            holder.mActionButton.setText("Select");
+            holder.mActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mListener.onDeviceSelectedForRecovery(holder.mDevice);
+                }
+            });
+        }
     }
 }

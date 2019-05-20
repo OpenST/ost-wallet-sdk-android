@@ -182,6 +182,7 @@ public class MappyNetworkClient {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (!(resource.equalsIgnoreCase("users/current-user"))
+                                && null != error.networkResponse.headers
                                 && UNAUTHORIZED
                                 .equalsIgnoreCase(
                                         error.networkResponse.headers.get("Status")
