@@ -97,7 +97,6 @@ public class UserListFragment extends BaseFragment implements UserListView,
         mUserListPresenter.setUserList(mUserList);
         mUserListRecyclerViewAdapter = UserListRecyclerViewAdapter.newInstance(mUserList, this);
 
-        mUserListPresenter.attachView(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -127,6 +126,8 @@ public class UserListFragment extends BaseFragment implements UserListView,
                 mPullToRefresh.setRefreshing(false);
             }
         });
+
+        mUserListPresenter.attachView(this);
         return view;
     }
 
