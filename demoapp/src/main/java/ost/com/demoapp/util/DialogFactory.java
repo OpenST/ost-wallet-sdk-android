@@ -49,6 +49,9 @@ public final class DialogFactory {
             @Override
             public void onClick(View v) {
                 // Close dialog
+                if (null != onClickListener){
+                    onClickListener.onClick(dialog, 0);
+                }
                 dialog.dismiss();
             }
         });

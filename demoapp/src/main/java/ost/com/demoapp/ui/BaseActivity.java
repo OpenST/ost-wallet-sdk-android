@@ -19,11 +19,11 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.util.DialogFactory;
 
@@ -44,6 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
             actionBar.hide();
         }
 
+        AppProvider.get().setCurrentActivity(this);
         super.onCreate(savedInstanceState);
     }
 

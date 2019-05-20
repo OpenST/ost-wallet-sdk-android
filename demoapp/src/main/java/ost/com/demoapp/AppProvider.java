@@ -25,6 +25,7 @@ import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.network.NetworkClient;
+import ost.com.demoapp.ui.BaseActivity;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
 import ost.com.demoapp.util.DBLog;
 
@@ -43,6 +44,7 @@ public class AppProvider {
     private CurrentEconomy currentEconomy;
     private LogInUser logInUser;
     private CookieStore mCookieStore;
+    private BaseActivity mCurrentActivity;
 
     private AppProvider(Context context) {
         mApplicationContext = context;
@@ -164,5 +166,13 @@ public class AppProvider {
         AlarmManager mgr = (AlarmManager)mApplicationContext.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
         System.exit(0);
+    }
+
+    public void setCurrentActivity(BaseActivity baseActivity) {
+        mCurrentActivity = baseActivity;
+    }
+
+    public BaseActivity getCurrentActivity() {
+        return mCurrentActivity;
     }
 }

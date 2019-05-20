@@ -10,6 +10,8 @@
 
 package ost.com.demoapp.sdkInteract;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
@@ -271,6 +273,25 @@ public class WorkFlowListener implements OstWorkFlowCallback {
             }
         }
         Log.e(LOG_TAG, title);
-        // Todo:: show dialog to relaunch application
+        showLogoutDialog(title, message);
     }
+
+    public void showLogoutDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                AppProvider.get().relaunchApp();
+            }});
+
+        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }});
+
+        builder.create().show();
+    }
+
 }

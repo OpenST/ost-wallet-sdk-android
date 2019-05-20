@@ -10,6 +10,8 @@
 
 package ost.com.demoapp.network;
 
+import android.content.DialogInterface;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,6 +24,7 @@ import org.json.JSONObject;
 import java.util.Iterator;
 
 import ost.com.demoapp.AppProvider;
+import ost.com.demoapp.util.DialogFactory;
 
 public class MappyNetworkClient {
 
@@ -183,7 +186,15 @@ public class MappyNetworkClient {
                                 .equalsIgnoreCase(
                                         error.networkResponse.headers.get("Status")
                                 )) {
-                            AppProvider.get().relaunchApp();
+                            DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(),
+                                    "Cookie expired",
+                                    "Login required",
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            AppProvider.get().relaunchApp();
+                                        }
+                                    }).show();
                         } else {
                             callback.onFailure(error.getCause());
                         }
