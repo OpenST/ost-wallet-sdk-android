@@ -97,7 +97,7 @@ public class OstResetPin extends OstBaseWorkFlow {
             struct = rkm.getResetRecoveryOwnerSignature(currentPassphrase, newPassphrase);
             rkm = null;
         } catch (OstError error) {
-            return postErrorInterrupt(error.getInternalErrorCode(), error.getErrorCode());
+            return postErrorInterrupt(error);
         }
 
         newRecoveryOwnerAddress = struct.getNewRecoveryOwnerAddress();
