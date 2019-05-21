@@ -36,16 +36,8 @@ public class OstError extends Error {
         return mErrorCode;
     }
 
-    public void setErrorCode( OstErrors.ErrorCode code ){
-        this.mErrorCode = code ;
-    }
-
     public String getInternalErrorCode() {
         return mInternalErrorCode;
-    }
-
-    public void setInternalErrorCode( String code ){
-        this.mInternalErrorCode = code ;
     }
 
     public boolean isApiError() {
