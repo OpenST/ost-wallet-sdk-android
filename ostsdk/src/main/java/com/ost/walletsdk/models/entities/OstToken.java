@@ -35,6 +35,7 @@ public class OstToken extends OstBaseEntity {
     private static final String CHAIN_ID = "chain_id";
     private static final String TAG = "OstToken";
     private static final String DECIMALS = "decimals";
+    private static final String BASE_TOKEN = "base_token";
 
 
     public static String getIdentifier() {
@@ -184,5 +185,9 @@ public class OstToken extends OstBaseEntity {
 
     public OstRule[] getAllRules() {
         return OstModelFactory.getRuleModel().getEntitiesByParentId(getId());
+    }
+
+    public String getCurrencySymbol() {
+        return this.getJsonDataPropertyAsString(OstToken.BASE_TOKEN);
     }
 }
