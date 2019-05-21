@@ -611,7 +611,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         return postFlowComplete(null);
     }
 
-    AsyncStatus postErrorInterrupt(String internalErrCode, OstErrors.OstErrorCode errorCode) {
+    AsyncStatus postErrorInterrupt(String internalErrCode, OstErrors.ErrorCode errorCode) {
         Log.i(TAG, "Flow Error");
         OstError error = new OstError(internalErrCode, errorCode);
         return postErrorInterrupt(error);
