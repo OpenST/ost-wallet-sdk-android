@@ -16,9 +16,18 @@ import android.util.Log;
  * Ost Error with error code and error message
  */
 public class OstErrors {
+
+    public interface OstErrorCode {
+
+    }
+
     private static String TAG = "OstErrors";
 
-    public static String getMessage(ErrorCode code) {
+    public static String getMessage(OstErrorCode ostErrorCode) {
+        if ( !( ostErrorCode instanceof ErrorCode ) ) {
+            return "";
+        }
+        ErrorCode code = (ErrorCode) ostErrorCode;
         switch (code) {
             case INVALID_USER_ID: return "Unable to recognize the user id. Please inspect for what is being sent, rectify and re-submit.";
             case INVALID_SDK_URL: return "Invalid OST server url";
@@ -225,7 +234,7 @@ public class OstErrors {
         }
     }
 
-    public enum ErrorCode {
+    public enum ErrorCode implements OstErrorCode {
         INVALID_USER_ID,
         INVALID_SDK_URL,
         INVALID_WORKFLOW_CALLBACK,

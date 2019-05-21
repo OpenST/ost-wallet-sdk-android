@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="#ebfbfb">
+
+        <ImageView
+            android:id="@+id/ptv_image"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_15"/>
+
+        <ost.com.demoapp.uicomponents.OstBoldTextView
+            android:id="@+id/ptv_username"
+            android:textSize="@dimen/setting_user_name"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_toRightOf="@id/ptv_image"
+            android:textColor="#34445b"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_height="wrap_content" />
+
+        <ost.com.demoapp.uicomponents.OstTextView
+            android:id="@+id/ptv_userid"
+            android:textSize="@dimen/sp_14"
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@id/ptv_image"
+            android:layout_below="@id/ptv_username"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/ll_settings_list"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

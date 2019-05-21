@@ -34,6 +34,7 @@ import com.ost.walletsdk.workflows.OstPerform;
 import com.ost.walletsdk.workflows.OstRecoverDeviceWorkflow;
 import com.ost.walletsdk.workflows.OstRegisterDevice;
 import com.ost.walletsdk.workflows.OstResetPin;
+import com.ost.walletsdk.workflows.OstRevokeDevice;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -134,15 +135,11 @@ public class OstSdk {
      * @param baseUrl base Url of OST Platform
      */
     public static void initialize(Context context, String baseUrl) {
-        if (INSTANCE == null) {
-            synchronized (OstSdk.class) {
-                if (INSTANCE == null) {
-                    //Create Config.
-                    OstConfigs.init(context);
-                    //Create instance.
-                    INSTANCE = new OstSdk(context, baseUrl);
-                }
-            }
+        synchronized (OstSdk.class) {
+            //Create Config.
+            OstConfigs.init(context);
+            //Create instance.
+            INSTANCE = new OstSdk(context, baseUrl);
         }
     }
 
@@ -401,6 +398,22 @@ public class OstSdk {
                 newPassphrase,
                 workFlowCallback);
         ostResetPin.perform();
+    }
+
+    /**
+     * To revoke device address from user id's device manager.
+     *
+     * @param userId           user Id whose device to revoke
+     * @param deviceAddress    Device address of the device to be revoked
+     * @param workFlowCallback Work flow interact object
+     */
+    public static void revokeDevice(String userId,
+                                    String deviceAddress,
+                                    OstWorkFlowCallback workFlowCallback) {
+        final OstRevokeDevice ostRevokeDevice = new OstRevokeDevice(userId,
+                deviceAddress,
+                workFlowCallback);
+        ostRevokeDevice.perform();
     }
 
     /**
