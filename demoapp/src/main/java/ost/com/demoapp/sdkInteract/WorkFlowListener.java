@@ -285,12 +285,6 @@ public class WorkFlowListener implements OstWorkFlowCallback {
             public void onClick(DialogInterface dialog, int id) {
                 AppProvider.get().relaunchApp();
             }});
-
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }});
-
         builder.create().show();
     }
 

@@ -254,8 +254,6 @@ public class SettingsFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
-                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
-
                 Fragment fragment = AbortRecoveryFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
