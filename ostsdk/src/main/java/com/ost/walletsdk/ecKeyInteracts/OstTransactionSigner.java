@@ -15,7 +15,6 @@ import android.util.Log;
 import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedTransactionStruct;
-import com.ost.walletsdk.models.entities.OstRule;
 import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
@@ -83,7 +82,7 @@ public class OstTransactionSigner {
                                 OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
                         throw ostError;
                     }
-                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(jsonObject, OstConfigs.getInstance().PRICE_POINT_TOKEN_SYMBOL);
+                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(jsonObject, OstSdk.getToken(user.getTokenId()).getBaseToken());
                     if (null == pricePointObject) {
                         OstError ostError = new OstError("km_ts_st_6",
                                 OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
