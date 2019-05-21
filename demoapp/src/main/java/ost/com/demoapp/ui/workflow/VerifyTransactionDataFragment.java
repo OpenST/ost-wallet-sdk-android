@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ost.walletsdk.OstConstants;
@@ -50,7 +49,7 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
 
         mVerifyDataJson = (JSONObject) getVerifyData();
 
-        ((TextView)viewGroup.findViewById(R.id.atv_transfer_type)).setText(mVerifyDataJson.optString(OstConstants.RULE_NAME));
+        ((TextView)viewGroup.findViewById(R.id.atv_transfer_type)).setText(mVerifyDataJson.optString(OstConstants.RULE_NAME).toUpperCase());
 
         LinearLayout transferHolder = ((LinearLayout)viewGroup.findViewById(R.id.ll_transfer_holder));
 
@@ -59,12 +58,12 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
         for (int i=0; i<tokenHolderAddressesList.length(); i++) {
             String tokenHolderAddress = tokenHolderAddressesList.optString(i);
             String tokenHolderAmount = tokenHolderAmountsList.optString(i);
-            RelativeLayout layoutTransfer = new RelativeLayout(getContext());
-            layoutTransfer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            LinearLayout layoutTransfer = new LinearLayout(getContext());
+            layoutTransfer.setOrientation(LinearLayout.HORIZONTAL);
+            layoutTransfer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
             OstTextView tokenHolderAddressView = new OstTextView(getContext());
-            RelativeLayout.LayoutParams paramsTokenHolder = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            paramsTokenHolder.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
+            LinearLayout.LayoutParams paramsTokenHolder = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.7f);
             tokenHolderAddressView.setLayoutParams(paramsTokenHolder);
             tokenHolderAddressView.setText(tokenHolderAddress);
             tokenHolderAddressView.setTextColor(Color.parseColor("#34445b"));
@@ -73,10 +72,13 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
             layoutTransfer.addView(tokenHolderAddressView);
 
             OstBoldTextView tokenHolderValueView = new OstBoldTextView(getContext());
-            RelativeLayout.LayoutParams paramsTokenHolderValue = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            paramsTokenHolderValue.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
+            LinearLayout.LayoutParams paramsTokenHolderValue = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 0.3f);
+            tokenHolderValueView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
             tokenHolderValueView.setLayoutParams(paramsTokenHolderValue);
-            tokenHolderValueView.setText(tokenHolderAmount);
+            tokenHolderValueView.setText(
+                    String.format("%s %s", CommonUtils.convertWeiToTokenCurrency(tokenHolderAmount),
+                            AppProvider.get().getCurrentEconomy().getTokenSymbol())
+            );
             tokenHolderValueView.setTextColor(Color.parseColor("#34445b"));
             tokenHolderValueView.setTextSize(14);
 
