@@ -56,6 +56,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
         } else if(!hasMoreData){
             return;
         }
+        httpRequestPending = true;
         AppProvider.get().getMappyClient().getCurrentUserDevices(nextPayload, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {

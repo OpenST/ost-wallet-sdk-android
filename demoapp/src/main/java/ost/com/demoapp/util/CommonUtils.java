@@ -157,7 +157,7 @@ public class CommonUtils {
         }
     }
 
-    public boolean handleActionEligibilityCheck(Context activityContext) {
+    public boolean handleActivatingStateCheck(Context activityContext) {
         OstUser currentOstUser = AppProvider.get().getCurrentUser().getOstUser();
         if (currentOstUser.isActivating()) {
             Dialog dialog = DialogFactory.createSimpleOkErrorDialog(
@@ -167,6 +167,12 @@ public class CommonUtils {
             dialog.show();
             return true;
         }
+        return false;
+    }
+    public boolean handleActionEligibilityCheck(Context activityContext) {
+        if (handleActivatingStateCheck(activityContext)) return true;
+
+        OstUser currentOstUser = AppProvider.get().getCurrentUser().getOstUser();
         OstDevice currentDevice = currentOstUser.getCurrentDevice();
         if (currentDevice.isRecovering()) {
             Dialog dialog = DialogFactory.createSimpleOkErrorDialog(

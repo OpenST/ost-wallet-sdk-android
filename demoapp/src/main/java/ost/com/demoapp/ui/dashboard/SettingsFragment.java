@@ -114,6 +114,8 @@ public class SettingsFragment extends BaseFragment {
         walletDetailsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
+
                 Fragment fragment = WalletDetailsFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -201,6 +203,8 @@ public class SettingsFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
+
                 Fragment fragment = QRFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -211,6 +215,8 @@ public class SettingsFragment extends BaseFragment {
         manageDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
 
                 Fragment fragment = DeviceListFragment.manageDeviceInstance();
                 mListener.launchFeatureFragment(fragment);
@@ -275,7 +281,7 @@ public class SettingsFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
-                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
 
                 if (userDeviceNotAuthorized()) {
                     openDeviceAuthorizationFragment();
