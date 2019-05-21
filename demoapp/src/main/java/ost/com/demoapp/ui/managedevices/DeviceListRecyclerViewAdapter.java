@@ -82,7 +82,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
 
         if (OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status)) {
             holder.mStatus.setVisibility(View.VISIBLE);
-            holder.mStatus.setText("Recovery in progress");
+            holder.mStatus.setText("\uD83D\uDD58Recovery in progress");
             holder.mActionButton.setText("Abort recovery");
             holder.mActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -90,12 +90,14 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
                     mListener.onDeviceSelectedToAbortRecovery(holder.mDevice);
                 }
             });
-        }
-
-        if (mCurrentDeviceAddress.equalsIgnoreCase(holder.mDevice.getDeviceAddress())) {
+        } else if (mCurrentDeviceAddress.equalsIgnoreCase(holder.mDevice.getDeviceAddress())) {
             holder.mStatus.setVisibility(View.VISIBLE);
             holder.mActionButton.setVisibility(View.GONE);
             holder.mStatus.setText("This Device");
+        }
+
+        if (OstDevice.CONST_STATUS.REVOKING.equalsIgnoreCase(status)) {
+            holder.mActionButton.setVisibility(View.GONE);
         }
     }
 
