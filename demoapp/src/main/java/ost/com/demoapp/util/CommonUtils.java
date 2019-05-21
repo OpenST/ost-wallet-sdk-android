@@ -137,8 +137,24 @@ public class CommonUtils {
         Integer decimals = Integer.parseInt(token.getBtDecimals());
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
         BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
-        BigDecimal newBal = bal.setScale(5, RoundingMode.DOWN);
-        return newBal.toString().replace(".00000", "");
+        BigDecimal newBal = bal.setScale(2, RoundingMode.DOWN);
+        return newBal.toString().replace(".00", "");
+    }
+
+    public static String convertBTWeiToUsd(String balance, JSONObject pricePointObject) {
+        if (null == balance) return "0";
+
+        try{
+            OstToken token = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
+            Integer decimals = Integer.parseInt(token.getBtDecimals());
+            BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
+            BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
+            BigDecimal baseCurrencyBal = bal.divide(new BigDecimal(token.getConversionFactor()), RoundingMode.DOWN);
+            Double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getCurrencySymbol()).getDouble("USD");
+            return baseCurrencyBal.multiply(new BigDecimal(pricePointOSTtoUSD)).setScale(2, RoundingMode.DOWN).toString();
+        } catch (Exception e){
+            return null;
+        }
     }
 
     public boolean handleActionEligibilityCheck(Context activityContext) {

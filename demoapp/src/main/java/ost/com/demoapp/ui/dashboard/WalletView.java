@@ -13,6 +13,6 @@ package ost.com.demoapp.ui.dashboard;
 import ost.com.demoapp.ui.BaseView;
 
 interface WalletView extends BaseView {
-    void updateBalance(String balance);
+    void updateBalance(String balance, String usdBalance);
     void notifyDataSetChanged();
 }

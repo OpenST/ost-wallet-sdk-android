@@ -28,6 +28,7 @@ import ost.com.demoapp.ui.BaseFragment;
 public class WalletFragment extends BaseFragment implements WalletView {
 
     private TextView mWalletBalance;
+    private TextView mWalletUsdBalance;
 
     private WalletPresenter mWalletPresenter;
     private RecyclerView mRecyclerView;
@@ -57,6 +58,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_wallet, container, false);
 
         mWalletBalance = view.findViewById(R.id.ptv_wallet_balance);
+        mWalletUsdBalance = view.findViewById(R.id.ptv_wallet_usd_balance);
         mEmptyWalletLL = view.findViewById(R.id.empty_wallet_text);
         mRecyclerView = view.findViewById(R.id.rv_transactions);
         mPullToRefresh = view.findViewById(R.id.pullToRefresh);
@@ -100,8 +102,12 @@ public class WalletFragment extends BaseFragment implements WalletView {
     }
 
     @Override
-    public void updateBalance(String balance) {
+    public void updateBalance(String balance, String usdBalance) {
         mWalletBalance.setText(balance);
+        if(usdBalance != null){
+            mWalletUsdBalance.setText(String.format("≈ $ %s", usdBalance));
+            mWalletUsdBalance.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

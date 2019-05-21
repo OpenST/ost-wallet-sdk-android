@@ -66,6 +66,7 @@ class UserListPresenter extends BasePresenter<UserListView> {
                         nextPayload = dataJSONObject.optJSONObject("meta");
                         hasMoreData = (nextPayload != null && !nextPayload.getJSONObject("next_page_payload").toString().equals("{}"));
                         JSONObject balancesJSONObject = dataJSONObject.optJSONObject("balances");
+                        Log.d("Complete JSON **", dataJSONObject.toString());
                         if (null == balancesJSONObject) balancesJSONObject = new JSONObject();
 
                         JSONArray userJSONArray = (JSONArray) new CommonUtils()

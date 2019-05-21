@@ -21,23 +21,39 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp_20">
 
-        <ost.com.demoapp.uicomponents.OstTextView
-            android:id="@+id/ptv_wallet_balance"
+        <LinearLayout
+            android:id="@+id/balance_ll"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            android:background="@drawable/bg_primary_button"
-            android:gravity="center"
-            android:text="Tokens"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="12dp"
-            android:textColor="@android:color/white"
-            android:textSize="32sp" />
+            android:background="@drawable/bg_primary_button"
+            android:layout_height="160dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ost.com.demoapp.uicomponents.OstTextView
+                android:id="@+id/ptv_wallet_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tokens"
+                android:textColor="@android:color/white"
+                android:textSize="32sp" />
+
+            <ost.com.demoapp.uicomponents.OstTextView
+                android:id="@+id/ptv_wallet_usd_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_transaction_history"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ptv_wallet_balance"
+            android:layout_below="@id/balance_ll"
             android:layout_marginTop="20dp"
             android:layout_marginStart="12dp"
             android:text="TRANSACTION HISTORY"
