@@ -25,7 +25,14 @@ public class OstError extends Error {
 
     private boolean isApiError = false;
 
-    public OstError(String internalErrorCode, OstErrors.OstErrorCode errorCode) {
+    public OstError(String internalErrorCode, OstErrors.OstErrorCode errorCode, String errorMessage) {
+        super(errorMessage);
+        mErrorCode = errorCode;
+        mInternalErrorCode = internalErrorCode;
+        Log.d(Tag, "Error Code: '" + internalErrorCode + "'. Error Message:" + errorMessage);
+    }
+
+    public OstError(String internalErrorCode, OstErrors.ErrorCode errorCode) {
         super(OstErrors.getMessage(errorCode));
         mErrorCode = errorCode;
         mInternalErrorCode = internalErrorCode;
