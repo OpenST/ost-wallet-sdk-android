@@ -20,18 +20,18 @@ public class OstError extends Error {
 
     private static String Tag = "OstError";
 
-    private final OstErrors.ErrorCode mErrorCode;
+    private final OstErrors.OstErrorCode mErrorCode;
     private final String mInternalErrorCode;
     private boolean isApiError = false;
 
-    public OstError(String internalErrorCode, OstErrors.ErrorCode errorCode) {
+    public OstError(String internalErrorCode, OstErrors.OstErrorCode errorCode) {
         super(OstErrors.getMessage(errorCode));
         mErrorCode = errorCode;
         mInternalErrorCode = internalErrorCode;
         Log.d(Tag, "Error Code: '" + internalErrorCode + "'. Error Message:" + OstErrors.getMessage(errorCode));
     }
 
-    public OstErrors.ErrorCode getErrorCode() {
+    public OstErrors.OstErrorCode getErrorCode() {
         return mErrorCode;
     }
 
