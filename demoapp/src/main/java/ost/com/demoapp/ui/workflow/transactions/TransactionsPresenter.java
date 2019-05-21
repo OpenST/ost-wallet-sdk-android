@@ -12,6 +12,7 @@ package ost.com.demoapp.ui.workflow.transactions;
 
 import android.util.Log;
 
+import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -36,14 +37,13 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
     private static final String LOG_TAG = "OstTransactionPresenter";
 
     private String mCurrentTokenSymbol = AppProvider.get().getCurrentEconomy().getTokenSymbol();
-    private List<String> mUnitList = Arrays.asList(mCurrentTokenSymbol);
+    private List<String> mUnitList = Arrays.asList(mCurrentTokenSymbol, OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL);
 
     public List<String> getUnitList() {
         return mUnitList;
     }
 
     private TransactionsPresenter() {
-        mUnitList.add(OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId()).getCurrencySymbol());
     }
 
     static TransactionsPresenter getInstance() {
