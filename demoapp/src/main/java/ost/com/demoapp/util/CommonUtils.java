@@ -150,7 +150,7 @@ public class CommonUtils {
             BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
             BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
             BigDecimal baseCurrencyBal = bal.divide(new BigDecimal(token.getConversionFactor()), RoundingMode.DOWN);
-            Double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getCurrencySymbol()).getDouble("USD");
+            Double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble("USD");
             return baseCurrencyBal.multiply(new BigDecimal(pricePointOSTtoUSD)).setScale(2, RoundingMode.DOWN).toString();
         } catch (Exception e){
             return null;
