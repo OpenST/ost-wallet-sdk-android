@@ -303,55 +303,17 @@ public class DashboardActivity extends BaseActivity implements
         if (OstSdk.DEVICE.equalsIgnoreCase(ostContextEntity.getEntityType())) {
             fragment = VerifyDeviceDataFragment.newInstance();
             OstDevice ostDevice = ((OstDevice) ostContextEntity.getEntity());
-            if (OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE.equals(
-                    ostWorkflowContext.getWorkflow_type()
-            )) {
-                dataToVerify = createRevokeDeviceString(ostDevice);
-            } else {
-                dataToVerify = createAuthorizeDeviceString(ostDevice);
-            }
-            fragment.setDataToVerify(dataToVerify);
+            fragment.setDataToVerify(ostDevice);
         } else {
             fragment = VerifyTransactionDataFragment.newInstance();
             jsonObject = (JSONObject) ostContextEntity.getEntity();
-            dataToVerify = createTransactionString(jsonObject);
-            fragment.setDataToVerify(dataToVerify);
+            fragment.setDataToVerify(jsonObject);
         }
 
         fragment.setVerifyDataCallback(ostVerifyDataInterface);
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
-    }
-
-    private String createTransactionString(JSONObject jsonObject) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Rule Name: ");
-        stringBuilder.append(
-                jsonObject.optString(OstConstants.RULE_NAME)
-        );
-
-        JSONArray tokenHolderAddressesList = jsonObject.optJSONArray(OstConstants.TOKEN_HOLDER_ADDRESSES);
-        JSONArray tokenHolderAmountsList = jsonObject.optJSONArray(OstConstants.AMOUNTS);
-        for (int i=0; i<tokenHolderAddressesList.length(); i++) {
-            String tokenHolderAddress = tokenHolderAddressesList.optString(i);
-            String tokenHolderAmount = tokenHolderAmountsList.optString(i);
-
-            stringBuilder.append("\nToken Holder Address: ");
-            stringBuilder.append(tokenHolderAddress);
-
-            stringBuilder.append("\nToken Holder Amount: ");
-            stringBuilder.append(tokenHolderAmount);
-        }
-        return stringBuilder.toString();
-    }
-
-    private String createRevokeDeviceString(OstDevice ostDevice) {
-        return ostDevice.getAddress();
-    }
-
-    private String createAuthorizeDeviceString(OstDevice ostDevice) {
-        return ostDevice.getAddress();
     }
 
     @Override

@@ -17,6 +17,7 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import org.json.JSONException;
 
@@ -56,6 +57,7 @@ class AuthorizeDeviceQRPresenter extends BasePresenter<AuthorizeDeviceQRView> im
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         Log.e(LOG_TAG, "Flow Interrupt");
         getMvpView().showProgress(false);
+        getMvpView().showToastMessage(OstErrors.getMessage(ostError.getErrorCode()), false);
     }
 
     void processQRResult(Intent data) {

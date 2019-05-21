@@ -131,6 +131,8 @@ public class CommonUtils {
     }
 
     public static String convertWeiToTokenCurrency(String balance) {
+        if (null == balance) return "0";
+
         OstToken token = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
         Integer decimals = Integer.parseInt(token.getBtDecimals());
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);

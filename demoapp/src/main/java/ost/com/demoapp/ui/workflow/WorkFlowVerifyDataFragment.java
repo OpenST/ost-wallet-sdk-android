@@ -17,13 +17,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.uicomponents.AppBar;
-import ost.com.demoapp.uicomponents.OstTextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,8 +32,8 @@ import ost.com.demoapp.uicomponents.OstTextView;
  */
 public class WorkFlowVerifyDataFragment extends BaseFragment {
 
-    private OstVerifyDataInterface mOstVerifyDataInterface;
-    private String mDataToVerify;
+    OstVerifyDataInterface mOstVerifyDataInterface;
+    private Object mDataToVerify;
 
     public WorkFlowVerifyDataFragment() {
         // Required empty public constructor
@@ -63,7 +63,6 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
     protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_work_flow_verify_data, container, true);
 
-        ((OstTextView)viewGroup.findViewById(R.id.ptv_data)).setText(getSubHeading());
         ((Button)viewGroup.findViewById(R.id.pbtn_verified)).setText(getPositiveButtonText());
         viewGroup.findViewById(R.id.pbtn_verified).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,15 +78,17 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
             }
         });
 
-        ((OstTextView)viewGroup.findViewById(R.id.lbl_verify_data_heading)).setText(getVerifyDataHeading());
-
-        ((OstTextView)viewGroup.findViewById(R.id.atv_verify_data)).setText(getVerifyData());
+        ((FrameLayout)viewGroup.findViewById(R.id.fl_view_holder)).addView(getVerifyDataView());
 
         AppBar appBar = AppBar.newInstance(getContext(), getTitle(), true);
         setUpAppBar(viewGroup, appBar);
     }
 
-    String getVerifyData() {
+    View getVerifyDataView() {
+        return new View(getContext());
+    }
+
+    Object getVerifyData() {
         return mDataToVerify;
     }
 
@@ -97,10 +98,6 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
 
     String getPositiveButtonText() {
         return "Authorize";
-    }
-
-    String getSubHeading() {
-        return "You’ve a authorization request";
     }
 
     String getTitle() {
@@ -113,7 +110,7 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
         super.goBack();
     }
 
-    public void setDataToVerify(String mDataToVerfiy) {
+    public void setDataToVerify(Object mDataToVerfiy) {
         this.mDataToVerify = mDataToVerfiy;
     }
 
