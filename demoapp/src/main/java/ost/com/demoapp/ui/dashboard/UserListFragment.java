@@ -119,10 +119,8 @@ public class UserListFragment extends BaseFragment implements UserListView,
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!paginationRequestSent) {
-                    mUserListPresenter.updateUserList(true);
-                    paginationRequestSent = true;
-                }
+                mUserListPresenter.updateUserList(true);
+                paginationRequestSent = true;
                 mPullToRefresh.setRefreshing(false);
             }
         });

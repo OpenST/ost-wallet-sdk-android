@@ -35,17 +35,27 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
     }
 
     private JSONObject nextPayload = new JSONObject();
+    private Boolean hasMoreData = false;
+    private Boolean httpRequestPending = false;
 
     private List<Device> ostDeviceList = new ArrayList<>();
 
     @Override
     public void attachView(DeviceListView mvpView) {
         super.attachView(mvpView);
-        updateDeviceList();
+        updateDeviceList(true);
     }
 
-    void updateDeviceList() {
-        ostDeviceList.clear();
+    void updateDeviceList(Boolean clearList) {
+        if(httpRequestPending){
+            return;
+        }
+        if(clearList){
+            ostDeviceList.clear();
+            nextPayload = new JSONObject();
+        } else if(!hasMoreData){
+            return;
+        }
         AppProvider.get().getMappyClient().getCurrentUserDevices(nextPayload, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -53,7 +63,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
                     try {
                         JSONObject dataJSONObject =  new CommonUtils().parseJSONData(jsonObject);
                         nextPayload = dataJSONObject.optJSONObject("meta");
-
+                        hasMoreData = (nextPayload != null && !nextPayload.getJSONObject("next_page_payload").toString().equals("{}"));
                         JSONArray deviceJSONArray = (JSONArray) new CommonUtils()
                                 .parseResponseForResultType(jsonObject);
 
@@ -73,12 +83,14 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
                     Log.e(LOG_TAG, String.format("Get Current User list response false: %s", jsonObject.toString()));
                     getMvpView().notifyDataSetChanged();
                 }
+                httpRequestPending = false;
             }
 
             @Override
             public void onFailure(Throwable throwable) {
                 Log.e(LOG_TAG, String.format("Get Current User list error:"));
                 getMvpView().notifyDataSetChanged();
+                httpRequestPending = false;
             }
         });
     }

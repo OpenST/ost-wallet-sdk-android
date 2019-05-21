@@ -36,6 +36,7 @@ class UserListPresenter extends BasePresenter<UserListView> {
 
     private JSONObject nextPayload = new JSONObject();
     private Boolean hasMoreData = false;
+    private Boolean httpRequestPending = false;
 
     private List<User> userList = new ArrayList<>();
 
@@ -46,13 +47,16 @@ class UserListPresenter extends BasePresenter<UserListView> {
     }
 
     void updateUserList(Boolean clearList) {
+        if(httpRequestPending){
+            return;
+        }
         if(clearList){
             userList.clear();
             nextPayload = new JSONObject();
         } else if(!hasMoreData){
-            getMvpView().notifyDataSetChanged();
             return;
         }
+        httpRequestPending = true;
         AppProvider.get().getMappyClient().getUserList(nextPayload, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -81,6 +85,7 @@ class UserListPresenter extends BasePresenter<UserListView> {
                     Log.e(LOG_TAG, String.format("Get Current User list response false: %s", jsonObject.toString()));
                     getMvpView().notifyDataSetChanged();
                 }
+                httpRequestPending = false;
             }
 
             @Override
@@ -90,6 +95,7 @@ class UserListPresenter extends BasePresenter<UserListView> {
                 nextPayload = new JSONObject();
                 getMvpView().showToastMessage("Something went wrong", false);
                 getMvpView().notifyDataSetChanged();
+                httpRequestPending = false;
             }
         });
     }

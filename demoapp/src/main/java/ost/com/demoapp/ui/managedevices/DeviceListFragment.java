@@ -12,6 +12,7 @@ package ost.com.demoapp.ui.managedevices;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,6 +52,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
     private List<Device> mDeviceList;
     private TextView mHeadingTextView;
     private String mAction;
+    private Boolean paginationRequestSent = false;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -111,14 +113,32 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
                 : InitiateRecoveryRecyclerViewAdapter.newInstance(mDeviceList, mListener);
 
         mDeviceListPresenter.attachView(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setAdapter(mDeviceListRecyclerViewAdapter);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+                if (!paginationRequestSent && dy > 0 && (visibleItemCount + firstVisibleItemPosition) >=
+                        totalItemCount && firstVisibleItemPosition >= 0) {
+                    paginationRequestSent = true;
+                    mDeviceListPresenter.updateDeviceList(false);
+                }
+            }
+        });
+
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mDeviceListPresenter.updateDeviceList();
+                mDeviceListPresenter.updateDeviceList(true);
                 mPullToRefresh.setRefreshing(false);
+                paginationRequestSent = false;
             }
         });
         return view;

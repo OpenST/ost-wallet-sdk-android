@@ -37,6 +37,7 @@ class WalletPresenter extends BasePresenter<WalletView> implements
 
     private JSONObject nextPayload = new JSONObject();
     private Boolean hasMoreData = false;
+    private Boolean httpRequestPending = false;
 
     private List<Transaction> transactionList;
 
@@ -55,12 +56,16 @@ class WalletPresenter extends BasePresenter<WalletView> implements
     }
 
     void updateTransactionHistory(Boolean clearList) {
+        if(httpRequestPending){
+            return;
+        }
         if(clearList){
             transactionList.clear();
             nextPayload = new JSONObject();
         } else if(!hasMoreData){
             return;
         }
+        httpRequestPending = true;
         AppProvider.get().getMappyClient().getCurrentUserTransactions(nextPayload, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -85,12 +90,14 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                     Log.e(LOG_TAG, String.format("Get Current User Transaction response false: %s", jsonObject.toString()));
                     getMvpView().notifyDataSetChanged();
                 }
+                httpRequestPending = false;
             }
 
             @Override
             public void onFailure(Throwable throwable) {
                 Log.e(LOG_TAG, "Get Current User Transaction error");
                 getMvpView().notifyDataSetChanged();
+                httpRequestPending = false;
             }
         });
     }
