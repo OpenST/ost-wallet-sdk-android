@@ -88,7 +88,7 @@ public class OstSdk {
      * token_id: 1055
      * }
      */
-    public static final String JSON_OBJECT = "JSON";
+    public static final String JSON_OBJECT = "json";
 
     /**
      * Type of context entity which is byte[] for work flow
