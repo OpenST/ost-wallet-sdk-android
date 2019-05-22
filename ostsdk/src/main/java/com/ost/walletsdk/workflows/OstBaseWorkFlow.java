@@ -21,6 +21,7 @@ import android.util.Log;
 import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.R;
 import com.ost.walletsdk.biometric.OstBiometricAuthentication;
 import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.ecKeyInteracts.OstRecoveryManager;
@@ -198,7 +199,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
                     Log.i(TAG, "Ask for authentication");
                     if (shouldAskForAuthentication()) {
                         if (shouldAskForBioMetric()) {
-                            new OstBiometricAuthentication(OstSdk.getContext(), getBioMetricCallBack());
+                            new OstBiometricAuthentication(OstSdk.getContext(), getBiometricHeading(), getBioMetricCallBack());
                         } else {
                             return goToState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
                         }
@@ -249,7 +250,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
     //endregion
 
-    
+
     //region - SME helper methods
     protected AsyncStatus performNext(Object stateObject) {
         stateManager.setNextState(stateObject);
@@ -277,8 +278,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         performWithState(state, null);
     }
     //endregion
-    
-    
+
+
     //region - Entity ensure methods
     protected AsyncStatus performValidations(Object stateObject) {
         try {
@@ -501,8 +502,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         return mOstRules;
     }
     //endregion
-    
-    
+
+
     //region - Flow method
     protected boolean shouldAskForAuthentication() {
         return true;
@@ -511,8 +512,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         return true;
     }
     //endregion
-    
-    
+
+
     //region - Pin flow methods
     @Override
     public void pinEntered(UserPassphrase passphrase) {
@@ -575,8 +576,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         performWithState(WorkflowStateManager.CANCELLED);
     }
     //endregion
-    
-    
+
+
     //region - Post methods for app
     AsyncStatus postGetPin(OstPinAcceptInterface pinAcceptInterface) {
         Log.i(TAG, "get Pin");
@@ -616,7 +617,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         OstError error = new OstError(internalErrCode, errorCode);
         return postErrorInterrupt(error);
     }
-    
+
     AsyncStatus postErrorInterrupt(OstError error) {
         mHandler.post(new Runnable() {
             @Override
@@ -669,7 +670,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
     //endregion
 
-    
+
     //region - Biometric methods
     OstBiometricAuthentication.Callback getBioMetricCallBack() {
         if (null == mBioMetricCallBack) {
@@ -689,18 +690,23 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         }
         return mBioMetricCallBack;
     }
-    
-    private void onBioMetricAuthenticationSuccess() {
+
+    void onBioMetricAuthenticationSuccess() {
         performWithState(WorkflowStateManager.AUTHENTICATED);
     }
 
-    private void onBioMetricAuthenticationFail() {
+    void onBioMetricAuthenticationFail() {
         //Ask for pin.
         performWithState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
     }
 
-    private boolean shouldAskForBioMetric() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    boolean shouldAskForBioMetric() {
+        return OstSdk.isBiometricEnabled(mUserId)
+                && isBioMetricEnabled();
+    }
+
+    boolean isBioMetricEnabled() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //Fingerprint API only available on from Android 6.0 (M)
             FingerprintManager fingerprintManager = (FingerprintManager) OstSdk.getContext()
                     .getSystemService(Context.FINGERPRINT_SERVICE);
@@ -711,7 +717,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
     //endregion
 
-    
+
     //region - Perform methods
     AsyncStatus performOnAuthenticated() {
         return new AsyncStatus(true);
@@ -817,6 +823,10 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
 
         return String.valueOf(expirationHeight);
+    }
+
+    String getBiometricHeading() {
+        return new CommonUtils().getStringRes(R.string.authorize);
     }
     //endregion
 }

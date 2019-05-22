@@ -22,10 +22,11 @@ public class OstBiometricAuthentication {
 
     private final Context mContext;
 
-    public OstBiometricAuthentication(Context context, Callback callback) {
+    public OstBiometricAuthentication(Context context, String biometricHeading, Callback callback) {
         this.mContext = context;
 
         Intent intent = new Intent(mContext, FingerprintAuthenticationDialogActivity.class);
+        intent.putExtra(FingerprintAuthenticationDialogActivity.DIALOG_HEADING, biometricHeading);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         BroadcastReceiver broadcastReceiver = new AuthenticationReceiver(callback);
