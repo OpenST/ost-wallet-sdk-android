@@ -10,7 +10,9 @@
 
 package ost.com.demoapp.ui.dashboard;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -276,8 +278,8 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(evenLogs);
 
-        View viewLogOut = getFeatureView("Log out all sessions", isUserActive);
-        viewLogOut.setOnClickListener(new View.OnClickListener() {
+        View sessionLogOut = getFeatureView("Revoke all Sessions", isUserActive);
+        sessionLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -286,15 +288,41 @@ public class SettingsFragment extends BaseFragment {
                 if (userDeviceNotAuthorized()) {
                     openDeviceAuthorizationFragment();
                 } else {
-                    showProgress(true, "Logging Out");
-                    WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-                    OstSdk.logoutAllSessions(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);
-                    //Remove all cookies
-                    AppProvider.get().getCookieStore().removeAll();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+                    builder.setTitle("Sure You want to Revoke Sessions?");
+                    builder.setMessage("This would revoke all other device sessions too. Sessions needs to be re-added with PIN. ");
+
+                    builder.setPositiveButton("Revoke", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            showProgress(true, "Revoking Sessions");
+                            WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+                            OstSdk.logoutAllSessions(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);
+                        }});
+                    builder.setNegativeButton("Cancel", null);
+                    builder.create().show();
                 }
             }
         });
-        mScrollViewSettings.addView(viewLogOut);
+        mScrollViewSettings.addView(sessionLogOut);
+
+        View userLogout = getFeatureView("Logout", true);
+        userLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+                builder.setTitle("Sure You want to logout?");
+
+                builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //Remove all cookies
+                        AppProvider.get().getCookieStore().removeAll();
+                        mListener.relaunchApp();
+                    }});
+                builder.setNegativeButton("Cancel", null);
+                builder.create().show();
+            }
+        });
+        mScrollViewSettings.addView(userLogout);
     }
 
     @Override
@@ -358,5 +386,6 @@ public class SettingsFragment extends BaseFragment {
 
     interface OnFragmentInteractionListener {
         void launchFeatureFragment(Fragment fragment);
+        void relaunchApp();
     }
 }

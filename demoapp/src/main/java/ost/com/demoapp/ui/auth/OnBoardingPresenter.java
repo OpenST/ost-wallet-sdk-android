@@ -123,7 +123,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     }
 
     void checkLoggedInUser() {
-        getMvpView().showProgress(true, "Checking auto login..");
+        getMvpView().showProgress(true, "Fetching User");
         AppProvider.get().getMappyClient().getLoggedInUser(new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {

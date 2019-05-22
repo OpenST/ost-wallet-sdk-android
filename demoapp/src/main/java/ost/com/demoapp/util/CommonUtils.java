@@ -210,7 +210,7 @@ public class CommonUtils {
                                 CommonUtils.convertWeiToTokenCurrency(workflowDetails.getString("amount")),
                                 AppProvider.get().getCurrentEconomy().getTokenSymbol());
                     } else {
-                        amount = String.format("%s USD", workflowDetails.getString("amount"));
+                        amount = String.format("%s USD", CommonUtils.convertUsdWeitoUsd(workflowDetails.getString("amount")));
                     }
                     return String.format("%s sent to %s successfully!",
                             amount,
@@ -257,7 +257,7 @@ public class CommonUtils {
                                 CommonUtils.convertWeiToTokenCurrency(workflowDetails.getString("amount")),
                                 AppProvider.get().getCurrentEconomy().getTokenSymbol());
                     } else {
-                        amount = String.format("%s USD", workflowDetails.getString("amount"));
+                        amount = String.format("%s USD", CommonUtils.convertUsdWeitoUsd(workflowDetails.getString("amount")));
                     }
                     return String.format("Token Transfer of %s to %s failed!\n%s",
                             amount,

@@ -207,11 +207,6 @@ public class DashboardActivity extends BaseActivity implements
                         ostWorkflowContext.getWorkflow_type()
                 )) {
             notifyActivate();
-        } else if (OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS
-                .equals(
-                        ostWorkflowContext.getWorkflow_type()
-                )) {
-            relaunchApp();
         }
     }
 
@@ -248,11 +243,6 @@ public class DashboardActivity extends BaseActivity implements
                 )) {
             Log.e(LOG_TAG, "User Activate failed");
             checkForActiveUserAndDevice();
-        } else if (OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS
-                .equals(
-                        ostWorkflowContext.getWorkflow_type()
-                )) {
-           relaunchApp();
         }
     }
 
@@ -402,7 +392,8 @@ public class DashboardActivity extends BaseActivity implements
         snack.show();
     }
 
-    private void relaunchApp() {
+    @Override
+    public void relaunchApp() {
         AppProvider.get().getCookieStore().removeAll();
         Intent intent = new Intent(DashboardActivity.this, OnBoardingActivity.class);
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);

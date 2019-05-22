@@ -96,7 +96,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
             transferRule = OstSdk.RULE_NAME_PRICER;
 
             //Provided token are in Cent convert it into Dollar wei
-            BigDecimal tokenInDollarWei = tokensBigInt.multiply( new BigDecimal("10").pow(18));
+            BigDecimal tokenInDollarWei = tokensBigInt.multiply( new BigDecimal("10").pow(18)).setScale(0);
             String usdBalance = CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mPricePoint);
             if(null == usdBalance){
                 usdBalance = "0";
