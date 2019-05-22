@@ -175,12 +175,8 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(viewMnemonicsView);
 
-        mToggleBiometric = (ViewGroup) getFeatureView(
-                String.format("Biometric is %s",
-                        OstSdk.isBiometricEnabled(AppProvider.get().getCurrentUser().getOstUserId()) ? "enabled":"disabled"
-                ),
-                isUserActive
-        );
+        mToggleBiometric = (ViewGroup) getFeatureView("Enable Biometric Authentication", isUserActive);
+        updateBiometricView(mToggleBiometric);
         mToggleBiometric.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -395,11 +391,15 @@ public class SettingsFragment extends BaseFragment implements
     private void updateCommonCode(OstWorkflowContext ostWorkflowContext) {
         if (OstWorkflowContext.WORKFLOW_TYPE.UPDATE_BIOMETRIC_PREFERENCE
                 .equals(ostWorkflowContext.getWorkflow_type())) {
-            OstTextView mTextView = mToggleBiometric.findViewById(R.id.ws_item);
-            mTextView.setText(String.format("Biometric is %s",
-                    OstSdk.isBiometricEnabled(AppProvider.get().getCurrentUser().getOstUserId()) ? "enabled":"disabled"
-            ));
+            updateBiometricView(mToggleBiometric);
         }
+    }
+
+    private void updateBiometricView(ViewGroup toggleBiometric) {
+        OstTextView mTextView = toggleBiometric.findViewById(R.id.ws_item);
+        mTextView.setText(String.format("%s Biometric Authentication",
+                OstSdk.isBiometricEnabled(AppProvider.get().getCurrentUser().getOstUserId()) ? "Disable":"Enable"
+        ));
     }
 
     interface OnFragmentInteractionListener {
