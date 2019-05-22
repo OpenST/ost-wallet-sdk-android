@@ -19,6 +19,7 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -128,6 +129,24 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         unitSpinner.setAdapter(adapter);
         unitSpinner.setSelection(0);
+        unitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position == 0){
+                    ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: %s %s",
+                            CommonUtils.convertWeiToTokenCurrency(AppProvider.get().getCurrentUser().getBalance()),
+                            AppProvider.get().getCurrentEconomy().getTokenSymbol()));
+                } else {
+                    ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: $ %s",
+                            CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mTransactionPresenter.mPricePoint)));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         ((Button)viewGroup.findViewById(R.id.pbtn_send_tokens)).setOnClickListener(new View.OnClickListener() {
             @Override

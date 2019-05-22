@@ -56,15 +56,20 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
     View getVerifyDataView() {
         ViewGroup viewGroup = (ViewGroup) getLayoutInflater().inflate(R.layout.view_verify_transaction, null);
 
-        ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: %s %s",
-                CommonUtils.convertWeiToTokenCurrency(AppProvider.get().getCurrentUser().getBalance()).toString(),
-                AppProvider.get().getCurrentEconomy().getTokenSymbol()));
-
         mVerifyDataJson = (JSONObject) getVerifyData();
 
         String pricerRule = mVerifyDataJson.optString(OstConstants.RULE_NAME);
         ((TextView)viewGroup.findViewById(R.id.atv_transfer_type)).setText(pricerRule.toUpperCase());
         isDirectTransfers = (pricerRule.equalsIgnoreCase("direct transfer"));
+
+        if(isDirectTransfers){
+            ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: %s %s",
+                    CommonUtils.convertWeiToTokenCurrency(AppProvider.get().getCurrentUser().getBalance()).toString(),
+                    AppProvider.get().getCurrentEconomy().getTokenSymbol()));
+        } else {
+            ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: $ %s",
+                    CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mPricePointData)));
+        }
 
         LinearLayout transferHolder = ((LinearLayout)viewGroup.findViewById(R.id.ll_transfer_holder));
 
@@ -101,7 +106,7 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
                 );
             } else {
                 tokenHolderValueView.setText(
-                        String.format("%s %s", CommonUtils.convertUsdWeitoUsd(tokenHolderAmount),
+                        String.format("$ %s", CommonUtils.convertUsdWeitoUsd(tokenHolderAmount),
                                 "USD")
                 );
             }

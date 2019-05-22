@@ -138,7 +138,7 @@ public class CommonUtils {
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
         BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
         BigDecimal newBal = bal.setScale(2, RoundingMode.DOWN);
-        return newBal.toString().replace(".00", "");
+        return newBal.toString();
     }
 
     public static String convertBTWeiToUsd(String balance, JSONObject pricePointObject) {

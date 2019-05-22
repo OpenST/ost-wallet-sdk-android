@@ -181,7 +181,7 @@ public class MappyNetworkClient {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        if (!(resource.equalsIgnoreCase("users/current-user"))
+                        if (null != error.networkResponse && !(resource.equalsIgnoreCase("users/current-user"))
                                 && null != error.networkResponse.headers
                                 && UNAUTHORIZED
                                 .equalsIgnoreCase(

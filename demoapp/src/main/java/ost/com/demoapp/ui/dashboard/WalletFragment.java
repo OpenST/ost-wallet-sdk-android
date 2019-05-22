@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import ost.com.demoapp.App;
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.ui.BaseFragment;
@@ -29,6 +31,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
 
     private TextView mWalletBalance;
     private TextView mWalletUsdBalance;
+    private TextView mTokenSymbolView;
 
     private WalletPresenter mWalletPresenter;
     private RecyclerView mRecyclerView;
@@ -58,8 +61,16 @@ public class WalletFragment extends BaseFragment implements WalletView {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_wallet, container, false);
 
         mWalletBalance = view.findViewById(R.id.ptv_wallet_balance);
+        mTokenSymbolView = view.findViewById(R.id.ptv_token_symbol);
+        mTokenSymbolView.setText(AppProvider.get().getCurrentEconomy().getTokenSymbol());
         mWalletUsdBalance = view.findViewById(R.id.ptv_wallet_usd_balance);
         mEmptyWalletLL = view.findViewById(R.id.empty_wallet_text);
+        if(!AppProvider.get().getCurrentUser().getOstUser().isActivated()){
+            ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv1)).
+                    setText(getResources().getString(R.string.wallet_being_setup));
+            ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv2)).
+                    setText(getResources().getString(R.string.wallet_setup_text));
+        }
         mRecyclerView = view.findViewById(R.id.rv_transactions);
         mPullToRefresh = view.findViewById(R.id.pullToRefresh);
         AppBar appBar = AppBar.newInstance(getContext(),
@@ -96,6 +107,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
                 mWalletPresenter.updateBalance();
                 mWalletPresenter.updateTransactionHistory(true);
                 mPullToRefresh.setRefreshing(false);
+                mEmptyWalletLL.setVisibility(View.VISIBLE);
             }
         });
         return view;

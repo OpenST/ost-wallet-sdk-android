@@ -118,14 +118,13 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                     } catch(Exception e){ }
                 }
                 AppProvider.get().getCurrentUser().updateBalance(balance);
-                getMvpView().updateBalance(String.format("%s %s", AppProvider.get().getCurrentEconomy().getTokenSymbol(),
-                        CommonUtils.convertWeiToTokenCurrency(balance).toString()),
+                getMvpView().updateBalance(CommonUtils.convertWeiToTokenCurrency(balance),
                         CommonUtils.convertBTWeiToUsd(balance, pricePoint));
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                getMvpView().updateBalance("Balance fetch error", null);
+                getMvpView().updateBalance("0", null);
             }
         });
     }

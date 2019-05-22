@@ -44,7 +44,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
     private OstToken mOstToken = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
     private String mCurrentTokenSymbol = mOstToken.getSymbol();
     private List<String> mUnitList = Arrays.asList(mCurrentTokenSymbol, OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL);
-    private JSONObject mPricePoint = null;
+    public JSONObject mPricePoint = null;
 
     public List<String> getUnitList() {
         return mUnitList;
@@ -134,6 +134,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
     }
 
     void updateBalance() {
+        getMvpView().showProgress(true, "Fetching User Balance");
         AppProvider.get().getMappyClient().getCurrentUserBalance(new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -146,11 +147,12 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
                     } catch(Exception e){ }
                 }
                 AppProvider.get().getCurrentUser().updateBalance(balance);
+                getMvpView().showProgress(false);
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-
+                getMvpView().showProgress(false);
             }
         });
     }
