@@ -226,7 +226,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
                     if ( stateObject instanceof OstError) {
                         return postErrorInterrupt( (OstError) stateObject );
                     } else {
-                        OstError error = new OstError("bua_wf_osc_canceled", ErrorCode.UNKNOWN);
+                        OstError error = new OstError("bua_wf_osc_canceled", ErrorCode.WORKFLOW_CANCELLED);
                         return postErrorInterrupt(error);
                     }
 
