@@ -84,6 +84,7 @@
         android:text="Not enough token balance"
         android:drawableStart="@drawable/icon_error"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_height="wrap_content" />
 
 

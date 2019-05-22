@@ -24,6 +24,7 @@ import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.uicomponents.AppBar;
+import ost.com.demoapp.uicomponents.OstPrimaryButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +35,7 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
 
     OstVerifyDataInterface mOstVerifyDataInterface;
     private Object mDataToVerify;
+    private ViewGroup mViewGroup;
 
     public WorkFlowVerifyDataFragment() {
         // Required empty public constructor
@@ -61,31 +63,37 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
 
     @Override
     protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_work_flow_verify_data, container, true);
+        mViewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_work_flow_verify_data, container, true);
 
-        ((Button)viewGroup.findViewById(R.id.pbtn_verified)).setText(getPositiveButtonText());
-        viewGroup.findViewById(R.id.pbtn_verified).setOnClickListener(new View.OnClickListener() {
+        ((Button)mViewGroup.findViewById(R.id.pbtn_verified)).setText(getPositiveButtonText());
+        mViewGroup.findViewById(R.id.pbtn_verified).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mOstVerifyDataInterface.dataVerified();
                 showProgress(true);
             }
         });
-        viewGroup.findViewById(R.id.pbtn_deny).setOnClickListener(new View.OnClickListener() {
+        mViewGroup.findViewById(R.id.pbtn_deny).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goBack();
             }
         });
 
-        ((FrameLayout)viewGroup.findViewById(R.id.fl_view_holder)).addView(getVerifyDataView());
+        ((FrameLayout)mViewGroup.findViewById(R.id.fl_view_holder)).addView(getVerifyDataView());
+
+        ((OstPrimaryButton) mViewGroup.findViewById(R.id.pbtn_verified)).setEnabled(enablePrimaryButton());
 
         AppBar appBar = AppBar.newInstance(getContext(), getTitle(), true);
-        setUpAppBar(viewGroup, appBar);
+        setUpAppBar(mViewGroup, appBar);
     }
 
     View getVerifyDataView() {
         return new View(getContext());
+    }
+
+    public Boolean enablePrimaryButton(){
+        return true;
     }
 
     Object getVerifyData() {
@@ -116,5 +124,11 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
 
     public void setVerifyDataCallback(OstVerifyDataInterface ostVerifyDataInterface) {
         mOstVerifyDataInterface = ostVerifyDataInterface;
+    }
+
+    public void refreshDataView(){
+        FrameLayout viewHolder = (FrameLayout) mViewGroup.findViewById(R.id.fl_view_holder);
+        viewHolder.removeAllViews();
+        viewHolder.addView(getVerifyDataView());
     }
 }

@@ -142,7 +142,7 @@ public class CommonUtils {
     }
 
     public static String convertBTWeiToUsd(String balance, JSONObject pricePointObject) {
-        if (null == balance) return "0";
+        if (null == balance || null == pricePointObject) return null;
 
         try{
             OstToken token = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
@@ -155,6 +155,13 @@ public class CommonUtils {
         } catch (Exception e){
             return null;
         }
+    }
+
+    public static String convertUsdWeitoUsd(String amount) {
+        if (null == amount) return "";
+        BigDecimal btWeiMultiplier = new BigDecimal(10).pow(18);
+        BigDecimal bal = new BigDecimal(amount).divide(btWeiMultiplier);
+        return bal.setScale(2, RoundingMode.DOWN).toString();
     }
 
     public boolean handleActivatingStateCheck(Context activityContext) {

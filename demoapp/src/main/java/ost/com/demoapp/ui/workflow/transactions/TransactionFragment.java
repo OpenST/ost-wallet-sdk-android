@@ -121,7 +121,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
 
         mTokensEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_number));
         mTokensEditTextView.setHintText(getResources().getString(R.string.transaction_amount));
-        mTokensEditTextView.setInputType(InputType.TYPE_CLASS_NUMBER);
+        mTokensEditTextView.setInputType((InputType.TYPE_CLASS_NUMBER + InputType.TYPE_NUMBER_FLAG_DECIMAL));
 
         final AppCompatSpinner unitSpinner = ((AppCompatSpinner)viewGroup.findViewById(R.id.etv_tokens_unit));
         ArrayAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, mTransactionPresenter.getUnitList());

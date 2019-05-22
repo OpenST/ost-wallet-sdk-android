@@ -120,7 +120,6 @@ public class UserListFragment extends BaseFragment implements UserListView,
             @Override
             public void onRefresh() {
                 mUserListPresenter.updateUserList(true);
-                paginationRequestSent = true;
                 mPullToRefresh.setRefreshing(false);
             }
         });
