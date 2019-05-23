@@ -75,6 +75,11 @@ public class WalletFragment extends BaseFragment implements WalletView {
                     setText(getResources().getString(R.string.wallet_being_setup));
             ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv2)).
                     setText(getResources().getString(R.string.wallet_setup_text));
+        } else {
+            ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv1)).
+                    setText(getResources().getString(R.string.no_transactions_title));
+            ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv2)).
+                    setText(getResources().getString(R.string.no_transactions_text));
         }
         mRecyclerView = view.findViewById(R.id.rv_transactions);
         mPullToRefresh = view.findViewById(R.id.pullToRefresh);
