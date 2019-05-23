@@ -131,7 +131,7 @@ class WalletPresenter extends BasePresenter<WalletView> implements
 
     @Override
     public void onListViewInteraction(Transaction transaction) {
-
+        getMvpView().openTransactionView(transaction);
     }
 
     public TransactionRecyclerViewAdapter getTransactionRecyclerViewAdapter() {

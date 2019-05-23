@@ -21,6 +21,7 @@ import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -240,6 +241,9 @@ public class CommonUtils {
     }
 
     public String formatWorkflowFailedToast(OstWorkflowContext.WORKFLOW_TYPE workflowType, OstError ostError, JSONObject workflowDetails){
+        if(OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())){
+            return null;
+        }
         if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.SETUP_DEVICE)){
             return null;
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER)){
@@ -290,10 +294,11 @@ public class CommonUtils {
         String viewEndPoint = AppProvider.get().getCurrentEconomy().getViewApiEndpoint();
         try{
             LogInUser logInUser = AppProvider.get().getCurrentUser();
-            JSONArray auxChains = OstSdk.getToken(logInUser.getTokenId()).getAuxiliaryChain();
+            OstToken token = OstSdk.getToken(logInUser.getTokenId());
+            JSONArray auxChains = token.getAuxiliaryChain();
             JSONObject jsonObject = auxChains.getJSONObject(0);
             String tokenAddr = jsonObject.getString("utility_branded_token");
-            String url = viewEndPoint + "token/th-" + logInUser.getTokenId() + "-" +
+            String url = viewEndPoint + "token/th-" + token.getChainId() + "-" +
                     tokenAddr + "-" +
                     logInUser.getOstUser().getTokenHolderAddress();
             return url;

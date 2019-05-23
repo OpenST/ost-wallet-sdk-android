@@ -10,6 +10,7 @@
 
 package ost.com.demoapp.ui.dashboard;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,9 +22,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import ost.com.demoapp.App;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstToken;
+
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.entity.Transaction;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.ui.BaseFragment;
 
@@ -38,6 +42,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
     private SwipeRefreshLayout mPullToRefresh;
     private Boolean paginationRequestSent = false;
     private LinearLayout mEmptyWalletLL;
+    private WalletFragment.walletFragmentInteraction mListener;
 
     public WalletFragment() {
     }
@@ -114,6 +119,23 @@ public class WalletFragment extends BaseFragment implements WalletView {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof WalletFragment.walletFragmentInteraction) {
+            mListener = (WalletFragment.walletFragmentInteraction) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
     public void updateBalance(String balance, String usdBalance) {
         mWalletBalance.setText(balance);
         if(usdBalance != null){
@@ -136,5 +158,19 @@ public class WalletFragment extends BaseFragment implements WalletView {
         super.onDestroyView();
         mWalletPresenter.detachView();
         mWalletPresenter = null;
+    }
+
+    @Override
+    public void openTransactionView(Transaction transaction){
+        if(null != mListener && null != transaction){
+            String viewEndPoint = AppProvider.get().getCurrentEconomy().getViewApiEndpoint();
+            OstToken token = OstSdk.getToken(AppProvider.get().getCurrentEconomy().getTokenId());
+            String url = viewEndPoint + "transaction/tx-" + token.getChainId() + "-" + transaction.getTxnHash();
+            mListener.openWebView(url);
+        }
+    }
+
+    public interface walletFragmentInteraction{
+        void openWebView(String url);
     }
 }

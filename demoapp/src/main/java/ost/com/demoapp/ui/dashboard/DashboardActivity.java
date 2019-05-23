@@ -81,7 +81,8 @@ public class DashboardActivity extends BaseActivity implements
         TransactionFragment.OnFragmentInteractionListener,
         DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener,
         WalletDetailsFragment.OnWalletDetailsFragmentListener,
-        AuthorizeDeviceOptionsFragment.OnAuthorizeDeviceOptionsFragmentListener {
+        AuthorizeDeviceOptionsFragment.OnAuthorizeDeviceOptionsFragmentListener,
+        WalletFragment.walletFragmentInteraction {
 
     private static final String LOG_TAG = "DashboardActivity";
     private ViewPager mViewPager;
