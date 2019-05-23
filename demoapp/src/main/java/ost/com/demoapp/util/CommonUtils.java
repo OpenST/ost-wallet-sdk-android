@@ -12,8 +12,12 @@ package ost.com.demoapp.util;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -308,14 +312,42 @@ public class CommonUtils {
         return viewEndPoint;
     }
 
-    public boolean isBioMetricEnabled() {
+    public boolean isBioMetricEnrolled() {
+       return isBioMetric(false);
+    }
+
+    public boolean isBioMetricHardwareAvailable() {
+        return isBioMetric(true);
+    }
+
+    private boolean isBioMetric(boolean checkForHardware) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //Fingerprint API only available on from Android 6.0 (M)
             FingerprintManager fingerprintManager = (FingerprintManager) AppProvider.get().getApplicationContext()
                     .getSystemService(Context.FINGERPRINT_SERVICE);
-            return null != fingerprintManager && fingerprintManager.isHardwareDetected()
-                    && fingerprintManager.hasEnrolledFingerprints();
+            if (null != fingerprintManager) {
+                if (checkForHardware) {
+                    return fingerprintManager.isHardwareDetected();
+                } else {
+                    return fingerprintManager.isHardwareDetected() && fingerprintManager.hasEnrolledFingerprints();
+                }
+            }
         }
         return false;
+    }
+
+    public void showEnableBiometricDialog(DialogInterface.OnClickListener onCancelListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+        builder.setCancelable(true);
+        builder.setMessage("Enroll for Biometric to use application effectively");
+        builder.setTitle("Enroll for Biometric");
+        builder.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which)
+            {
+                AppProvider.get().getCurrentActivity().startActivity(new Intent(Settings.ACTION_SECURITY_SETTINGS));
+            }
+        });
+        builder.setNegativeButton("Cancel", onCancelListener);
+        builder.create().show();
     }
 }

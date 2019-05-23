@@ -10,6 +10,7 @@
 
 package ost.com.demoapp.ui.workflow.walletsetup;
 
+import android.content.DialogInterface;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
@@ -25,6 +26,7 @@ import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BasePresenter;
+import ost.com.demoapp.util.CommonUtils;
 
 class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkInteract.RequestAcknowledged {
 
@@ -52,26 +54,40 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
         } else {
             if (mFirstPin.equals(pin)) {
                 Log.d(LOG_TAG, "Activate user");
-                LogInUser logInUser = AppProvider.get().getCurrentUser();
-                UserPassphrase userPassphrase = new UserPassphrase(logInUser.getOstUserId(), pin, logInUser.getUserPinSalt());
-                long expiredAfterInSecs = 30 * 24 * 60 * 60;
-                Integer decimals = Integer.parseInt(OstToken.getById(logInUser.getTokenId()).getBtDecimals());
-                String spendingLimit = new BigDecimal("1000").multiply(new BigDecimal(10).pow(decimals)).toString();
-                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-                SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
 
-                getMvpView().showProgress(true, "Activating user...");
-
-                OstSdk.activateUser(
-                        userPassphrase,
-                        expiredAfterInSecs,
-                        spendingLimit,
-                        workFlowListener
-                );
+                if (new CommonUtils().isBioMetricHardwareAvailable() && !new CommonUtils().isBioMetricEnrolled()) {
+                    new CommonUtils().showEnableBiometricDialog(new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startWorkFLow(pin);
+                        }
+                    });
+                    return;
+                }
+                startWorkFLow(pin);
             } else {
                 getMvpView().showPinErrorDialog();
             }
         }
+    }
+
+    private void startWorkFLow(String pin) {
+        LogInUser logInUser = AppProvider.get().getCurrentUser();
+        UserPassphrase userPassphrase = new UserPassphrase(logInUser.getOstUserId(), pin, logInUser.getUserPinSalt());
+        long expiredAfterInSecs = 30 * 24 * 60 * 60;
+        Integer decimals = Integer.parseInt(OstToken.getById(logInUser.getTokenId()).getBtDecimals());
+        String spendingLimit = new BigDecimal("1000").multiply(new BigDecimal(10).pow(decimals)).toString();
+        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
+
+        getMvpView().showProgress(true, "Activating user...");
+
+        OstSdk.activateUser(
+                userPassphrase,
+                expiredAfterInSecs,
+                spendingLimit,
+                workFlowListener
+        );
     }
 
     @Override

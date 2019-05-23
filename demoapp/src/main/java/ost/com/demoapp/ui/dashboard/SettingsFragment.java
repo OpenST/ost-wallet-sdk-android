@@ -180,26 +180,6 @@ public class SettingsFragment extends BaseFragment implements
 
         mScrollViewSettings.addView(getCategoryView("DEVICE"));
 
-        mToggleBiometric = (ViewGroup) getFeatureView("Enable Biometric Authentication", isUserActive);
-        updateBiometricView(mToggleBiometric);
-        mToggleBiometric.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
-
-                String userId = AppProvider.get().getCurrentUser().getOstUserId();
-                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-                showProgress(true, "Updating biometric...");
-                SdkInteract.getInstance().subscribe(workFlowListener.getId(), SettingsFragment.this);
-                OstSdk.updateBiometricPreference(userId, !OstSdk.isBiometricEnabled(userId), workFlowListener);
-            }
-        });
-
-        if (new CommonUtils().isBioMetricEnabled()) {
-            mScrollViewSettings.addView(mToggleBiometric);
-        }
-
         View authorizeDeviceViaQR = getFeatureView("Authorize Additional Device via QR", isUserActive);
         authorizeDeviceViaQR.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -234,6 +214,15 @@ public class SettingsFragment extends BaseFragment implements
 
                 if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
 
+                if (new CommonUtils().isBioMetricHardwareAvailable() && !new CommonUtils().isBioMetricEnrolled()) {
+                    new CommonUtils().showEnableBiometricDialog(new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    return;
+                }
                 String userId = AppProvider.get().getCurrentUser().getOstUserId();
                 WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
                 showProgress(true, "Updating biometric...");
@@ -241,7 +230,9 @@ public class SettingsFragment extends BaseFragment implements
                 OstSdk.updateBiometricPreference(userId, !OstSdk.isBiometricEnabled(userId), workFlowListener);
             }
         });
-        mScrollViewSettings.addView(mToggleBiometric);
+        if (new CommonUtils().isBioMetricHardwareAvailable()) {
+            mScrollViewSettings.addView(mToggleBiometric);
+        }
 
         View viewShowDeviceQR = getFeatureView("Show Device QR", true);
         viewShowDeviceQR.setOnClickListener(new View.OnClickListener() {
