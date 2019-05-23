@@ -177,7 +177,28 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(viewMnemonicsView);
 
+
         mScrollViewSettings.addView(getCategoryView("DEVICE"));
+
+        mToggleBiometric = (ViewGroup) getFeatureView("Enable Biometric Authentication", isUserActive);
+        updateBiometricView(mToggleBiometric);
+        mToggleBiometric.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
+
+                String userId = AppProvider.get().getCurrentUser().getOstUserId();
+                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+                showProgress(true, "Updating biometric...");
+                SdkInteract.getInstance().subscribe(workFlowListener.getId(), SettingsFragment.this);
+                OstSdk.updateBiometricPreference(userId, !OstSdk.isBiometricEnabled(userId), workFlowListener);
+            }
+        });
+
+        if (new CommonUtils().isBioMetricEnabled()) {
+            mScrollViewSettings.addView(mToggleBiometric);
+        }
 
         View authorizeDeviceViaQR = getFeatureView("Authorize Additional Device via QR", isUserActive);
         authorizeDeviceViaQR.setOnClickListener(new View.OnClickListener() {

@@ -12,6 +12,8 @@ package ost.com.demoapp.util;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -304,5 +306,16 @@ public class CommonUtils {
             return url;
         } catch (Exception e){ }
         return viewEndPoint;
+    }
+
+    public boolean isBioMetricEnabled() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //Fingerprint API only available on from Android 6.0 (M)
+            FingerprintManager fingerprintManager = (FingerprintManager) AppProvider.get().getApplicationContext()
+                    .getSystemService(Context.FINGERPRINT_SERVICE);
+            return null != fingerprintManager && fingerprintManager.isHardwareDetected()
+                    && fingerprintManager.hasEnrolledFingerprints();
+        }
+        return false;
     }
 }
