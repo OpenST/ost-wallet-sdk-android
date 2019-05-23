@@ -17,6 +17,7 @@ import android.util.Log;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.ost.walletsdk.database.OstSdkDatabase;
 import com.ost.walletsdk.database.OstSdkKeyDatabase;
+import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.models.Impls.OstModelFactory;
 import com.ost.walletsdk.models.entities.OstDevice;
@@ -27,6 +28,7 @@ import com.ost.walletsdk.workflows.OstAbortDeviceRecovery;
 import com.ost.walletsdk.workflows.OstActivateUser;
 import com.ost.walletsdk.workflows.OstAddCurrentDeviceWithMnemonics;
 import com.ost.walletsdk.workflows.OstAddSession;
+import com.ost.walletsdk.workflows.OstBiometricPreference;
 import com.ost.walletsdk.workflows.OstExecuteTransaction;
 import com.ost.walletsdk.workflows.OstGetPaperWallet;
 import com.ost.walletsdk.workflows.OstLogoutAllSessions;
@@ -155,6 +157,15 @@ public class OstSdk {
         return OstModelFactory.getUserModel().getEntityById(id);
     }
 
+    /**
+     * To check whether biometric of provide userId is enabled for this device or not
+     *
+     * @param userId user Id whose biometric config to retrieve
+     * @return boolean biometric enabled or disabled
+     */
+    public static boolean isBiometricEnabled(String userId) {
+        return new OstKeyManager(userId).isBiometricEnabled();
+    }
     // region - Work flows
 
     /**
@@ -461,6 +472,17 @@ public class OstSdk {
                                          OstWorkFlowCallback workFlowCallback) {
         final OstLogoutAllSessions ostLogoutAllSessions = new OstLogoutAllSessions(userId, workFlowCallback);
         ostLogoutAllSessions.perform();
+    }
+
+    /**
+     * To update Biometric preference
+     * @param userId - user Id
+     * @param enable - to enable or disable
+     * @param callback  - A workflow callback handler.
+     */
+    public static void updateBiometricPreference(String userId, boolean enable, OstWorkFlowCallback callback) {
+        final OstBiometricPreference ostBiometricPreference = new OstBiometricPreference(userId, enable, callback);
+        ostBiometricPreference.perform();
     }
     // endregion
 

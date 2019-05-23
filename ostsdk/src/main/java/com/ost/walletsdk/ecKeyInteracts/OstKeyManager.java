@@ -91,6 +91,13 @@ public class OstKeyManager {
         }
     }
 
+    public boolean isBiometricEnabled() {
+        if (null == mKeyMetaStruct) {
+            return false;
+        }
+        return mKeyMetaStruct.isBiometricEnabled();
+    }
+
     private void wipeSession(String address) {
         OstModelFactory.getSessionModel().deleteEntity(address);
         new OstSessionKeyModelRepository().deleteSessionKey(address);

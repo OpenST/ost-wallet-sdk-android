@@ -27,6 +27,9 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
@@ -48,11 +51,14 @@ import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.OstTextView;
 import ost.com.demoapp.util.CommonUtils;
 
-public class SettingsFragment extends BaseFragment {
+public class SettingsFragment extends BaseFragment implements
+        SdkInteract.FlowInterrupt,
+        SdkInteract.FlowComplete {
     private LinearLayout mScrollViewSettings;
     private OnFragmentInteractionListener mListener;
     public Boolean openDeviceAuthorization = false;
     private LayoutInflater mInflater;
+    private ViewGroup mToggleBiometric;
 
     public SettingsFragment() {
     }
@@ -171,6 +177,22 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(viewMnemonicsView);
 
+        mToggleBiometric = (ViewGroup) getFeatureView("Enable Biometric Authentication", isUserActive);
+        updateBiometricView(mToggleBiometric);
+        mToggleBiometric.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
+
+                String userId = AppProvider.get().getCurrentUser().getOstUserId();
+                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+                showProgress(true, "Updating biometric...");
+                SdkInteract.getInstance().subscribe(workFlowListener.getId(), SettingsFragment.this);
+                OstSdk.updateBiometricPreference(userId, !OstSdk.isBiometricEnabled(userId), workFlowListener);
+            }
+        });
+        mScrollViewSettings.addView(mToggleBiometric);
 
         mScrollViewSettings.addView(getCategoryView("ADD & Recovery"));
 
@@ -382,6 +404,30 @@ public class SettingsFragment extends BaseFragment {
 
     private int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    @Override
+    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        updateCommonCode(ostWorkflowContext);
+    }
+
+    @Override
+    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        updateCommonCode(ostWorkflowContext);
+    }
+
+    private void updateCommonCode(OstWorkflowContext ostWorkflowContext) {
+        if (OstWorkflowContext.WORKFLOW_TYPE.UPDATE_BIOMETRIC_PREFERENCE
+                .equals(ostWorkflowContext.getWorkflow_type())) {
+            updateBiometricView(mToggleBiometric);
+        }
+    }
+
+    private void updateBiometricView(ViewGroup toggleBiometric) {
+        OstTextView mTextView = toggleBiometric.findViewById(R.id.ws_item);
+        mTextView.setText(String.format("%s Biometric Authentication",
+                OstSdk.isBiometricEnabled(AppProvider.get().getCurrentUser().getOstUserId()) ? "Disable":"Enable"
+        ));
     }
 
     interface OnFragmentInteractionListener {

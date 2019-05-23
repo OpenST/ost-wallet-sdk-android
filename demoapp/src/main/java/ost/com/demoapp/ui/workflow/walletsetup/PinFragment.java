@@ -127,6 +127,7 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
             if (v.getText().toString().length() < 6) {
                 mPinEntryEditText.setError(true);
             } else {
+                KeyBoard.hideKeyboard(getContext());
                 return onValidPin(v.getText().toString());
             }
         }
