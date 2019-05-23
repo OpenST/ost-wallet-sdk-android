@@ -141,8 +141,12 @@ public class CreateAccountFragment extends BaseFragment {
         }
     }
 
-    public void showError(String errorString) {
+    public void showUserNameError(String errorString) {
         mEditTextViewUserName.showErrorString(errorString);
+    }
+
+    public void showPasswordError(String errorString) {
+        mEditTextViewPassword.showErrorString(errorString);
     }
 
     public interface OnFragmentInteractionListener {

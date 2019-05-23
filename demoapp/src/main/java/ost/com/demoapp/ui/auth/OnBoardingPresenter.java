@@ -34,6 +34,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
         SdkInteract.FlowInterrupt {
 
     private static final String LOG_TAG = "OstOnBoardingPresenter";
+    private static final int MINIMUM_PWD_CHAR = 8;
 
     public static OnBoardingPresenter getInstance() {
         return new OnBoardingPresenter();
@@ -45,6 +46,9 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
 
     void createAccount(String userName, String password) {
         if (!assertEconomy()) {
+            return;
+        }
+        if (!assertCredValidation(userName, password)) {
             return;
         }
         getMvpView().showProgress(true, "Creating account...");
@@ -71,7 +75,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
                         e.printStackTrace();
                     }
                 } else {
-                    getMvpView().showError("Error while logging");
+                    showErrorMessage(jsonObject);
                     Log.e(LOG_TAG, "Error while logging");
                     getMvpView().showProgress(false);
                 }
@@ -79,14 +83,40 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
 
             @Override
             public void onFailure(Throwable throwable) {
+                showErrorMessage(null);
                 getMvpView().showProgress(false);
                 Log.e(LOG_TAG, throwable.getMessage());
             }
         });
     }
 
+    private void showErrorMessage(JSONObject jsonObject) {
+        String errorMsg = jsonObject.optString("msg");
+        if (null != errorMsg) {
+            getMvpView().showToastMessage(errorMsg, false);
+        } else {
+            getMvpView().showToastMessage("Error while logging", false);
+        }
+    }
+
+    private boolean assertCredValidation(String userName, String password) {
+        boolean userNameValid = userName.matches("[a-zA-Z0-9]+");
+        boolean passwordValid = password.matches("[a-zA-Z0-9]+") && password.length() >= MINIMUM_PWD_CHAR;
+        if (!userNameValid) {
+            getMvpView().showUsernameError("Username should be alpha numeric");
+        }
+        if (!passwordValid) {
+            getMvpView().showPasswordError("Password should be alpha numeric and minimum 8 characters");
+        }
+
+        return userNameValid && passwordValid;
+    }
+
     void logIn(String userName, String password) {
         if (!assertEconomy()) {
+            return;
+        }
+        if (!assertCredValidation(userName, password)) {
             return;
         }
         getMvpView().showProgress(true, "Logging In");
@@ -108,7 +138,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
                         e.printStackTrace();
                     }
                 } else {
-                    getMvpView().showError("Error while logging");
+                    showErrorMessage(jsonObject);
                     Log.e(LOG_TAG, "Error while logging");
                     getMvpView().showProgress(false);
                 }
@@ -116,6 +146,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
 
             @Override
             public void onFailure(Throwable throwable) {
+                showErrorMessage(null);
                 getMvpView().showProgress(false);
                 Log.e(LOG_TAG, throwable.getMessage());
             }

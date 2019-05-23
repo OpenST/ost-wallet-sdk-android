@@ -103,6 +103,16 @@ public class OnBoardingActivity extends BaseActivity implements
     }
 
     @Override
+    public void showUsernameError(String errorString) {
+        ((CreateAccountFragment) FragmentUtils.getTopFragment(this, R.id.layout_container)).showUserNameError(errorString);
+    }
+
+    @Override
+    public void showPasswordError(String errorString) {
+        ((CreateAccountFragment) FragmentUtils.getTopFragment(this, R.id.layout_container)).showPasswordError(errorString);
+    }
+
+    @Override
     public void refreshToken() {
         if (FragmentUtils.getFragmentByTag(this, CREATE_ACCOUNT_TAG) instanceof CreateAccountFragment) {
             ((CreateAccountFragment) FragmentUtils.getFragmentByTag(this, CREATE_ACCOUNT_TAG)).updateToken();
@@ -115,11 +125,6 @@ public class OnBoardingActivity extends BaseActivity implements
         startActivity(intent);
         animateActivityChangingToRight();
         finish();
-    }
-
-    @Override
-    public void showError(String errorString) {
-        ((CreateAccountFragment)FragmentUtils.getTopFragment(this,R.id.layout_container)).showError(errorString);
     }
 
     @Override
