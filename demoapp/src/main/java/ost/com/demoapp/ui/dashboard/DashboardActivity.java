@@ -157,13 +157,15 @@ public class DashboardActivity extends BaseActivity implements
         if (topFragment instanceof ChildFragmentStack) {
              consumed = ((ChildFragmentStack)topFragment).popBack();
         }
-        if (!consumed && !FragmentUtils.isBackStackEmpty(this) &&
-                !(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
-            FragmentUtils.goBack(this);
-        } else {
-            //hide keyboard if open
-            KeyBoard.hideKeyboard(DashboardActivity.this);
-            super.goBack();
+        if (!consumed) {
+            if (!FragmentUtils.isBackStackEmpty(this) &&
+                    !(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
+                FragmentUtils.goBack(this);
+            } else {
+                //hide keyboard if open
+                KeyBoard.hideKeyboard(DashboardActivity.this);
+                super.goBack();
+            }
         }
     }
 
