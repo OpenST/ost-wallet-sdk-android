@@ -113,7 +113,7 @@ public class SettingsFragment extends BaseFragment implements
 
     private void drawListItems(){
         mScrollViewSettings.removeAllViews();
-        mScrollViewSettings.addView(getCategoryView("DEVICE"));
+        mScrollViewSettings.addView(getCategoryView("GENERAL"));
 
         OstUser ostUser = AppProvider.get().getCurrentUser().getOstUser();
         Boolean isUserActive = ostUser.isActivated();
@@ -177,6 +177,34 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(viewMnemonicsView);
 
+        mScrollViewSettings.addView(getCategoryView("DEVICE"));
+
+        View authorizeDeviceViaQR = getFeatureView("Authorize Additional Device via QR", isUserActive);
+        authorizeDeviceViaQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
+                Fragment fragment = AuthorizeDeviceQRFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
+        mScrollViewSettings.addView(authorizeDeviceViaQR);
+
+        View authorizeDeviceViaMnemonics = getFeatureView("Authorize This Device via Mnemonics", isUserActive);
+        authorizeDeviceViaMnemonics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+
+                Fragment fragment = EnterMnemonicsFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
+        mScrollViewSettings.addView(authorizeDeviceViaMnemonics);
+
         mToggleBiometric = (ViewGroup) getFeatureView("Enable Biometric Authentication", isUserActive);
         updateBiometricView(mToggleBiometric);
         mToggleBiometric.setOnClickListener(new View.OnClickListener() {
@@ -193,34 +221,6 @@ public class SettingsFragment extends BaseFragment implements
             }
         });
         mScrollViewSettings.addView(mToggleBiometric);
-
-        mScrollViewSettings.addView(getCategoryView("ADD & Recovery"));
-
-        View authorizeDeviceViaQR = getFeatureView("Authorize Device via QR", isUserActive);
-        authorizeDeviceViaQR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
-
-                Fragment fragment = AuthorizeDeviceQRFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
-            }
-        });
-        mScrollViewSettings.addView(authorizeDeviceViaQR);
-
-        View authorizeDeviceViaMnemonics = getFeatureView("Authorize Device via Mnemonics", isUserActive);
-        authorizeDeviceViaMnemonics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
-
-                Fragment fragment = EnterMnemonicsFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
-            }
-        });
-        mScrollViewSettings.addView(authorizeDeviceViaMnemonics);
 
         View viewShowDeviceQR = getFeatureView("Show Device QR", true);
         viewShowDeviceQR.setOnClickListener(new View.OnClickListener() {
@@ -389,6 +389,7 @@ public class SettingsFragment extends BaseFragment implements
         demoAppTextView.setPadding(dpToPx(20), dpToPx(10), dpToPx(10), dpToPx(10));
         demoAppTextView.setTextSize(13);
         demoAppTextView.setTypeface(Typeface.DEFAULT_BOLD);
+        demoAppTextView.setTextColor(getResources().getColor(R.color.color_168dc1));
         return demoAppTextView;
     }
 
