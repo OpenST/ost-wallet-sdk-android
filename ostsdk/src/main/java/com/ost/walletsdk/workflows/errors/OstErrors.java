@@ -220,6 +220,10 @@ public class OstErrors {
                 return "Logout request of all sessions failed";
             case TOKEN_HOLDER_API_FAILED:
                 return "Token holder get api returned failed response";
+
+            case INVALID_JSON_STRING: return "The provided json string is invalid.";
+            case INVALID_JSON_ARRAY: return "The provided json array string is invalid.";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -230,7 +234,7 @@ public class OstErrors {
         }
     }
 
-    public enum ErrorCode implements OstErrorCode {
+    public enum ErrorCode {
         INVALID_USER_ID,
         INVALID_SDK_URL,
         INVALID_WORKFLOW_CALLBACK,
@@ -316,6 +320,8 @@ public class OstErrors {
         INVALID_PRICE_POINT_CURRENCY_SYMBOL,
         INVALID_REQUEST_TIMEOUT_DURATION,
         INVALID_SESSION_BUFFER_TIME,
+        INVALID_JSON_STRING,
+        INVALID_JSON_ARRAY,
 
 
         //Generic
