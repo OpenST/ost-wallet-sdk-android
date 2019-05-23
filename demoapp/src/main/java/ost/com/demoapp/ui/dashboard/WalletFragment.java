@@ -70,17 +70,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
         mTokenSymbolView.setText(AppProvider.get().getCurrentEconomy().getTokenSymbol());
         mWalletUsdBalance = view.findViewById(R.id.ptv_wallet_usd_balance);
         mEmptyWalletLL = view.findViewById(R.id.empty_wallet_text);
-        if(!AppProvider.get().getCurrentUser().getOstUser().isActivated()){
-            ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv1)).
-                    setText(getResources().getString(R.string.wallet_being_setup));
-            ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv2)).
-                    setText(getResources().getString(R.string.wallet_setup_text));
-        } else {
-            ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv1)).
-                    setText(getResources().getString(R.string.no_transactions_title));
-            ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv2)).
-                    setText(getResources().getString(R.string.no_transactions_text));
-        }
+        setDefaultText();
         mRecyclerView = view.findViewById(R.id.rv_transactions);
         mPullToRefresh = view.findViewById(R.id.pullToRefresh);
         AppBar appBar = AppBar.newInstance(getContext(),
@@ -153,6 +143,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
     public void notifyDataSetChanged() {
         paginationRequestSent = false;
         mWalletPresenter.getTransactionRecyclerViewAdapter().notifyDataSetChanged();
+        setDefaultText();
         if(mWalletPresenter.getTransactionRecyclerViewAdapter().getItemCount() > 0){
             mEmptyWalletLL.setVisibility(View.GONE);
         }
@@ -172,6 +163,22 @@ public class WalletFragment extends BaseFragment implements WalletView {
             OstToken token = OstSdk.getToken(AppProvider.get().getCurrentEconomy().getTokenId());
             String url = viewEndPoint + "transaction/tx-" + token.getChainId() + "-" + transaction.getTxnHash();
             mListener.openWebView(url);
+        }
+    }
+
+    private void setDefaultText(){
+        if(null != mEmptyWalletLL){
+            if(!AppProvider.get().getCurrentUser().getOstUser().isActivated()){
+                ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv1)).
+                        setText(getResources().getString(R.string.wallet_being_setup));
+                ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv2)).
+                        setText(getResources().getString(R.string.wallet_setup_text));
+            } else {
+                ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv1)).
+                        setText(getResources().getString(R.string.no_transactions_title));
+                ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv2)).
+                        setText(getResources().getString(R.string.no_transactions_text));
+            }
         }
     }
 
