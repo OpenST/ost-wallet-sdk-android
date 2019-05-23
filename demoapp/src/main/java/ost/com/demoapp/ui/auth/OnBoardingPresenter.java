@@ -45,6 +45,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     }
 
     void createAccount(String userName, String password) {
+        resetErrors();
         if (!assertEconomy()) {
             return;
         }
@@ -113,6 +114,7 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
     }
 
     void logIn(String userName, String password) {
+        resetErrors();
         if (!assertEconomy()) {
             return;
         }
@@ -195,6 +197,11 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
         }
         AppProvider.get().setCurrentEconomy(currentEconomy);
         getMvpView().refreshToken();
+    }
+
+    private void resetErrors() {
+        getMvpView().showUsernameError(null);
+        getMvpView().showPasswordError(null);
     }
 
     @Override
