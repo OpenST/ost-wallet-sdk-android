@@ -20,9 +20,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:textSize="@dimen/sp_15"
-        android:layout_marginLeft="@dimen/dp_20"
-        android:drawableRight="@drawable/ic_arrow_forward_grey_24dp"
-        android:drawablePadding="@dimen/dp_24"
+        android:layout_marginLeft="@dimen/dp_30"
         android:layout_marginRight="@dimen/dp_20"
         android:textColor="#34445b" />
 

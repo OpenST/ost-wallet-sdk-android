@@ -64,4 +64,6 @@
     <!-- Wallet Setup -->
     <string name="wallet_being_setup">Your Wallet is being Setup</string>
     <string name="wallet_setup_text">The Wallet setup process takes about 30 seconds. You can continue to use the app and we’ll notify when the wallet is ready to use.</string>
+    <string name="no_transactions_title">No Transactions Completed!</string>
+    <string name="no_transactions_text">Looks like you have not made any transactions, send some tokens to other users.</string>
 </resources>

@@ -17,6 +17,8 @@ import android.content.DialogInterface;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -35,7 +37,10 @@ public final class DialogFactory {
 
         final Dialog dialog = new Dialog(context);
         // Include dialog.xml file
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.simple_dialog_view);
+        dialog.getWindow().getAttributes().width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().getAttributes().height = ViewGroup.LayoutParams.WRAP_CONTENT;
 
         TextView headingTextView = (TextView) dialog.findViewById(R.id.tv_heading);
         headingTextView.setText(title);

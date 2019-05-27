@@ -18,4 +18,5 @@
     <string name="authorize">Authorize</string>
     <string name="authorize_sub_heading">Authorize you fingerprint</string>
     <string name="fingerprint_check_status">Touch the fingerprint sensor</string>
+    <string name="enable_biometric">Enable Biometric?</string>
 </resources>

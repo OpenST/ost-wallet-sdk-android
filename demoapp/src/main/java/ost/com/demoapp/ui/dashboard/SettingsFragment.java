@@ -10,7 +10,9 @@
 
 package ost.com.demoapp.ui.dashboard;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -25,6 +27,9 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
@@ -46,11 +51,14 @@ import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.OstTextView;
 import ost.com.demoapp.util.CommonUtils;
 
-public class SettingsFragment extends BaseFragment {
+public class SettingsFragment extends BaseFragment implements
+        SdkInteract.FlowInterrupt,
+        SdkInteract.FlowComplete {
     private LinearLayout mScrollViewSettings;
     private OnFragmentInteractionListener mListener;
     public Boolean openDeviceAuthorization = false;
     private LayoutInflater mInflater;
+    private ViewGroup mToggleBiometric;
 
     public SettingsFragment() {
     }
@@ -105,7 +113,7 @@ public class SettingsFragment extends BaseFragment {
 
     private void drawListItems(){
         mScrollViewSettings.removeAllViews();
-        mScrollViewSettings.addView(getCategoryView("DEVICE"));
+        mScrollViewSettings.addView(getCategoryView("GENERAL"));
 
         OstUser ostUser = AppProvider.get().getCurrentUser().getOstUser();
         Boolean isUserActive = ostUser.isActivated();
@@ -114,6 +122,8 @@ public class SettingsFragment extends BaseFragment {
         walletDetailsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
+
                 Fragment fragment = WalletDetailsFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -168,9 +178,9 @@ public class SettingsFragment extends BaseFragment {
         mScrollViewSettings.addView(viewMnemonicsView);
 
 
-        mScrollViewSettings.addView(getCategoryView("ADD & Recovery"));
+        mScrollViewSettings.addView(getCategoryView("DEVICE"));
 
-        View authorizeDeviceViaQR = getFeatureView("Authorize Device via QR", isUserActive);
+        View authorizeDeviceViaQR = getFeatureView("Authorize Additional Device via QR", isUserActive);
         authorizeDeviceViaQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -183,7 +193,7 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(authorizeDeviceViaQR);
 
-        View authorizeDeviceViaMnemonics = getFeatureView("Authorize Device via Mnemonics", isUserActive);
+        View authorizeDeviceViaMnemonics = getFeatureView("Authorize This Device via Mnemonics", isUserActive);
         authorizeDeviceViaMnemonics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,10 +206,40 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(authorizeDeviceViaMnemonics);
 
+        mToggleBiometric = (ViewGroup) getFeatureView("Enable Biometric Authentication", isUserActive);
+        updateBiometricView(mToggleBiometric);
+        mToggleBiometric.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
+
+                if (new CommonUtils().isBioMetricHardwareAvailable() && !new CommonUtils().isBioMetricEnrolled()) {
+                    new CommonUtils().showEnableBiometricDialog(new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    return;
+                }
+                String userId = AppProvider.get().getCurrentUser().getOstUserId();
+                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+                showProgress(true, "Updating biometric...");
+                SdkInteract.getInstance().subscribe(workFlowListener.getId(), SettingsFragment.this);
+                OstSdk.updateBiometricPreference(userId, !OstSdk.isBiometricEnabled(userId), workFlowListener);
+            }
+        });
+        if (new CommonUtils().isBioMetricHardwareAvailable()) {
+            mScrollViewSettings.addView(mToggleBiometric);
+        }
+
         View viewShowDeviceQR = getFeatureView("Show Device QR", true);
         viewShowDeviceQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
 
                 Fragment fragment = QRFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
@@ -211,6 +251,8 @@ public class SettingsFragment extends BaseFragment {
         manageDevices.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
 
                 Fragment fragment = DeviceListFragment.manageDeviceInstance();
                 mListener.launchFeatureFragment(fragment);
@@ -254,8 +296,6 @@ public class SettingsFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
 
-                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
-
                 Fragment fragment = AbortRecoveryFragment.newInstance();
                 mListener.launchFeatureFragment(fragment);
             }
@@ -272,25 +312,51 @@ public class SettingsFragment extends BaseFragment {
         });
         mScrollViewSettings.addView(evenLogs);
 
-        View viewLogOut = getFeatureView("Log out all sessions", isUserActive);
-        viewLogOut.setOnClickListener(new View.OnClickListener() {
+        View sessionLogOut = getFeatureView("Revoke all Sessions", isUserActive);
+        sessionLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+                if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
 
                 if (userDeviceNotAuthorized()) {
                     openDeviceAuthorizationFragment();
                 } else {
-                    showProgress(true, "Logging Out");
-                    WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-                    OstSdk.logoutAllSessions(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);
-                    //Remove all cookies
-                    AppProvider.get().getCookieStore().removeAll();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+                    builder.setTitle("Sure You want to Revoke Sessions?");
+                    builder.setMessage("This would revoke all other device sessions too. Sessions needs to be re-added with PIN. ");
+
+                    builder.setPositiveButton("Revoke", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            showProgress(true, "Revoking Sessions");
+                            WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+                            OstSdk.logoutAllSessions(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);
+                        }});
+                    builder.setNegativeButton("Cancel", null);
+                    builder.create().show();
                 }
             }
         });
-        mScrollViewSettings.addView(viewLogOut);
+        mScrollViewSettings.addView(sessionLogOut);
+
+        View userLogout = getFeatureView("Logout", true);
+        userLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+                builder.setTitle("Sure You want to logout?");
+
+                builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //Remove all cookies
+                        AppProvider.get().getCookieStore().removeAll();
+                        mListener.relaunchApp();
+                    }});
+                builder.setNegativeButton("Cancel", null);
+                builder.create().show();
+            }
+        });
+        mScrollViewSettings.addView(userLogout);
     }
 
     @Override
@@ -335,6 +401,7 @@ public class SettingsFragment extends BaseFragment {
         demoAppTextView.setPadding(dpToPx(20), dpToPx(10), dpToPx(10), dpToPx(10));
         demoAppTextView.setTextSize(13);
         demoAppTextView.setTypeface(Typeface.DEFAULT_BOLD);
+        demoAppTextView.setTextColor(getResources().getColor(R.color.color_168dc1));
         return demoAppTextView;
     }
 
@@ -352,7 +419,32 @@ public class SettingsFragment extends BaseFragment {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
+    @Override
+    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        updateCommonCode(ostWorkflowContext);
+    }
+
+    @Override
+    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        updateCommonCode(ostWorkflowContext);
+    }
+
+    private void updateCommonCode(OstWorkflowContext ostWorkflowContext) {
+        if (OstWorkflowContext.WORKFLOW_TYPE.UPDATE_BIOMETRIC_PREFERENCE
+                .equals(ostWorkflowContext.getWorkflow_type())) {
+            updateBiometricView(mToggleBiometric);
+        }
+    }
+
+    private void updateBiometricView(ViewGroup toggleBiometric) {
+        OstTextView mTextView = toggleBiometric.findViewById(R.id.ws_item);
+        mTextView.setText(String.format("%s Biometric Authentication",
+                OstSdk.isBiometricEnabled(AppProvider.get().getCurrentUser().getOstUserId()) ? "Disable":"Enable"
+        ));
+    }
+
     interface OnFragmentInteractionListener {
         void launchFeatureFragment(Fragment fragment);
+        void relaunchApp();
     }
 }

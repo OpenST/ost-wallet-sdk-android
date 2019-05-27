@@ -157,7 +157,7 @@ public class WorkFlowListener implements OstWorkFlowCallback {
         Log.d(LOG_TAG, String.format("Flow Interrupted: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
         //region Sdk Error Handling
-        if (OstErrors.ErrorCode.WORKFLOW_CANCELLED == ostError.getErrorCode()) {
+        if (OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
             //Test-App has cancelled the workflow
             Log.i(LOG_TAG, "Interrupt Reason: Test-App cancelled the workflow.");
             //Store event in db
@@ -285,12 +285,6 @@ public class WorkFlowListener implements OstWorkFlowCallback {
             public void onClick(DialogInterface dialog, int id) {
                 AppProvider.get().relaunchApp();
             }});
-
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-            }});
-
         builder.create().show();
     }
 

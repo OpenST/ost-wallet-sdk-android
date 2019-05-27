@@ -13,6 +13,7 @@ package ost.com.demoapp.ui.workflow.createsession;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -55,7 +56,8 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
         }
 
         //Convert tokens spending limit to Wei
-        BigInteger tokensInWei = spendingLimitBigInt.multiply( new BigInteger("10").pow(18));
+        Integer decimals = Integer.parseInt(OstToken.getById(AppProvider.get().getCurrentEconomy().getTokenId()).getBtDecimals());
+        BigInteger tokensInWei = spendingLimitBigInt.multiply( new BigInteger("10").pow(decimals));
         spendingLimit = tokensInWei.toString();
 
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();

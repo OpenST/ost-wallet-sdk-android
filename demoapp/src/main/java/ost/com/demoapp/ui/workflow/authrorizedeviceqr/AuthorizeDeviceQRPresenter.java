@@ -57,7 +57,9 @@ class AuthorizeDeviceQRPresenter extends BasePresenter<AuthorizeDeviceQRView> im
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         Log.e(LOG_TAG, "Flow Interrupt");
         getMvpView().showProgress(false);
-        getMvpView().showToastMessage(OstErrors.getMessage(ostError.getErrorCode()), false);
+        if (!OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())){
+            getMvpView().showToastMessage(OstErrors.getMessage(ostError.getErrorCode()), false);
+        }
     }
 
     void processQRResult(Intent data) {

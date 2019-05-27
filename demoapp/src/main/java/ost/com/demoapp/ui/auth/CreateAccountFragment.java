@@ -28,6 +28,7 @@ import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.ui.BaseFragment;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.uicomponents.OstPrimaryEditTextView;
+import ost.com.demoapp.util.KeyBoard;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -104,6 +105,7 @@ public class CreateAccountFragment extends BaseFragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                KeyBoard.hideKeyboard(getContext());
                 if (mIsCreateAccountFragment) {
                     mListener.createAccount(editTextViewEconomy.getText(), mEditTextViewUserName.getText(), mEditTextViewPassword.getText());
                 } else {
@@ -141,8 +143,12 @@ public class CreateAccountFragment extends BaseFragment {
         }
     }
 
-    public void showError(String errorString) {
+    public void showUserNameError(String errorString) {
         mEditTextViewUserName.showErrorString(errorString);
+    }
+
+    public void showPasswordError(String errorString) {
+        mEditTextViewPassword.showErrorString(errorString);
     }
 
     public interface OnFragmentInteractionListener {

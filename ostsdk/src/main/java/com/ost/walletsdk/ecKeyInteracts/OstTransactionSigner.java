@@ -15,7 +15,6 @@ import android.util.Log;
 import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedTransactionStruct;
-import com.ost.walletsdk.models.entities.OstRule;
 import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
@@ -83,13 +82,13 @@ public class OstTransactionSigner {
                                 OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
                         throw ostError;
                     }
-                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(jsonObject, OstConfigs.getInstance().PRICE_POINT_TOKEN_SYMBOL);
+                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(jsonObject, OstSdk.getToken(user.getTokenId()).getBaseToken());
                     if (null == pricePointObject) {
                         OstError ostError = new OstError("km_ts_st_6",
                                 OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
                         throw ostError;
                     }
-                    pricePointOSTtoUSD = pricePointObject.getDouble(OstSdk.getToken(user.getTokenId()).getCurrencySymbol());
+                    pricePointOSTtoUSD = pricePointObject.getDouble(OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL);
                     decimalExponent = pricePointObject.getInt(DECIMAL_EXPONENT);
 
                 } catch (Exception e) {
@@ -122,9 +121,9 @@ public class OstTransactionSigner {
                 BigDecimal fiatMultiplier = calFiatMultiplier(pricePointOSTtoUSD, decimalExponent, conversionFactor, btDecimals);
 
                 callData = new PricerRule().getPriceTxnExecutableData(user.getTokenHolderAddress(),
-                        tokenHolderAddresses, amounts, OstSdk.getToken(user.getTokenId()).getCurrencySymbol(), weiPricePoint);
+                        tokenHolderAddresses, amounts, OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL, weiPricePoint);
                 rawCallData = new PricerRule().getPricerTransactionRawCallData(user.getTokenHolderAddress(),
-                        tokenHolderAddresses, amounts, OstSdk.getToken(user.getTokenId()).getCurrencySymbol(), weiPricePoint);
+                        tokenHolderAddresses, amounts, OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL, weiPricePoint);
                 spendingBtAmountInWei = new PricerRule().calDirectTransferSpendingLimit(amounts, fiatMultiplier);
                 break;
             default:

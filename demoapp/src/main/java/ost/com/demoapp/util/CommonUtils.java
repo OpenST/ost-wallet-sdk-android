@@ -12,6 +12,12 @@ package ost.com.demoapp.util;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -21,6 +27,7 @@ import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -137,11 +144,34 @@ public class CommonUtils {
         Integer decimals = Integer.parseInt(token.getBtDecimals());
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
         BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
-        BigDecimal newBal = bal.setScale(5, RoundingMode.DOWN);
-        return newBal.toString().replace(".00000", "");
+        BigDecimal newBal = bal.setScale(2, RoundingMode.DOWN);
+        return newBal.toString();
     }
 
-    public boolean handleActionEligibilityCheck(Context activityContext) {
+    public static String convertBTWeiToUsd(String balance, JSONObject pricePointObject) {
+        if (null == balance || null == pricePointObject) return null;
+
+        try{
+            OstToken token = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
+            Integer decimals = Integer.parseInt(token.getBtDecimals());
+            BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
+            BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
+            BigDecimal baseCurrencyBal = bal.divide(new BigDecimal(token.getConversionFactor()), RoundingMode.DOWN);
+            Double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble("USD");
+            return baseCurrencyBal.multiply(new BigDecimal(pricePointOSTtoUSD)).setScale(2, RoundingMode.DOWN).toString();
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    public static String convertUsdWeitoUsd(String amount) {
+        if (null == amount) return "";
+        BigDecimal btWeiMultiplier = new BigDecimal(10).pow(18);
+        BigDecimal bal = new BigDecimal(amount).divide(btWeiMultiplier);
+        return bal.setScale(2, RoundingMode.DOWN).toString();
+    }
+
+    public boolean handleActivatingStateCheck(Context activityContext) {
         OstUser currentOstUser = AppProvider.get().getCurrentUser().getOstUser();
         if (currentOstUser.isActivating()) {
             Dialog dialog = DialogFactory.createSimpleOkErrorDialog(
@@ -151,6 +181,12 @@ public class CommonUtils {
             dialog.show();
             return true;
         }
+        return false;
+    }
+    public boolean handleActionEligibilityCheck(Context activityContext) {
+        if (handleActivatingStateCheck(activityContext)) return true;
+
+        OstUser currentOstUser = AppProvider.get().getCurrentUser().getOstUser();
         OstDevice currentDevice = currentOstUser.getCurrentDevice();
         if (currentDevice.isRecovering()) {
             Dialog dialog = DialogFactory.createSimpleOkErrorDialog(
@@ -181,7 +217,7 @@ public class CommonUtils {
                                 CommonUtils.convertWeiToTokenCurrency(workflowDetails.getString("amount")),
                                 AppProvider.get().getCurrentEconomy().getTokenSymbol());
                     } else {
-                        amount = String.format("%s USD", workflowDetails.getString("amount"));
+                        amount = String.format("%s USD", CommonUtils.convertUsdWeitoUsd(workflowDetails.getString("amount")));
                     }
                     return String.format("%s sent to %s successfully!",
                             amount,
@@ -211,6 +247,9 @@ public class CommonUtils {
     }
 
     public String formatWorkflowFailedToast(OstWorkflowContext.WORKFLOW_TYPE workflowType, OstError ostError, JSONObject workflowDetails){
+        if(OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())){
+            return null;
+        }
         if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.SETUP_DEVICE)){
             return null;
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER)){
@@ -228,7 +267,7 @@ public class CommonUtils {
                                 CommonUtils.convertWeiToTokenCurrency(workflowDetails.getString("amount")),
                                 AppProvider.get().getCurrentEconomy().getTokenSymbol());
                     } else {
-                        amount = String.format("%s USD", workflowDetails.getString("amount"));
+                        amount = String.format("%s USD", CommonUtils.convertUsdWeitoUsd(workflowDetails.getString("amount")));
                     }
                     return String.format("Token Transfer of %s to %s failed!\n%s",
                             amount,
@@ -261,14 +300,54 @@ public class CommonUtils {
         String viewEndPoint = AppProvider.get().getCurrentEconomy().getViewApiEndpoint();
         try{
             LogInUser logInUser = AppProvider.get().getCurrentUser();
-            JSONArray auxChains = OstSdk.getToken(logInUser.getTokenId()).getAuxiliaryChain();
+            OstToken token = OstSdk.getToken(logInUser.getTokenId());
+            JSONArray auxChains = token.getAuxiliaryChain();
             JSONObject jsonObject = auxChains.getJSONObject(0);
             String tokenAddr = jsonObject.getString("utility_branded_token");
-            String url = viewEndPoint + "token/th-" + logInUser.getTokenId() + "-" +
+            String url = viewEndPoint + "token/th-" + token.getChainId() + "-" +
                     tokenAddr + "-" +
                     logInUser.getOstUser().getTokenHolderAddress();
             return url;
         } catch (Exception e){ }
         return viewEndPoint;
+    }
+
+    public boolean isBioMetricEnrolled() {
+       return isBioMetric(false);
+    }
+
+    public boolean isBioMetricHardwareAvailable() {
+        return isBioMetric(true);
+    }
+
+    private boolean isBioMetric(boolean checkForHardware) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //Fingerprint API only available on from Android 6.0 (M)
+            FingerprintManager fingerprintManager = (FingerprintManager) AppProvider.get().getApplicationContext()
+                    .getSystemService(Context.FINGERPRINT_SERVICE);
+            if (null != fingerprintManager) {
+                if (checkForHardware) {
+                    return fingerprintManager.isHardwareDetected();
+                } else {
+                    return fingerprintManager.isHardwareDetected() && fingerprintManager.hasEnrolledFingerprints();
+                }
+            }
+        }
+        return false;
+    }
+
+    public void showEnableBiometricDialog(DialogInterface.OnClickListener onCancelListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+        builder.setCancelable(true);
+        builder.setMessage("Enroll for Biometric to use application effectively");
+        builder.setTitle("Enroll for Biometric");
+        builder.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which)
+            {
+                AppProvider.get().getCurrentActivity().startActivity(new Intent(Settings.ACTION_SECURITY_SETTINGS));
+            }
+        });
+        builder.setNegativeButton("Cancel", onCancelListener);
+        builder.create().show();
     }
 }

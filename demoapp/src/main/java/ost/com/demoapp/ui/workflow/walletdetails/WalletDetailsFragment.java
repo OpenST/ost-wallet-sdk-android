@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -155,13 +156,15 @@ public class WalletDetailsFragment extends BaseFragment implements View.OnClickL
                 break;
             }
             case R.id.ost_user_device_manager_address: {
-                String url = viewEndPoint + "address/ad-" + logInUser.getTokenId() + "-" +
+                OstToken token = OstSdk.getToken(logInUser.getTokenId());
+                String url = viewEndPoint + "address/ad-" + token.getChainId() + "-" +
                         logInUser.getOstUser().getDeviceManagerAddress();
                 mListener.openWebView(url);
                 break;
             }
             case R.id.ost_user_recovery_owner_address: {
-                String url = viewEndPoint + "address/ad-" + logInUser.getTokenId() + "-" +
+                OstToken token = OstSdk.getToken(logInUser.getTokenId());
+                String url = viewEndPoint + "address/ad-" + token.getChainId() + "-" +
                         logInUser.getOstUser().getRecoveryOwnerAddress();
                 mListener.openWebView(url);
                 break;

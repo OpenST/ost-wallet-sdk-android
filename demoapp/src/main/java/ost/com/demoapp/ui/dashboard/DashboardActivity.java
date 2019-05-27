@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
@@ -33,10 +32,8 @@ import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 import ost.com.demoapp.AppProvider;
@@ -81,7 +78,8 @@ public class DashboardActivity extends BaseActivity implements
         TransactionFragment.OnFragmentInteractionListener,
         DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener,
         WalletDetailsFragment.OnWalletDetailsFragmentListener,
-        AuthorizeDeviceOptionsFragment.OnAuthorizeDeviceOptionsFragmentListener {
+        AuthorizeDeviceOptionsFragment.OnAuthorizeDeviceOptionsFragmentListener,
+        WalletFragment.walletFragmentInteraction {
 
     private static final String LOG_TAG = "DashboardActivity";
     private ViewPager mViewPager;
@@ -156,13 +154,15 @@ public class DashboardActivity extends BaseActivity implements
         if (topFragment instanceof ChildFragmentStack) {
              consumed = ((ChildFragmentStack)topFragment).popBack();
         }
-        if (!consumed && !FragmentUtils.isBackStackEmpty(this) &&
-                !(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
-            FragmentUtils.goBack(this);
-        } else {
-            //hide keyboard if open
-            KeyBoard.hideKeyboard(DashboardActivity.this);
-            super.goBack();
+        if (!consumed) {
+            if (!FragmentUtils.isBackStackEmpty(this) &&
+                    !(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
+                FragmentUtils.goBack(this);
+            } else {
+                //hide keyboard if open
+                KeyBoard.hideKeyboard(DashboardActivity.this);
+                super.goBack();
+            }
         }
     }
 
@@ -207,11 +207,6 @@ public class DashboardActivity extends BaseActivity implements
                         ostWorkflowContext.getWorkflow_type()
                 )) {
             notifyActivate();
-        } else if (OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS
-                .equals(
-                        ostWorkflowContext.getWorkflow_type()
-                )) {
-            relaunchApp();
         }
     }
 
@@ -248,11 +243,6 @@ public class DashboardActivity extends BaseActivity implements
                 )) {
             Log.e(LOG_TAG, "User Activate failed");
             checkForActiveUserAndDevice();
-        } else if (OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS
-                .equals(
-                        ostWorkflowContext.getWorkflow_type()
-                )) {
-           relaunchApp();
         }
     }
 
@@ -402,7 +392,8 @@ public class DashboardActivity extends BaseActivity implements
         snack.show();
     }
 
-    private void relaunchApp() {
+    @Override
+    public void relaunchApp() {
         AppProvider.get().getCookieStore().removeAll();
         Intent intent = new Intent(DashboardActivity.this, OnBoardingActivity.class);
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);

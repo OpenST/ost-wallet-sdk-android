@@ -71,7 +71,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
     void handleView(final ViewHolder holder) {
         String status = holder.mDevice.getStatus();
         if (OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)) {
-            holder.mActionButton.setText("Remove");
+            holder.mActionButton.setText("Remove Device");
             holder.mActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -82,20 +82,22 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
 
         if (OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status)) {
             holder.mStatus.setVisibility(View.VISIBLE);
-            holder.mStatus.setText("Recovery in progress");
-            holder.mActionButton.setText("Abort recovery");
+            holder.mStatus.setText("\uD83D\uDD58Recovery in progress");
+            holder.mActionButton.setText("Abort Recovery");
             holder.mActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mListener.onDeviceSelectedToAbortRecovery(holder.mDevice);
                 }
             });
-        }
-
-        if (mCurrentDeviceAddress.equalsIgnoreCase(holder.mDevice.getDeviceAddress())) {
+        } else if (mCurrentDeviceAddress.equalsIgnoreCase(holder.mDevice.getDeviceAddress())) {
             holder.mStatus.setVisibility(View.VISIBLE);
             holder.mActionButton.setVisibility(View.GONE);
             holder.mStatus.setText("This Device");
+        }
+
+        if (OstDevice.CONST_STATUS.REVOKING.equalsIgnoreCase(status)) {
+            holder.mActionButton.setVisibility(View.GONE);
         }
     }
 

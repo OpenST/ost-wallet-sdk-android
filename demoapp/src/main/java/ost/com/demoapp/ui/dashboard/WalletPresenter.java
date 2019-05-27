@@ -12,6 +12,8 @@ package ost.com.demoapp.ui.dashboard;
 
 import android.util.Log;
 
+import com.ost.walletsdk.OstConstants;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -107,24 +109,29 @@ class WalletPresenter extends BasePresenter<WalletView> implements
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 String balance = "0";
+                JSONObject pricePoint = null;
                 if (new CommonUtils().isValidResponse(jsonObject)) {
                     balance = new CommonUtils().parseStringResponseForKey(jsonObject, "available_balance");
+                    try{
+                        JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
+                        pricePoint = jsonData.optJSONObject("price_point");
+                    } catch(Exception e){ }
                 }
                 AppProvider.get().getCurrentUser().updateBalance(balance);
-                getMvpView().updateBalance(String.format("%s %s", AppProvider.get().getCurrentEconomy().getTokenSymbol(),
-                        CommonUtils.convertWeiToTokenCurrency(balance).toString()));
+                getMvpView().updateBalance(CommonUtils.convertWeiToTokenCurrency(balance),
+                        CommonUtils.convertBTWeiToUsd(balance, pricePoint));
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                getMvpView().updateBalance("Balance fetch error");
+                getMvpView().updateBalance("0", null);
             }
         });
     }
 
     @Override
     public void onListViewInteraction(Transaction transaction) {
-
+        getMvpView().openTransactionView(transaction);
     }
 
     public TransactionRecyclerViewAdapter getTransactionRecyclerViewAdapter() {

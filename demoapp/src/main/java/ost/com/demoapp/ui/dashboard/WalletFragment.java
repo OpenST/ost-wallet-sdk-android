@@ -10,6 +10,7 @@
 
 package ost.com.demoapp.ui.dashboard;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,19 +22,27 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstToken;
+
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.entity.Transaction;
 import ost.com.demoapp.uicomponents.AppBar;
 import ost.com.demoapp.ui.BaseFragment;
 
 public class WalletFragment extends BaseFragment implements WalletView {
 
     private TextView mWalletBalance;
+    private TextView mWalletUsdBalance;
+    private TextView mTokenSymbolView;
 
     private WalletPresenter mWalletPresenter;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mPullToRefresh;
     private Boolean paginationRequestSent = false;
     private LinearLayout mEmptyWalletLL;
+    private WalletFragment.walletFragmentInteraction mListener;
 
     public WalletFragment() {
     }
@@ -57,7 +66,11 @@ public class WalletFragment extends BaseFragment implements WalletView {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_wallet, container, false);
 
         mWalletBalance = view.findViewById(R.id.ptv_wallet_balance);
+        mTokenSymbolView = view.findViewById(R.id.ptv_token_symbol);
+        mTokenSymbolView.setText(AppProvider.get().getCurrentEconomy().getTokenSymbol());
+        mWalletUsdBalance = view.findViewById(R.id.ptv_wallet_usd_balance);
         mEmptyWalletLL = view.findViewById(R.id.empty_wallet_text);
+        setDefaultText();
         mRecyclerView = view.findViewById(R.id.rv_transactions);
         mPullToRefresh = view.findViewById(R.id.pullToRefresh);
         AppBar appBar = AppBar.newInstance(getContext(),
@@ -94,20 +107,43 @@ public class WalletFragment extends BaseFragment implements WalletView {
                 mWalletPresenter.updateBalance();
                 mWalletPresenter.updateTransactionHistory(true);
                 mPullToRefresh.setRefreshing(false);
+                mEmptyWalletLL.setVisibility(View.VISIBLE);
             }
         });
         return view;
     }
 
     @Override
-    public void updateBalance(String balance) {
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof WalletFragment.walletFragmentInteraction) {
+            mListener = (WalletFragment.walletFragmentInteraction) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void updateBalance(String balance, String usdBalance) {
         mWalletBalance.setText(balance);
+        if(usdBalance != null){
+            mWalletUsdBalance.setText(String.format("≈ $ %s", usdBalance));
+            mWalletUsdBalance.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void notifyDataSetChanged() {
         paginationRequestSent = false;
         mWalletPresenter.getTransactionRecyclerViewAdapter().notifyDataSetChanged();
+        setDefaultText();
         if(mWalletPresenter.getTransactionRecyclerViewAdapter().getItemCount() > 0){
             mEmptyWalletLL.setVisibility(View.GONE);
         }
@@ -118,5 +154,35 @@ public class WalletFragment extends BaseFragment implements WalletView {
         super.onDestroyView();
         mWalletPresenter.detachView();
         mWalletPresenter = null;
+    }
+
+    @Override
+    public void openTransactionView(Transaction transaction){
+        if(null != mListener && null != transaction){
+            String viewEndPoint = AppProvider.get().getCurrentEconomy().getViewApiEndpoint();
+            OstToken token = OstSdk.getToken(AppProvider.get().getCurrentEconomy().getTokenId());
+            String url = viewEndPoint + "transaction/tx-" + token.getChainId() + "-" + transaction.getTxnHash();
+            mListener.openWebView(url);
+        }
+    }
+
+    private void setDefaultText(){
+        if(null != mEmptyWalletLL){
+            if(!AppProvider.get().getCurrentUser().getOstUser().isActivated()){
+                ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv1)).
+                        setText(getResources().getString(R.string.wallet_being_setup));
+                ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv2)).
+                        setText(getResources().getString(R.string.wallet_setup_text));
+            } else {
+                ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv1)).
+                        setText(getResources().getString(R.string.no_transactions_title));
+                ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv2)).
+                        setText(getResources().getString(R.string.no_transactions_text));
+            }
+        }
+    }
+
+    public interface walletFragmentInteraction{
+        void openWebView(String url);
     }
 }

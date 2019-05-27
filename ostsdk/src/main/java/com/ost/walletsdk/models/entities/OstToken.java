@@ -187,7 +187,7 @@ public class OstToken extends OstBaseEntity {
         return OstModelFactory.getRuleModel().getEntitiesByParentId(getId());
     }
 
-    public String getCurrencySymbol() {
+    public String getBaseToken() {
         return this.getJsonDataPropertyAsString(OstToken.BASE_TOKEN);
     }
 }

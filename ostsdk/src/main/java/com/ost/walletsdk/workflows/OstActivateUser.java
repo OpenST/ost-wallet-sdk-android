@@ -15,12 +15,15 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.R;
+import com.ost.walletsdk.ecKeyInteracts.OstBiometricManager;
 import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.ecKeyInteracts.OstRecoveryManager;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.utils.AsyncStatus;
+import com.ost.walletsdk.utils.CommonUtils;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -58,7 +61,29 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
     @Override
     protected boolean shouldAskForAuthentication() {
-        return false;
+        return super.isBioMetricEnabled();
+    }
+
+    @Override
+    boolean shouldAskForBioMetric() {
+        return true;
+    }
+
+    @Override
+    void onBioMetricAuthenticationSuccess() {
+        new OstBiometricManager(mUserId).enableBiometric();
+        super.onBioMetricAuthenticationSuccess();
+    }
+
+    @Override
+    void onBioMetricAuthenticationFail() {
+        new OstBiometricManager(mUserId).disableBiometric();
+        super.onBioMetricAuthenticationSuccess();
+    }
+
+    @Override
+    String getBiometricHeading() {
+        return new CommonUtils().getStringRes(R.string.enable_biometric);
     }
 
     @Override
@@ -77,7 +102,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
 
     @Override
-    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
+    AsyncStatus performOnAuthenticated() {
         try {
 
             assertUserInCreatedState();

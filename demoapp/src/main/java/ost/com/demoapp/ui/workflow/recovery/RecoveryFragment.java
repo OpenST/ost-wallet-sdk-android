@@ -37,7 +37,7 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
     RecoveryPresenter recoveryPresenter = getPresenter();
 
     public RecoveryPresenter getPresenter() {
-        return null;
+        return AbortRecoveryPresenter.getInstance();
     }
 
     private String mDeviceAddress;

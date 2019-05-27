@@ -12,7 +12,10 @@ package ost.com.demoapp.ui.workflow.transactions;
 
 import android.util.Log;
 
+import com.ost.walletsdk.OstConfigs;
+import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -20,14 +23,17 @@ import com.ost.walletsdk.workflows.errors.OstError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
 import ost.com.demoapp.AppProvider;
+import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BasePresenter;
+import ost.com.demoapp.util.CommonUtils;
 
 class TransactionsPresenter extends BasePresenter<TransactionsView> implements
         SdkInteract.RequestAcknowledged,
@@ -35,15 +41,16 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
 
     private static final String LOG_TAG = "OstTransactionPresenter";
 
-    private String mCurrentTokenSymbol = AppProvider.get().getCurrentEconomy().getTokenSymbol();
-    private List<String> mUnitList = Arrays.asList(mCurrentTokenSymbol);
+    private OstToken mOstToken = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
+    private String mCurrentTokenSymbol = mOstToken.getSymbol();
+    private List<String> mUnitList = Arrays.asList(mCurrentTokenSymbol, OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL);
+    public JSONObject mPricePoint = null;
 
     public List<String> getUnitList() {
         return mUnitList;
     }
 
     private TransactionsPresenter() {
-        mUnitList.add(OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId()).getCurrencySymbol());
     }
 
     static TransactionsPresenter getInstance() {
@@ -53,6 +60,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
     @Override
     public void attachView(TransactionsView mvpView) {
         super.attachView(mvpView);
+        updateBalance();
     }
 
     JSONObject sendTokens(String tokenHolderAddress, String tokens, String unit) {
@@ -60,9 +68,9 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
 
         //tokens validation
         //Input token string is in Eth
-        BigInteger tokensBigInt;
+        BigDecimal tokensBigInt;
         try {
-            tokensBigInt = new BigInteger(tokens);
+            tokensBigInt = new BigDecimal(tokens);
         } catch (Exception e) {
             Log.e(LOG_TAG, "tokens value is invalid", e);
             getMvpView().invalidTokenValue();
@@ -75,19 +83,30 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
             transferRule = OstSdk.RULE_NAME_DIRECT_TRANSFER;
 
             //Convert tokens to Wei
-            BigInteger tokensInWei = tokensBigInt.multiply( new BigInteger("10").pow(18));
-            tokens = tokensInWei.toString();
-            BigInteger balanceInBigInt = new BigInteger(AppProvider.get().getCurrentUser().getBalance());
+            Integer decimals = Integer.parseInt(mOstToken.getBtDecimals());
+            BigDecimal tokensInWei = tokensBigInt.multiply( new BigDecimal("10").pow(decimals));
+            BigDecimal balanceInBigInt = new BigDecimal(AppProvider.get().getCurrentUser().getBalance());
             if (tokensInWei.compareTo(balanceInBigInt) > 0 ) {
                 getMvpView().insufficientBalance();
                 getMvpView().showProgress(false);
                 return  null;
             }
+            tokens = tokensInWei.toString();
         } else {
             transferRule = OstSdk.RULE_NAME_PRICER;
 
             //Provided token are in Cent convert it into Dollar wei
-            BigInteger tokenInDollarWei = tokensBigInt.multiply( new BigInteger("10").pow(16));
+            BigDecimal tokenInDollarWei = tokensBigInt.multiply( new BigDecimal("10").pow(18)).setScale(0);
+            String usdBalance = CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mPricePoint);
+            if(null == usdBalance){
+                usdBalance = "0";
+            }
+            BigDecimal balanceInDollarWei = new BigDecimal(usdBalance).multiply( new BigDecimal("10").pow(18));
+            if (tokenInDollarWei.compareTo(balanceInDollarWei) > 0 ) {
+                getMvpView().insufficientBalance();
+                getMvpView().showProgress(false);
+                return  null;
+            }
             tokens = tokenInDollarWei.toString();
         }
 
@@ -112,6 +131,30 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
                 workFlowListener
         );
         return transactionDetails;
+    }
+
+    void updateBalance() {
+        getMvpView().showProgress(true, "Fetching User Balance");
+        AppProvider.get().getMappyClient().getCurrentUserBalance(new MappyNetworkClient.ResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                String balance = "0";
+                if (new CommonUtils().isValidResponse(jsonObject)) {
+                    balance = new CommonUtils().parseStringResponseForKey(jsonObject, "available_balance");
+                    try{
+                        JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
+                        mPricePoint = jsonData.optJSONObject("price_point");
+                    } catch(Exception e){ }
+                }
+                AppProvider.get().getCurrentUser().updateBalance(balance);
+                getMvpView().showProgress(false);
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                getMvpView().showProgress(false);
+            }
+        });
     }
 
     @Override
