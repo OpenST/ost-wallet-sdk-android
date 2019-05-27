@@ -343,24 +343,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
         }
 
         private Map<String, Object> getMetaMap() {
-            Map<String, Object> metaMap = new HashMap<>();
-            if (null == metaObject) {
-                return metaMap;
-            }
-
-            String transactionName = metaObject.optString(OstConstants.QR_META_TRANSACTION_NAME,
-                    "");
-            metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
-
-            String transactionType = metaObject.optString(OstConstants.QR_META_TRANSACTION_TYPE,
-                    "");
-            metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
-
-            String transactionDetails = metaObject.optString(OstConstants.QR_META_TRANSACTION_DETAILS,
-                    "");
-            metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
-
-            return metaMap;
+            return OstExecuteTransaction.getMetaMap( metaObject );
         }
 
         @Override
@@ -372,5 +355,26 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
         public WORKFLOW_TYPE getWorkFlowType() {
             return WORKFLOW_TYPE.EXECUTE_TRANSACTION;
         }
+    }
+
+    public static Map<String, Object> getMetaMap(JSONObject metaJsonObject) {
+        Map<String, Object> metaMap = new HashMap<>();
+        if (null == metaJsonObject) {
+            return metaMap;
+        }
+
+        String transactionName = metaJsonObject.optString(OstConstants.QR_META_TRANSACTION_NAME,
+                "");
+        metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+
+        String transactionType = metaJsonObject.optString(OstConstants.QR_META_TRANSACTION_TYPE,
+                "");
+        metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+
+        String transactionDetails = metaJsonObject.optString(OstConstants.QR_META_TRANSACTION_DETAILS,
+                "");
+        metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+
+        return metaMap;
     }
 }
