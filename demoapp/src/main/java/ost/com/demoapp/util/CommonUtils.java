@@ -252,7 +252,7 @@ public class CommonUtils {
     }
 
     public String formatWorkflowFailedToast(OstWorkflowContext.WORKFLOW_TYPE workflowType, OstError ostError, JSONObject workflowDetails){
-        if(OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())){
+        if(ostError.getErrorCode() == OstErrors.ErrorCode.WORKFLOW_CANCELLED){
             return null;
         }
         String errMsg = (ostError.getErrorCode() == OstErrors.ErrorCode.OST_PLATFORM_API_ERROR) ?
