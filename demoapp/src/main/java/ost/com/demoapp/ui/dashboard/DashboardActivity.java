@@ -10,9 +10,7 @@
 
 package ost.com.demoapp.ui.dashboard;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +18,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -88,6 +87,7 @@ public class DashboardActivity extends BaseActivity implements
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private SettingsFragment mSettingsFragment;
+    private Boolean currencyChangeOptionShown = false;
     private JSONObject transactionWorkflows = new JSONObject();
 
     @Override
@@ -399,6 +399,17 @@ public class DashboardActivity extends BaseActivity implements
             }
         });
         snack.show();
+    }
+
+    @Override
+    public void showCurrencyChangeOption(){
+        if(!currencyChangeOptionShown){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Please choose the currency to price transaction.\nChoosing USD will mean that the chosen number of USD worth of tokens will be transferred.");
+            builder.setPositiveButton("OK", null);
+            builder.create().show();
+            currencyChangeOptionShown = true;
+        }
     }
 
     @Override

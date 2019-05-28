@@ -174,6 +174,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
 
         AppBar appBar = AppBar.newInstance(getContext(), "Send Tokens", true);
         setUpAppBar(viewGroup, appBar);
+        mListener.showCurrencyChangeOption();
     }
 
     @Override
@@ -196,5 +197,6 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
     public interface OnFragmentInteractionListener {
         void popTopFragment();
         void setTransactionWorkflow(JSONObject transactionDetails);
+        void showCurrencyChangeOption();
     }
 }

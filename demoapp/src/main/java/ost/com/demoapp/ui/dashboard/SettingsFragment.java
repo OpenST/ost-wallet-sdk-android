@@ -278,15 +278,23 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(transactionViaQR);
 
-        View initiateRecovery = getFeatureView("Initiate Recovery", isUserActive);
+        View initiateRecovery = getFeatureView("Initiate Recovery", ostUser.getCurrentDevice().canBeAuthorized());
         initiateRecovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+                if (userDeviceNotAuthorized()) {
+                    if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                Fragment fragment = DeviceListFragment.initiateRecoveryInstance();
-                mListener.launchFeatureFragment(fragment);
+                    Fragment fragment = DeviceListFragment.initiateRecoveryInstance();
+                    mListener.launchFeatureFragment(fragment);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+                    builder.setMessage("This is an authorized device, recovery applies only to cases where a user has no authorized device.");
+
+                    builder.setPositiveButton("OK", null);
+                    builder.create().show();
+                }
             }
         });
         mScrollViewSettings.addView(initiateRecovery);

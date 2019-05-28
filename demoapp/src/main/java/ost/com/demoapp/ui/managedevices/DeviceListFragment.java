@@ -93,7 +93,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
 
         mHeadingTextView = ((TextView) view.findViewById(R.id.tv_heading));
         mHeadingTextView.setText(
-                String.format(Locale.getDefault(), "Here are your authorized devices")
+                String.format(Locale.getDefault(), "This is a list of all the devices that are authorized to access your wallet.")
         );
 
         Context context = view.getContext();

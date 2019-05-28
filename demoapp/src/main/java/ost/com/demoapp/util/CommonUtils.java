@@ -346,8 +346,8 @@ public class CommonUtils {
     public void showEnableBiometricDialog(DialogInterface.OnClickListener onCancelListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
         builder.setCancelable(true);
-        builder.setMessage("Enroll for Biometric to use application effectively");
-        builder.setTitle("Enroll for Biometric");
+        builder.setMessage("No biometrics available on this device. Please enable via your device settings.");
+        builder.setTitle("Enable Biometric");
         builder.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which)
             {

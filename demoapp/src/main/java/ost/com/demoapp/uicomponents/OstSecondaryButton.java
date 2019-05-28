@@ -11,6 +11,7 @@
 package ost.com.demoapp.uicomponents;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -36,7 +37,7 @@ public class OstSecondaryButton extends OstButton {
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
         super.defineUi(context, attrs, defStyleAttr);
         Resources res = getResources();
-        setTextColor(getEnabledTextColor());
+        setTextColor(res.getColorStateList(R.drawable.secondary_button_text_color));
         setTextSize(SizeUtil.getTextSize(res, R.dimen.secondary_button_text_size));
         setBackground(getEnabledBackground());
     }
