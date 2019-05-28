@@ -25,6 +25,8 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.network.OstApiClient;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
@@ -206,9 +208,9 @@ public class CommonUtils {
         if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.SETUP_DEVICE)){
             return null;
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER)){
-            return "User has been Activated!";
+            return "Congratulations! Your wallet is now ready!";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION)){
-            return "New Session has been Activated!";
+            return "A session has been authorized. You can now make in-app transactions seamlessly.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS)){
             return null;
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.EXECUTE_TRANSACTION)){
@@ -232,17 +234,17 @@ public class CommonUtils {
                 return "Token Transfer is successful!";
             }
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_QR_CODE)){
-            return "New Device has been Authorized!";
+            return "This device is now authorized to access your Wallet.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS)){
-            return "New Device has been Authorized!";
+            return "This device is now authorized to access your Wallet.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY)){
-            return "Recovery request has been Initiated. Device would be recovered in sometime!";
+            return "Wallet recovery has been initiated. Unless interrupted, your device will authorized in about 12 hours.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY)){
-            return "Recovery request has been Aborted!";
+            return "Recovery has been successfully aborted. Existing authorized devices may be used.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE)){
-            return "Device has been Revoked Successfully!";
+            return "The chosen device has been revoked. It can no longer access your Wallet.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN)){
-            return "New PIN has been Activated!";
+            return "Your PIN has been reset. Please remember this new PIN.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS)){
             return "All Sessions have been Logged Out!";
         }
@@ -253,14 +255,16 @@ public class CommonUtils {
         if(OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())){
             return null;
         }
+        String errMsg = (ostError.getErrorCode() == OstErrors.ErrorCode.OST_PLATFORM_API_ERROR) ?
+                ((OstApiError) ostError).getErrMsg() : ostError.getMessage();
         if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.SETUP_DEVICE)){
             return null;
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER)){
-            return ("User Activation Failed!\n" + ostError.getMessage());
+            return ("User Activation Failed!\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION)){
-            return ("Add Session Failed!\n" + ostError.getMessage());
+            return ("Session could not be authorized.\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS)){
-            return ("Mnemonics cannot be fetched.\n" + ostError.getMessage());
+            return ("Mnemonics cannot be fetched.\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.EXECUTE_TRANSACTION)){
             if(workflowDetails != null){
                 try{
@@ -274,27 +278,27 @@ public class CommonUtils {
                     }
                     return String.format("Token Transfer of %s to %s failed!\n%s",
                             amount,
-                            workflowDetails.getString("userName"), ostError.getMessage());
+                            workflowDetails.getString("userName"), errMsg);
                 } catch (Exception e){
-                    return ("Transaction Failed!\n" + ostError.getMessage());
+                    return ("Transaction Failed!\n" + errMsg);
                 }
             } else {
-                return ("Transaction Failed!\n" + ostError.getMessage());
+                return ("Transaction Failed!\n" + errMsg);
             }
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_QR_CODE)){
-            return ("Device Authorization Failed!\n" + ostError.getMessage());
+            return ("Authorization failed. Please verify the QR code.");
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS)){
-            return ("Device Authorization Failed!\n" + ostError.getMessage());
+            return ("Authorization failed. Please verify that the mnemonics are correct.");
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY)){
-            return ("Device Recovery Request Failed!\n" + ostError.getMessage());
+            return ("Recovery could not be initiated. Please verify PIN.");
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY)){
-            return ("Recovery Request cannot be Aborted!\n" + ostError.getMessage());
+            return ("Abort recovery failed.\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE)){
-            return ("Device Revoking Failed!\n" + ostError.getMessage());
+            return ("Revokation failed. A device cannot revoke itself.\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN)){
-            return ("Reset PIN Failed!\n" + ostError.getMessage());
+            return ("Reset PIN failed. Please verify that you entered the correct PIN!");
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS)){
-            return ("Sessions Logging Out Failed!\n" + ostError.getMessage());
+            return ("Sessions Logging Out Failed!\n" + errMsg);
         }
         return null;
     }
