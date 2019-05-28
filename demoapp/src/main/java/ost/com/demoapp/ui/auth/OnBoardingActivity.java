@@ -17,12 +17,15 @@ import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
 
+import java.net.URLDecoder;
+
 import io.fabric.sdk.android.Fabric;
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.ui.BaseActivity;
 import ost.com.demoapp.ui.dashboard.DashboardActivity;
 import ost.com.demoapp.ui.qrscanner.QRScannerFragment;
+import ost.com.demoapp.util.CommonUtils;
 import ost.com.demoapp.util.FragmentUtils;
 import ost.com.demoapp.util.KeyBoard;
 
@@ -37,7 +40,7 @@ public class OnBoardingActivity extends BaseActivity implements
         QRScannerFragment.OnFragmentInteractionListener {
 
     private static final String CREATE_ACCOUNT_TAG = "ca_tag";
-    private static final String LOG_TAG = "OstOnBoardingActivity";
+    public static final String LOG_TAG = "OstOnBoardingActivity";
     OnBoardingPresenter mOnBoardingPresenter = OnBoardingPresenter.getInstance();
 
     @Override
@@ -50,6 +53,8 @@ public class OnBoardingActivity extends BaseActivity implements
 
         if (null != AppProvider.get().getCurrentEconomy() ) {
             mOnBoardingPresenter.checkLoggedInUser();
+        } else {
+            showEconomyChangeDialog();
         }
 
         FragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
@@ -122,6 +127,7 @@ public class OnBoardingActivity extends BaseActivity implements
     @Override
     public void goToDashBoard() {
         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
+        intent.setData(getIntent().getData());
         startActivity(intent);
         animateActivityChangingToRight();
         finish();
@@ -144,5 +150,10 @@ public class OnBoardingActivity extends BaseActivity implements
     @Override
     protected View getRootView() {
         return findViewById(R.id.layout_holder);
+    }
+
+    @Override
+    public void showEconomyChangeDialog(){
+        new CommonUtils().showEconomyChangeDialog(getIntent(), LOG_TAG);
     }
 }

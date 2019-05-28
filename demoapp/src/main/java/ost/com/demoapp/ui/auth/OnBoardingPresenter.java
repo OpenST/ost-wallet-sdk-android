@@ -10,6 +10,7 @@
 
 package ost.com.demoapp.ui.auth;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
@@ -172,12 +173,14 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
                 } else {
                     Log.e(LOG_TAG, "Error while logging");
                     getMvpView().showProgress(false);
+                    getMvpView().showEconomyChangeDialog();
                 }
             }
 
             @Override
             public void onFailure(Throwable throwable) {
                 getMvpView().showProgress(false);
+                getMvpView().showEconomyChangeDialog();
                 Log.e(LOG_TAG, null != throwable ? throwable.getMessage() : "");
             }
         });

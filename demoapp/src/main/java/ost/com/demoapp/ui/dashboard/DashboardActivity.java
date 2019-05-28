@@ -10,7 +10,9 @@
 
 package ost.com.demoapp.ui.dashboard;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.util.Objects;
 
 import ost.com.demoapp.AppProvider;
@@ -145,6 +148,12 @@ public class DashboardActivity extends BaseActivity implements
                 notifyActivate();
             }
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        new CommonUtils().showEconomyChangeDialog(getIntent(), LOG_TAG);
     }
 
     @Override

@@ -36,12 +36,15 @@ import org.web3j.crypto.Keys;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.entity.LogInUser;
+import ost.com.demoapp.ui.auth.OnBoardingActivity;
 
 public class CommonUtils {
     private static final String LOG_TAG = "OstCommonUtils";
@@ -349,5 +352,45 @@ public class CommonUtils {
         });
         builder.setNegativeButton("Cancel", onCancelListener);
         builder.create().show();
+    }
+
+    public boolean showEconomyChangeDialog(Intent intent, String source){
+        try{
+            String intentData = URLDecoder.decode(intent.getData().getEncodedQuery(), "UTF-8");
+            intent.setData(null);
+            String launchData = intentData.replace("ld=", "");
+            // If current economy is not set and data is given in intent then set that economy without alert.
+            if(null == AppProvider.get().getCurrentEconomy()){
+                CurrentEconomy currentEconomy = CurrentEconomy.newInstance(launchData);
+                AppProvider.get().setCurrentEconomy(currentEconomy);
+                return false;
+            }
+            // Current Economy is present then check whether its changed or same.
+            JSONObject jsonObject = new JSONObject(launchData);
+            if(!jsonObject.optString("token_id").equals(AppProvider.get().getCurrentEconomy().getTokenId())){
+                AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+                if(source.equals(OnBoardingActivity.LOG_TAG)){
+                    builder.setTitle("Part of Other Economy");
+                    builder.setMessage("You appear to be using another economy. Do you want to switch Economy?");
+                    builder.setPositiveButton("Replace Economy", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            try{
+                                CurrentEconomy currentEconomy = CurrentEconomy.newInstance(launchData);
+                                AppProvider.get().setCurrentEconomy(currentEconomy);
+                            } catch (Exception e){}
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", null);
+                } else {
+                    builder.setTitle("Logged In Other Economy");
+                    builder.setMessage("You appear to be logged in to another economy, please log out of the application and try connecting again.");
+                    builder.setPositiveButton("OK", null);
+                }
+                builder.create().show();
+                return true;
+            }
+        } catch (Exception e){ }
+        return false;
     }
 }
