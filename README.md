@@ -228,6 +228,13 @@ OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
     void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface)
 ```
 
+
+| Argument | Description |
+|---|---|
+| **apiParams** <br> **JSONObject**	|	Device information for registration	|
+| **ostDeviceRegisteredInterface** <br> **OstDeviceRegisteredInterface**	| **OstDeviceRegisteredInterface.deviceRegistered(JSONObject newDeviceEntity )** should be called to pass the newly created device entity back to SDK. <br>In case data is not verified the current workflow should be canceled by developer by calling **OstDeviceRegisteredInterface.cancelFlow()**  |
+
+
 ```java
     /**
      * Ask SDK user to verify data to proceed
@@ -238,6 +245,14 @@ OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
      */
     void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface)
 ```
+| Argument | Description |
+|---|---|
+| **ostWorkflowContext** <br> **OstWorkflowContext**	| Information about the current workflow during which this callback will be called	|
+| **ostContextEntity** <br> **OstContextEntity**	| Information about the entity |
+| **ostVerifyDataInterface** <br> **OstVerifyDataInterface**	| **ostVerifyDataInterface.dataVerified()** should be called if the data is verified successfully. <br>In case data is not verified the current workflow should be canceled by developer by calling **ostVerifyDataInterface.cancelFlow()** |
+
+
+
 
 ```java
     /**
@@ -251,6 +266,12 @@ OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
     void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 ```
 
+| Argument | Description |
+|---|---|
+| **userId** <br> **String**	| Unique identifier of the user |
+| **ostPinAcceptInterface** <br> **OstPinAcceptInterface**	| **ostPinAcceptInterface.pinEntered()** should be called to pass the PIN back to SDK. <br> For some reason if the developer wants to cancel the current workflow they can do it by calling **ostPinAcceptInterface.cancelFlow()** |
+
+
 ```java
    /**
      * Inform SDK user about invalid pin
@@ -262,6 +283,12 @@ OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
      */
     void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 ```
+| Argument | Description |
+|---|---|
+| **userId** <br> **String**	|	Unique identifier of the user	|
+| **ostPinAcceptInterface** <br> **OstPinAcceptInterface**	| **ostPinAcceptInterface.pinEntered()** should be called to again pass the PIN back to SDK. <br> For some reason if the developer wants to cancel the current workflow they can do it by calling **ostPinAcceptInterface.cancelFlow()**  |
+
+
 
 ```java
    /**
@@ -274,6 +301,12 @@ OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
     void pinValidated(OstWorkflowContext ostWorkflowContext, String userId);
 ```
 
+| Argument | Description |
+|---|---|
+| **userId** <br> **String**	| Unique identifier of the user |
+
+
+
 ```java
    /**
      * Inform SDK user about workflow core api call
@@ -282,6 +315,13 @@ OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
      */
     void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity)
 ```
+
+| Argument | Description |
+|---|---|
+| **ostWorkflowContext** <br> **OstWorkflowContext**	| Information about the workflow	|
+| **ostContextEntity** <br> **OstContextEntity**	| Information about the entity |
+
+
 
 ```java
    /**
@@ -293,6 +333,13 @@ OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
      */
     void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity)
 ```
+| Argument | Description |
+|---|---|
+| **ostWorkflowContext** <br> **OstWorkflowContext**	|	Information about the workflow	|
+| **ostContextEntity** <br> **OstContextEntity**	| Information about the entity |
+
+
+
 
 ```java
    /**
@@ -304,6 +351,13 @@ OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
      */
     void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError)
 ```
+
+
+| Argument | Description |
+|---|---|
+| **ostWorkflowContext** <br> **OstWorkflowContext**	| Information about the workflow |
+| **ostError** <br> **OstError**	| ostError object will have details about the error that interrupted the flow |
+
 ## Steps to use Android mobile sdk through AAR lib
 - Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
 - Create libs folder under app directory in your application project.
