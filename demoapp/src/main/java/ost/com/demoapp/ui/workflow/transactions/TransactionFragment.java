@@ -185,8 +185,8 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
     }
 
     @Override
-    public void invalidTokenValue() {
-        mTokensEditTextView.showErrorString("Invalid Token Number");
+    public void invalidTokenValue(String text) {
+        mTokensEditTextView.showErrorString(text);
     }
 
     @Override

@@ -87,6 +87,7 @@ public class DashboardActivity extends BaseActivity implements
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private SettingsFragment mSettingsFragment;
+    private WalletFragment mWalletFragment;
     private Boolean currencyChangeOptionShown = false;
     private JSONObject transactionWorkflows = new JSONObject();
 
@@ -97,10 +98,11 @@ public class DashboardActivity extends BaseActivity implements
 
         mViewPager = (ViewPager) findViewById(R.id.home_viewpager);
         mSettingsFragment = SettingsFragment.newInstance();
+        mWalletFragment = WalletFragment.newInstance();
 
         HomePagerAdapter homePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         homePagerAdapter.addFragment(UserListFragment.newInstance(), "Users");
-        homePagerAdapter.addFragment(WalletFragment.newInstance(), "Wallet");
+        homePagerAdapter.addFragment(mWalletFragment, "Wallet");
         homePagerAdapter.addFragment(mSettingsFragment, "Wallet Settings");
 
         mViewPager.setAdapter(homePagerAdapter);
@@ -221,10 +223,13 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     private void notifyActivate() {
+        if(null != mWalletFragment){
+            mWalletFragment.refreshWalletView();
+        }
         AppProvider.get().getMappyClient().notifyUserActivate(new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
-                Log.d(LOG_TAG, "Activate User Sync Succeded");
+                Log.d(LOG_TAG, "Activate User Sync Succeeded");
             }
 
             @Override

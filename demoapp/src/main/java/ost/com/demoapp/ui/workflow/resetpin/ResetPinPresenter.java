@@ -18,12 +18,16 @@ import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 
+import org.json.JSONObject;
+
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.entity.LogInUser;
+import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BasePresenter;
 import ost.com.demoapp.ui.dashboard.DashboardActivity;
+import ost.com.demoapp.util.CommonUtils;
 
 class ResetPinPresenter extends BasePresenter<ResetPinView> implements
         SdkInteract.RequestAcknowledged,
@@ -73,22 +77,43 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
         } else {
             if (mFirstNewPin.equals(pin)) {
                 Log.d(LOG_TAG,"Retyped Pin is equal");
-
-                LogInUser logInUser = AppProvider.get().getCurrentUser();
-                UserPassphrase currentUserPassPhrase = new UserPassphrase(logInUser.getOstUserId(), mCurrentPin, logInUser.getUserPinSalt());
-                UserPassphrase newUserPassPhrase = new UserPassphrase(logInUser.getOstUserId(), mFirstNewPin, logInUser.getUserPinSalt());
-
-                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-                SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
-
+                ResetPinPresenter resetPinPresenter = this;
                 getMvpView().showProgress(true, "Resetting PIN...");
+                AppProvider.get().getMappyClient().getLoggedInUserPinSalt(new MappyNetworkClient.ResponseCallback() {
+                    @Override
+                    public void onSuccess(JSONObject jsonObject) {
+                        if (new CommonUtils().isValidResponse(jsonObject)){
+                            try {
+                                JSONObject userSaltObject = (JSONObject) new CommonUtils().parseResponseForResultType(jsonObject);
+                                String userPinSalt = userSaltObject.getString("recovery_pin_salt");
+                                LogInUser logInUser = AppProvider.get().getCurrentUser();
+                                UserPassphrase currentUserPassPhrase = new UserPassphrase(logInUser.getOstUserId(), mCurrentPin, userPinSalt);
+                                UserPassphrase newUserPassPhrase = new UserPassphrase(logInUser.getOstUserId(), mFirstNewPin, userPinSalt);
 
-                OstSdk.resetPin(
-                        logInUser.getOstUserId(),
-                        currentUserPassPhrase,
-                        newUserPassPhrase,
-                        workFlowListener
-                );
+                                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+                                SdkInteract.getInstance().subscribe(workFlowListener.getId(), resetPinPresenter);
+
+                                OstSdk.resetPin(
+                                        logInUser.getOstUserId(),
+                                        currentUserPassPhrase,
+                                        newUserPassPhrase,
+                                        workFlowListener
+                                );
+                            } catch (Exception e){
+                                Log.d("getPinSalt", "Exception in fetching Pin Salt.");
+                                getMvpView().showProgress(false);
+                                AppProvider.get().getCurrentActivity().showToastMessage("Reset PIN failed. Please try after sometime.", false);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        Log.d("getPinSalt", String.format("Error in fetching Pin Salt. %s", (null != throwable ? throwable.getMessage() : "")));
+                        getMvpView().showProgress(false);
+                        AppProvider.get().getCurrentActivity().showToastMessage("Reset PIN failed. Please try after sometime.", false);
+                    }
+                });
             } else {
                 Log.d(LOG_TAG,"Retype Pin is not equal");
                 getMvpView().showPinErrorDialog();

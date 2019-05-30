@@ -17,11 +17,15 @@ import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 
+import org.json.JSONObject;
+
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.entity.LogInUser;
+import ost.com.demoapp.network.MappyNetworkClient;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BasePresenter;
+import ost.com.demoapp.util.CommonUtils;
 
 class RecoveryPresenter extends BasePresenter<RecoveryView> implements
         SdkInteract.RequestAcknowledged,
@@ -48,16 +52,37 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
     }
 
     void onPinEntered(String pin) {
-        LogInUser logInUser = AppProvider.get().getCurrentUser();
-        UserPassphrase currentUserPassPhrase = new UserPassphrase(logInUser.getOstUserId(), pin, logInUser.getUserPinSalt());
+        RecoveryPresenter recoveryPresenter = this;
+        AppProvider.get().getMappyClient().getLoggedInUserPinSalt(new MappyNetworkClient.ResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                if (new CommonUtils().isValidResponse(jsonObject)){
+                    try {
+                        JSONObject userSaltObject = (JSONObject) new CommonUtils().parseResponseForResultType(jsonObject);
+                        String userPinSalt = userSaltObject.getString("recovery_pin_salt");
+                        LogInUser logInUser = AppProvider.get().getCurrentUser();
+                        UserPassphrase currentUserPassPhrase = new UserPassphrase(logInUser.getOstUserId(), pin, userPinSalt);
 
-        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-        SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
+                        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+                        SdkInteract.getInstance().subscribe(workFlowListener.getId(), recoveryPresenter);
 
-        startWorkFlow(logInUser.getOstUserId(),
-                currentUserPassPhrase,
-                mDeviceAddress,
-                workFlowListener);
+                        startWorkFlow(logInUser.getOstUserId(),
+                                currentUserPassPhrase,
+                                mDeviceAddress,
+                                workFlowListener);
+                    } catch (Exception e){
+                        Log.d("getPinSalt", "Exception in fetching Pin Salt.");
+                        recoverySaltFetchFailed();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                Log.d("getPinSalt", String.format("Error in fetching Pin Salt. %s", (null != throwable ? throwable.getMessage() : "")));
+                recoverySaltFetchFailed();
+            }
+        });
     }
 
     void startWorkFlow(String ostUserId, UserPassphrase currentUserPassPhrase, String mDeviceAddress, WorkFlowListener workFlowListener) {
@@ -75,5 +100,11 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
 
     void showToast(){
 
+    }
+
+    private void recoverySaltFetchFailed(){
+        getMvpView().showProgress(false);
+        getMvpView().gotoDashboard(0);
+        AppProvider.get().getCurrentActivity().showToastMessage("Recovery could not be initiated. Please try after sometime.", false);
     }
 }

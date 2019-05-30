@@ -104,10 +104,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mWalletPresenter.updateBalance();
-                mWalletPresenter.updateTransactionHistory(true);
-                mPullToRefresh.setRefreshing(false);
-                mEmptyWalletLL.setVisibility(View.VISIBLE);
+                refreshWalletView();
             }
         });
         return view;
@@ -179,6 +176,19 @@ public class WalletFragment extends BaseFragment implements WalletView {
                 ((TextView)mEmptyWalletLL.findViewById(R.id.empty_wallet_text_tv2)).
                         setText(getResources().getString(R.string.no_transactions_text));
             }
+        }
+    }
+
+    public void refreshWalletView(){
+        if(null != mWalletPresenter){
+            mWalletPresenter.updateBalance();
+            mWalletPresenter.updateTransactionHistory(true);
+        }
+        if(null != mPullToRefresh){
+            mPullToRefresh.setRefreshing(false);
+        }
+        if(null != mEmptyWalletLL){
+            mEmptyWalletLL.setVisibility(View.VISIBLE);
         }
     }
 

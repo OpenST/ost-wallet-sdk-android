@@ -71,11 +71,17 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
         //tokens validation
         //Input token string is in Eth
         BigDecimal tokensBigInt;
+        Integer tokenDecimals = Integer.parseInt(mOstToken.getBtDecimals());
         try {
             tokensBigInt = new BigDecimal(tokens);
+            if(tokensBigInt.scale() > 2){
+                getMvpView().invalidTokenValue("Only 2 digits are allowed after decimal");
+                getMvpView().showProgress(false);
+                return null;
+            }
         } catch (Exception e) {
             Log.e(LOG_TAG, "tokens value is invalid", e);
-            getMvpView().invalidTokenValue();
+            getMvpView().invalidTokenValue("Invalid Token Number");
             getMvpView().showProgress(false);
             return null;
         }
@@ -85,8 +91,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
             transferRule = OstSdk.RULE_NAME_DIRECT_TRANSFER;
 
             //Convert tokens to Wei
-            Integer decimals = Integer.parseInt(mOstToken.getBtDecimals());
-            BigDecimal tokensInWei = tokensBigInt.multiply( new BigDecimal("10").pow(decimals)).setScale(0);
+            BigDecimal tokensInWei = tokensBigInt.multiply( new BigDecimal("10").pow(tokenDecimals)).setScale(0);
             BigDecimal balanceInBigInt = new BigDecimal(AppProvider.get().getCurrentUser().getBalance());
             if (tokensInWei.compareTo(balanceInBigInt) > 0 ) {
                 getMvpView().insufficientBalance();

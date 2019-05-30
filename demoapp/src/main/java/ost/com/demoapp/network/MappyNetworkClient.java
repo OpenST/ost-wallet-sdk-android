@@ -75,6 +75,15 @@ public class MappyNetworkClient {
         }
     }
 
+    public void getLoggedInUserPinSalt(ResponseCallback callback) {
+        try {
+            JSONObject params = new JSONObject();
+            sendRequest(Request.Method.GET, "users/current-user-salt", params, callback);
+        } catch (Exception ex) {
+            callback.onFailure(ex);
+        }
+    }
+
     public void getLoggedInUser(ResponseCallback callback) {
         try {
             JSONObject params = new JSONObject();
