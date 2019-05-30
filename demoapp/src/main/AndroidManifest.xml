@@ -27,6 +27,7 @@
             android:name=".ui.auth.OnBoardingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,10 +38,10 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="*.ost.com" android:path="/known" />
-                <data android:scheme="https" android:host="*.ost.com" android:path="/known" />
-                <data android:scheme="http" android:host="ost.com" android:path="/known" />
-                <data android:scheme="https" android:host="ost.com" android:path="/known" />
+                <data android:scheme="http" android:host="ost.com" android:path="/demo-wallet/launch" />
+                <data android:scheme="https" android:host="ost.com" android:path="/demo-wallet/launch" />
+                <data android:scheme="http" android:host="ost.com" android:path="/demo-wallet/launch/" />
+                <data android:scheme="https" android:host="ost.com" android:path="/demo-wallet/launch/" />
             </intent-filter>
         </activity>
 
@@ -51,6 +52,7 @@
         <activity
             android:name=".ui.dashboard.DashboardActivity"
             android:theme="@style/FullscreenTheme"
+            android:launchMode="singleTask"
             android:label="@string/title_activity_dashboard"/>
     </application>
 

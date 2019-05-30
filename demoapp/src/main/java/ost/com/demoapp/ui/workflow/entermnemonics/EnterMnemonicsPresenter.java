@@ -43,7 +43,7 @@ class EnterMnemonicsPresenter extends BasePresenter<EnterMnemonicsView> implemen
             return;
         }
 
-        getMvpView().showProgress(true, "Recovering device...");
+        getMvpView().showProgress(true, "Authorizing...");
 
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);

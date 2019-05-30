@@ -13,6 +13,7 @@ package ost.com.demoapp.ui.workflow.recovery;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 
 class AbortRecoveryPresenter extends RecoveryPresenter {
@@ -34,5 +35,10 @@ class AbortRecoveryPresenter extends RecoveryPresenter {
                 currentUserPassPhrase,
                 workFlowListener
         );
+    }
+
+    @Override
+    void showToast(){
+        AppProvider.get().getCurrentActivity().showToastMessage("Request to abort recovery received ", true);
     }
 }

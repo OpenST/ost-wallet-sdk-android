@@ -25,6 +25,8 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.network.OstApiClient;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
@@ -36,12 +38,16 @@ import org.web3j.crypto.Keys;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
+import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.entity.LogInUser;
+import ost.com.demoapp.ui.auth.OnBoardingActivity;
+import ost.com.demoapp.ui.auth.OnBoardingPresenter;
 
 public class CommonUtils {
     private static final String LOG_TAG = "OstCommonUtils";
@@ -144,7 +150,7 @@ public class CommonUtils {
         Integer decimals = Integer.parseInt(token.getBtDecimals());
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
         BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
-        BigDecimal newBal = bal.setScale(2, RoundingMode.DOWN);
+        BigDecimal newBal = bal.setScale(2, RoundingMode.HALF_UP);
         return newBal.toString();
     }
 
@@ -203,9 +209,9 @@ public class CommonUtils {
         if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.SETUP_DEVICE)){
             return null;
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER)){
-            return "User has been Activated!";
+            return "Congratulations! Your wallet is now ready!";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION)){
-            return "New Session has been Activated!";
+            return "A session has been authorized. You can now make in-app transactions seamlessly.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS)){
             return null;
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.EXECUTE_TRANSACTION)){
@@ -229,17 +235,17 @@ public class CommonUtils {
                 return "Token Transfer is successful!";
             }
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_QR_CODE)){
-            return "New Device has been Authorized!";
+            return "This device is now authorized to access your Wallet.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS)){
-            return "New Device has been Authorized!";
+            return "This device is now authorized to access your Wallet.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY)){
-            return "Recovery request has been Initiated. Device would be recovered in sometime!";
+            return "Wallet recovery has been initiated. Unless interrupted, your device will authorized in about 12 hours.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY)){
-            return "Recovery request has been Aborted!";
+            return "Recovery has been successfully aborted. Existing authorized devices may be used.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE)){
-            return "Device has been Revoked Successfully!";
+            return "The chosen device has been revoked. It can no longer access your Wallet.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN)){
-            return "New PIN has been Activated!";
+            return "Your PIN has been reset. Please remember this new PIN.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS)){
             return "All Sessions have been Logged Out!";
         }
@@ -247,17 +253,19 @@ public class CommonUtils {
     }
 
     public String formatWorkflowFailedToast(OstWorkflowContext.WORKFLOW_TYPE workflowType, OstError ostError, JSONObject workflowDetails){
-        if(OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())){
+        if(ostError.getErrorCode() == OstErrors.ErrorCode.WORKFLOW_CANCELLED){
             return null;
         }
+        String errMsg = (ostError.getErrorCode() == OstErrors.ErrorCode.OST_PLATFORM_API_ERROR) ?
+                ((OstApiError) ostError).getErrMsg() : ostError.getMessage();
         if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.SETUP_DEVICE)){
             return null;
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER)){
-            return ("User Activation Failed!\n" + ostError.getMessage());
+            return ("User Activation Failed!\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION)){
-            return ("Add Session Failed!\n" + ostError.getMessage());
+            return ("Session could not be authorized.\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS)){
-            return ("Mnemonics cannot be fetched.\n" + ostError.getMessage());
+            return ("Mnemonics cannot be fetched.\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.EXECUTE_TRANSACTION)){
             if(workflowDetails != null){
                 try{
@@ -271,27 +279,27 @@ public class CommonUtils {
                     }
                     return String.format("Token Transfer of %s to %s failed!\n%s",
                             amount,
-                            workflowDetails.getString("userName"), ostError.getMessage());
+                            workflowDetails.getString("userName"), errMsg);
                 } catch (Exception e){
-                    return ("Transaction Failed!\n" + ostError.getMessage());
+                    return ("Transaction Failed!\n" + errMsg);
                 }
             } else {
-                return ("Transaction Failed!\n" + ostError.getMessage());
+                return ("Transaction Failed!\n" + errMsg);
             }
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_QR_CODE)){
-            return ("Device Authorization Failed!\n" + ostError.getMessage());
+            return ("Authorization failed. Please verify the QR code.");
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS)){
-            return ("Device Authorization Failed!\n" + ostError.getMessage());
+            return ("Authorization failed. Please verify that the mnemonics are correct.");
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY)){
-            return ("Device Recovery Request Failed!\n" + ostError.getMessage());
+            return ("Recovery could not be initiated. Please verify PIN.");
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY)){
-            return ("Recovery Request cannot be Aborted!\n" + ostError.getMessage());
+            return ("Abort recovery failed.\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE)){
-            return ("Device Revoking Failed!\n" + ostError.getMessage());
+            return ("Revokation failed. A device cannot revoke itself.\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN)){
-            return ("Reset PIN Failed!\n" + ostError.getMessage());
+            return ("Reset PIN failed. Please verify that you entered the correct PIN!");
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.LOGOUT_ALL_SESSIONS)){
-            return ("Sessions Logging Out Failed!\n" + ostError.getMessage());
+            return ("Sessions Logging Out Failed!\n" + errMsg);
         }
         return null;
     }
@@ -339,8 +347,8 @@ public class CommonUtils {
     public void showEnableBiometricDialog(DialogInterface.OnClickListener onCancelListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
         builder.setCancelable(true);
-        builder.setMessage("Enroll for Biometric to use application effectively");
-        builder.setTitle("Enroll for Biometric");
+        builder.setMessage("No biometrics available on this device. Please enable via your device settings.");
+        builder.setTitle("Enable Biometric");
         builder.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which)
             {
@@ -349,5 +357,49 @@ public class CommonUtils {
         });
         builder.setNegativeButton("Cancel", onCancelListener);
         builder.create().show();
+    }
+
+    public void showEconomyChangeDialog(Intent intent, String source, OnBoardingPresenter onBoardingPresenter){
+        try{
+            String intentData = URLDecoder.decode(intent.getData().getEncodedQuery(), "UTF-8");
+            intent.setData(null);
+            String launchData = intentData.replace("ld=", "");
+            // If current economy is not set and data is given in intent then set that economy without alert.
+            if(null == AppProvider.get().getCurrentEconomy()){
+                CurrentEconomy currentEconomy = CurrentEconomy.newInstance(launchData);
+                AppProvider.get().setCurrentEconomy(currentEconomy);
+                if(null != onBoardingPresenter){
+                    onBoardingPresenter.refreshEconomyView();
+                }
+                return;
+            }
+            // Current Economy is present then check whether its changed or same.
+            JSONObject jsonObject = new JSONObject(launchData);
+            if(!jsonObject.optString("token_id").equals(AppProvider.get().getCurrentEconomy().getTokenId())){
+                AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+                if(source.equals(OnBoardingActivity.LOG_TAG)){
+                    builder.setTitle("Part of Other Economy");
+                    builder.setMessage("You appear to be using another economy. Do you want to switch Economy?");
+                    builder.setPositiveButton("Replace Economy", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            try{
+                                CurrentEconomy currentEconomy = CurrentEconomy.newInstance(launchData);
+                                AppProvider.get().setCurrentEconomy(currentEconomy);
+                                if(null != onBoardingPresenter){
+                                    onBoardingPresenter.refreshEconomyView();
+                                }
+                            } catch (Exception e){}
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", null);
+                } else {
+                    builder.setTitle("Logged In Other Economy");
+                    builder.setMessage("You appear to be logged in to another economy, please log out of the application and try connecting again.");
+                    builder.setPositiveButton("OK", null);
+                }
+                builder.create().show();
+            }
+        } catch (Exception e){ }
     }
 }

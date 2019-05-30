@@ -61,16 +61,7 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
         String pricerRule = mVerifyDataJson.optString(OstConstants.RULE_NAME);
         ((TextView)viewGroup.findViewById(R.id.atv_transfer_type)).setText(pricerRule.toUpperCase());
         isDirectTransfers = (pricerRule.equalsIgnoreCase("direct transfer"));
-
-        if(isDirectTransfers){
-            ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: %s %s",
-                    CommonUtils.convertWeiToTokenCurrency(AppProvider.get().getCurrentUser().getBalance()).toString(),
-                    AppProvider.get().getCurrentEconomy().getTokenSymbol()));
-        } else {
-            ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: $ %s",
-                    CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mPricePointData)));
-        }
-
+        updateBalanceView(viewGroup);
         LinearLayout transferHolder = ((LinearLayout)viewGroup.findViewById(R.id.ll_transfer_holder));
 
         JSONArray tokenHolderAddressesList = mVerifyDataJson.optJSONArray(OstConstants.TOKEN_HOLDER_ADDRESSES);
@@ -163,10 +154,29 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
         } else {
             String userUsdBalance = CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mPricePointData);
             if(null != userUsdBalance){
-                return (totalTransferAmount.compareTo(new BigDecimal(userUsdBalance)) <= 0 );
+                String usdTransferAmount = CommonUtils.convertUsdWeitoUsd(totalTransferAmount.toString());
+                return (new BigDecimal(usdTransferAmount).compareTo(new BigDecimal(userUsdBalance)) <= 0 );
             }
             return false;
         }
+    }
+
+    private void updateBalanceView(View viewGroup){
+        if(isDirectTransfers){
+            ((TextView) viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: %s %s",
+                    CommonUtils.convertWeiToTokenCurrency(AppProvider.get().getCurrentUser().getBalance()).toString(),
+                    AppProvider.get().getCurrentEconomy().getTokenSymbol()));
+        } else {
+            ((TextView) viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: $ %s",
+                    CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mPricePointData)));
+        }
+    }
+
+    @Override
+    public View refreshDataView(){
+        View view = super.refreshDataView();
+        updateBalanceView(view);
+        return view;
     }
 
     String getTitle() {

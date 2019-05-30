@@ -23,6 +23,7 @@ import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.sdkInteract.SdkInteract;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BasePresenter;
+import ost.com.demoapp.ui.dashboard.DashboardActivity;
 
 class ResetPinPresenter extends BasePresenter<ResetPinView> implements
         SdkInteract.RequestAcknowledged,
@@ -53,6 +54,7 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
         Log.d(LOG_TAG, "Request Ack for Activate user");
         getMvpView().showProgress(false);
         (getMvpView()).gotoDashboard(workflowId);
+        AppProvider.get().getCurrentActivity().showToastMessage("Reset request received. This request may take up to 60 seconds to process.", true);
     }
 
     public void onPinEntered(String pin) {
@@ -79,7 +81,7 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
                 WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
                 SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
 
-                getMvpView().showProgress(true, "Reset pin in progress...");
+                getMvpView().showProgress(true, "Resetting PIN...");
 
                 OstSdk.resetPin(
                         logInUser.getOstUserId(),

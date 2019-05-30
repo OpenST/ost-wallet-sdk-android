@@ -23,4 +23,6 @@ interface OnBoardingView extends BaseView {
     void showUsernameError(String errorString);
 
     void showPasswordError(String errorString);
+
+    void showEconomyChangeDialog();
 }

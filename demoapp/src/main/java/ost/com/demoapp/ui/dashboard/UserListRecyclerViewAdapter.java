@@ -29,6 +29,7 @@ import java.util.List;
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.R;
 import ost.com.demoapp.entity.User;
+import ost.com.demoapp.uicomponents.OstListButton;
 import ost.com.demoapp.uicomponents.uiutils.FontFactory;
 import ost.com.demoapp.util.CommonUtils;
 
@@ -96,6 +97,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
                     )
             );
             holder.mSendButton.setEnabled(true);
+            holder.mSendButton.setTextColor(context.getResources().getColorStateList(R.drawable.secondary_button_text_color));
             holder.mSendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -121,7 +123,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         private final ImageView mImageView;
         private final TextView mUserName;
         private final TextView mStatus;
-        private final Button mSendButton;
+        private final OstListButton mSendButton;
 
         public User mUser;
 
@@ -131,7 +133,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
             mImageView = (ImageView) view.findViewById(R.id.iv_user_image);
             mUserName = (TextView) view.findViewById(R.id.tv_user_name);
             mStatus = (TextView) view.findViewById(R.id.tv_status);
-            mSendButton = (Button) view.findViewById(R.id.btn_send_token);
+            mSendButton = (OstListButton) view.findViewById(R.id.btn_send_token);
             view.findViewById(R.id.list_item_seperator).setVisibility(View.VISIBLE);
         }
 

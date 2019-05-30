@@ -10,6 +10,7 @@
 
 package ost.com.demoapp.ui.auth;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
@@ -29,7 +30,7 @@ import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BasePresenter;
 import ost.com.demoapp.util.CommonUtils;
 
-class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
+public class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
         SdkInteract.FlowComplete,
         SdkInteract.FlowInterrupt {
 
@@ -172,12 +173,14 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
                 } else {
                     Log.e(LOG_TAG, "Error while logging");
                     getMvpView().showProgress(false);
+                    getMvpView().showEconomyChangeDialog();
                 }
             }
 
             @Override
             public void onFailure(Throwable throwable) {
                 getMvpView().showProgress(false);
+                getMvpView().showEconomyChangeDialog();
                 Log.e(LOG_TAG, null != throwable ? throwable.getMessage() : "");
             }
         });
@@ -224,5 +227,9 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
             return false;
         }
         return true;
+    }
+
+    public void refreshEconomyView(){
+        getMvpView().refreshToken();
     }
 }

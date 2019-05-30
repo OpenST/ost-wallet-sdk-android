@@ -60,7 +60,7 @@ public class WebViewFragment extends BaseFragment {
         super.onCreateViewDelegate(inflater, container, savedInstanceState);
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_web_view, container, true);
 
-        AppBar appBar = AppBar.newInstance(getContext(), "Web View", true);
+        AppBar appBar = AppBar.newInstance(getContext(), "Ost View", true);
         setUpAppBar(view, appBar);
 
         mWebView = (WebView) view.findViewById(R.id.activity_main_webview);
