@@ -388,15 +388,6 @@ public class OstRecoveryManager {
         apiClient.getUser();
     }
 
-    private OstDevice getDevice( String deviceAddress ) {
-        // Fetch information of device to recover.
-        apiClient.getDevice(deviceAddress);
-        OstDevice device = OstDevice.getById(deviceAddress);
-        if ( null == device) {
-            throw new OstError("km_orm_gd_2", ErrorCode.GET_DEVICE_API_FAILED);
-        }
-        return device;
-    }
     //endregion
 
 
