@@ -83,12 +83,7 @@ public class OstResetPin extends OstBaseWorkFlow {
     @Override
     protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
         String newRecoveryOwnerAddress = "";
-        try {
-            mOstApiClient.getDevice(mOstUser.getCurrentDevice().getAddress());
-        } catch (IOException e) {
-            Log.e(TAG, "GetDevice api failed");
-            return postErrorInterrupt("wf_rp_udv_1", OstErrors.ErrorCode.GET_DEVICE_API_FAILED);
-        }
+        mOstApiClient.getDevice(mOstUser.getCurrentDevice().getAddress());
 
         SignedResetRecoveryStruct struct;
         OstRecoveryManager rkm;
@@ -104,13 +99,7 @@ public class OstResetPin extends OstBaseWorkFlow {
         Map<String, Object> requestMap = buildApiRequest(newRecoveryOwnerAddress,
                 struct.getRecoveryOwnerAddress(), struct.getRecoveryContractAddress(), struct.getSignature());
 
-        JSONObject postRecoveryAddresssResponse = null;
-        try {
-            postRecoveryAddresssResponse = mOstApiClient.postRecoveryOwners(requestMap);
-        } catch (IOException e) {
-            Log.e(TAG, "IOException in postRecoveryOwner");
-        }
-
+        JSONObject postRecoveryAddresssResponse = mOstApiClient.postRecoveryOwners(requestMap);
         JSONObject jsonData = postRecoveryAddresssResponse.optJSONObject(OstConstants.RESPONSE_DATA);
         JSONObject resultTypeObject = jsonData.optJSONObject(jsonData.optString(OstConstants.RESULT_TYPE));
         OstRecoveryOwner ostRecoveryOwner = null;

@@ -17,6 +17,7 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.network.OstHttpRequestClient;
+import com.ost.walletsdk.workflows.errors.OstError;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +44,7 @@ public class MappyApiClient {
                 try {
                     JSONObject response = mOstHttpRequestClient.get(String.format("users/%s/", userId), map);
                     runOnUI(callback, true, response);
-                } catch (IOException e) {
+                } catch (OstError e) {
                     e.printStackTrace();
                     runOnUI(callback, false, null);
                 }
@@ -73,7 +74,7 @@ public class MappyApiClient {
                     } else {
                         runOnUI(callback, true, response);
                     }
-                } catch (IOException e) {
+                } catch (OstError e) {
                     e.printStackTrace();
                     runOnUI(callback, false, null);
                 }
@@ -99,7 +100,7 @@ public class MappyApiClient {
                 try {
                     JSONObject response = mOstHttpRequestClient.post(String.format("users/%s/devices/", userId), map);
                     runOnUI(callback, true, response);
-                } catch (IOException e) {
+                } catch (OstError e) {
                     e.printStackTrace();
                     runOnUI(callback, false, null);
                 }
@@ -115,7 +116,7 @@ public class MappyApiClient {
                     Map<String, Object> map = new HashMap<>();
                     JSONObject response = mOstHttpRequestClient.get("users", map);
                     runOnUI(callback, true, response);
-                } catch (IOException e) {
+                } catch (OstError e) {
                     e.printStackTrace();
                     runOnUI(callback, false, null);
                 }
@@ -139,7 +140,7 @@ public class MappyApiClient {
                     } else {
                         runOnUI(callback, true, response);
                     }
-                } catch (IOException e) {
+                } catch (OstError e) {
                     e.printStackTrace();
                     Log.e(TAG, e.toString());
                     runOnUI(callback, false, null);

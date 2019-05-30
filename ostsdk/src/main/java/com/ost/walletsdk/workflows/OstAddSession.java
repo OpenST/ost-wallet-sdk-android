@@ -74,12 +74,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         OstUser ostUser = mOstUser;
 
         String expiryHeight = calculateExpirationHeight(mExpiresAfterInSecs);
-
-        try {
-            ostApiClient.getDeviceManager();
-        } catch (IOException e) {
-            Log.e(TAG, "IO Exception ");
-        }
+        ostApiClient.getDeviceManager();
 
         OstMultiSigSigner signer = new OstMultiSigSigner(mUserId);
         SignedAddSessionStruct struct;
@@ -102,14 +97,9 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
                 .setNonce( struct.getNonce() )
                 .build();
 
-        JSONObject responseObject = null;
-        try {
-            responseObject = ostApiClient.postAddSession(map);
-            Log.i(TAG, String.format("Response %s", responseObject.toString()));
-        } catch (IOException e) {
-            Log.e(TAG, "Exception");
-            return postErrorInterrupt("wf_as_pr_as_3", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
-        }
+        JSONObject responseObject = ostApiClient.postAddSession(map);
+        Log.i(TAG, String.format("Response %s", responseObject.toString()));
+
         if (!isValidResponse(responseObject)) {
             return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
         }
@@ -140,12 +130,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
 
     private String getCurrentBlockNumber(OstApiClient ostApiClient) {
         String blockNumber = null;
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = ostApiClient.getCurrentBlockNumber();
-        } catch (IOException e) {
-            Log.e(TAG, "IOException");
-        }
+        JSONObject jsonObject = ostApiClient.getCurrentBlockNumber();
         blockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
         return blockNumber;
     }

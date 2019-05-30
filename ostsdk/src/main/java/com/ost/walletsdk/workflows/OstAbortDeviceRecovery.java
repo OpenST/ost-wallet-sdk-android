@@ -138,13 +138,8 @@ public class OstAbortDeviceRecovery extends OstBaseWorkFlow {
             postRequestAcknowledge(contextEntity);
 
             return pollForStatus();
-        } catch (IOException e) {
-            OstError error = new OstError("wf_rdwf_poa_1", ErrorCode.POST_RESET_RECOVERY_API_FAILED);
-            return postErrorInterrupt(error);
         } catch (OstError error) {
             return postErrorInterrupt(error);
-        } finally {
-
         }
     }
 

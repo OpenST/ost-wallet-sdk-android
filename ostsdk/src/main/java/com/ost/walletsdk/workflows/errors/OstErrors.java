@@ -25,12 +25,12 @@ public class OstErrors {
 
     public static String getMessage(ErrorCode code) {
         switch (code) {
+            case SDK_ERROR: return "An internal SDK error has occurred.";
+            case NETWORK_ERROR: return "Request could not be executed due to cancellation, a connectivity problem or timeout.";
             case INVALID_USER_ID: return "Unable to recognize the user id. Please inspect for what is being sent, rectify and re-submit.";
             case INVALID_SDK_URL: return "Invalid OST server url";
             case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
             case OST_PLATFORM_API_ERROR: return "OST Platform Api returned error.";
-            case GET_USER_API_FAILED:
-                return "Failed to fetch user information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
             case SALT_API_FAILED:
                 return "Failed to fetch user salt. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
@@ -235,10 +235,11 @@ public class OstErrors {
     }
 
     public enum ErrorCode {
+        SDK_ERROR,
+        NETWORK_ERROR,
         INVALID_USER_ID,
         INVALID_SDK_URL,
         INVALID_WORKFLOW_CALLBACK,
-        GET_USER_API_FAILED,
         TOKEN_API_FAILED,
         GET_DEVICE_API_FAILED,
         CHAIN_API_FAILED,

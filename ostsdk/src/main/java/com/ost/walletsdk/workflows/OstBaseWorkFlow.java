@@ -15,6 +15,7 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -110,7 +111,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
      * @param userId - Ost Platform user-id
      * @param callback - callback handler of the application.
      */
-    OstBaseWorkFlow(String userId, OstWorkFlowCallback callback) {
+    OstBaseWorkFlow(@NonNull String userId, @NonNull OstWorkFlowCallback callback) {
         mUserId = userId;
 
         mHandler = new Handler(Looper.getMainLooper());
@@ -370,14 +371,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
 
     void syncOstUser() throws OstError {
-        try {
-            mOstApiClient.getUser();
-            mOstUser = OstUser.getById(mUserId);
-        } catch (IOException e) {
-            Log.d(TAG, "Encountered IOException while fetching user.");
-            OstError ostError = new OstError("wp_base_sou_1", ErrorCode.GET_USER_API_FAILED);
-            throw ostError;
-        }
+        mOstApiClient.getUser();
+        mOstUser = OstUser.getById(mUserId);
     }
 
     OstToken mOstToken;
@@ -395,13 +390,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
 
     void syncOstToken() {
-        try {
-            mOstApiClient.getToken();
-            mOstToken = OstToken.getById(mOstUser.getTokenId());
-        } catch (IOException e) {
-            Log.i(TAG, "Encountered IOException while fetching token.");
-            throw new OstError("wp_base_sot_1", ErrorCode.TOKEN_API_FAILED);
-        }
+        mOstApiClient.getToken();
+        mOstToken = OstToken.getById(mOstUser.getTokenId());
     }
 
     void ensureDeviceAuthorized() throws OstError {
@@ -429,11 +419,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
             throw new OstError("wp_base_scd_1", ErrorCode.DEVICE_NOT_SETUP);
         }
         String currentDeviceAddress = device.getAddress();
-        try {
-            mOstApiClient.getDevice( currentDeviceAddress );
-        } catch (IOException e) {
-            throw new OstError("wp_base_scd_3", ErrorCode.GET_DEVICE_API_FAILED);
-        }
+        mOstApiClient.getDevice( currentDeviceAddress );
         mCurrentDevice = ostUser.getCurrentDevice();
     }
 
@@ -458,13 +444,10 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         if ( null == deviceManagerAddress ) {
             throw new OstError("wp_base_sdm_1", ErrorCode.USER_NOT_ACTIVATED);
         }
-        try {
-            mOstApiClient.getDeviceManager();
-            mDeviceManager = OstDeviceManager.getById( deviceManagerAddress );
-            return mDeviceManager;
-        } catch (IOException e) {
-            throw new OstError("wp_base_sdm_2", ErrorCode.DEVICE_MANAGER_API_FAILED);
-        }
+
+        mOstApiClient.getDeviceManager();
+        mDeviceManager = OstDeviceManager.getById( deviceManagerAddress );
+        return mDeviceManager;
     }
 
     OstRule[] mOstRules;
@@ -774,31 +757,25 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
     AsyncStatus makeAddDeviceCall(SignedAddDeviceStruct signedAddDeviceStruct) {
         Log.i(TAG, "Api Call payload");
-        try {
-            String deviceManagerAddress = signedAddDeviceStruct.getDeviceManagerAddress();
-            Map<String, Object> map = new OstPayloadBuilder()
-                    .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
-                    .setRawCalldata(signedAddDeviceStruct.getRawCallData())
-                    .setCallData(signedAddDeviceStruct.getCallData())
-                    .setTo(deviceManagerAddress)
-                    .setSignatures(signedAddDeviceStruct.getSignature())
-                    .setSigners(Arrays.asList(signedAddDeviceStruct.getSignerAddress()))
-                    .setNonce(String.valueOf(signedAddDeviceStruct.getNonce()))
-                    .build();
-            OstApiClient ostApiClient = new OstApiClient(mUserId);
-            JSONObject jsonObject = ostApiClient.postAddDevice(map);
-            Log.d(TAG, String.format("JSON Object response: %s", jsonObject.toString()));
-            if (isValidResponse(jsonObject)) {
+        String deviceManagerAddress = signedAddDeviceStruct.getDeviceManagerAddress();
+        Map<String, Object> map = new OstPayloadBuilder()
+                .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
+                .setRawCalldata(signedAddDeviceStruct.getRawCallData())
+                .setCallData(signedAddDeviceStruct.getCallData())
+                .setTo(deviceManagerAddress)
+                .setSignatures(signedAddDeviceStruct.getSignature())
+                .setSigners(Arrays.asList(signedAddDeviceStruct.getSignerAddress()))
+                .setNonce(String.valueOf(signedAddDeviceStruct.getNonce()))
+                .build();
+        OstApiClient ostApiClient = new OstApiClient(mUserId);
+        JSONObject jsonObject = ostApiClient.postAddDevice(map);
+        Log.d(TAG, String.format("JSON Object response: %s", jsonObject.toString()));
+        if (isValidResponse(jsonObject)) {
+            //increment nonce
+            OstDeviceManager.getById(deviceManagerAddress).incrementNonce();
 
-                //increment nonce
-                OstDeviceManager.getById(deviceManagerAddress).incrementNonce();
-
-                return new AsyncStatus(true);
-            } else {
-                return new AsyncStatus(false);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "IO Exception");
+            return new AsyncStatus(true);
+        } else {
             return new AsyncStatus(false);
         }
     }

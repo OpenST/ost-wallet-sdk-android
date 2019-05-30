@@ -114,8 +114,9 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
             Log.i(TAG, "Not a valid response retrying again");
             try {
                 mOstApiClient.getSession(signedTransactionStruct.getSignerAddress());
-            } catch (IOException e) {
-                Log.e(TAG, "update sessions error", e);
+            } catch (Throwable e) {
+                //Ignore this error.
+                //This is a session sync error and should be handled silently because transaction already failed.
             }
             return postErrorInterrupt("wf_et_pr_6", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
         } else {
@@ -152,13 +153,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
 
 
     private String postTransactionApi(Map<String, Object> map) {
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = mOstApiClient.postExecuteTransaction(map);
-        } catch (IOException e) {
-            Log.e(TAG, "IO exception in post Transaction");
-            return null;
-        }
+        JSONObject jsonObject = mOstApiClient.postExecuteTransaction(map);
         if (isValidResponse(jsonObject)) {
             return parseResponseForKey(jsonObject, OstTransaction.ID);
         } else {

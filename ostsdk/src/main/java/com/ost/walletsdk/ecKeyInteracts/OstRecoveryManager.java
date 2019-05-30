@@ -370,8 +370,6 @@ public class OstRecoveryManager {
             jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
             jsonSalt = jsonData.getJSONObject(SALT);
             return jsonSalt.getString(SCRYPT_SALT).getBytes(UTF_8);
-        } catch (IOException e) {
-            throw new OstError("km_rm_gs_1", ErrorCode.SALT_API_FAILED);
         } catch (JSONException e) {
             throw new OstError("km_rm_gs_2", ErrorCode.SALT_API_FAILED);
         } catch (Throwable th) {
@@ -387,20 +385,12 @@ public class OstRecoveryManager {
 
 
     private void forceSyncUser() {
-        try {
-            apiClient.getUser();
-        } catch (IOException e) {
-            throw new OstError("km_orm_fsu_1", ErrorCode.GET_USER_API_FAILED);
-        }
+        apiClient.getUser();
     }
 
     private OstDevice getDevice( String deviceAddress ) {
         // Fetch information of device to recover.
-        try {
-            apiClient.getDevice(deviceAddress);
-        } catch (IOException e) {
-            throw new OstError("km_orm_gd_1", ErrorCode.GET_DEVICE_API_FAILED);
-        }
+        apiClient.getDevice(deviceAddress);
         OstDevice device = OstDevice.getById(deviceAddress);
         if ( null == device) {
             throw new OstError("km_orm_gd_2", ErrorCode.GET_DEVICE_API_FAILED);

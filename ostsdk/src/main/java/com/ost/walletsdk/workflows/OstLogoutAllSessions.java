@@ -112,14 +112,10 @@ public class OstLogoutAllSessions extends OstBaseWorkFlow {
     }
 
     private void postLogoutRequest(Map<String, Object> requestMap) {
-        JSONObject responseObject;
-        try {
-            responseObject = mOstApiClient.postLogoutAllSessions(requestMap);
-            Log.i(TAG, String.format("Response %s", responseObject.toString()));
-        } catch (IOException e) {
-            Log.e(TAG, "Exception");
-            throw new OstError("wf_loas_pr_1", OstErrors.ErrorCode.LOGOUT_ALL_SESSIONS_FAILED);
-        }
+
+        JSONObject responseObject = mOstApiClient.postLogoutAllSessions(requestMap);
+        Log.i(TAG, String.format("Response %s", responseObject.toString()));
+
         if (!isValidResponse(responseObject)) {
             throw new OstError("wf_loas_pr_2", OstErrors.ErrorCode.LOGOUT_ALL_SESSIONS_FAILED);
         }

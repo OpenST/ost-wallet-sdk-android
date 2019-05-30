@@ -135,9 +135,6 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
         } catch (OstError error) {
             return postErrorInterrupt(error);
-        } catch (IOException e) {
-            OstError error = new OstError("wf_au_udvp_2", ErrorCode.ACTIVATE_USER_API_FAILED);
-            return postErrorInterrupt(error);
         } finally {
             mPassphrase.wipe();
         }

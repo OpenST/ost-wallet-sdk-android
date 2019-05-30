@@ -48,11 +48,7 @@ public class OstAddDeviceWithQR extends OstBaseWorkFlow {
 
     @Override
     AsyncStatus performOnAuthenticated() {
-        try {
-            mOstApiClient.getDeviceManager();
-        } catch (IOException e) {
-            return postErrorInterrupt("wf_adwq_pr_7", ErrorCode.ADD_DEVICE_API_FAILED);
-        }
+        mOstApiClient.getDeviceManager();
 
         OstMultiSigSigner ostMultiSigSigner = new OstMultiSigSigner(mUserId);
         SignedAddDeviceStruct signedData = ostMultiSigSigner.addExternalDevice(mDeviceAddressToBeAdded);
@@ -101,11 +97,7 @@ public class OstAddDeviceWithQR extends OstBaseWorkFlow {
         //Validate mDeviceAddressToBeAdded
         OstDevice ostDevice = OstDevice.getById(mDeviceAddressToBeAdded);
         if (null == ostDevice) {
-            try {
-                mOstApiClient.getDevice(mDeviceAddressToBeAdded);
-            } catch (IOException e) {
-                Log.e(TAG, "Exception while getting device");
-            }
+            mOstApiClient.getDevice(mDeviceAddressToBeAdded);
         }
         ostDevice = OstDevice.getById(mDeviceAddressToBeAdded);
         if ( null == ostDevice || !ostDevice.canBeAuthorized() ) {
@@ -136,11 +128,7 @@ public class OstAddDeviceWithQR extends OstBaseWorkFlow {
         @Override
         public void validateApiDependentParams() {
             String deviceAddress = getDeviceAddress();
-            try {
-                new OstApiClient(userId).getDevice(deviceAddress);
-            } catch (IOException e) {
-                throw new OstError("wf_pe_ad_3", ErrorCode.GET_DEVICE_API_FAILED);
-            }
+            new OstApiClient(userId).getDevice(deviceAddress);
             OstDevice ostDevice = OstDevice.getById(deviceAddress);
             if (null == ostDevice) {
                 throw new OstError("wf_pe_ad_4", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);

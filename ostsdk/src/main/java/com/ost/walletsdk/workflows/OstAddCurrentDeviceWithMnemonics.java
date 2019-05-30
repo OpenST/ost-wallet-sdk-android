@@ -73,11 +73,7 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseWorkFlow implements
 
     @Override
     AsyncStatus performOnAuthenticated() {
-        try {
-            mOstApiClient.getDeviceManager();
-        } catch (IOException e) {
-            return postErrorInterrupt("wf_adwm_pr_7", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
-        }
+        mOstApiClient.getDeviceManager();
 
         String deviceAddress = mOstUser.getCurrentDevice().getAddress();
         String deviceManagerAddress = OstUser.getById(mUserId).getDeviceManagerAddress();
