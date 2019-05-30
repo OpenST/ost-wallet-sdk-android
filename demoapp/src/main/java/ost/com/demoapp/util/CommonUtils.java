@@ -47,6 +47,7 @@ import ost.com.demoapp.R;
 import ost.com.demoapp.entity.CurrentEconomy;
 import ost.com.demoapp.entity.LogInUser;
 import ost.com.demoapp.ui.auth.OnBoardingActivity;
+import ost.com.demoapp.ui.auth.OnBoardingPresenter;
 
 public class CommonUtils {
     private static final String LOG_TAG = "OstCommonUtils";
@@ -149,7 +150,7 @@ public class CommonUtils {
         Integer decimals = Integer.parseInt(token.getBtDecimals());
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
         BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
-        BigDecimal newBal = bal.setScale(2, RoundingMode.DOWN);
+        BigDecimal newBal = bal.setScale(2, RoundingMode.HALF_UP);
         return newBal.toString();
     }
 
@@ -358,7 +359,7 @@ public class CommonUtils {
         builder.create().show();
     }
 
-    public boolean showEconomyChangeDialog(Intent intent, String source){
+    public void showEconomyChangeDialog(Intent intent, String source, OnBoardingPresenter onBoardingPresenter){
         try{
             String intentData = URLDecoder.decode(intent.getData().getEncodedQuery(), "UTF-8");
             intent.setData(null);
@@ -367,7 +368,10 @@ public class CommonUtils {
             if(null == AppProvider.get().getCurrentEconomy()){
                 CurrentEconomy currentEconomy = CurrentEconomy.newInstance(launchData);
                 AppProvider.get().setCurrentEconomy(currentEconomy);
-                return false;
+                if(null != onBoardingPresenter){
+                    onBoardingPresenter.refreshEconomyView();
+                }
+                return;
             }
             // Current Economy is present then check whether its changed or same.
             JSONObject jsonObject = new JSONObject(launchData);
@@ -382,6 +386,9 @@ public class CommonUtils {
                             try{
                                 CurrentEconomy currentEconomy = CurrentEconomy.newInstance(launchData);
                                 AppProvider.get().setCurrentEconomy(currentEconomy);
+                                if(null != onBoardingPresenter){
+                                    onBoardingPresenter.refreshEconomyView();
+                                }
                             } catch (Exception e){}
                         }
                     });
@@ -392,9 +399,7 @@ public class CommonUtils {
                     builder.setPositiveButton("OK", null);
                 }
                 builder.create().show();
-                return true;
             }
         } catch (Exception e){ }
-        return false;
     }
 }

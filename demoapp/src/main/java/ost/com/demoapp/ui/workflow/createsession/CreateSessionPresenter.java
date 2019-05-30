@@ -41,7 +41,7 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
     }
 
     void createSession(String spendingLimit, String unit, String expiryDays) {
-        getMvpView().showProgress(true, "Creating session...");
+        getMvpView().showProgress(true, "Authorizing session...");
 
         //tokens validation
         //Input spending limit string is in Eth
@@ -79,7 +79,7 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
     @Override
     public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         getMvpView().showProgress(false);
-        getMvpView().showToastMessage("Your session creation has been broadcasted", true);
+        getMvpView().showToastMessage("Session authorization request received.", true);
         getMvpView().goBack();
     }
 }

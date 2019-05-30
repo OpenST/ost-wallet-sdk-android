@@ -27,7 +27,7 @@
             android:name=".ui.auth.OnBoardingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,6 +52,7 @@
         <activity
             android:name=".ui.dashboard.DashboardActivity"
             android:theme="@style/FullscreenTheme"
+            android:launchMode="singleTask"
             android:label="@string/title_activity_dashboard"/>
     </application>
 

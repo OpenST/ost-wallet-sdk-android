@@ -63,6 +63,13 @@ public class OnBoardingActivity extends BaseActivity implements
     }
 
     @Override
+    protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+        new CommonUtils().showEconomyChangeDialog(intent, LOG_TAG, mOnBoardingPresenter);
+    }
+
+    @Override
     public void launchCreateAccountView() {
         FragmentUtils.addFragment(R.id.layout_container,
                 CreateAccountFragment.newInstance(true),
@@ -128,6 +135,7 @@ public class OnBoardingActivity extends BaseActivity implements
     public void goToDashBoard() {
         Intent intent = new Intent(getApplicationContext(), DashboardActivity.class);
         intent.setData(getIntent().getData());
+        intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         animateActivityChangingToRight();
         finish();
@@ -154,6 +162,6 @@ public class OnBoardingActivity extends BaseActivity implements
 
     @Override
     public void showEconomyChangeDialog(){
-        new CommonUtils().showEconomyChangeDialog(getIntent(), LOG_TAG);
+        new CommonUtils().showEconomyChangeDialog(getIntent(), LOG_TAG, mOnBoardingPresenter);
     }
 }

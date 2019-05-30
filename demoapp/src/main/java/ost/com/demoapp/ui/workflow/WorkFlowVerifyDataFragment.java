@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
@@ -36,6 +37,7 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
     OstVerifyDataInterface mOstVerifyDataInterface;
     private Object mDataToVerify;
     private ViewGroup mViewGroup;
+    private View mVerifyDataView;
 
     public WorkFlowVerifyDataFragment() {
         // Required empty public constructor
@@ -70,7 +72,7 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 mOstVerifyDataInterface.dataVerified();
-                showProgress(true);
+                showProgress(true, "Request processing...");
             }
         });
         mViewGroup.findViewById(R.id.pbtn_deny).setOnClickListener(new View.OnClickListener() {
@@ -80,7 +82,8 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
             }
         });
 
-        ((FrameLayout)mViewGroup.findViewById(R.id.fl_view_holder)).addView(getVerifyDataView());
+        mVerifyDataView = getVerifyDataView();
+        ((FrameLayout)mViewGroup.findViewById(R.id.fl_view_holder)).addView(mVerifyDataView);
 
         ((OstPrimaryButton) mViewGroup.findViewById(R.id.pbtn_verified)).setEnabled(enablePrimaryButton());
 
@@ -126,9 +129,14 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
         mOstVerifyDataInterface = ostVerifyDataInterface;
     }
 
-    public void refreshDataView(){
-        FrameLayout viewHolder = (FrameLayout) mViewGroup.findViewById(R.id.fl_view_holder);
-        viewHolder.removeAllViews();
-        viewHolder.addView(getVerifyDataView());
+    public View refreshDataView(){
+        Boolean enableButton = enablePrimaryButton();
+        if(enableButton){
+            ((TextView) mVerifyDataView.findViewById(R.id.tv_not_enough_balance)).setVisibility(View.GONE);
+        } else {
+            ((TextView) mVerifyDataView.findViewById(R.id.tv_not_enough_balance)).setVisibility(View.VISIBLE);
+        }
+        ((OstPrimaryButton) mViewGroup.findViewById(R.id.pbtn_verified)).setEnabled(enableButton);
+        return mVerifyDataView;
     }
 }

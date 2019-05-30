@@ -336,7 +336,7 @@ public class SettingsFragment extends BaseFragment implements
 
                     builder.setPositiveButton("Revoke", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            showProgress(true, "Revoking Sessions");
+                            showProgress(true, "Revoking Sessions...");
                             WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
                             OstSdk.logoutAllSessions(AppProvider.get().getCurrentUser().getOstUserId(), workFlowListener);
                         }});

@@ -30,7 +30,7 @@ import ost.com.demoapp.sdkInteract.WorkFlowListener;
 import ost.com.demoapp.ui.BasePresenter;
 import ost.com.demoapp.util.CommonUtils;
 
-class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
+public class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
         SdkInteract.FlowComplete,
         SdkInteract.FlowInterrupt {
 
@@ -227,5 +227,9 @@ class OnBoardingPresenter extends BasePresenter<OnBoardingView> implements
             return false;
         }
         return true;
+    }
+
+    public void refreshEconomyView(){
+        getMvpView().refreshToken();
     }
 }

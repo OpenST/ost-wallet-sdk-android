@@ -151,9 +151,10 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-        new CommonUtils().showEconomyChangeDialog(getIntent(), LOG_TAG);
+    public void onNewIntent(Intent intent){
+        super.onNewIntent(intent);
+        AppProvider.get().setCurrentActivity(this);
+        new CommonUtils().showEconomyChangeDialog(intent, LOG_TAG, null);
     }
 
     @Override
@@ -357,6 +358,8 @@ public class DashboardActivity extends BaseActivity implements
                 device.getDeviceAddress(),
                 revokeDeviceWorkflowListener
         );
+
+        showToastMessage("Revocation request received", true);
     }
 
     @Override

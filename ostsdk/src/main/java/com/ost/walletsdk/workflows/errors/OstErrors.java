@@ -117,7 +117,7 @@ public class OstErrors {
             case INVALID_RECOVER_DEVICE_ADDRESS:return "Invalid device address. This address can not be recovered.";
 
             case DEVICE_UNAUTHORIZED:
-                return "Unable to perform the operation as the device not unauthorized. For details on how to authorize a device please visit https://dev.ost.com/platform/docs/sdk/references ";
+                return "Unable to perform the operation as the device not authorized. For details on how to authorize a device please visit https://dev.ost.com/platform/docs/sdk/references ";
 
             case DEVICE_ALREADY_AUTHORIZED:
                 return "This Device is already authorized";
@@ -157,7 +157,7 @@ public class OstErrors {
 
             case POST_ABORT_RECOVER_DEVICE_API_FAILED: return "Abort Recover Device API failed. Either OST server is unavailable temporarily OR The API request object sent cannot be executed. Please inspect the input being sent and re-try. If the problem persists contact support@ost.com .";
 
-            case UNCAUGHT_EXCEPTION_HANDELED: return "Uncaught exception has been handeled. You can choose to report this exception to the OST team for fixing it in future releases.";
+            case UNCAUGHT_EXCEPTION_HANDELED: return "Uncaught exception has been handled. You can choose to report this exception to the OST team for fixing it in future releases.";
 
             case INSUFFICIENT_DATA: return "The device does not have sufficient data to perform this action.";
 

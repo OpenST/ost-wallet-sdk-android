@@ -43,6 +43,7 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
     public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for recovery");
         getMvpView().showProgress(false);
+        showToast();
         (getMvpView()).gotoDashboard(workflowId);
     }
 
@@ -70,5 +71,9 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
 
     public void setDeviceAddress(String deviceAddress) {
         mDeviceAddress = deviceAddress;
+    }
+
+    void showToast(){
+
     }
 }

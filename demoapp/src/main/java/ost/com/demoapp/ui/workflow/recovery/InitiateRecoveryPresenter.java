@@ -13,6 +13,7 @@ package ost.com.demoapp.ui.workflow.recovery;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 
+import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.sdkInteract.WorkFlowListener;
 
 class InitiateRecoveryPresenter extends RecoveryPresenter {
@@ -35,5 +36,10 @@ class InitiateRecoveryPresenter extends RecoveryPresenter {
                 deviceAddress,
                 workFlowListener
         );
+    }
+
+    @Override
+    void showToast(){
+        AppProvider.get().getCurrentActivity().showToastMessage("Recovery request received ", true);
     }
 }

@@ -26,7 +26,9 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ost.com.demoapp.AppProvider;
 import ost.com.demoapp.network.MappyNetworkClient;
@@ -64,7 +66,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
     }
 
     JSONObject sendTokens(String tokenHolderAddress, String tokens, String unit) {
-        getMvpView().showProgress(true, "Transaction in progress...");
+        getMvpView().showProgress(true, "Transaction processing...");
 
         //tokens validation
         //Input token string is in Eth
@@ -84,7 +86,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
 
             //Convert tokens to Wei
             Integer decimals = Integer.parseInt(mOstToken.getBtDecimals());
-            BigDecimal tokensInWei = tokensBigInt.multiply( new BigDecimal("10").pow(decimals));
+            BigDecimal tokensInWei = tokensBigInt.multiply( new BigDecimal("10").pow(decimals)).setScale(0);
             BigDecimal balanceInBigInt = new BigDecimal(AppProvider.get().getCurrentUser().getBalance());
             if (tokensInWei.compareTo(balanceInBigInt) > 0 ) {
                 getMvpView().insufficientBalance();
@@ -123,11 +125,15 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
 
         SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "Tokens sent from Android");
+        map.put("type", "user_to_user");
         OstSdk.executeTransaction(
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 Arrays.asList(tokenHolderAddress),
                 Arrays.asList(tokens),
                 transferRule,
+                map,
                 workFlowListener
         );
         return transactionDetails;
@@ -160,7 +166,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
     @Override
     public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         getMvpView().showProgress(false);
-        getMvpView().showToastMessage("Your transaction has been broadcasted", true);
+        getMvpView().showToastMessage("Transaction received. ", true);
         getMvpView().goBack();
     }
 
