@@ -99,7 +99,7 @@ public class OstRecoverDeviceWorkflow extends OstBaseWorkFlow {
             // To ignore null pointer exception warning.
             deviceToRecover = OstDevice.getById(deviceAddressToRecover);
             if ( null == deviceToRecover ) {
-                throw new OstError("wf_rdwf_oudvp_3", ErrorCode.GET_DEVICE_API_FAILED);
+                throw new OstError("wf_rdwf_oudvp_3", ErrorCode.INVALID_RECOVER_DEVICE_ADDRESS);
             }
 
             //The deviceAddressToRecover must be an Authorized device.

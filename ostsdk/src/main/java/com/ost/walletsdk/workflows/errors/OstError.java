@@ -107,4 +107,22 @@ public class OstError extends Error {
 
         return err;
     }
+
+    public static OstError ApiResponseError(String internalErrorCode, String apiMethodName, JSONObject apiResponse) {
+        JSONObject errorInfo = new JSONObject();
+
+        try {
+            errorInfo.putOpt("apiMethodName", apiMethodName);
+        } catch (JSONException e) {
+            //Ignore.
+        }
+
+        try {
+            errorInfo.putOpt("apiResponse", apiResponse);
+        } catch (JSONException e) {
+            //Ignore.
+        }
+
+        return new OstError(internalErrorCode, OstErrors.ErrorCode.INVALID_API_RESPONSE, errorInfo);
+    }
 }

@@ -68,7 +68,8 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         String blockNumber = getCurrentBlockNumber(ostApiClient);
         if (null == blockNumber) {
             Log.e(TAG, "BlockNumber is null");
-            return postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.BLOCK_NUMBER_API_FAILED);
+            OstError err = OstError.ApiResponseError("wf_as_pr_1", "getCurrentBlockNumber", null);
+            return postErrorInterrupt(err);
         }
 
         OstUser ostUser = mOstUser;

@@ -103,7 +103,7 @@ public class OstTransactionSigner {
                 OstToken ostToken = OstToken.getById(mTokenId);
                 if (null == ostToken) {
                     throw new OstError("km_ts_st_8",
-                            ErrorCode.TOKEN_API_FAILED);
+                            ErrorCode.INVALID_TOKEN_ID);
                 }
                 String conversionFactor = ostToken.getConversionFactor();
                 if (null == conversionFactor) {

@@ -362,19 +362,14 @@ public class OstRecoveryManager {
 
     //region - Network calls.
     private byte[] getSalt() {
-        JSONObject jsonObject = null;
-        JSONObject jsonData = null;
+        JSONObject jsonObject = apiClient.getSalt();
         JSONObject jsonSalt = null;
         try {
-            jsonObject = apiClient.getSalt();
-            jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
+            JSONObject jsonData =  jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
             jsonSalt = jsonData.getJSONObject(SALT);
             return jsonSalt.getString(SCRYPT_SALT).getBytes(UTF_8);
         } catch (JSONException e) {
-            throw new OstError("km_rm_gs_2", ErrorCode.SALT_API_FAILED);
-        } catch (Throwable th) {
-            //Catch everything esle.
-            throw new OstError("km_rm_gs_3", ErrorCode.SALT_API_FAILED);
+            throw OstError.ApiResponseError("km_rm_gs_2","getSalt", jsonObject);
         }
         finally {
             if ( null != jsonSalt && jsonSalt.has(SCRYPT_SALT) ) {

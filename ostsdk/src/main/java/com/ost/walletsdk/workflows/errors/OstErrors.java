@@ -35,17 +35,6 @@ public class OstErrors {
             case SALT_API_FAILED:
                 return "Failed to fetch user salt. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
-            case TOKEN_API_FAILED:
-                return "Failed to fetch token information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
-
-            case CHAIN_API_FAILED:
-                return "Failed to fetch block-chain information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
-
-            case RULES_API_FAILED:return "Failed to fetch rule information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
-
-            case GET_DEVICE_API_FAILED: return "Failed to fetch device Information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
-
-            case DEVICE_MANAGER_API_FAILED: return "Failed to fetch device manager information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
             case INVALID_WORKFLOW_PARAMS:
                 return "Invalid workflow params. Please ensure the input is well formed or visit https://dev.ost.com/platform/docs/sdk/references for details on workflow parameters.";
@@ -190,7 +179,7 @@ public class OstErrors {
                 return "Price points api failed. Either OST server is unavailable temporarily OR The API request object sent cannot be executed. Please re-try a bit later.";
 
             case WORKFLOW_CANCELLED:return "Workflow got cancelled, possibly because one or more input parameters require a different type of information.";
-                
+
             case UNKNOWN_DATA_DEFINITION: return "The QR code does not contain valid data definition. To know the data definition for QR code based on type of operations please visit https://dev.ost.com/platform";
 
             case DEVICE_ALREADY_REVOKED:
@@ -221,8 +210,27 @@ public class OstErrors {
             case TOKEN_HOLDER_API_FAILED:
                 return "Token holder get api returned failed response";
 
+            case INVALID_API_RESPONSE:
+                return "Unable to recognize the API response object sent and so cannot be executed.";
+
             case INVALID_JSON_STRING: return "The provided json string is invalid.";
             case INVALID_JSON_ARRAY: return "The provided json array string is invalid.";
+
+            //deprecated
+            case GET_USER_API_FAILED:
+                return "Failed to fetch user information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
+
+            case TOKEN_API_FAILED:
+                return "Failed to fetch token information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
+
+            case CHAIN_API_FAILED:
+                return "Failed to fetch block-chain information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
+
+            case RULES_API_FAILED:return "Failed to fetch rule information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
+
+            case GET_DEVICE_API_FAILED: return "Failed to fetch device Information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
+
+            case DEVICE_MANAGER_API_FAILED: return "Failed to fetch device manager information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
@@ -237,35 +245,27 @@ public class OstErrors {
     public enum ErrorCode {
         SDK_ERROR,
         NETWORK_ERROR,
+        INVALID_API_RESPONSE,
         INVALID_USER_ID,
         INVALID_SDK_URL,
         INVALID_WORKFLOW_CALLBACK,
-        TOKEN_API_FAILED,
-        GET_DEVICE_API_FAILED,
-        CHAIN_API_FAILED,
-        SALT_API_FAILED,
-        DEVICE_MANAGER_API_FAILED,
-        RULES_API_FAILED,
-
         INVALID_WORKFLOW_PARAMS,
         CREATE_DEVICE_FAILED,
-        ACTIVATE_USER_API_FAILED,
         ACTIVATE_USER_API_POLLING_FAILED,
-
         DEVICE_NOT_SETUP,
-
         USER_NOT_ACTIVATED,
         POLLING_TIMEOUT,
-        BLOCK_NUMBER_API_FAILED,
         ADD_DEVICE_API_FAILED,
+        TRANSACTION_API_FAILED,
+
         EIP712_FAILED,
         NO_SESSION_FOUND,
-        TRANSACTION_API_FAILED,
+
         RULE_NOT_FOUND,
         INVALID_TOKEN_ID,
         USER_NOT_FOUND,
         CURRENT_DEVICE_NOT_FOUND,
-        POLLING_API_FAILED,
+
         UNKNOWN_ENTITY_TYPE,
         INVALID_QR_DEVICE_OPERATION_DATA,
         INVALID_ADD_DEVICE_ADDRESS,
@@ -332,6 +332,62 @@ public class OstErrors {
         DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY,
         OST_PLATFORM_API_ERROR,
-        CONFIG_READ_FAILED,;
+        CONFIG_READ_FAILED,
+
+        //Deprecated
+        /**
+         * @deprecated GET_USER_API_FAILED has been deprecated.
+         */
+        GET_USER_API_FAILED,
+
+        /**
+         * @deprecated TOKEN_API_FAILED has been deprecated. Kindly check for INVALID_TOKEN_ID
+         */
+        TOKEN_API_FAILED,
+
+        /**
+         * @deprecated GET_DEVICE_API_FAILED has been deprecated.
+         */
+        GET_DEVICE_API_FAILED,
+
+        /**
+         * @deprecated DEVICE_MANAGER_API_FAILED has been deprecated.
+         */
+        DEVICE_MANAGER_API_FAILED,
+
+        /**
+         * @deprecated CHAIN_API_FAILED has been deprecated.
+         */
+        CHAIN_API_FAILED,
+
+        /**
+         * @deprecated RULES_API_FAILED has been deprecated.
+         */
+        RULES_API_FAILED,
+
+        /**
+         * @deprecated ACTIVATE_USER_API_FAILED has been deprecated.
+         */
+        ACTIVATE_USER_API_FAILED,
+
+        /**
+         * @deprecated ACTIVATE_USER_API_FAILED has been deprecated.
+         */
+        SALT_API_FAILED,
+
+        /**
+         * @deprecated ACTIVATE_USER_API_FAILED has been deprecated.
+         */
+        BLOCK_NUMBER_API_FAILED,
+
+        /**
+         * @deprecated POLLING_API_FAILED has been deprecated.
+         */
+        POLLING_API_FAILED,
+        ;
+
+
+
+
     }
 }

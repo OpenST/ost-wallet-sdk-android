@@ -53,7 +53,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Map;
@@ -466,8 +465,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         }
 
         //Fetch the rules.
+        JSONObject rulesResponseObject = mOstApiClient.getAllRules();
         try {
-            JSONObject rulesResponseObject = mOstApiClient.getAllRules();
             JSONArray rulesJsonArray = (JSONArray)new CommonUtils().parseResponseForResultType(rulesResponseObject);
 
             int numberOfRules = rulesJsonArray.length();
@@ -479,8 +478,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
             }
             mOstRules = ostRules;
         } catch (Exception e) {
-            OstError ostError = new OstError("wp_base_eot_1", ErrorCode.RULES_API_FAILED);
-            throw ostError;
+            throw OstError.ApiResponseError("wp_base_eot_1", "getAllRules", rulesResponseObject);
         }
         return mOstRules;
     }
@@ -781,16 +779,15 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
 
     String calculateExpirationHeight(long expiresInSecs) {
-        JSONObject jsonObject = null;
+        JSONObject jsonObject = mOstApiClient.getCurrentBlockNumber();
         long currentBlockNumber, blockGenerationTime;
         String strCurrentBlockNumber;
         String strBlockGenerationTime;
         try {
-            jsonObject = mOstApiClient.getCurrentBlockNumber();
             strCurrentBlockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
             strBlockGenerationTime = parseResponseForKey(jsonObject, OstConstants.BLOCK_TIME);
         } catch (Throwable e) {
-            throw new OstError("wf_bwf_ceh_1", ErrorCode.CHAIN_API_FAILED);
+            throw OstError.ApiResponseError("wf_bwf_ceh_1", "getCurrentBlockNumber", jsonObject);
         }
 
         currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
