@@ -31,18 +31,9 @@ public class OstGetPaperWallet extends OstBaseWorkFlow {
 
     @Override
     AsyncStatus performOnAuthenticated() {
-        OstKeyManager ostKeyManager = null;
-        try {
-            ostKeyManager = new OstKeyManager(mUserId);
-            OstContextEntity ostContextEntity = new OstContextEntity(ostKeyManager.getMnemonics(), OstSdk.MNEMONICS);
-            return postFlowComplete(ostContextEntity);
-        } catch (OstError error) {
-            return postErrorInterrupt( error );
-        } catch (Throwable th) {
-            return postErrorInterrupt("wf_ogpw_poa_1", OstErrors.ErrorCode.UNKNOWN);
-        } finally {
-            ostKeyManager = null;
-        }
+        OstKeyManager ostKeyManager = new OstKeyManager(mUserId);
+        OstContextEntity ostContextEntity = new OstContextEntity(ostKeyManager.getMnemonics(), OstSdk.MNEMONICS);
+        return postFlowComplete(ostContextEntity);
     }
 
     @Override
