@@ -10,9 +10,14 @@
 
 package ost.com.demoapp.ui.dashboard;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
+import com.ost.walletsdk.network.OstJsonApi;
+import com.ost.walletsdk.network.OstJsonApiCallback;
+import com.ost.walletsdk.workflows.errors.OstError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -125,6 +130,29 @@ class WalletPresenter extends BasePresenter<WalletView> implements
             @Override
             public void onFailure(Throwable throwable) {
                 getMvpView().updateBalance("0", null);
+            }
+        });
+
+
+        //Test OstJsonApi - @Pankaj.
+        OstJsonApi.getBalanceWithPricePoints(AppProvider.get().getCurrentUser().getOstUserId(), new OstJsonApiCallback() {
+            @Override
+            public void onOstJsonApiSuccess(@Nullable JSONObject data) {
+                if ( null != data ) {
+                    Log.d(LOG_TAG, "getBalanceWithPricePoints data: " + data.toString());
+                } else {
+                    Log.d(LOG_TAG, "getBalanceWithPricePoints data is null.");
+                }
+            }
+
+            @Override
+            public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) {
+                Log.e(LOG_TAG, "getBalanceWithPricePoints InternalErrorCode:" + err.getInternalErrorCode());
+                if ( null != data ) {
+                    Log.d(LOG_TAG, "getBalanceWithPricePoints data: " + data.toString());
+                } else {
+                    Log.d(LOG_TAG, "getBalanceWithPricePoints data is null.");
+                }
             }
         });
     }
