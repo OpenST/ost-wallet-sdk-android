@@ -18,6 +18,7 @@ public class OstTransactionPollingHelper extends OstBasePollingHelper {
     public OstTransactionPollingHelper(@NonNull String transactionId, @NonNull String userId, @NonNull OstTransactionPollingCallback callback) {
         super(userId, callback);
         this.entityId = transactionId;
+        this.scheduleInitialPoll();
     }
 
     @Nullable

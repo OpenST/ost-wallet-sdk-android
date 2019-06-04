@@ -13,11 +13,13 @@ import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import org.json.JSONObject;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public abstract class OstBasePollingHelper {
-    private final static ThreadPoolExecutor POLLING_REQUEST_API_THREAD_POOL_EXECUTOR = (ThreadPoolExecutor) Executors
-            .newFixedThreadPool(1);
+    private final static ScheduledExecutorService POLLING_REQUEST_API_THREAD_POOL_EXECUTOR = Executors
+            .newScheduledThreadPool(1);
     private static final String TAG = "OstBasePollingHelper";
     private long pollingInterval = OstConfigs.getInstance().BLOCK_GENERATION_TIME * 1000;;
     private long initialPollingInterval = pollingInterval * 6;
@@ -50,17 +52,12 @@ public abstract class OstBasePollingHelper {
 
     void schedule(long delay) {
         OstBasePollingHelper oThis = this;
-        new android.os.Handler().postDelayed(new Runnable() {
+        getAsyncQueue().schedule(new Runnable() {
             @Override
             public void run() {
-                oThis.getAsyncQueue().submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        oThis.executePoll();
-                    }
-                });
+                oThis.executePoll();
             }
-        }, delay);
+        }, delay, TimeUnit.MILLISECONDS);
     }
 
     void executePoll() {
@@ -158,7 +155,7 @@ public abstract class OstBasePollingHelper {
         return callback;
     }
 
-    protected ThreadPoolExecutor getAsyncQueue() {
+    protected ScheduledExecutorService getAsyncQueue() {
         return POLLING_REQUEST_API_THREAD_POOL_EXECUTOR;
     }
 
