@@ -232,6 +232,9 @@ public class OstErrors {
 
             case DEVICE_MANAGER_API_FAILED: return "Failed to fetch device manager information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
+            case WORKFLOW_FAILED:
+                return "Something went wrong, please try again";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -328,6 +331,7 @@ public class OstErrors {
         //Generic
         UNKNOWN,
         WORKFLOW_CANCELLED,
+        WORKFLOW_FAILED,
         UNCAUGHT_EXCEPTION_HANDELED,
         DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY,

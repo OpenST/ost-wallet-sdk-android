@@ -19,7 +19,6 @@ import com.ost.walletsdk.workflows.errors.OstError;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -181,6 +180,14 @@ public class OstApiClient {
 
     public JSONObject getAllTransactions() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
+        return mOstHttpRequestClient.get(String.format("/users/%s/transactions", mUserId), requestMap);
+    }
+
+    public JSONObject getTransactions(Map<String, Object> map) throws OstError {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        if ( null != map ) {
+            requestMap.putAll(map);
+        }
         return mOstHttpRequestClient.get(String.format("/users/%s/transactions", mUserId), requestMap);
     }
 

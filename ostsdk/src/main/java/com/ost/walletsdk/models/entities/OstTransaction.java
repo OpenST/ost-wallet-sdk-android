@@ -54,6 +54,26 @@ public class OstTransaction extends OstBaseEntity {
         return OstModelFactory.getTransactionModel().getEntityById(entityId);
     }
 
+    public enum TransactionStatus {
+        UNKNOWN,
+        CREATED,
+        SUBMITTED,
+        MINED,
+        SUCCESS,
+        FAILED
+    }
+
+    public static TransactionStatus statusFromString(String status) {
+        switch ( status.toLowerCase() ) {
+            case "created": return TransactionStatus.CREATED;
+            case "submitted": return TransactionStatus.SUBMITTED;
+            case "mined": return TransactionStatus.MINED;
+            case "success": return TransactionStatus.SUCCESS;
+            case "failed": return TransactionStatus.FAILED;
+            default: return TransactionStatus.UNKNOWN;
+        }
+    }
+
     public static class CONST_STATUS {
         public static final String CREATED = "created";
         public static final String SUBMITTED = "submitted";
@@ -120,6 +140,10 @@ public class OstTransaction extends OstBaseEntity {
 
     public String getStatus() {
         return this.getJsonDataPropertyAsString(OstTransaction.STATUS);
+    }
+
+    public TransactionStatus getTransactionStatus() {
+        return OstTransaction.statusFromString( getStatus() );
     }
 
     public String getGasPrice() {

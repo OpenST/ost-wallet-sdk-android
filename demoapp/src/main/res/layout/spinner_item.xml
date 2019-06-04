@@ -9,7 +9,7 @@
   ~       http://www.apache.org/licenses/LICENSE-2.0
   -->
 
-<ost.com.demoapp.uicomponents.OstTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ost.ostwallet.uicomponents.OstTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     android:textSize="@dimen/primary_edit_text_size"
     android:singleLine="true"

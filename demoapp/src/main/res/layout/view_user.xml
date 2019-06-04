@@ -21,7 +21,7 @@
         android:layout_margin="@dimen/dp_10"
         android:src="@drawable/ic_arrow_forward_black_24dp" />
 
-    <ost.com.demoapp.uicomponents.OstBoldTextView
+    <com.ost.ostwallet.uicomponents.OstBoldTextView
         android:id="@+id/tv_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         android:textColor="@color/user_list_user_name"
         android:textSize="@dimen/user_list_user_name" />
 
-    <ost.com.demoapp.uicomponents.OstTextView
+    <com.ost.ostwallet.uicomponents.OstTextView
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         android:textColor="@color/user_list_sub_header"
         android:textSize="@dimen/user_list_sub_header" />
 
-    <ost.com.demoapp.uicomponents.OstListButton
+    <com.ost.ostwallet.uicomponents.OstListButton
         android:id="@+id/btn_send_token"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

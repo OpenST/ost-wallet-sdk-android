@@ -24,14 +24,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/layout_holder" />
 
-    <ost.com.demoapp.uicomponents.OstSubHeaderTextView
+    <com.ost.ostwallet.uicomponents.OstSubHeaderTextView
         android:id="@+id/shtv_pin_sub_heading"
         android:layout_below="@id/layout_holder"
         android:layout_margin="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ost.com.demoapp.uicomponents.PinEntryEditText
+    <com.ost.ostwallet.uicomponents.PinEntryEditText
         android:id="@+id/txt_pin_entry"
         android:layout_below="@id/shtv_pin_sub_heading"
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
         android:layout_gravity="center_horizontal"
         android:visibility="visible" />
 
-    <ost.com.demoapp.uicomponents.OstTextView
+    <com.ost.ostwallet.uicomponents.OstTextView
         android:id="@+id/pin_terms_privacy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

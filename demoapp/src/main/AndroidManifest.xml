@@ -9,7 +9,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="ost.com.demoapp">
+    package="com.ost.ostwallet">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -38,10 +38,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" android:host="ost.com" android:path="/demo-wallet/launch" />
-                <data android:scheme="https" android:host="ost.com" android:path="/demo-wallet/launch" />
-                <data android:scheme="http" android:host="ost.com" android:path="/demo-wallet/launch/" />
-                <data android:scheme="https" android:host="ost.com" android:path="/demo-wallet/launch/" />
+                <data android:scheme="https" android:host="ost.com" android:path="/ost-wallet/" />
             </intent-filter>
         </activity>
 

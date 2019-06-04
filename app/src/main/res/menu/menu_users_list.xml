@@ -11,7 +11,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ost.com.sampleostsdkapplication.UsersListActivity">
+    tools:context="com.ost.sampleostsdkapplication.UsersListActivity">
     <item
         android:id="@+id/user_detail"
         android:orderInCategory="100"
