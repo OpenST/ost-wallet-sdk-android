@@ -118,7 +118,8 @@ public class OstLogoutAllSessions extends OstBaseWorkFlow {
         Log.i(TAG, String.format("Response %s", responseObject.toString()));
 
         if (!isValidResponse(responseObject)) {
-            throw new OstError("wf_loas_pr_2", OstErrors.ErrorCode.LOGOUT_ALL_SESSIONS_FAILED);
+            //postLogoutAllSessions will throw OstApiError
+            throw new OstError("wf_loas_pr_2", OstErrors.ErrorCode.WORKFLOW_FAILED);
         }
     }
 

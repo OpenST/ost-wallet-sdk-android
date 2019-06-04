@@ -121,10 +121,6 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
     
     //region - Validators
-    boolean hasValidParams() {
-        return !TextUtils.isEmpty(mUserId) && null != mHandler && null != getCallback();
-    }
-
     /**
      * Method that can be called to validate and params.
      * @Dev: Please make sure this method is only used to perform validations
@@ -219,6 +215,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
                     //Call the abstract method.
                     AsyncStatus status = performOnAuthenticated();
                     if ( !status.isSuccess() ) {
+                        //performOnAuthenticated will throw OstApiError. So, this is hypothetical case.
                         goToState(WorkflowStateManager.COMPLETED_WITH_ERROR);
                     }
                     return status;

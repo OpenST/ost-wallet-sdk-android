@@ -68,7 +68,8 @@ public class OstRevokeDevice extends OstBaseWorkFlow {
         AsyncStatus apiCallStatus = makeRevokeDeviceApiCall(signedData);
 
         if (!apiCallStatus.isSuccess()) {
-            return postErrorInterrupt("wf_rd_pr_4", ErrorCode.ADD_DEVICE_API_FAILED);
+            //makeRevokeDeviceApiCall [postRevokeDevice] will throw OstApiError. So, this is hypothetical case.
+            return postErrorInterrupt("wf_rd_pr_4", ErrorCode.SDK_ERROR);
         }
 
         //request acknowledge
@@ -123,7 +124,7 @@ public class OstRevokeDevice extends OstBaseWorkFlow {
     @Override
     void ensureValidParams() {
         if (TextUtils.isEmpty(mDeviceToBeRevoked) || !WalletUtils.isValidAddress(mDeviceToBeRevoked)) {
-            throw new OstError("wf_rd_evp_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
+            throw new OstError("wf_rd_evp_1", ErrorCode.INVALID_DEVICE_ADDRESS);
         }
 
         super.ensureValidParams();

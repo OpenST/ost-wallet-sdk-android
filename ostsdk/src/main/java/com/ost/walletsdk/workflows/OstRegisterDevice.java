@@ -10,6 +10,7 @@
 
 package com.ost.walletsdk.workflows;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -26,6 +27,7 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +71,7 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
         orderedStates.addAll(paramsValidationIndx, customStates);
     }
 
-    public OstRegisterDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback callback) {
+    public OstRegisterDevice(@NonNull String userId, @NonNull String tokenId, boolean forceSync, OstWorkFlowCallback callback) {
         super(userId, callback);
 
         mTokenId = tokenId;
@@ -79,9 +81,8 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
     @Override
     void ensureValidParams() {
         super.ensureValidParams();
-        Log.i(TAG, "Validating user and token Id");
-        if (!hasValidParams()) {
-            throw new OstError("wf_rd_evp_1" , ErrorCode.INVALID_WORKFLOW_PARAMS);
+        if (TextUtils.isEmpty(mTokenId) ) {
+            throw new OstError("wf_rd_evp_1", ErrorCode.INVALID_TOKEN_ID);
         }
     }
 
@@ -99,12 +100,12 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
                     Log.i(TAG, "Creating current device if does not exist");
                     OstDevice ostDevice = createOrGetCurrentDevice(ostUser);
                     if (null == ostDevice) {
-                        return postErrorInterrupt("wf_rd_pr_2" , ErrorCode.CREATE_DEVICE_FAILED);
+                        return postErrorInterrupt("wf_rd_pr_2" , ErrorCode.SDK_ERROR);
                     }
 
                     Log.i(TAG, "Check we are able to access device keys");
                     if (!hasDeviceApiKey(ostDevice)) {
-                        return postErrorInterrupt("wf_rd_pr_3", ErrorCode.CREATE_DEVICE_FAILED);
+                        return postErrorInterrupt("wf_rd_pr_3", ErrorCode.SDK_ERROR);
                     }
 
                     Log.i(TAG, "Check if device has been registered.");
@@ -198,10 +199,6 @@ public class OstRegisterDevice extends OstBaseWorkFlow implements OstDeviceRegis
             ostDevice = ostUser.createDevice();
         }
         return ostDevice;
-    }
-
-    boolean hasValidParams() {
-        return super.hasValidParams() && !TextUtils.isEmpty(mTokenId);
     }
 
     private JSONObject buildApiResponse(OstDevice ostDevice) {

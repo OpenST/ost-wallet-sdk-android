@@ -12,6 +12,7 @@ package com.ost.walletsdk;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
@@ -191,7 +192,7 @@ public class OstSdk {
         ostActivateUser.perform();
     }
 
-    private static void registerDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback callback) {
+    private static void registerDevice(@NonNull String userId, @NonNull String tokenId, boolean forceSync, @NonNull OstWorkFlowCallback callback) {
         final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, tokenId, forceSync, callback);
         ostRegisterDevice.perform();
     }
@@ -360,13 +361,13 @@ public class OstSdk {
     public static Bitmap getAddDeviceQRCode(String userId) {
         OstUser ostUser = OstUser.getById(userId);
         if (null == ostUser) {
-            Log.e(TAG, String.format("gadqc_1 %s", OstErrors.getMessage(OstErrors.ErrorCode.USER_NOT_FOUND)));
+            Log.e(TAG, String.format("gadqc_1 %s", OstErrors.getMessage(OstErrors.ErrorCode.INVALID_USER_ID)));
             return null;
         }
 
         OstDevice ostDevice = ostUser.getCurrentDevice();
         if (null == ostDevice) {
-            Log.e(TAG, String.format("gadqc_2 %s", OstErrors.getMessage(OstErrors.ErrorCode.CURRENT_DEVICE_NOT_FOUND)));
+            Log.e(TAG, String.format("gadqc_2 %s", "Current device is not registered with the user. Either rectify the value being sent in device Id field OR register this device with the user. "));
             return null;
         }
 

@@ -128,7 +128,7 @@ public class OstTransactionSigner {
                 break;
             default:
                 OstError ostError = new OstError("km_ts_st_11",
-                        OstErrors.ErrorCode.UNKNOWN_RULE_NAME);
+                        OstErrors.ErrorCode.RULE_NOT_FOUND);
                 throw ostError;
 
         }
@@ -149,7 +149,7 @@ public class OstTransactionSigner {
         Log.i(TAG, "Creating transaction hash to sign");
         String eip1077TxnHash = createEIP1077TxnHash(callData, ruleAddress, activeSession.getNonce());
         if (null == eip1077TxnHash) {
-            OstError ostError = new OstError("km_ts_st_3", ErrorCode.EIP1077_FAILED);
+            OstError ostError = new OstError("km_ts_st_3", ErrorCode.SDK_ERROR);
             throw ostError;
         }
 

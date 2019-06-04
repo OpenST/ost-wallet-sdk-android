@@ -66,7 +66,7 @@ public class OstKeyManager {
         ikm = null;
 
         if ( null == address ) {
-            throw new OstError("km_okm_csk_1", ErrorCode.SESSION_KEY_GENERATION_FAILED);
+            throw new OstError("km_okm_csk_1", ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
         }
 
         return address;

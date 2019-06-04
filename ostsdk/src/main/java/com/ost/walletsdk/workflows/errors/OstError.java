@@ -72,7 +72,7 @@ public class OstError extends Error {
     public JSONObject toJSONObject() {
         JSONObject err = new JSONObject();
         try {
-            err.putOpt(OstJSONErrorKeys.ERROR_CODE, mErrorCode.toString());
+            err.putOpt(OstJSONErrorKeys.ERROR_CODE,  OstErrors.errorCodeToString(mErrorCode));
         } catch (JSONException e) {
             //Ignore.
         }

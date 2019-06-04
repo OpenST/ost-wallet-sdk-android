@@ -49,7 +49,7 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseWorkFlow implements
     @Override
     void ensureValidParams() {
         if ( null == mMnemonics || mMnemonics.length < 1) {
-            throw new OstError("wf_acdwm_evp_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+            throw new OstError("wf_acdwm_evp_1", OstErrors.ErrorCode.INVALID_MNEMONICS);
         }
         super.ensureValidParams();
     }
@@ -65,6 +65,10 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseWorkFlow implements
 
         try {
             ensureDeviceManager();
+            OstDevice currentDevice = mOstUser.getCurrentDevice();
+            if ( !currentDevice.canBeAuthorized() ) {
+                return postErrorInterrupt("wf_acdwm_pudv_1", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
+            }
         } catch (OstError ostError) {
             return postErrorInterrupt(ostError);
         }

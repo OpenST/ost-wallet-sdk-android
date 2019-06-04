@@ -17,10 +17,6 @@ import android.util.Log;
  */
 public class OstErrors {
 
-    public interface OstErrorCode {
-
-    }
-
     private static String TAG = "OstErrors";
 
     public static String getMessage(ErrorCode code) {
@@ -39,12 +35,6 @@ public class OstErrors {
 
             case CREATE_DEVICE_FAILED:
                 return "Failed to create device.";
-
-            case ACTIVATE_USER_API_FAILED:
-                return "Unable to activate the user. Inspect if correct input values are being sent, the input is well formed and re-try. If the problem persists contact support@ost.com .";
-
-            case ACTIVATE_USER_API_POLLING_FAILED:
-                return "Unable to complete the user activation flow. Inspect if correct input values are being sent, the input is well formed and re-try. If the problem persists contact support@ost.com . ";
 
             case DEVICE_NOT_SETUP:
                 return "Unable to recognize the device. Please setup this device for the user using workflow provided at https://dev.ost.com/platform/docs/sdk/references";
@@ -138,8 +128,6 @@ public class OstErrors {
 
             case INSUFFICIENT_DATA: return "The device does not have sufficient data to perform this action.";
 
-            case DEPRECATED: return "The method has been deprecated";
-
             case SESSION_KEY_GENERATION_FAILED: return "Failed to create new session key. Inspect if a correct input values required are being sent and re-submit the request.";
 
             case FAILED_TO_GENERATE_MESSAGE_HASH: return "Failed to generate message hash needed to complete the action. Inspect if a correct input values required are being sent and re-submit the request.";
@@ -147,6 +135,8 @@ public class OstErrors {
             case INVALID_SESSION_ADDRESS: return "Unable to recognize the session address. Inspect if a correct value is being sent and its not null. ";
 
             case FAILED_TO_SIGN_DATA: return "Unable to sign data. Visit https://dev.ost.com/platform/docs/sdk for detailed SDK references. Please ensure the input is well formed and re-submit the request.";
+
+            case INVALID_DEVICE_ADDRESS : return  "Incorrect device address. Please inspect the value being sent is correct and not null, rectify and re-submit.";
 
             case DEVICE_CAN_NOT_BE_AUTHORIZED: return "Unable to authorize this device. Please ensure the device is 'Registered' for this user with OST platform. Only a registered device can be authorized.";
 
@@ -190,8 +180,6 @@ public class OstErrors {
                 return "Invalid configuration 'PIN_MAX_RETRY_COUNT'. It must be an Integer greater than zero";
             case INVALID_SESSION_BUFFER_TIME:
                 return "Invalid configuration 'SESSION_BUFFER_TIME'. It must be long greater than or equal to zero";
-            case INVALID_PRICE_POINT_TOKEN_SYMBOL:
-                return "Unable to recognize 'PRICE_POINT_TOKEN_SYMBOL'. For details on how supported token symbols please vist https://dev.ost.com/platform/docs/api";
             case INVALID_PRICE_POINT_CURRENCY_SYMBOL:
                 return "Unable to recognize 'PRICE_POINT_CURRENCY_SYMBOL'. For details on how supported currencies please vist https://dev.ost.com/platform/docs/api ";
             case INVALID_REQUEST_TIMEOUT_DURATION:
@@ -240,6 +228,15 @@ public class OstErrors {
             case TOKEN_HOLDER_API_FAILED:
                 return "Token holder get api returned failed response";
 
+            case ACTIVATE_USER_API_FAILED:
+                return "Unable to activate the user. Inspect if correct input values are being sent, the input is well formed and re-try. If the problem persists contact support@ost.com .";
+
+            case ACTIVATE_USER_API_POLLING_FAILED:
+                return "Unable to complete the user activation flow. Inspect if correct input values are being sent, the input is well formed and re-try. If the problem persists contact support@ost.com . ";
+
+            case INVALID_PRICE_POINT_TOKEN_SYMBOL:
+                return "Unable to recognize 'PRICE_POINT_TOKEN_SYMBOL'. For details on how supported token symbols please vist https://dev.ost.com/platform/docs/api";
+
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -257,50 +254,26 @@ public class OstErrors {
         INVALID_USER_ID,
         INVALID_SDK_URL,
         INVALID_WORKFLOW_CALLBACK,
-        INVALID_WORKFLOW_PARAMS,
-        CREATE_DEVICE_FAILED,
-        ACTIVATE_USER_API_POLLING_FAILED,
         DEVICE_NOT_SETUP,
         USER_NOT_ACTIVATED,
         POLLING_TIMEOUT,
-        ADD_DEVICE_API_FAILED,
-        TRANSACTION_API_FAILED,
-
-        EIP712_FAILED,
         NO_SESSION_FOUND,
-
         RULE_NOT_FOUND,
         INVALID_TOKEN_ID,
-        USER_NOT_FOUND,
-        CURRENT_DEVICE_NOT_FOUND,
-
-
-        INVALID_QR_DEVICE_OPERATION_DATA,
-        INVALID_ADD_DEVICE_ADDRESS,
+        INVALID_DEVICE_ADDRESS,
         INVALID_RECOVER_DEVICE_ADDRESS,
         DEVICE_UNAUTHORIZED,
-        DEVICE_ALREADY_AUTHORIZED,
         DEVICE_ALREADY_REVOKED,
         DEVICE_CAN_NOT_BE_AUTHORIZED,
         DEVICE_CAN_NOT_BE_REVOKED,
         INVALID_REVOKE_DEVICE_ADDRESS,
-        USER_ACTIVATING,
         USER_ALREADY_ACTIVATED,
-        INVALID_MNEMONICS,
         INVALID_QR_TRANSACTION_DATA,
-        EIP1077_FAILED,
-        PRICE_POINTS_API_FAILED,
-        UNKNOWN_RULE_NAME,
-        UNKNOWN_DATA_DEFINITION,
         NO_PENDING_RECOVERY,
-        LOGOUT_ALL_SESSIONS_FAILED,
-
         DEVICE_NOT_REGISTERED,
         INVALID_SESSION_SPENDING_LIMIT,
         INVALID_SESSION_EXPIRY_TIME,
-
-        //SESSION KEY
-        SESSION_KEY_GENERATION_FAILED,
+        INVALID_MNEMONICS,
 
         //RECOVERY KEY
         RECOVERY_PASSPHRASE_OWNER_NOT_SET,
@@ -308,16 +281,11 @@ public class OstErrors {
         USER_PASSPHRASE_VALIDATION_LOCKED,
         INVALID_NEW_USER_PASSPHRASE,
         INVALID_PASSPHRASE_PREFIX,
-
         MAX_PASSPHRASE_VERIFICATION_LIMIT_REACHED,
         RECOVERY_KEY_GENERATION_FAILED,
-        POST_RESET_RECOVERY_API_FAILED,
-        POST_RECOVER_DEVICE_API_FAILED,
-        POST_ABORT_RECOVER_DEVICE_API_FAILED,
 
         //Key-Managers
         INSUFFICIENT_DATA,
-        FAILED_TO_GENERATE_MESSAGE_HASH,
         INVALID_SESSION_ADDRESS,
         FAILED_TO_SIGN_DATA,
 
@@ -325,23 +293,22 @@ public class OstErrors {
         //Configurations
         INVALID_BLOCK_GENERATION_TIME,
         INVALID_PIN_MAX_RETRY_COUNT,
-        INVALID_PRICE_POINT_TOKEN_SYMBOL,
         INVALID_PRICE_POINT_CURRENCY_SYMBOL,
         INVALID_REQUEST_TIMEOUT_DURATION,
         INVALID_SESSION_BUFFER_TIME,
         INVALID_JSON_STRING,
         INVALID_JSON_ARRAY,
 
-
         //Generic
         UNKNOWN,
         WORKFLOW_CANCELLED,
         WORKFLOW_FAILED,
         UNCAUGHT_EXCEPTION_HANDELED,
-        DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY,
         OST_PLATFORM_API_ERROR,
         CONFIG_READ_FAILED,
+
+        USER_ACTIVATING, 
 
         //Deprecated
         /**
@@ -402,10 +369,137 @@ public class OstErrors {
          * @deprecated TOKEN_HOLDER_API_FAILED has been deprecated.
          */
         TOKEN_HOLDER_API_FAILED,
+
+        /**
+         * @deprecated INVALID_PRICE_POINT_TOKEN_SYMBOL has been deprecated.
+         */
+        INVALID_PRICE_POINT_TOKEN_SYMBOL,
+
+        /**
+         * @deprecated POST_ABORT_RECOVER_DEVICE_API_FAILED has been deprecated.
+         */
+        POST_ABORT_RECOVER_DEVICE_API_FAILED,
+
+        /**
+         * @deprecated POST_RECOVER_DEVICE_API_FAILED has been deprecated.
+         */
+        POST_RECOVER_DEVICE_API_FAILED,
+
+        /**
+         * @deprecated PRICE_POINTS_API_FAILED has been deprecated.
+         */
+        PRICE_POINTS_API_FAILED,
+
+        /**
+         * @deprecated INVALID_ADD_DEVICE_ADDRESS has been deprecated.
+         */
+        INVALID_ADD_DEVICE_ADDRESS,
+
+        /**
+         * @deprecated ACTIVATE_USER_API_POLLING_FAILED has been deprecated.
+         */
+        ACTIVATE_USER_API_POLLING_FAILED,
+
+        /**
+         * @deprecated USER_NOT_FOUND has been deprecated.
+         */
+        USER_NOT_FOUND,
+
+        /**
+         * @deprecated CURRENT_DEVICE_NOT_FOUND has been deprecated.
+         */
+        CURRENT_DEVICE_NOT_FOUND,
+
+        /**
+         * @deprecated INVALID_WORKFLOW_PARAMS has been deprecated.
+         */
+        INVALID_WORKFLOW_PARAMS,
+
+        /**
+         * @deprecated CREATE_DEVICE_FAILED has been deprecated.
+         */
+        CREATE_DEVICE_FAILED,
+
+        /**
+         * @deprecated TRANSACTION_API_FAILED has been deprecated.
+         */
+        TRANSACTION_API_FAILED,
+
+        /**
+         * @deprecated EIP712_FAILED has been deprecated.
+         */
+        EIP712_FAILED,
+
+        /**
+         * @deprecated INVALID_QR_DEVICE_OPERATION_DATA has been deprecated.
+         */
+        INVALID_QR_DEVICE_OPERATION_DATA,
+
+        /**
+         * @deprecated DEVICE_ALREADY_AUTHORIZED has been deprecated.
+         */
+        DEVICE_ALREADY_AUTHORIZED,
+
+
+        /**
+         * @deprecated EIP1077_FAILED has been deprecated.
+         */
+        EIP1077_FAILED,
+
+
+        /**
+         * @deprecated UNKNOWN_RULE_NAME has been deprecated.
+         */
+        UNKNOWN_RULE_NAME,
+
+
+        /**
+         * @deprecated UNKNOWN_DATA_DEFINITION has been deprecated.
+         */
+        UNKNOWN_DATA_DEFINITION,
+
+
+        /**
+         * @deprecated ADD_DEVICE_API_FAILED has been deprecated.
+         */
+        ADD_DEVICE_API_FAILED,
+
+
+        /**
+         * @deprecated POST_RESET_RECOVERY_API_FAILED has been deprecated.
+         */
+        POST_RESET_RECOVERY_API_FAILED,
+
+        /**
+         * @deprecated LOGOUT_ALL_SESSIONS_FAILED has been deprecated.
+         */
+        LOGOUT_ALL_SESSIONS_FAILED,
+
+
+        /**
+         * @deprecated SESSION_KEY_GENERATION_FAILED has been deprecated.
+         */
+        SESSION_KEY_GENERATION_FAILED,
+
+        /**
+         * @deprecated FAILED_TO_GENERATE_MESSAGE_HASH has been deprecated.
+         */
+        FAILED_TO_GENERATE_MESSAGE_HASH,
         ;
-
-
-
-
     }
+
+    public static String errorCodeToString(ErrorCode errorCode) {
+        switch (errorCode) {
+            case INVALID_SDK_URL: return  "INVALID_API_END_POINT" ;
+            case OST_PLATFORM_API_ERROR: return  "API_RESPONSE_ERROR" ;
+            case FAILED_TO_GENERATE_ETH_KEY: return "GENERATE_PRIVATE_KEY_FAIL";
+            case NO_SESSION_FOUND : return "SESSION_NOT_FOUND";
+            case INVALID_QR_TRANSACTION_DATA : return "INVALID_QR_CODE";
+            case RECOVERY_PASSPHRASE_OWNER_NOT_SET : return "RECOVERY_OWNER_ADDRESS_NOT_FOUND";
+            case UNCAUGHT_EXCEPTION_HANDELED: return "SDK_ERROR";
+            default:
+                return errorCode.toString();
+        }
+    }
+
 }

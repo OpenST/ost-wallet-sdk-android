@@ -96,9 +96,6 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
             new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.SESSION).perform();
             throw ostApiError;
         }
-        if ( null == transactionId ) {
-            return postErrorInterrupt("wf_et_pr_4", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
-        }
 
         Log.i(TAG, "Increment nonce");
         //Increment Nonce
@@ -185,10 +182,12 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
     private String postTransactionApi(Map<String, Object> map) {
         JSONObject jsonObject = mOstApiClient.postExecuteTransaction(map);
         if (isValidResponse(jsonObject)) {
-            return parseResponseForKey(jsonObject, OstTransaction.ID);
-        } else {
-            return null;
+            String txId = parseResponseForKey(jsonObject, OstTransaction.ID);
+            if ( null != txId ) {
+                return txId;
+            }
         }
+        throw OstError.ApiResponseError("wf_et_ptxapi_1", "postTransactionApi", jsonObject);
     }
 
     private Map<String, Object> buildTransactionRequest(SignedTransactionStruct signedTransactionStruct) {

@@ -106,7 +106,7 @@ public class OstResetPin extends OstBaseWorkFlow {
         try {
             ostRecoveryOwner = OstRecoveryOwner.parse(resultTypeObject);
         } catch (JSONException e) {
-            return postErrorInterrupt("wf_rp_udv_1", OstErrors.ErrorCode.POST_RESET_RECOVERY_API_FAILED);
+            return postErrorInterrupt("wf_rp_udv_1", OstErrors.ErrorCode.INVALID_API_RESPONSE);
         }
 
         postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));

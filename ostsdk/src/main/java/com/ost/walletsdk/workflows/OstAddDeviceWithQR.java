@@ -56,8 +56,10 @@ public class OstAddDeviceWithQR extends OstBaseWorkFlow {
         Log.i(TAG, "Api Call payload");
         AsyncStatus apiCallStatus = makeAddDeviceCall(signedData);
 
+
         if (!apiCallStatus.isSuccess()) {
-            return postErrorInterrupt("wf_adwq_pr_4", ErrorCode.ADD_DEVICE_API_FAILED);
+            //makeAddDeviceCall will throw OstApiError. So, this is hypothetical case.
+            return postErrorInterrupt("wf_adwq_pr_4", ErrorCode.SDK_ERROR);
         }
 
         //request acknowledge
@@ -86,7 +88,7 @@ public class OstAddDeviceWithQR extends OstBaseWorkFlow {
     @Override
     void ensureValidParams() {
         if ( TextUtils.isEmpty(mDeviceAddressToBeAdded) || !WalletUtils.isValidAddress(mDeviceAddressToBeAdded) ) {
-            throw new OstError("wf_ad_evp_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
+            throw new OstError("wf_ad_evp_1", ErrorCode.INVALID_DEVICE_ADDRESS);
         }
 
         super.ensureValidParams();

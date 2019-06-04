@@ -102,7 +102,8 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         Log.i(TAG, String.format("Response %s", responseObject.toString()));
 
         if (!isValidResponse(responseObject)) {
-            return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
+            //postAddSession will throw OstApiError. So, this is hypothetical case.
+            return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.SDK_ERROR);
         }
         //Request Acknowledge
         postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),

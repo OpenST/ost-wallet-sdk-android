@@ -145,7 +145,7 @@ public class OstRecoveryManager {
                     newRecoveryOwnerAddress, recoveryContractAddress);
 
             if (null == eip712TypedData) {
-                throw new OstError("km_rs_grrows_4", ErrorCode.EIP712_FAILED);
+                throw new OstError("km_rs_grrows_4", ErrorCode.SDK_ERROR);
             }
             String eip712Hash = getEIP712SignHash(eip712TypedData);
 
@@ -227,7 +227,7 @@ public class OstRecoveryManager {
             try {
                 dataHolder = composeRecoveryOperation(INITIATE_RECOVERY_STRUCT, deviceToRevoke, currentDevice);
             } catch (Throwable th) {
-                throw new OstError("km_rs_grds_6", ErrorCode.EIP712_FAILED);
+                throw new OstError("km_rs_grds_6", ErrorCode.SDK_ERROR);
             }
 
             salt = getSalt();
@@ -300,7 +300,7 @@ public class OstRecoveryManager {
             try {
                 dataHolder = composeRecoveryOperation(ABORT_RECOVERY_STRUCT, deviceToRevoke, recoveringDevice);
             } catch (Throwable th) {
-                throw new OstError("km_rs_gads_6", ErrorCode.EIP712_FAILED);
+                throw new OstError("km_rs_gads_6", ErrorCode.SDK_ERROR);
             }
 
             salt = getSalt();
@@ -355,7 +355,7 @@ public class OstRecoveryManager {
         try {
             return new EIP712(typedData).toEIP712TransactionHash();
         } catch (Exception e) {
-            throw new OstError("km_rs_grrows_4", ErrorCode.EIP712_FAILED);
+            throw new OstError("km_rs_grrows_4", ErrorCode.SDK_ERROR);
         }
     }
     //endregion
