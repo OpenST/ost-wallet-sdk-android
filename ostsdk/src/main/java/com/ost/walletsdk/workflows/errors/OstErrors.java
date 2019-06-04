@@ -263,7 +263,6 @@ public class OstErrors {
         INVALID_DEVICE_ADDRESS,
         INVALID_RECOVER_DEVICE_ADDRESS,
         DEVICE_UNAUTHORIZED,
-        DEVICE_ALREADY_REVOKED,
         DEVICE_CAN_NOT_BE_AUTHORIZED,
         DEVICE_CAN_NOT_BE_REVOKED,
         INVALID_REVOKE_DEVICE_ADDRESS,
@@ -308,7 +307,7 @@ public class OstErrors {
         OST_PLATFORM_API_ERROR,
         CONFIG_READ_FAILED,
 
-        USER_ACTIVATING, 
+        USER_ACTIVATING,
 
         //Deprecated
         /**
@@ -485,6 +484,11 @@ public class OstErrors {
          * @deprecated FAILED_TO_GENERATE_MESSAGE_HASH has been deprecated.
          */
         FAILED_TO_GENERATE_MESSAGE_HASH,
+
+        /**
+         * @deprecated DEVICE_ALREADY_REVOKED has been deprecated.
+         */
+        DEVICE_ALREADY_REVOKED,
         ;
     }
 
