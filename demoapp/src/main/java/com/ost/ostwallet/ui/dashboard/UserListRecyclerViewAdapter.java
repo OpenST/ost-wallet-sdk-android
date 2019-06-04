@@ -84,7 +84,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
 
         if (OstUser.CONST_STATUS.CREATED.equalsIgnoreCase(holder.mUser.getStatus())) {
             holder.mStatus.setTextColor(Color.RED);
-            holder.mStatus.setText("Wallet Setup Incomplete");
+            holder.mStatus.setText("Initialising User...");
             holder.mSendButton.setEnabled(false);
             holder.mView.setOnClickListener(null);
         } else {

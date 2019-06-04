@@ -169,6 +169,33 @@ public class CommonUtils {
         }
     }
 
+    public static String convertBtToUsd(String btAmount, JSONObject pricePointObject){
+        if (null == btAmount || btAmount.equals("")) return null;
+
+        OstToken token = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
+        Integer decimals = Integer.parseInt(token.getBtDecimals());
+        BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
+        BigDecimal btWei = new BigDecimal(btAmount).multiply(btWeiMultiplier);
+        return convertBTWeiToUsd(btWei.toString(), pricePointObject);
+    }
+
+    public static String convertUsdToBt(String usdAmount, JSONObject pricePointObject) {
+        if (null == usdAmount || usdAmount.equals("") || null == pricePointObject) return null;
+
+        try{
+            OstToken token = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
+            Double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble("USD");
+            BigDecimal weiMultipler = new BigDecimal(10).pow(18);
+            BigDecimal usdWei = new BigDecimal(usdAmount).multiply(weiMultipler);
+            BigDecimal pricePointOSTtoUSDWei = new BigDecimal(String.valueOf(pricePointOSTtoUSD)).multiply(weiMultipler).setScale(0);
+            BigDecimal baseCurrency = usdWei.divide(pricePointOSTtoUSDWei, 5, RoundingMode.DOWN);
+            BigDecimal bt = baseCurrency.multiply(new BigDecimal(token.getConversionFactor()));
+            return bt.setScale(2, RoundingMode.DOWN).toString();
+        } catch (Exception e){
+            return null;
+        }
+    }
+
     public static String convertUsdWeitoUsd(String amount) {
         if (null == amount) return "";
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(18);

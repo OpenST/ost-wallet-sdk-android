@@ -15,7 +15,10 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -78,6 +81,25 @@ public class OstPrimaryEditTextView extends RelativeLayout {
 
     public void setHintText(String hintText) {
         mTextInputLayout.setHint(hintText);
+    }
+
+    public void diasbleInput(){
+        mTextInputEditText.setInputType(InputType.TYPE_NULL);
+        mTextInputEditText.setTextIsSelectable(false);
+        mTextInputEditText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                return true;  // Blocks input from hardware keyboards.
+            }
+        });
+    }
+
+    public void setOnTextChangeListener(TextWatcher textWatcher){
+        mTextInputEditText.addTextChangedListener(textWatcher);
+    }
+
+    public void setOnFocusListener(View.OnFocusChangeListener listener){
+        mTextInputEditText.setOnFocusChangeListener(listener);
     }
 
     @Override

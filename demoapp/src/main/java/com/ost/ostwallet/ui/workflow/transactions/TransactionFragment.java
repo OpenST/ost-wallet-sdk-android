@@ -15,7 +15,10 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +40,7 @@ import com.ost.ostwallet.ui.BaseFragment;
 import com.ost.ostwallet.uicomponents.AppBar;
 import com.ost.ostwallet.uicomponents.OstPrimaryEditTextView;
 import com.ost.ostwallet.util.CommonUtils;
+import com.ost.walletsdk.OstConfigs;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,6 +54,8 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
     private User mUser;
     private OnFragmentInteractionListener mListener;
     private OstPrimaryEditTextView mTokensEditTextView;
+    private OstPrimaryEditTextView mFiatAmountEditTextView;
+    private String focusOnEtv = "";
 
     public TransactionFragment() {
         // Required empty public constructor
@@ -106,13 +112,12 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         /*********User View***********/
         viewGroup.findViewById(R.id.btn_send_token).setVisibility(View.GONE);
 
-        ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
-        int color = generator.getColor(mUser.getOstUserId());
         TextDrawable drawable = TextDrawable.builder()
                 .beginConfig()
                 .withBorder(4)
+                .textColor(getResources().getColor(R.color.color_9b9b9b))
                 .endConfig()
-                .round().build(mUser.getUserName().substring(0,1).toUpperCase(), color);
+                .round().build(mUser.getUserName().substring(0,1).toUpperCase(), getResources().getColor(R.color.color_f4f4f4));
 
         ((ImageView)viewGroup.findViewById(R.id.iv_user_image)).setImageDrawable(drawable);
 
@@ -123,30 +128,64 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         mTokensEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_number));
         mTokensEditTextView.setHintText(getResources().getString(R.string.transaction_amount));
         mTokensEditTextView.setInputType((InputType.TYPE_CLASS_NUMBER + InputType.TYPE_NUMBER_FLAG_DECIMAL));
-
-        final AppCompatSpinner unitSpinner = ((AppCompatSpinner)viewGroup.findViewById(R.id.etv_tokens_unit));
-        ArrayAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_item, mTransactionPresenter.getUnitList());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        unitSpinner.setAdapter(adapter);
-        unitSpinner.setSelection(0);
-        unitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mTokensEditTextView.setOnFocusListener(new View.OnFocusChangeListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position == 0){
-                    ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: %s %s",
-                            CommonUtils.convertWeiToTokenCurrency(AppProvider.get().getCurrentUser().getBalance()),
-                            AppProvider.get().getCurrentEconomy().getTokenSymbol()));
-                } else {
-                    ((TextView)viewGroup.findViewById(R.id.tv_balance)).setText(String.format("Balance: $ %s",
-                            CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mTransactionPresenter.mPricePoint)));
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onFocusChange(View v, boolean hasFocus) {
+                focusOnEtv = AppProvider.get().getCurrentEconomy().getTokenSymbol();
             }
         });
+        mTokensEditTextView.setOnTextChangeListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(focusOnEtv.equals(AppProvider.get().getCurrentEconomy().getTokenSymbol())){
+                    String usdVal = CommonUtils.convertBtToUsd(s.toString(), mTransactionPresenter.mPricePoint);
+                    mFiatAmountEditTextView.setText((null != usdVal) ? usdVal : "");
+                }
+            }
+        });
+
+        OstPrimaryEditTextView symbolETv = (OstPrimaryEditTextView) viewGroup.findViewById(R.id.etv_tokens_unit);
+        symbolETv.setHintText("Unit");
+        symbolETv.setText(AppProvider.get().getCurrentEconomy().getTokenSymbol());
+        symbolETv.diasbleInput();
+
+        mFiatAmountEditTextView = ((OstPrimaryEditTextView) viewGroup.findViewById(R.id.etv_fiat_amount));
+        mFiatAmountEditTextView.setHintText(getResources().getString(R.string.transaction_amount));
+        mFiatAmountEditTextView.setInputType((InputType.TYPE_CLASS_NUMBER + InputType.TYPE_NUMBER_FLAG_DECIMAL));
+        mFiatAmountEditTextView.setOnFocusListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                focusOnEtv = OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL;
+            }
+        });
+        mFiatAmountEditTextView.setOnTextChangeListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(focusOnEtv.equals(OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL)){
+                    String btVal = CommonUtils.convertUsdToBt(s.toString(), mTransactionPresenter.mPricePoint);
+                    mTokensEditTextView.setText((null != btVal) ? btVal : "");
+                }
+            }
+        });
+
+        OstPrimaryEditTextView fiatUnitETv = (OstPrimaryEditTextView) viewGroup.findViewById(R.id.etv_fiat_unit);
+        fiatUnitETv.setHintText("Unit");
+        fiatUnitETv.setText(OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL);
+        fiatUnitETv.diasbleInput();
 
         ((Button)viewGroup.findViewById(R.id.pbtn_send_tokens)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,7 +194,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
                     mTokensEditTextView.showErrorString(null);
                     JSONObject transactionDetails = mTransactionPresenter.sendTokens(mUser.getTokenHolderAddress(),
                             mTokensEditTextView.getText(),
-                            mTransactionPresenter.getUnitList().get(unitSpinner.getSelectedItemPosition())
+                            AppProvider.get().getCurrentEconomy().getTokenSymbol()
                     );
                     if (null != transactionDetails) {
                         transactionDetails.put("userName", mUser.getUserName());
@@ -174,12 +213,17 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
 
         AppBar appBar = AppBar.newInstance(getContext(), "Send Tokens", true);
         setUpAppBar(viewGroup, appBar);
-        mListener.showCurrencyChangeOption();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if(null != mFiatAmountEditTextView){
+            mFiatAmountEditTextView.setOnTextChangeListener(null);
+        }
+        if(null != mTokensEditTextView){
+            mTokensEditTextView.setOnTextChangeListener(null);
+        }
         mTransactionPresenter.detachView();
         mTransactionPresenter = null;
     }
@@ -197,6 +241,5 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
     public interface OnFragmentInteractionListener {
         void popTopFragment();
         void setTransactionWorkflow(JSONObject transactionDetails);
-        void showCurrencyChangeOption();
     }
 }

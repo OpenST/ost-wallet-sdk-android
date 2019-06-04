@@ -409,17 +409,6 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void showCurrencyChangeOption(){
-        if(!currencyChangeOptionShown){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Please choose the currency to price transaction.\nChoosing USD will mean that the chosen number of USD worth of tokens will be transferred.");
-            builder.setPositiveButton("OK", null);
-            builder.create().show();
-            currencyChangeOptionShown = true;
-        }
-    }
-
-    @Override
     public void relaunchApp() {
         AppProvider.get().getCookieStore().removeAll();
         Intent intent = new Intent(DashboardActivity.this, OnBoardingActivity.class);
