@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ost.com.demoapp.uicomponents.OstSubHeaderTextView
+    <com.ost.ostwallet.uicomponents.OstSubHeaderTextView
         android:id="@+id/ptv_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +20,7 @@
         android:layout_marginTop="24dp"
         android:background="@drawable/bg_data_view">
 
-        <ost.com.demoapp.uicomponents.OstTextView
+        <com.ost.ostwallet.uicomponents.OstTextView
             android:id="@+id/lbl_verify_data_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp" />
 
-        <ost.com.demoapp.uicomponents.OstTextView
+        <com.ost.ostwallet.uicomponents.OstTextView
             android:id="@+id/atv_verify_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

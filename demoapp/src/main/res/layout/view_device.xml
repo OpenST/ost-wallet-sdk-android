@@ -27,7 +27,7 @@
             android:layout_margin="@dimen/dp_10"
             android:src="@drawable/device_icon" />
 
-        <ost.com.demoapp.uicomponents.OstSubHeaderTextView
+        <com.ost.ostwallet.uicomponents.OstSubHeaderTextView
             android:id="@+id/tv_device_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             android:layout_toRightOf="@id/iv_device_image"
             android:text="Device 1" />
 
-        <ost.com.demoapp.uicomponents.OstTextView
+        <com.ost.ostwallet.uicomponents.OstTextView
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             android:layout_toEndOf="@id/tv_device_name"
             android:visibility="gone"/>
 
-        <ost.com.demoapp.uicomponents.OstTextView
+        <com.ost.ostwallet.uicomponents.OstTextView
             android:id="@+id/tv_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
             android:textColor="@color/view_cell_sub_text"
             android:textSize="@dimen/view_cell_sub_text" />
 
-        <ost.com.demoapp.uicomponents.OstListButton
+        <com.ost.ostwallet.uicomponents.OstListButton
             android:id="@+id/btn_list_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

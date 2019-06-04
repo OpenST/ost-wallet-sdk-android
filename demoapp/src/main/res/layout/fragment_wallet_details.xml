@@ -33,7 +33,7 @@
             android:orientation="vertical"
             android:paddingTop="16dp">
 
-            <ost.com.demoapp.uicomponents.OstBoldTextView
+            <com.ost.ostwallet.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -42,7 +42,7 @@
                 android:textSize="@dimen/sp_13"
                 android:text="OST User Id" />
 
-            <ost.com.demoapp.uicomponents.OstTextView
+            <com.ost.ostwallet.uicomponents.OstTextView
                 android:id="@+id/ost_user_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <ost.com.demoapp.uicomponents.OstBoldTextView
+            <com.ost.ostwallet.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -70,7 +70,7 @@
                 android:textSize="@dimen/sp_13"
                 android:text="User Status" />
 
-            <ost.com.demoapp.uicomponents.OstTextView
+            <com.ost.ostwallet.uicomponents.OstTextView
                 android:id="@+id/ost_user_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <ost.com.demoapp.uicomponents.OstBoldTextView
+            <com.ost.ostwallet.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -95,7 +95,7 @@
                 android:textSize="@dimen/sp_13"
                 android:text="Token ID" />
 
-            <ost.com.demoapp.uicomponents.OstTextView
+            <com.ost.ostwallet.uicomponents.OstTextView
                 android:id="@+id/ost_token_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <ost.com.demoapp.uicomponents.OstBoldTextView
+            <com.ost.ostwallet.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -120,7 +120,7 @@
                 android:textSize="@dimen/sp_13"
                 android:text="Token Holder Address" />
 
-            <ost.com.demoapp.uicomponents.OstTextView
+            <com.ost.ostwallet.uicomponents.OstTextView
                 android:id="@+id/ost_user_token_holder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -141,7 +141,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <ost.com.demoapp.uicomponents.OstBoldTextView
+            <com.ost.ostwallet.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -150,7 +150,7 @@
                 android:textSize="@dimen/sp_13"
                 android:text="Device Address" />
 
-            <ost.com.demoapp.uicomponents.OstTextView
+            <com.ost.ostwallet.uicomponents.OstTextView
                 android:id="@+id/ost_user_device_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -171,7 +171,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <ost.com.demoapp.uicomponents.OstBoldTextView
+            <com.ost.ostwallet.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -180,7 +180,7 @@
                 android:textSize="@dimen/sp_13"
                 android:text="Device Status" />
 
-            <ost.com.demoapp.uicomponents.OstTextView
+            <com.ost.ostwallet.uicomponents.OstTextView
                 android:id="@+id/ost_user_device_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -196,7 +196,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <ost.com.demoapp.uicomponents.OstBoldTextView
+            <com.ost.ostwallet.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -205,7 +205,7 @@
                 android:textSize="@dimen/sp_13"
                 android:text="Device Manager Address" />
 
-            <ost.com.demoapp.uicomponents.OstTextView
+            <com.ost.ostwallet.uicomponents.OstTextView
                 android:id="@+id/ost_user_device_manager_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -226,7 +226,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <ost.com.demoapp.uicomponents.OstBoldTextView
+            <com.ost.ostwallet.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -235,7 +235,7 @@
                 android:textSize="@dimen/sp_13"
                 android:text="Recovery Key Address" />
 
-            <ost.com.demoapp.uicomponents.OstTextView
+            <com.ost.ostwallet.uicomponents.OstTextView
                 android:id="@+id/ost_user_recovery_key_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -256,7 +256,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <ost.com.demoapp.uicomponents.OstBoldTextView
+            <com.ost.ostwallet.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -266,7 +266,7 @@
                 android:text="Recovery Owner Address"
                 android:visibility="visible" />
 
-            <ost.com.demoapp.uicomponents.OstTextView
+            <com.ost.ostwallet.uicomponents.OstTextView
                 android:id="@+id/ost_user_recovery_owner_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -287,7 +287,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:background="#e3e3e3"/>
 
-            <ost.com.demoapp.uicomponents.OstBoldTextView
+            <com.ost.ostwallet.uicomponents.OstBoldTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
@@ -296,7 +296,7 @@
                 android:textSize="@dimen/sp_13"
                 android:text="Platform End Point" />
 
-            <ost.com.demoapp.uicomponents.OstTextView
+            <com.ost.ostwallet.uicomponents.OstTextView
                 android:id="@+id/ost_user_platform_endpoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

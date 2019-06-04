@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ost.com.demoapp.uicomponents.OstSubHeaderTextView
+    <com.ost.ostwallet.uicomponents.OstSubHeaderTextView
         android:id="@+id/tv_authorize_options"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         android:layout_below="@id/layout_holder"
         android:text="We notice that this is not an authorized device. Please recover your wallet from the following options." />
 
-    <ost.com.demoapp.uicomponents.OstPrimaryButton
+    <com.ost.ostwallet.uicomponents.OstPrimaryButton
         android:id="@+id/authorize_qr_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         android:layout_margin="@dimen/dp_20"
         android:text="Authorize with QR"/>
 
-    <ost.com.demoapp.uicomponents.OstSecondaryButton
+    <com.ost.ostwallet.uicomponents.OstSecondaryButton
         android:id="@+id/authorize_mnemonics_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
         android:layout_below="@id/authorize_qr_btn"
         />
 
-    <ost.com.demoapp.uicomponents.OstLinkButton
+    <com.ost.ostwallet.uicomponents.OstLinkButton
         android:id="@+id/authorize_pin_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
         android:layout_alignParentBottom="true"
         />
 
-    <ost.com.demoapp.uicomponents.OstSubHeaderTextView
+    <com.ost.ostwallet.uicomponents.OstSubHeaderTextView
         android:id="@+id/tv_authorize_pin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

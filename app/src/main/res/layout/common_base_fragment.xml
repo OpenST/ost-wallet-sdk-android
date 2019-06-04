@@ -86,7 +86,7 @@
                 android:visibility="gone"
                 android:layout_gravity="right">
 
-                <ost.com.sampleostsdkapplication.uicomponents.LoaderView
+                <com.ost.sampleostsdkapplication.uicomponents.LoaderView
                     android:id="@+id/loader"
                     android:layout_width="30dp"
                     android:layout_height="30dp"

@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <ost.com.demoapp.uicomponents.OstTextView
+        <com.ost.ostwallet.uicomponents.OstTextView
             android:id="@+id/tv_timestamp"
             android:layout_marginTop="@dimen/dp_5"
             android:layout_toRightOf="@id/iv_transfer_image"
@@ -45,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <ost.com.demoapp.uicomponents.OstTextView
+        <com.ost.ostwallet.uicomponents.OstTextView
             android:id="@+id/tv_value"
             android:textSize="@dimen/sp_15"
             android:textColor="@color/received_token_amount"

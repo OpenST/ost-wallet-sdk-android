@@ -17,7 +17,7 @@
     android:clickable="true"
     android:focusable="true">
 
-    <ost.com.demoapp.uicomponents.OstSubHeaderTextView
+    <com.ost.ostwallet.uicomponents.OstSubHeaderTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_30"
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ost.com.demoapp.uicomponents.OstTextView
+        <com.ost.ostwallet.uicomponents.OstTextView
             android:id="@+id/lbl_device_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:layout_centerHorizontal="true"
             android:textColor="@android:color/darker_gray"/>
 
-        <ost.com.demoapp.uicomponents.OstTextView
+        <com.ost.ostwallet.uicomponents.OstTextView
             android:id="@+id/atv_device_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             android:textColor="@android:color/black"/>
     </RelativeLayout>
 
-    <ost.com.demoapp.uicomponents.OstPrimaryButton
+    <com.ost.ostwallet.uicomponents.OstPrimaryButton
         android:id="@+id/pbtn_check_device_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

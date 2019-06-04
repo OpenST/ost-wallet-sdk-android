@@ -26,7 +26,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/ost_logo_blue" />
 
-    <ost.com.demoapp.uicomponents.OstSubHeaderTextView
+    <com.ost.ostwallet.uicomponents.OstSubHeaderTextView
         android:id="@+id/tv_intro"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/ost_kit_start_minting" />
 
-    <ost.com.demoapp.uicomponents.OstPrimaryButton
+    <com.ost.ostwallet.uicomponents.OstPrimaryButton
         android:id="@+id/tv_create_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:text="Create Account"/>
 
-    <ost.com.demoapp.uicomponents.OstSecondaryButton
+    <com.ost.ostwallet.uicomponents.OstSecondaryButton
         android:id="@+id/tv_log_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
