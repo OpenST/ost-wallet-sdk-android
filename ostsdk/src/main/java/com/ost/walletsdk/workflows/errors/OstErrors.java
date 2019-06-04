@@ -224,6 +224,8 @@ public class OstErrors {
                 return "Logout request of all sessions failed";
             case TOKEN_HOLDER_API_FAILED:
                 return "Token holder get api returned failed response";
+            case WORKFLOW_FAILED:
+                return "Something went wrong, please try again";
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
             case UNKNOWN:
@@ -325,6 +327,7 @@ public class OstErrors {
         //Generic
         UNKNOWN,
         WORKFLOW_CANCELLED,
+        WORKFLOW_FAILED,
         UNCAUGHT_EXCEPTION_HANDELED,
         DEPRECATED,
         FAILED_TO_GENERATE_ETH_KEY,
