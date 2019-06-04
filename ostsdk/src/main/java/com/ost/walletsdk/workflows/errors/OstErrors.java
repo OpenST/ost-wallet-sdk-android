@@ -32,8 +32,6 @@ public class OstErrors {
             case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
             case OST_PLATFORM_API_ERROR: return "OST Platform Api returned error.";
 
-            case SALT_API_FAILED:
-                return "Failed to fetch user salt. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
 
             case INVALID_WORKFLOW_PARAMS:
@@ -86,12 +84,6 @@ public class OstErrors {
 
             case CURRENT_DEVICE_NOT_FOUND:
                 return "Current device is not registered with the user. Either rectify the value being sent in device Id field OR register this device with the user. ";
-
-            case POLLING_API_FAILED:
-                return "Polling api failed. This can be intermittent event with a request or two failing followed by successful one.";
-
-            case UNKNOWN_ENTITY_TYPE:
-                return "Unable to recognize the API request object sent and so cannot be executed.";
 
             case INVALID_QR_DEVICE_OPERATION_DATA:
                 return "The QR code for adding a new device is not well formed. To know the data definition for QR code based on type of operations please visit https://dev.ost.com/platform ";
@@ -207,14 +199,15 @@ public class OstErrors {
 
             case LOGOUT_ALL_SESSIONS_FAILED:
                 return "Logout request of all sessions failed";
-            case TOKEN_HOLDER_API_FAILED:
-                return "Token holder get api returned failed response";
 
             case INVALID_API_RESPONSE:
                 return "Unable to recognize the API response object sent and so cannot be executed.";
 
             case INVALID_JSON_STRING: return "The provided json string is invalid.";
             case INVALID_JSON_ARRAY: return "The provided json array string is invalid.";
+
+            case WORKFLOW_FAILED:
+                return "Something went wrong, please try again";
 
             //deprecated
             case GET_USER_API_FAILED:
@@ -226,14 +219,26 @@ public class OstErrors {
             case CHAIN_API_FAILED:
                 return "Failed to fetch block-chain information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
-            case RULES_API_FAILED:return "Failed to fetch rule information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
+            case RULES_API_FAILED:
+                return "Failed to fetch rule information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
-            case GET_DEVICE_API_FAILED: return "Failed to fetch device Information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
+            case GET_DEVICE_API_FAILED:
+                return "Failed to fetch device Information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
-            case DEVICE_MANAGER_API_FAILED: return "Failed to fetch device manager information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
+            case DEVICE_MANAGER_API_FAILED:
+                return "Failed to fetch device manager information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
 
-            case WORKFLOW_FAILED:
-                return "Something went wrong, please try again";
+            case SALT_API_FAILED:
+                return "Failed to fetch user salt. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
+
+            case POLLING_API_FAILED:
+                return "Polling api failed. This can be intermittent event with a request or two failing followed by successful one.";
+
+            case UNKNOWN_ENTITY_TYPE:
+                return "Unable to recognize the API request object sent and so cannot be executed.";
+
+            case TOKEN_HOLDER_API_FAILED:
+                return "Token holder get api returned failed response";
 
             //Important Note for P.M.:
             //This is a special case. Do not add return in front of UNKNOWN:
@@ -269,7 +274,7 @@ public class OstErrors {
         USER_NOT_FOUND,
         CURRENT_DEVICE_NOT_FOUND,
 
-        UNKNOWN_ENTITY_TYPE,
+
         INVALID_QR_DEVICE_OPERATION_DATA,
         INVALID_ADD_DEVICE_ADDRESS,
         INVALID_RECOVER_DEVICE_ADDRESS,
@@ -289,7 +294,7 @@ public class OstErrors {
         UNKNOWN_DATA_DEFINITION,
         NO_PENDING_RECOVERY,
         LOGOUT_ALL_SESSIONS_FAILED,
-        TOKEN_HOLDER_API_FAILED,
+
         DEVICE_NOT_REGISTERED,
         INVALID_SESSION_SPENDING_LIMIT,
         INVALID_SESSION_EXPIRY_TIME,
@@ -388,6 +393,15 @@ public class OstErrors {
          * @deprecated POLLING_API_FAILED has been deprecated.
          */
         POLLING_API_FAILED,
+        /**
+         * @deprecated UNKNOWN_ENTITY_TYPE has been deprecated.
+         */
+        UNKNOWN_ENTITY_TYPE,
+
+        /**
+         * @deprecated TOKEN_HOLDER_API_FAILED has been deprecated.
+         */
+        TOKEN_HOLDER_API_FAILED,
         ;
 
 

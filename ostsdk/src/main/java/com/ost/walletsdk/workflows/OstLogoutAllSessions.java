@@ -107,7 +107,7 @@ public class OstLogoutAllSessions extends OstBaseWorkFlow {
         }
         if (!bundle.getBoolean(OstPollingService.EXTRA_IS_VALID_RESPONSE, false)) {
             Log.i(TAG, "Not a valid response");
-            throw new OstError("wf_loas_pr_4", OstErrors.ErrorCode.TOKEN_HOLDER_API_FAILED);
+            throw new OstError("wf_loas_pr_4", OstErrors.ErrorCode.INVALID_API_RESPONSE);
         }
     }
 
