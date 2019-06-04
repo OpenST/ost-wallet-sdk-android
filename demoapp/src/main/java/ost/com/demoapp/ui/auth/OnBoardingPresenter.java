@@ -93,11 +93,11 @@ public class OnBoardingPresenter extends BasePresenter<OnBoardingView> implement
     }
 
     private void showErrorMessage(JSONObject jsonObject) {
-        String errorMsg = jsonObject.optString("msg");
+        String errorMsg = (null != jsonObject) ? jsonObject.optString("msg") : null;
         if (null != errorMsg) {
             getMvpView().showToastMessage(errorMsg, false);
         } else {
-            getMvpView().showToastMessage("Error while logging", false);
+            getMvpView().showToastMessage("Could not connect to Mappy server. Please try after sometime.", false);
         }
     }
 
@@ -137,7 +137,7 @@ public class OnBoardingPresenter extends BasePresenter<OnBoardingView> implement
                         OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), workFlowListener);
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {

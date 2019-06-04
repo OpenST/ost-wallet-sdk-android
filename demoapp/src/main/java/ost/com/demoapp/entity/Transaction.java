@@ -12,6 +12,9 @@ package ost.com.demoapp.entity;
 
 import android.util.Log;
 
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,8 +76,11 @@ public class Transaction {
     private final String metaName;
     private final String metaType;
     private final String metaDetails;
+    private String fromUserName;
+    private String toUserName;
 
-    public Transaction(String txnId, String txnHash, boolean in, String value, String metaName, String metaType, String metaDetails, int timestamp) {
+    public Transaction(String txnId, String txnHash, boolean in, String value, String metaName, String metaType,
+                       String metaDetails, int timestamp, String fromUserName, String toUserName) {
         this.txnId = txnId;
         this.txnHash = txnHash;
         this.in = in;
@@ -83,9 +89,11 @@ public class Transaction {
         this.metaType = metaType;
         this.metaDetails = metaDetails;
         this.timestamp = timestamp;
+        this.fromUserName = fromUserName;
+        this.toUserName = toUserName;
     }
 
-    public static List<Transaction> newInstance(JSONObject jsonObject) {
+    public static List<Transaction> newInstance(JSONObject jsonObject, JSONObject transactionUsers) {
         List<Transaction> list = new ArrayList<>();
         try {
             String txnId = jsonObject.getString(TXN_ID);
@@ -103,10 +111,13 @@ public class Transaction {
                 JSONObject transfer = transfersJSONArray.getJSONObject(i);
                 String from_userId = transfer.optString(FROM_USER_ID);
                 String to_userId = transfer.optString(TO_USER_ID);
+                String fromUserName = Transaction.getNameFromUid(from_userId, transfer.optString("from"), transactionUsers);
+                String toUserName = Transaction.getNameFromUid(to_userId, transfer.optString("to"), transactionUsers);
                 if (from_userId.equals(currentUserId) || to_userId.equals(currentUserId)) {
                     boolean in = to_userId.equals(currentUserId);
                     String value = transfer.optString(AMOUNT);
-                    list.add(new Transaction(txnId, txnHash, in ,value ,metaName, metaType, metaDetails, timestamp));
+                    list.add(new Transaction(txnId, txnHash, in ,value ,metaName, metaType, metaDetails,
+                            timestamp, fromUserName, toUserName));
                 }
 
             }
@@ -119,5 +130,36 @@ public class Transaction {
 
     public int getTimestamp() {
         return timestamp;
+    }
+
+    public String getFromUserName() {
+        return fromUserName;
+    }
+
+    public String getToUserName() {
+        return toUserName;
+    }
+
+    private static String getNameFromUid(String userId, String address, JSONObject transactionUsers){
+        String name = null;
+        if(null != transactionUsers){
+            JSONObject userObj = transactionUsers.optJSONObject(userId);
+            name = (null != userObj) ? userObj.optString("username") : null;
+        }
+        if(null == name && null != address){
+            try{
+                OstToken ostToken = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
+                if(null != ostToken.getCompanyTokenHolders()){
+                    for(int i=0;i<ostToken.getCompanyTokenHolders().length();i++){
+                        String cta = ostToken.getCompanyTokenHolders().getString(i);
+                        if(cta.equalsIgnoreCase(address)){
+                            name = ostToken.getName();
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception e){}
+        }
+        return name;
     }
 }

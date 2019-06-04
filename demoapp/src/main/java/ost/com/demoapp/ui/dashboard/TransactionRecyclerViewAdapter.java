@@ -63,17 +63,26 @@ class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<TransactionRec
         holder.mDate.setText(date);
         String transferValue = CommonUtils.convertWeiToTokenCurrency(holder.mTransaction.getValue());
 
-        holder.mTransferType.setText(holder.mTransaction.getMetaName());
         Context context = AppProvider.get().getApplicationContext();
         if(holder.mTransaction.isIn()){
-            if(!holder.mTransaction.getMetaType().equals("company_to_user")){
+            if(holder.mTransaction.getMetaType().equals("company_to_user") && !isEmptyString(holder.mTransaction.getMetaName())){
+                holder.mTransferType.setText(holder.mTransaction.getMetaName());
+            } else if(isEmptyString(holder.mTransaction.getFromUserName())){
                 holder.mTransferType.setText("Received Tokens");
+            } else {
+                holder.mTransferType.setText("Received from " + holder.mTransaction.getFromUserName());
+            }
+            if(!holder.mTransaction.getMetaType().equals("company_to_user")){
                 holder.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.token_receive_icon, null));
             }
             holder.mTransferValue.setTextColor(context.getResources().getColor(R.color.received_token_amount));
             holder.mTransferValue.setText(String.format("+%s", transferValue));
         } else {
-            holder.mTransferType.setText("Sent Tokens");
+            if(isEmptyString(holder.mTransaction.getToUserName())){
+                holder.mTransferType.setText("Sent Tokens");
+            } else {
+                holder.mTransferType.setText("Sent to " + holder.mTransaction.getToUserName());
+            }
             holder.mTransferValue.setTextColor(context.getResources().getColor(R.color.sent_token_amount));
             holder.mTransferValue.setText(String.format("-%s", transferValue));
             holder.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.token_sent_icon, null));
@@ -117,6 +126,10 @@ class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<TransactionRec
         public String toString() {
             return super.toString() + " '" + mDate.getText() + "'";
         }
+    }
+
+    private Boolean isEmptyString(String text){
+        return(null == text || text.equals(""));
     }
 
     private void clearViewHolder(ViewHolder holder){

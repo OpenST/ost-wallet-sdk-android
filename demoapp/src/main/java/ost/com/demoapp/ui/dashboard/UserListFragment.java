@@ -82,6 +82,7 @@ public class UserListFragment extends BaseFragment implements UserListView,
                         AppProvider.get().getCurrentEconomy().getTokenSymbol()
                 )
         );
+        (view.findViewById(R.id.tv_heading)).setVisibility(View.GONE);
 
         Context context = view.getContext();
 

@@ -83,10 +83,11 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                         hasMoreData = (nextPayload != null && !nextPayload.getJSONObject("next_page_payload").toString().equals("{}"));
                         JSONArray transactionJSONArray = (JSONArray) new CommonUtils()
                                 .parseResponseForResultType(jsonObject);
+                        JSONObject transactionUsers = dataJSONObject.optJSONObject("transaction_users");
 
                         for (int i = 0; i < transactionJSONArray.length(); i++) {
                             JSONObject txnJSONObject = transactionJSONArray.getJSONObject(i);
-                            List<Transaction> list = Transaction.newInstance(txnJSONObject);
+                            List<Transaction> list = Transaction.newInstance(txnJSONObject, transactionUsers);
                             transactionList.addAll(list);
                         }
                     } catch (JSONException e) {
