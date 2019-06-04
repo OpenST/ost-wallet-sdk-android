@@ -111,49 +111,30 @@ class WalletPresenter extends BasePresenter<WalletView> implements
     }
 
     void updateBalance() {
-        AppProvider.get().getMappyClient().getCurrentUserBalance(new MappyNetworkClient.ResponseCallback() {
-            @Override
-            public void onSuccess(JSONObject jsonObject) {
-                String balance = "0";
-                JSONObject pricePoint = null;
-                if (new CommonUtils().isValidResponse(jsonObject)) {
-                    balance = new CommonUtils().parseStringResponseForKey(jsonObject, "available_balance");
-                    try{
-                        JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
-                        pricePoint = jsonData.optJSONObject("price_point");
-                    } catch(Exception e){ }
-                }
-                AppProvider.get().getCurrentUser().updateBalance(balance);
-                getMvpView().updateBalance(CommonUtils.convertWeiToTokenCurrency(balance),
-                        CommonUtils.convertBTWeiToUsd(balance, pricePoint));
-            }
-
-            @Override
-            public void onFailure(Throwable throwable) {
-                getMvpView().updateBalance("0", null);
-            }
-        });
-
-
-        //Test OstJsonApi - @Pankaj.
         OstJsonApi.getBalanceWithPricePoints(AppProvider.get().getCurrentUser().getOstUserId(), new OstJsonApiCallback() {
             @Override
-            public void onOstJsonApiSuccess(@Nullable JSONObject data) {
-                if ( null != data ) {
-                    Log.d(LOG_TAG, "getBalanceWithPricePoints data: " + data.toString());
+            public void onOstJsonApiSuccess(@Nullable JSONObject jsonObject) {
+                if ( null != jsonObject ) {
+                    String balance = "0";
+                    JSONObject pricePoint = null;
+                    try{
+                        JSONObject balanceData = jsonObject.getJSONObject(jsonObject.getString(OstConstants.RESULT_TYPE));
+                        balance = balanceData.getString("available_balance");
+                        pricePoint = jsonObject.optJSONObject("price_point");
+                    } catch(Exception e){ }
+                    AppProvider.get().getCurrentUser().updateBalance(balance);
+                    getMvpView().updateBalance(CommonUtils.convertWeiToTokenCurrency(balance),
+                            CommonUtils.convertBTWeiToUsd(balance, pricePoint));
                 } else {
                     Log.d(LOG_TAG, "getBalanceWithPricePoints data is null.");
+                    getMvpView().updateBalance("0", null);
                 }
             }
 
             @Override
             public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) {
                 Log.e(LOG_TAG, "getBalanceWithPricePoints InternalErrorCode:" + err.getInternalErrorCode());
-                if ( null != data ) {
-                    Log.d(LOG_TAG, "getBalanceWithPricePoints data: " + data.toString());
-                } else {
-                    Log.d(LOG_TAG, "getBalanceWithPricePoints data is null.");
-                }
+                getMvpView().updateBalance("0", null);
             }
         });
     }
