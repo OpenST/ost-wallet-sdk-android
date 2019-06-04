@@ -74,26 +74,26 @@ public class OstTransactionSigner {
                 double pricePointOSTtoUSD;
                 int decimalExponent;
                 OstApiClient ostApiClient = new OstApiClient(mUserId);
+                JSONObject pricePointApiResponse = ostApiClient.getPricePoints();
                 try {
                     CommonUtils commonUtils = new CommonUtils();
-                    JSONObject jsonObject = ostApiClient.getPricePoints();
-                    if (!commonUtils.isValidResponse(jsonObject)) {
-                        OstError ostError = new OstError("km_ts_st_5",
-                                OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
-                        throw ostError;
+                    if (!commonUtils.isValidResponse(pricePointApiResponse)) {
+                        throw OstError.ApiResponseError("km_ts_st_5", "getPricePoints", pricePointApiResponse);
                     }
-                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(jsonObject, OstSdk.getToken(user.getTokenId()).getBaseToken());
+                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(pricePointApiResponse, OstSdk.getToken(user.getTokenId()).getBaseToken());
                     if (null == pricePointObject) {
-                        OstError ostError = new OstError("km_ts_st_6",
-                                OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
-                        throw ostError;
+                        throw OstError.ApiResponseError("km_ts_st_6", "getPricePoints", pricePointApiResponse);
                     }
                     pricePointOSTtoUSD = pricePointObject.getDouble(OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL);
                     decimalExponent = pricePointObject.getInt(DECIMAL_EXPONENT);
 
-                } catch (Exception e) {
-                    OstError ostError = new OstError("km_ts_st_7",
-                            OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
+                } catch (Throwable e) {
+                    OstError ostError;
+                    if ( e instanceof OstError ) {
+                        ostError = (OstError) e;
+                    } else {
+                        ostError = OstError.ApiResponseError("km_ts_st_7", "getPricePoints", pricePointApiResponse);
+                    }
                     throw ostError;
                 }
                 Log.i(TAG, "Building call data");
