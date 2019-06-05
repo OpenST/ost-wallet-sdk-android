@@ -495,6 +495,7 @@ public class OstErrors {
     public static String errorCodeToString(ErrorCode errorCode) {
         switch (errorCode) {
             case INVALID_SDK_URL: return  "INVALID_API_END_POINT" ;
+            case RULE_NOT_FOUND: return "RULES_NOT_FOUND";
             case OST_PLATFORM_API_ERROR: return  "API_RESPONSE_ERROR" ;
             case FAILED_TO_GENERATE_ETH_KEY: return "GENERATE_PRIVATE_KEY_FAIL";
             case NO_SESSION_FOUND : return "SESSION_NOT_FOUND";

@@ -86,7 +86,7 @@ class WorkflowStateManager {
     public void setState(String state, Object stateObject) {
         int stateIndx = orderedStates.indexOf(state);
         if ( stateIndx < 0 ) {
-            OstError ostError = new OstError("bua_wf_WFSM_jts_1", OstErrors.ErrorCode.UNKNOWN);
+            OstError ostError = new OstError("bua_wf_WFSM_jts_1", OstErrors.ErrorCode.SDK_ERROR);
             throw ostError;
         }
         mCurrentState = stateIndx;
