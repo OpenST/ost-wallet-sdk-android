@@ -12,6 +12,7 @@
     <color name="colorPrimary">#168dc1</color>
     <color name="colorPrimaryDark">#168dc1</color>
     <color name="colorAccent">#168dc1</color>
+    <color name="color_app_bar">#61B2D6</color>
 
     <color name="black_overlay">#66000000</color>
 

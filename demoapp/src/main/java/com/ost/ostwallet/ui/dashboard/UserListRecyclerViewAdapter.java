@@ -73,6 +73,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        clearViewHolder(holder);
         holder.mUser = mValues.get(position);
 
         Context context = AppProvider.get().getApplicationContext();
@@ -81,12 +82,11 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         holder.mImageView.setImageDrawable(drawable);
 
         holder.mUserName.setText(holder.mUser.getUserName());
-
+        holder.mSendButton.setVisibility(View.VISIBLE);
         if (OstUser.CONST_STATUS.CREATED.equalsIgnoreCase(holder.mUser.getStatus())) {
             holder.mStatus.setTextColor(Color.RED);
             holder.mStatus.setText("Initialising User...");
             holder.mSendButton.setEnabled(false);
-            holder.mView.setOnClickListener(null);
         } else {
             holder.mStatus.setTextColor(context.getResources().getColor(R.color.color_34445b));
             holder.mStatus.setText(
@@ -109,12 +109,33 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
             });
         }
 
-
+        // If its a current user
+        if(AppProvider.get().getCurrentUser().getId().equals(holder.mUser.getId())){
+            holder.mSendButton.setVisibility(View.GONE);
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (null != mListener) {
+                        mListener.goToWalletDetails();
+                    }
+                }
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    private void clearViewHolder(ViewHolder holder){
+        holder.mUser = null;
+        holder.mStatus.setText("");
+        holder.mSendButton.setVisibility(View.GONE);
+        holder.mSendButton.setOnClickListener(null);
+        holder.mUserName.setText("");
+        holder.mView.setOnClickListener(null);
+        holder.mImageView.setImageDrawable(null);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -144,5 +165,6 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
 
     public interface OnUserListInteractionListener {
         void onListViewInteraction(User user);
+        void goToWalletDetails();
     }
 }

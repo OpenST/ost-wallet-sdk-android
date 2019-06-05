@@ -86,7 +86,7 @@ public class UserListFragment extends BaseFragment implements UserListView,
         Context context = view.getContext();
 
         AppBar appBar = AppBar.newInstance(getContext(),
-                String.format("%s Users", AppProvider.get().getCurrentEconomy().getTokenSymbol()),
+                "Users",
                 false);
         setUpAppBar(view, appBar);
 
@@ -152,6 +152,11 @@ public class UserListFragment extends BaseFragment implements UserListView,
     }
 
     @Override
+    public void goToWalletDetails(){
+        mListener.goToWalletDetails();
+    }
+
+    @Override
     public void notifyDataSetChanged() {
         paginationRequestSent = false;
         mUserListRecyclerViewAdapter.notifyDataSetChanged();
@@ -168,7 +173,7 @@ public class UserListFragment extends BaseFragment implements UserListView,
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-
+        void goToWalletDetails();
         void onListFragmentInteraction(User user);
     }
 }

@@ -394,6 +394,13 @@ public class DashboardActivity extends BaseActivity implements
         return findViewById(R.id.layout_container);
     }
 
+    @Override
+    public void goToWalletDetails(){
+        if(null != mViewPager){
+            mViewPager.setCurrentItem(1);
+        }
+    }
+
     private void showActionSnackBar(String text){
         Snackbar snack = generateSnackBar(text, true);
         TextView textViewNoAct = (TextView) snack.getView().findViewById(android.support.design.R.id.snackbar_action);

@@ -115,7 +115,7 @@ public class SettingsFragment extends BaseFragment implements
         drawListItems();
 
         AppBar appBar = AppBar.newInstance(getContext(),
-                "Wallet Settings",
+                "Settings",
                 false);
         setUpAppBar(view, appBar);
 

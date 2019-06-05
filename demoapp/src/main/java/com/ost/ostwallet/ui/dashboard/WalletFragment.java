@@ -74,7 +74,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
         mRecyclerView = view.findViewById(R.id.rv_transactions);
         mPullToRefresh = view.findViewById(R.id.pullToRefresh);
         AppBar appBar = AppBar.newInstance(getContext(),
-                "Your Wallet",
+                "Wallet",
                 false);
         setUpAppBar(view, appBar);
 
