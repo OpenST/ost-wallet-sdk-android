@@ -183,7 +183,7 @@ public class OstJsonApi {
         getAsyncQueue().submit(new Runnable() {
             @Override
             public void run() {
-                execGetBalance(userId, callback);
+                execGetPendingRecovery(userId, callback);
             }
         });
     }

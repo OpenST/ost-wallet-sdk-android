@@ -16,7 +16,10 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +30,8 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.network.OstJsonApi;
+import com.ost.walletsdk.network.OstJsonApiCallback;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -51,6 +56,10 @@ import com.ost.ostwallet.uicomponents.AppBar;
 import com.ost.ostwallet.uicomponents.OstTextView;
 import com.ost.ostwallet.util.CommonUtils;
 
+import org.json.JSONObject;
+
+import io.reactivex.annotations.Nullable;
+
 public class SettingsFragment extends BaseFragment implements
         SdkInteract.FlowInterrupt,
         SdkInteract.FlowComplete {
@@ -59,6 +68,8 @@ public class SettingsFragment extends BaseFragment implements
     public Boolean openDeviceAuthorization = false;
     private LayoutInflater mInflater;
     private ViewGroup mToggleBiometric;
+    private View mAbortRecoveryView = null;
+    private Boolean hasPendingRecoveries = false;
 
     public SettingsFragment() {
     }
@@ -130,7 +141,7 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(walletDetailsView);
 
-        View addSessionView = getFeatureView("Add Session", isUserActive);
+        View addSessionView = getFeatureView("Authenticate Wallet", isUserActive);
         addSessionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -283,14 +294,20 @@ public class SettingsFragment extends BaseFragment implements
             @Override
             public void onClick(View v) {
 
-                if (userDeviceNotAuthorized()) {
+                String msg = null;
+                if(ostUser.getCurrentDevice().isRecovering()){
+                    msg = "This device has recovery in progress. Other request cannot be initiated.";
+                } else if (userDeviceNotAuthorized()) {
                     if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
                     Fragment fragment = DeviceListFragment.initiateRecoveryInstance();
                     mListener.launchFeatureFragment(fragment);
                 } else {
+                    msg = "This is an authorized device, recovery applies only to cases where a user has no authorized device.";
+                }
+                if(null != msg){
                     AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
-                    builder.setMessage("This is an authorized device, recovery applies only to cases where a user has no authorized device.");
+                    builder.setMessage(msg);
 
                     builder.setPositiveButton("OK", null);
                     builder.create().show();
@@ -299,26 +316,33 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(initiateRecovery);
 
-        View abortRecovery = getFeatureView("Abort Recovery", isUserActive);
-        abortRecovery.setOnClickListener(new View.OnClickListener() {
+        mAbortRecoveryView = getFeatureView("Abort Recovery", hasPendingRecoveries);
+        mAbortRecoveryView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(hasPendingRecoveries){
+                    Fragment fragment = AbortRecoveryFragment.newInstance();
+                    mListener.launchFeatureFragment(fragment);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+                    builder.setMessage("Recovery not initiated, Abort recovery applies only if recovery has been previously initiated.");
 
-                Fragment fragment = AbortRecoveryFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
+                    builder.setPositiveButton("OK", null);
+                    builder.create().show();
+                }
             }
         });
-        mScrollViewSettings.addView(abortRecovery);
+        mScrollViewSettings.addView(mAbortRecoveryView);
 
-        View evenLogs = getFeatureView("Wallet events", true);
-        evenLogs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fragment = WalletEventFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
-            }
-        });
-        mScrollViewSettings.addView(evenLogs);
+//        View evenLogs = getFeatureView("Wallet events", true);
+//        evenLogs.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Fragment fragment = WalletEventFragment.newInstance();
+//                mListener.launchFeatureFragment(fragment);
+//            }
+//        });
+//        mScrollViewSettings.addView(evenLogs);
 
         View sessionLogOut = getFeatureView("Revoke all Sessions", isUserActive);
         sessionLogOut.setOnClickListener(new View.OnClickListener() {
@@ -331,8 +355,7 @@ public class SettingsFragment extends BaseFragment implements
                     openDeviceAuthorizationFragment();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
-                    builder.setTitle("Sure You want to Revoke Sessions?");
-                    builder.setMessage("This would revoke all other device sessions too. Sessions needs to be re-added with PIN. ");
+                    builder.setMessage("Are you sure you want to revoke all sessions? You will need re-authenticate to spend tokens.");
 
                     builder.setPositiveButton("Revoke", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
@@ -352,7 +375,8 @@ public class SettingsFragment extends BaseFragment implements
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
-                builder.setTitle("Sure You want to logout?");
+                builder.setTitle("Sure you want to logout?");
+                builder.setMessage("Are you sure you want to logout from OST Wallet");
 
                 builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -365,6 +389,8 @@ public class SettingsFragment extends BaseFragment implements
             }
         });
         mScrollViewSettings.addView(userLogout);
+
+        mScrollViewSettings.addView(appBottomText());
     }
 
     @Override
@@ -385,6 +411,7 @@ public class SettingsFragment extends BaseFragment implements
     public void onResume(){
         super.onResume();
         drawListItems();
+        fetchPendingRecoveries();
     }
 
     @Override
@@ -400,6 +427,9 @@ public class SettingsFragment extends BaseFragment implements
         if(!isEnabled){
             mTextView.setDisabled();
         }
+        if(featureTitle.equalsIgnoreCase("logout")){
+            mWalletSettingsItem.findViewById(R.id.ws_item_line).setVisibility(View.GONE);
+        }
         return mWalletSettingsItem;
     }
 
@@ -410,6 +440,16 @@ public class SettingsFragment extends BaseFragment implements
         demoAppTextView.setTextSize(13);
         demoAppTextView.setTypeface(Typeface.DEFAULT_BOLD);
         demoAppTextView.setTextColor(getResources().getColor(R.color.color_168dc1));
+        return demoAppTextView;
+    }
+
+    private View appBottomText() {
+        OstTextView demoAppTextView = new OstTextView(getContext());
+        demoAppTextView.setText("This app version of OST Wallet is a test running on testnet, and transactions do not involve real money.");
+        demoAppTextView.setPadding(dpToPx(20), dpToPx(20), dpToPx(20), dpToPx(20));
+        demoAppTextView.setTextSize(14);
+        demoAppTextView.setTextColor(getResources().getColor(R.color.color_9b9b9b));
+        demoAppTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         return demoAppTextView;
     }
 
@@ -435,6 +475,38 @@ public class SettingsFragment extends BaseFragment implements
     @Override
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         updateCommonCode(ostWorkflowContext);
+    }
+
+    private void setAbortRecoveryView(){
+        if(null != mAbortRecoveryView){
+            if(hasPendingRecoveries){
+                ((TextView)mAbortRecoveryView.findViewById(R.id.ws_item)).setTextColor(getResources().getColor(R.color.color_34445b));
+            } else {
+                ((OstTextView)mAbortRecoveryView.findViewById(R.id.ws_item)).setDisabled();
+            }
+        }
+    }
+
+    private void fetchPendingRecoveries() {
+        OstJsonApi.getPendingRecovery(AppProvider.get().getCurrentUser().getOstUserId(), new OstJsonApiCallback() {
+            @Override
+            public void onOstJsonApiSuccess(@Nullable JSONObject jsonObject) {
+                if ( null != jsonObject ) {
+                    hasPendingRecoveries = true;
+                } else {
+                    Log.d("SettingsFragment", "fetchPendingRecoveries data is null.");
+                    hasPendingRecoveries = false;
+                }
+                setAbortRecoveryView();
+            }
+
+            @Override
+            public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) {
+                Log.e("SettingsFragment", "fetchPendingRecoveries InternalErrorCode:" + err.getInternalErrorCode());
+                hasPendingRecoveries = false;
+                setAbortRecoveryView();
+            }
+        });
     }
 
     private void updateCommonCode(OstWorkflowContext ostWorkflowContext) {
