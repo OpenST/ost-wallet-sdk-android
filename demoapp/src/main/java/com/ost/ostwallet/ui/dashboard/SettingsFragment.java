@@ -446,8 +446,8 @@ public class SettingsFragment extends BaseFragment implements
     private View appBottomText() {
         OstTextView demoAppTextView = new OstTextView(getContext());
         demoAppTextView.setText("This app version of OST Wallet is a test running on testnet, and transactions do not involve real money.");
-        demoAppTextView.setPadding(dpToPx(20), dpToPx(20), dpToPx(20), dpToPx(20));
-        demoAppTextView.setTextSize(14);
+        demoAppTextView.setPadding(dpToPx(30), dpToPx(30), dpToPx(30), dpToPx(20));
+        demoAppTextView.setTextSize(15);
         demoAppTextView.setTextColor(getResources().getColor(R.color.color_9b9b9b));
         demoAppTextView.setGravity(Gravity.CENTER_HORIZONTAL);
         return demoAppTextView;
