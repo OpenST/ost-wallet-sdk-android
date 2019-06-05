@@ -22,11 +22,11 @@
     <color name="pin_normal">#6B767E</color>
 
     <!--Primary Button colors-->
-    <color name="primary_button">#9accd7</color>
+    <color name="primary_button">#168DC1</color>
     <color name="primary_button_text">#ffffff</color>
     <color name="primary_button_text_disabled">#efefef</color>
-    <color name="primary_button_disabled">#e0e0e0</color>
-    <color name="primary_button_pressed">#80b4bf</color>
+    <color name="primary_button_disabled">#B9DCEC</color>
+    <color name="primary_button_pressed">#61B2D6</color>
 
     <!--Secondary Button-->
     <color name="secondary_button">#168dc1</color>
@@ -53,6 +53,8 @@
     <color name="color_b9d18f">#B9D18F</color>
     <color name="color_ff8485">#ff8485</color>
     <color name="color_168dc1">#168dc1</color>
+    <color name="color_e7f3f8">#E7F3F8</color>
+    <color name="color_wallet_text">#FF34443C</color>
 
     <!--User list-->
     <color name="user_list_user_name">#597a84</color>

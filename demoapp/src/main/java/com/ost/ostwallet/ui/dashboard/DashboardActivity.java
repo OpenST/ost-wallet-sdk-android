@@ -102,7 +102,7 @@ public class DashboardActivity extends BaseActivity implements
         HomePagerAdapter homePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         homePagerAdapter.addFragment(UserListFragment.newInstance(), "Users");
         homePagerAdapter.addFragment(mWalletFragment, "Wallet");
-        homePagerAdapter.addFragment(mSettingsFragment, "Wallet Settings");
+        homePagerAdapter.addFragment(mSettingsFragment, "Settings");
 
         mViewPager.setAdapter(homePagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.home_navigation);

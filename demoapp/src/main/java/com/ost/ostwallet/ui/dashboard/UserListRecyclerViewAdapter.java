@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.ost.ostwallet.uicomponents.OstPrimaryButton;
 import com.ost.walletsdk.models.entities.OstUser;
 
 import java.util.List;
@@ -96,7 +97,6 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
                     )
             );
             holder.mSendButton.setEnabled(true);
-            holder.mSendButton.setTextColor(context.getResources().getColorStateList(R.drawable.secondary_button_text_color));
             holder.mSendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -143,7 +143,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         private final ImageView mImageView;
         private final TextView mUserName;
         private final TextView mStatus;
-        private final OstListButton mSendButton;
+        private final OstPrimaryButton mSendButton;
 
         public User mUser;
 
@@ -153,7 +153,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
             mImageView = (ImageView) view.findViewById(R.id.iv_user_image);
             mUserName = (TextView) view.findViewById(R.id.tv_user_name);
             mStatus = (TextView) view.findViewById(R.id.tv_status);
-            mSendButton = (OstListButton) view.findViewById(R.id.btn_send_token);
+            mSendButton = (OstPrimaryButton) view.findViewById(R.id.btn_send_token);
             view.findViewById(R.id.list_item_seperator).setVisibility(View.VISIBLE);
         }
 
