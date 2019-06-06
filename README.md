@@ -204,6 +204,26 @@ To abort initiated device recovery.<br/><br/>
 OstSdk.abortDeviceRecovery(userId, passphrase, new OstWorkFlowCallbackImpl())
 ```
 
+### Update Biometric Preference
+This method can be used to enable or disable the biometric.<br/><br/>
+&nbsp; parameter userId           userId of user<br/>
+&nbsp; parameter enable           A flag to enable or disable user biometric preference.<br/>
+&nbsp; parameter workFlowCallback Workflow callback Interact <br/>
+&nbsp; **void updateBiometricPreference(String userId, boolean enable, OstWorkFlowCallback workFlowCallback)**<br/>
+```java
+OstSdk.updateBiometricPreference(userId, enable, new OstWorkFlowCallbackImpl())
+```
+
+### Revoke Device
+To revoke device access.<br/><br/>
+&nbsp; parameter userId           userId of user<br/>
+&nbsp; parameter deviceAddress    Address of device to revoke<br/>
+&nbsp; parameter workFlowCallback Workflow callback Interact <br/>
+&nbsp; **void revokeDevice(String userId, String  deviceAddress , OstWorkFlowCallback workFlowCallback)**<br/>
+```java
+OstSdk.revokeDevice(userId, deviceAddress, new OstWorkFlowCallbackImpl())
+```
+
 ### Log out
 It will revoke all the sessions associated with provided userId<br/><br/>
 &nbsp; parameter userId           user Id whose sessions to revoke<br/>
