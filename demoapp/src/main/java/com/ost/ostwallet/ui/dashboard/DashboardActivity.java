@@ -395,7 +395,7 @@ public class DashboardActivity extends BaseActivity implements
         if(null != mViewPager){
             mViewPager.setCurrentItem(1);
         }
-        refreshWalletAfter(6000);
+        refreshWalletAfter(10000);
     }
 
     private void showActionSnackBar(String text){
