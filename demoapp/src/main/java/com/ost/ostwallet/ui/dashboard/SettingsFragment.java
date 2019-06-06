@@ -188,6 +188,17 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(viewMnemonicsView);
 
+        View contactSupportView = getFeatureView("OST Support", true);
+        contactSupportView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Fragment fragment = WebViewFragment.newInstance("https://help.ost.com/support/home", "OST Support");
+                mListener.launchFeatureFragment(fragment);
+            }
+        });
+        mScrollViewSettings.addView(contactSupportView);
+
 
         mScrollViewSettings.addView(getCategoryView("DEVICE"));
 

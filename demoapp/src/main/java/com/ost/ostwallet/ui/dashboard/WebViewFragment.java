@@ -38,6 +38,7 @@ public class WebViewFragment extends BaseFragment {
     private WebChromeClient webChromeClient;
     private WebViewClient webViewClient;
     private String mUrl;
+    private String mAppBarTitle = null;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -55,12 +56,21 @@ public class WebViewFragment extends BaseFragment {
         return fragment;
     }
 
+    public static WebViewFragment newInstance(String url, String title) {
+        WebViewFragment fragment = new WebViewFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        fragment.mUrl = url;
+        fragment.mAppBarTitle = title;
+        return fragment;
+    }
+
     @Override
     protected void onCreateViewDelegate(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateViewDelegate(inflater, container, savedInstanceState);
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_web_view, container, true);
 
-        AppBar appBar = AppBar.newInstance(getContext(), "Ost View", true);
+        AppBar appBar = AppBar.newInstance(getContext(), (null != mAppBarTitle ? mAppBarTitle : "Ost View"), true);
         setUpAppBar(view, appBar);
 
         mWebView = (WebView) view.findViewById(R.id.activity_main_webview);
