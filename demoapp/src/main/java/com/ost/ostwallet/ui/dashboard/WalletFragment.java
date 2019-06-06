@@ -35,7 +35,6 @@ public class WalletFragment extends BaseFragment implements WalletView {
 
     private TextView mWalletBalance;
     private TextView mWalletUsdBalance;
-    private TextView mTokenSymbolView;
 
     private WalletPresenter mWalletPresenter;
     private RecyclerView mRecyclerView;
@@ -66,8 +65,6 @@ public class WalletFragment extends BaseFragment implements WalletView {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.fragment_wallet, container, false);
 
         mWalletBalance = view.findViewById(R.id.ptv_wallet_balance);
-        mTokenSymbolView = view.findViewById(R.id.ptv_token_symbol);
-        mTokenSymbolView.setText(AppProvider.get().getCurrentEconomy().getTokenSymbol());
         mWalletUsdBalance = view.findViewById(R.id.ptv_wallet_usd_balance);
         mEmptyWalletLL = view.findViewById(R.id.empty_wallet_text);
         setDefaultText();
@@ -85,6 +82,8 @@ public class WalletFragment extends BaseFragment implements WalletView {
         mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setAdapter(mWalletPresenter.getTransactionRecyclerViewAdapter());
+
+        updateBalance("0.00", null);
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -129,9 +128,9 @@ public class WalletFragment extends BaseFragment implements WalletView {
 
     @Override
     public void updateBalance(String balance, String usdBalance) {
-        mWalletBalance.setText(balance);
+        mWalletBalance.setText(String.format("%s %s", balance, AppProvider.get().getCurrentEconomy().getTokenSymbol()));
         if(usdBalance != null){
-            mWalletUsdBalance.setText(String.format("≈ $ %s", usdBalance));
+            mWalletUsdBalance.setText(String.format("$ %s", usdBalance));
             mWalletUsdBalance.setVisibility(View.VISIBLE);
         }
     }

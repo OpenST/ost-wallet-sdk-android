@@ -54,7 +54,7 @@
     <color name="color_ff8485">#ff8485</color>
     <color name="color_168dc1">#168dc1</color>
     <color name="color_e7f3f8">#E7F3F8</color>
-    <color name="color_wallet_text">#FF34443C</color>
+    <color name="color_wallet_text">#34445b</color>
 
     <!--User list-->
     <color name="user_list_user_name">#597a84</color>
