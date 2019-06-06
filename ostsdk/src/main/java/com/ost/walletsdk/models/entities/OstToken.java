@@ -35,6 +35,8 @@ public class OstToken extends OstBaseEntity {
     private static final String CHAIN_ID = "chain_id";
     private static final String TAG = "OstToken";
     private static final String DECIMALS = "decimals";
+    private static final String BASE_TOKEN = "base_token";
+    private static final String COMPANY_TOKEN_HOLDERS = "company_token_holders";
 
 
     public static String getIdentifier() {
@@ -172,6 +174,18 @@ public class OstToken extends OstBaseEntity {
         }
     }
 
+    public JSONArray getCompanyTokenHolders() {
+        try {
+            JSONArray jsonArray = getAuxiliaryChain();
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            JSONArray tokenHolders = jsonObject.optJSONArray(COMPANY_TOKEN_HOLDERS);
+            return tokenHolders;
+        } catch (Exception e) {
+            Log.e(TAG, "Exception while getting chainId", e);
+            return null;
+        }
+    }
+
     @Override
     public String getParentId() {
         return "";
@@ -184,5 +198,9 @@ public class OstToken extends OstBaseEntity {
 
     public OstRule[] getAllRules() {
         return OstModelFactory.getRuleModel().getEntitiesByParentId(getId());
+    }
+
+    public String getBaseToken() {
+        return this.getJsonDataPropertyAsString(OstToken.BASE_TOKEN);
     }
 }

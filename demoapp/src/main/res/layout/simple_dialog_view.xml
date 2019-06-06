@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+
+    <com.ost.ostwallet.uicomponents.OstBoldTextView
+        android:id="@+id/tv_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="20sp"
+        android:textColor="#de000000"
+        android:layout_gravity="center_horizontal"
+        android:text="Heading"
+        android:textAlignment="center"/>
+
+    <com.ost.ostwallet.uicomponents.OstSubHeaderTextView
+        android:id="@+id/tv_sub_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:text="Sub heading"
+        android:textAlignment="center"/>
+
+    <com.ost.ostwallet.uicomponents.OstLinkButton
+        android:id="@+id/buttonOk"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:textAlignment="center"
+        android:text="OK"
+        android:textColor="@color/colorPrimary" />
+</LinearLayout>

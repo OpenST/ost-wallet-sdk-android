@@ -961,5 +961,11 @@ class InternalKeyManager {
 
     //endregion
 
+    //region - biometric
+    void setBiometricPreference(boolean enable) {
+        mKeyMetaStruct.setBiometricEnabled(enable);
+        storeKeyMetaStruct();
+    }
+    //endregion
 
 }

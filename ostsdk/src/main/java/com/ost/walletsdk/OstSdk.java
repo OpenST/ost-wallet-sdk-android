@@ -12,11 +12,13 @@ package com.ost.walletsdk;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.ost.walletsdk.database.OstSdkDatabase;
 import com.ost.walletsdk.database.OstSdkKeyDatabase;
+import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.models.Impls.OstModelFactory;
 import com.ost.walletsdk.models.entities.OstDevice;
@@ -27,6 +29,7 @@ import com.ost.walletsdk.workflows.OstAbortDeviceRecovery;
 import com.ost.walletsdk.workflows.OstActivateUser;
 import com.ost.walletsdk.workflows.OstAddCurrentDeviceWithMnemonics;
 import com.ost.walletsdk.workflows.OstAddSession;
+import com.ost.walletsdk.workflows.OstBiometricPreference;
 import com.ost.walletsdk.workflows.OstExecuteTransaction;
 import com.ost.walletsdk.workflows.OstGetPaperWallet;
 import com.ost.walletsdk.workflows.OstLogoutAllSessions;
@@ -34,12 +37,16 @@ import com.ost.walletsdk.workflows.OstPerform;
 import com.ost.walletsdk.workflows.OstRecoverDeviceWorkflow;
 import com.ost.walletsdk.workflows.OstRegisterDevice;
 import com.ost.walletsdk.workflows.OstResetPin;
+import com.ost.walletsdk.workflows.OstRevokeDevice;
+import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +91,7 @@ public class OstSdk {
      * token_id: 1055
      * }
      */
-    public static final String JSON_OBJECT = "JSON";
+    public static final String JSON_OBJECT = "json";
 
     /**
      * Type of context entity which is byte[] for work flow
@@ -113,7 +120,7 @@ public class OstSdk {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
-        BASE_URL = baseUrl;
+        BASE_URL = validateSdkUrl(baseUrl);
     }
 
     public static OstSdk get() {
@@ -131,15 +138,11 @@ public class OstSdk {
      * @param baseUrl base Url of OST Platform
      */
     public static void initialize(Context context, String baseUrl) {
-        if (INSTANCE == null) {
-            synchronized (OstSdk.class) {
-                if (INSTANCE == null) {
-                    //Create Config.
-                    OstConfigs.init(context);
-                    //Create instance.
-                    INSTANCE = new OstSdk(context, baseUrl);
-                }
-            }
+        synchronized (OstSdk.class) {
+            //Create Config.
+            OstConfigs.init(context);
+            //Create instance.
+            INSTANCE = new OstSdk(context, baseUrl);
         }
     }
 
@@ -155,6 +158,15 @@ public class OstSdk {
         return OstModelFactory.getUserModel().getEntityById(id);
     }
 
+    /**
+     * To check whether biometric of provide userId is enabled for this device or not
+     *
+     * @param userId user Id whose biometric config to retrieve
+     * @return boolean biometric enabled or disabled
+     */
+    public static boolean isBiometricEnabled(String userId) {
+        return new OstKeyManager(userId).isBiometricEnabled();
+    }
     // region - Work flows
 
     /**
@@ -180,7 +192,7 @@ public class OstSdk {
         ostActivateUser.perform();
     }
 
-    private static void registerDevice(String userId, String tokenId, boolean forceSync, OstWorkFlowCallback callback) {
+    private static void registerDevice(@NonNull String userId, @NonNull String tokenId, boolean forceSync, @NonNull OstWorkFlowCallback callback) {
         final OstRegisterDevice ostRegisterDevice = new OstRegisterDevice(userId, tokenId, forceSync, callback);
         ostRegisterDevice.perform();
     }
@@ -349,13 +361,13 @@ public class OstSdk {
     public static Bitmap getAddDeviceQRCode(String userId) {
         OstUser ostUser = OstUser.getById(userId);
         if (null == ostUser) {
-            Log.e(TAG, String.format("gadqc_1 %s", OstErrors.getMessage(OstErrors.ErrorCode.USER_NOT_FOUND)));
+            Log.e(TAG, String.format("gadqc_1 %s", OstErrors.getMessage(OstErrors.ErrorCode.INVALID_USER_ID)));
             return null;
         }
 
         OstDevice ostDevice = ostUser.getCurrentDevice();
         if (null == ostDevice) {
-            Log.e(TAG, String.format("gadqc_2 %s", OstErrors.getMessage(OstErrors.ErrorCode.CURRENT_DEVICE_NOT_FOUND)));
+            Log.e(TAG, String.format("gadqc_2 %s", "Current device is not registered with the user. Either rectify the value being sent in device Id field OR register this device with the user. "));
             return null;
         }
 
@@ -398,6 +410,22 @@ public class OstSdk {
                 newPassphrase,
                 workFlowCallback);
         ostResetPin.perform();
+    }
+
+    /**
+     * To revoke device address from user id's device manager.
+     *
+     * @param userId           user Id whose device to revoke
+     * @param deviceAddress    Device address of the device to be revoked
+     * @param workFlowCallback Work flow interact object
+     */
+    public static void revokeDevice(String userId,
+                                    String deviceAddress,
+                                    OstWorkFlowCallback workFlowCallback) {
+        final OstRevokeDevice ostRevokeDevice = new OstRevokeDevice(userId,
+                deviceAddress,
+                workFlowCallback);
+        ostRevokeDevice.perform();
     }
 
     /**
@@ -446,5 +474,40 @@ public class OstSdk {
         final OstLogoutAllSessions ostLogoutAllSessions = new OstLogoutAllSessions(userId, workFlowCallback);
         ostLogoutAllSessions.perform();
     }
+
+    /**
+     * To update Biometric preference
+     * @param userId - user Id
+     * @param enable - to enable or disable
+     * @param callback  - A workflow callback handler.
+     */
+    public static void updateBiometricPreference(String userId, boolean enable, OstWorkFlowCallback callback) {
+        final OstBiometricPreference ostBiometricPreference = new OstBiometricPreference(userId, enable, callback);
+        ostBiometricPreference.perform();
+    }
     // endregion
+
+    private String validateSdkUrl(String baseUrl) {
+        try {
+            new URL(baseUrl);
+        } catch (MalformedURLException e) {
+            throw new OstError("cu_vsu_1", OstErrors.ErrorCode.INVALID_SDK_URL);
+        }
+
+        baseUrl = baseUrl.trim();
+        if ('/' == baseUrl.charAt(baseUrl.length() - 1)) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+
+        String[] endPointSplits = baseUrl.split("/");
+        if (endPointSplits.length < 5) {
+            throw new OstError("cu_vsu_2", OstErrors.ErrorCode.INVALID_SDK_URL);
+        }
+        String providedApiVersion = endPointSplits[4].toLowerCase();
+        String expectedApiVersions = String.format("v%s", OstConstants.OST_API_VERSION).toLowerCase();
+        if ( !providedApiVersion.equalsIgnoreCase(expectedApiVersions) ) {
+            throw new OstError("cu_vsu_3", OstErrors.ErrorCode.INVALID_SDK_URL);
+        }
+        return baseUrl;
+    }
 }

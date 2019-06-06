@@ -40,7 +40,7 @@ import java.util.Map;
  * To initiate abort recovery device should be at least registered and
  * the user must provide his device's user passphrase
  */
-public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
+public class OstAbortDeviceRecovery extends OstBaseWorkFlow {
 
     private static final String TAG = "OstAbortDeviceRecovery";
     private SignedRecoverOperationStruct dataHolder;
@@ -138,13 +138,8 @@ public class OstAbortDeviceRecovery extends OstBaseUserAuthenticatorWorkflow {
             postRequestAcknowledge(contextEntity);
 
             return pollForStatus();
-        } catch (IOException e) {
-            OstError error = new OstError("wf_rdwf_poa_1", ErrorCode.POST_RESET_RECOVERY_API_FAILED);
-            return postErrorInterrupt(error);
         } catch (OstError error) {
             return postErrorInterrupt(error);
-        } finally {
-
         }
     }
 

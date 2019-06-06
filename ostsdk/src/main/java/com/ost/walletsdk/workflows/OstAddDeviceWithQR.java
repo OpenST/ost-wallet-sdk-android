@@ -36,7 +36,7 @@ import java.io.IOException;
  * It authorize device address by adding it to Device Manager.
  * Device to add should be in {@link OstDevice.CONST_STATUS#REGISTERED} state.
  */
-public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
+public class OstAddDeviceWithQR extends OstBaseWorkFlow {
 
     private static final String TAG = "OstAddDeviceWithQR";
     private final String mDeviceAddressToBeAdded;
@@ -48,11 +48,7 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     AsyncStatus performOnAuthenticated() {
-        try {
-            mOstApiClient.getDeviceManager();
-        } catch (IOException e) {
-            return postErrorInterrupt("wf_adwq_pr_7", ErrorCode.ADD_DEVICE_API_FAILED);
-        }
+        mOstApiClient.getDeviceManager();
 
         OstMultiSigSigner ostMultiSigSigner = new OstMultiSigSigner(mUserId);
         SignedAddDeviceStruct signedData = ostMultiSigSigner.addExternalDevice(mDeviceAddressToBeAdded);
@@ -60,8 +56,10 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
         Log.i(TAG, "Api Call payload");
         AsyncStatus apiCallStatus = makeAddDeviceCall(signedData);
 
+
         if (!apiCallStatus.isSuccess()) {
-            return postErrorInterrupt("wf_adwq_pr_4", ErrorCode.ADD_DEVICE_API_FAILED);
+            //makeAddDeviceCall will throw OstApiError. So, this is hypothetical case.
+            return postErrorInterrupt("wf_adwq_pr_4", ErrorCode.SDK_ERROR);
         }
 
         //request acknowledge
@@ -90,7 +88,7 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
     @Override
     void ensureValidParams() {
         if ( TextUtils.isEmpty(mDeviceAddressToBeAdded) || !WalletUtils.isValidAddress(mDeviceAddressToBeAdded) ) {
-            throw new OstError("wf_ad_evp_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
+            throw new OstError("wf_ad_evp_1", ErrorCode.INVALID_DEVICE_ADDRESS);
         }
 
         super.ensureValidParams();
@@ -101,11 +99,7 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
         //Validate mDeviceAddressToBeAdded
         OstDevice ostDevice = OstDevice.getById(mDeviceAddressToBeAdded);
         if (null == ostDevice) {
-            try {
-                mOstApiClient.getDevice(mDeviceAddressToBeAdded);
-            } catch (IOException e) {
-                Log.e(TAG, "Exception while getting device");
-            }
+            mOstApiClient.getDevice(mDeviceAddressToBeAdded);
         }
         ostDevice = OstDevice.getById(mDeviceAddressToBeAdded);
         if ( null == ostDevice || !ostDevice.canBeAuthorized() ) {
@@ -136,11 +130,7 @@ public class OstAddDeviceWithQR extends OstBaseUserAuthenticatorWorkflow {
         @Override
         public void validateApiDependentParams() {
             String deviceAddress = getDeviceAddress();
-            try {
-                new OstApiClient(userId).getDevice(deviceAddress);
-            } catch (IOException e) {
-                throw new OstError("wf_pe_ad_3", ErrorCode.GET_DEVICE_API_FAILED);
-            }
+            new OstApiClient(userId).getDevice(deviceAddress);
             OstDevice ostDevice = OstDevice.getById(deviceAddress);
             if (null == ostDevice) {
                 throw new OstError("wf_pe_ad_4", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);

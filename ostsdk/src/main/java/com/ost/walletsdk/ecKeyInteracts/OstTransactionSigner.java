@@ -15,7 +15,6 @@ import android.util.Log;
 import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedTransactionStruct;
-import com.ost.walletsdk.models.entities.OstRule;
 import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
@@ -75,26 +74,26 @@ public class OstTransactionSigner {
                 double pricePointOSTtoUSD;
                 int decimalExponent;
                 OstApiClient ostApiClient = new OstApiClient(mUserId);
+                JSONObject pricePointApiResponse = ostApiClient.getPricePoints();
                 try {
                     CommonUtils commonUtils = new CommonUtils();
-                    JSONObject jsonObject = ostApiClient.getPricePoints();
-                    if (!commonUtils.isValidResponse(jsonObject)) {
-                        OstError ostError = new OstError("km_ts_st_5",
-                                OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
-                        throw ostError;
+                    if (!commonUtils.isValidResponse(pricePointApiResponse)) {
+                        throw OstError.ApiResponseError("km_ts_st_5", "getPricePoints", pricePointApiResponse);
                     }
-                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(jsonObject, OstConfigs.getInstance().PRICE_POINT_TOKEN_SYMBOL);
+                    JSONObject pricePointObject = commonUtils.parseObjectResponseForKey(pricePointApiResponse, OstSdk.getToken(user.getTokenId()).getBaseToken());
                     if (null == pricePointObject) {
-                        OstError ostError = new OstError("km_ts_st_6",
-                                OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
-                        throw ostError;
+                        throw OstError.ApiResponseError("km_ts_st_6", "getPricePoints", pricePointApiResponse);
                     }
                     pricePointOSTtoUSD = pricePointObject.getDouble(OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL);
                     decimalExponent = pricePointObject.getInt(DECIMAL_EXPONENT);
 
-                } catch (Exception e) {
-                    OstError ostError = new OstError("km_ts_st_7",
-                            OstErrors.ErrorCode.PRICE_POINTS_API_FAILED);
+                } catch (Throwable e) {
+                    OstError ostError;
+                    if ( e instanceof OstError ) {
+                        ostError = (OstError) e;
+                    } else {
+                        ostError = OstError.ApiResponseError("km_ts_st_7", "getPricePoints", pricePointApiResponse);
+                    }
                     throw ostError;
                 }
                 Log.i(TAG, "Building call data");
@@ -104,7 +103,7 @@ public class OstTransactionSigner {
                 OstToken ostToken = OstToken.getById(mTokenId);
                 if (null == ostToken) {
                     throw new OstError("km_ts_st_8",
-                            ErrorCode.TOKEN_API_FAILED);
+                            ErrorCode.INVALID_TOKEN_ID);
                 }
                 String conversionFactor = ostToken.getConversionFactor();
                 if (null == conversionFactor) {
@@ -129,7 +128,7 @@ public class OstTransactionSigner {
                 break;
             default:
                 OstError ostError = new OstError("km_ts_st_11",
-                        OstErrors.ErrorCode.UNKNOWN_RULE_NAME);
+                        OstErrors.ErrorCode.RULE_NOT_FOUND);
                 throw ostError;
 
         }
@@ -150,7 +149,7 @@ public class OstTransactionSigner {
         Log.i(TAG, "Creating transaction hash to sign");
         String eip1077TxnHash = createEIP1077TxnHash(callData, ruleAddress, activeSession.getNonce());
         if (null == eip1077TxnHash) {
-            OstError ostError = new OstError("km_ts_st_3", ErrorCode.EIP1077_FAILED);
+            OstError ostError = new OstError("km_ts_st_3", ErrorCode.SDK_ERROR);
             throw ostError;
         }
 

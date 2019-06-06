@@ -145,7 +145,7 @@ public class OstRecoveryManager {
                     newRecoveryOwnerAddress, recoveryContractAddress);
 
             if (null == eip712TypedData) {
-                throw new OstError("km_rs_grrows_4", ErrorCode.EIP712_FAILED);
+                throw new OstError("km_rs_grrows_4", ErrorCode.SDK_ERROR);
             }
             String eip712Hash = getEIP712SignHash(eip712TypedData);
 
@@ -227,7 +227,7 @@ public class OstRecoveryManager {
             try {
                 dataHolder = composeRecoveryOperation(INITIATE_RECOVERY_STRUCT, deviceToRevoke, currentDevice);
             } catch (Throwable th) {
-                throw new OstError("km_rs_grds_6", ErrorCode.EIP712_FAILED);
+                throw new OstError("km_rs_grds_6", ErrorCode.SDK_ERROR);
             }
 
             salt = getSalt();
@@ -300,7 +300,7 @@ public class OstRecoveryManager {
             try {
                 dataHolder = composeRecoveryOperation(ABORT_RECOVERY_STRUCT, deviceToRevoke, recoveringDevice);
             } catch (Throwable th) {
-                throw new OstError("km_rs_gads_6", ErrorCode.EIP712_FAILED);
+                throw new OstError("km_rs_gads_6", ErrorCode.SDK_ERROR);
             }
 
             salt = getSalt();
@@ -355,28 +355,21 @@ public class OstRecoveryManager {
         try {
             return new EIP712(typedData).toEIP712TransactionHash();
         } catch (Exception e) {
-            throw new OstError("km_rs_grrows_4", ErrorCode.EIP712_FAILED);
+            throw new OstError("km_rs_grrows_4", ErrorCode.SDK_ERROR);
         }
     }
     //endregion
 
     //region - Network calls.
     private byte[] getSalt() {
-        JSONObject jsonObject = null;
-        JSONObject jsonData = null;
+        JSONObject jsonObject = apiClient.getSalt();
         JSONObject jsonSalt = null;
         try {
-            jsonObject = apiClient.getSalt();
-            jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
+            JSONObject jsonData =  jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
             jsonSalt = jsonData.getJSONObject(SALT);
             return jsonSalt.getString(SCRYPT_SALT).getBytes(UTF_8);
-        } catch (IOException e) {
-            throw new OstError("km_rm_gs_1", ErrorCode.SALT_API_FAILED);
         } catch (JSONException e) {
-            throw new OstError("km_rm_gs_2", ErrorCode.SALT_API_FAILED);
-        } catch (Throwable th) {
-            //Catch everything esle.
-            throw new OstError("km_rm_gs_3", ErrorCode.SALT_API_FAILED);
+            throw OstError.ApiResponseError("km_rm_gs_2","getSalt", jsonObject);
         }
         finally {
             if ( null != jsonSalt && jsonSalt.has(SCRYPT_SALT) ) {
@@ -387,26 +380,9 @@ public class OstRecoveryManager {
 
 
     private void forceSyncUser() {
-        try {
-            apiClient.getUser();
-        } catch (IOException e) {
-            throw new OstError("km_orm_fsu_1", ErrorCode.GET_USER_API_FAILED);
-        }
+        apiClient.getUser();
     }
 
-    private OstDevice getDevice( String deviceAddress ) {
-        // Fetch information of device to recover.
-        try {
-            apiClient.getDevice(deviceAddress);
-        } catch (IOException e) {
-            throw new OstError("km_orm_gd_1", ErrorCode.GET_DEVICE_API_FAILED);
-        }
-        OstDevice device = OstDevice.getById(deviceAddress);
-        if ( null == device) {
-            throw new OstError("km_orm_gd_2", ErrorCode.GET_DEVICE_API_FAILED);
-        }
-        return device;
-    }
     //endregion
 
 

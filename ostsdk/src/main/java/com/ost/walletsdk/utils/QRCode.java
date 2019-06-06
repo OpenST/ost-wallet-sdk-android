@@ -147,14 +147,14 @@ public class QRCode {
             for (int i = 0; i < mHeight; i++) {
                 for (int j = 0; j < mWidth; j++) {
                     if (bitMatrix.get(j, i)) {
-                        pixels[i * mWidth + j] = 0xFFFFFFFF;
-                    } else {
                         pixels[i * mWidth + j] = 0x00000000;
+                    } else {
+                        pixels[i * mWidth + j] = 0xFFFFFFFF;
                     }
                 }
             }
             MultiFormatReader multiFormatReader = new MultiFormatReader();
-            return Bitmap.createBitmap(pixels, mWidth, mHeight, Bitmap.Config.ARGB_8888);
+            return Bitmap.createBitmap(pixels, mWidth, mHeight, Bitmap.Config.RGB_565);
         } catch (WriterException e) {
             e.printStackTrace();
         }

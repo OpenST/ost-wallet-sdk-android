@@ -42,7 +42,7 @@ import java.util.Map;
  * It revokes provided device address from device manager.
  * Current device should be in {@link OstDevice.CONST_STATUS#AUTHORIZED} state.
  */
-public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
+public class OstRevokeDevice extends OstBaseWorkFlow {
 
     private static final String TAG = "OstRevokeDeviceWithQR";
     private final String mDeviceToBeRevoked;
@@ -54,11 +54,7 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
 
     @Override
     AsyncStatus performOnAuthenticated() {
-        try {
-            mOstApiClient.getDeviceManager();
-        } catch (IOException e) {
-            return postErrorInterrupt("wf_rd_pr_7", ErrorCode.DEVICE_MANAGER_API_FAILED);
-        }
+        mOstApiClient.getDeviceManager();
 
         OstDevice ostDeviceToBeRevoked = OstDevice.getById(mDeviceToBeRevoked);
         if (null == ostDeviceToBeRevoked) {
@@ -72,7 +68,8 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
         AsyncStatus apiCallStatus = makeRevokeDeviceApiCall(signedData);
 
         if (!apiCallStatus.isSuccess()) {
-            return postErrorInterrupt("wf_rd_pr_4", ErrorCode.ADD_DEVICE_API_FAILED);
+            //makeRevokeDeviceApiCall [postRevokeDevice] will throw OstApiError. So, this is hypothetical case.
+            return postErrorInterrupt("wf_rd_pr_4", ErrorCode.SDK_ERROR);
         }
 
         //request acknowledge
@@ -85,31 +82,26 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
 
     private AsyncStatus makeRevokeDeviceApiCall(SignedRevokeDeviceStruct signedData) {
         Log.i(TAG, "Api Call payload");
-        try {
-            String deviceManagerAddress = signedData.getDeviceManagerAddress();
-            Map<String, Object> map = new OstPayloadBuilder()
-                    .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.REVOKE_DEVICE.toUpperCase())
-                    .setRawCalldata(signedData.getRawCallData())
-                    .setCallData(signedData.getCallData())
-                    .setTo(deviceManagerAddress)
-                    .setSignatures(signedData.getSignature())
-                    .setSigners(Arrays.asList(signedData.getSignerAddress()))
-                    .setNonce(String.valueOf(signedData.getNonce()))
-                    .build();
-            OstApiClient ostApiClient = new OstApiClient(mUserId);
-            JSONObject jsonObject = ostApiClient.postRevokeDevice(map);
-            Log.d(TAG, String.format("JSON Object response: %s", jsonObject.toString()));
-            if (isValidResponse(jsonObject)) {
+        String deviceManagerAddress = signedData.getDeviceManagerAddress();
+        Map<String, Object> map = new OstPayloadBuilder()
+                .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.REVOKE_DEVICE.toUpperCase())
+                .setRawCalldata(signedData.getRawCallData())
+                .setCallData(signedData.getCallData())
+                .setTo(deviceManagerAddress)
+                .setSignatures(signedData.getSignature())
+                .setSigners(Arrays.asList(signedData.getSignerAddress()))
+                .setNonce(String.valueOf(signedData.getNonce()))
+                .build();
+        OstApiClient ostApiClient = new OstApiClient(mUserId);
+        JSONObject jsonObject = ostApiClient.postRevokeDevice(map);
+        Log.d(TAG, String.format("JSON Object response: %s", jsonObject.toString()));
+        if (isValidResponse(jsonObject)) {
 
-                //increment nonce
-                OstDeviceManager.getById(deviceManagerAddress).incrementNonce();
+            //increment nonce
+            OstDeviceManager.getById(deviceManagerAddress).incrementNonce();
 
-                return new AsyncStatus(true);
-            } else {
-                return new AsyncStatus(false);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "IO Exception");
+            return new AsyncStatus(true);
+        } else {
             return new AsyncStatus(false);
         }
     }
@@ -132,7 +124,7 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
     @Override
     void ensureValidParams() {
         if (TextUtils.isEmpty(mDeviceToBeRevoked) || !WalletUtils.isValidAddress(mDeviceToBeRevoked)) {
-            throw new OstError("wf_rd_evp_1", ErrorCode.INVALID_WORKFLOW_PARAMS);
+            throw new OstError("wf_rd_evp_1", ErrorCode.INVALID_DEVICE_ADDRESS);
         }
 
         super.ensureValidParams();
@@ -143,11 +135,7 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
         //Validate mDeviceAddressToBeAdded
         OstDevice ostDevice = OstDevice.getById(mDeviceToBeRevoked);
         if (null == ostDevice) {
-            try {
-                mOstApiClient.getDevice(mDeviceToBeRevoked);
-            } catch (IOException e) {
-                Log.e(TAG, "Exception while getting device");
-            }
+            mOstApiClient.getDevice(mDeviceToBeRevoked);
         }
         ostDevice = OstDevice.getById(mDeviceToBeRevoked);
         if ( null == ostDevice || !ostDevice.canBeRevoked() ) {
@@ -178,11 +166,8 @@ public class OstRevokeDevice extends OstBaseUserAuthenticatorWorkflow {
         @Override
         public void validateApiDependentParams() {
             String deviceAddress = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
-            try {
-                new OstApiClient(userId).getDevice(deviceAddress);
-            } catch (IOException e) {
-                throw new OstError("wf_pe_rd_3", ErrorCode.GET_DEVICE_API_FAILED);
-            }
+            new OstApiClient(userId).getDevice(deviceAddress);
+
             if (null == OstDevice.getById(deviceAddress)) {
                 throw new OstError("wf_pe_rd_4", ErrorCode.DEVICE_CAN_NOT_BE_REVOKED);
             }

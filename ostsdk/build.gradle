@@ -68,8 +68,8 @@ dependencies {
     api 'com.madgag.spongycastle:core:1.56.0.0'
     api group: 'org.web3j', name: 'core', version: '4.1.0-android'
     // Lifecycle components
-    implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
-    annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
+    implementation "android.arch.lifecycle:extensions:$rootProject.roomVersion"
+    annotationProcessor "android.arch.lifecycle:compiler:$rootProject.roomVersion"
 
 
     // https://mvnrepository.com/artifact/com.google.guava/guava

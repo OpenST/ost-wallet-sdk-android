@@ -30,6 +30,7 @@ public class FingerprintAuthenticationDialogActivity extends Activity
         implements FingerprintUiHelper.Callback {
 
     private static final String TAG = "BiometricDailog";
+    public static final String DIALOG_HEADING = "heading";
     private TextView mCancelButton;
 
     private FingerprintUiHelper mFingerprintUiHelper;
@@ -41,6 +42,11 @@ public class FingerprintAuthenticationDialogActivity extends Activity
         setContentView(R.layout.fingerprint_dialog_container);
         // Do not create a new Fragment when the Activity is re-created such as orientation changes.
         setFinishOnTouchOutside(false);
+
+        String heading = getIntent().getStringExtra(DIALOG_HEADING);
+        TextView headingTextView = findViewById(R.id.tv_heading);
+        headingTextView.setText(heading);
+
         mCancelButton = findViewById(R.id.cancel_button);
         mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override

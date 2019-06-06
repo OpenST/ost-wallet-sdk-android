@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_verify_data"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.ost.ostwallet.uicomponents.OstSubHeaderTextView
+        android:id="@+id/ptv_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You’ve a new device authorization\n request from the following device"
+        android:singleLine="false" />
+
+    <RelativeLayout
+        android:id="@+id/rl_device_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ptv_data"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_data_view">
+
+        <com.ost.ostwallet.uicomponents.OstTextView
+            android:id="@+id/lbl_verify_data_heading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="Device Address"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp" />
+
+        <com.ost.ostwallet.uicomponents.OstTextView
+            android:id="@+id/atv_verify_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lbl_verify_data_heading"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="0xbbfb321ba9531Ca0a8dE212f364A24b5dA1d7794"
+            android:textColor="@android:color/black"
+            android:textSize="13sp" />
+    </RelativeLayout>
+</RelativeLayout>

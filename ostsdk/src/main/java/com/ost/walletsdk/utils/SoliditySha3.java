@@ -185,7 +185,7 @@ public class SoliditySha3 {
             }
 
             if (num.compareTo(new BigInteger("0")) < 0) {
-                return twosComplement(num).toString(16);
+                return num.abs().toString(16);
             } else {
                 return size != -1 ? leftPad(num.toString(16), size / 8 * 2) : num.toString(16);
             }

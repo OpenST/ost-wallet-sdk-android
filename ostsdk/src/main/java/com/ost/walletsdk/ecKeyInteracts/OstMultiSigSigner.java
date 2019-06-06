@@ -56,7 +56,7 @@ public class OstMultiSigSigner {
             String messageHash = new EIP712(struct.getTypedData()).toEIP712TransactionHash();
             struct.setMessageHash(messageHash);
         } catch (Exception e) {
-            OstError ostError = new OstError("km_gss_as_5", ErrorCode.FAILED_TO_GENERATE_MESSAGE_HASH);
+            OstError ostError = new OstError("km_gss_as_5", ErrorCode.SDK_ERROR);
             throw ostError;
         }
 
@@ -104,7 +104,7 @@ public class OstMultiSigSigner {
             String messageHash = new EIP712(struct.getTypedData()).toEIP712TransactionHash();
             struct.setMessageHash(messageHash);
         } catch (Exception e) {
-            OstError ostError = new OstError("km_gss_los_5", ErrorCode.FAILED_TO_GENERATE_MESSAGE_HASH);
+            OstError ostError = new OstError("km_gss_los_5", ErrorCode.SDK_ERROR);
             throw ostError;
         }
 
@@ -187,7 +187,7 @@ public class OstMultiSigSigner {
         }
 
         if ( device.isAuthorized() ) {
-            throw new OstError("km_gss_cads_2", ErrorCode.DEVICE_ALREADY_AUTHORIZED);
+            throw new OstError("km_gss_cads_2", ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
         }
 
         if ( !device.canBeAuthorized() ) {
@@ -207,7 +207,7 @@ public class OstMultiSigSigner {
             String messageHash = new EIP712(struct.getTypedData()).toEIP712TransactionHash();
             struct.setMessageHash(messageHash);
         } catch (Exception e) {
-            OstError ostError = new OstError("km_gss_cads_4", ErrorCode.FAILED_TO_GENERATE_MESSAGE_HASH);
+            OstError ostError = new OstError("km_gss_cads_4", ErrorCode.SDK_ERROR);
             throw ostError;
         }
 
@@ -309,7 +309,7 @@ public class OstMultiSigSigner {
         }
 
         if (device.isRevoked()) {
-            throw new OstError("km_gss_crds_2", ErrorCode.DEVICE_ALREADY_REVOKED);
+            throw new OstError("km_gss_crds_2", ErrorCode.INVALID_RECOVER_DEVICE_ADDRESS);
         }
 
         if (!device.canBeRevoked()) {
@@ -329,7 +329,7 @@ public class OstMultiSigSigner {
             String messageHash = new EIP712(struct.getTypedData()).toEIP712TransactionHash();
             struct.setMessageHash(messageHash);
         } catch (Exception e) {
-            OstError ostError = new OstError("km_gss_crds_4", ErrorCode.FAILED_TO_GENERATE_MESSAGE_HASH);
+            OstError ostError = new OstError("km_gss_crds_4", ErrorCode.SDK_ERROR);
             throw ostError;
         }
 

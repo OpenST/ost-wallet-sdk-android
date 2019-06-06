@@ -39,7 +39,7 @@ abstract class OstDeviceDataDefinitionInstance implements OstPerform.DataDefinit
     public void validateDataPayload() {
         boolean hasDeviceAddress = dataObject.has(OstConstants.QR_DEVICE_ADDRESS);
         if (!hasDeviceAddress) {
-            throw new OstError("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_QR_DEVICE_OPERATION_DATA);
+            throw new OstError("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_DEVICE_ADDRESS);
         }
     }
 
