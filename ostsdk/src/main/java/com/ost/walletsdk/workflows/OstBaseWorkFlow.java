@@ -15,12 +15,14 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.R;
 import com.ost.walletsdk.biometric.OstBiometricAuthentication;
 import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.ecKeyInteracts.OstRecoveryManager;
@@ -51,7 +53,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Map;
@@ -109,7 +110,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
      * @param userId - Ost Platform user-id
      * @param callback - callback handler of the application.
      */
-    OstBaseWorkFlow(String userId, OstWorkFlowCallback callback) {
+    OstBaseWorkFlow(@NonNull String userId, @NonNull OstWorkFlowCallback callback) {
         mUserId = userId;
 
         mHandler = new Handler(Looper.getMainLooper());
@@ -120,10 +121,6 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
     
     //region - Validators
-    boolean hasValidParams() {
-        return !TextUtils.isEmpty(mUserId) && null != mHandler && null != getCallback();
-    }
-
     /**
      * Method that can be called to validate and params.
      * @Dev: Please make sure this method is only used to perform validations
@@ -198,7 +195,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
                     Log.i(TAG, "Ask for authentication");
                     if (shouldAskForAuthentication()) {
                         if (shouldAskForBioMetric()) {
-                            new OstBiometricAuthentication(OstSdk.getContext(), getBioMetricCallBack());
+                            new OstBiometricAuthentication(OstSdk.getContext(), getBiometricHeading(), getBioMetricCallBack());
                         } else {
                             return goToState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
                         }
@@ -218,6 +215,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
                     //Call the abstract method.
                     AsyncStatus status = performOnAuthenticated();
                     if ( !status.isSuccess() ) {
+                        //performOnAuthenticated will throw OstApiError. So, this is hypothetical case.
                         goToState(WorkflowStateManager.COMPLETED_WITH_ERROR);
                     }
                     return status;
@@ -225,7 +223,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
                     if ( stateObject instanceof OstError) {
                         return postErrorInterrupt( (OstError) stateObject );
                     } else {
-                        OstError error = new OstError("bua_wf_osc_canceled", ErrorCode.UNKNOWN);
+                        OstError error = new OstError("bua_wf_osc_canceled", ErrorCode.WORKFLOW_CANCELLED);
                         return postErrorInterrupt(error);
                     }
 
@@ -249,7 +247,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
     //endregion
 
-    
+
     //region - SME helper methods
     protected AsyncStatus performNext(Object stateObject) {
         stateManager.setNextState(stateObject);
@@ -277,8 +275,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         performWithState(state, null);
     }
     //endregion
-    
-    
+
+
     //region - Entity ensure methods
     protected AsyncStatus performValidations(Object stateObject) {
         try {
@@ -369,14 +367,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
 
     void syncOstUser() throws OstError {
-        try {
-            mOstApiClient.getUser();
-            mOstUser = OstUser.getById(mUserId);
-        } catch (IOException e) {
-            Log.d(TAG, "Encountered IOException while fetching user.");
-            OstError ostError = new OstError("wp_base_sou_1", ErrorCode.GET_USER_API_FAILED);
-            throw ostError;
-        }
+        mOstApiClient.getUser();
+        mOstUser = OstUser.getById(mUserId);
     }
 
     OstToken mOstToken;
@@ -394,13 +386,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
 
     void syncOstToken() {
-        try {
-            mOstApiClient.getToken();
-            mOstToken = OstToken.getById(mOstUser.getTokenId());
-        } catch (IOException e) {
-            Log.i(TAG, "Encountered IOException while fetching token.");
-            throw new OstError("wp_base_sot_1", ErrorCode.TOKEN_API_FAILED);
-        }
+        mOstApiClient.getToken();
+        mOstToken = OstToken.getById(mOstUser.getTokenId());
     }
 
     void ensureDeviceAuthorized() throws OstError {
@@ -428,11 +415,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
             throw new OstError("wp_base_scd_1", ErrorCode.DEVICE_NOT_SETUP);
         }
         String currentDeviceAddress = device.getAddress();
-        try {
-            mOstApiClient.getDevice( currentDeviceAddress );
-        } catch (IOException e) {
-            throw new OstError("wp_base_scd_3", ErrorCode.GET_DEVICE_API_FAILED);
-        }
+        mOstApiClient.getDevice( currentDeviceAddress );
         mCurrentDevice = ostUser.getCurrentDevice();
     }
 
@@ -457,13 +440,10 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         if ( null == deviceManagerAddress ) {
             throw new OstError("wp_base_sdm_1", ErrorCode.USER_NOT_ACTIVATED);
         }
-        try {
-            mOstApiClient.getDeviceManager();
-            mDeviceManager = OstDeviceManager.getById( deviceManagerAddress );
-            return mDeviceManager;
-        } catch (IOException e) {
-            throw new OstError("wp_base_sdm_2", ErrorCode.DEVICE_MANAGER_API_FAILED);
-        }
+
+        mOstApiClient.getDeviceManager();
+        mDeviceManager = OstDeviceManager.getById( deviceManagerAddress );
+        return mDeviceManager;
     }
 
     OstRule[] mOstRules;
@@ -482,8 +462,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         }
 
         //Fetch the rules.
+        JSONObject rulesResponseObject = mOstApiClient.getAllRules();
         try {
-            JSONObject rulesResponseObject = mOstApiClient.getAllRules();
             JSONArray rulesJsonArray = (JSONArray)new CommonUtils().parseResponseForResultType(rulesResponseObject);
 
             int numberOfRules = rulesJsonArray.length();
@@ -495,14 +475,13 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
             }
             mOstRules = ostRules;
         } catch (Exception e) {
-            OstError ostError = new OstError("wp_base_eot_1", ErrorCode.RULES_API_FAILED);
-            throw ostError;
+            throw OstError.ApiResponseError("wp_base_eot_1", "getAllRules", rulesResponseObject);
         }
         return mOstRules;
     }
     //endregion
-    
-    
+
+
     //region - Flow method
     protected boolean shouldAskForAuthentication() {
         return true;
@@ -511,8 +490,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         return true;
     }
     //endregion
-    
-    
+
+
     //region - Pin flow methods
     @Override
     public void pinEntered(UserPassphrase passphrase) {
@@ -575,8 +554,8 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         performWithState(WorkflowStateManager.CANCELLED);
     }
     //endregion
-    
-    
+
+
     //region - Post methods for app
     AsyncStatus postGetPin(OstPinAcceptInterface pinAcceptInterface) {
         Log.i(TAG, "get Pin");
@@ -616,7 +595,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         OstError error = new OstError(internalErrCode, errorCode);
         return postErrorInterrupt(error);
     }
-    
+
     AsyncStatus postErrorInterrupt(OstError error) {
         mHandler.post(new Runnable() {
             @Override
@@ -669,7 +648,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
     //endregion
 
-    
+
     //region - Biometric methods
     OstBiometricAuthentication.Callback getBioMetricCallBack() {
         if (null == mBioMetricCallBack) {
@@ -689,18 +668,23 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         }
         return mBioMetricCallBack;
     }
-    
-    private void onBioMetricAuthenticationSuccess() {
+
+    void onBioMetricAuthenticationSuccess() {
         performWithState(WorkflowStateManager.AUTHENTICATED);
     }
 
-    private void onBioMetricAuthenticationFail() {
+    void onBioMetricAuthenticationFail() {
         //Ask for pin.
         performWithState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
     }
 
-    private boolean shouldAskForBioMetric() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    boolean shouldAskForBioMetric() {
+        return OstSdk.isBiometricEnabled(mUserId)
+                && isBioMetricEnabled();
+    }
+
+    boolean isBioMetricEnabled() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //Fingerprint API only available on from Android 6.0 (M)
             FingerprintManager fingerprintManager = (FingerprintManager) OstSdk.getContext()
                     .getSystemService(Context.FINGERPRINT_SERVICE);
@@ -711,7 +695,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
     //endregion
 
-    
+
     //region - Perform methods
     AsyncStatus performOnAuthenticated() {
         return new AsyncStatus(true);
@@ -768,46 +752,39 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
     AsyncStatus makeAddDeviceCall(SignedAddDeviceStruct signedAddDeviceStruct) {
         Log.i(TAG, "Api Call payload");
-        try {
-            String deviceManagerAddress = signedAddDeviceStruct.getDeviceManagerAddress();
-            Map<String, Object> map = new OstPayloadBuilder()
-                    .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
-                    .setRawCalldata(signedAddDeviceStruct.getRawCallData())
-                    .setCallData(signedAddDeviceStruct.getCallData())
-                    .setTo(deviceManagerAddress)
-                    .setSignatures(signedAddDeviceStruct.getSignature())
-                    .setSigners(Arrays.asList(signedAddDeviceStruct.getSignerAddress()))
-                    .setNonce(String.valueOf(signedAddDeviceStruct.getNonce()))
-                    .build();
-            OstApiClient ostApiClient = new OstApiClient(mUserId);
-            JSONObject jsonObject = ostApiClient.postAddDevice(map);
-            Log.d(TAG, String.format("JSON Object response: %s", jsonObject.toString()));
-            if (isValidResponse(jsonObject)) {
+        String deviceManagerAddress = signedAddDeviceStruct.getDeviceManagerAddress();
+        Map<String, Object> map = new OstPayloadBuilder()
+                .setDataDefination(OstDeviceManagerOperation.KIND_TYPE.AUTHORIZE_DEVICE.toUpperCase())
+                .setRawCalldata(signedAddDeviceStruct.getRawCallData())
+                .setCallData(signedAddDeviceStruct.getCallData())
+                .setTo(deviceManagerAddress)
+                .setSignatures(signedAddDeviceStruct.getSignature())
+                .setSigners(Arrays.asList(signedAddDeviceStruct.getSignerAddress()))
+                .setNonce(String.valueOf(signedAddDeviceStruct.getNonce()))
+                .build();
+        OstApiClient ostApiClient = new OstApiClient(mUserId);
+        JSONObject jsonObject = ostApiClient.postAddDevice(map);
+        Log.d(TAG, String.format("JSON Object response: %s", jsonObject.toString()));
+        if (isValidResponse(jsonObject)) {
+            //increment nonce
+            OstDeviceManager.getById(deviceManagerAddress).incrementNonce();
 
-                //increment nonce
-                OstDeviceManager.getById(deviceManagerAddress).incrementNonce();
-
-                return new AsyncStatus(true);
-            } else {
-                return new AsyncStatus(false);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "IO Exception");
+            return new AsyncStatus(true);
+        } else {
             return new AsyncStatus(false);
         }
     }
 
     String calculateExpirationHeight(long expiresInSecs) {
-        JSONObject jsonObject = null;
+        JSONObject jsonObject = mOstApiClient.getCurrentBlockNumber();
         long currentBlockNumber, blockGenerationTime;
         String strCurrentBlockNumber;
         String strBlockGenerationTime;
         try {
-            jsonObject = mOstApiClient.getCurrentBlockNumber();
             strCurrentBlockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
             strBlockGenerationTime = parseResponseForKey(jsonObject, OstConstants.BLOCK_TIME);
         } catch (Throwable e) {
-            throw new OstError("wf_bwf_ceh_1", ErrorCode.CHAIN_API_FAILED);
+            throw OstError.ApiResponseError("wf_bwf_ceh_1", "getCurrentBlockNumber", jsonObject);
         }
 
         currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
@@ -817,6 +794,10 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
 
         return String.valueOf(expirationHeight);
+    }
+
+    String getBiometricHeading() {
+        return new CommonUtils().getStringRes(R.string.authorize);
     }
     //endregion
 }

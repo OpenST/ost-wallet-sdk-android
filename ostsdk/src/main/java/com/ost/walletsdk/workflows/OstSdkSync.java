@@ -106,8 +106,6 @@ class OstSdkSync {
                         ostApiClient.getDeviceManager();
                     }
                     Log.i(TAG, String.format("Sync response for %s", entity.toString()));
-                } catch (IOException e) {
-                    Log.e(TAG, String.format("IOException: %s", e.getCause()));
                 } finally {
                     mCountDownLatch.countDown();
                 }

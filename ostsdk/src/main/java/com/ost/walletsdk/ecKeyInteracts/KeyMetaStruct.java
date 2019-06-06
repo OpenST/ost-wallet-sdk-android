@@ -19,6 +19,7 @@ public class KeyMetaStruct implements Serializable {
     static final long serialVersionUID = 129348938L;
     String apiAddress;
     String deviceAddress;
+    private Boolean isBiometricEnabled = false;
     HashMap<String, String> ethKeyMetaMapping = new HashMap<>();
     HashMap<String, String> ethKeyMnemonicsMetaMapping = new HashMap<>();
 
@@ -45,5 +46,13 @@ public class KeyMetaStruct implements Serializable {
 
     public String getDeviceAddress() {
         return deviceAddress;
+    }
+
+    boolean isBiometricEnabled() {
+        return isBiometricEnabled;
+    }
+
+    void setBiometricEnabled(boolean enabled) {
+        isBiometricEnabled = enabled;
     }
 }

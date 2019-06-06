@@ -10,7 +10,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ost.com.sampleostsdkapplication">
+    package="com.ost.sampleostsdkapplication">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -19,14 +19,14 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:name=".App"
+        android:name="com.com.ost.sampleostsdkapplication.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.OstDemoApp">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.com.ost.sampleostsdkapplication.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -36,11 +36,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".UsersListActivity"
+            android:name="com.com.ost.sampleostsdkapplication.UsersListActivity"
             android:label="@string/title_activity_users_list"
             android:theme="@style/Theme.OstDemoApp" />
-        <activity android:name=".QR_view" />
-        <activity android:name=".SimpleScannerActivity" />
+        <activity android:name="com.com.ost.sampleostsdkapplication.QR_view" />
+        <activity android:name="com.com.ost.sampleostsdkapplication.SimpleScannerActivity" />
     </application>
 
 </manifest>

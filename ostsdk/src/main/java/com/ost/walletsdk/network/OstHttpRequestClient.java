@@ -21,6 +21,8 @@ import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstApiSigner;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -125,15 +127,15 @@ public class OstHttpRequestClient {
     private static String IOExceptionString = "{'success':'false','err':{'code':'IOException','internal_id':'SDK(IO_EXCEPTION)','msg':'','error_data':[]}}";
     private static String NetworkExceptionString = "{'success':'false','err':{'code':'NO_NETWORK','internal_id':'SDK(NO_NETWORK)','msg':'','error_data':[]}}";
 
-    public JSONObject get(String resource, Map<String, Object> queryParams) throws IOException {
+    public JSONObject get(String resource, Map<String, Object> queryParams) throws OstError {
         return send(GET_REQUEST, resource, queryParams);
     }
 
-    public JSONObject post(String resource, Map<String, Object> queryParams) throws IOException {
+    public JSONObject post(String resource, Map<String, Object> queryParams) throws OstError {
         return send(POST_REQUEST, resource, queryParams);
     }
 
-    private JSONObject send(String requestType, String resource, Map<String, Object> mapParams) throws IOException {
+    private JSONObject send(String requestType, String resource, Map<String, Object> mapParams) throws OstError {
         // Basic Sanity.
         if (!isNetworkAvailable()) {
             try {
@@ -143,9 +145,10 @@ public class OstHttpRequestClient {
             }
         }
 
-        if (!requestType.equalsIgnoreCase(POST_REQUEST) && !requestType.equalsIgnoreCase(GET_REQUEST)) {
-            throw new IOException("Invalid requestType");
-        }
+//        //TODO: Make POST_REQUEST & GET_REQUEST ENUMS
+//        if (!requestType.equalsIgnoreCase(POST_REQUEST) && !requestType.equalsIgnoreCase(GET_REQUEST)) {
+//            throw new IOException("Invalid requestType");
+//        }
         if (null == mapParams) {
             mapParams = new HashMap<String, Object>();
         }
@@ -157,7 +160,20 @@ public class OstHttpRequestClient {
 
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         if (null == urlBuilder) {
-            throw new IOException("Failed to instantiate HttpUrl.Builder. resource or Api Endpoint is incorrect.");
+            JSONObject errorInfo = new JSONObject();
+
+            try {
+                errorInfo.putOpt("apiEndpoint", apiEndpoint);
+            } catch (JSONException e) {
+                // Ignore
+            }
+            try {
+                errorInfo.putOpt("resource", resource);
+            } catch (JSONException e) {
+                // Ignore
+            }
+
+            throw new OstError("ost_hrc_s_1", OstErrors.ErrorCode.SDK_ERROR, errorInfo);
         }
 
         // Evaluate the url generated so far.
@@ -247,10 +263,31 @@ public class OstHttpRequestClient {
         try {
             okhttp3.Response response = call.execute();
             responseBody = getResponseBodyAsString(response);
-        }catch (SocketTimeoutException e)
-        {
+        }
+        catch (SocketTimeoutException e) {
             Log.e(TAG, "SocketTimeoutException occurred.");
             responseBody =  SocketTimeoutExceptionString;
+        } catch (IOException e) {
+            JSONObject errorInfo = new JSONObject();
+
+            try {
+                errorInfo.putOpt("apiEndpoint", apiEndpoint);
+            } catch (JSONException e1) {
+                // Ignore
+            }
+            try {
+                errorInfo.putOpt("resource", resource);
+            } catch (JSONException e2) {
+                // Ignore
+            }
+
+            try {
+                errorInfo.putOpt("details", "The request could not be executed due to cancellation, a connectivity problem or timeout. Because networks can fail during an exchange, it is possible that the remote server accepted the request before the failure.");
+            } catch (JSONException e3) {
+                // Ignore
+            }
+
+            throw new OstError("ost_hrc_s_2", OstErrors.ErrorCode.NETWORK_ERROR, errorInfo);
         }
 
         JSONObject jsonResponse = buildApiResponse(responseBody);

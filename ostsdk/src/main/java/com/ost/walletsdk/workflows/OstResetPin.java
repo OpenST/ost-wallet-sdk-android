@@ -83,12 +83,7 @@ public class OstResetPin extends OstBaseWorkFlow {
     @Override
     protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
         String newRecoveryOwnerAddress = "";
-        try {
-            mOstApiClient.getDevice(mOstUser.getCurrentDevice().getAddress());
-        } catch (IOException e) {
-            Log.e(TAG, "GetDevice api failed");
-            return postErrorInterrupt("wf_rp_udv_1", OstErrors.ErrorCode.GET_DEVICE_API_FAILED);
-        }
+        mOstApiClient.getDevice(mOstUser.getCurrentDevice().getAddress());
 
         SignedResetRecoveryStruct struct;
         OstRecoveryManager rkm;
@@ -97,27 +92,21 @@ public class OstResetPin extends OstBaseWorkFlow {
             struct = rkm.getResetRecoveryOwnerSignature(currentPassphrase, newPassphrase);
             rkm = null;
         } catch (OstError error) {
-            return postErrorInterrupt(error.getInternalErrorCode(), error.getErrorCode());
+            return postErrorInterrupt(error);
         }
 
         newRecoveryOwnerAddress = struct.getNewRecoveryOwnerAddress();
         Map<String, Object> requestMap = buildApiRequest(newRecoveryOwnerAddress,
                 struct.getRecoveryOwnerAddress(), struct.getRecoveryContractAddress(), struct.getSignature());
 
-        JSONObject postRecoveryAddresssResponse = null;
-        try {
-            postRecoveryAddresssResponse = mOstApiClient.postRecoveryOwners(requestMap);
-        } catch (IOException e) {
-            Log.e(TAG, "IOException in postRecoveryOwner");
-        }
-
+        JSONObject postRecoveryAddresssResponse = mOstApiClient.postRecoveryOwners(requestMap);
         JSONObject jsonData = postRecoveryAddresssResponse.optJSONObject(OstConstants.RESPONSE_DATA);
         JSONObject resultTypeObject = jsonData.optJSONObject(jsonData.optString(OstConstants.RESULT_TYPE));
         OstRecoveryOwner ostRecoveryOwner = null;
         try {
             ostRecoveryOwner = OstRecoveryOwner.parse(resultTypeObject);
         } catch (JSONException e) {
-            return postErrorInterrupt("wf_rp_udv_1", OstErrors.ErrorCode.POST_RESET_RECOVERY_API_FAILED);
+            return postErrorInterrupt("wf_rp_udv_1", OstErrors.ErrorCode.INVALID_API_RESPONSE);
         }
 
         postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));

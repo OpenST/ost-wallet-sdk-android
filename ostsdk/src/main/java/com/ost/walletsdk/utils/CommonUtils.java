@@ -13,6 +13,7 @@ package com.ost.walletsdk.utils;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
+import com.ost.walletsdk.OstSdk;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,5 +107,12 @@ public class CommonUtils {
             Log.e(TAG, "JSON Exception");
         }
         return null;
+    }
+
+    public String getStringRes(int id) {
+        if (null == OstSdk.getContext().getResources()) {
+            return "";
+        }
+        return OstSdk.getContext().getResources().getString(id);
     }
 }

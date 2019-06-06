@@ -66,7 +66,7 @@ public class OstKeyManager {
         ikm = null;
 
         if ( null == address ) {
-            throw new OstError("km_okm_csk_1", ErrorCode.SESSION_KEY_GENERATION_FAILED);
+            throw new OstError("km_okm_csk_1", ErrorCode.FAILED_TO_GENERATE_ETH_KEY);
         }
 
         return address;
@@ -89,6 +89,13 @@ public class OstKeyManager {
             // wipe session key which is not available in backend
             wipeSession(sessionAddress);
         }
+    }
+
+    public boolean isBiometricEnabled() {
+        if (null == mKeyMetaStruct) {
+            return false;
+        }
+        return mKeyMetaStruct.isBiometricEnabled();
     }
 
     private void wipeSession(String address) {

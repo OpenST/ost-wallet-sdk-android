@@ -10,28 +10,32 @@
 
 package com.ost.walletsdk.workflows;
 
-import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.R;
+import com.ost.walletsdk.ecKeyInteracts.OstBiometricManager;
 import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.ecKeyInteracts.OstRecoveryManager;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
+import com.ost.walletsdk.models.entities.OstBaseEntity;
 import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.network.polling.interfaces.OstPollingCallback;
+import com.ost.walletsdk.network.polling.OstUserPollingHelper;
 import com.ost.walletsdk.utils.AsyncStatus;
+import com.ost.walletsdk.utils.CommonUtils;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
-import com.ost.walletsdk.workflows.services.OstPollingService;
-import com.ost.walletsdk.workflows.services.OstUserPollingService;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class OstActivateUser extends OstBaseWorkFlow {
+public class OstActivateUser extends OstBaseWorkFlow implements OstPollingCallback {
 
     private static final String TAG = "OstActivateUser";
     private final UserPassphrase mPassphrase;
@@ -58,7 +62,29 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
     @Override
     protected boolean shouldAskForAuthentication() {
-        return false;
+        return super.isBioMetricEnabled();
+    }
+
+    @Override
+    boolean shouldAskForBioMetric() {
+        return true;
+    }
+
+    @Override
+    void onBioMetricAuthenticationSuccess() {
+        new OstBiometricManager(mUserId).enableBiometric();
+        super.onBioMetricAuthenticationSuccess();
+    }
+
+    @Override
+    void onBioMetricAuthenticationFail() {
+        new OstBiometricManager(mUserId).disableBiometric();
+        super.onBioMetricAuthenticationSuccess();
+    }
+
+    @Override
+    String getBiometricHeading() {
+        return new CommonUtils().getStringRes(R.string.enable_biometric);
     }
 
     @Override
@@ -77,7 +103,7 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
 
     @Override
-    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
+    AsyncStatus performOnAuthenticated() {
         try {
 
             assertUserInCreatedState();
@@ -110,9 +136,6 @@ public class OstActivateUser extends OstBaseWorkFlow {
 
         } catch (OstError error) {
             return postErrorInterrupt(error);
-        } catch (IOException e) {
-            OstError error = new OstError("wf_au_udvp_2", ErrorCode.ACTIVATE_USER_API_FAILED);
-            return postErrorInterrupt(error);
         } finally {
             mPassphrase.wipe();
         }
@@ -120,18 +143,8 @@ public class OstActivateUser extends OstBaseWorkFlow {
         //Activate the user if otherwise.
         Log.i(TAG, "Starting user polling service");
         Log.i(TAG, "Waiting for update");
-        Bundle bundle = OstUserPollingService.startPolling(mUserId, mUserId, OstUser.CONST_STATUS.ACTIVATED,
-                OstUser.CONST_STATUS.CREATED);
-        if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
-            Log.d(TAG, String.format("Polling time out for user Id: %s", mUserId));
-            return postErrorInterrupt("wf_au_udvp_3", ErrorCode.ACTIVATE_USER_API_POLLING_FAILED);
-        }
-        Log.i(TAG, "Syncing Entities: User, Device, Sessions");
-        new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.DEVICE,
-                OstSdkSync.SYNC_ENTITY.SESSION).perform();
-
-        Log.i(TAG, "Response received for post Token deployment");
-        return postFlowComplete( new OstContextEntity(mOstUser, OstSdk.USER) );
+        new OstUserPollingHelper(mUserId, this);
+        return new AsyncStatus(true);
     }
 
     private void assertUserInCreatedState() {
@@ -141,5 +154,22 @@ public class OstActivateUser extends OstBaseWorkFlow {
         } else if (ostUser.isActivating()) {
             throw new OstError("wf_ac_nua_1", ErrorCode.USER_ACTIVATING);
         }
+    }
+
+    @Override
+    public void onOstPollingSuccess(@Nullable OstBaseEntity entity, @Nullable JSONObject data) {
+        Log.i(TAG, "Syncing Entities: User, Device, Sessions");
+        new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.USER, OstSdkSync.SYNC_ENTITY.DEVICE,
+                OstSdkSync.SYNC_ENTITY.SESSION).perform();
+
+        Log.i(TAG, "Response received for post Token deployment");
+        postFlowComplete( new OstContextEntity(mOstUser, OstSdk.USER) );
+        goToState(WorkflowStateManager.COMPLETED);
+    }
+
+    @Override
+    public void onOstPollingFailed(OstError error) {
+        postErrorInterrupt( error );
+        goToState(WorkflowStateManager.COMPLETED_WITH_ERROR);
     }
 }

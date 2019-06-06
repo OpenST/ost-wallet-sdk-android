@@ -15,10 +15,10 @@ import com.ost.walletsdk.ecKeyInteracts.OstApiSigner;
 import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.workflows.errors.OstError;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,7 +73,7 @@ public class OstApiClient {
         return mOstHttpRequestClient;
     }
 
-    public JSONObject getToken() throws IOException {
+    public JSONObject getToken() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get("/tokens/", requestMap);
     }
@@ -81,7 +81,7 @@ public class OstApiClient {
     public JSONObject postUserActivate(String sessionAddress,
                                        String expirationHeight,
                                        String spendingLimit,
-                                       String recoveryOwnerAddress) throws IOException {
+                                       String recoveryOwnerAddress) throws OstError {
 
         Map<String, Object> requestMap = new HashMap<>();
 
@@ -93,18 +93,18 @@ public class OstApiClient {
         return postUserActivate(requestMap);
     }
 
-    public JSONObject postUserActivate(Map<String, Object> map) throws IOException {
+    public JSONObject postUserActivate(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/activate-user/", mUserId), requestMap);
     }
 
-    public JSONObject getDevice(String address) throws IOException {
+    public JSONObject getDevice(String address) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/devices/%s/", mUserId, address), requestMap);
     }
 
-    public JSONObject getUser() throws IOException {
+    public JSONObject getUser() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s", mUserId), requestMap);
     }
@@ -121,12 +121,12 @@ public class OstApiClient {
         return map;
     }
 
-    public JSONObject getSalt() throws IOException {
+    public JSONObject getSalt() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/salts", mUserId), requestMap);
     }
 
-    public JSONObject getCurrentBlockNumber() throws IOException {
+    public JSONObject getCurrentBlockNumber() throws OstError {
         String tokenId = mOstUser.getTokenId();
         OstToken ostToken = OstToken.getById(tokenId);
         String chainId = ostToken.getChainId();
@@ -134,19 +134,19 @@ public class OstApiClient {
         return mOstHttpRequestClient.get(String.format("/chains/%s", chainId), requestMap);
     }
 
-    public JSONObject postAddDevice(Map<String, Object> map) throws IOException {
+    public JSONObject postAddDevice(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/devices/authorize", mUserId), requestMap);
     }
 
-    public JSONObject postAddSession(Map<String, Object> map) throws IOException {
+    public JSONObject postAddSession(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/sessions/authorize", mUserId), requestMap);
     }
 
-    public JSONObject getSession(String address) throws IOException {
+    public JSONObject getSession(String address) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         JSONObject jsonObject = null;
         try {
@@ -162,62 +162,70 @@ public class OstApiClient {
         return jsonObject;
     }
 
-    public JSONObject getDeviceManager() throws IOException {
+    public JSONObject getDeviceManager() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/device-managers", mUserId), requestMap);
     }
 
-    public JSONObject postExecuteTransaction(Map<String, Object> map) throws IOException {
+    public JSONObject postExecuteTransaction(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/transactions", mUserId), requestMap);
     }
 
-    public JSONObject getTransaction(String transactionId) throws IOException {
+    public JSONObject getTransaction(String transactionId) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/transactions/%s", mUserId, transactionId), requestMap);
     }
 
-    public JSONObject getAllTransactions() throws IOException {
+    public JSONObject getAllTransactions() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/transactions", mUserId), requestMap);
     }
 
-    public JSONObject getAllRules() throws IOException {
+    public JSONObject getTransactions(Map<String, Object> map) throws OstError {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        if ( null != map ) {
+            requestMap.putAll(map);
+        }
+        return mOstHttpRequestClient.get(String.format("/users/%s/transactions", mUserId), requestMap);
+    }
+
+    public JSONObject getAllRules() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get("/rules", requestMap);
     }
 
-    public JSONObject postRecoveryOwners(Map<String, Object> map) throws IOException {
+    public JSONObject postRecoveryOwners(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/recovery-owners", mUserId), requestMap);
     }
 
-    public JSONObject getRecoveryOwnerAddress(String recoveryAddress) throws IOException {
+    public JSONObject getRecoveryOwnerAddress(String recoveryAddress) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/recovery-owners/%s", mUserId, recoveryAddress), requestMap);
     }
 
-    public JSONObject postRevokeDevice(Map<String, Object> map) throws IOException {
+    public JSONObject postRevokeDevice(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/devices/revoke", mUserId), requestMap);
     }
 
-    public JSONObject postInitiateRecovery(Map<String, Object> map) throws IOException {
+    public JSONObject postInitiateRecovery(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/devices/initiate-recovery", mUserId), requestMap);
     }
 
-    public JSONObject postAbortRecovery(Map<String, Object> map) throws IOException {
+    public JSONObject postAbortRecovery(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/devices/abort-recovery", mUserId), requestMap);
     }
 
-    public JSONObject getPricePoints() throws IOException {
+    public JSONObject getPricePoints() throws OstError {
         String tokenId = mOstUser.getTokenId();
         OstToken ostToken = OstToken.getById(tokenId);
         String chainId = ostToken.getChainId();
@@ -225,23 +233,23 @@ public class OstApiClient {
         return mOstHttpRequestClient.get(String.format("/chains/%s/price-points", chainId), requestMap);
     }
 
-    public JSONObject getPendingRecovery() throws IOException {
+    public JSONObject getPendingRecovery() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/devices/pending-recovery", mUserId), requestMap);
     }
 
-    public JSONObject getBalance() throws IOException {
+    public JSONObject getBalance() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/balance", mUserId), requestMap);
     }
 
-    public JSONObject postLogoutAllSessions(Map<String, Object> map) throws IOException {
+    public JSONObject postLogoutAllSessions(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         requestMap.putAll(map);
         return mOstHttpRequestClient.post(String.format("/users/%s/token-holder/logout", mUserId), requestMap);
     }
 
-    public JSONObject getTokenHolder() throws IOException {
+    public JSONObject getTokenHolder() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/token-holder", mUserId), requestMap);
     }

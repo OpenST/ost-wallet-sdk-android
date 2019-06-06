@@ -10,7 +10,8 @@
 
 package com.ost.walletsdk.workflows;
 
-import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -18,18 +19,20 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstTransactionSigner;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedTransactionStruct;
+import com.ost.walletsdk.models.entities.OstBaseEntity;
 import com.ost.walletsdk.models.entities.OstRule;
 import com.ost.walletsdk.models.entities.OstTransaction;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstApiError;
+import com.ost.walletsdk.network.polling.OstTransactionPollingHelper;
+import com.ost.walletsdk.network.polling.interfaces.OstTransactionPollingCallback;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.utils.CommonUtils;
 import com.ost.walletsdk.workflows.OstWorkflowContext.WORKFLOW_TYPE;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
+import com.ost.walletsdk.workflows.interfaces.OstTransactionWorkflowCallback;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
-import com.ost.walletsdk.workflows.services.OstPollingService;
-import com.ost.walletsdk.workflows.services.OstTransactionPollingService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -52,12 +55,14 @@ import java.util.Map;
  * It can do multiple transfers by passing list of token holder receiver addresses with
  * respective amounts.
  */
-public class OstExecuteTransaction extends OstBaseWorkFlow {
+public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransactionPollingCallback {
 
     private static final String TAG = "OstExecuteTransaction";
     private final List<String> mTokenHolderAddresses;
     private final List<String> mAmounts;
     private final String mRuleName;
+    private String transactionId;
+    private String sessionAddress;
     private final Map<String, Object> mMeta;
 
     public OstExecuteTransaction(String userId,
@@ -85,45 +90,68 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
         Map<String, Object> map = buildTransactionRequest(signedTransactionStruct);
 
         Log.i(TAG, "post transaction execute api");
-        String entityId = null;
         try {
-            entityId = postTransactionApi(map);
+            transactionId = postTransactionApi(map);
         } catch (OstApiError ostApiError) {
             new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.SESSION).perform();
             throw ostApiError;
-        }
-        if ( null == entityId ) {
-            return postErrorInterrupt("wf_et_pr_4", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
         }
 
         Log.i(TAG, "Increment nonce");
         //Increment Nonce
         signedTransactionStruct.getSession().incrementNonce();
 
+        //Store Session address
+        sessionAddress = signedTransactionStruct.getSignerAddress();
+
         //Request Acknowledge
         postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
-                new OstContextEntity(OstTransaction.getById(entityId), OstSdk.TRANSACTION));
+                new OstContextEntity(OstTransaction.getById(transactionId), OstSdk.TRANSACTION));
 
         Log.i(TAG, "start polling");
-        Bundle bundle = OstTransactionPollingService.startPolling(mUserId, entityId,
-                OstTransaction.CONST_STATUS.SUCCESS, OstTransaction.CONST_STATUS.FAILED);
-        if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
-            return postErrorInterrupt("wf_et_pr_5", OstErrors.ErrorCode.POLLING_TIMEOUT);
-        }
-        if (!bundle.getBoolean(OstPollingService.EXTRA_IS_VALID_RESPONSE, false)) {
-            Log.i(TAG, "Not a valid response retrying again");
-            try {
-                mOstApiClient.getSession(signedTransactionStruct.getSignerAddress());
-            } catch (IOException e) {
-                Log.e(TAG, "update sessions error", e);
-            }
-            return postErrorInterrupt("wf_et_pr_6", OstErrors.ErrorCode.TRANSACTION_API_FAILED);
-        } else {
-            return postFlowComplete(
-                    new OstContextEntity(OstTransaction.getById(entityId), OstSdk.TRANSACTION)
-            );
+        //OstTransactionPollingService
+        new OstTransactionPollingHelper(transactionId, mUserId, this);
+        return new AsyncStatus(true);
+    }
+
+    @Override
+    public void onTransactionMined(@NonNull OstTransaction transaction) {
+        Log.e(TAG, "Transaction " + this.transactionId + " mined.");
+        if ( getCallback() instanceof OstTransactionWorkflowCallback) {
+            OstContextEntity tx = new OstContextEntity(OstTransaction.getById(transactionId), OstSdk.TRANSACTION);
+            OstWorkflowContext context = new OstWorkflowContext(getWorkflowType());
+            OstTransactionWorkflowCallback cb = (OstTransactionWorkflowCallback) getCallback();
+            // Callback on main thread.
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    cb.transactionMined(context, tx);
+                }
+            });
         }
     }
+
+    @Override
+    public void onOstPollingSuccess(@Nullable OstBaseEntity entity, @Nullable JSONObject data) {
+        Log.e(TAG, "Transaction " + this.transactionId + " executed successfully.");
+        postFlowComplete(new OstContextEntity(OstTransaction.getById(this.transactionId), OstSdk.TRANSACTION));
+        goToState(WorkflowStateManager.COMPLETED);
+    }
+
+    @Override
+    public void onOstPollingFailed(OstError error) {
+        Log.e(TAG, "Transaction " + this.transactionId + " failed");
+        Log.d(TAG, "Syncing session");
+        try {
+            mOstApiClient.getSession(sessionAddress);
+        } catch (Throwable e) {
+            //Ignore.
+            Log.d(TAG, "Failed to sync session entity");
+        }
+        postErrorInterrupt( error );
+        goToState(WorkflowStateManager.COMPLETED_WITH_ERROR);
+    }
+
 
     private String getRuleAddressFor(String ruleName) {
         OstRule[] ostRules = mOstRules;
@@ -152,18 +180,14 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
 
 
     private String postTransactionApi(Map<String, Object> map) {
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = mOstApiClient.postExecuteTransaction(map);
-        } catch (IOException e) {
-            Log.e(TAG, "IO exception in post Transaction");
-            return null;
-        }
+        JSONObject jsonObject = mOstApiClient.postExecuteTransaction(map);
         if (isValidResponse(jsonObject)) {
-            return parseResponseForKey(jsonObject, OstTransaction.ID);
-        } else {
-            return null;
+            String txId = parseResponseForKey(jsonObject, OstTransaction.ID);
+            if ( null != txId ) {
+                return txId;
+            }
         }
+        throw OstError.ApiResponseError("wf_et_ptxapi_1", "postTransactionApi", jsonObject);
     }
 
     private Map<String, Object> buildTransactionRequest(SignedTransactionStruct signedTransactionStruct) {
@@ -372,5 +396,26 @@ public class OstExecuteTransaction extends OstBaseWorkFlow {
         public WORKFLOW_TYPE getWorkFlowType() {
             return WORKFLOW_TYPE.EXECUTE_TRANSACTION;
         }
+    }
+
+    public static Map<String, Object> convertMetaMap(JSONObject metaJsonObject) {
+        Map<String, Object> metaMap = new HashMap<>();
+        if (null == metaJsonObject) {
+            return metaMap;
+        }
+
+        String transactionName = metaJsonObject.optString(OstConstants.META_TRANSACTION_NAME,
+                "");
+        metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+
+        String transactionType = metaJsonObject.optString(OstConstants.META_TRANSACTION_TYPE,
+                "");
+        metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+
+        String transactionDetails = metaJsonObject.optString(OstConstants.META_TRANSACTION_DETAILS,
+                "");
+        metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+
+        return metaMap;
     }
 }

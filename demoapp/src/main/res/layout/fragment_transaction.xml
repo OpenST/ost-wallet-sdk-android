@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginEnd="16dp">
+
+        <com.ost.ostwallet.uicomponents.OstTextView
+            android:id="@+id/tv_send_tokens"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send Tokens To"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+        <com.ost.ostwallet.uicomponents.OstTextView
+            android:id="@+id/tv_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:letterSpacing="-0.01"
+            android:lineSpacingExtra="6sp"
+            android:text="Balance:"
+            android:textColor="#34445b"
+            android:textSize="12sp" />
+
+        <include
+            android:id="@+id/layout_user_view"
+            layout="@layout/view_user"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_below="@id/tv_send_tokens"
+            android:layout_marginTop="15dp" />
+
+        <com.ost.ostwallet.uicomponents.OstPrimaryEditTextView
+            android:id="@+id/etv_tokens_unit"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/layout_user_view"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginStart="10dp" />
+
+        <com.ost.ostwallet.uicomponents.OstPrimaryEditTextView
+            android:id="@+id/etv_tokens_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_toLeftOf="@id/etv_tokens_unit"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_below="@id/layout_user_view" />
+
+        <com.ost.ostwallet.uicomponents.OstPrimaryEditTextView
+            android:id="@+id/etv_fiat_unit"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/etv_tokens_number"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginStart="10dp" />
+
+        <com.ost.ostwallet.uicomponents.OstPrimaryEditTextView
+            android:id="@+id/etv_fiat_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/etv_fiat_unit"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_below="@id/etv_tokens_number" />
+
+        <com.ost.ostwallet.uicomponents.OstPrimaryButton
+            android:id="@+id/pbtn_send_tokens"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/etv_fiat_amount"
+            android:layout_marginTop="20dp"
+            android:text="Send Tokens" />
+
+        <com.ost.ostwallet.uicomponents.OstLinkButton
+            android:id="@+id/linkbtn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pbtn_send_tokens"
+            android:layout_marginTop="8dp"
+            android:text="Cancel" />
+    </RelativeLayout>
+
+</merge>

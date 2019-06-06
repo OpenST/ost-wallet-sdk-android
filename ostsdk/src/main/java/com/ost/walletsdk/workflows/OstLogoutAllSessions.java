@@ -11,6 +11,7 @@
 package com.ost.walletsdk.workflows;
 
 import android.os.Bundle;
+import android.system.Os;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
@@ -107,21 +108,18 @@ public class OstLogoutAllSessions extends OstBaseWorkFlow {
         }
         if (!bundle.getBoolean(OstPollingService.EXTRA_IS_VALID_RESPONSE, false)) {
             Log.i(TAG, "Not a valid response");
-            throw new OstError("wf_loas_pr_4", OstErrors.ErrorCode.TOKEN_HOLDER_API_FAILED);
+            throw OstError.ApiResponseError("wf_loas_pr_4", "OstTokenHolderPollingService",null );
         }
     }
 
     private void postLogoutRequest(Map<String, Object> requestMap) {
-        JSONObject responseObject;
-        try {
-            responseObject = mOstApiClient.postLogoutAllSessions(requestMap);
-            Log.i(TAG, String.format("Response %s", responseObject.toString()));
-        } catch (IOException e) {
-            Log.e(TAG, "Exception");
-            throw new OstError("wf_loas_pr_1", OstErrors.ErrorCode.LOGOUT_ALL_SESSIONS_FAILED);
-        }
+
+        JSONObject responseObject = mOstApiClient.postLogoutAllSessions(requestMap);
+        Log.i(TAG, String.format("Response %s", responseObject.toString()));
+
         if (!isValidResponse(responseObject)) {
-            throw new OstError("wf_loas_pr_2", OstErrors.ErrorCode.LOGOUT_ALL_SESSIONS_FAILED);
+            //postLogoutAllSessions will throw OstApiError
+            throw new OstError("wf_loas_pr_2", OstErrors.ErrorCode.WORKFLOW_FAILED);
         }
     }
 

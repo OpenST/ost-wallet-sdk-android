@@ -94,16 +94,12 @@ public class OstRecoverDeviceWorkflow extends OstBaseWorkFlow {
             }
 
             // Fetch information of device to recover.
-            try {
-                mOstApiClient.getDevice(deviceAddressToRecover);
-            } catch (IOException e) {
-                throw new OstError("wf_rdwf_oudvp_2", ErrorCode.GET_DEVICE_API_FAILED);
-            }
+            mOstApiClient.getDevice(deviceAddressToRecover);
 
             // To ignore null pointer exception warning.
             deviceToRecover = OstDevice.getById(deviceAddressToRecover);
             if ( null == deviceToRecover ) {
-                throw new OstError("wf_rdwf_oudvp_3", ErrorCode.GET_DEVICE_API_FAILED);
+                throw new OstError("wf_rdwf_oudvp_3", ErrorCode.INVALID_RECOVER_DEVICE_ADDRESS);
             }
 
             //The deviceAddressToRecover must be an Authorized device.
@@ -147,9 +143,6 @@ public class OstRecoverDeviceWorkflow extends OstBaseWorkFlow {
             OstContextEntity contextEntity = new OstContextEntity(mCurrentDevice, OstSdk.DEVICE);
             postRequestAcknowledge(contextEntity);
             return postFlowComplete(contextEntity);
-        } catch (IOException e) {
-            OstError error = new OstError("wf_rdwf_poa_1", ErrorCode.POST_RESET_RECOVERY_API_FAILED);
-            return postErrorInterrupt( error );
         } catch (OstError error ) {
             return postErrorInterrupt( error );
         } finally {

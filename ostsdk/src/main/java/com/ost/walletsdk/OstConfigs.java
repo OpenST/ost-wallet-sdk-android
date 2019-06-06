@@ -35,7 +35,6 @@ public class OstConfigs {
 
     public final long BLOCK_GENERATION_TIME;
     public final long PIN_MAX_RETRY_COUNT;
-    public final String PRICE_POINT_TOKEN_SYMBOL;
     public final String PRICE_POINT_CURRENCY_SYMBOL;
     public final long REQUEST_TIMEOUT_DURATION;
     public final long SESSION_BUFFER_TIME;
@@ -52,11 +51,6 @@ public class OstConfigs {
         PIN_MAX_RETRY_COUNT = config.optLong("PIN_MAX_RETRY_COUNT", -1);
         if (PIN_MAX_RETRY_COUNT < 1) {
             throw new OstError("Ost_config_sc_pmrc", ErrorCode.INVALID_PIN_MAX_RETRY_COUNT);
-        }
-
-        PRICE_POINT_TOKEN_SYMBOL = config.optString("PRICE_POINT_TOKEN_SYMBOL");
-        if (TextUtils.isEmpty(PRICE_POINT_TOKEN_SYMBOL)) {
-            throw new OstError("Ost_config_sc_pmrc", ErrorCode.INVALID_PRICE_POINT_TOKEN_SYMBOL);
         }
 
         PRICE_POINT_CURRENCY_SYMBOL = config.optString("PRICE_POINT_CURRENCY_SYMBOL");
