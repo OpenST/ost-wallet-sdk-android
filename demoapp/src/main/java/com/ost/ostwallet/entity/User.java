@@ -35,7 +35,6 @@ public class User {
     private String id;
     private String ostUserId;
     private String tokenId;
-    private String userPinSalt;
     private String userName;
 
     public static User newInstance(JSONObject usersJSONObject, JSONObject balancesJSONObject) {
@@ -63,7 +62,6 @@ public class User {
         this.userName = userName;
         this.tokenId = tokenId;
         this.ostUserId = ostUserId;
-        this.userPinSalt = ostUserId;
         this.tokenHolderAddress = tokenHolderAddress;
         this.balance = balance;
         this.status = status;
@@ -81,13 +79,8 @@ public class User {
         return OstSdk.getUser(ostUserId);
     }
 
-
     public String getTokenId() {
         return tokenId;
-    }
-
-    public String getUserPinSalt() {
-        return userPinSalt;
     }
 
     public String getUserName() {

@@ -127,7 +127,7 @@ public class QRScannerFragment extends BaseFragment implements ZXingScannerView.
         qrFooter.setGravity(Gravity.CENTER);
         qrFooter.setTextSize(SizeUtil.getTextSize(getResources(), R.dimen.qr_scanner_footer_text));
         qrFooter.setTextColor(Color.WHITE);
-        qrFooter.setBackgroundColor(getResources().getColor(R.color.qr_footer_bg));
+        qrFooter.setBackgroundColor(getResources().getColor(R.color.color_app_bar));
         relativeLayout.addView(qrFooter);
 
 

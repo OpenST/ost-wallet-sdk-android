@@ -1,5 +1,6 @@
 package com.ost.walletsdk.network;
 
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import android.os.Handler;
 
 public class OstJsonApi {
     private final static ThreadPoolExecutor REQUEST_API_THREAD_POOL_EXECUTOR = (ThreadPoolExecutor) Executors
@@ -19,6 +21,14 @@ public class OstJsonApi {
 
     private static ThreadPoolExecutor getAsyncQueue() {
         return REQUEST_API_THREAD_POOL_EXECUTOR;
+    }
+
+    private static android.os.Handler _handler = null;
+    private static Handler getHandler() {
+        if ( null == _handler ) {
+            _handler = new android.os.Handler(Looper.getMainLooper());
+        }
+        return _handler;
     }
 
     // region - getBalance
@@ -40,16 +50,13 @@ public class OstJsonApi {
 
     private static void execGetBalance(@NonNull String userId, @NonNull OstJsonApiCallback callback) {
         JSONObject data = null;
-//        if ( null == userId ) {
-//            callback.onOstJsonApiError(new OstError("ojsonapi_egb_1", ErrorCode.INVALID_USER_ID ), data);
-//        }
 
         try {
             //TODO: Remove this try catch once react changes come here.
             OstApiClient apiClient = new OstApiClient(userId);
             JSONObject response = apiClient.getBalance();
             data = getDataFromApiResponse( response );
-            callback.onOstJsonApiSuccess( data );
+            sendSuccessCallback(callback, data);
         } catch (Throwable err) {
             OstError error = null;
             if ( err instanceof OstError ) {
@@ -58,7 +65,7 @@ public class OstJsonApi {
                 //TODO: Throw invalid api response error.
                 error = new OstError("ojsonapi_egb_2", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
             }
-            callback.onOstJsonApiError(error, data);
+            sendErrorCallback(callback, error, data);
         }
     }
     // endregion
@@ -82,9 +89,6 @@ public class OstJsonApi {
 
     private static void execGetBalanceWithPricePoints(@NonNull String userId, @NonNull OstJsonApiCallback callback) {
         JSONObject data = new JSONObject();
-//        if ( null == userId ) {
-//            callback.onOstJsonApiError(new OstError("ojsonapi_egbwpp_1", ErrorCode.INVALID_USER_ID ), data);
-//        }
 
         try {
             //TODO: Remove this try catch once react changes come here.
@@ -99,7 +103,7 @@ public class OstJsonApi {
             }
             String balanceResultType = getResultType( balanceData );
             //Populate data.
-            data.putOpt( balanceResultType, balanceData );
+            data.putOpt( balanceResultType, balanceData.optJSONObject(balanceResultType) );
             data.putOpt("result_type", balanceResultType);
 
             //Get Price Point
@@ -112,9 +116,9 @@ public class OstJsonApi {
             String pricePointResultType = getResultType( pricePointData );
 
             //Populate data.
-            data.putOpt( pricePointResultType, pricePointData);
+            data.putOpt( pricePointResultType, pricePointData.optJSONObject(pricePointResultType));
 
-            callback.onOstJsonApiSuccess( data );
+            sendSuccessCallback(callback, data);
         } catch (Throwable err) {
             OstError error = null;
             if ( err instanceof OstError ) {
@@ -123,7 +127,7 @@ public class OstJsonApi {
 
                 error = new OstError("ojsonapi_egbwpp_4", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
             }
-            callback.onOstJsonApiError(error, data);
+            sendErrorCallback(callback, error, data);
         }
     }
     // endregion
@@ -148,16 +152,13 @@ public class OstJsonApi {
 
     private static void execGetTransactions(@NonNull String userId, Map<String, Object> requestPayload,  @NonNull OstJsonApiCallback callback) {
         JSONObject data = null;
-//        if ( null == userId ) {
-//            callback.onOstJsonApiError(new OstError("ojsonapi_egt_1", ErrorCode.INVALID_USER_ID ), data);
-//        }
 
         try {
             //TODO: Remove this try catch once react changes come here.
             OstApiClient apiClient = new OstApiClient(userId);
             JSONObject response = apiClient.getTransactions(requestPayload);
             data = getDataFromApiResponse( response );
-            callback.onOstJsonApiSuccess( data );
+            sendSuccessCallback(callback, data);
         } catch (Throwable err) {
             OstError error = null;
             if ( err instanceof OstError ) {
@@ -166,7 +167,7 @@ public class OstJsonApi {
                 //TODO: Throw invalid api response error.
                 error = new OstError("ojsonapi_egt_2", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
             }
-            callback.onOstJsonApiError(error, data);
+            sendErrorCallback(callback, error, data);
         }
     }
     // endregion
@@ -182,23 +183,20 @@ public class OstJsonApi {
         getAsyncQueue().submit(new Runnable() {
             @Override
             public void run() {
-                execGetBalance(userId, callback);
+                execGetPendingRecovery(userId, callback);
             }
         });
     }
 
     private static void execGetPendingRecovery(@NonNull String userId, @NonNull OstJsonApiCallback callback) {
         JSONObject data = null;
-//        if ( null == userId ) {
-//            callback.onOstJsonApiError(new OstError("ojsonapi_egpr_1", ErrorCode.INVALID_USER_ID ), data);
-//        }
 
         try {
             //TODO: Remove this try catch once react changes come here.
             OstApiClient apiClient = new OstApiClient(userId);
             JSONObject response = apiClient.getPendingRecovery();
             data = getDataFromApiResponse( response );
-            callback.onOstJsonApiSuccess( data );
+            sendSuccessCallback(callback, data);
         } catch (Throwable err) {
             OstError error = null;
             if ( err instanceof OstError ) {
@@ -207,7 +205,7 @@ public class OstJsonApi {
                 //TODO: Throw invalid api response error.
                 error = new OstError("ojsonapi_egpr_2", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
             }
-            callback.onOstJsonApiError(error, data);
+            sendErrorCallback(callback, error, data);
         }
     }
     // endregion
@@ -237,6 +235,24 @@ public class OstJsonApi {
 
     public static @Nullable JSONObject getDataFromApiResponse(@NonNull JSONObject apiResponse) {
         return apiResponse.optJSONObject("data");
+    }
+
+    private static void sendSuccessCallback(@NonNull OstJsonApiCallback callback, @Nullable JSONObject data) {
+        getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onOstJsonApiSuccess(data);
+            }
+        });
+    }
+
+    private static void sendErrorCallback(@NonNull OstJsonApiCallback callback, @NonNull OstError error, @Nullable JSONObject data) {
+        getHandler().post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onOstJsonApiError(error, data);
+            }
+        });
     }
     // endregion
 }

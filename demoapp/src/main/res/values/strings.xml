@@ -45,7 +45,7 @@
     <string name="transaction_unit">Unit</string>
 
     <string name="view_mnemonics_heading">Write down your 12-word mnemonic phrase and store them securely</string>
-    <string name="view_mnemonics_tip">Tip: \nThis mnemonic phrase can be used to authorize a device. The order of the words is important, so please be sure to write it down carefully.</string>
+    <string name="view_mnemonics_tip">Tip: \nThis mnemonic phrase can be used to authorize a device. The order of the words is important, so please be sure to write it down carefully.\n</string>
 
     <!--Pin fragment -->
     <string name="pin_sub_heading_add_pin">Add a 6-digit PIN to secure your wallet.\n The PIN is required to recover your\n wallet if you lose your phone.</string>
@@ -59,7 +59,7 @@
 
 
     <!--QR fragment-->
-    <string name="qr_sub_heading_economy_scan">Scan the QR code available on the OST\n Platform to select your economy.\n (Your app won’t require this step)</string>
+    <string name="qr_sub_heading_economy_scan">Please scan the QR code or click on the \"Connect to Economy\" button in your invitation email.</string>
     <string name="qr_sub_heading_authorize_scan">Scan the QR code to complete action</string>
 
     <!-- Wallet Setup -->

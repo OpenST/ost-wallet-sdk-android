@@ -102,7 +102,7 @@ public class DashboardActivity extends BaseActivity implements
         HomePagerAdapter homePagerAdapter = new HomePagerAdapter(getSupportFragmentManager());
         homePagerAdapter.addFragment(UserListFragment.newInstance(), "Users");
         homePagerAdapter.addFragment(mWalletFragment, "Wallet");
-        homePagerAdapter.addFragment(mSettingsFragment, "Wallet Settings");
+        homePagerAdapter.addFragment(mSettingsFragment, "Settings");
 
         mViewPager.setAdapter(homePagerAdapter);
         mTabLayout = (TabLayout) findViewById(R.id.home_navigation);
@@ -207,6 +207,10 @@ public class DashboardActivity extends BaseActivity implements
         String successMessage = new CommonUtils().formatWorkflowSuccessToast(ostWorkflowContext.getWorkflow_type(), trxWorkflow);
         if(successMessage != null){
             if(trxWorkflow != null){
+                // This would be the case only when workflow is of transaction submitted.
+                if(null != mWalletFragment){
+                    mWalletFragment.refreshWalletView();
+                }
                 showActionSnackBar(successMessage);
             } else {
                 showToastMessage(successMessage, true);
@@ -392,6 +396,13 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     protected View getRootView() {
         return findViewById(R.id.layout_container);
+    }
+
+    @Override
+    public void goToWalletDetails(){
+        if(null != mViewPager){
+            mViewPager.setCurrentItem(1);
+        }
     }
 
     private void showActionSnackBar(String text){

@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/pbtn_create_session"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             android:text="Cancel" />
     </RelativeLayout>
 </merge>

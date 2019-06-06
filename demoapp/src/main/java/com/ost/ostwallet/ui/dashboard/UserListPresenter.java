@@ -24,6 +24,7 @@ import com.ost.ostwallet.entity.User;
 import com.ost.ostwallet.network.MappyNetworkClient;
 import com.ost.ostwallet.ui.BasePresenter;
 import com.ost.ostwallet.util.CommonUtils;
+import com.ost.walletsdk.models.entities.OstUser;
 
 class UserListPresenter extends BasePresenter<UserListView> {
     private static final String LOG_TAG = "OstUserListPresenter";
@@ -60,6 +61,7 @@ class UserListPresenter extends BasePresenter<UserListView> {
         AppProvider.get().getMappyClient().getUserList(nextPayload, new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
+                int usersAdded = 0;
                 if (new CommonUtils().isValidResponse(jsonObject)) {
                     try {
                         JSONObject dataJSONObject =  new CommonUtils().parseJSONData(jsonObject);
@@ -71,11 +73,13 @@ class UserListPresenter extends BasePresenter<UserListView> {
                         JSONArray userJSONArray = (JSONArray) new CommonUtils()
                                 .parseResponseForResultType(jsonObject);
 
-
                         for (int i = 0; i < userJSONArray.length(); i++) {
                             JSONObject userJSONObject = userJSONArray.getJSONObject(i);
                             User user = User.newInstance(userJSONObject, balancesJSONObject);
-                            userList.add(user);
+                            if(AppProvider.get().getCurrentUser().getId().equals(user.getId()) || user.getStatus().equalsIgnoreCase(OstUser.CONST_STATUS.ACTIVATED)){
+                                userList.add(user);
+                                usersAdded++;
+                            }
                         }
                     } catch (JSONException e) {
                         //Exception not expected
@@ -86,6 +90,7 @@ class UserListPresenter extends BasePresenter<UserListView> {
                     getMvpView().notifyDataSetChanged();
                 }
                 httpRequestPending = false;
+                loadMoreData(usersAdded);
             }
 
             @Override
@@ -96,6 +101,13 @@ class UserListPresenter extends BasePresenter<UserListView> {
                 httpRequestPending = false;
             }
         });
+    }
+
+    private void loadMoreData(int usersAdded){
+        // If users Added in current iteration is less than 10, then make request for next page
+        if(usersAdded < 6 && hasMoreData){
+            updateUserList(false);
+        }
     }
 
     void setUserList(List<User> userList) {

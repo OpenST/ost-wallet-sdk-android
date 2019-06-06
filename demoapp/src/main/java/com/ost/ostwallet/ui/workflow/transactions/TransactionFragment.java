@@ -18,6 +18,7 @@ import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,6 +112,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
 
         /*********User View***********/
         viewGroup.findViewById(R.id.btn_send_token).setVisibility(View.GONE);
+        viewGroup.findViewById(R.id.layout_user_view).setBackground(getResources().getDrawable(R.drawable.rounded_corner_bg));
 
         TextDrawable drawable = TextDrawable.builder()
                 .beginConfig()
@@ -122,7 +124,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         ((ImageView)viewGroup.findViewById(R.id.iv_user_image)).setImageDrawable(drawable);
 
         ((TextView)viewGroup.findViewById(R.id.tv_user_name)).setText(mUser.getUserName());
-        ((TextView)viewGroup.findViewById(R.id.tv_status)).setText(mUser.getTokenHolderAddress());
+        ((TextView)viewGroup.findViewById(R.id.tv_status)).setVisibility(View.GONE);
         /*************End*************/
 
         mTokensEditTextView = ((OstPrimaryEditTextView)viewGroup.findViewById(R.id.etv_tokens_number));
@@ -236,6 +238,14 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
     @Override
     public void insufficientBalance() {
         mTokensEditTextView.showErrorString("Not enough token balance");
+    }
+
+    @Override
+    public void goToWalletDetails(){
+        if(null != mListener){
+            mListener.popTopFragment();
+        }
+        super.goToWalletDetails();
     }
 
     public interface OnFragmentInteractionListener {

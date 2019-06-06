@@ -79,7 +79,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         View view = snack.getView();
         FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view.getLayoutParams();
         if(isSuccess){
-            view.setBackground(getResources().getDrawable(R.drawable.green_rounded_rectangle, null));
+            view.setBackground(getResources().getDrawable(R.drawable.blue_rounded_rectangle, null));
         } else {
             view.setBackground(getResources().getDrawable(R.drawable.red_rounded_rectangle, null));
             params.height = FrameLayout.LayoutParams.WRAP_CONTENT;

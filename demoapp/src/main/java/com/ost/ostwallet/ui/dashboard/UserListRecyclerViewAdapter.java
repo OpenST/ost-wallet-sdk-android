@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.ost.ostwallet.uicomponents.OstPrimaryButton;
 import com.ost.walletsdk.models.entities.OstUser;
 
 import java.util.List;
@@ -73,6 +74,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        clearViewHolder(holder);
         holder.mUser = mValues.get(position);
 
         Context context = AppProvider.get().getApplicationContext();
@@ -81,12 +83,11 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         holder.mImageView.setImageDrawable(drawable);
 
         holder.mUserName.setText(holder.mUser.getUserName());
-
+        holder.mSendButton.setVisibility(View.VISIBLE);
         if (OstUser.CONST_STATUS.CREATED.equalsIgnoreCase(holder.mUser.getStatus())) {
             holder.mStatus.setTextColor(Color.RED);
             holder.mStatus.setText("Initialising User...");
             holder.mSendButton.setEnabled(false);
-            holder.mView.setOnClickListener(null);
         } else {
             holder.mStatus.setTextColor(context.getResources().getColor(R.color.color_34445b));
             holder.mStatus.setText(
@@ -96,7 +97,6 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
                     )
             );
             holder.mSendButton.setEnabled(true);
-            holder.mSendButton.setTextColor(context.getResources().getColorStateList(R.drawable.secondary_button_text_color));
             holder.mSendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -109,7 +109,18 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
             });
         }
 
-
+        // If its a current user
+        if(AppProvider.get().getCurrentUser().getId().equals(holder.mUser.getId())){
+            holder.mSendButton.setVisibility(View.GONE);
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (null != mListener) {
+                        mListener.goToWalletDetails();
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -117,12 +128,22 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         return mValues.size();
     }
 
+    private void clearViewHolder(ViewHolder holder){
+        holder.mUser = null;
+        holder.mStatus.setText("");
+        holder.mSendButton.setVisibility(View.GONE);
+        holder.mSendButton.setOnClickListener(null);
+        holder.mUserName.setText("");
+        holder.mView.setOnClickListener(null);
+        holder.mImageView.setImageDrawable(null);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         private final ImageView mImageView;
         private final TextView mUserName;
         private final TextView mStatus;
-        private final OstListButton mSendButton;
+        private final OstPrimaryButton mSendButton;
 
         public User mUser;
 
@@ -132,7 +153,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
             mImageView = (ImageView) view.findViewById(R.id.iv_user_image);
             mUserName = (TextView) view.findViewById(R.id.tv_user_name);
             mStatus = (TextView) view.findViewById(R.id.tv_status);
-            mSendButton = (OstListButton) view.findViewById(R.id.btn_send_token);
+            mSendButton = (OstPrimaryButton) view.findViewById(R.id.btn_send_token);
             view.findViewById(R.id.list_item_seperator).setVisibility(View.VISIBLE);
         }
 
@@ -144,5 +165,6 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
 
     public interface OnUserListInteractionListener {
         void onListViewInteraction(User user);
+        void goToWalletDetails();
     }
 }

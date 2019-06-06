@@ -92,6 +92,9 @@ public abstract class BaseFragment extends Fragment implements BaseView {
     }
 
     @Override
+    public void goToWalletDetails() { if (null != baseActivity) baseActivity.goToWalletDetails(); }
+
+    @Override
     public void goBack() {
         if (null != baseActivity) baseActivity.goBack();
     }

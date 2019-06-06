@@ -94,6 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/pbtn_send_tokens"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             android:text="Cancel" />
     </RelativeLayout>
 

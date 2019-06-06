@@ -162,4 +162,8 @@ public class OnBoardingActivity extends BaseActivity implements
     public void showEconomyChangeDialog(){
         new CommonUtils().showEconomyChangeDialog(getIntent(), LOG_TAG, mOnBoardingPresenter);
     }
+
+    @Override
+    public void goToWalletDetails(){
+    }
 }

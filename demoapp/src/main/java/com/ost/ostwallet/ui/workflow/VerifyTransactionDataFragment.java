@@ -2,6 +2,9 @@ package com.ost.ostwallet.ui.workflow;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +21,12 @@ import java.util.Locale;
 
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.R;
-import com.ost.ostwallet.network.MappyNetworkClient;
 import com.ost.ostwallet.uicomponents.OstBoldTextView;
 import com.ost.ostwallet.uicomponents.OstTextView;
 import com.ost.ostwallet.util.CommonUtils;
+import com.ost.walletsdk.network.OstJsonApi;
+import com.ost.walletsdk.network.OstJsonApiCallback;
+import com.ost.walletsdk.workflows.errors.OstError;
 
 public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
 
@@ -124,24 +129,28 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
 
     void updateBalance() {
         showProgress(true, "Fetching User Balance");
-        AppProvider.get().getMappyClient().getCurrentUserBalance(new MappyNetworkClient.ResponseCallback() {
+        OstJsonApi.getBalanceWithPricePoints(AppProvider.get().getCurrentUser().getOstUserId(), new OstJsonApiCallback() {
             @Override
-            public void onSuccess(JSONObject jsonObject) {
-                String balance = "0";
-                if (new CommonUtils().isValidResponse(jsonObject)) {
-                    balance = new CommonUtils().parseStringResponseForKey(jsonObject, "available_balance");
+            public void onOstJsonApiSuccess(@Nullable JSONObject jsonObject) {
+                if ( null != jsonObject ) {
+                    String balance = "0";
                     try{
-                        JSONObject jsonData = jsonObject.getJSONObject(OstConstants.RESPONSE_DATA);
-                        mPricePointData = jsonData.optJSONObject("price_point");
+                        JSONObject balanceData = jsonObject.getJSONObject(jsonObject.getString(OstConstants.RESULT_TYPE));
+                        balance = balanceData.getString("available_balance");
+                        mPricePointData = jsonObject.optJSONObject("price_point");
                     } catch(Exception e){ }
+                    AppProvider.get().getCurrentUser().updateBalance(balance);
+                    showProgress(false);
+                    refreshDataView();
+                } else {
+                    Log.d("VerifyTransactionData", "getBalanceWithPricePoints data is null.");
+                    showProgress(false);
                 }
-                AppProvider.get().getCurrentUser().updateBalance(balance);
-                showProgress(false);
-                refreshDataView();
             }
 
             @Override
-            public void onFailure(Throwable throwable) {
+            public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) {
+                Log.e("VerifyTransactionData", "getBalanceWithPricePoints InternalErrorCode:" + err.getInternalErrorCode());
                 showProgress(false);
             }
         });

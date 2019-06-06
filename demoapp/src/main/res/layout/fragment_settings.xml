@@ -18,7 +18,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:background="#ebfbfb">
+        android:background="@color/color_e7f3f8">
 
         <ImageView
             android:id="@+id/ptv_image"
