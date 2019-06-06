@@ -207,6 +207,10 @@ public class DashboardActivity extends BaseActivity implements
         String successMessage = new CommonUtils().formatWorkflowSuccessToast(ostWorkflowContext.getWorkflow_type(), trxWorkflow);
         if(successMessage != null){
             if(trxWorkflow != null){
+                // This would be the case only when workflow is of transaction submitted.
+                if(null != mWalletFragment){
+                    mWalletFragment.refreshWalletView();
+                }
                 showActionSnackBar(successMessage);
             } else {
                 showToastMessage(successMessage, true);

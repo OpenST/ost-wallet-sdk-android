@@ -151,10 +151,10 @@ public class UserListFragment extends BaseFragment implements UserListView,
         mListener.onListFragmentInteraction(user);
     }
 
-    @Override
-    public void goToWalletDetails(){
-        mListener.goToWalletDetails();
-    }
+//    @Override
+//    public void goToWalletDetails(){
+//        mListener.goToWalletDetails();
+//    }
 
     @Override
     public void notifyDataSetChanged() {

@@ -23,5 +23,7 @@ public interface BaseView {
     void showProgress(boolean show);
 
     void showProgress(boolean show, String progressString);
+
+    void goToWalletDetails();
 }
 

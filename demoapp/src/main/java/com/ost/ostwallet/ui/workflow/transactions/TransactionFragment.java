@@ -240,6 +240,14 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         mTokensEditTextView.showErrorString("Not enough token balance");
     }
 
+    @Override
+    public void goToWalletDetails(){
+        if(null != mListener){
+            mListener.popTopFragment();
+        }
+        super.goToWalletDetails();
+    }
+
     public interface OnFragmentInteractionListener {
         void popTopFragment();
         void setTransactionWorkflow(JSONObject transactionDetails);

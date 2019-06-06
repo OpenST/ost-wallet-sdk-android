@@ -178,7 +178,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
     public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         getMvpView().showProgress(false);
         getMvpView().showToastMessage("Transaction received. ", true);
-        getMvpView().goBack();
+        getMvpView().goToWalletDetails();
     }
 
     @Override
