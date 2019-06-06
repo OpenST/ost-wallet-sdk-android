@@ -196,7 +196,8 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
                     mTokensEditTextView.showErrorString(null);
                     JSONObject transactionDetails = mTransactionPresenter.sendTokens(mUser.getTokenHolderAddress(),
                             mTokensEditTextView.getText(),
-                            AppProvider.get().getCurrentEconomy().getTokenSymbol()
+                            AppProvider.get().getCurrentEconomy().getTokenSymbol(),
+                            mUser.getUserName()
                     );
                     if (null != transactionDetails) {
                         transactionDetails.put("userName", mUser.getUserName());

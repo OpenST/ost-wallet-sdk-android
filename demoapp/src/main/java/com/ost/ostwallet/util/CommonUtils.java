@@ -170,7 +170,7 @@ public class CommonUtils {
     }
 
     public static String convertBtToUsd(String btAmount, JSONObject pricePointObject){
-        if (null == btAmount || btAmount.equals("")) return null;
+        if (null == btAmount || btAmount.equals("") || btAmount.equals(".")) return null;
 
         OstToken token = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
         Integer decimals = Integer.parseInt(token.getBtDecimals());
@@ -180,7 +180,7 @@ public class CommonUtils {
     }
 
     public static String convertUsdToBt(String usdAmount, JSONObject pricePointObject) {
-        if (null == usdAmount || usdAmount.equals("") || null == pricePointObject) return null;
+        if (null == usdAmount || usdAmount.equals("") || usdAmount.equals(".") || null == pricePointObject) return null;
 
         try{
             OstToken token = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());

@@ -87,7 +87,7 @@ public class DashboardActivity extends BaseActivity implements
     private TabLayout mTabLayout;
     private SettingsFragment mSettingsFragment;
     private WalletFragment mWalletFragment;
-    private Boolean currencyChangeOptionShown = false;
+    private Boolean showUserActivationToast = false;
     private JSONObject transactionWorkflows = new JSONObject();
 
     @Override
@@ -200,35 +200,29 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
+        if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
+                .equals(
+                        ostWorkflowContext.getWorkflow_type()
+                )) {
+            showUserActivationToast = true;
+            notifyActivate();
+            return;
+        }
         JSONObject trxWorkflow = null;
-        try{
-            trxWorkflow = transactionWorkflows.getJSONObject(String.format("%s", workflowId));
-        } catch (Exception e){}
+        trxWorkflow = transactionWorkflows.optJSONObject(String.format("%s", workflowId));
         String successMessage = new CommonUtils().formatWorkflowSuccessToast(ostWorkflowContext.getWorkflow_type(), trxWorkflow);
         if(successMessage != null){
             if(trxWorkflow != null){
-                // This would be the case only when workflow is of transaction submitted.
-                if(null != mWalletFragment){
-                    mWalletFragment.refreshWalletView();
-                }
+                refreshWalletAfter(500);
                 showActionSnackBar(successMessage);
             } else {
                 showToastMessage(successMessage, true);
             }
         }
-
-        if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
-                .equals(
-                        ostWorkflowContext.getWorkflow_type()
-                )) {
-            notifyActivate();
-        }
     }
 
     private void notifyActivate() {
-        if(null != mWalletFragment){
-            mWalletFragment.refreshWalletView();
-        }
+        refreshWalletAfter(30000);
         AppProvider.get().getMappyClient().notifyUserActivate(new MappyNetworkClient.ResponseCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -366,8 +360,6 @@ public class DashboardActivity extends BaseActivity implements
                 device.getDeviceAddress(),
                 revokeDeviceWorkflowListener
         );
-
-        showToastMessage("Revocation request received", true);
     }
 
     @Override
@@ -403,6 +395,7 @@ public class DashboardActivity extends BaseActivity implements
         if(null != mViewPager){
             mViewPager.setCurrentItem(1);
         }
+        refreshWalletAfter(6000);
     }
 
     private void showActionSnackBar(String text){
@@ -426,5 +419,20 @@ public class DashboardActivity extends BaseActivity implements
         intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
         DashboardActivity.this.startActivity(intent);
         DashboardActivity.this.finish();
+    }
+
+    private void refreshWalletAfter(int timeInMilliseconds){
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        if(null != mWalletFragment){
+                            mWalletFragment.refreshWalletView();
+                        }
+                        if(showUserActivationToast){
+                            showToastMessage(new CommonUtils().formatWorkflowSuccessToast(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER, null), true);
+                            showUserActivationToast = false;
+                        }
+                    }
+                }, timeInMilliseconds);
     }
 }

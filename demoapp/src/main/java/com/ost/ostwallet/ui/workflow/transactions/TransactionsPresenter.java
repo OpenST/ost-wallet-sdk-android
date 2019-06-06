@@ -67,8 +67,8 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
         updateBalance();
     }
 
-    JSONObject sendTokens(String tokenHolderAddress, String tokens, String unit) {
-        getMvpView().showProgress(true, "Transaction processing...");
+    JSONObject sendTokens(String tokenHolderAddress, String tokens, String unit, String userName) {
+        getMvpView().showProgress(true, String.format("Sending %s %s to %s", tokens, unit, userName));
 
         //tokens validation
         //Input token string is in Eth

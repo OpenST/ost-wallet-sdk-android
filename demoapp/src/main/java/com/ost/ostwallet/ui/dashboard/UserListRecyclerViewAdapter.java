@@ -86,7 +86,7 @@ public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRe
         holder.mSendButton.setVisibility(View.VISIBLE);
         if (OstUser.CONST_STATUS.CREATED.equalsIgnoreCase(holder.mUser.getStatus())) {
             holder.mStatus.setTextColor(Color.RED);
-            holder.mStatus.setText("Initialising User...");
+            holder.mStatus.setText("Initializing User...");
             holder.mSendButton.setEnabled(false);
         } else {
             holder.mStatus.setTextColor(context.getResources().getColor(R.color.color_34445b));
