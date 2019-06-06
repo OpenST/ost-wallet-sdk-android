@@ -188,7 +188,7 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(viewMnemonicsView);
 
-        View contactSupportView = getFeatureView("OST Support", true);
+        View contactSupportView = getFeatureView("Contact Support", true);
         contactSupportView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
