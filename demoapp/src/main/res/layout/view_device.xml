@@ -65,7 +65,7 @@
             android:textColor="@color/view_cell_sub_text"
             android:textSize="@dimen/view_cell_sub_text" />
 
-        <com.ost.ostwallet.uicomponents.OstListButton
+        <com.ost.ostwallet.uicomponents.OstPrimaryButton
             android:id="@+id/btn_list_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
