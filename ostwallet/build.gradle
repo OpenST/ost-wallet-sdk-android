@@ -32,11 +32,11 @@ android {
 
 
     defaultConfig {
-        applicationId "ost.com.demoapp"
+        applicationId "com.ost.ostwallet"
         minSdkVersion 22
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
