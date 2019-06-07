@@ -117,3 +117,4 @@ app/release/output.json
 app/src/main/res/values/uris.xml
 app/src/main/res/values/.uris.xml
 ostwallet/fabric.properties
+ostwallet/release

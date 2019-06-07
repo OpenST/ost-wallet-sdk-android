@@ -33,27 +33,6 @@
         android:layout_centerHorizontal="true"
         android:text="Version 0.0.1 (testnet)" />
 
-    <ImageView
-        android:id="@+id/img_ost_kit_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/tv_version"
-        android:layout_marginTop="@dimen/dp_50"
-        android:src="@drawable/ost_kit_start_minting" />
-
-    <com.ost.ostwallet.uicomponents.OstTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/img_ost_kit_logo"
-        android:textColor="#888888"
-        android:gravity="center"
-        android:layout_margin="@dimen/dp_30"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="normal"
-        android:text="This beta release enables users to join Brand Token economies, to send and receive tokens, and to access wallet security and recovery features."
-        />
-
     <com.ost.ostwallet.uicomponents.OstSecondaryButton
         android:id="@+id/tv_log_in"
         android:layout_width="match_parent"
@@ -73,5 +52,28 @@
         android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_20"
         android:text="Create Account"/>
+
+    <com.ost.ostwallet.uicomponents.OstTextView
+        android:id="@+id/intro_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/tv_create_account"
+        android:textColor="#888888"
+        android:gravity="center"
+        android:layout_margin="@dimen/dp_30"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        android:text="This beta release enables users to join Brand Token economies, to send and receive tokens, and to access wallet security and recovery features."
+        />
+
+    <ImageView
+        android:id="@+id/img_ost_kit_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/intro_text"
+        android:layout_below="@+id/tv_version"
+        android:layout_marginTop="@dimen/dp_30"
+        android:src="@drawable/ost_kit_start_minting" />
 
 </RelativeLayout>
