@@ -116,4 +116,5 @@ ostsdk/schemas/
 app/release/output.json
 app/src/main/res/values/uris.xml
 app/src/main/res/values/.uris.xml
-demoapp/fabric.properties
+ostwallet/fabric.properties
+ostwallet/release
