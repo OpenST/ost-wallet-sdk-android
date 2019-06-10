@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <FrameLayout
+        android:id="@+id/fl_view_holder"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp">
+    </FrameLayout>
+
+    <com.ost.ostwallet.uicomponents.OstPrimaryButton
+        android:id="@+id/pbtn_verified"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/btn_text_verify_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.ost.ostwallet.uicomponents.OstLinkButton
+        android:id="@+id/pbtn_deny"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:text="@string/btn_deny_request"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content"/>
+</merge>

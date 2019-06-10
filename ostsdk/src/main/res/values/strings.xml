@@ -16,7 +16,7 @@
     <string name="fingerprint_success">Fingerprint Successful</string>
     <string name="description_fingerprint_icon">Fingerprint icon</string>
     <string name="authorize">Authorize</string>
-    <string name="authorize_sub_heading">Would you like to use biometrics in place of your PIN for wallet actions? \nNote: Wallet recovery always requires the use of the PIN.</string>
+    <string name="authorize_sub_heading">Would you like to use biometrics to authenticate your wallet?</string>
     <string name="fingerprint_check_status">Touch the fingerprint sensor</string>
     <string name="enable_biometric">Enable Biometric?</string>
 </resources>
