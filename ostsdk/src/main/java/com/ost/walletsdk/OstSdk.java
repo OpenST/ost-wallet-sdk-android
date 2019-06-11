@@ -79,7 +79,17 @@ public class OstSdk {
     public static final String SESSIONS = "sessions";
     // endregion
 
+    // region - workflow response state
 
+    /**
+     * To be used to define work flow complete state
+     */
+    public enum COMPLETE_STATE {
+        BUILD_REQUEST,
+        POST_COMPLETE,
+        POLL_COMPLETE,
+    }
+    // endregion
     /**
      * Type of verify data context entity for execute rule transaction
      * In case of Direct Transfer
@@ -281,7 +291,7 @@ public class OstSdk {
 
     /**
      * For Documentation refer
-     * {@link #executeTransaction(String, List, List, String, Map, boolean ,OstWorkFlowCallback)}
+     * {@link #executeTransaction(String, List, List, String, Map, COMPLETE_STATE ,OstWorkFlowCallback)}
      * Only difference is meta is passed as null
      */
     public static void executeTransaction(String userId,
@@ -294,13 +304,13 @@ public class OstSdk {
                 amounts,
                 ruleName,
                 new HashMap<>(),
-                true,
+                COMPLETE_STATE.POLL_COMPLETE,
                 workFlowCallback);
     }
 
     /**
      * For Documentation refer
-     * {@link #executeTransaction(String, List, List, String, Map, boolean ,OstWorkFlowCallback)}
+     * {@link #executeTransaction(String, List, List, String, Map, COMPLETE_STATE ,OstWorkFlowCallback)}
      * Only difference is meta can be passed.
      */
     public static void executeTransaction(String userId,
@@ -314,7 +324,7 @@ public class OstSdk {
                amounts,
                ruleName,
                meta,
-               true,
+               COMPLETE_STATE.POLL_COMPLETE,
                workFlowCallback);
     }
 
@@ -337,7 +347,7 @@ public class OstSdk {
      *                             {name: "transaction name",
      *                             type "user-to-user",
      *                             details, "like"}
-     * @param waitForFinalization  flag whether to poll transaction entity
+     * @param completeState        enum to define flow complete state
      * @param workFlowCallback     workflow callback handler.
      */
     public static void executeTransaction(String userId,
@@ -345,7 +355,7 @@ public class OstSdk {
                                           List<String> amounts,
                                           String ruleName,
                                           Map<String, Object> meta,
-                                          boolean waitForFinalization,
+                                          COMPLETE_STATE completeState,
                                           OstWorkFlowCallback workFlowCallback) {
         if (null == meta) meta = new HashMap<>();
 
@@ -354,7 +364,7 @@ public class OstSdk {
                 amounts,
                 ruleName,
                 meta,
-                waitForFinalization,
+                completeState,
                 workFlowCallback);
 
         ostExecuteTransaction.perform();

@@ -38,7 +38,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,9 +69,9 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
                                  List<String> amounts,
                                  String ruleName,
                                  Map<String, Object> meta,
-                                 boolean waitForFinalization,
+                                 OstSdk.COMPLETE_STATE completeState,
                                  OstWorkFlowCallback callback) {
-        super(userId, waitForFinalization, callback);
+        super(userId, completeState, callback);
         mTokenHolderAddresses = tokenHolderAddresses;
         mAmounts = amounts;
         mRuleName = ruleName;
@@ -111,7 +110,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
 
         Log.i(TAG, "start polling");
         //OstTransactionPollingService
-        if (mShouldPoll) {
+        if (OstSdk.COMPLETE_STATE.POLL_COMPLETE.equals(mCompleteState)) {
             new OstTransactionPollingHelper(transactionId, mUserId, this);
         } else {
             postFlowComplete(new OstContextEntity(OstTransaction.getById(transactionId), OstSdk.TRANSACTION));
@@ -367,7 +366,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
                     amounts,
                     ruleName,
                     metaMap,
-                    true,
+                    OstSdk.COMPLETE_STATE.POLL_COMPLETE,
                     callback);
 
             ostExecuteTransaction.perform();
