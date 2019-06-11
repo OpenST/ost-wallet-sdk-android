@@ -80,6 +80,13 @@ public class OstSdk {
     // endregion
 
 
+    // region - rule data constants
+    /**
+     * Key constants to be used in ruleData{@link #executeTransaction(String, List, List, String, Map, Map, OstWorkFlowCallback)}
+     */
+    public static final String CURRENCY_CODE = "currency_code";
+    // endregion
+
     /**
      * Type of verify data context entity for execute rule transaction
      * In case of Direct Transfer
@@ -336,7 +343,7 @@ public class OstSdk {
      * @param ruleData             rule data to hold info of rule name
      *                             For {@link #RULE_NAME_DIRECT_TRANSFER#RULE_NAME_PRICER}
      *                             rule data:-
-     *                             {currency_code: "USD"}
+     *                             {{@link #CURRENCY_CODE}: "USD"}
      * @param meta                 data about transaction example:-
      *                             {name: "transaction name",
      *                             type "user-to-user",

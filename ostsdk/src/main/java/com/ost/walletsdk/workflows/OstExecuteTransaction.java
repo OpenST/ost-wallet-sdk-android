@@ -12,6 +12,7 @@ package com.ost.walletsdk.workflows;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -38,7 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -337,6 +337,8 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
                         dataObject.optJSONArray(OstConstants.QR_AMOUNTS));
                 jsonObject.put(OstConstants.TOKEN_ID,
                         dataObject.optJSONArray(OstConstants.QR_TOKEN_ID));
+                jsonObject.put(OstConstants.RULE_DATA,
+                        dataObject.optJSONObject(OstConstants.QR_RULE_DATA));
             } catch (JSONException e) {
                 Log.e(TAG, "JSON Exception in updateJSONKeys: ", e);
             }
@@ -359,11 +361,20 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
             JSONArray jsonArrayAmounts = dataObject.optJSONArray(OstConstants.QR_AMOUNTS);
             List<String> amounts = commonUtils.jsonArrayToList(jsonArrayAmounts);
 
+            Map<String,String> ruleData = new HashMap<>();
+            JSONObject ruleNameJSONObject = dataObject.optJSONObject(OstConstants.QR_RULE_DATA);
+            if (null != ruleNameJSONObject) {
+                String currencyCode = ruleNameJSONObject.optString(OstConstants.QR_CURRENCY_CODE);
+                if (!TextUtils.isEmpty(currencyCode)) {
+                    ruleData.put(OstSdk.CURRENCY_CODE, currencyCode);
+                }
+            }
+
             OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId,
                     tokenHolderAddresses,
                     amounts,
                     ruleName,
-                    null,
+                    ruleData,
                     metaMap,
                     callback);
 

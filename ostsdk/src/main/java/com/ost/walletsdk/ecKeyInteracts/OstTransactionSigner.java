@@ -35,13 +35,14 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
+import static com.ost.walletsdk.OstSdk.CURRENCY_CODE;
 import static com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 
 
 public class OstTransactionSigner {
     private static final String TAG = "OstTransactionSigner";
     private static final String DIRECT_TRANSFER = OstSdk.RULE_NAME_DIRECT_TRANSFER;
-    private static final String PRICER =OstSdk.RULE_NAME_PRICER;
+    private static final String PRICER = OstSdk.RULE_NAME_PRICER;
     private static final String DECIMAL_EXPONENT = "decimals";
     private final String mUserId;
     private final String mTokenId;
@@ -79,7 +80,7 @@ public class OstTransactionSigner {
                 OstApiClient ostApiClient = new OstApiClient(mUserId);
                 JSONObject pricePointApiResponse = ostApiClient.getPricePoints();
 
-                String currencyCode = ruleData.get("currency_code");
+                String currencyCode = ruleData.get(CURRENCY_CODE);
                 if (null == currencyCode) currencyCode = OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL;
 
                 try {
