@@ -82,7 +82,7 @@ public class OstSdk {
 
     // region - rule data constants
     /**
-     * Key constants to be used in ruleData{@link #executeTransaction(String, List, List, String, Map, Map, OstWorkFlowCallback)}
+     * Key constants to be used in ruleData{@link #executeTransaction(String, List, List, String, Map, Map, boolean, OstWorkFlowCallback)}
      */
     public static final String CURRENCY_CODE = "currency_code";
     // endregion
@@ -288,7 +288,7 @@ public class OstSdk {
 
     /**
      * For Documentation refer
-     * {@link #executeTransaction(String, List, List, String, Map, Map ,OstWorkFlowCallback)}
+     * {@link #executeTransaction(String, List, List, String, Map, Map, boolean, OstWorkFlowCallback)}
      * Only difference is meta is passed as null
      */
     public static void executeTransaction(String userId,
@@ -301,13 +301,14 @@ public class OstSdk {
                 amounts,
                 ruleName,
                 null,
-                null,
+                new HashMap<>(),
+                true,
                 workFlowCallback);
     }
 
     /**
      * For Documentation refer
-     * {@link #executeTransaction(String, List, List, String, Map, Map ,OstWorkFlowCallback)}
+     * {@link #executeTransaction(String, List, List, String, Map, Map, boolean, OstWorkFlowCallback)}
      * Only difference is meta can be passed.
      */
     public static void executeTransaction(String userId,
@@ -322,6 +323,7 @@ public class OstSdk {
                ruleName,
                null,
                meta,
+               true,
                workFlowCallback);
     }
 
@@ -348,6 +350,7 @@ public class OstSdk {
      *                             {name: "transaction name",
      *                             type "user-to-user",
      *                             details, "like"}
+     * @param waitForFinalization  flag whether to poll transaction entity
      * @param workFlowCallback     workflow callback handler.
      */
     public static void executeTransaction(String userId,
@@ -356,6 +359,7 @@ public class OstSdk {
                                           String ruleName,
                                           Map<String, String> ruleData,
                                           Map<String, Object> meta,
+                                          boolean waitForFinalization,
                                           OstWorkFlowCallback workFlowCallback) {
         if (null == meta) meta = new HashMap<>();
         if (null == ruleData) ruleData = new HashMap<>();
@@ -366,6 +370,7 @@ public class OstSdk {
                 ruleName,
                 ruleData,
                 meta,
+                waitForFinalization,
                 workFlowCallback);
 
         ostExecuteTransaction.perform();

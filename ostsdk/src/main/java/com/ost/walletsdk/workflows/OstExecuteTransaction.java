@@ -72,8 +72,9 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
                                  String ruleName,
                                  Map<String, String> ruleData,
                                  Map<String, Object> meta,
+                                 boolean waitForFinalization,
                                  OstWorkFlowCallback callback) {
-        super(userId, callback);
+        super(userId, waitForFinalization, callback);
         mTokenHolderAddresses = tokenHolderAddresses;
         mAmounts = amounts;
         mRuleName = ruleName;
@@ -113,7 +114,12 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
 
         Log.i(TAG, "start polling");
         //OstTransactionPollingService
-        new OstTransactionPollingHelper(transactionId, mUserId, this);
+        if (mShouldPoll) {
+            new OstTransactionPollingHelper(transactionId, mUserId, this);
+        } else {
+            postFlowComplete(new OstContextEntity(OstTransaction.getById(transactionId), OstSdk.TRANSACTION));
+            goToState(WorkflowStateManager.COMPLETED);
+        }
         return new AsyncStatus(true);
     }
 
@@ -376,6 +382,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
                     ruleName,
                     ruleData,
                     metaMap,
+                    true,
                     callback);
 
             ostExecuteTransaction.perform();
