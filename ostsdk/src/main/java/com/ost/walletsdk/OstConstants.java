@@ -24,6 +24,7 @@ public interface OstConstants {
     String TOKEN_ID = "token_id";
     String METHOD = "method";
     String PARAMETERS = "parameters";
+    String RULE_DATA = "rule_data";
     String QR_DATA = "d";
     String QR_META = "m";
     String QR_DATA_DEFINITION = "dd";
@@ -36,6 +37,8 @@ public interface OstConstants {
     String QR_TOKEN_HOLDER_ADDRESSES = "ads";
     String QR_AMOUNTS = "ams";
     String QR_TOKEN_ID = "tid";
+    String QR_RULE_DATA = "rd";
+    String QR_CURRENCY_CODE = "cs";
     String META_TRANSACTION_NAME = "name";
     String META_TRANSACTION_TYPE = "type";
     String META_TRANSACTION_DETAILS = "details";
