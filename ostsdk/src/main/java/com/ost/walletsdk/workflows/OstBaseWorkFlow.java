@@ -71,6 +71,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     OstApiClient mOstApiClient;
     final String mUserId;
     final Handler mHandler;
+    final boolean mShouldPoll;
 
     WorkflowStateManager stateManager;
     
@@ -104,15 +105,23 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         mOstApiClient = new OstApiClient(mUserId);
     }
     //endregion
-    
-    
+
+
     /**
-     * @param userId - Ost Platform user-id
+     * @param userId   - Ost Platform user-id
      * @param callback - callback handler of the application.
      */
     OstBaseWorkFlow(@NonNull String userId, @NonNull OstWorkFlowCallback callback) {
-        mUserId = userId;
+        this(userId, true, callback);
+    }
 
+    /**
+     * @param userId   - Ost Platform user-id
+     * @param callback - callback handler of the application.
+     */
+    OstBaseWorkFlow(@NonNull String userId, boolean shouldPoll, @NonNull OstWorkFlowCallback callback) {
+        mUserId = userId;
+        mShouldPoll = shouldPoll;
         mHandler = new Handler(Looper.getMainLooper());
         workFlowCallbackWeakReference = new WeakReference<>(callback);
         initApiClient();
