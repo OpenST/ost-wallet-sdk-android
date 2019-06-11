@@ -82,11 +82,7 @@ public class OstSdk {
 
     // region - rule data constants
     /**
-<<<<<<< HEAD
      * Key constants to be used in ruleData{@link #executeTransaction(String, List, List, String, Map, Map, boolean, OstWorkFlowCallback)}
-=======
-     * Key constants to be used in ruleData{@link #executeTransaction(String, List, List, String, Map, Map, OstWorkFlowCallback)}
->>>>>>> OstSdk: Custom currency symbol support
      */
     public static final String CURRENCY_CODE = "currency_code";
     // endregion
