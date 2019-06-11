@@ -80,11 +80,13 @@ public class OstSdk {
     // endregion
 
 
-    // region - rule data constants
+    // region - transactions options constants
     /**
-     * Key constants to be used in ruleData{@link #executeTransaction(String, List, List, String, Map, Map, boolean, OstWorkFlowCallback)}
+     * Key constants to be used in transactions constants
+     * {@link #executeTransaction(String, List, List, String, Map, Map, OstWorkFlowCallback)}
      */
     public static final String CURRENCY_CODE = "currency_code";
+    public static final String WAIT_FOR_FINALIZATION = "wait_for_finalization";
     // endregion
 
     /**
@@ -288,7 +290,7 @@ public class OstSdk {
 
     /**
      * For Documentation refer
-     * {@link #executeTransaction(String, List, List, String, Map, Map, boolean, OstWorkFlowCallback)}
+     * {@link #executeTransaction(String, List, List, String, Map, Map, OstWorkFlowCallback)}
      * Only difference is meta is passed as null
      */
     public static void executeTransaction(String userId,
@@ -301,14 +303,13 @@ public class OstSdk {
                 amounts,
                 ruleName,
                 null,
-                new HashMap<>(),
-                true,
+                null,
                 workFlowCallback);
     }
 
     /**
      * For Documentation refer
-     * {@link #executeTransaction(String, List, List, String, Map, Map, boolean, OstWorkFlowCallback)}
+     * {@link #executeTransaction(String, List, List, String, Map, Map, OstWorkFlowCallback)}
      * Only difference is meta can be passed.
      */
     public static void executeTransaction(String userId,
@@ -321,9 +322,8 @@ public class OstSdk {
                tokenHolderAddresses,
                amounts,
                ruleName,
-               null,
                meta,
-               true,
+               null,
                workFlowCallback);
     }
 
@@ -342,35 +342,31 @@ public class OstSdk {
      * @param tokenHolderAddresses List<String> token holder addresses list to where amounts need to be sent
      * @param amounts              List<String> amounts list corresponding to token holder addresses
      * @param ruleName             rule name to execute in transaction
-     * @param ruleData             rule data to hold info of rule name
-     *                             For {@link #RULE_NAME_DIRECT_TRANSFER#RULE_NAME_PRICER}
-     *                             rule data:-
-     *                             {{@link #CURRENCY_CODE}: "USD"}
      * @param meta                 data about transaction example:-
      *                             {name: "transaction name",
      *                             type "user-to-user",
      *                             details, "like"}
-     * @param waitForFinalization  flag whether to poll transaction entity
+     * @param options              map contains options of transactions
+     *                             {{@link #CURRENCY_CODE}: "USD",
+     *                              {@link #WAIT_FOR_FINALIZATION: true}}
      * @param workFlowCallback     workflow callback handler.
      */
     public static void executeTransaction(String userId,
                                           List<String> tokenHolderAddresses,
                                           List<String> amounts,
                                           String ruleName,
-                                          Map<String, String> ruleData,
                                           Map<String, Object> meta,
-                                          boolean waitForFinalization,
+                                          Map<String, Object> options,
                                           OstWorkFlowCallback workFlowCallback) {
         if (null == meta) meta = new HashMap<>();
-        if (null == ruleData) ruleData = new HashMap<>();
+        if (null == options) options = new HashMap<>();
 
         final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId,
                 tokenHolderAddresses,
                 amounts,
                 ruleName,
-                ruleData,
                 meta,
-                waitForFinalization,
+                options,
                 workFlowCallback);
 
         ostExecuteTransaction.perform();

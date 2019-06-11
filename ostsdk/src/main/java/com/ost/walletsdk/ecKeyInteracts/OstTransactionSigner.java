@@ -53,7 +53,7 @@ public class OstTransactionSigner {
     }
 
     public SignedTransactionStruct getSignedTransaction(String ruleName,
-                                                        Map<String, String> ruleData,
+                                                        Map<String, Object> options,
                                                         List<String> tokenHolderAddresses,
                                                         List<String> amounts,
                                                         String ruleAddress) {
@@ -80,7 +80,7 @@ public class OstTransactionSigner {
                 OstApiClient ostApiClient = new OstApiClient(mUserId);
                 JSONObject pricePointApiResponse = ostApiClient.getPricePoints();
 
-                String currencyCode = ruleData.get(CURRENCY_CODE);
+                String currencyCode = (String)options.get(CURRENCY_CODE);
                 if (null == currencyCode) currencyCode = OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL;
 
                 try {

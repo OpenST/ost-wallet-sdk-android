@@ -64,21 +64,23 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
     private String transactionId;
     private String sessionAddress;
     private final Map<String, Object> mMeta;
-    private Map<String, String> mRuleData;
+    private Map<String, Object> mOptions;
 
     public OstExecuteTransaction(String userId,
                                  List<String> tokenHolderAddresses,
                                  List<String> amounts,
                                  String ruleName,
-                                 Map<String, String> ruleData,
                                  Map<String, Object> meta,
-                                 boolean waitForFinalization,
+                                 Map<String, Object> options,
                                  OstWorkFlowCallback callback) {
-        super(userId, waitForFinalization, callback);
+        super(userId,
+                null == options.get(OstSdk.WAIT_FOR_FINALIZATION) ? true: (Boolean) options.get(OstSdk.WAIT_FOR_FINALIZATION),
+                callback);
+
         mTokenHolderAddresses = tokenHolderAddresses;
         mAmounts = amounts;
         mRuleName = ruleName;
-        mRuleData = ruleData;
+        mOptions = options;
         mMeta = meta;
     }
 
@@ -88,7 +90,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
 
         OstTransactionSigner ostTransactionSigner = new OstTransactionSigner(mUserId);
         SignedTransactionStruct signedTransactionStruct = ostTransactionSigner
-                .getSignedTransaction(mRuleName, mRuleData ,mTokenHolderAddresses, mAmounts, getRuleAddressFor(mRuleName));
+                .getSignedTransaction(mRuleName, mOptions, mTokenHolderAddresses, mAmounts, getRuleAddressFor(mRuleName));
 
         Log.i(TAG, "Building transaction request");
         Map<String, Object> map = buildTransactionRequest(signedTransactionStruct);
@@ -343,8 +345,8 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
                         dataObject.optJSONArray(OstConstants.QR_AMOUNTS));
                 jsonObject.put(OstConstants.TOKEN_ID,
                         dataObject.optJSONArray(OstConstants.QR_TOKEN_ID));
-                jsonObject.put(OstConstants.RULE_DATA,
-                        dataObject.optJSONObject(OstConstants.QR_RULE_DATA));
+                jsonObject.put(OstConstants.TRANSACTION_OPTIONS,
+                        dataObject.optJSONObject(OstConstants.QR_OPTIONS_DATA));
             } catch (JSONException e) {
                 Log.e(TAG, "JSON Exception in updateJSONKeys: ", e);
             }
@@ -367,12 +369,12 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
             JSONArray jsonArrayAmounts = dataObject.optJSONArray(OstConstants.QR_AMOUNTS);
             List<String> amounts = commonUtils.jsonArrayToList(jsonArrayAmounts);
 
-            Map<String,String> ruleData = new HashMap<>();
-            JSONObject ruleNameJSONObject = dataObject.optJSONObject(OstConstants.QR_RULE_DATA);
+            Map<String, Object> options = new HashMap<>();
+            JSONObject ruleNameJSONObject = dataObject.optJSONObject(OstConstants.QR_OPTIONS_DATA);
             if (null != ruleNameJSONObject) {
                 String currencyCode = ruleNameJSONObject.optString(OstConstants.QR_CURRENCY_CODE);
                 if (!TextUtils.isEmpty(currencyCode)) {
-                    ruleData.put(OstSdk.CURRENCY_CODE, currencyCode);
+                    options.put(OstSdk.CURRENCY_CODE, currencyCode);
                 }
             }
 
@@ -380,9 +382,8 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
                     tokenHolderAddresses,
                     amounts,
                     ruleName,
-                    ruleData,
                     metaMap,
-                    true,
+                    options,
                     callback);
 
             ostExecuteTransaction.perform();
