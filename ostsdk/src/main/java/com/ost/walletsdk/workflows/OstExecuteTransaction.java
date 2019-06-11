@@ -64,17 +64,20 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
     private String transactionId;
     private String sessionAddress;
     private final Map<String, Object> mMeta;
+    private Map<String, String> mRuleData;
 
     public OstExecuteTransaction(String userId,
                                  List<String> tokenHolderAddresses,
                                  List<String> amounts,
                                  String ruleName,
+                                 Map<String, String> ruleData,
                                  Map<String, Object> meta,
                                  OstWorkFlowCallback callback) {
         super(userId, callback);
         mTokenHolderAddresses = tokenHolderAddresses;
         mAmounts = amounts;
         mRuleName = ruleName;
+        mRuleData = ruleData;
         mMeta = meta;
     }
 
@@ -84,7 +87,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
 
         OstTransactionSigner ostTransactionSigner = new OstTransactionSigner(mUserId);
         SignedTransactionStruct signedTransactionStruct = ostTransactionSigner
-                .getSignedTransaction(mRuleName, mTokenHolderAddresses, mAmounts, getRuleAddressFor(mRuleName));
+                .getSignedTransaction(mRuleName, mRuleData ,mTokenHolderAddresses, mAmounts, getRuleAddressFor(mRuleName));
 
         Log.i(TAG, "Building transaction request");
         Map<String, Object> map = buildTransactionRequest(signedTransactionStruct);
@@ -360,6 +363,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
                     tokenHolderAddresses,
                     amounts,
                     ruleName,
+                    null,
                     metaMap,
                     callback);
 

@@ -281,7 +281,7 @@ public class OstSdk {
 
     /**
      * For Documentation refer
-     * {@link #executeTransaction(String, List, List, String, Map, OstWorkFlowCallback)}
+     * {@link #executeTransaction(String, List, List, String, Map, Map ,OstWorkFlowCallback)}
      * Only difference is meta is passed as null
      */
     public static void executeTransaction(String userId,
@@ -293,10 +293,30 @@ public class OstSdk {
                 tokenHolderAddresses,
                 amounts,
                 ruleName,
-                new HashMap<>(),
+                null,
+                null,
                 workFlowCallback);
     }
 
+    /**
+     * For Documentation refer
+     * {@link #executeTransaction(String, List, List, String, Map, Map ,OstWorkFlowCallback)}
+     * Only difference is meta can be passed.
+     */
+    public static void executeTransaction(String userId,
+                                          List<String> tokenHolderAddresses,
+                                          List<String> amounts,
+                                          String ruleName,
+                                          Map<String, Object> meta,
+                                          OstWorkFlowCallback workFlowCallback) {
+       executeTransaction(userId,
+               tokenHolderAddresses,
+               amounts,
+               ruleName,
+               null,
+               meta,
+               workFlowCallback);
+    }
 
     /**
      * Start the workflow to execute rule transaction.
@@ -313,6 +333,10 @@ public class OstSdk {
      * @param tokenHolderAddresses List<String> token holder addresses list to where amounts need to be sent
      * @param amounts              List<String> amounts list corresponding to token holder addresses
      * @param ruleName             rule name to execute in transaction
+     * @param ruleData             rule data to hold info of rule name
+     *                             For {@link #RULE_NAME_DIRECT_TRANSFER#RULE_NAME_PRICER}
+     *                             rule data:-
+     *                             {currency_code: "USD"}
      * @param meta                 data about transaction example:-
      *                             {name: "transaction name",
      *                             type "user-to-user",
@@ -323,12 +347,17 @@ public class OstSdk {
                                           List<String> tokenHolderAddresses,
                                           List<String> amounts,
                                           String ruleName,
+                                          Map<String, String> ruleData,
                                           Map<String, Object> meta,
                                           OstWorkFlowCallback workFlowCallback) {
+        if (null == meta) meta = new HashMap<>();
+        if (null == ruleData) ruleData = new HashMap<>();
+
         final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId,
                 tokenHolderAddresses,
                 amounts,
                 ruleName,
+                ruleData,
                 meta,
                 workFlowCallback);
 
