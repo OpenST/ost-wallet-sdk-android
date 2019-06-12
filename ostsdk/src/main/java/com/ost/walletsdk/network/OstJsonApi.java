@@ -52,7 +52,6 @@ public class OstJsonApi {
         JSONObject data = null;
 
         try {
-            //TODO: Remove this try catch once react changes come here.
             OstApiClient apiClient = new OstApiClient(userId);
             JSONObject response = apiClient.getBalance();
             data = getDataFromApiResponse( response );
@@ -62,8 +61,44 @@ public class OstJsonApi {
             if ( err instanceof OstError ) {
                 error = (OstError) err;
             } else {
-                //TODO: Throw invalid api response error.
-                error = new OstError("ojsonapi_egb_2", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+                error = new OstError("ojsonapi_egb_2", ErrorCode.SDK_ERROR);
+            }
+            sendErrorCallback(callback, error, data);
+        }
+    }
+    // endregion
+
+    // region - getPricePoints
+
+    /**
+     * Api to get Price Points.
+     *
+     * @param userId   User Id of the current logged-in user.
+     * @param callback callback where to receive data/error
+     */
+    public static void getPricePoints(@NonNull String userId, @NonNull OstJsonApiCallback callback) {
+        getAsyncQueue().submit(new Runnable() {
+            @Override
+            public void run() {
+                execGetPricePoints(userId, callback);
+            }
+        });
+    }
+
+    private static void execGetPricePoints(@NonNull String userId, @NonNull OstJsonApiCallback callback) {
+        JSONObject data = null;
+
+        try {
+            OstApiClient apiClient = new OstApiClient(userId);
+            JSONObject response = apiClient.getPricePoints();
+            data = getDataFromApiResponse( response );
+            sendSuccessCallback(callback, data);
+        } catch (Throwable err) {
+            OstError error = null;
+            if ( err instanceof OstError ) {
+                error = (OstError) err;
+            } else {
+                error = new OstError("ojsonapi_egb_2", ErrorCode.SDK_ERROR);
             }
             sendErrorCallback(callback, error, data);
         }
@@ -91,15 +126,13 @@ public class OstJsonApi {
         JSONObject data = new JSONObject();
 
         try {
-            //TODO: Remove this try catch once react changes come here.
             OstApiClient apiClient = new OstApiClient(userId);
 
             //Get Balance.
             JSONObject balanceResponse = apiClient.getBalance();
             JSONObject balanceData = getDataFromApiResponse( balanceResponse );
             if ( null == balanceData ) {
-                //TODO: Throw invalid api response error.
-                throw new OstError("ojsonapi_egbwpp_2", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+                throw new OstError("ojsonapi_egbwpp_2", ErrorCode.INVALID_API_RESPONSE);
             }
             String balanceResultType = getResultType( balanceData );
             //Populate data.
@@ -110,8 +143,7 @@ public class OstJsonApi {
             JSONObject pricePointResponse = apiClient.getPricePoints();
             JSONObject pricePointData = getDataFromApiResponse( pricePointResponse );
             if ( null == pricePointData ) {
-                //TODO: Throw invalid api response error.
-                throw new OstError("ojsonapi_egbwpp_3", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+                throw new OstError("ojsonapi_egbwpp_3", ErrorCode.INVALID_API_RESPONSE);
             }
             String pricePointResultType = getResultType( pricePointData );
 
@@ -125,7 +157,7 @@ public class OstJsonApi {
                 error = (OstError) err;
             } else {
 
-                error = new OstError("ojsonapi_egbwpp_4", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+                error = new OstError("ojsonapi_egbwpp_4", ErrorCode.SDK_ERROR);
             }
             sendErrorCallback(callback, error, data);
         }
@@ -154,7 +186,6 @@ public class OstJsonApi {
         JSONObject data = null;
 
         try {
-            //TODO: Remove this try catch once react changes come here.
             OstApiClient apiClient = new OstApiClient(userId);
             JSONObject response = apiClient.getTransactions(requestPayload);
             data = getDataFromApiResponse( response );
@@ -164,8 +195,7 @@ public class OstJsonApi {
             if ( err instanceof OstError ) {
                 error = (OstError) err;
             } else {
-                //TODO: Throw invalid api response error.
-                error = new OstError("ojsonapi_egt_2", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+                error = new OstError("ojsonapi_egt_2", ErrorCode.INVALID_API_RESPONSE);
             }
             sendErrorCallback(callback, error, data);
         }
@@ -192,7 +222,6 @@ public class OstJsonApi {
         JSONObject data = null;
 
         try {
-            //TODO: Remove this try catch once react changes come here.
             OstApiClient apiClient = new OstApiClient(userId);
             JSONObject response = apiClient.getPendingRecovery();
             data = getDataFromApiResponse( response );
@@ -202,8 +231,7 @@ public class OstJsonApi {
             if ( err instanceof OstError ) {
                 error = (OstError) err;
             } else {
-                //TODO: Throw invalid api response error.
-                error = new OstError("ojsonapi_egpr_2", ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+                error = new OstError("ojsonapi_egpr_2", ErrorCode.SDK_ERROR);
             }
             sendErrorCallback(callback, error, data);
         }
