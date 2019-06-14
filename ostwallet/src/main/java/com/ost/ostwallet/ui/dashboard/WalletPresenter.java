@@ -124,7 +124,7 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                     } catch(Exception e){ }
                     AppProvider.get().getCurrentUser().updateBalance(balance);
                     getMvpView().updateBalance(CommonUtils.convertWeiToTokenCurrency(balance),
-                            CommonUtils.convertBTWeiToUsd(balance, pricePoint));
+                            CommonUtils.convertBTWeiToFiat(balance, pricePoint));
                 } else {
                     Log.d(LOG_TAG, "getBalanceWithPricePoints data is null.");
                     getMvpView().updateBalance("0", null);

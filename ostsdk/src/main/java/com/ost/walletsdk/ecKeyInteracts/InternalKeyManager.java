@@ -583,7 +583,7 @@ class InternalKeyManager {
         byte[] seed = null;
         Bip32ECKeyPair hdMasterKey = null;
         try {
-            boolean shouldUseSeedPassword = OstConfigs.getInstance().USE_SEED_PASSWORD;
+            boolean shouldUseSeedPassword = OstConfigs.getInstance().isUSE_SEED_PASSWORD();
             seed = generateSeedFromMnemonicBytes(mnemonics,
                     shouldUseSeedPassword ? buildSeedPassword(keyType) : ""
             );

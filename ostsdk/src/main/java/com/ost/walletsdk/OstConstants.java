@@ -39,6 +39,7 @@ public interface OstConstants {
     String QR_TOKEN_ID = "tid";
     String QR_OPTIONS_DATA = "o";
     String QR_CURRENCY_CODE = "cs";
+    String QR_CURRENCY_SIGN = "s";
     String META_TRANSACTION_NAME = "name";
     String META_TRANSACTION_TYPE = "type";
     String META_TRANSACTION_DETAILS = "details";

@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +82,7 @@ public class OstTransactionSigner {
                 JSONObject pricePointApiResponse = ostApiClient.getPricePoints();
 
                 String currencyCode = (String)options.get(CURRENCY_CODE);
-                if (null == currencyCode) currencyCode = OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL;
+                if (null == currencyCode) currencyCode = OstConfigs.getInstance().getPRICE_POINT_CURRENCY_SYMBOL();
 
                 try {
                     CommonUtils commonUtils = new CommonUtils();
@@ -198,8 +199,11 @@ public class OstTransactionSigner {
         BigDecimal conversionFactorOstToPin = new BigDecimal(String.valueOf(oneOstToBT));
         BigDecimal btInWeiNumerator = conversionFactorOstToPin.multiply(toBtWeiMultiplier);
 
+        int precision = usdDecimalExponent - btDecimalExponent;
+        if (precision < 1) precision = 2;
+
         // multiplierForFiat = btInWeiNumerator / usdWeiDecimalDenominator
-        BigDecimal multiplierForFiat = btInWeiNumerator.divideToIntegralValue(usdWeiDecimalDenominator);
+        BigDecimal multiplierForFiat = btInWeiNumerator.divide(usdWeiDecimalDenominator, precision, RoundingMode.DOWN);
 
         return multiplierForFiat;
     }

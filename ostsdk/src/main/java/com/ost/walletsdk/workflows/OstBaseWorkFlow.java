@@ -520,7 +520,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         }
 
         mPinAskCount = mPinAskCount + 1;
-        if (mPinAskCount < OstConfigs.getInstance().PIN_MAX_RETRY_COUNT) {
+        if (mPinAskCount < OstConfigs.getInstance().getPIN_MAX_RETRY_COUNT()) {
             Log.d(TAG, "Pin InValidated ask for pin again");
             OstPinAcceptInterface me = this;
             return postInvalidPin(me);
@@ -798,7 +798,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
         currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
         blockGenerationTime = Long.parseLong(strBlockGenerationTime);
-        long bufferBlocks = (OstConfigs.getInstance().SESSION_BUFFER_TIME) / blockGenerationTime;
+        long bufferBlocks = (OstConfigs.getInstance().getSESSION_BUFFER_TIME()) / blockGenerationTime;
         long expiresAfterBlocks = expiresInSecs / blockGenerationTime;
         long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
 
