@@ -397,15 +397,21 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
 
             String transactionName = metaObject.optString(OstConstants.QR_META_TRANSACTION_NAME,
                     "");
-            metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+            if (!TextUtils.isEmpty(transactionName)) {
+                metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+            }
 
             String transactionType = metaObject.optString(OstConstants.QR_META_TRANSACTION_TYPE,
                     "");
-            metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+            if (!TextUtils.isEmpty(transactionType)) {
+                metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+            }
 
             String transactionDetails = metaObject.optString(OstConstants.QR_META_TRANSACTION_DETAILS,
                     "");
-            metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+            if (!TextUtils.isEmpty(transactionDetails)) {
+                metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+            }
 
             return metaMap;
         }
@@ -429,15 +435,21 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
 
         String transactionName = metaJsonObject.optString(OstConstants.META_TRANSACTION_NAME,
                 "");
-        metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+        if (!TextUtils.isEmpty(transactionName)) {
+            metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+        }
 
         String transactionType = metaJsonObject.optString(OstConstants.META_TRANSACTION_TYPE,
                 "");
-        metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+        if (!TextUtils.isEmpty(transactionType)) {
+            metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+        }
 
         String transactionDetails = metaJsonObject.optString(OstConstants.META_TRANSACTION_DETAILS,
                 "");
-        metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+        if (!TextUtils.isEmpty(transactionDetails)) {
+            metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+        }
 
         return metaMap;
     }
