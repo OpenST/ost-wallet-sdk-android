@@ -39,15 +39,25 @@ public class OstApiError extends OstError {
     }
 
     private JSONObject jsonApiError = null;
+
+    public JSONObject getApiResponse() {
+        return apiResponse;
+    }
+
+    private JSONObject apiResponse = null;
     public OstApiError(String internalErrorCode, OstErrors.ErrorCode errorCode, JSONObject apiResponse) {
         super(internalErrorCode, errorCode);
         setApiError( true );
         if ( apiResponse != null ) {
             jsonApiError = apiResponse.optJSONObject("err");
         }
-
         if ( null == jsonApiError ) {
             jsonApiError = new JSONObject();
+        }
+        if ( null == apiResponse ) {
+            this.apiResponse = new JSONObject();
+        } else {
+            this.apiResponse = apiResponse;
         }
 
         parseErrorData();
