@@ -113,7 +113,7 @@ public class OstHttpRequestClient {
 
         client = new OkHttpClient.Builder()
                 .connectionPool(new ConnectionPool(10, 2, TimeUnit.MINUTES))
-                .connectTimeout(OstConfigs.getInstance().REQUEST_TIMEOUT_DURATION, TimeUnit.SECONDS)
+                .connectTimeout(OstConfigs.getInstance().getREQUEST_TIMEOUT_DURATION(), TimeUnit.SECONDS)
                 .readTimeout(timeout, TimeUnit.SECONDS)
                 .dispatcher(dispatcher)
                 .retryOnConnectionFailure(false)

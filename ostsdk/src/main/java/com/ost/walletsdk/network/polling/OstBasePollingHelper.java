@@ -21,7 +21,7 @@ public abstract class OstBasePollingHelper {
     private final static ScheduledExecutorService POLLING_REQUEST_API_THREAD_POOL_EXECUTOR = Executors
             .newScheduledThreadPool(1);
     private static final String TAG = "OstBasePollingHelper";
-    private long pollingInterval = OstConfigs.getInstance().BLOCK_GENERATION_TIME * 1000;;
+    private long pollingInterval = OstConfigs.getInstance().getBLOCK_GENERATION_TIME() * 1000;;
     private long initialPollingInterval = pollingInterval * 6;
     private int maxPollingCount = 20;
     private int currentPollingIndex = 0;

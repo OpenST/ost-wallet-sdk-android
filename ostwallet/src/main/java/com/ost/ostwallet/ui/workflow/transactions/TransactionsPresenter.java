@@ -47,7 +47,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
 
     private OstToken mOstToken = OstSdk.getToken(AppProvider.get().getCurrentUser().getTokenId());
     private String mCurrentTokenSymbol = mOstToken.getSymbol();
-    private List<String> mUnitList = Arrays.asList(mCurrentTokenSymbol, OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL);
+    private List<String> mUnitList = Arrays.asList(mCurrentTokenSymbol, OstConfigs.getInstance().getPRICE_POINT_CURRENCY_SYMBOL());
     public JSONObject mPricePoint = null;
 
     public List<String> getUnitList() {
@@ -106,7 +106,7 @@ class TransactionsPresenter extends BasePresenter<TransactionsView> implements
 
             //Provided token are in Cent convert it into Dollar wei
             BigDecimal tokenInDollarWei = tokensBigInt.multiply( new BigDecimal("10").pow(18)).setScale(0);
-            String usdBalance = CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mPricePoint);
+            String usdBalance = CommonUtils.convertBTWeiToFiat(AppProvider.get().getCurrentUser().getBalance(), mPricePoint);
             if(null == usdBalance){
                 usdBalance = "0";
             }

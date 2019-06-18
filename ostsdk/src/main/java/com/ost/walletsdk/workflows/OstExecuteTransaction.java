@@ -12,6 +12,7 @@ package com.ost.walletsdk.workflows;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -38,7 +39,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,17 +64,23 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
     private String transactionId;
     private String sessionAddress;
     private final Map<String, Object> mMeta;
+    private Map<String, Object> mOptions;
 
     public OstExecuteTransaction(String userId,
                                  List<String> tokenHolderAddresses,
                                  List<String> amounts,
                                  String ruleName,
                                  Map<String, Object> meta,
+                                 Map<String, Object> options,
                                  OstWorkFlowCallback callback) {
-        super(userId, callback);
+        super(userId,
+                null == options.get(OstSdk.WAIT_FOR_FINALIZATION) ? true: (Boolean) options.get(OstSdk.WAIT_FOR_FINALIZATION),
+                callback);
+
         mTokenHolderAddresses = tokenHolderAddresses;
         mAmounts = amounts;
         mRuleName = ruleName;
+        mOptions = options;
         mMeta = meta;
     }
 
@@ -84,7 +90,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
 
         OstTransactionSigner ostTransactionSigner = new OstTransactionSigner(mUserId);
         SignedTransactionStruct signedTransactionStruct = ostTransactionSigner
-                .getSignedTransaction(mRuleName, mTokenHolderAddresses, mAmounts, getRuleAddressFor(mRuleName));
+                .getSignedTransaction(mRuleName, mOptions, mTokenHolderAddresses, mAmounts, getRuleAddressFor(mRuleName));
 
         Log.i(TAG, "Building transaction request");
         Map<String, Object> map = buildTransactionRequest(signedTransactionStruct);
@@ -110,7 +116,12 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
 
         Log.i(TAG, "start polling");
         //OstTransactionPollingService
-        new OstTransactionPollingHelper(transactionId, mUserId, this);
+        if (mShouldPoll) {
+            new OstTransactionPollingHelper(transactionId, mUserId, this);
+        } else {
+            postFlowComplete(new OstContextEntity(OstTransaction.getById(transactionId), OstSdk.TRANSACTION));
+            goToState(WorkflowStateManager.COMPLETED);
+        }
         return new AsyncStatus(true);
     }
 
@@ -334,6 +345,8 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
                         dataObject.optJSONArray(OstConstants.QR_AMOUNTS));
                 jsonObject.put(OstConstants.TOKEN_ID,
                         dataObject.optJSONArray(OstConstants.QR_TOKEN_ID));
+                jsonObject.put(OstConstants.TRANSACTION_OPTIONS,
+                        dataObject.optJSONObject(OstConstants.QR_OPTIONS_DATA));
             } catch (JSONException e) {
                 Log.e(TAG, "JSON Exception in updateJSONKeys: ", e);
             }
@@ -356,11 +369,21 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
             JSONArray jsonArrayAmounts = dataObject.optJSONArray(OstConstants.QR_AMOUNTS);
             List<String> amounts = commonUtils.jsonArrayToList(jsonArrayAmounts);
 
+            Map<String, Object> options = new HashMap<>();
+            JSONObject ruleNameJSONObject = dataObject.optJSONObject(OstConstants.QR_OPTIONS_DATA);
+            if (null != ruleNameJSONObject) {
+                String currencyCode = ruleNameJSONObject.optString(OstConstants.QR_CURRENCY_CODE);
+                if (!TextUtils.isEmpty(currencyCode)) {
+                    options.put(OstSdk.CURRENCY_CODE, currencyCode);
+                }
+            }
+
             OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId,
                     tokenHolderAddresses,
                     amounts,
                     ruleName,
                     metaMap,
+                    options,
                     callback);
 
             ostExecuteTransaction.perform();
@@ -374,15 +397,21 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
 
             String transactionName = metaObject.optString(OstConstants.QR_META_TRANSACTION_NAME,
                     "");
-            metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+            if (!TextUtils.isEmpty(transactionName)) {
+                metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+            }
 
             String transactionType = metaObject.optString(OstConstants.QR_META_TRANSACTION_TYPE,
                     "");
-            metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+            if (!TextUtils.isEmpty(transactionType)) {
+                metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+            }
 
             String transactionDetails = metaObject.optString(OstConstants.QR_META_TRANSACTION_DETAILS,
                     "");
-            metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+            if (!TextUtils.isEmpty(transactionDetails)) {
+                metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+            }
 
             return metaMap;
         }
@@ -406,15 +435,21 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
 
         String transactionName = metaJsonObject.optString(OstConstants.META_TRANSACTION_NAME,
                 "");
-        metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+        if (!TextUtils.isEmpty(transactionName)) {
+            metaMap.put(OstConstants.META_TRANSACTION_NAME, transactionName);
+        }
 
         String transactionType = metaJsonObject.optString(OstConstants.META_TRANSACTION_TYPE,
                 "");
-        metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+        if (!TextUtils.isEmpty(transactionType)) {
+            metaMap.put(OstConstants.META_TRANSACTION_TYPE, transactionType);
+        }
 
         String transactionDetails = metaJsonObject.optString(OstConstants.META_TRANSACTION_DETAILS,
                 "");
-        metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+        if (!TextUtils.isEmpty(transactionDetails)) {
+            metaMap.put(OstConstants.META_TRANSACTION_DETAILS, transactionDetails);
+        }
 
         return metaMap;
     }

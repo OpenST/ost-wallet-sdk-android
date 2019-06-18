@@ -41,7 +41,7 @@ public abstract class OstPollingService {
     private static final int POLL_MAX_COUNT = 10;
 
     private static final String TAG = "OstPollingService";
-    private static final long POLLING_INTERVAL = OstConfigs.getInstance().BLOCK_GENERATION_TIME * 1000;
+    private static final long POLLING_INTERVAL = OstConfigs.getInstance().getBLOCK_GENERATION_TIME() * 1000;
     private static final long INITIAL_POLLING_INTERVAL = 6 * POLLING_INTERVAL;
     private final String failedStatus;
     private final String successStatus;
