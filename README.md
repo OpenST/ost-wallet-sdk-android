@@ -123,15 +123,15 @@ A transaction where Brand Tokens are transferred from a user to another actor wi
 &nbsp; parameter meta: meta data of transaction to be associated<br/>
 Example:-
 ```json
-                           {name: "transaction name",
-                           type: "user-to-user",
-                           details: "like"}
+                           {"name": "transaction name",
+                           "type": "user-to-user",
+                           "details": "like"}
 ```
 &nbsp; parameter options: Map containing options of transactions<br/>
 Example:-
 ```json
-                           {currency_code: "USD",
-                           wait_for_finalization: true}
+                           {"currency_code": "USD",
+                           "wait_for_finalization": true}
 ```
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback workFlowCallback)**<br/>
