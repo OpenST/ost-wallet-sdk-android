@@ -207,7 +207,7 @@ public class OstJsonApi {
 
     // region - getPendingRecovery
     /**
-     * Api to get user balance. Balance of only current logged-in user can be fetched.
+     * Api to get pending ongoing recovery.
      *
      * @param userId User Id of the current logged-in user.
      * @param callback callback where to receive data/error.

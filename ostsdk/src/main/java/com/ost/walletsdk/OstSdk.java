@@ -344,11 +344,11 @@ public class OstSdk {
      * @param ruleName             rule name to execute in transaction
      * @param meta                 data about transaction example:-
      *                             {name: "transaction name",
-     *                             type "user-to-user",
-     *                             details, "like"}
+     *                             type: "user-to-user",
+     *                             details: "like"}
      * @param options              map contains options of transactions
-     *                             {{@link #CURRENCY_CODE}: "USD",
-     *                              {@link #WAIT_FOR_FINALIZATION: true}}
+     *                             {@link #CURRENCY_CODE}: "USD",
+     *                              @link #WAIT_FOR_FINALIZATION: true}
      * @param workFlowCallback     workflow callback handler.
      */
     public static void executeTransaction(String userId,

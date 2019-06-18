@@ -120,10 +120,23 @@ A transaction where Brand Tokens are transferred from a user to another actor wi
 &nbsp; parameter tokenHolderAddresses: Token holder addresses of amount receiver<br/>
 &nbsp; parameter amounts: Amounts corresponding to tokenHolderAddresses to be transfered<br/>
 &nbsp; parameter ruleName: Rule name to be executed<br/>
+&nbsp; parameter meta: meta data of transaction to be associated<br/>
+Example:-
+```json
+                           {"name": "transaction name",
+                           "type": "user-to-user",
+                           "details": "like"}
+```
+&nbsp; parameter options: Map containing options of transactions<br/>
+Example:-
+```json
+                           {"currency_code": "USD",
+                           "wait_for_finalization": true}
+```
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
 &nbsp; **void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.executeTransaction(userId, tokenHolderAddresses, amounts, ruleName, new OstWorkFlowCallbackImpl())
+OstSdk.executeTransaction(userId, tokenHolderAddresses, amounts, meta, options, ruleName, new OstWorkFlowCallbackImpl())
 ````
 
 ### Get Mnemonic Phrase
@@ -376,6 +389,101 @@ OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
 |---|---|
 | **ostWorkflowContext** <br> **OstWorkflowContext**	| Information about the workflow |
 | **ostError** <br> **OstError**	| ostError object will have details about the error that interrupted the flow |
+
+## OST JSON APIs
+
+### User Balance
+
+Api to get user balance. Balance of only current logged-in user can be fetched.<br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: User Id of the current logged-in user.<br/>
+&nbsp; parameter callback: callback where to receive data/error.<br/>
+&nbsp; **getBalance(userId, callback)**<br/>
+```java
+OstJsonApi.getBalance(userId, new OstJsonApiCallback() {
+        @Override
+        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+
+        @Override
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) { }
+    }
+);
+```
+
+### Price Points
+
+Api to get Price Points. 
+It will provide latest conversion rates of base token to fiat currency.<br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: User Id of the current logged-in user.<br/>
+&nbsp; parameter callback: callback where to receive data/error.<br/>
+&nbsp; **getPricePoints(userId, callback)**<br/>
+```java
+OstJsonApi.getPricePoints(userId, new OstJsonApiCallback() {
+        @Override
+        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+
+        @Override
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) { }
+    }
+);
+```
+
+### Balance With Price Points
+
+Api to get user balance and Price Points. Balance of only current logged-in user can be fetched.
+It will also provide latest conversion rates of base token to fiat currency.<br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: User Id of the current logged-in user.<br/>
+&nbsp; parameter callback: callback where to receive data/error.<br/>
+&nbsp; **getBalanceWithPricePoints(userId, callback)**<br/>
+```java
+OstJsonApi.getBalanceWithPricePoints(userId, new OstJsonApiCallback() {
+        @Override
+        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+
+        @Override
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) { }
+    }
+);
+```
+
+### Transactions
+
+Api to get user transactions. Transactions of only current logged-in user can be fetched.<br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: User Id of the current logged-in user.<br/>
+&nbsp; parameter requestPayload: request payload. Such as next-page payload, filters etc.
+&nbsp; parameter callback: callback where to receive data/error.<br/>
+&nbsp; **getTransactions(userId, callback)**<br/>
+```java
+OstJsonApi.getTransactions(userId, requestPayload, new OstJsonApiCallback() {
+        @Override
+        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+
+        @Override
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) { }
+    }
+);
+```
+
+### Pending Recovery
+
+Api to get status of pending ongoing recovery.<br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: User Id of the current logged-in user.<br/>
+&nbsp; parameter callback: callback where to receive data/error.<br/>
+&nbsp; **getPendingRecovery(userId, callback)**<br/>
+```java
+OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
+        @Override
+        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+
+        @Override
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) { }
+    }
+);
+```
 
 ## Steps to use Android mobile sdk through AAR lib
 - Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
