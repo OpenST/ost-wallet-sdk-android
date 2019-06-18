@@ -500,7 +500,7 @@ OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
 
 ```java
    /**
-     * Inform SDK user about Success of OstJsonApi
+     * Inform SDK user about Failure of OstJsonApi
      * @param err      OstError object containing error details
      * @param response Api response
      */
