@@ -405,7 +405,7 @@ OstJsonApi.getBalance(userId, new OstJsonApiCallback() {
         public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
 
         @Override
-        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) { }
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
     }
 );
 ```
@@ -424,7 +424,7 @@ OstJsonApi.getPricePoints(userId, new OstJsonApiCallback() {
         public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
 
         @Override
-        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) { }
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
     }
 );
 ```
@@ -443,7 +443,7 @@ OstJsonApi.getBalanceWithPricePoints(userId, new OstJsonApiCallback() {
         public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
 
         @Override
-        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) { }
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
     }
 );
 ```
@@ -462,7 +462,7 @@ OstJsonApi.getTransactions(userId, requestPayload, new OstJsonApiCallback() {
         public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
 
         @Override
-        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) { }
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
     }
 );
 ```
@@ -480,10 +480,36 @@ OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
         public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
 
         @Override
-        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) { }
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
     }
 );
 ```
+## Json Api Response Callback
+&nbsp; Callbacks to be implemented by application before calling any of the above OstJsonApis.
+
+```java
+   /**
+     * Inform SDK user about Success of OstJsonApi
+     * @param data Response data
+     */
+    public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+```
+| Argument | Description |
+|---|---|
+| **data** <br> **JSONObject**	|	Api Response data	|
+
+```java
+   /**
+     * Inform SDK user about Success of OstJsonApi
+     * @param err      OstError object containing error details
+     * @param response Api response
+     */
+    public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
+```
+| Argument | Description |
+|---|---|
+| **err** <br> **OstError**	|	OstError object containing error details	|
+| **response** <br> **JSONObject**	|	Api Response	|
 
 ## Steps to use Android mobile sdk through AAR lib
 - Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
