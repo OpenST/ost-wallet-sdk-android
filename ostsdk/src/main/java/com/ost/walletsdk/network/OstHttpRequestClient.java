@@ -15,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.datatheorem.android.trustkit.TrustKit;
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
 import com.ost.walletsdk.OstConfigs;
@@ -28,7 +29,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -111,7 +114,15 @@ public class OstHttpRequestClient {
         dispatcher.setMaxRequests(500);
         dispatcher.setMaxRequestsPerHost(150);
 
+        String hostName = "ost.com";
+        try {
+            hostName = new URL(baseUrl).getHost();
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "URL parsing error");
+        }
         client = new OkHttpClient.Builder()
+                .sslSocketFactory(TrustKit.getInstance().getSSLSocketFactory(hostName),
+                        TrustKit.getInstance().getTrustManager(hostName))
                 .connectionPool(new ConnectionPool(10, 2, TimeUnit.MINUTES))
                 .connectTimeout(OstConfigs.getInstance().getREQUEST_TIMEOUT_DURATION(), TimeUnit.SECONDS)
                 .readTimeout(timeout, TimeUnit.SECONDS)
