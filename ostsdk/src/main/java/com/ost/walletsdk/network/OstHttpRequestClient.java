@@ -136,15 +136,6 @@ public class OstHttpRequestClient {
     }
 
     private JSONObject send(String requestType, String resource, Map<String, Object> mapParams) throws OstError {
-        // Basic Sanity.
-        if (!isNetworkAvailable()) {
-            try {
-                return new JSONObject(NetworkExceptionString);
-            } catch (JSONException e) {
-                //Not expected
-            }
-        }
-
 //        //TODO: Make POST_REQUEST & GET_REQUEST ENUMS
 //        if (!requestType.equalsIgnoreCase(POST_REQUEST) && !requestType.equalsIgnoreCase(GET_REQUEST)) {
 //            throw new IOException("Invalid requestType");
@@ -261,8 +252,12 @@ public class OstHttpRequestClient {
         String responseBody;
         Call call = client.newCall(request);
         try {
-            okhttp3.Response response = call.execute();
-            responseBody = getResponseBodyAsString(response);
+            if (isNetworkAvailable()) {
+                okhttp3.Response response = call.execute();
+                responseBody = getResponseBodyAsString(response);
+            } else {
+                responseBody = NetworkExceptionString;
+            }
         }
         catch (SocketTimeoutException e) {
             Log.e(TAG, "SocketTimeoutException occurred.");
