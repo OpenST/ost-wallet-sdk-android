@@ -41,6 +41,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.SSLHandshakeException;
+
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
 import okhttp3.Dispatcher;
@@ -137,6 +139,17 @@ public class OstHttpRequestClient {
     private static String SocketTimeoutExceptionString = "{'success':'false','err':{'code':'REQUEST_TIMEOUT','internal_id':'SDK(TIMEOUT_ERROR)','msg':'','error_data':[]}}";
     private static String IOExceptionString = "{'success':'false','err':{'code':'IOException','internal_id':'SDK(IO_EXCEPTION)','msg':'','error_data':[]}}";
     private static String NetworkExceptionString = "{'success':'false','err':{'code':'NO_NETWORK','internal_id':'SDK(NO_NETWORK)','msg':'','error_data':[]}}";
+    private static final String CertificateErrorString = "{'success':'false','err':{'code':'INVALID_CERTIFICATE','internal_id':'SDK(INVALID_CERTIFICATE)','msg':'','error_data':[]}}";;
+
+    private static JSONObject CertificateErrorJsonResponse;
+
+    static {
+        try {
+            CertificateErrorJsonResponse = new JSONObject(CertificateErrorString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     public JSONObject get(String resource, Map<String, Object> queryParams) throws OstError {
         return send(GET_REQUEST, resource, queryParams);
@@ -278,6 +291,8 @@ public class OstHttpRequestClient {
         catch (SocketTimeoutException e) {
             Log.e(TAG, "SocketTimeoutException occurred.");
             responseBody =  SocketTimeoutExceptionString;
+        } catch (SSLHandshakeException e) {
+            throw new OstApiError("ost_hrc_s_3", OstErrors.ErrorCode.INVALID_CERTIFICATE, CertificateErrorJsonResponse);
         } catch (IOException e) {
             JSONObject errorInfo = new JSONObject();
 

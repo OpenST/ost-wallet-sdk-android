@@ -3,8 +3,7 @@
     <!-- Pin the domain stagingost.com and ost.com-->
     <!-- Official Android N API -->
     <domain-config>
-        <domain includeSubdomains="true">ost.com</domain>
-        <domain includeSubdomains="true">stagingost.com</domain>
+        <domain includeSubdomains="false">api.ost.com</domain>
         <pin-set>
             <!--Production-->
             <pin digest="SHA-256">s4vrk6by0cqKQ9p/mFOakoi0daivc7Le8q7fUuuo4/U=</pin>
@@ -14,8 +13,8 @@
             <pin digest="SHA-256">efgWbb0q/zHFLub1SY5QpoQVlZp33QpLOj0EmhoK8tI=</pin>
 
             <!--Staging-->
-            <pin digest="SHA-256">VMqNElFr41WvPqW6DcYoVXGjW7u85pF2dGpuyxaAPAk=</pin>
-            <pin digest="SHA-256">EB5U//Yqir8uZ9UgM+sVXBoOi+daBWlrjO1543RvDmk=</pin>
+            <!--<pin digest="SHA-256">VMqNElFr41WvPqW6DcYoVXGjW7u85pF2dGpuyxaAPAk=</pin>-->
+            <!--<pin digest="SHA-256">EB5U//Yqir8uZ9UgM+sVXBoOi+daBWlrjO1543RvDmk=</pin>-->
         </pin-set>
         <trustkit-config enforcePinning="true">
         </trustkit-config>
