@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.datatheorem.android.trustkit.TrustKit;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.ost.walletsdk.database.OstSdkDatabase;
 import com.ost.walletsdk.database.OstSdkKeyDatabase;
@@ -129,6 +130,8 @@ public class OstSdk {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
+        TrustKit.initializeWithNetworkSecurityConfiguration(mApplicationContext);
+
         BASE_URL = validateSdkUrl(baseUrl);
     }
 
