@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.datatheorem.android.trustkit.TrustKit;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.ost.walletsdk.database.OstSdkDatabase;
 import com.ost.walletsdk.database.OstSdkKeyDatabase;
@@ -80,6 +81,15 @@ public class OstSdk {
     // endregion
 
 
+    // region - transactions options constants
+    /**
+     * Key constants to be used in transactions constants
+     * {@link #executeTransaction(String, List, List, String, Map, Map, OstWorkFlowCallback)}
+     */
+    public static final String CURRENCY_CODE = "currency_code";
+    public static final String WAIT_FOR_FINALIZATION = "wait_for_finalization";
+    // endregion
+
     /**
      * Type of verify data context entity for execute rule transaction
      * In case of Direct Transfer
@@ -120,6 +130,8 @@ public class OstSdk {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
+        TrustKit.initializeWithNetworkSecurityConfiguration(mApplicationContext);
+
         BASE_URL = validateSdkUrl(baseUrl);
     }
 
@@ -281,7 +293,7 @@ public class OstSdk {
 
     /**
      * For Documentation refer
-     * {@link #executeTransaction(String, List, List, String, Map, OstWorkFlowCallback)}
+     * {@link #executeTransaction(String, List, List, String, Map, Map, OstWorkFlowCallback)}
      * Only difference is meta is passed as null
      */
     public static void executeTransaction(String userId,
@@ -293,10 +305,30 @@ public class OstSdk {
                 tokenHolderAddresses,
                 amounts,
                 ruleName,
-                new HashMap<>(),
+                null,
+                null,
                 workFlowCallback);
     }
 
+    /**
+     * For Documentation refer
+     * {@link #executeTransaction(String, List, List, String, Map, Map, OstWorkFlowCallback)}
+     * Only difference is meta can be passed.
+     */
+    public static void executeTransaction(String userId,
+                                          List<String> tokenHolderAddresses,
+                                          List<String> amounts,
+                                          String ruleName,
+                                          Map<String, Object> meta,
+                                          OstWorkFlowCallback workFlowCallback) {
+       executeTransaction(userId,
+               tokenHolderAddresses,
+               amounts,
+               ruleName,
+               meta,
+               null,
+               workFlowCallback);
+    }
 
     /**
      * Start the workflow to execute rule transaction.
@@ -315,8 +347,11 @@ public class OstSdk {
      * @param ruleName             rule name to execute in transaction
      * @param meta                 data about transaction example:-
      *                             {name: "transaction name",
-     *                             type "user-to-user",
-     *                             details, "like"}
+     *                             type: "user-to-user",
+     *                             details: "like"}
+     * @param options              map contains options of transactions
+     *                             {@link #CURRENCY_CODE}: "USD",
+     *                              @link #WAIT_FOR_FINALIZATION: true}
      * @param workFlowCallback     workflow callback handler.
      */
     public static void executeTransaction(String userId,
@@ -324,12 +359,17 @@ public class OstSdk {
                                           List<String> amounts,
                                           String ruleName,
                                           Map<String, Object> meta,
+                                          Map<String, Object> options,
                                           OstWorkFlowCallback workFlowCallback) {
+        if (null == meta) meta = new HashMap<>();
+        if (null == options) options = new HashMap<>();
+
         final OstExecuteTransaction ostExecuteTransaction = new OstExecuteTransaction(userId,
                 tokenHolderAddresses,
                 amounts,
                 ruleName,
                 meta,
+                options,
                 workFlowCallback);
 
         ostExecuteTransaction.perform();

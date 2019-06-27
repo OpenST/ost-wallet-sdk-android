@@ -14,23 +14,17 @@ package com.ost.ostwallet.ui.workflow.transactions;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 
 import org.json.JSONObject;
 
@@ -147,7 +141,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
             @Override
             public void afterTextChanged(Editable s) {
                 if(focusOnEtv.equals(AppProvider.get().getCurrentEconomy().getTokenSymbol())){
-                    String usdVal = CommonUtils.convertBtToUsd(s.toString(), mTransactionPresenter.mPricePoint);
+                    String usdVal = CommonUtils.convertBtToFiat(s.toString(), mTransactionPresenter.mPricePoint);
                     mFiatAmountEditTextView.setText((null != usdVal) ? usdVal : "");
                 }
             }
@@ -164,7 +158,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         mFiatAmountEditTextView.setOnFocusListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                focusOnEtv = OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL;
+                focusOnEtv = OstConfigs.getInstance().getPRICE_POINT_CURRENCY_SYMBOL();
             }
         });
         mFiatAmountEditTextView.setOnTextChangeListener(new TextWatcher() {
@@ -177,7 +171,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(focusOnEtv.equals(OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL)){
+                if(focusOnEtv.equals(OstConfigs.getInstance().getPRICE_POINT_CURRENCY_SYMBOL())){
                     String btVal = CommonUtils.convertUsdToBt(s.toString(), mTransactionPresenter.mPricePoint);
                     mTokensEditTextView.setText((null != btVal) ? btVal : "");
                 }
@@ -186,7 +180,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
 
         OstPrimaryEditTextView fiatUnitETv = (OstPrimaryEditTextView) viewGroup.findViewById(R.id.etv_fiat_unit);
         fiatUnitETv.setHintText("Unit");
-        fiatUnitETv.setText(OstConfigs.getInstance().PRICE_POINT_CURRENCY_SYMBOL);
+        fiatUnitETv.setText(OstConfigs.getInstance().getPRICE_POINT_CURRENCY_SYMBOL());
         fiatUnitETv.diasbleInput();
 
         ((Button)viewGroup.findViewById(R.id.pbtn_send_tokens)).setOnClickListener(new View.OnClickListener() {

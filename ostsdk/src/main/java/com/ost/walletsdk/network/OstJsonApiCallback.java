@@ -9,5 +9,5 @@ import org.json.JSONObject;
 
 public interface OstJsonApiCallback {
     void onOstJsonApiSuccess(@Nullable JSONObject data);
-    void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data);
+    void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response);
 }

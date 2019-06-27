@@ -71,6 +71,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     OstApiClient mOstApiClient;
     final String mUserId;
     final Handler mHandler;
+    final boolean mShouldPoll;
 
     WorkflowStateManager stateManager;
     
@@ -104,15 +105,23 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         mOstApiClient = new OstApiClient(mUserId);
     }
     //endregion
-    
-    
+
+
     /**
-     * @param userId - Ost Platform user-id
+     * @param userId   - Ost Platform user-id
      * @param callback - callback handler of the application.
      */
     OstBaseWorkFlow(@NonNull String userId, @NonNull OstWorkFlowCallback callback) {
-        mUserId = userId;
+        this(userId, true, callback);
+    }
 
+    /**
+     * @param userId   - Ost Platform user-id
+     * @param callback - callback handler of the application.
+     */
+    OstBaseWorkFlow(@NonNull String userId, boolean shouldPoll, @NonNull OstWorkFlowCallback callback) {
+        mUserId = userId;
+        mShouldPoll = shouldPoll;
         mHandler = new Handler(Looper.getMainLooper());
         workFlowCallbackWeakReference = new WeakReference<>(callback);
         initApiClient();
@@ -511,7 +520,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         }
 
         mPinAskCount = mPinAskCount + 1;
-        if (mPinAskCount < OstConfigs.getInstance().PIN_MAX_RETRY_COUNT) {
+        if (mPinAskCount < OstConfigs.getInstance().getPIN_MAX_RETRY_COUNT()) {
             Log.d(TAG, "Pin InValidated ask for pin again");
             OstPinAcceptInterface me = this;
             return postInvalidPin(me);
@@ -789,7 +798,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
         currentBlockNumber = Long.parseLong(strCurrentBlockNumber);
         blockGenerationTime = Long.parseLong(strBlockGenerationTime);
-        long bufferBlocks = (OstConfigs.getInstance().SESSION_BUFFER_TIME) / blockGenerationTime;
+        long bufferBlocks = (OstConfigs.getInstance().getSESSION_BUFFER_TIME()) / blockGenerationTime;
         long expiresAfterBlocks = expiresInSecs / blockGenerationTime;
         long expirationHeight = currentBlockNumber + expiresAfterBlocks + bufferBlocks;
 

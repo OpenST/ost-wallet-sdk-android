@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstConstants;
 
 import org.json.JSONArray;
@@ -34,6 +35,7 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
     private BigDecimal totalTransferAmount = new BigDecimal("0");
     private Boolean isDirectTransfers = true;
     private JSONObject mPricePointData = null;
+    private String mCurrencySign = "$";
 
     public static VerifyTransactionDataFragment newInstance() {
         VerifyTransactionDataFragment fragment = new VerifyTransactionDataFragment();
@@ -65,11 +67,19 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
         String pricerRule = mVerifyDataJson.optString(OstConstants.RULE_NAME);
         ((TextView)viewGroup.findViewById(R.id.atv_transfer_type)).setText(pricerRule.toUpperCase());
         isDirectTransfers = (pricerRule.equalsIgnoreCase("direct transfer"));
-        updateBalanceView(viewGroup);
         LinearLayout transferHolder = ((LinearLayout)viewGroup.findViewById(R.id.ll_transfer_holder));
 
         JSONArray tokenHolderAddressesList = mVerifyDataJson.optJSONArray(OstConstants.TOKEN_HOLDER_ADDRESSES);
         JSONArray tokenHolderAmountsList = mVerifyDataJson.optJSONArray(OstConstants.AMOUNTS);
+        JSONObject optionData = mVerifyDataJson.optJSONObject(OstConstants.TRANSACTION_OPTIONS);
+        String currencySymbol = OstConfigs.getInstance().getPRICE_POINT_CURRENCY_SYMBOL();
+        if (null != optionData) {
+            currencySymbol = optionData.optString(OstConstants.QR_CURRENCY_CODE, OstConfigs.getInstance().getPRICE_POINT_CURRENCY_SYMBOL());
+            mCurrencySign = optionData.optString(OstConstants.QR_CURRENCY_SIGN, "$");
+        }
+
+        updateBalanceView(viewGroup);
+
         for (int i=0; i<tokenHolderAddressesList.length(); i++) {
             String tokenHolderAddress = tokenHolderAddressesList.optString(i);
             String tokenHolderAmount = tokenHolderAmountsList.optString(i);
@@ -101,8 +111,8 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
                 );
             } else {
                 tokenHolderValueView.setText(
-                        String.format("$ %s", CommonUtils.convertUsdWeitoUsd(tokenHolderAmount),
-                                "USD")
+                        String.format("%s %s", mCurrencySign ,CommonUtils.convertUsdWeitoUsd(tokenHolderAmount),
+                                currencySymbol)
                 );
             }
             tokenHolderValueView.setTextColor(Color.parseColor("#34445b"));
@@ -160,7 +170,7 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
         if(isDirectTransfers){
             return (totalTransferAmount.compareTo(new BigDecimal(AppProvider.get().getCurrentUser().getBalance())) <= 0 );
         } else {
-            String userUsdBalance = CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mPricePointData);
+            String userUsdBalance = CommonUtils.convertBTWeiToFiat(AppProvider.get().getCurrentUser().getBalance(), mPricePointData);
             if(null != userUsdBalance){
                 String usdTransferAmount = CommonUtils.convertUsdWeitoUsd(totalTransferAmount.toString());
                 return (new BigDecimal(usdTransferAmount).compareTo(new BigDecimal(userUsdBalance)) <= 0 );
@@ -175,8 +185,8 @@ public class VerifyTransactionDataFragment extends WorkFlowVerifyDataFragment {
                     CommonUtils.convertWeiToTokenCurrency(AppProvider.get().getCurrentUser().getBalance()).toString(),
                     AppProvider.get().getCurrentEconomy().getTokenSymbol()));
         } else {
-            ((TextView) viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: $ %s",
-                    CommonUtils.convertBTWeiToUsd(AppProvider.get().getCurrentUser().getBalance(), mPricePointData)));
+            ((TextView) viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: %s %s",
+                    mCurrencySign, CommonUtils.convertBTWeiToFiat(AppProvider.get().getCurrentUser().getBalance(), mPricePointData)));
         }
     }
 
