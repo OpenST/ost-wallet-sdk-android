@@ -13,6 +13,6 @@ package com.ost.walletsdk.workflows.interfaces;
 /**
  * Base Interface having SDK's flows common methods
  */
-interface OstBaseInterface {
+public interface OstBaseInterface {
     void cancelFlow();
 }

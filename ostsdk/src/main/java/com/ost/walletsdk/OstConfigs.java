@@ -33,13 +33,36 @@ public class OstConfigs {
         }
     }
 
-    public final long BLOCK_GENERATION_TIME;
-    public final long PIN_MAX_RETRY_COUNT;
-    public final String PRICE_POINT_TOKEN_SYMBOL;
-    public final String PRICE_POINT_CURRENCY_SYMBOL;
-    public final long REQUEST_TIMEOUT_DURATION;
-    public final long SESSION_BUFFER_TIME;
-    public final boolean USE_SEED_PASSWORD;
+    public long getBLOCK_GENERATION_TIME() {
+        return 0 > BLOCK_GENERATION_TIME ? 3 : BLOCK_GENERATION_TIME;
+    }
+
+    public long getPIN_MAX_RETRY_COUNT() {
+        return 0 > PIN_MAX_RETRY_COUNT ? 3 : PIN_MAX_RETRY_COUNT;
+    }
+
+    public String getPRICE_POINT_CURRENCY_SYMBOL() {
+        return TextUtils.isEmpty(PRICE_POINT_CURRENCY_SYMBOL) ? "USD" : PRICE_POINT_CURRENCY_SYMBOL;
+    }
+
+    public long getREQUEST_TIMEOUT_DURATION() {
+        return 0 > REQUEST_TIMEOUT_DURATION ? 60 : REQUEST_TIMEOUT_DURATION;
+    }
+
+    public long getSESSION_BUFFER_TIME() {
+        return 0 > SESSION_BUFFER_TIME ? 3600 : SESSION_BUFFER_TIME;
+    }
+
+    public boolean isUSE_SEED_PASSWORD() {
+        return USE_SEED_PASSWORD;
+    }
+
+    private final long BLOCK_GENERATION_TIME;
+    private final long PIN_MAX_RETRY_COUNT;
+    private final String PRICE_POINT_CURRENCY_SYMBOL;
+    private final long REQUEST_TIMEOUT_DURATION;
+    private final long SESSION_BUFFER_TIME;
+    private final boolean USE_SEED_PASSWORD;
 
 
     private OstConfigs(final Context context) {
@@ -52,11 +75,6 @@ public class OstConfigs {
         PIN_MAX_RETRY_COUNT = config.optLong("PIN_MAX_RETRY_COUNT", -1);
         if (PIN_MAX_RETRY_COUNT < 1) {
             throw new OstError("Ost_config_sc_pmrc", ErrorCode.INVALID_PIN_MAX_RETRY_COUNT);
-        }
-
-        PRICE_POINT_TOKEN_SYMBOL = config.optString("PRICE_POINT_TOKEN_SYMBOL");
-        if (TextUtils.isEmpty(PRICE_POINT_TOKEN_SYMBOL)) {
-            throw new OstError("Ost_config_sc_pmrc", ErrorCode.INVALID_PRICE_POINT_TOKEN_SYMBOL);
         }
 
         PRICE_POINT_CURRENCY_SYMBOL = config.optString("PRICE_POINT_CURRENCY_SYMBOL");

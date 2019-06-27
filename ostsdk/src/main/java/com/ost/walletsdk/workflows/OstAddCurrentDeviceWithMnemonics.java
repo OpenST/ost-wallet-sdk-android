@@ -33,7 +33,7 @@ import java.io.IOException;
  * It adds current Device using provided mnemonics
  * Current device should be in {@link OstDevice.CONST_STATUS#REGISTERED} state.
  */
-public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWorkflow implements OstPinAcceptInterface {
+public class OstAddCurrentDeviceWithMnemonics extends OstBaseWorkFlow implements OstPinAcceptInterface {
 
     private static final String TAG = "OstADWithMnemonics";
     private final byte[] mMnemonics;
@@ -49,7 +49,7 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
     @Override
     void ensureValidParams() {
         if ( null == mMnemonics || mMnemonics.length < 1) {
-            throw new OstError("wf_acdwm_evp_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
+            throw new OstError("wf_acdwm_evp_1", OstErrors.ErrorCode.INVALID_MNEMONICS);
         }
         super.ensureValidParams();
     }
@@ -65,6 +65,10 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
 
         try {
             ensureDeviceManager();
+            OstDevice currentDevice = mOstUser.getCurrentDevice();
+            if ( !currentDevice.canBeAuthorized() ) {
+                return postErrorInterrupt("wf_acdwm_pudv_1", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
+            }
         } catch (OstError ostError) {
             return postErrorInterrupt(ostError);
         }
@@ -73,11 +77,7 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseUserAuthenticatorWo
 
     @Override
     AsyncStatus performOnAuthenticated() {
-        try {
-            mOstApiClient.getDeviceManager();
-        } catch (IOException e) {
-            return postErrorInterrupt("wf_adwm_pr_7", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
-        }
+        mOstApiClient.getDeviceManager();
 
         String deviceAddress = mOstUser.getCurrentDevice().getAddress();
         String deviceManagerAddress = OstUser.getById(mUserId).getDeviceManagerAddress();

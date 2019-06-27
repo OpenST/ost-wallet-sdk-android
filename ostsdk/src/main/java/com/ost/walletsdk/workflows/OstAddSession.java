@@ -44,7 +44,7 @@ import java.util.Map;
  * To do any rule execution transaction sessions needs to be added.
  * Session added are specific to device and can't be used from another device.
  */
-public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements OstPinAcceptInterface {
+public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterface {
 
     private static final String TAG = "OstAddSession";
     private final String mSpendingLimit;
@@ -68,18 +68,14 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
         String blockNumber = getCurrentBlockNumber(ostApiClient);
         if (null == blockNumber) {
             Log.e(TAG, "BlockNumber is null");
-            return postErrorInterrupt("wf_as_pr_1", OstErrors.ErrorCode.BLOCK_NUMBER_API_FAILED);
+            OstError err = OstError.ApiResponseError("wf_as_pr_1", "getCurrentBlockNumber", null);
+            return postErrorInterrupt(err);
         }
 
         OstUser ostUser = mOstUser;
 
         String expiryHeight = calculateExpirationHeight(mExpiresAfterInSecs);
-
-        try {
-            ostApiClient.getDeviceManager();
-        } catch (IOException e) {
-            Log.e(TAG, "IO Exception ");
-        }
+        ostApiClient.getDeviceManager();
 
         OstMultiSigSigner signer = new OstMultiSigSigner(mUserId);
         SignedAddSessionStruct struct;
@@ -102,16 +98,12 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
                 .setNonce( struct.getNonce() )
                 .build();
 
-        JSONObject responseObject = null;
-        try {
-            responseObject = ostApiClient.postAddSession(map);
-            Log.i(TAG, String.format("Response %s", responseObject.toString()));
-        } catch (IOException e) {
-            Log.e(TAG, "Exception");
-            return postErrorInterrupt("wf_as_pr_as_3", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
-        }
+        JSONObject responseObject = ostApiClient.postAddSession(map);
+        Log.i(TAG, String.format("Response %s", responseObject.toString()));
+
         if (!isValidResponse(responseObject)) {
-            return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.ADD_DEVICE_API_FAILED);
+            //postAddSession will throw OstApiError. So, this is hypothetical case.
+            return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.SDK_ERROR);
         }
         //Request Acknowledge
         postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
@@ -140,12 +132,7 @@ public class OstAddSession extends OstBaseUserAuthenticatorWorkflow implements O
 
     private String getCurrentBlockNumber(OstApiClient ostApiClient) {
         String blockNumber = null;
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = ostApiClient.getCurrentBlockNumber();
-        } catch (IOException e) {
-            Log.e(TAG, "IOException");
-        }
+        JSONObject jsonObject = ostApiClient.getCurrentBlockNumber();
         blockNumber = parseResponseForKey(jsonObject, OstConstants.BLOCK_HEIGHT);
         return blockNumber;
     }

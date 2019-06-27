@@ -20,6 +20,7 @@ public class OstWorkflowContext {
         ACTIVATE_USER,
         ADD_SESSION,
         GET_DEVICE_MNEMONICS,
+        UPDATE_BIOMETRIC_PREFERENCE,
         PERFORM_QR_ACTION,
         EXECUTE_TRANSACTION,
         AUTHORIZE_DEVICE_WITH_QR_CODE,

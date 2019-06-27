@@ -14,6 +14,7 @@ import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -38,15 +39,25 @@ public class OstApiError extends OstError {
     }
 
     private JSONObject jsonApiError = null;
+
+    public JSONObject getApiResponse() {
+        return apiResponse;
+    }
+
+    private JSONObject apiResponse = null;
     public OstApiError(String internalErrorCode, OstErrors.ErrorCode errorCode, JSONObject apiResponse) {
         super(internalErrorCode, errorCode);
         setApiError( true );
         if ( apiResponse != null ) {
             jsonApiError = apiResponse.optJSONObject("err");
         }
-
         if ( null == jsonApiError ) {
             jsonApiError = new JSONObject();
+        }
+        if ( null == apiResponse ) {
+            this.apiResponse = new JSONObject();
+        } else {
+            this.apiResponse = apiResponse;
         }
 
         parseErrorData();
@@ -155,5 +166,26 @@ public class OstApiError extends OstError {
         public static String UNSUPPORTED_VERSION = "UNSUPPORTED_VERSION";
         public static String TOO_MANY_REQUESTS = "TOO_MANY_REQUESTS";
         public static String ALREADY_EXISTS = "ALREADY_EXISTS";
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        JSONObject err = super.toJSONObject();
+        try {
+            err.putOpt(OstJSONErrorKeys.IS_API_ERROR, 1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            JSONObject apiError = getJsonApiError();
+            String apiErrorStr = apiError.toString();
+            apiError = new JSONObject( apiErrorStr );
+            err.putOpt(OstJSONErrorKeys.API_ERROR, apiError);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return err;
     }
 }

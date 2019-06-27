@@ -25,6 +25,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
+import io.reactivex.annotations.NonNull;
+
 /**
  * To hold User info
  */
@@ -94,6 +96,22 @@ public class OstUser extends OstBaseEntity {
         }
         Log.e(TAG, "No Active session key available");
         return null;
+    }
+
+    public enum UserStatus {
+        UNKNOWN,
+        CREATED,
+        ACTIVATING,
+        ACTIVATED
+    }
+
+    public static UserStatus statusFromString(@NonNull  String status) {
+        switch ( status.toLowerCase() ) {
+            case "created": return UserStatus.CREATED;
+            case "activating": return UserStatus.ACTIVATING;
+            case "activated": return UserStatus.ACTIVATED;
+            default: return UserStatus.UNKNOWN;
+        }
     }
 
     public static class CONST_STATUS {
@@ -240,5 +258,9 @@ public class OstUser extends OstBaseEntity {
 
     public void flushCurrentDevice() {
         this.currentDevice = null;
+    }
+
+    public UserStatus getUserStatus() {
+        return OstUser.statusFromString( getStatus() );
     }
 }

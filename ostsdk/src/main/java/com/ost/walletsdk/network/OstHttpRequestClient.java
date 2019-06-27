@@ -15,18 +15,23 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.datatheorem.android.trustkit.TrustKit;
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
 import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstApiSigner;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +40,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLHandshakeException;
 
 import okhttp3.Call;
 import okhttp3.ConnectionPool;
@@ -109,9 +116,17 @@ public class OstHttpRequestClient {
         dispatcher.setMaxRequests(500);
         dispatcher.setMaxRequestsPerHost(150);
 
+        String hostName = "ost.com";
+        try {
+            hostName = new URL(baseUrl).getHost();
+        } catch (MalformedURLException e) {
+            Log.e(TAG, "URL parsing error");
+        }
         client = new OkHttpClient.Builder()
+                .sslSocketFactory(TrustKit.getInstance().getSSLSocketFactory(hostName),
+                        TrustKit.getInstance().getTrustManager(hostName))
                 .connectionPool(new ConnectionPool(10, 2, TimeUnit.MINUTES))
-                .connectTimeout(OstConfigs.getInstance().REQUEST_TIMEOUT_DURATION, TimeUnit.SECONDS)
+                .connectTimeout(OstConfigs.getInstance().getREQUEST_TIMEOUT_DURATION(), TimeUnit.SECONDS)
                 .readTimeout(timeout, TimeUnit.SECONDS)
                 .dispatcher(dispatcher)
                 .retryOnConnectionFailure(false)
@@ -124,28 +139,31 @@ public class OstHttpRequestClient {
     private static String SocketTimeoutExceptionString = "{'success':'false','err':{'code':'REQUEST_TIMEOUT','internal_id':'SDK(TIMEOUT_ERROR)','msg':'','error_data':[]}}";
     private static String IOExceptionString = "{'success':'false','err':{'code':'IOException','internal_id':'SDK(IO_EXCEPTION)','msg':'','error_data':[]}}";
     private static String NetworkExceptionString = "{'success':'false','err':{'code':'NO_NETWORK','internal_id':'SDK(NO_NETWORK)','msg':'','error_data':[]}}";
+    private static final String CertificateErrorString = "{'success':'false','err':{'code':'INVALID_CERTIFICATE','internal_id':'SDK(INVALID_CERTIFICATE)','msg':'','error_data':[]}}";;
 
-    public JSONObject get(String resource, Map<String, Object> queryParams) throws IOException {
+    private static JSONObject CertificateErrorJsonResponse;
+
+    static {
+        try {
+            CertificateErrorJsonResponse = new JSONObject(CertificateErrorString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public JSONObject get(String resource, Map<String, Object> queryParams) throws OstError {
         return send(GET_REQUEST, resource, queryParams);
     }
 
-    public JSONObject post(String resource, Map<String, Object> queryParams) throws IOException {
+    public JSONObject post(String resource, Map<String, Object> queryParams) throws OstError {
         return send(POST_REQUEST, resource, queryParams);
     }
 
-    private JSONObject send(String requestType, String resource, Map<String, Object> mapParams) throws IOException {
-        // Basic Sanity.
-        if (!isNetworkAvailable()) {
-            try {
-                return new JSONObject(NetworkExceptionString);
-            } catch (JSONException e) {
-                //Not expected
-            }
-        }
-
-        if (!requestType.equalsIgnoreCase(POST_REQUEST) && !requestType.equalsIgnoreCase(GET_REQUEST)) {
-            throw new IOException("Invalid requestType");
-        }
+    private JSONObject send(String requestType, String resource, Map<String, Object> mapParams) throws OstError {
+//        //TODO: Make POST_REQUEST & GET_REQUEST ENUMS
+//        if (!requestType.equalsIgnoreCase(POST_REQUEST) && !requestType.equalsIgnoreCase(GET_REQUEST)) {
+//            throw new IOException("Invalid requestType");
+//        }
         if (null == mapParams) {
             mapParams = new HashMap<String, Object>();
         }
@@ -157,7 +175,20 @@ public class OstHttpRequestClient {
 
         FormBody.Builder formBodyBuilder = new FormBody.Builder();
         if (null == urlBuilder) {
-            throw new IOException("Failed to instantiate HttpUrl.Builder. resource or Api Endpoint is incorrect.");
+            JSONObject errorInfo = new JSONObject();
+
+            try {
+                errorInfo.putOpt("apiEndpoint", apiEndpoint);
+            } catch (JSONException e) {
+                // Ignore
+            }
+            try {
+                errorInfo.putOpt("resource", resource);
+            } catch (JSONException e) {
+                // Ignore
+            }
+
+            throw new OstError("ost_hrc_s_1", OstErrors.ErrorCode.SDK_ERROR, errorInfo);
         }
 
         // Evaluate the url generated so far.
@@ -245,12 +276,39 @@ public class OstHttpRequestClient {
         String responseBody;
         Call call = client.newCall(request);
         try {
-            okhttp3.Response response = call.execute();
-            responseBody = getResponseBodyAsString(response);
-        }catch (SocketTimeoutException e)
-        {
+            if (isNetworkAvailable()) {
+                okhttp3.Response response = call.execute();
+                responseBody = getResponseBodyAsString(response);
+            } else {
+                responseBody = NetworkExceptionString;
+            }
+        }
+        catch (SocketTimeoutException e) {
             Log.e(TAG, "SocketTimeoutException occurred.");
             responseBody =  SocketTimeoutExceptionString;
+        } catch (SSLHandshakeException e) {
+            throw new OstApiError("ost_hrc_s_3", OstErrors.ErrorCode.INVALID_CERTIFICATE, CertificateErrorJsonResponse);
+        } catch (IOException e) {
+            JSONObject errorInfo = new JSONObject();
+
+            try {
+                errorInfo.putOpt("apiEndpoint", apiEndpoint);
+            } catch (JSONException e1) {
+                // Ignore
+            }
+            try {
+                errorInfo.putOpt("resource", resource);
+            } catch (JSONException e2) {
+                // Ignore
+            }
+
+            try {
+                errorInfo.putOpt("details", "The request could not be executed due to cancellation, a connectivity problem or timeout. Because networks can fail during an exchange, it is possible that the remote server accepted the request before the failure.");
+            } catch (JSONException e3) {
+                // Ignore
+            }
+
+            throw new OstError("ost_hrc_s_2", OstErrors.ErrorCode.NETWORK_ERROR, errorInfo);
         }
 
         JSONObject jsonResponse = buildApiResponse(responseBody);

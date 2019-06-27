@@ -1,5 +1,23 @@
 # OST Wallet SDK Changelog
 
+## Version 2.2.1
+### Bug Fix:
+* Add `No Network Access` error to OstApiError
+
+### Security Enhancements
+* Implemented public-key pinning for api.ost.com
+
+## Version v2.2.0
+### Changes: 
+* Added Multi Currency Feature which allows developers to specify fiat-currency at runtime while executing a transaction.
+* Added OstJsonApi that allows developers to fetch data from Ost Platform. Please see README.MD for supported Api(s).
+
+## Version 2.1.0
+### Changes: 
+* Biometric preferences are now saved in the SDK
+* Remove hard-coding of OST as the value token that backs Brand Tokens 
+* Now supports device access revocation via API
+
 ## Version 2.0.1
 
 ### Changes:

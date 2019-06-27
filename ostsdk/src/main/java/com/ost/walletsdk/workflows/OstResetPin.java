@@ -48,11 +48,6 @@ public class OstResetPin extends OstBaseWorkFlow {
     private final UserPassphrase currentPassphrase;
     private final UserPassphrase newPassphrase;
 
-    private String mNewRecoveryOwnerAddress;
-    private OstResetPin.STATES mCurrentState = OstResetPin.STATES.INITIAL;
-    private OstRecoveryOwner mOstRecoveryOwner;
-
-
     public OstResetPin(String userId, UserPassphrase currentPassphrase, UserPassphrase newPassphrase, OstWorkFlowCallback workFlowCallback) {
         super(userId, workFlowCallback);
         this.currentPassphrase = currentPassphrase;
@@ -60,106 +55,75 @@ public class OstResetPin extends OstBaseWorkFlow {
     }
 
     @Override
-    protected AsyncStatus process() {
+    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
+        return OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN;
+    }
+
+    @Override
+    void ensureValidParams() {
+        super.ensureValidParams();
+        if (null == currentPassphrase) {
+            throw new OstError("wf_rp_evp_1", OstErrors.ErrorCode.INVALID_USER_PASSPHRASE);
+        }
+        if (null == newPassphrase) {
+            throw new OstError("wf_rp_evp_2", OstErrors.ErrorCode.INVALID_NEW_USER_PASSPHRASE);
+        }
+    }
+
+    @Override
+    boolean shouldCheckCurrentDeviceAuthorization() {
+        return false;
+    }
+
+    @Override
+    protected boolean shouldAskForAuthentication() {
+        return false;
+    }
+
+    @Override
+    protected AsyncStatus onUserDeviceValidationPerformed(Object stateObject) {
         String newRecoveryOwnerAddress = "";
+        mOstApiClient.getDevice(mOstUser.getCurrentDevice().getAddress());
+
+        SignedResetRecoveryStruct struct;
+        OstRecoveryManager rkm;
         try {
-            switch (mCurrentState) {
-                case INITIAL:
-                    Log.d(TAG, String.format("Perform workflow for userId: %s started", mUserId));
-
-                    Log.i(TAG, "validate params");
-                    if (!hasValidParams()) {
-                        return postErrorInterrupt("wf_rp_pr_1", OstErrors.ErrorCode.INVALID_WORKFLOW_PARAMS);
-                    }
-
-                    Log.i(TAG, "Loading device and user entities");
-                    ensureApiCommunication();
-                    ensureOstUser();
-
-                    if (!hasActivatedUser()) {
-                        Log.e(TAG, String.format("User is not activated of user id: %s", mUserId));
-                        return postErrorInterrupt("wf_rp_pr_2", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
-                    }
-
-
-                    try {
-                        mOstApiClient.getDevice(mOstUser.getCurrentDevice().getAddress());
-                    } catch (IOException e) {
-                        Log.e(TAG, "GetDevice api failed");
-                        return postErrorInterrupt("wf_rp_pr_4", OstErrors.ErrorCode.GET_USER_API_FAILED);
-                    }
-
-
-                    SignedResetRecoveryStruct struct;
-                    OstRecoveryManager rkm;
-                    try {
-                        rkm = new OstRecoveryManager(mUserId);
-                        struct = rkm.getResetRecoveryOwnerSignature(currentPassphrase, newPassphrase);
-                        rkm = null;
-                    } catch (OstError error) {
-                        return postErrorInterrupt(error.getInternalErrorCode(), error.getErrorCode());
-                    }
-
-                    newRecoveryOwnerAddress = struct.getNewRecoveryOwnerAddress();
-                    mNewRecoveryOwnerAddress = newRecoveryOwnerAddress;
-                    Map<String, Object> requestMap = buildApiRequest(newRecoveryOwnerAddress,
-                            struct.getRecoveryOwnerAddress(), struct.getRecoveryContractAddress(), struct.getSignature());
-
-                    JSONObject postRecoveryAddresssResponse = null;
-                    try {
-                        postRecoveryAddresssResponse = mOstApiClient.postRecoveryOwners(requestMap);
-                    } catch (IOException e) {
-                        Log.e(TAG, "IOException in postRecoveryOwner");
-                    }
-
-                    if (!isValidResponse(postRecoveryAddresssResponse)) {
-                        return postErrorInterrupt("wf_rp_pr_5", OstErrors.ErrorCode.POST_RESET_RECOVERY_API_FAILED);
-                    }
-
-                    JSONObject jsonData = postRecoveryAddresssResponse.optJSONObject(OstConstants.RESPONSE_DATA);
-                    JSONObject resultTypeObject = jsonData.optJSONObject(jsonData.optString(OstConstants.RESULT_TYPE));
-                    OstRecoveryOwner ostRecoveryOwner = null;
-                    try {
-                        ostRecoveryOwner = OstRecoveryOwner.parse(resultTypeObject);
-                    } catch (JSONException e) {
-                        return postErrorInterrupt("wf_rp_pr_6", OstErrors.ErrorCode.POST_RESET_RECOVERY_API_FAILED);
-                    }
-
-                    mOstRecoveryOwner = ostRecoveryOwner;
-                    postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(mOstRecoveryOwner, OstSdk.RECOVERY_OWNER));
-
-                case POLLING:
-
-                    Log.i(TAG, "Waiting for update");
-                    Bundle bundle = OstRecoveryPollingService.startPolling(mUserId, mNewRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZED,
-                            OstRecoveryOwner.CONST_STATUS.AUTHORIZATION_FAILED);
-
-                    if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
-                        Log.d(TAG, String.format("Polling time out for recovery owner Id: %s", newRecoveryOwnerAddress));
-                        return postErrorInterrupt("wf_rp_pr_7", OstErrors.ErrorCode.POLLING_TIMEOUT);
-                    }
-
-                    Log.i(TAG, "Response received for RecoveryOwner");
-                    postFlowComplete(
-                            new OstContextEntity(mOstRecoveryOwner, OstSdk.RECOVERY_OWNER)
-                    );
-                    break;
-                case CANCELLED:
-                    Log.d(TAG, String.format("Error in Add device flow: %s", mUserId));
-                    postErrorInterrupt("wf_rp_pr_8", OstErrors.ErrorCode.WORKFLOW_CANCELLED);
-                    break;
-            }
-
-        } catch (Throwable th) {
-            OstError error;
-            if (th instanceof OstError) {
-                error = (OstError) th;
-            } else {
-                error = new OstError("wf_rp_oudvp_5", OstErrors.ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
-            }
+            rkm = new OstRecoveryManager(mUserId);
+            struct = rkm.getResetRecoveryOwnerSignature(currentPassphrase, newPassphrase);
+            rkm = null;
+        } catch (OstError error) {
             return postErrorInterrupt(error);
         }
-        return new AsyncStatus(true);
+
+        newRecoveryOwnerAddress = struct.getNewRecoveryOwnerAddress();
+        Map<String, Object> requestMap = buildApiRequest(newRecoveryOwnerAddress,
+                struct.getRecoveryOwnerAddress(), struct.getRecoveryContractAddress(), struct.getSignature());
+
+        JSONObject postRecoveryAddresssResponse = mOstApiClient.postRecoveryOwners(requestMap);
+        JSONObject jsonData = postRecoveryAddresssResponse.optJSONObject(OstConstants.RESPONSE_DATA);
+        JSONObject resultTypeObject = jsonData.optJSONObject(jsonData.optString(OstConstants.RESULT_TYPE));
+        OstRecoveryOwner ostRecoveryOwner = null;
+        try {
+            ostRecoveryOwner = OstRecoveryOwner.parse(resultTypeObject);
+        } catch (JSONException e) {
+            return postErrorInterrupt("wf_rp_udv_1", OstErrors.ErrorCode.INVALID_API_RESPONSE);
+        }
+
+        postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));
+
+        Log.i(TAG, "Waiting for update");
+        Bundle bundle = OstRecoveryPollingService.startPolling(mUserId, newRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZED,
+                OstRecoveryOwner.CONST_STATUS.AUTHORIZATION_FAILED);
+
+        if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
+            Log.d(TAG, String.format("Polling time out for recovery owner Id: %s", newRecoveryOwnerAddress));
+            return postErrorInterrupt("wf_rp_udv_2", OstErrors.ErrorCode.POLLING_TIMEOUT);
+        }
+
+        Log.i(TAG, "Response received for RecoveryOwner");
+        return postFlowComplete(
+                new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER)
+        );
     }
 
     private Map<String, Object> buildApiRequest(String newRecoveryOwnerAddress, String recoveryOwnerAddress,
@@ -170,16 +134,5 @@ public class OstResetPin extends OstBaseWorkFlow {
         map.put(SIGNER, recoveryOwnerAddress);
         map.put(SIGNATURE, signature);
         return map;
-    }
-
-    @Override
-    public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN;
-    }
-
-    private enum STATES {
-        INITIAL,
-        CANCELLED,
-        POLLING
     }
 }
