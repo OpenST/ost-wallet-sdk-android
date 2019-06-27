@@ -1,5 +1,12 @@
 # OST Wallet SDK Changelog
 
+## Version 2.2.1
+### Bug Fix:
+* Add `No Network Access` error to OstApiError
+
+### Security Enhancements
+* Implemented public-key pinning for api.ost.com
+
 ## Version v2.2.0
 ### Changes: 
 * Added Multi Currency Feature which allows developers to specify fiat-currency at runtime while executing a transaction.
