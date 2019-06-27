@@ -23,6 +23,7 @@ public class OstErrors {
         switch (code) {
             case SDK_ERROR: return "An internal SDK error has occurred.";
             case NETWORK_ERROR: return "Request could not be executed due to cancellation, a connectivity problem or timeout.";
+            case INVALID_CERTIFICATE: return "Certificate provided by Ost platform is invalid Or it has been compromised. Please re-try in some other network and if the problem persists contact support@ost.com .";
             case INVALID_USER_ID: return "Unable to recognize the user id. Please inspect for what is being sent, rectify and re-submit.";
             case INVALID_SDK_URL: return "Invalid OST server url";
             case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
@@ -250,6 +251,7 @@ public class OstErrors {
     public enum ErrorCode {
         SDK_ERROR,
         NETWORK_ERROR,
+        INVALID_CERTIFICATE,
         INVALID_API_RESPONSE,
         INVALID_USER_ID,
         INVALID_SDK_URL,
