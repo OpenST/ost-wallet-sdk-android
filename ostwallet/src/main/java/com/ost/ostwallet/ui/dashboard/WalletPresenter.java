@@ -123,18 +123,18 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                         pricePoint = jsonObject.optJSONObject("price_point");
                     } catch(Exception e){ }
                     AppProvider.get().getCurrentUser().updateBalance(balance);
-                    getMvpView().updateBalance(CommonUtils.convertWeiToTokenCurrency(balance),
+                    updateViewBalance(CommonUtils.convertWeiToTokenCurrency(balance),
                             CommonUtils.convertBTWeiToFiat(balance, pricePoint));
                 } else {
                     Log.d(LOG_TAG, "getBalanceWithPricePoints data is null.");
-                    getMvpView().updateBalance("0", null);
+                    updateViewBalance("0", null);
                 }
             }
 
             @Override
             public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) {
                 Log.e(LOG_TAG, "getBalanceWithPricePoints InternalErrorCode:" + err.getInternalErrorCode());
-                getMvpView().updateBalance("0", null);
+                updateViewBalance("0", null);
             }
         });
     }
@@ -142,6 +142,12 @@ class WalletPresenter extends BasePresenter<WalletView> implements
     @Override
     public void onListViewInteraction(Transaction transaction) {
         getMvpView().openTransactionView(transaction);
+    }
+
+    private void updateViewBalance(String balance, String usdBalance) {
+        if (null != getMvpView()) {
+            getMvpView().updateBalance(balance, usdBalance);
+        }
     }
 
     public TransactionRecyclerViewAdapter getTransactionRecyclerViewAdapter() {
