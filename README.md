@@ -246,6 +246,29 @@ It will revoke all the sessions associated with provided userId<br/><br/>
 OstSdk.logoutAllSessions(userId, new OstWorkFlowCallbackImpl())
 ```
 
+### Get User
+To get User Entity<br/><br/>
+&nbsp; parameter userId           user Id whose entity to retrieve<br/>
+&nbsp; **OstUser getUser(String userId)**
+```java
+OstSdk.getUser(userId)
+```
+
+### Get Token
+To get Token Entity<br/><br/>
+&nbsp; parameter tokenId           token Id whose entity to retrieve<br/>
+&nbsp; **OstToken getToken(String tokenId)**
+```java
+OstSdk.getToken(tokenId)
+```
+
+### Get Biometric preference
+To check whether biometric of provide userId is enabled for this device or not<br/><br/>
+&nbsp; parameter userId           user Id whose biometric config to retrieve<br/>
+&nbsp; **boolean isBiometricEnabled(String userId)**
+```java
+OstSdk.isBiometricEnabled(userId)
+```
 
 ## WorkFlow Callbacks
 &nbsp; Callbacks to be implemented by application before calling any of the above WorkFlows.
