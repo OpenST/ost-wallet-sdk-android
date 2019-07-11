@@ -93,10 +93,10 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                     } catch (JSONException e) {
                         //Exception not expected
                     }
-                    getMvpView().notifyDataSetChanged();
+                    notifyDataSetChange();
                 } else {
                     Log.e(LOG_TAG, String.format("Get Current User Transaction response false: %s", jsonObject.toString()));
-                    getMvpView().notifyDataSetChanged();
+                    notifyDataSetChange();
                 }
                 httpRequestPending = false;
             }
@@ -104,7 +104,7 @@ class WalletPresenter extends BasePresenter<WalletView> implements
             @Override
             public void onFailure(Throwable throwable) {
                 Log.e(LOG_TAG, "Get Current User Transaction error");
-                getMvpView().notifyDataSetChanged();
+                notifyDataSetChange();
                 httpRequestPending = false;
             }
         });
@@ -147,6 +147,12 @@ class WalletPresenter extends BasePresenter<WalletView> implements
     private void updateViewBalance(String balance, String usdBalance) {
         if (null != getMvpView()) {
             getMvpView().updateBalance(balance, usdBalance);
+        }
+    }
+
+    private void notifyDataSetChange() {
+        if (null != getMvpView()) {
+            getMvpView().notifyDataSetChanged();
         }
     }
 
