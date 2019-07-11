@@ -168,12 +168,14 @@ public class DashboardActivity extends BaseActivity implements
                 public void onClick(DialogInterface dialog, int id) {
                     AppProvider.get().setPostCrashAnalytics(true);
                     Fabric.with(DashboardActivity.this, new Crashlytics());
+                    AppProvider.get().getMappyClient().postCrashAnalyticsPreference(true, null);
                     mSettingsFragment.onResume();
                 }});
             builder.setNegativeButton("Opt out", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     AppProvider.get().setPostCrashAnalytics(false);
+                    AppProvider.get().getMappyClient().postCrashAnalyticsPreference(false, null);
                     mSettingsFragment.onResume();
                 }
             });

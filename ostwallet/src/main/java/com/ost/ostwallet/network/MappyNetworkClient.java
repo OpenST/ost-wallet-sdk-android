@@ -114,6 +114,31 @@ public class MappyNetworkClient {
         }
     }
 
+    public void postCrashAnalyticsPreference(final boolean postCrash, ResponseCallback callback) {
+        if (null == callback) {
+            callback = new ResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject jsonObject) {
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                }
+            };
+        }
+
+        try {
+            JSONObject params = new JSONObject();
+            params.put("preference", postCrash ? 1 : 0);
+            sendRequest(Request.Method.POST,
+                    String.format("users/%s/set-preference", AppProvider.get().getCurrentUser().getId()),
+                    params,
+                    callback);
+        } catch (Exception ex) {
+            callback.onFailure(ex);
+        }
+    }
+
 
     public void getCurrentUserTransactions(final JSONObject nextPayload, final ResponseCallback callback) {
         try {

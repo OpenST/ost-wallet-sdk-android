@@ -202,6 +202,8 @@ public class SettingsFragment extends BaseFragment implements
                     DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(), title,
                             "For the changes to take effect, please exit the app and re-launch it").show();
                 }
+                //Post analytics to backend
+                AppProvider.get().getMappyClient().postCrashAnalyticsPreference(AppProvider.get().getPostCrashAnalytics(), null);
             }
         });
         mScrollViewSettings.addView(fabricReporting);
