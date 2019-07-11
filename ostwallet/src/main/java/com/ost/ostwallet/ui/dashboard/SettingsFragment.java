@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.crashlytics.android.Crashlytics;
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.R;
 import com.ost.ostwallet.sdkInteract.SdkInteract;
@@ -57,6 +58,7 @@ import com.ost.walletsdk.workflows.errors.OstError;
 
 import org.json.JSONObject;
 
+import io.fabric.sdk.android.Fabric;
 import io.reactivex.annotations.Nullable;
 
 public class SettingsFragment extends BaseFragment implements
@@ -194,8 +196,12 @@ public class SettingsFragment extends BaseFragment implements
                 String title = String.format("Opt %s crash reporting", AppProvider.get().getPostCrashAnalytics() ? "out from":"in to");
                 AppProvider.get().setPostCrashAnalytics(!AppProvider.get().getPostCrashAnalytics());
                 updatePostCrashAnalyticsView(fabricReporting);
-                DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(),  title,
-                        "For the changes to take effect, please exit the app and re-launch it").show();
+                if (AppProvider.get().getPostCrashAnalytics()) {
+                    Fabric.with(getActivity(), new Crashlytics());
+                } else {
+                    DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(), title,
+                            "For the changes to take effect, please exit the app and re-launch it").show();
+                }
             }
         });
         mScrollViewSettings.addView(fabricReporting);
