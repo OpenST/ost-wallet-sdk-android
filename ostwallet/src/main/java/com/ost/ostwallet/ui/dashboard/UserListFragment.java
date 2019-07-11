@@ -21,14 +21,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.R;
-import com.ost.ostwallet.uicomponents.AppBar;
 import com.ost.ostwallet.entity.User;
 import com.ost.ostwallet.ui.BaseFragment;
+import com.ost.ostwallet.uicomponents.AppBar;
+import com.ost.ostwallet.util.WrapLinearLayoutManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -97,7 +98,7 @@ public class UserListFragment extends BaseFragment implements UserListView,
         mUserListPresenter.setUserList(mUserList);
         mUserListRecyclerViewAdapter = UserListRecyclerViewAdapter.newInstance(mUserList, this);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new WrapLinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setAdapter(mUserListRecyclerViewAdapter);
