@@ -15,6 +15,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
 
@@ -38,6 +39,7 @@ import static com.ost.ostwallet.entity.CurrentEconomy.URL_ID;
 import static com.ost.ostwallet.entity.CurrentEconomy.VIEW_API_ENDPOINT;
 
 public class AppProvider {
+    private static final String LOG_TAG = "AppProvider";
 
     private static final String POST_CRASH_ANALYTICS = "post_crash_analytics";
     private static AppProvider INSTANCE = null;
@@ -133,9 +135,12 @@ public class AppProvider {
         }
 
         keyValuesEditor.apply();
-
-        //Initialize SDK
-        OstSdk.initialize(mApplicationContext, this.currentEconomy.getSaasApiEndpoint());
+        try {
+            //Initialize SDK
+            OstSdk.initialize(mApplicationContext, this.currentEconomy.getSaasApiEndpoint());
+        } catch (Exception e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+        }
     }
 
     public boolean isPostCrashAnalyticsSet() {
