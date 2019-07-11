@@ -11,6 +11,7 @@
 package com.ost.ostwallet.ui.dashboard;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,11 +19,11 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
@@ -63,6 +64,8 @@ import com.ost.ostwallet.util.CommonUtils;
 import com.ost.ostwallet.util.DialogFactory;
 import com.ost.ostwallet.util.FragmentUtils;
 import com.ost.ostwallet.util.KeyBoard;
+
+import io.fabric.sdk.android.Fabric;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -118,6 +121,8 @@ public class DashboardActivity extends BaseActivity implements
         SdkInteract.getInstance().setVerifyDataCallbackListener(this);
         SdkInteract.getInstance().setFlowListeners(this);
 
+        handleCrashAnalytics();
+
         setUpDevice();
 
         checkForActiveUserAndDevice();
@@ -148,6 +153,31 @@ public class DashboardActivity extends BaseActivity implements
                     )) {
                 notifyActivate();
             }
+        }
+    }
+
+    private void handleCrashAnalytics() {
+        if (AppProvider.get().isPostCrashAnalyticsSet()) {
+            Fabric.with(this, new Crashlytics());
+        } else {
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+            builder.setTitle("Crash Reporting");
+            builder.setMessage("Would you like to share crash reports with OST to help improve the app?");
+
+            builder.setPositiveButton("Opt in", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    AppProvider.get().setPostCrashAnalytics(true);
+                    Fabric.with(DashboardActivity.this, new Crashlytics());
+                    mSettingsFragment.onResume();
+                }});
+            builder.setNegativeButton("Opt out", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AppProvider.get().setPostCrashAnalytics(false);
+                    mSettingsFragment.onResume();
+                }
+            });
+            builder.create().show();
         }
     }
 

@@ -28,20 +28,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.ost.walletsdk.OstSdk;
-import com.ost.walletsdk.models.entities.OstUser;
-import com.ost.walletsdk.network.OstJsonApi;
-import com.ost.walletsdk.network.OstJsonApiCallback;
-import com.ost.walletsdk.workflows.OstContextEntity;
-import com.ost.walletsdk.workflows.OstWorkflowContext;
-import com.ost.walletsdk.workflows.errors.OstError;
-
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.R;
 import com.ost.ostwallet.sdkInteract.SdkInteract;
 import com.ost.ostwallet.sdkInteract.WorkFlowListener;
 import com.ost.ostwallet.ui.BaseFragment;
-import com.ost.ostwallet.ui.logging.WalletEventFragment;
 import com.ost.ostwallet.ui.managedevices.AuthorizeDeviceOptionsFragment;
 import com.ost.ostwallet.ui.managedevices.DeviceListFragment;
 import com.ost.ostwallet.ui.workflow.authrorizedeviceqr.AuthorizeDeviceQRFragment;
@@ -55,6 +46,14 @@ import com.ost.ostwallet.ui.workflow.walletdetails.WalletDetailsFragment;
 import com.ost.ostwallet.uicomponents.AppBar;
 import com.ost.ostwallet.uicomponents.OstTextView;
 import com.ost.ostwallet.util.CommonUtils;
+import com.ost.ostwallet.util.DialogFactory;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.network.OstJsonApi;
+import com.ost.walletsdk.network.OstJsonApiCallback;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
 
 import org.json.JSONObject;
 
@@ -112,7 +111,6 @@ public class SettingsFragment extends BaseFragment implements
 
         mInflater = inflater;
 
-        drawListItems();
 
         AppBar appBar = AppBar.newInstance(getContext(),
                 "Settings",
@@ -187,6 +185,20 @@ public class SettingsFragment extends BaseFragment implements
             }
         });
         mScrollViewSettings.addView(viewMnemonicsView);
+
+        final ViewGroup fabricReporting = (ViewGroup) getFeatureView("Opt in to crash reporting", true);
+        updatePostCrashAnalyticsView(fabricReporting);
+        fabricReporting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String title = String.format("Opt %s crash reporting", AppProvider.get().getPostCrashAnalytics() ? "out from":"in to");
+                AppProvider.get().setPostCrashAnalytics(!AppProvider.get().getPostCrashAnalytics());
+                updatePostCrashAnalyticsView(fabricReporting);
+                DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(),  title,
+                        "For the changes to take effect, please exit the app and re-launch it").show();
+            }
+        });
+        mScrollViewSettings.addView(fabricReporting);
 
         View contactSupportView = getFeatureView("Contact Support", true);
         contactSupportView.setOnClickListener(new View.OnClickListener() {
@@ -532,6 +544,12 @@ public class SettingsFragment extends BaseFragment implements
         mTextView.setText(String.format("%s Biometric Authentication",
                 OstSdk.isBiometricEnabled(AppProvider.get().getCurrentUser().getOstUserId()) ? "Disable":"Enable"
         ));
+    }
+
+    private void updatePostCrashAnalyticsView(ViewGroup crashAnalyticsView) {
+        OstTextView mTextView = crashAnalyticsView.findViewById(R.id.ws_item);
+        mTextView.setText(String.format("Opt %s crash reporting",
+                AppProvider.get().getPostCrashAnalytics() ? "out from":"in to"));
     }
 
     interface OnFragmentInteractionListener {

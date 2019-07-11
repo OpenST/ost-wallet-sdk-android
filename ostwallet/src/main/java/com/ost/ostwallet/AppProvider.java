@@ -38,9 +38,12 @@ import static com.ost.ostwallet.entity.CurrentEconomy.URL_ID;
 import static com.ost.ostwallet.entity.CurrentEconomy.VIEW_API_ENDPOINT;
 
 public class AppProvider {
+
+    private static final String POST_CRASH_ANALYTICS = "post_crash_analytics";
     private static AppProvider INSTANCE = null;
     private final Context mApplicationContext;
-    private final SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferencesEconomy;
+    private final SharedPreferences sharedPreferencesCrashAnalytics;
     private CurrentEconomy currentEconomy;
     private LogInUser logInUser;
     private CookieStore mCookieStore;
@@ -49,8 +52,10 @@ public class AppProvider {
     private AppProvider(Context context) {
         mApplicationContext = context;
         NetworkClient.init(mApplicationContext);
-        sharedPreferences = mApplicationContext.getSharedPreferences("CurrentEconomy", Context.MODE_PRIVATE);
+        sharedPreferencesEconomy = mApplicationContext.getSharedPreferences("CurrentEconomy", Context.MODE_PRIVATE);
+        sharedPreferencesCrashAnalytics = mApplicationContext.getSharedPreferences("CrashAnalytics", Context.MODE_PRIVATE);
         getCurrentEconomy();
+        getPostCrashAnalytics();
     }
 
     public static void init(Context context) {
@@ -69,7 +74,7 @@ public class AppProvider {
         CurrentEconomy currentEconomy = getCurrentEconomy();
 
         return new MappyNetworkClient(
-                String.format("%sapi/%s/%s/", getCurrentEconomy().getMappyApiEndpoint() , currentEconomy.getTokenId(), currentEconomy.getUrlId()),
+                String.format("%sapi/%s/%s/", getCurrentEconomy().getMappyApiEndpoint(), currentEconomy.getTokenId(), currentEconomy.getUrlId()),
                 NetworkClient.getRequestQueue()
         );
     }
@@ -86,13 +91,13 @@ public class AppProvider {
     }
 
     private CurrentEconomy getCurrentEconomyPref() {
-        String tokenName = sharedPreferences.getString(TOKEN_NAME, null);
-        String tokenSymbol = sharedPreferences.getString(CurrentEconomy.TOKEN_SYMBOL, null);
-        String tokenId = sharedPreferences.getString(CurrentEconomy.TOKEN_ID, null);
-        String urlId = sharedPreferences.getString(CurrentEconomy.URL_ID, null);
-        String mappyApiEndpoint = sharedPreferences.getString(CurrentEconomy.MAPPY_API_ENDPOINT, null);
-        String saasApiEndpoint = sharedPreferences.getString(CurrentEconomy.SAAS_API_ENDPOINT, null);
-        String viewApiEndpoint = sharedPreferences.getString(CurrentEconomy.VIEW_API_ENDPOINT, null);
+        String tokenName = sharedPreferencesEconomy.getString(TOKEN_NAME, null);
+        String tokenSymbol = sharedPreferencesEconomy.getString(CurrentEconomy.TOKEN_SYMBOL, null);
+        String tokenId = sharedPreferencesEconomy.getString(CurrentEconomy.TOKEN_ID, null);
+        String urlId = sharedPreferencesEconomy.getString(CurrentEconomy.URL_ID, null);
+        String mappyApiEndpoint = sharedPreferencesEconomy.getString(CurrentEconomy.MAPPY_API_ENDPOINT, null);
+        String saasApiEndpoint = sharedPreferencesEconomy.getString(CurrentEconomy.SAAS_API_ENDPOINT, null);
+        String viewApiEndpoint = sharedPreferencesEconomy.getString(CurrentEconomy.VIEW_API_ENDPOINT, null);
 
         if (null == urlId || null == tokenName || null == tokenId
                 || null == mappyApiEndpoint || null == saasApiEndpoint
@@ -113,7 +118,7 @@ public class AppProvider {
 
     public void setCurrentEconomy(CurrentEconomy currentEconomy) {
         this.currentEconomy = currentEconomy;
-        SharedPreferences.Editor keyValuesEditor = sharedPreferences.edit();
+        SharedPreferences.Editor keyValuesEditor = sharedPreferencesEconomy.edit();
 
         if (null == currentEconomy) {
             keyValuesEditor.clear();
@@ -131,6 +136,21 @@ public class AppProvider {
 
         //Initialize SDK
         OstSdk.initialize(mApplicationContext, this.currentEconomy.getSaasApiEndpoint());
+    }
+
+    public boolean isPostCrashAnalyticsSet() {
+        return (0 <= sharedPreferencesCrashAnalytics.getInt(POST_CRASH_ANALYTICS, -1));
+    }
+
+    public boolean getPostCrashAnalytics() {
+        int postCrashAnalytics = sharedPreferencesCrashAnalytics.getInt(POST_CRASH_ANALYTICS, 0);
+        return (postCrashAnalytics != 0);
+    }
+
+    public void setPostCrashAnalytics(boolean shouldPost) {
+        SharedPreferences.Editor keyValuesEditor = sharedPreferencesCrashAnalytics.edit();
+        keyValuesEditor.putInt(POST_CRASH_ANALYTICS, shouldPost ? 1 : 0);
+        keyValuesEditor.apply();
     }
 
     public Context getApplicationContext() {
@@ -163,7 +183,7 @@ public class AppProvider {
         Intent intent = new Intent(mApplicationContext, OnBoardingActivity.class);
         int mPendingIntentId = 123456;
         PendingIntent mPendingIntent = PendingIntent.getActivity(mApplicationContext, mPendingIntentId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager)mApplicationContext.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager mgr = (AlarmManager) mApplicationContext.getSystemService(Context.ALARM_SERVICE);
         mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
         System.exit(0);
     }
