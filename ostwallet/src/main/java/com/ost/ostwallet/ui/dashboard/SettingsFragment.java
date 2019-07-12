@@ -222,9 +222,8 @@ public class SettingsFragment extends BaseFragment implements
         contactSupportView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                  throw new RuntimeException("Test::Crash the Ost Wallet");
-//                Fragment fragment = WebViewFragment.newInstance("https://help.ost.com/support/home", "OST Support");
-//                mListener.launchFeatureFragment(fragment);
+                Fragment fragment = WebViewFragment.newInstance("https://help.ost.com/support/home", "OST Support");
+                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(contactSupportView);
@@ -454,6 +453,10 @@ public class SettingsFragment extends BaseFragment implements
         super.onResume();
         drawListItems();
         fetchPendingRecoveries();
+    }
+
+    public void reDrawView() {
+        drawListItems();
     }
 
     @Override

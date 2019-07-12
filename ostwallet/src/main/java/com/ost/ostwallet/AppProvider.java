@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.ost.ostwallet.util.CommonUtils;
+import com.ost.ostwallet.util.DialogFactory;
 import com.ost.walletsdk.OstSdk;
 
 import java.net.CookieStore;
@@ -135,12 +136,9 @@ public class AppProvider {
         }
 
         keyValuesEditor.apply();
-        try {
-            //Initialize SDK
-            OstSdk.initialize(mApplicationContext, this.currentEconomy.getSaasApiEndpoint());
-        } catch (Exception e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-        }
+
+        //Initialize SDK
+        OstSdk.initialize(mApplicationContext, this.currentEconomy.getSaasApiEndpoint());
     }
 
     public FabricStateProvider getFabricStateProvider() {
@@ -226,7 +224,7 @@ public class AppProvider {
 
                 @Override
                 public void onFailure(Throwable throwable) {
-                    Log.d(LOG_TAG, throwable.toString());
+                    Log.d(LOG_TAG, null != throwable ? throwable.toString() : "Throwable is null");
                     callback.returnedPreference(mUserDeviceFabricSetting);
                 }
             });
@@ -241,16 +239,26 @@ public class AppProvider {
                     if (new CommonUtils().isValidResponse(jsonObject)) {
                         JSONObject data = new CommonUtils().parseJSONData(jsonObject);
                         mUserDeviceFabricSetting = data.optInt("preference", 0);
+                    } else {
+                        showErrorDialog(setFabricSetting);
                     }
                     callback.returnedPreference(mUserDeviceFabricSetting);
                 }
 
                 @Override
                 public void onFailure(Throwable throwable) {
-                    Log.d(LOG_TAG, throwable.toString());
+                    Log.d(LOG_TAG, null != throwable ? throwable.toString() : "Throwable is null");
+                    showErrorDialog(setFabricSetting);
                     callback.returnedPreference(mUserDeviceFabricSetting);
                 }
             });
+        }
+
+        private void showErrorDialog(boolean setFabricSetting) {
+            DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(),
+                    String.format("Opt %s crash reporting", setFabricSetting ? "in to": "out from"),
+                    "Sorry, we could not save your preferences. Please try  changing them on the Settings tab")
+                    .show();
         }
 
         public void clearUserFabricState() {

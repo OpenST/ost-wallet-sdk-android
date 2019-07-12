@@ -110,12 +110,6 @@ public class WalletFragment extends BaseFragment implements WalletView {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        mWalletPresenter.onResume();
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof WalletFragment.walletFragmentInteraction) {
