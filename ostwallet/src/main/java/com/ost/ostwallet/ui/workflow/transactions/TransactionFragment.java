@@ -146,9 +146,13 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
                     String usdVal = CommonUtils.convertBtToFiat(s.toString(), mTransactionPresenter.mPricePoint);
                     mFiatAmountEditTextView.setText((null != usdVal) ? usdVal : "");
                 }
-                if (!TextUtils.isEmpty(s) && Double.parseDouble(s.toString()) > 0) {
-                    mSendButton.setEnabled(true);
-                } else {
+                try {
+                    if (!TextUtils.isEmpty(s) && Double.parseDouble(s.toString()) > 0) {
+                        mSendButton.setEnabled(true);
+                    } else {
+                        mSendButton.setEnabled(false);
+                    }
+                } catch (Exception e) {
                     mSendButton.setEnabled(false);
                 }
             }
