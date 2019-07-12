@@ -16,6 +16,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
     private OstPrimaryEditTextView mTokensEditTextView;
     private OstPrimaryEditTextView mFiatAmountEditTextView;
     private String focusOnEtv = "";
+    private Button mSendButton;
 
     public TransactionFragment() {
         // Required empty public constructor
@@ -144,6 +146,11 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
                     String usdVal = CommonUtils.convertBtToFiat(s.toString(), mTransactionPresenter.mPricePoint);
                     mFiatAmountEditTextView.setText((null != usdVal) ? usdVal : "");
                 }
+                if (!TextUtils.isEmpty(s) && Double.parseDouble(s.toString()) > 0) {
+                    mSendButton.setEnabled(true);
+                } else {
+                    mSendButton.setEnabled(false);
+                }
             }
         });
 
@@ -183,7 +190,8 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
         fiatUnitETv.setText(OstConfigs.getInstance().getPRICE_POINT_CURRENCY_SYMBOL());
         fiatUnitETv.diasbleInput();
 
-        ((Button)viewGroup.findViewById(R.id.pbtn_send_tokens)).setOnClickListener(new View.OnClickListener() {
+        mSendButton = ((Button)viewGroup.findViewById(R.id.pbtn_send_tokens));
+        mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
@@ -200,6 +208,7 @@ public class TransactionFragment extends BaseFragment implements TransactionsVie
                 } catch (Exception e){}
             }
         });
+        mSendButton.setEnabled(false);
 
         ((Button)viewGroup.findViewById(R.id.linkbtn_cancel)).setOnClickListener(new View.OnClickListener() {
             @Override
