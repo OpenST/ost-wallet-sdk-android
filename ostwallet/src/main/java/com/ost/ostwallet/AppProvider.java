@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.ost.ostwallet.util.CommonUtils;
 import com.ost.walletsdk.OstSdk;
 
 import java.net.CookieStore;
@@ -30,6 +31,8 @@ import com.ost.ostwallet.ui.BaseActivity;
 import com.ost.ostwallet.ui.auth.OnBoardingActivity;
 import com.ost.ostwallet.util.DBLog;
 
+import org.json.JSONObject;
+
 import static com.ost.ostwallet.entity.CurrentEconomy.MAPPY_API_ENDPOINT;
 import static com.ost.ostwallet.entity.CurrentEconomy.SAAS_API_ENDPOINT;
 import static com.ost.ostwallet.entity.CurrentEconomy.TOKEN_ID;
@@ -41,23 +44,20 @@ import static com.ost.ostwallet.entity.CurrentEconomy.VIEW_API_ENDPOINT;
 public class AppProvider {
     private static final String LOG_TAG = "AppProvider";
 
-    private static final String POST_CRASH_ANALYTICS = "post_crash_analytics";
     private static AppProvider INSTANCE = null;
     private final Context mApplicationContext;
     private final SharedPreferences sharedPreferencesEconomy;
-    private final SharedPreferences sharedPreferencesCrashAnalytics;
     private CurrentEconomy currentEconomy;
     private LogInUser logInUser;
     private CookieStore mCookieStore;
     private BaseActivity mCurrentActivity;
+    private FabricStateProvider mFabricStateProviderProvider;
 
     private AppProvider(Context context) {
         mApplicationContext = context;
         NetworkClient.init(mApplicationContext);
         sharedPreferencesEconomy = mApplicationContext.getSharedPreferences("CurrentEconomy", Context.MODE_PRIVATE);
-        sharedPreferencesCrashAnalytics = mApplicationContext.getSharedPreferences("CrashAnalytics", Context.MODE_PRIVATE);
         getCurrentEconomy();
-        getPostCrashAnalytics();
     }
 
     public static void init(Context context) {
@@ -143,19 +143,11 @@ public class AppProvider {
         }
     }
 
-    public boolean isPostCrashAnalyticsSet() {
-        return (0 <= sharedPreferencesCrashAnalytics.getInt(POST_CRASH_ANALYTICS, -1));
-    }
-
-    public boolean getPostCrashAnalytics() {
-        int postCrashAnalytics = sharedPreferencesCrashAnalytics.getInt(POST_CRASH_ANALYTICS, 0);
-        return (postCrashAnalytics != 0);
-    }
-
-    public void setPostCrashAnalytics(boolean shouldPost) {
-        SharedPreferences.Editor keyValuesEditor = sharedPreferencesCrashAnalytics.edit();
-        keyValuesEditor.putInt(POST_CRASH_ANALYTICS, shouldPost ? 1 : 0);
-        keyValuesEditor.apply();
+    public FabricStateProvider getFabricStateProvider() {
+        if (null == mFabricStateProviderProvider) {
+            mFabricStateProviderProvider = new FabricStateProvider();
+        }
+        return mFabricStateProviderProvider;
     }
 
     public Context getApplicationContext() {
@@ -199,5 +191,74 @@ public class AppProvider {
 
     public BaseActivity getCurrentActivity() {
         return mCurrentActivity;
+    }
+
+    public static class FabricStateProvider {
+        private boolean mIsFabricOn = false;
+        private Integer mUserDeviceFabricSetting = null;
+
+        private FabricStateProvider() {
+        }
+
+        public boolean isFabricOn() {
+            return mIsFabricOn;
+        }
+
+        public void setFabricOn(boolean isFabricOn) {
+            this.mIsFabricOn = isFabricOn;
+        }
+
+        public void getUserDeviceFabricSetting(Callback callback) {
+            if (mUserDeviceFabricSetting != null) {
+                callback.returnedPreference(mUserDeviceFabricSetting);
+                return;
+            }
+            AppProvider.get().getMappyClient().getCrashlyticsPreference(new MappyNetworkClient.ResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject jsonObject) {
+                    Log.d(LOG_TAG, String.format("Get CrashlyticsResponse %s", jsonObject.toString()));
+                    if (new CommonUtils().isValidResponse(jsonObject)) {
+                        JSONObject data = new CommonUtils().parseJSONData(jsonObject);
+                        mUserDeviceFabricSetting = data.optInt("preference", -1);
+                    }
+                    callback.returnedPreference(mUserDeviceFabricSetting);
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    Log.d(LOG_TAG, throwable.toString());
+                    callback.returnedPreference(mUserDeviceFabricSetting);
+                }
+            });
+        }
+
+        public void setUserDeviceFabricSetting(boolean setFabricSetting, Callback callback) {
+
+            AppProvider.get().getMappyClient().postCrashlyticsPreference(setFabricSetting, new MappyNetworkClient.ResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject jsonObject) {
+                    Log.d(LOG_TAG, String.format("Set CrashlyticsResponse %s", jsonObject.toString()));
+                    if (new CommonUtils().isValidResponse(jsonObject)) {
+                        JSONObject data = new CommonUtils().parseJSONData(jsonObject);
+                        mUserDeviceFabricSetting = data.optInt("preference", 0);
+                    }
+                    callback.returnedPreference(mUserDeviceFabricSetting);
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    Log.d(LOG_TAG, throwable.toString());
+                    callback.returnedPreference(mUserDeviceFabricSetting);
+                }
+            });
+        }
+
+        public void clearUserFabricState() {
+            mUserDeviceFabricSetting = null;
+        }
+
+        public interface Callback {
+            void returnedPreference(Integer preference);
+        }
     }
 }

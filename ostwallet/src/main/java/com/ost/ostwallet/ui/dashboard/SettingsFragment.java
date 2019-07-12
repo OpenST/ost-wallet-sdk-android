@@ -193,17 +193,27 @@ public class SettingsFragment extends BaseFragment implements
         fabricReporting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title = String.format("Opt %s crash reporting", AppProvider.get().getPostCrashAnalytics() ? "out from":"in to");
-                AppProvider.get().setPostCrashAnalytics(!AppProvider.get().getPostCrashAnalytics());
-                updatePostCrashAnalyticsView(fabricReporting);
-                if (AppProvider.get().getPostCrashAnalytics()) {
-                    Fabric.with(getActivity(), new Crashlytics());
-                } else {
-                    DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(), title,
-                            "For the changes to take effect, please exit the app and re-launch it").show();
-                }
-                //Post analytics to backend
-                AppProvider.get().getMappyClient().postCrashAnalyticsPreference(AppProvider.get().getPostCrashAnalytics(), null);
+                final AppProvider.FabricStateProvider fabricStateProvider = AppProvider.get().getFabricStateProvider();
+                showProgress(true, String.format("Opting %s crash reporting", fabricStateProvider.isFabricOn() ? "out from": "in to"));
+                fabricStateProvider.setUserDeviceFabricSetting(!fabricStateProvider.isFabricOn(), new AppProvider.FabricStateProvider.Callback() {
+                    @Override
+                    public void returnedPreference(Integer preference) {
+                        showProgress(false);
+                        if (null != preference) {
+                            if (1 == preference && !fabricStateProvider.isFabricOn()) {
+                                Fabric.with(getActivity(), new Crashlytics());
+                                fabricStateProvider.setFabricOn(true);
+                            }
+                            if (0 == preference && fabricStateProvider.isFabricOn()) {
+                                String title = "Opt out from crash reporting";
+                                DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(), title,
+                                        "For the changes to take effect, please exit the app and re-launch it").show();
+                                fabricStateProvider.setFabricOn(false);
+                            }
+                            updatePostCrashAnalyticsView(fabricReporting);
+                        }
+                    }
+                });
             }
         });
         mScrollViewSettings.addView(fabricReporting);
@@ -212,9 +222,9 @@ public class SettingsFragment extends BaseFragment implements
         contactSupportView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Fragment fragment = WebViewFragment.newInstance("https://help.ost.com/support/home", "OST Support");
-                mListener.launchFeatureFragment(fragment);
+                  throw new RuntimeException("Test::Crash the Ost Wallet");
+//                Fragment fragment = WebViewFragment.newInstance("https://help.ost.com/support/home", "OST Support");
+//                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(contactSupportView);
@@ -412,6 +422,7 @@ public class SettingsFragment extends BaseFragment implements
                 builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         //Remove all cookies
+                        AppProvider.get().getFabricStateProvider().clearUserFabricState();
                         AppProvider.get().getCookieStore().removeAll();
                         mListener.relaunchApp();
                     }});
@@ -557,7 +568,7 @@ public class SettingsFragment extends BaseFragment implements
     private void updatePostCrashAnalyticsView(ViewGroup crashAnalyticsView) {
         OstTextView mTextView = crashAnalyticsView.findViewById(R.id.ws_item);
         mTextView.setText(String.format("Opt %s crash reporting",
-                AppProvider.get().getPostCrashAnalytics() ? "out from":"in to"));
+                AppProvider.get().getFabricStateProvider().isFabricOn() ? "out from":"in to"));
     }
 
     interface OnFragmentInteractionListener {

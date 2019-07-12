@@ -10,10 +10,13 @@
 
 package com.ost.ostwallet.ui.dashboard;
 
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+import com.ost.ostwallet.util.DialogFactory;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.network.OstJsonApi;
 import com.ost.walletsdk.network.OstJsonApiCallback;
@@ -31,6 +34,8 @@ import com.ost.ostwallet.entity.Transaction;
 import com.ost.ostwallet.network.MappyNetworkClient;
 import com.ost.ostwallet.ui.BasePresenter;
 import com.ost.ostwallet.util.CommonUtils;
+
+import io.fabric.sdk.android.Fabric;
 
 class WalletPresenter extends BasePresenter<WalletView> implements
         TransactionRecyclerViewAdapter.OnListInteractionListener {
@@ -159,4 +164,67 @@ class WalletPresenter extends BasePresenter<WalletView> implements
     public TransactionRecyclerViewAdapter getTransactionRecyclerViewAdapter() {
         return mTransactionRecyclerViewAdapter;
     }
+
+    public void onResume() {
+        handleCrashAnalytics();
+    }
+
+    private void handleCrashAnalytics() {
+        final AppProvider.FabricStateProvider fabricStateProvider = AppProvider.get().getFabricStateProvider();
+        fabricStateProvider.getUserDeviceFabricSetting(new AppProvider.FabricStateProvider.Callback() {
+            @Override
+            public void returnedPreference(Integer preference) {
+                if (preference == -1) {
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+                    builder.setTitle("Crash Reporting");
+                    builder.setMessage("Would you like to share crash reports with OST to help improve the app?");
+
+                    builder.setPositiveButton("Opt in", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            fabricStateProvider.setUserDeviceFabricSetting(true, new AppProvider.FabricStateProvider.Callback() {
+                                @Override
+                                public void returnedPreference(Integer preference) {
+                                    if (!fabricStateProvider.isFabricOn()) {
+                                        Fabric.with(AppProvider.get().getApplicationContext(), new Crashlytics());
+                                        fabricStateProvider.setFabricOn(true);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    builder.setNegativeButton("Opt out", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            fabricStateProvider.setUserDeviceFabricSetting(false, new AppProvider.FabricStateProvider.Callback() {
+                                @Override
+                                public void returnedPreference(Integer preference) {
+                                    if (fabricStateProvider.isFabricOn()) {
+                                        fabricStateProvider.setFabricOn(false);
+                                        String title = "Opt out from crash reporting";
+                                        DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(), title,
+                                                "For the changes to take effect, please exit the app and re-launch it").show();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    builder.create().show();
+                } else if (preference == 0) {
+                    if (fabricStateProvider.isFabricOn()) {
+                        fabricStateProvider.setFabricOn(false);
+                        String title = "Opt out from crash reporting";
+                        DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(), title,
+                                "For the changes to take effect, please exit the app and re-launch it").show();
+                    }
+                } else if (preference == 1){
+                    if (!fabricStateProvider.isFabricOn()) {
+                        Fabric.with(AppProvider.get().getApplicationContext(), new Crashlytics());
+                        fabricStateProvider.setFabricOn(true);
+                    }
+                }
+            }
+        });
+    }
+
 }

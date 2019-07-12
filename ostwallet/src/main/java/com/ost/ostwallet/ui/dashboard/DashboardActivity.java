@@ -121,8 +121,6 @@ public class DashboardActivity extends BaseActivity implements
         SdkInteract.getInstance().setVerifyDataCallbackListener(this);
         SdkInteract.getInstance().setFlowListeners(this);
 
-        handleCrashAnalytics();
-
         setUpDevice();
 
         checkForActiveUserAndDevice();
@@ -153,33 +151,6 @@ public class DashboardActivity extends BaseActivity implements
                     )) {
                 notifyActivate();
             }
-        }
-    }
-
-    private void handleCrashAnalytics() {
-        if (AppProvider.get().isPostCrashAnalyticsSet()) {
-            Fabric.with(this, new Crashlytics());
-        } else {
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AppProvider.get().getCurrentActivity());
-            builder.setTitle("Crash Reporting");
-            builder.setMessage("Would you like to share crash reports with OST to help improve the app?");
-
-            builder.setPositiveButton("Opt in", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    AppProvider.get().setPostCrashAnalytics(true);
-                    Fabric.with(DashboardActivity.this, new Crashlytics());
-                    AppProvider.get().getMappyClient().postCrashAnalyticsPreference(true, null);
-                    mSettingsFragment.onResume();
-                }});
-            builder.setNegativeButton("Opt out", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    AppProvider.get().setPostCrashAnalytics(false);
-                    AppProvider.get().getMappyClient().postCrashAnalyticsPreference(false, null);
-                    mSettingsFragment.onResume();
-                }
-            });
-            builder.create().show();
         }
     }
 

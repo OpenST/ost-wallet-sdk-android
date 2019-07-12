@@ -25,6 +25,7 @@ import java.util.Iterator;
 
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.util.DialogFactory;
+import com.ost.walletsdk.OstSdk;
 
 public class MappyNetworkClient {
 
@@ -114,24 +115,33 @@ public class MappyNetworkClient {
         }
     }
 
-    public void postCrashAnalyticsPreference(final boolean postCrash, ResponseCallback callback) {
-        if (null == callback) {
-            callback = new ResponseCallback() {
-                @Override
-                public void onSuccess(JSONObject jsonObject) {
-                }
-
-                @Override
-                public void onFailure(Throwable throwable) {
-                }
-            };
-        }
-
+    public void postCrashlyticsPreference(final boolean postCrash, ResponseCallback callback) {
         try {
+            String userId = AppProvider.get().getCurrentUser().getId();
+            String ostUserId = AppProvider.get().getCurrentUser().getOstUserId();
+            String deviceAddress = OstSdk.getUser(ostUserId).getCurrentDevice().getAddress();
+
             JSONObject params = new JSONObject();
             params.put("preference", postCrash ? 1 : 0);
+            params.put("device_address", deviceAddress);
             sendRequest(Request.Method.POST,
-                    String.format("users/%s/set-preference", AppProvider.get().getCurrentUser().getId()),
+                    String.format("users/%s/set-preference", userId),
+                    params,
+                    callback);
+        } catch (Exception ex) {
+            callback.onFailure(ex);
+        }
+    }
+
+    public void getCrashlyticsPreference(ResponseCallback callback) {
+        try {
+            String userId = AppProvider.get().getCurrentUser().getId();
+            String ostUserId = AppProvider.get().getCurrentUser().getOstUserId();
+            String deviceAddress = OstSdk.getUser(ostUserId).getCurrentDevice().getAddress();
+
+            JSONObject params = new JSONObject();
+            sendRequest(Request.Method.GET,
+                    String.format("users/%s/get-preference?device_address=%s", userId, deviceAddress),
                     params,
                     callback);
         } catch (Exception ex) {
