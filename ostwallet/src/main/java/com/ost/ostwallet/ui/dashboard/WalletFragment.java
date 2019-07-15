@@ -22,14 +22,14 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ost.walletsdk.OstSdk;
-import com.ost.walletsdk.models.entities.OstToken;
-
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.R;
 import com.ost.ostwallet.entity.Transaction;
-import com.ost.ostwallet.uicomponents.AppBar;
 import com.ost.ostwallet.ui.BaseFragment;
+import com.ost.ostwallet.uicomponents.AppBar;
+import com.ost.ostwallet.util.WrapLinearLayoutManager;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstToken;
 
 public class WalletFragment extends BaseFragment implements WalletView {
 
@@ -78,7 +78,7 @@ public class WalletFragment extends BaseFragment implements WalletView {
         mWalletPresenter = WalletPresenter.newInstance();
         mWalletPresenter.attachView(this);
 
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager = new WrapLinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setAdapter(mWalletPresenter.getTransactionRecyclerViewAdapter());

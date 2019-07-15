@@ -11,6 +11,7 @@
 package com.ost.ostwallet.ui.dashboard;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -18,11 +19,11 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
@@ -63,6 +64,8 @@ import com.ost.ostwallet.util.CommonUtils;
 import com.ost.ostwallet.util.DialogFactory;
 import com.ost.ostwallet.util.FragmentUtils;
 import com.ost.ostwallet.util.KeyBoard;
+
+import io.fabric.sdk.android.Fabric;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -138,6 +141,7 @@ public class DashboardActivity extends BaseActivity implements
                     this);
             mViewPager.setCurrentItem(1);
         } else if(ostUser.getCurrentDevice().canBeAuthorized()) {
+            handleCrashAnalytics();
             mSettingsFragment.setOpenDeviceAuthorization(true);
             mViewPager.setCurrentItem(2);
         } else {
@@ -148,6 +152,7 @@ public class DashboardActivity extends BaseActivity implements
                     )) {
                 notifyActivate();
             }
+            handleCrashAnalytics();
         }
     }
 
@@ -195,6 +200,7 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void activateAcknowledged(long workflowId) {
         FragmentUtils.goBack(this);
+        handleCrashAnalytics();
     }
 
     @Override
@@ -434,5 +440,68 @@ public class DashboardActivity extends BaseActivity implements
                         }
                     }
                 }, timeInMilliseconds);
+    }
+
+    private void handleCrashAnalytics() {
+        final AppProvider.FabricStateProvider fabricStateProvider = AppProvider.get().getFabricStateProvider();
+        fabricStateProvider.getUserDeviceFabricSetting(new AppProvider.FabricStateProvider.Callback() {
+            @Override
+            public void returnedPreference(Integer preference) {
+                if (preference == -1) {
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+                    builder.setTitle("Crash Reporting");
+                    builder.setMessage("Would you like to share crash reports with OST to help improve the app?");
+                    builder.setCancelable(false);
+
+                    builder.setPositiveButton("Opt in", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            fabricStateProvider.setUserDeviceFabricSetting(true, new AppProvider.FabricStateProvider.Callback() {
+                                @Override
+                                public void returnedPreference(Integer preference) {
+                                    if (!fabricStateProvider.isFabricOn()) {
+                                        Fabric.with(AppProvider.get().getApplicationContext(), new Crashlytics());
+                                        fabricStateProvider.setFabricOn(true);
+                                        mSettingsFragment.reDrawView();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    builder.setNegativeButton("Opt out", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            fabricStateProvider.setUserDeviceFabricSetting(false, new AppProvider.FabricStateProvider.Callback() {
+                                @Override
+                                public void returnedPreference(Integer preference) {
+                                    if (fabricStateProvider.isFabricOn()) {
+                                        fabricStateProvider.setFabricOn(false);
+                                        mSettingsFragment.reDrawView();
+                                        String title = "Opt out from crash reporting";
+                                        DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(), title,
+                                                "For the changes to take effect, please exit the app and re-launch it").show();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                    builder.create().show();
+                } else if (preference == 0) {
+                    if (fabricStateProvider.isFabricOn()) {
+                        fabricStateProvider.setFabricOn(false);
+                        mSettingsFragment.reDrawView();
+                        String title = "Opt out from crash reporting";
+                        DialogFactory.createSimpleOkErrorDialog(AppProvider.get().getCurrentActivity(), title,
+                                "For the changes to take effect, please exit the app and re-launch it").show();
+                    }
+                } else if (preference == 1){
+                    if (!fabricStateProvider.isFabricOn()) {
+                        Fabric.with(AppProvider.get().getApplicationContext(), new Crashlytics());
+                        fabricStateProvider.setFabricOn(true);
+                        mSettingsFragment.reDrawView();
+                    }
+                }
+            }
+        });
     }
 }
