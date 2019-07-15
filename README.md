@@ -134,9 +134,9 @@ Example:-
                            "wait_for_finalization": true}
 ```
 &nbsp; parameter workFlowCallback: callback implementation object for application communication <br/>
-&nbsp; **void executeTransaction(String userId, String tokenId, List<String> tokenHolderAddresses, List<String> amounts, String ruleName, OstWorkFlowCallback workFlowCallback)**<br/>
+&nbsp; **void executeTransaction(String userId, String tokenId, List tokenHolderAddresses, List amounts, String ruleName, Map meta, Map options, OstWorkFlowCallback workFlowCallback)**<br/>
 ```java
-OstSdk.executeTransaction(userId, tokenHolderAddresses, amounts, meta, options, ruleName, new OstWorkFlowCallbackImpl())
+OstSdk.executeTransaction(userId, tokenHolderAddresses, amounts, ruleName, meta, options, new OstWorkFlowCallbackImpl())
 ````
 
 ### Get Mnemonic Phrase
