@@ -121,6 +121,7 @@ public class OstSdk {
 
     private static Context mApplicationContext;
     private final String BASE_URL;
+    private static boolean mTrustKitInitialised = false;
 
     public static Context getContext() {
         return mApplicationContext;
@@ -130,9 +131,13 @@ public class OstSdk {
         mApplicationContext = context.getApplicationContext();
         OstSdkDatabase.initDatabase(mApplicationContext);
         OstSdkKeyDatabase.initDatabase(mApplicationContext);
-        TrustKit.initializeWithNetworkSecurityConfiguration(mApplicationContext);
 
         BASE_URL = validateSdkUrl(baseUrl);
+
+        if(!mTrustKitInitialised) {
+            TrustKit.initializeWithNetworkSecurityConfiguration(mApplicationContext);
+            mTrustKitInitialised = true;
+        }
     }
 
     public static OstSdk get() {
