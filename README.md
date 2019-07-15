@@ -536,7 +536,7 @@ OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
 
 ## Application development supporting doc
  
-### Entity status on Application state
+### Entities status on User Activities
 |User Activity |App State|User Status|Device Status|Session status|
 | --- | --- | --- | --- | --- |
 |Installs app for the first time|Not Login|CREATED|UNREGISTED| `NA`|
@@ -551,12 +551,25 @@ OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
 |Log in back to App|Activated Wallet|ACTIVATED|AUTHORIZED|AUTHORISED|
 |Reinstall the App|No Login|CREATED|UNREGISTED| `NA`|
 |Login in the app|Log In|ACTIVATED|REGISTERED| `NA`|
-|Recover Wallet Or Add Wallet|Activated Wallet|ACTIVATED|AUTHORISED| `NA`|
-|Revoked Device from other device|Activated Wallet||REVOKING->REVOKED| `NA`|
+|Recover Wallet Or Add Wallet|Activating Wallet|ACTIVATED|AUTHORIZING->AUTHORISED| `NA`|
+|Revoked Device from other device|Activated Wallet|ACTIVATED|REVOKING->REVOKED| `NA`|
 
 
-### Identify Whether Wallet need recovery
-if 
+### Wallet Check on App launch
+* Check whether User need Activation.
+* Check whether Wallet need Device Addition Or Recovery.
+  * For device addition **OstSdk.performQRAction()** method can be used to process QR from AUTHORIZED deivce.
+  * Device can also be added through **OstSdk.authorizeCurrentDeviceWithMnemonics()** by passing AUTHORIZED device mnemonics.
+  * Or Device can be recovered through **OstSdk.initiateDeviceRecovery()** by passing Device address of the Device to be recovered from.
+```java
+if (!(ostUser.isActivated() || ostUser.isActivating())) {
+        //TODO:: Wallet need Activation
+} else if (ostUser.isActivated() && ostUser.getCurrentDevice().canBeAuthorized()) { 
+        //TODO:: Ask user whether he wants to Add device through QR or Mnemonics Or want to recover device. 
+} else {
+        //TODO:: App Dashboard
+}
+```
 
 
 
