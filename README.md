@@ -554,11 +554,13 @@ OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
 |Recover Wallet Or Add Wallet|Activating Wallet|ACTIVATED|AUTHORIZING->AUTHORISED| `NA`|
 |Revoked Device from other device|Activated Wallet|ACTIVATED|REVOKING->REVOKED| `NA`|
 
+### Get Entity status updates
+To get real time updates of entities like ongoing activation Or transactions, server side sdk's [WebHooks](https://dev.ost.com/platform/docs/api/#webhooks) services can be used.
 
 ### Wallet Check on App launch
 * Check whether User need Activation.
 * Check whether Wallet need Device Addition Or Recovery.
-  * For device addition **OstSdk.performQRAction()** method can be used to process QR from AUTHORIZED deivce.
+  * For device addition, the current Device which is to be Authorized should used **OstSdk.getAddDeviceQRCode** to generate QR code And **OstSdk.performQRAction()** method should be used to process that QR from AUTHORIZED deivce.
   * Device can also be added through **OstSdk.authorizeCurrentDeviceWithMnemonics()** by passing AUTHORIZED device mnemonics.
   * Or Device can be recovered through **OstSdk.initiateDeviceRecovery()** by passing Device address of the Device to be recovered from.
 ```java
@@ -570,7 +572,69 @@ if (!(ostUser.isActivated() || ostUser.isActivating())) {
         //TODO:: App Dashboard
 }
 ```
+### Balance calculation
+* TokenHolder Balance can be shown in Token currency or in Fiat currency.
+  * For Token currency conversion, the fetched balance is in Wei unit, which needs to be converted to Base unit.
+  * For Fiat currency conversion, the fetched balance first need to be converted to fiat equivalent using current converion rate from price points and then to its Base unit.
+```java
+OstJsonApi.getBalanceWithPricePoints(userId, new OstJsonApiCallback() {
+            @Override
+            public void onOstJsonApiSuccess(@Nullable JSONObject jsonObject) {
+                if ( null != jsonObject ) {
+                    String balance = "0";
+                    JSONObject pricePoint = null;
+                    try{
+                        JSONObject balanceData = jsonObject.getJSONObject(jsonObject.getString("result_type"));
+                        balance = balanceData.getString("available_balance");
+                        pricePoint = jsonObject.optJSONObject("price_point");
+                    } catch(Exception e){ 
+                    }
+                    //To user balance in token currency with two decimals.
+                    convertWeiToTokenCurrency(balance);
+                    
+                    //To user balance in fiat(Dollar) with two decimals.
+                    convertBTWeiToFiat(balance, pricePoint)
+                } else {
+                        //Todo:: Show fetch error
+                }
+            }
 
+            @Override
+            public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) {
+                //Todo:: Show fetch error
+            }
+        });
+
+public static String convertWeiToTokenCurrency(String balance) {
+        if (null == balance) return "0";
+
+        OstToken token = OstSdk.getToken(AppProvider.getTokenId());
+        Integer decimals = Integer.parseInt(token.getBtDecimals());
+        BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
+        BigDecimal balance = new BigDecimal(balance).divide(btWeiMultiplier);
+        return balance.setScale(2, RoundingMode.HALF_UP).toString();
+    }
+
+public static String convertBTWeiToFiat(String balance, JSONObject pricePointObject) {
+        if (null == balance || null == pricePointObject) return null;
+
+        try{
+            OstToken token = OstSdk.getToken(AppProvider.getTokenId());
+            double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble("USD");
+            int fiatDecimalExponent = pricePointObject.getJSONObject(token.getBaseToken()).getInt("decimals");
+            BigDecimal fiatToEthConversionFactor = new BigDecimal("10").pow(fiatDecimalExponent);
+
+            BigDecimal tokenToFiatMultiplier = calTokenToFiatMultiplier(pricePointOSTtoUSD, fiatDecimalExponent, token.getConversionFactor(), Integer.parseInt(token.getBtDecimals()));
+
+            BigDecimal fiatBalance = new BigDecimal(balance).multiply(tokenToFiatMultiplier);
+
+            return fiatBalance.divide(fiatToEthConversionFactor, 2, RoundingMode.DOWN).toString();
+
+        } catch (Exception e){
+            return null;
+        }
+    }
+```
 
 
 ## Steps to use Android mobile sdk through AAR lib
