@@ -534,6 +534,32 @@ OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
 | **err** <br> **OstError**	|	OstError object containing error details	|
 | **response** <br> **JSONObject**	|	Api Response	|
 
+## Application development supporting doc
+ 
+### Entity status on Application state
+|User Activity |App State|User Status|Device Status|Session status|
+| --- | --- | --- | --- | --- |
+|Installs app for the first time|Not Login|CREATED|UNREGISTED| `NA`|
+|Login in the app for the first time|Log In|CREATED|REGISTERED| `NA`|
+|Initiate Activate Wallet by entering pin|Activating Wallet|ACTIVATING|AUTHORIZING|INITIALIZING|
+|Activates Wallet after waiting|Activated Wallet|ACTIVATED|AUTHORIZED|AUTHORISED|
+|Performs transactions|Activated Wallet|ACTIVATED|AUTHORIZED|AUTHORISED|
+|Session get expired|Activated Wallet|ACTIVATED|AUTHORIZED|EXPIRED|
+|Logout all Sessions|Activated Wallet|ACTIVATED|AUTHORIZED|REVOKING->REVOKED|
+|Add Session|Activated Wallet|ACTIVATED|AUTHORIZED|INITIALIZING->AUTHORISED|
+|Log out from app|Not Login|ACTIVATED|AUTHORIZED|AUTHORISED|
+|Log in back to App|Activated Wallet|ACTIVATED|AUTHORIZED|AUTHORISED|
+|Reinstall the App|No Login|CREATED|UNREGISTED| `NA`|
+|Login in the app|Log In|ACTIVATED|REGISTERED| `NA`|
+|Recover Wallet Or Add Wallet|Activated Wallet|ACTIVATED|AUTHORISED| `NA`|
+|Revoked Device from other device|Activated Wallet||REVOKING->REVOKED| `NA`|
+
+
+### Identify Whether Wallet need recovery
+if 
+
+
+
 ## Steps to use Android mobile sdk through AAR lib
 - Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
 - Create libs folder under app directory in your application project.
