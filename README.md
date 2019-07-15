@@ -538,21 +538,21 @@ OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
  
 ### Entities status on User Activities
 |User Activity |App State|User Status|Device Status|Session status|
-| --- | --- | --- | --- | --- |
+| --- | --- | :---: | :---: | :---: |
 |Installs app for the first time|Not Login|CREATED|UNREGISTED| `NA`|
 |Login in the app for the first time|Log In|CREATED|REGISTERED| `NA`|
 |Initiate Activate Wallet by entering pin|Activating Wallet|ACTIVATING|AUTHORIZING|INITIALIZING|
 |Activates Wallet after waiting|Activated Wallet|ACTIVATED|AUTHORIZED|AUTHORISED|
 |Performs transactions|Activated Wallet|ACTIVATED|AUTHORIZED|AUTHORISED|
 |Session get expired|Activated Wallet|ACTIVATED|AUTHORIZED|EXPIRED|
-|Logout all Sessions|Activated Wallet|ACTIVATED|AUTHORIZED|REVOKING->REVOKED|
-|Add Session|Activated Wallet|ACTIVATED|AUTHORIZED|INITIALIZING->AUTHORISED|
+|Logout all Sessions|Activated Wallet|ACTIVATED|AUTHORIZED|REVOKING -> REVOKED|
+|Add Session|Activated Wallet|ACTIVATED|AUTHORIZED|INITIALIZING -> AUTHORISED|
 |Log out from app|Not Login|ACTIVATED|AUTHORIZED|AUTHORISED|
 |Log in back to App|Activated Wallet|ACTIVATED|AUTHORIZED|AUTHORISED|
 |Reinstall the App|No Login|CREATED|UNREGISTED| `NA`|
 |Login in the app|Log In|ACTIVATED|REGISTERED| `NA`|
-|Recover Wallet Or Add Wallet|Activating Wallet|ACTIVATED|AUTHORIZING->AUTHORISED| `NA`|
-|Revoked Device from other device|Activated Wallet|ACTIVATED|REVOKING->REVOKED| `NA`|
+|Recover Wallet Or Add Wallet|Activating Wallet|ACTIVATED|AUTHORIZING -> AUTHORISED| `NA`|
+|Revoked Device from other device|Activated Wallet|ACTIVATED|REVOKING -> REVOKED| `NA`|
 
 ### Get Entity status updates
 To get real time updates of entities like ongoing activation Or transactions, server side sdk's [WebHooks](https://dev.ost.com/platform/docs/api/#webhooks) services can be used.
