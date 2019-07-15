@@ -123,6 +123,9 @@ public class SettingsFragment extends BaseFragment implements
     }
 
     private void drawListItems(){
+
+        if (null == mScrollViewSettings) return;
+
         mScrollViewSettings.removeAllViews();
         mScrollViewSettings.addView(getCategoryView("GENERAL"));
 
