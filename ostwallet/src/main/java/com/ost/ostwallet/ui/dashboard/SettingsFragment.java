@@ -71,6 +71,7 @@ public class SettingsFragment extends BaseFragment implements
     private ViewGroup mToggleBiometric;
     private View mAbortRecoveryView = null;
     private Boolean hasPendingRecoveries = false;
+    private boolean onScreen = false;
 
     public SettingsFragment() {
     }
@@ -123,8 +124,6 @@ public class SettingsFragment extends BaseFragment implements
     }
 
     private void drawListItems(){
-
-        if (null == mScrollViewSettings) return;
 
         mScrollViewSettings.removeAllViews();
         mScrollViewSettings.addView(getCategoryView("GENERAL"));
@@ -454,12 +453,19 @@ public class SettingsFragment extends BaseFragment implements
     @Override
     public void onResume(){
         super.onResume();
+        onScreen = true;
         drawListItems();
         fetchPendingRecoveries();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        onScreen = false;
+    }
+
     public void reDrawView() {
-        drawListItems();
+        if (onScreen) drawListItems();
     }
 
     @Override
