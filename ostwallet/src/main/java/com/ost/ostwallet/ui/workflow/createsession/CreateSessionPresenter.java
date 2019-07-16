@@ -41,7 +41,7 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
     }
 
     void createSession(String spendingLimit, String unit, String expiryDays) {
-        getMvpView().showProgress(true, "Authorizing session...");
+        if (null != getMvpView()) getMvpView().showProgress(true, "Authorizing session...");
 
         //tokens validation
         //Input spending limit string is in Eth
@@ -50,8 +50,8 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
             spendingLimitBigInt = new BigInteger(spendingLimit);
         } catch (Exception e) {
             Log.e(LOG_TAG, "spending limit value is invalid", e);
-            getMvpView().invalidSpendingLimit();
-            getMvpView().showProgress(false);
+            if (null != getMvpView()) getMvpView().invalidSpendingLimit();
+            if (null != getMvpView()) getMvpView().showProgress(false);
             return;
         }
 
@@ -73,13 +73,15 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
 
     @Override
     public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        getMvpView().showProgress(false);
+        if (null != getMvpView()) getMvpView().showProgress(false);
     }
 
     @Override
     public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        getMvpView().showProgress(false);
-        getMvpView().showToastMessage("Session authorization request received.", true);
-        getMvpView().goBack();
+        if (null != getMvpView()) {
+            getMvpView().showProgress(false);
+            getMvpView().showToastMessage("Session authorization request received.", true);
+            getMvpView().goBack();
+        }
     }
 }

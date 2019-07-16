@@ -36,6 +36,8 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
     private static final String LOG_TAG = "WalletSetUpPresenter";
     private String mFirstPin;
     private int pinCounter;
+    private boolean onScreen;
+    private boolean requestAcknowledgedActionPending;
 
     private WalletSetUpPresenter() {
         pinCounter = 0;
@@ -118,8 +120,12 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
     @Override
     public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for Activate user");
-        getMvpView().showProgress(false);
-        (getMvpView()).gotoDashboard(workflowId);
+        if (onScreen) {
+            getMvpView().showProgress(false);
+            (getMvpView()).gotoDashboard(workflowId);
+        } else {
+            requestAcknowledgedActionPending = true;
+        }
     }
 
     void popBack() {
@@ -131,5 +137,17 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
     void resetWalletSetUp() {
         pinCounter = 0;
         (getMvpView()).showAddPin();
+    }
+
+    public void onResume() {
+        onScreen = true;
+        if (requestAcknowledgedActionPending) {
+            getMvpView().showProgress(false);
+            (getMvpView()).gotoDashboard(-1);
+        }
+    }
+
+    public void onPause() {
+        onScreen = false;
     }
 }

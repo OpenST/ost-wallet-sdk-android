@@ -88,6 +88,18 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        mWalletSetupPresenter.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mWalletSetupPresenter.onPause();
+    }
+
+    @Override
     public void showAddPin() {
         PinFragment fragment = PinFragment.newInstance("Add PIN", getResources().getString(R.string.pin_sub_heading_add_pin));
         fragment.showTermsLine = true;

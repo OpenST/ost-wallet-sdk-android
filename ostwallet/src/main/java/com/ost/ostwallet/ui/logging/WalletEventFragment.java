@@ -12,21 +12,21 @@ package com.ost.ostwallet.ui.logging;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.R;
 import com.ost.ostwallet.entity.OstLogEvent;
 import com.ost.ostwallet.ui.BaseFragment;
 import com.ost.ostwallet.uicomponents.AppBar;
+import com.ost.ostwallet.util.WrapLinearLayoutManager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A fragment representing a list of Log Events.
@@ -72,7 +72,7 @@ public class WalletEventFragment extends BaseFragment {
 
         mRecyclerView = viewGroup.findViewById(R.id.rv_events);
         mPullToRefresh = viewGroup.findViewById(R.id.pullToRefresh);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView.setLayoutManager(new WrapLinearLayoutManager(getContext()));
         mRecyclerViewAdapter = new WalletEventRecyclerViewAdapter(mLogEventList);
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mPullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

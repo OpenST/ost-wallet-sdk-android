@@ -22,14 +22,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ost.ostwallet.R;
+import com.ost.ostwallet.entity.Device;
+import com.ost.ostwallet.ui.BaseFragment;
+import com.ost.ostwallet.uicomponents.AppBar;
+import com.ost.ostwallet.util.WrapLinearLayoutManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import com.ost.ostwallet.R;
-import com.ost.ostwallet.uicomponents.AppBar;
-import com.ost.ostwallet.entity.Device;
-import com.ost.ostwallet.ui.BaseFragment;
 
 /**
  * A fragment representing a list of Items.
@@ -113,7 +114,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
                 : InitiateRecoveryRecyclerViewAdapter.newInstance(mDeviceList, mListener);
 
         mDeviceListPresenter.attachView(this);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        final LinearLayoutManager layoutManager = new WrapLinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
 
         mRecyclerView.setAdapter(mDeviceListRecyclerViewAdapter);

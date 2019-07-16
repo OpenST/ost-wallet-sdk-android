@@ -10,10 +10,13 @@
 
 package com.ost.ostwallet.ui.dashboard;
 
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
+import com.ost.ostwallet.util.DialogFactory;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.network.OstJsonApi;
 import com.ost.walletsdk.network.OstJsonApiCallback;
@@ -31,6 +34,8 @@ import com.ost.ostwallet.entity.Transaction;
 import com.ost.ostwallet.network.MappyNetworkClient;
 import com.ost.ostwallet.ui.BasePresenter;
 import com.ost.ostwallet.util.CommonUtils;
+
+import io.fabric.sdk.android.Fabric;
 
 class WalletPresenter extends BasePresenter<WalletView> implements
         TransactionRecyclerViewAdapter.OnListInteractionListener {
@@ -93,10 +98,10 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                     } catch (JSONException e) {
                         //Exception not expected
                     }
-                    getMvpView().notifyDataSetChanged();
+                    notifyDataSetChange();
                 } else {
                     Log.e(LOG_TAG, String.format("Get Current User Transaction response false: %s", jsonObject.toString()));
-                    getMvpView().notifyDataSetChanged();
+                    notifyDataSetChange();
                 }
                 httpRequestPending = false;
             }
@@ -104,7 +109,7 @@ class WalletPresenter extends BasePresenter<WalletView> implements
             @Override
             public void onFailure(Throwable throwable) {
                 Log.e(LOG_TAG, "Get Current User Transaction error");
-                getMvpView().notifyDataSetChanged();
+                notifyDataSetChange();
                 httpRequestPending = false;
             }
         });
@@ -147,6 +152,12 @@ class WalletPresenter extends BasePresenter<WalletView> implements
     private void updateViewBalance(String balance, String usdBalance) {
         if (null != getMvpView()) {
             getMvpView().updateBalance(balance, usdBalance);
+        }
+    }
+
+    private void notifyDataSetChange() {
+        if (null != getMvpView()) {
+            getMvpView().notifyDataSetChanged();
         }
     }
 
