@@ -150,7 +150,7 @@ public class OnBoardingPresenter extends BasePresenter<OnBoardingView> implement
             public void onFailure(Throwable throwable) {
                 showErrorMessage(null);
                 getMvpView().showProgress(false);
-                Log.e(LOG_TAG, throwable.getMessage());
+                Log.e(LOG_TAG, null != throwable ? throwable.getMessage(): "Null Throwable");
             }
         });
     }
@@ -180,7 +180,7 @@ public class OnBoardingPresenter extends BasePresenter<OnBoardingView> implement
             public void onFailure(Throwable throwable) {
                 getMvpView().showProgress(false);
                 getMvpView().showEconomyChangeDialog();
-                Log.e(LOG_TAG, null != throwable ? throwable.getMessage() : "");
+                Log.e(LOG_TAG, null != throwable ? throwable.getMessage() : "Null Throwable");
             }
         });
     }
