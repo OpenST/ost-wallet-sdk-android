@@ -20,6 +20,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -38,6 +39,7 @@ public class PinEntryEditText extends LinearLayout {
     List<View> pins = new ArrayList<>();
     private EditText invisiblePinEditText;
     private int pinLenght;
+    private TextView.OnEditorActionListener mOnEditorActionListener;
 
     public PinEntryEditText(Context context) {
         super(context);
@@ -146,7 +148,7 @@ public class PinEntryEditText extends LinearLayout {
     }
 
 
-    private void setupEditTextPinListener(EditText editText) {
+    private void setupEditTextPinListener(final EditText editText) {
         editText.addTextChangedListener(new TextWatcher() {
             int lastTextLenght = 0;
 
@@ -162,6 +164,9 @@ public class PinEntryEditText extends LinearLayout {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                if (editable.length() == pinLenght) {
+                    mOnEditorActionListener.onEditorAction(editText, EditorInfo.IME_ACTION_DONE, null);
+                }
             }
         });
     }
@@ -194,6 +199,7 @@ public class PinEntryEditText extends LinearLayout {
     }
 
     public void setOnEditorActionListener(TextView.OnEditorActionListener onEditorActionListener) {
+        mOnEditorActionListener = onEditorActionListener;
         invisiblePinEditText.setOnEditorActionListener(onEditorActionListener);
     }
 
