@@ -34,9 +34,5 @@ public class App extends Application {
 
         AppProvider.init(getApplicationContext());
         AppProvider.get().setPersistentCookieStore(persistentCookieStore);
-
-        if (null != AppProvider.get().getCurrentEconomy()) {
-            OstSdk.initialize(getApplicationContext(), AppProvider.get().getCurrentEconomy().getSaasApiEndpoint());
-        }
     }
 }

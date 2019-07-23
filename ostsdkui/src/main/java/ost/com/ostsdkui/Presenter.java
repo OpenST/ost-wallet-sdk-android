@@ -8,4 +8,15 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-include ':ostsdk', ':ostwallet', ':ostsdkui'
+package ost.com.ostsdkui;
+
+/*
+ * Every presenter in the app must either implement this interface or extend BasePresenter
+ * indicating the MvpView type that wants to be attached with.
+ */
+public interface Presenter<V> {
+
+    void attachView(V mvpView);
+
+    void detachView();
+}

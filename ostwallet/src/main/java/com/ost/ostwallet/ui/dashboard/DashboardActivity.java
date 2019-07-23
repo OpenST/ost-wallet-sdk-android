@@ -24,8 +24,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.ost.ostwallet.ui.workflow.walletsetup.WalletSetUpFragment;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
+import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -36,6 +38,7 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import com.ost.ostwallet.AppProvider;
@@ -45,7 +48,6 @@ import com.ost.ostwallet.entity.LogInUser;
 import com.ost.ostwallet.entity.User;
 import com.ost.ostwallet.network.MappyNetworkClient;
 import com.ost.ostwallet.sdkInteract.SdkInteract;
-import com.ost.ostwallet.sdkInteract.WorkFlowListener;
 import com.ost.ostwallet.ui.BaseActivity;
 import com.ost.ostwallet.ui.auth.OnBoardingActivity;
 import com.ost.ostwallet.ui.managedevices.AuthorizeDeviceOptionsFragment;
@@ -59,13 +61,14 @@ import com.ost.ostwallet.ui.workflow.recovery.AbortRecoveryFragment;
 import com.ost.ostwallet.ui.workflow.recovery.InitiateRecoveryFragment;
 import com.ost.ostwallet.ui.workflow.transactions.TransactionFragment;
 import com.ost.ostwallet.ui.workflow.walletdetails.WalletDetailsFragment;
-import com.ost.ostwallet.ui.workflow.walletsetup.WalletSetUpFragment;
 import com.ost.ostwallet.util.CommonUtils;
 import com.ost.ostwallet.util.DialogFactory;
 import com.ost.ostwallet.util.FragmentUtils;
 import com.ost.ostwallet.util.KeyBoard;
 
 import io.fabric.sdk.android.Fabric;
+import ost.com.ostsdkui.OstSdkUi;
+import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -136,9 +139,14 @@ public class DashboardActivity extends BaseActivity implements
     private void checkForActiveUserAndDevice() {
         OstUser ostUser = AppProvider.get().getCurrentUser().getOstUser();
         if (!(ostUser.isActivated() || ostUser.isActivating())) {
-            FragmentUtils.addFragment(R.id.layout_container,
-                    WalletSetUpFragment.newInstance(),
-                    this);
+            long expiredAfterInSecs = 30 * 24 * 60 * 60;
+            Integer decimals = Integer.parseInt(OstToken.getById(AppProvider.get().getCurrentUser().getTokenId()).getBtDecimals());
+            String spendingLimit = new BigDecimal("1000").multiply(new BigDecimal(10).pow(decimals)).toString();
+            WorkFlowListener workFlowListener = OstSdkUi.activateUser(DashboardActivity.this,
+                    ostUser.getId(),
+                    expiredAfterInSecs,
+                    spendingLimit);
+            SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
             mViewPager.setCurrentItem(1);
         } else if(ostUser.getCurrentDevice().canBeAuthorized()) {
             handleCrashAnalytics();
@@ -359,13 +367,13 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void onDeviceSelectToRevoke(Device device) {
-        WorkFlowListener revokeDeviceWorkflowListener = SdkInteract.getInstance().newWorkFlowListener();
-
-        OstSdk.revokeDevice(
-                AppProvider.get().getCurrentUser().getOstUserId(),
-                device.getDeviceAddress(),
-                revokeDeviceWorkflowListener
-        );
+//        WorkFlowListener revokeDeviceWorkflowListener = SdkInteract.getInstance().newWorkFlowListener();
+//
+//        OstSdk.revokeDevice(
+//                AppProvider.get().getCurrentUser().getOstUserId(),
+//                device.getDeviceAddress(),
+//                revokeDeviceWorkflowListener
+//        );
     }
 
     @Override

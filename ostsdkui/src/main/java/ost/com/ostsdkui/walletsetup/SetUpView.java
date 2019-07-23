@@ -8,4 +8,18 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-include ':ostsdk', ':ostwallet', ':ostsdkui'
+package ost.com.ostsdkui.walletsetup;
+
+
+import ost.com.ostsdkui.BaseView;
+
+interface SetUpView extends BaseView {
+
+    void showAddPin();
+
+    void showRetypePin();
+
+    void gotoDashboard(long workflowId);
+
+    void showPinErrorDialog();
+}

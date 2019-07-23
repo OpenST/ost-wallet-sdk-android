@@ -17,12 +17,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.ost.ostwallet.util.CommonUtils;
-import com.ost.ostwallet.util.DialogFactory;
-import com.ost.walletsdk.OstSdk;
-
-import java.net.CookieStore;
-
 import com.ost.ostwallet.database.OstAppDatabase;
 import com.ost.ostwallet.entity.CurrentEconomy;
 import com.ost.ostwallet.entity.LogInUser;
@@ -30,9 +24,21 @@ import com.ost.ostwallet.network.MappyNetworkClient;
 import com.ost.ostwallet.network.NetworkClient;
 import com.ost.ostwallet.ui.BaseActivity;
 import com.ost.ostwallet.ui.auth.OnBoardingActivity;
+import com.ost.ostwallet.util.CommonUtils;
 import com.ost.ostwallet.util.DBLog;
+import com.ost.ostwallet.util.DialogFactory;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstDevice;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.interfaces.OstDeviceRegisteredInterface;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.CookieStore;
+
+import ost.com.ostsdkui.OstSdkUi;
+import ost.com.ostsdkui.sdkInteract.SdkInteract;
 
 import static com.ost.ostwallet.entity.CurrentEconomy.MAPPY_API_ENDPOINT;
 import static com.ost.ostwallet.entity.CurrentEconomy.SAAS_API_ENDPOINT;
@@ -64,6 +70,12 @@ public class AppProvider {
     public static void init(Context context) {
         INSTANCE = new AppProvider(context);
         OstAppDatabase.initDatabase(context);
+        if (null != AppProvider.get().getCurrentEconomy()) {
+            OstSdkUi.initialize(context.getApplicationContext(),
+                    AppProvider.get().getCurrentEconomy().getSaasApiEndpoint(),
+                    new SdkHelperImp());
+        }
+
     }
 
     public static AppProvider get() {
@@ -267,6 +279,76 @@ public class AppProvider {
 
         public interface Callback {
             void returnedPreference(Integer preference);
+        }
+    }
+
+    static class SdkHelperImp implements SdkInteract.SdkHelperCallback {
+
+        @Override
+        public void getUserPinSalt(SdkInteract.UserPinSaltCallback userPinSaltCallback) {
+            AppProvider.get().getMappyClient().getLoggedInUserPinSalt(new MappyNetworkClient.ResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject jsonObject) {
+                    if (new CommonUtils().isValidResponse(jsonObject)){
+                        try {
+                            JSONObject userSaltObject = (JSONObject) new CommonUtils().parseResponseForResultType(jsonObject);
+                            String userPinSalt = userSaltObject.getString("recovery_pin_salt");
+                            userPinSaltCallback.onResponse(userPinSalt);
+                        } catch (Exception e){
+                            Log.d("getPinSalt", "Exception in fetching Pin Salt.");
+                            userPinSaltCallback.onResponse(null);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    Log.d("getPinSalt", String.format("Error in fetching Pin Salt. %s", (null != throwable ? throwable.getMessage() : "")));
+                    userPinSaltCallback.onResponse(null);
+                }
+            });
+        }
+
+        @Override
+        public void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface) {
+            Log.i(LOG_TAG, String.format("Device Object %s ", apiParams.toString()));
+
+            String deviceAddress;
+            String apiSignerAddress;
+            try {
+                JSONObject deviceObject = apiParams.getJSONObject(OstSdk.DEVICE);
+                deviceAddress = deviceObject.getString(OstDevice.ADDRESS);
+                apiSignerAddress = deviceObject.getString(OstDevice.API_SIGNER_ADDRESS);
+            } catch (JSONException ex) {
+                Log.e(LOG_TAG, "JSONException in retrieving device_address and api_signer_address", ex);
+                ostDeviceRegisteredInterface.cancelFlow();
+                return;
+            }
+
+            AppProvider.get().getMappyClient().registerDevice(deviceAddress, apiSignerAddress, new MappyNetworkClient.ResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject jsonObject) {
+                    CommonUtils commonUtils = new CommonUtils();
+                    if (commonUtils.isValidResponse(jsonObject)) {
+                        Log.d(LOG_TAG, String.format("Device Registered JSONResponse: %s", jsonObject.toString()));
+                        ostDeviceRegisteredInterface.deviceRegistered(jsonObject);
+                    } else {
+                        Log.d(LOG_TAG, String.format("Device Registration failed JSONResponse: %s", jsonObject.toString()));
+                        ostDeviceRegisteredInterface.cancelFlow();
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    Log.e(LOG_TAG, "Failure in register device api request", throwable);
+                    ostDeviceRegisteredInterface.cancelFlow();
+                }
+            });
+        }
+
+        @Override
+        public void deviceUnauthorized(OstError ostError) {
+            Log.e(LOG_TAG, "Device unauthorized");
         }
     }
 }

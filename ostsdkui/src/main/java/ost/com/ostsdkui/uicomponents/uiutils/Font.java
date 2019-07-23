@@ -8,4 +8,20 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-include ':ostsdk', ':ostwallet', ':ostsdkui'
+package ost.com.ostsdkui.uicomponents.uiutils;
+
+import android.graphics.Typeface;
+
+public interface Font {
+    Typeface getRegular();
+
+    Typeface getLightItalic();
+
+    Typeface getLight();
+
+    Typeface getItalic();
+
+    Typeface getBoldItalic();
+
+    Typeface getBold();
+}
