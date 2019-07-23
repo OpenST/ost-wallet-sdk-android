@@ -25,6 +25,9 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import ost.com.ostsdkui.OstPassphraseAcceptor;
+import ost.com.ostsdkui.OstUserPassphraseCallback;
+
 
 public class WorkFlowListener implements OstWorkFlowCallback {
 
@@ -32,6 +35,7 @@ public class WorkFlowListener implements OstWorkFlowCallback {
     private final SdkInteract mSdkInteract;
 
     private static long identifier = 0;
+    private OstUserPassphraseCallback mUserPassphraseCallback;
 
     public long getId() {
         return mId;
@@ -142,4 +146,15 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
     }
 
+    public void setUserPassPhraseCallback(OstUserPassphraseCallback userPassphraseCallback) {
+        this.mUserPassphraseCallback = userPassphraseCallback;
+    }
+
+    public void getPassphrase(String userId, OstPassphraseAcceptor ostPassphraseAcceptor) {
+        if (null == mUserPassphraseCallback) {
+            ostPassphraseAcceptor.cancelFlow();
+        } else {
+            this.mUserPassphraseCallback.getPassphrase(userId, ostPassphraseAcceptor);
+        }
+    }
 }

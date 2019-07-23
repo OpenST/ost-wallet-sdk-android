@@ -12,9 +12,10 @@ import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 
 public class OstSdkUi {
 
-    public static WorkFlowListener activateUser(@NonNull Activity currentActivity, String userId ,long expiredAfterSecs,
-                                    String spendingLimit) {
+    public static WorkFlowListener activateUser(@NonNull Activity currentActivity, String userId, long expiredAfterSecs,
+                                                String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
         Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.ACTIVATE_USER);
@@ -25,8 +26,7 @@ public class OstSdkUi {
         return workFlowListener;
     }
 
-    public static void initialize(Context context, String url, SdkInteract.SdkHelperCallback sdkHelperCallback) {
+    public static void initialize(Context context, String url) {
         OstSdk.initialize(context, url);
-        SdkInteract.getInstance().setSdkHelper(sdkHelperCallback);
     }
 }

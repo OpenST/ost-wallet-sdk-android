@@ -15,11 +15,8 @@ import android.support.annotation.Nullable;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
-import com.ost.walletsdk.workflows.interfaces.OstDeviceRegisteredInterface;
 import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
-
-import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -42,7 +39,6 @@ public class SdkInteract {
     private SdkInteractListener mPinCallbackListener;
     private SdkInteractListener mVerifyDataCallbackListener;
     private SdkInteractListener mFlowListener;
-    private SdkHelperCallback mSdkHelperCallback;
 
     PinCallback getPinCallbackListener() {
         return (PinCallback) mPinCallbackListener;
@@ -50,14 +46,6 @@ public class SdkInteract {
 
     public VerifyDataCallback getVerifyDataCallbackListener() {
         return (VerifyDataCallback) mVerifyDataCallbackListener;
-    }
-
-    public void setSdkHelper(SdkHelperCallback sdkHelperCallback) {
-        this.mSdkHelperCallback = sdkHelperCallback;
-    }
-
-    public void getUserPinSalt(UserPinSaltCallback userPinSaltCallback) {
-        mSdkHelperCallback.getUserPinSalt(userPinSaltCallback);
     }
 
     public void setFlowListeners(SdkInteractListener sdkInteractListener) {
@@ -270,12 +258,6 @@ public class SdkInteract {
     public interface VerifyDataCallback extends SdkInteractListener {
 
         void verifyData(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface);
-    }
-
-    public interface SdkHelperCallback {
-        void getUserPinSalt(UserPinSaltCallback userPinSaltCallback);
-        void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDeviceRegisteredInterface);
-        void deviceUnauthorized(OstError ostError);
     }
 
     public interface UserPinSaltCallback {

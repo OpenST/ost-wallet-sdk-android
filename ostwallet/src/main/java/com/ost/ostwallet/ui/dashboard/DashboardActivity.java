@@ -145,7 +145,8 @@ public class DashboardActivity extends BaseActivity implements
             WorkFlowListener workFlowListener = OstSdkUi.activateUser(DashboardActivity.this,
                     ostUser.getId(),
                     expiredAfterInSecs,
-                    spendingLimit);
+                    spendingLimit,
+                    AppProvider.get().getUserPassphraseCallback());
             SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
             mViewPager.setCurrentItem(1);
         } else if(ostUser.getCurrentDevice().canBeAuthorized()) {

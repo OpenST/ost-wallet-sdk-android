@@ -10,7 +10,6 @@
 
 package ost.com.ostsdkui.walletsetup;
 
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
@@ -19,6 +18,7 @@ import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 
 import ost.com.ostsdkui.BasePresenter;
+import ost.com.ostsdkui.OstPassphraseAcceptor;
 import ost.com.ostsdkui.sdkInteract.SdkInteract;
 import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 
@@ -74,24 +74,25 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
     private void startWorkFLow(final String pin) {
         getMvpView().showProgress(true, "Activating user...");
         final WalletSetUpPresenter walletSetUpPresenter = this;
-        SdkInteract.getInstance().getUserPinSalt(new SdkInteract.UserPinSaltCallback() {
+        final WorkFlowListener workFlowListener = SdkInteract.getInstance().getWorkFlowListener(workflowId);
+        workFlowListener.getPassphrase(userId, new OstPassphraseAcceptor() {
             @Override
-            public void onResponse(@Nullable String salt) {
-                if (null != salt) {
-                    UserPassphrase userPassphrase = new UserPassphrase(userId, pin, salt);
-                    WorkFlowListener workFlowListener = SdkInteract.getInstance().getWorkFlowListener(workflowId);
-                    SdkInteract.getInstance().subscribe(workFlowListener.getId(), walletSetUpPresenter);
+            public void setPassphrase(String passphrase) {
+                UserPassphrase userPassphrase = new UserPassphrase(userId, pin, passphrase);
+                SdkInteract.getInstance().subscribe(workFlowListener.getId(), walletSetUpPresenter);
 
-                    OstSdk.activateUser(
-                            userPassphrase,
-                            expiredAfterSecs,
-                            spendingLimit,
-                            workFlowListener
-                    );
-                } else {
-                    getMvpView().showProgress(false);
-                    getMvpView().showToastMessage("User Activation failed. Please try after sometime.", false);
-                }
+                OstSdk.activateUser(
+                        userPassphrase,
+                        expiredAfterSecs,
+                        spendingLimit,
+                        workFlowListener
+                );
+            }
+
+            @Override
+            public void cancelFlow() {
+                getMvpView().showProgress(false);
+                getMvpView().showToastMessage("User Activation failed. Please try after sometime.", false);
             }
         });
 //        AppProvider.get().getMappyClient().getLoggedInUserPinSalt(new MappyNetworkClient.ResponseCallback() {
