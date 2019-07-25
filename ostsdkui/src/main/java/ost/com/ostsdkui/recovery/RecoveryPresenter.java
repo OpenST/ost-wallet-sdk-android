@@ -51,7 +51,7 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
     void onPinEntered(final String pin) {
         final RecoveryPresenter recoveryPresenter = this;
         final WorkFlowListener workFlowListener = SdkInteract.getInstance().getWorkFlowListener(mWorkflowId);
-        workFlowListener.getPassphrase(mUserId, new OstPassphraseAcceptor() {
+        workFlowListener.getPassphrase(mUserId, getWorkFlowContext() ,new OstPassphraseAcceptor() {
             @Override
             public void setPassphrase(String passphrase) {
                 UserPassphrase userPassphrase = new UserPassphrase(mUserId, pin, passphrase);
@@ -65,6 +65,10 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
                 recoverySaltFetchFailed();
             }
         });
+    }
+
+    protected OstWorkflowContext getWorkFlowContext() {
+        return new OstWorkflowContext();
     }
 
     void startWorkFlow(String ostUserId, UserPassphrase currentUserPassPhrase, String mDeviceAddress, WorkFlowListener workFlowListener) {

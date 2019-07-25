@@ -150,11 +150,11 @@ public class WorkFlowListener implements OstWorkFlowCallback {
         this.mUserPassphraseCallback = userPassphraseCallback;
     }
 
-    public void getPassphrase(String userId, OstPassphraseAcceptor ostPassphraseAcceptor) {
+    public void getPassphrase(String userId, OstWorkflowContext ostWorkflowContext, OstPassphraseAcceptor ostPassphraseAcceptor) {
         if (null == mUserPassphraseCallback) {
             ostPassphraseAcceptor.cancelFlow();
         } else {
-            this.mUserPassphraseCallback.getPassphrase(userId, ostPassphraseAcceptor);
+            this.mUserPassphraseCallback.getPassphrase(userId, ostWorkflowContext, ostPassphraseAcceptor);
         }
     }
 }

@@ -18,7 +18,7 @@ import ost.com.ostsdkui.uicomponents.uiutils.theme.ThemeConfig;
 
 public class OstSdkUi {
 
-    public static WorkFlowListener activateUser(@NonNull Activity currentActivity, String userId, long expiredAfterSecs,
+    public static long activateUser(@NonNull Activity currentActivity, String userId, long expiredAfterSecs,
                                                 String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
@@ -29,10 +29,10 @@ public class OstSdkUi {
         intent.putExtra(OstWorkFlowActivity.EXPIRED_AFTER_SECS, expiredAfterSecs);
         intent.putExtra(OstWorkFlowActivity.SPENDING_LIMIT, spendingLimit);
         currentActivity.startActivity(intent);
-        return workFlowListener;
+        return workFlowListener.getId();
     }
 
-    public static WorkFlowListener initiateDeviceRecovery(@NonNull Activity currentActivity, String userId,
+    public static long initiateDeviceRecovery(@NonNull Activity currentActivity, String userId,
                                                     @Nullable String address, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
@@ -42,10 +42,10 @@ public class OstSdkUi {
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
         intent.putExtra(RecoveryFragment.DEVICE_ADDRESS, address);
         currentActivity.startActivity(intent);
-        return workFlowListener;
+        return workFlowListener.getId();
     }
 
-    public static WorkFlowListener abortDeviceRecovery(@NonNull Activity currentActivity, String userId,
+    public static long abortDeviceRecovery(@NonNull Activity currentActivity, String userId,
                                                        OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
@@ -54,7 +54,7 @@ public class OstSdkUi {
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.ABORT_RECOVERY);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
         currentActivity.startActivity(intent);
-        return workFlowListener;
+        return workFlowListener.getId();
     }
 
     public static void initialize(Context context, String url) {

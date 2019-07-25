@@ -28,6 +28,7 @@ import com.ost.ostwallet.util.CommonUtils;
 import com.ost.ostwallet.util.DBLog;
 import com.ost.ostwallet.util.DialogFactory;
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
 
 import org.json.JSONObject;
 
@@ -285,7 +286,7 @@ public class AppProvider {
     static class SdkHelperImp implements OstUserPassphraseCallback {
 
         @Override
-        public void getPassphrase(String userId, OstPassphraseAcceptor ostPassphraseAcceptor) {
+        public void getPassphrase(String userId, OstWorkflowContext ostWorkflowContext, OstPassphraseAcceptor ostPassphraseAcceptor) {
             AppProvider.get().getMappyClient().getLoggedInUserPinSalt(new MappyNetworkClient.ResponseCallback() {
                 @Override
                 public void onSuccess(JSONObject jsonObject) {

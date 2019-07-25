@@ -163,8 +163,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     @Override
     public boolean popBack() {
         if (this.getChildFragmentManager().getBackStackEntryCount() > 1) {
-            mWalletSetupPresenter.popBack();
-            ChildFragmentUtils.goBack(this);
+            mWalletSetupPresenter.resetWalletSetUp();
             return true;
         }
         return false;

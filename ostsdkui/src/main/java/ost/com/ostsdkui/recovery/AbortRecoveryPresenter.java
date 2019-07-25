@@ -12,6 +12,7 @@ package ost.com.ostsdkui.recovery;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
 
 import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 
@@ -39,5 +40,10 @@ class AbortRecoveryPresenter extends RecoveryPresenter {
     @Override
     void showToast(){
         getMvpView().showToastMessage("Request to abort recovery received ", true);
+    }
+
+    @Override
+    protected OstWorkflowContext getWorkFlowContext() {
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY);
     }
 }

@@ -75,7 +75,9 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
         getMvpView().showProgress(true, "Activating user...");
         final WalletSetUpPresenter walletSetUpPresenter = this;
         final WorkFlowListener workFlowListener = SdkInteract.getInstance().getWorkFlowListener(workflowId);
-        workFlowListener.getPassphrase(userId, new OstPassphraseAcceptor() {
+        workFlowListener.getPassphrase(userId,
+                new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER),
+                new OstPassphraseAcceptor() {
             @Override
             public void setPassphrase(String passphrase) {
                 UserPassphrase userPassphrase = new UserPassphrase(userId, pin, passphrase);
@@ -95,42 +97,6 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
                 getMvpView().showToastMessage("User Activation failed. Please try after sometime.", false);
             }
         });
-//        AppProvider.get().getMappyClient().getLoggedInUserPinSalt(new MappyNetworkClient.ResponseCallback() {
-//            @Override
-//            public void onSuccess(JSONObject jsonObject) {
-//                if (new CommonUtils().isValidResponse(jsonObject)){
-//                    try {
-//                        JSONObject userSaltObject = (JSONObject) new CommonUtils().parseResponseForResultType(jsonObject);
-//                        String userPinSalt = userSaltObject.getStringConfig("recovery_pin_salt");
-//                        LogInUser logInUser = AppProvider.get().getCurrentUser();
-//                        UserPassphrase userPassphrase = new UserPassphrase(logInUser.getOstUserId(), pin, userPinSalt);
-//                        long expiredAfterInSecs = 30 * 24 * 60 * 60;
-//                        Integer decimals = Integer.parseInt(OstToken.getById(logInUser.getTokenId()).getBtDecimals());
-//                        String spendingLimit = new BigDecimal("1000").multiply(new BigDecimal(10).pow(decimals)).toString();
-//                        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-//                        SdkInteract.getInstance().subscribe(workFlowListener.getId(), walletSetUpPresenter);
-//
-//                        OstSdk.activateUser(
-//                                userPassphrase,
-//                                expiredAfterInSecs,
-//                                spendingLimit,
-//                                workFlowListener
-//                        );
-//                    } catch (Exception e){
-//                        Log.d("getPinSalt", "Exception in fetching Pin Salt.");
-//                        getMvpView().showProgress(false);
-//                        AppProvider.get().getCurrentActivity().showToastMessage("User Activation failed. Please try after sometime.", false);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Throwable throwable) {
-//                Log.d("getPinSalt", String.format("Error in fetching Pin Salt. %s", (null != throwable ? throwable.getMessage() : "")));
-//                getMvpView().showProgress(false);
-//                AppProvider.get().getCurrentActivity().showToastMessage("User Activation failed. Please try after sometime.", false);
-//            }
-//        });
     }
 
     @Override

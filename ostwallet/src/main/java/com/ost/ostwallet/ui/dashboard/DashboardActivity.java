@@ -139,12 +139,12 @@ public class DashboardActivity extends BaseActivity implements
             long expiredAfterInSecs = 30 * 24 * 60 * 60;
             Integer decimals = Integer.parseInt(OstToken.getById(AppProvider.get().getCurrentUser().getTokenId()).getBtDecimals());
             String spendingLimit = new BigDecimal("1000").multiply(new BigDecimal(10).pow(decimals)).toString();
-            WorkFlowListener workFlowListener = OstSdkUi.activateUser(DashboardActivity.this,
+            long workflowId = OstSdkUi.activateUser(DashboardActivity.this,
                     ostUser.getId(),
                     expiredAfterInSecs,
                     spendingLimit,
                     AppProvider.get().getUserPassphraseCallback());
-            SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
+            SdkInteract.getInstance().subscribe(workflowId, this);
             mViewPager.setCurrentItem(1);
         } else if(ostUser.getCurrentDevice().canBeAuthorized()) {
             handleCrashAnalytics();
@@ -376,19 +376,19 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void onDeviceSelectedForRecovery(Device device) {
-        WorkFlowListener workFlowListener = OstSdkUi.initiateDeviceRecovery(this,
+        long workflowId = OstSdkUi.initiateDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 device.getDeviceAddress(),
                 AppProvider.get().getUserPassphraseCallback());
-        SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
+        SdkInteract.getInstance().subscribe(workflowId, this);
     }
 
     @Override
     public void onDeviceSelectedToAbortRecovery(Device device) {
-        WorkFlowListener workFlowListener = OstSdkUi.abortDeviceRecovery(this,
+        long workflowId = OstSdkUi.abortDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 AppProvider.get().getUserPassphraseCallback());
-        SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
+        SdkInteract.getInstance().subscribe(workflowId, this);
     }
 
     @Override
