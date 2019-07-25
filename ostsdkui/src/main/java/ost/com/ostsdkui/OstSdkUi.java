@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.ost.walletsdk.OstSdk;
 
 import org.json.JSONObject;
 
+import ost.com.ostsdkui.recovery.RecoveryFragment;
 import ost.com.ostsdkui.sdkInteract.SdkInteract;
 import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 import ost.com.ostsdkui.uicomponents.uiutils.content.ContentConfig;
@@ -26,6 +28,31 @@ public class OstSdkUi {
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
         intent.putExtra(OstWorkFlowActivity.EXPIRED_AFTER_SECS, expiredAfterSecs);
         intent.putExtra(OstWorkFlowActivity.SPENDING_LIMIT, spendingLimit);
+        currentActivity.startActivity(intent);
+        return workFlowListener;
+    }
+
+    public static WorkFlowListener initiateDeviceRecovery(@NonNull Activity currentActivity, String userId,
+                                                    @Nullable String address, OstUserPassphraseCallback userPassphraseCallback) {
+        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
+        Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.INITIATE_RECOVERY);
+        intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
+        intent.putExtra(RecoveryFragment.DEVICE_ADDRESS, address);
+        currentActivity.startActivity(intent);
+        return workFlowListener;
+    }
+
+    public static WorkFlowListener abortDeviceRecovery(@NonNull Activity currentActivity, String userId,
+                                                       OstUserPassphraseCallback userPassphraseCallback) {
+        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
+        Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.ABORT_RECOVERY);
+        intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
         currentActivity.startActivity(intent);
         return workFlowListener;
     }

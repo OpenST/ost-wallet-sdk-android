@@ -24,7 +24,28 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.ost.ostwallet.AppProvider;
+import com.ost.ostwallet.R;
+import com.ost.ostwallet.entity.Device;
+import com.ost.ostwallet.entity.LogInUser;
+import com.ost.ostwallet.entity.User;
+import com.ost.ostwallet.network.MappyNetworkClient;
+import com.ost.ostwallet.ui.BaseActivity;
+import com.ost.ostwallet.ui.auth.OnBoardingActivity;
+import com.ost.ostwallet.ui.managedevices.AuthorizeDeviceOptionsFragment;
+import com.ost.ostwallet.ui.managedevices.DeviceListRecyclerViewAdapter;
+import com.ost.ostwallet.ui.workflow.ChildFragmentStack;
+import com.ost.ostwallet.ui.workflow.VerifyDeviceDataFragment;
+import com.ost.ostwallet.ui.workflow.VerifyTransactionDataFragment;
+import com.ost.ostwallet.ui.workflow.WorkFlowPinFragment;
+import com.ost.ostwallet.ui.workflow.WorkFlowVerifyDataFragment;
+import com.ost.ostwallet.ui.workflow.transactions.TransactionFragment;
+import com.ost.ostwallet.ui.workflow.walletdetails.WalletDetailsFragment;
 import com.ost.ostwallet.ui.workflow.walletsetup.WalletSetUpFragment;
+import com.ost.ostwallet.util.CommonUtils;
+import com.ost.ostwallet.util.DialogFactory;
+import com.ost.ostwallet.util.FragmentUtils;
+import com.ost.ostwallet.util.KeyBoard;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstToken;
@@ -41,33 +62,9 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-import com.ost.ostwallet.AppProvider;
-import com.ost.ostwallet.R;
-import com.ost.ostwallet.entity.Device;
-import com.ost.ostwallet.entity.LogInUser;
-import com.ost.ostwallet.entity.User;
-import com.ost.ostwallet.network.MappyNetworkClient;
-import com.ost.ostwallet.sdkInteract.SdkInteract;
-import com.ost.ostwallet.ui.BaseActivity;
-import com.ost.ostwallet.ui.auth.OnBoardingActivity;
-import com.ost.ostwallet.ui.managedevices.AuthorizeDeviceOptionsFragment;
-import com.ost.ostwallet.ui.managedevices.DeviceListRecyclerViewAdapter;
-import com.ost.ostwallet.ui.workflow.ChildFragmentStack;
-import com.ost.ostwallet.ui.workflow.VerifyDeviceDataFragment;
-import com.ost.ostwallet.ui.workflow.VerifyTransactionDataFragment;
-import com.ost.ostwallet.ui.workflow.WorkFlowPinFragment;
-import com.ost.ostwallet.ui.workflow.WorkFlowVerifyDataFragment;
-import com.ost.ostwallet.ui.workflow.recovery.AbortRecoveryFragment;
-import com.ost.ostwallet.ui.workflow.recovery.InitiateRecoveryFragment;
-import com.ost.ostwallet.ui.workflow.transactions.TransactionFragment;
-import com.ost.ostwallet.ui.workflow.walletdetails.WalletDetailsFragment;
-import com.ost.ostwallet.util.CommonUtils;
-import com.ost.ostwallet.util.DialogFactory;
-import com.ost.ostwallet.util.FragmentUtils;
-import com.ost.ostwallet.util.KeyBoard;
-
 import io.fabric.sdk.android.Fabric;
 import ost.com.ostsdkui.OstSdkUi;
+import ost.com.ostsdkui.sdkInteract.SdkInteract;
 import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
@@ -379,18 +376,19 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void onDeviceSelectedForRecovery(Device device) {
-        Fragment fragment = InitiateRecoveryFragment.newInstance(device.getDeviceAddress());
-        FragmentUtils.addFragment(R.id.layout_container,
-                fragment,
-                this);
+        WorkFlowListener workFlowListener = OstSdkUi.initiateDeviceRecovery(this,
+                AppProvider.get().getCurrentUser().getOstUserId(),
+                device.getDeviceAddress(),
+                AppProvider.get().getUserPassphraseCallback());
+        SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
     }
 
     @Override
     public void onDeviceSelectedToAbortRecovery(Device device) {
-        Fragment fragment = AbortRecoveryFragment.newInstance(device.getDeviceAddress());
-        FragmentUtils.addFragment(R.id.layout_container,
-                fragment,
-                this);
+        WorkFlowListener workFlowListener = OstSdkUi.abortDeviceRecovery(this,
+                AppProvider.get().getCurrentUser().getOstUserId(),
+                AppProvider.get().getUserPassphraseCallback());
+        SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
     }
 
     @Override

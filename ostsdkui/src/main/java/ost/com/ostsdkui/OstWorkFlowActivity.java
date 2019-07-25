@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
+import ost.com.ostsdkui.recovery.AbortRecoveryFragment;
+import ost.com.ostsdkui.recovery.InitiateRecoveryFragment;
 import ost.com.ostsdkui.sdkInteract.SdkInteract;
 import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 import ost.com.ostsdkui.util.FragmentUtils;
@@ -19,6 +21,8 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public static final String USER_ID = "user_id";
     public static final String EXPIRED_AFTER_SECS = "expired_after_secs";
     public static final String SPENDING_LIMIT = "spending_limit";
+    public static final String INITIATE_RECOVERY = "initiate_recovery";
+    public static final String ABORT_RECOVERY = "abort_recovery";
 
     private static final String LOG_TAG = "OstWorkFlowActivity";
     private WorkFlowListener mWorkFlowListener;
@@ -39,6 +43,14 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
                 FragmentUtils.addFragment(R.id.layout_container,
                         WalletSetUpFragment.newInstance(getIntent().getExtras()),
                         this);
+            } else if (INITIATE_RECOVERY.equalsIgnoreCase(workflow)) {
+                FragmentUtils.addFragment(R.id.layout_container,
+                        InitiateRecoveryFragment.newInstance(getIntent().getExtras()),
+                        this);
+            } else if (ABORT_RECOVERY.equalsIgnoreCase(workflow)) {
+                FragmentUtils.addFragment(R.id.layout_container,
+                        AbortRecoveryFragment.newInstance(getIntent().getExtras()),
+                        this);
             }
         }
     }
@@ -57,14 +69,9 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             consumed = ((ChildFragmentStack)topFragment).popBack();
         }
         if (!consumed) {
-            if (!FragmentUtils.isBackStackEmpty(this) &&
-                    !(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
-                FragmentUtils.goBack(this);
-            } else {
                 //hide keyboard if open
                 KeyBoard.hideKeyboard(OstWorkFlowActivity.this);
                 super.goBack();
-            }
         }
     }
 

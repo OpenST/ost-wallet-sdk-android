@@ -13,15 +13,12 @@ package ost.com.ostsdkui.walletsetup;
 
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.StyleSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +31,6 @@ import ost.com.ostsdkui.R;
 import ost.com.ostsdkui.uicomponents.AppBar;
 import ost.com.ostsdkui.uicomponents.OstTextView;
 import ost.com.ostsdkui.uicomponents.PinEntryEditText;
-import ost.com.ostsdkui.uicomponents.uiutils.FontCache;
 import ost.com.ostsdkui.util.KeyBoard;
 
 /**
