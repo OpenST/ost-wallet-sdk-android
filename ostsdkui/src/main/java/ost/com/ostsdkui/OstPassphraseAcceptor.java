@@ -1,7 +1,7 @@
 package ost.com.ostsdkui;
 
-public interface OstPassphraseAcceptor {
-    void setPassphrase(String passphrase);
+import com.ost.walletsdk.workflows.interfaces.OstBaseInterface;
 
-    void cancelFlow();
+public interface OstPassphraseAcceptor extends OstBaseInterface {
+    void setPassphrase(String passphrase);
 }
