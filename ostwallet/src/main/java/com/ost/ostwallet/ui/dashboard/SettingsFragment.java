@@ -60,7 +60,6 @@ import org.json.JSONObject;
 
 import io.fabric.sdk.android.Fabric;
 import io.reactivex.annotations.Nullable;
-import ost.com.ostsdkui.OstSdkUi;
 
 public class SettingsFragment extends BaseFragment implements
         SdkInteract.FlowInterrupt,

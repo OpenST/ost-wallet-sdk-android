@@ -16,7 +16,7 @@ import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 import ost.com.ostsdkui.uicomponents.uiutils.content.ContentConfig;
 import ost.com.ostsdkui.uicomponents.uiutils.theme.ThemeConfig;
 
-public class OstSdkUi {
+public class OstWalletUI {
 
     public static long activateUser(@NonNull Activity currentActivity, String userId, long expiredAfterSecs,
                                                 String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {

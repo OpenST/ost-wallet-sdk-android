@@ -63,9 +63,8 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
-import ost.com.ostsdkui.OstSdkUi;
+import ost.com.ostsdkui.OstWalletUI;
 import ost.com.ostsdkui.sdkInteract.SdkInteract;
-import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
@@ -139,7 +138,7 @@ public class DashboardActivity extends BaseActivity implements
             long expiredAfterInSecs = 30 * 24 * 60 * 60;
             Integer decimals = Integer.parseInt(OstToken.getById(AppProvider.get().getCurrentUser().getTokenId()).getBtDecimals());
             String spendingLimit = new BigDecimal("1000").multiply(new BigDecimal(10).pow(decimals)).toString();
-            long workflowId = OstSdkUi.activateUser(DashboardActivity.this,
+            long workflowId = OstWalletUI.activateUser(DashboardActivity.this,
                     ostUser.getId(),
                     expiredAfterInSecs,
                     spendingLimit,
@@ -376,7 +375,7 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void onDeviceSelectedForRecovery(Device device) {
-        long workflowId = OstSdkUi.initiateDeviceRecovery(this,
+        long workflowId = OstWalletUI.initiateDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 device.getDeviceAddress(),
                 AppProvider.get().getUserPassphraseCallback());
@@ -385,7 +384,7 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void onDeviceSelectedToAbortRecovery(Device device) {
-        long workflowId = OstSdkUi.abortDeviceRecovery(this,
+        long workflowId = OstWalletUI.abortDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 AppProvider.get().getUserPassphraseCallback());
         SdkInteract.getInstance().subscribe(workflowId, this);
