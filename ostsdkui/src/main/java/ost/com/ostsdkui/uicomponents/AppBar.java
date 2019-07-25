@@ -11,27 +11,24 @@
 package ost.com.ostsdkui.uicomponents;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import ost.com.ostsdkui.R;
+import ost.com.ostsdkui.uicomponents.uiutils.content.ContentConfig;
 
 
 public class AppBar extends LinearLayout {
 
     private ImageView mBackButton;
-    private TextView mTextView;
+    private ImageView mImageView;
+    private boolean mShowBackButton;
 
     public AppBar(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -45,8 +42,13 @@ public class AppBar extends LinearLayout {
     private LinearLayout mainView;
 
     public AppBar(Context context) {
+        this(context, true);
+    }
+
+    public AppBar(Context context, boolean showBackButton) {
         super(context);
         setId(R.id.app_bar);
+        showBackButton(showBackButton);
 
         LayoutInflater inflater = LayoutInflater.from(context);
         mainView = (LinearLayout) inflater.inflate(R.layout.ost_app_bar, this, false);
@@ -54,59 +56,49 @@ public class AppBar extends LinearLayout {
 
         appBar = (Toolbar) mainView.findViewById(R.id.tool_bar);
 
-        mTextView = getTitleView(context);
+        mImageView = getAppBarLogo(context);
 
         mBackButton = getBackButton(context);
 
-        appBar.addView(mTextView);
+        appBar.addView(mImageView);
         appBar.addView(mBackButton);
     }
 
-    public static AppBar newInstance(Context context, String title, boolean showBackButton) {
-        AppBar appBar = new AppBar(context);
-        appBar.setTitle(title);
-        appBar.showBackButton(showBackButton);
+    public static AppBar newInstance(Context context, boolean showBackButton) {
+        AppBar appBar = new AppBar(context, showBackButton);
         return appBar;
     }
 
     private ImageView getBackButton(Context context) {
         ImageView imageView = new ImageView(context);
-        TypedArray a = context.obtainStyledAttributes(R.style.AppTheme, new int[] {R.attr.homeAsUpIndicator});
-        int attributeResourceId = a.getResourceId(0, 0);
-        imageView.setImageDrawable(getResources().getDrawable(attributeResourceId,null));
-        a.recycle();
+        if (mShowBackButton) {
+            imageView.setImageDrawable(getResources().getDrawable(R.drawable.ost_back, null));
+        } else {
+            imageView.setImageDrawable(getResources().getDrawable(R.drawable.ost_close, null));
+        }
 
         imageView.setLayoutParams(new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.START | Gravity.CENTER_VERTICAL));
         return imageView;
     }
 
-    private TextView getTitleView(Context context) {
-        TextView textView = new OstTextView(context);
-        textView.setId(R.id.app_bar_title);
-        textView.setText(getResources().getText(R.string.app_name));
-        textView.setTextColor(Color.WHITE);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        textView.setBackgroundResource(android.R.color.transparent);
-        textView.setSingleLine();
-        textView.setEllipsize(TextUtils.TruncateAt.END);
+    private ImageView getAppBarLogo(Context context) {
+        ImageView imageView = new ImageView(context);
+        imageView.setId(R.id.app_bar_title);
+        imageView.setImageDrawable(ContentConfig.getInstance().getDrawableConfig("image_nav_bar_logo").getDrawable(context));
 
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT,
                 Toolbar.LayoutParams.WRAP_CONTENT,
                 Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
         layoutParams.leftMargin = (int) context.getResources().getDimension(R.dimen.dp_30);
         layoutParams.rightMargin = (int) context.getResources().getDimension(R.dimen.dp_30);
-        textView.setLayoutParams(layoutParams);
+        imageView.setLayoutParams(layoutParams);
 
-        return textView;
-    }
-
-    public void setTitle(String title) {
-        mTextView.setText(title);
+        return imageView;
     }
 
     public void showBackButton(boolean show) {
-        mBackButton.setVisibility(show ? VISIBLE : GONE );
+        mShowBackButton = show;
     }
 
     public void setBackButtonListener(OnClickListener onClickListener) {

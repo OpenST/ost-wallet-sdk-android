@@ -22,29 +22,46 @@
         android:layout_height="wrap_content"
         android:id="@+id/layout_holder" />
 
-    <ost.com.ostsdkui.uicomponents.OstSubHeaderTextView
-        android:id="@+id/shtv_pin_sub_heading"
+    <ost.com.ostsdkui.uicomponents.OstH1Label
+        android:id="@+id/shtv_pin_heading"
         android:layout_below="@id/layout_holder"
-        android:layout_margin="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ost.com.ostsdkui.uicomponents.OstH2Label
+        android:id="@+id/shtv_pin_sub_heading"
+        android:layout_below="@id/shtv_pin_heading"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginStart="48dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ost.com.ostsdkui.uicomponents.OstH3Label
+        android:id="@+id/shtv_pin_sub_heading_hint"
+        android:layout_below="@id/shtv_pin_sub_heading"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginStart="48dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <ost.com.ostsdkui.uicomponents.PinEntryEditText
         android:id="@+id/txt_pin_entry"
-        android:layout_below="@id/shtv_pin_sub_heading"
+        android:layout_marginTop="50dp"
+        android:layout_below="@id/shtv_pin_sub_heading_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:visibility="visible" />
 
-    <ost.com.ostsdkui.uicomponents.OstTextView
+    <ost.com.ostsdkui.uicomponents.OstH4Label
         android:id="@+id/pin_terms_privacy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_12"
-        android:layout_margin="@dimen/dp_20"
+        android:layout_margin="20dp"
         android:gravity="center"
-        android:textColor="#888888"
         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

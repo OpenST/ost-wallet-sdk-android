@@ -19,9 +19,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class CommonUtils {
@@ -116,5 +115,35 @@ public class CommonUtils {
         } catch (JSONException e) {
             return null;
         }
+    }
+
+    public JSONObject deepMergeJSONObject(JSONObject firstObject, JSONObject secondObject) {
+        JSONObject mergedObj = new JSONObject();
+
+        Iterator firstIterator = firstObject.keys();
+        Iterator secondIterator = secondObject.keys();
+        String tmp_key;
+        try {
+            while (firstIterator.hasNext()) {
+                tmp_key = (String) firstIterator.next();
+                mergedObj.put(tmp_key, firstObject.get(tmp_key));
+            }
+            while (secondIterator.hasNext()) {
+                tmp_key = (String) secondIterator.next();
+                if (secondObject.get(tmp_key) instanceof JSONObject) {
+                    if (mergedObj.has(tmp_key)) {
+                        mergedObj.put(tmp_key, deepMergeJSONObject(mergedObj.getJSONObject(tmp_key), secondObject.getJSONObject(tmp_key)));
+                    } else {
+                        mergedObj.put(tmp_key, deepMergeJSONObject(new JSONObject(), secondObject.getJSONObject(tmp_key)));
+                    }
+                } else {
+                    mergedObj.put(tmp_key, secondObject.get(tmp_key));
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return mergedObj;
     }
 }

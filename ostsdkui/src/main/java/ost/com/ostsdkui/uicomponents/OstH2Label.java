@@ -11,36 +11,32 @@
 package ost.com.ostsdkui.uicomponents;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.Gravity;
 
 import ost.com.ostsdkui.uicomponents.uiutils.Font;
 import ost.com.ostsdkui.uicomponents.uiutils.FontFactory;
+import ost.com.ostsdkui.uicomponents.uiutils.theme.ThemeConfig;
 
 
-public class OstBoldTextView extends OstTextView {
-    public OstBoldTextView(Context context) {
+public class OstH2Label extends OstTextView {
+    public OstH2Label(Context context) {
         super(context);
     }
 
-    public OstBoldTextView(Context context, AttributeSet attrs) {
+    public OstH2Label(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public OstBoldTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public OstH2Label(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @Override
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
         super.defineUi(context, attrs, defStyleAttr);
-        Resources res = getResources();
-        setTextAlignment(TEXT_ALIGNMENT_CENTER);
-        setGravity(Gravity.CENTER_HORIZONTAL);
-        setLineSpacing(0, (float)1.5);
+        ThemeConfig.getInstance().H2().apply(this);
     }
 
     @Override

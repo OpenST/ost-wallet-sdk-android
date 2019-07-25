@@ -1,0 +1,13 @@
+{
+  "image_nav_bar_logo": {
+    "name": "ost_nav_bar_logo",
+    "url": ""
+  },
+  "string_terms_and_condition": {
+    "name": "Your PIN will be used to authorise sessions, transactions, redemptions and recover wallet. <tc>",
+    "tc": {
+      "name": "T&C Apply",
+      "url": ""
+    }
+  }
+}

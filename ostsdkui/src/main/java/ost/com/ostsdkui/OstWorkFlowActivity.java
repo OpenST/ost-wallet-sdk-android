@@ -1,12 +1,14 @@
 package ost.com.ostsdkui;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
 import ost.com.ostsdkui.sdkInteract.SdkInteract;
 import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 import ost.com.ostsdkui.util.FragmentUtils;
+import ost.com.ostsdkui.util.KeyBoard;
 import ost.com.ostsdkui.walletsetup.WalletSetUpFragment;
 
 public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFragment.OnFragmentInteractionListener {
@@ -46,6 +48,26 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         return findViewById(R.id.layout_container);
     }
 
+
+    @Override
+    public void goBack() {
+        Fragment topFragment = FragmentUtils.getTopFragment(this, R.id.layout_container);
+        boolean consumed = false;
+        if (topFragment instanceof ChildFragmentStack) {
+            consumed = ((ChildFragmentStack)topFragment).popBack();
+        }
+        if (!consumed) {
+            if (!FragmentUtils.isBackStackEmpty(this) &&
+                    !(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
+                FragmentUtils.goBack(this);
+            } else {
+                //hide keyboard if open
+                KeyBoard.hideKeyboard(OstWorkFlowActivity.this);
+                super.goBack();
+            }
+        }
+    }
+
     @Override
     public void activateAcknowledged(long workflowId) {
         finish();
@@ -54,9 +76,9 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     @Override
     public void openWebView(String url) {
-//        WebViewFragment fragment = WebViewFragment.newInstance(url);
-//        FragmentUtils.addFragment(R.id.layout_container,
-//                fragment,
-//                this);
+        WebViewFragment fragment = WebViewFragment.newInstance(url);
+        FragmentUtils.addFragment(R.id.layout_container,
+                fragment,
+                this);
     }
 }

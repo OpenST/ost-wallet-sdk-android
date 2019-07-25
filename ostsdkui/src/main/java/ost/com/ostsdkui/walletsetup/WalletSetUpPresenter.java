@@ -101,7 +101,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
 //                if (new CommonUtils().isValidResponse(jsonObject)){
 //                    try {
 //                        JSONObject userSaltObject = (JSONObject) new CommonUtils().parseResponseForResultType(jsonObject);
-//                        String userPinSalt = userSaltObject.getString("recovery_pin_salt");
+//                        String userPinSalt = userSaltObject.getStringConfig("recovery_pin_salt");
 //                        LogInUser logInUser = AppProvider.get().getCurrentUser();
 //                        UserPassphrase userPassphrase = new UserPassphrase(logInUser.getOstUserId(), pin, userPinSalt);
 //                        long expiredAfterInSecs = 30 * 24 * 60 * 60;

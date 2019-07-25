@@ -45,11 +45,15 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
 
     protected static final String HEADING = "heading";
     protected static final String SUB_HEADING = "sub_heading";
+    private static final String SUB_HEADING_HINT = "sub_heading_hint";
+    private static final String SHOW_BACK_BUTTON = "show_back_button";
     private String mHeading;
     private PinEntryEditText mPinEntryEditText;
     private OnFragmentInteractionListener mListener;
     private String mSubHeading;
     public boolean showTermsLine;
+    private String mSubHeadingHint;
+    private boolean mShowBackButton;
 
     public PinFragment() {
         // Required empty public constructor
@@ -60,10 +64,16 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
     }
 
     public static PinFragment newInstance(String heading, String subHeading) {
+        return newInstance(heading, subHeading, null, true);
+    }
+
+    public static PinFragment newInstance(String heading, String subHeading, String subHeadingHint, boolean backButton) {
         PinFragment fragment = new PinFragment();
         Bundle args = new Bundle();
         args.putString(HEADING, heading);
         args.putString(SUB_HEADING, subHeading);
+        args.putString(SUB_HEADING_HINT, subHeadingHint);
+        args.putBoolean(SHOW_BACK_BUTTON, backButton);
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,6 +84,8 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         if (getArguments() != null) {
             mHeading = getArguments().getString(HEADING);
             mSubHeading = getArguments().getString(SUB_HEADING);
+            mSubHeadingHint = getArguments().getString(SUB_HEADING_HINT);
+            mShowBackButton = getArguments().getBoolean(SHOW_BACK_BUTTON);
         }
     }
 
@@ -97,14 +109,20 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.ost_fragment_pin_ui, container, false);
+        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.ost_fragment_pin, container, false);
         mPinEntryEditText = (PinEntryEditText) viewGroup.findViewById(R.id.txt_pin_entry);
         mPinEntryEditText.setOnEditorActionListener(this);
+
+        TextView pinHeadingTextView = (TextView) viewGroup.findViewById(R.id.shtv_pin_heading);
+        pinHeadingTextView.setText(mHeading);
 
         TextView pinSubHeadingTextView = (TextView) viewGroup.findViewById(R.id.shtv_pin_sub_heading);
         pinSubHeadingTextView.setText(mSubHeading);
 
-        AppBar appBar = AppBar.newInstance(getContext(), mHeading, true);
+        TextView pinSubHeadingHintTextView = (TextView) viewGroup.findViewById(R.id.shtv_pin_sub_heading_hint);
+        pinSubHeadingHintTextView.setText(mSubHeadingHint);
+
+        AppBar appBar = AppBar.newInstance(getContext(), mShowBackButton);
         setUpAppBar(viewGroup, appBar);
 
         if(showTermsLine){
@@ -145,8 +163,9 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
     }
 
     private void showTermsAndPolicyText(OstTextView textView){
-        SpannableString byContinuing = new SpannableString(getResources().getString(R.string.terms_policies));
-        SpannableString termsOfService = new SpannableString(getResources().getString(R.string.terms_of_service));
+
+        SpannableString spannableString = new SpannableString("Your PIN will be used to authorise sessions, transactions, redemptions and recover wallet.");
+        SpannableString termsOfService = new SpannableString("T&C Apply");
         ClickableSpan termsClickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
@@ -155,25 +174,8 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
                 }
             }
         };
-        Typeface bold = FontCache.get(getActivity(), "fonts/SourceSansPro-Bold.ttf");
-        int length = termsOfService.length();
-        termsOfService.setSpan(termsClickableSpan,0,termsOfService.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
-        termsOfService.setSpan(boldSpan, 0, length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        SpannableString and = new SpannableString(getResources().getString(R.string.and));
-        SpannableString policies = new SpannableString(getResources().getString(R.string.privacy_policy));
-        ClickableSpan policiesClickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(View view) {
-                if (mListener != null) {
-                    mListener.openWebView("https://ost.com/privacy");
-                }
-            }
-        };
-        length = policies.length();
-        policies.setSpan(policiesClickableSpan,0,length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        policies.setSpan(boldSpan, 0, length, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        textView.setText(TextUtils.concat(byContinuing,"\n",termsOfService," ", and, " ", policies));
+        termsOfService.setSpan(termsClickableSpan, 0, termsOfService.toString().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(TextUtils.concat(spannableString, " ", termsOfService));
         textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }
