@@ -16,13 +16,15 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
 
 import ost.com.ostsdkui.BasePresenter;
 import ost.com.ostsdkui.OstPassphraseAcceptor;
 import ost.com.ostsdkui.sdkInteract.SdkInteract;
 import ost.com.ostsdkui.sdkInteract.WorkFlowListener;
 
-class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkInteract.RequestAcknowledged {
+class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkInteract.RequestAcknowledged,
+        SdkInteract.FlowInterrupt {
 
     private static final String LOG_TAG = "WalletSetUpPresenter";
     private String mFirstPin;
@@ -138,5 +140,15 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
         this.workflowId = workflowId;
         this.expiredAfterSecs = expiredAfterSecs;
         this.spendingLimit = spendingLimit;
+    }
+
+    @Override
+    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        if (onScreen) {
+            getMvpView().showProgress(false);
+            (getMvpView()).gotoDashboard(workflowId);
+        } else {
+            requestAcknowledgedActionPending = true;
+        }
     }
 }

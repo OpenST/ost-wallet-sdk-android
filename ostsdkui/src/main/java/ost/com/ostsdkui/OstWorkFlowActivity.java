@@ -69,9 +69,13 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             consumed = ((ChildFragmentStack)topFragment).popBack();
         }
         if (!consumed) {
+            if (!(FragmentUtils.getTopFragment(this, R.id.layout_container) instanceof WalletSetUpFragment)) {
+                FragmentUtils.goBack(this);
+            } else {
                 //hide keyboard if open
                 KeyBoard.hideKeyboard(OstWorkFlowActivity.this);
                 super.goBack();
+            }
         }
     }
 
