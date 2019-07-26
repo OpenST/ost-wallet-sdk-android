@@ -21,7 +21,6 @@ import android.webkit.WebViewClient;
 import java.net.CookieHandler;
 import java.net.HttpCookie;
 import java.util.List;
-import java.util.Locale;
 
 import ost.com.ostsdkui.uicomponents.AppBar;
 
@@ -83,11 +82,21 @@ public class WebViewFragment extends BaseFragment {
         mWebView.setWebViewClient(webViewClient);
         mWebView.setWebChromeClient(webChromeClient);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        java.net.CookieManager cookiemanager = (java.net.CookieManager) CookieHandler.getDefault();
-        List<HttpCookie> cookies = cookiemanager.getCookieStore().getCookies();
-        CookieManager cookieManager = CookieManager.getInstance();
-        for (HttpCookie eachCookie : cookies) {
-            cookieManager.setCookie(eachCookie.getDomain(), String.format(Locale.US,"%s=%s", eachCookie.getName(), eachCookie.getValue()));
+
+        android.webkit.CookieManager webCookieManager =
+                CookieManager.getInstance();
+        webCookieManager.setAcceptCookie(true);
+
+        // Get cookie manager for HttpURLConnection
+        java.net.CookieStore rawCookieStore = ((java.net.CookieManager)
+                CookieHandler.getDefault()).getCookieStore();
+        List<HttpCookie> cookies = rawCookieStore.getCookies();
+        for (HttpCookie cookie : cookies) {
+            String setCookie = new StringBuilder(cookie.toString())
+                    .append("; domain=").append(cookie.getDomain())
+                    .append("; path=").append(cookie.getPath())
+                    .toString();
+            webCookieManager.setCookie(cookie.getDomain(), setCookie);
         }
         mWebView.loadUrl(mUrl);
     }
