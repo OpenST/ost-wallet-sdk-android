@@ -138,7 +138,7 @@ public class DashboardActivity extends BaseActivity implements
             long expiredAfterInSecs = 30 * 24 * 60 * 60;
             Integer decimals = Integer.parseInt(OstToken.getById(AppProvider.get().getCurrentUser().getTokenId()).getBtDecimals());
             String spendingLimit = new BigDecimal("1000").multiply(new BigDecimal(10).pow(decimals)).toString();
-            long workflowId = OstWalletUI.activateUser(DashboardActivity.this,
+            String workflowId = OstWalletUI.activateUser(DashboardActivity.this,
                     ostUser.getId(),
                     expiredAfterInSecs,
                     spendingLimit,
@@ -203,13 +203,13 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void activateAcknowledged(long workflowId) {
+    public void activateAcknowledged(String workflowId) {
         FragmentUtils.goBack(this);
         handleCrashAnalytics();
     }
 
     @Override
-    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(
@@ -248,7 +248,7 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         showProgress(false);
         JSONObject trxWorkflow = null;
         try{
@@ -277,13 +277,13 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void getPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+    public void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
         showGetPinFragment(ostPinAcceptInterface);
     }
 
     @Override
-    public void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+    public void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
         showGetPinFragment(ostPinAcceptInterface);
 
@@ -303,12 +303,12 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void pinValidated(long workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
+    public void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
 
     }
 
     @Override
-    public void verifyData(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+    public void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         showProgress(false);
         JSONObject jsonObject;
         String dataToVerify = null;
@@ -332,6 +332,11 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void popTopFragment() {
         FragmentUtils.goBack(this);
+    }
+
+    @Override
+    public void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+
     }
 
     @Override
@@ -375,7 +380,7 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void onDeviceSelectedForRecovery(Device device) {
-        long workflowId = OstWalletUI.initiateDeviceRecovery(this,
+        String workflowId = OstWalletUI.initiateDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 device.getDeviceAddress(),
                 AppProvider.get().getUserPassphraseCallback());
@@ -384,7 +389,7 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void onDeviceSelectedToAbortRecovery(Device device) {
-        long workflowId = OstWalletUI.abortDeviceRecovery(this,
+        String workflowId = OstWalletUI.abortDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 AppProvider.get().getUserPassphraseCallback());
         SdkInteract.getInstance().subscribe(workflowId, this);

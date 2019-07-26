@@ -65,7 +65,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             String userId = getArguments().getString(USER_ID);
-            long workflowId = getArguments().getLong(WORKFLOW_ID);
+            String workflowId = getArguments().getString(WORKFLOW_ID);
             long expiredAfterSecs = getArguments().getLong(EXPIRED_AFTER_SECS, 100000);
             String spendingLimit = getArguments().getString(SPENDING_LIMIT);
             mWalletSetupPresenter.setArguments(userId, workflowId, expiredAfterSecs, spendingLimit);
@@ -130,7 +130,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     }
 
     @Override
-    public void gotoDashboard(long workflowId) {
+    public void gotoDashboard(String workflowId) {
         mListener.activateAcknowledged(workflowId);
     }
 
@@ -171,7 +171,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
 
     public interface OnFragmentInteractionListener {
 
-        void activateAcknowledged(long workflowId);
+        void activateAcknowledged(String workflowId);
 
         void openWebView(String url);
     }

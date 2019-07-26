@@ -18,7 +18,7 @@ import ost.com.ostsdkui.uicomponents.uiutils.theme.ThemeConfig;
 
 public class OstWalletUI {
 
-    public static long activateUser(@NonNull Activity currentActivity, String userId, long expiredAfterSecs,
+    public static String activateUser(@NonNull Activity currentActivity, String userId, long expiredAfterSecs,
                                                 String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
@@ -32,7 +32,7 @@ public class OstWalletUI {
         return workFlowListener.getId();
     }
 
-    public static long initiateDeviceRecovery(@NonNull Activity currentActivity, String userId,
+    public static String initiateDeviceRecovery(@NonNull Activity currentActivity, String userId,
                                                     @Nullable String address, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
@@ -45,7 +45,7 @@ public class OstWalletUI {
         return workFlowListener.getId();
     }
 
-    public static long abortDeviceRecovery(@NonNull Activity currentActivity, String userId,
+    public static String abortDeviceRecovery(@NonNull Activity currentActivity, String userId,
                                                        OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);

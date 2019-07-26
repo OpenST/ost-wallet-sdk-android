@@ -70,7 +70,7 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
             mDeviceAddress = getArguments().getString(DEVICE_ADDRESS);
             mDeviceAddress = getArguments().getString(DEVICE_ADDRESS);
             String userId = getArguments().getString(USER_ID);
-            long workflowId = getArguments().getLong(WORKFLOW_ID);
+            String workflowId = getArguments().getString(WORKFLOW_ID);
             recoveryPresenter.setArguments(userId, workflowId, mDeviceAddress);
         }
     }
@@ -94,7 +94,7 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
     }
 
     @Override
-    public void gotoDashboard(long workflowId) {
+    public void gotoDashboard(String workflowId) {
         goBack();
     }
 

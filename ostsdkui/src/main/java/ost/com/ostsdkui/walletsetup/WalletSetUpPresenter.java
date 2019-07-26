@@ -30,7 +30,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
     private boolean onScreen;
     private boolean requestAcknowledgedActionPending;
     private String userId;
-    private long workflowId;
+    private String workflowId;
     private long expiredAfterSecs;
     private String spendingLimit;
 
@@ -100,7 +100,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
     }
 
     @Override
-    public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for Activate user");
         if (onScreen) {
             getMvpView().showProgress(false);
@@ -125,7 +125,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
         onScreen = true;
         if (requestAcknowledgedActionPending) {
             getMvpView().showProgress(false);
-            (getMvpView()).gotoDashboard(-1);
+            (getMvpView()).gotoDashboard(null);
         }
     }
 
@@ -133,7 +133,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
         onScreen = false;
     }
 
-    public void setArguments(String userId, long workflowId, long expiredAfterSecs, String spendingLimit) {
+    public void setArguments(String userId, String workflowId, long expiredAfterSecs, String spendingLimit) {
         this.userId = userId;
         this.workflowId = workflowId;
         this.expiredAfterSecs = expiredAfterSecs;

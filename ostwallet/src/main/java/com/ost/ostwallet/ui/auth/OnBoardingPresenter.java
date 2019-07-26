@@ -207,14 +207,14 @@ public class OnBoardingPresenter extends BasePresenter<OnBoardingView> implement
     }
 
     @Override
-    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.i(LOG_TAG, String.format("%d Flow Complete", workflowId));
         getMvpView().showProgress(false);
         getMvpView().goToDashBoard();
     }
 
     @Override
-    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         Log.i(LOG_TAG, String.format("%d Flow Interrupt", workflowId));
         getMvpView().showProgress(false);
     }

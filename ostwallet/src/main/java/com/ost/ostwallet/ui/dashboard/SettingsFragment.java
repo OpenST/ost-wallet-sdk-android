@@ -522,12 +522,12 @@ public class SettingsFragment extends BaseFragment implements
     }
 
     @Override
-    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         updateCommonCode(ostWorkflowContext);
     }
 
     @Override
-    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         updateCommonCode(ostWorkflowContext);
     }
 

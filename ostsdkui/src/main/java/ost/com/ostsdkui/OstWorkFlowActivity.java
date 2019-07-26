@@ -31,7 +31,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ost_work_flow);
-        long workflowId = getIntent().getLongExtra(WORKFLOW_ID, -1);
+        String workflowId = getIntent().getStringExtra(WORKFLOW_ID);
         String workflow = getIntent().getStringExtra(WORKFLOW_NAME);
         String userId = getIntent().getStringExtra(USER_ID);
         mWorkFlowListener = SdkInteract.getInstance().getWorkFlowListener(workflowId);
@@ -76,7 +76,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     }
 
     @Override
-    public void activateAcknowledged(long workflowId) {
+    public void activateAcknowledged(String workflowId) {
         finish();
 //        FragmentUtils.goBack(this);
     }

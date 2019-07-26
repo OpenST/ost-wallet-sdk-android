@@ -19,7 +19,7 @@ interface SetUpView extends BaseView {
 
     void showRetypePin();
 
-    void gotoDashboard(long workflowId);
+    void gotoDashboard(String workflowId);
 
     void showPinErrorDialog();
 }

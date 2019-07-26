@@ -30,6 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.entity.OstLogEvent;
@@ -44,19 +45,18 @@ public class WorkFlowListener implements OstWorkFlowCallback {
     private static final String LOG_TAG = "OstWorkFlowListener";
     private final SdkInteract mSdkInteract;
 
-    private static long identifier = 0;
     private final DBLog dbLogger;
 
-    public long getId() {
+    public String getId() {
         return mId;
     }
 
-    private final long mId;
+    private final String mId;
 
     WorkFlowListener() {
         this.mSdkInteract = SdkInteract.getInstance();
         this.dbLogger = AppProvider.get().getDBLogger();
-        this.mId = identifier++;
+        this.mId = UUID.randomUUID().toString();
     }
 
     @Override

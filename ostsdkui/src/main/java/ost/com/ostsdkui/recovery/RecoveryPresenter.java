@@ -28,7 +28,7 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
 
     private static final String LOG_TAG = "OstRecoveryPresenter";
     private String mDeviceAddress;
-    private long mWorkflowId;
+    private String mWorkflowId;
     private String mUserId;
 
     RecoveryPresenter() {
@@ -41,7 +41,7 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
 
 
     @Override
-    public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for recovery");
         getMvpView().showProgress(false);
         showToast();
@@ -76,7 +76,7 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
     }
 
     @Override
-    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         getMvpView().showProgress(false);
     }
 
@@ -86,11 +86,11 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
 
     private void recoverySaltFetchFailed(){
         getMvpView().showProgress(false);
-        getMvpView().gotoDashboard(0);
+        getMvpView().gotoDashboard(null);
         getMvpView().showToastMessage("Recovery could not be initiated. Please try after sometime.", false);
     }
 
-    public void setArguments(String userId, long workflowId, String deviceAddress) {
+    public void setArguments(String userId, String workflowId, String deviceAddress) {
         this.mUserId = userId;
         this.mWorkflowId = workflowId;
         this.mDeviceAddress = deviceAddress;
