@@ -5,16 +5,19 @@ import org.json.JSONObject;
 public class StringConfig {
 
     private final String name;
+    private final String url;
 
     StringConfig(JSONObject stringObject) {
         this.name = stringObject.optString("name");
-        int startIndexOfPlaceHolder = name.indexOf("<");
-        int endIndexOfPlaceHolder = name.indexOf(">", startIndexOfPlaceHolder);
-        String placeholderString = this.name.substring(startIndexOfPlaceHolder, endIndexOfPlaceHolder).trim();
+        this.url = stringObject.optString("url");
 
     }
 
     public String getString() {
         return this.name;
+    }
+
+    public String getUrl() {
+        return this.url;
     }
 }

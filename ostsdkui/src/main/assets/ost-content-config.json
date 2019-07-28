@@ -4,10 +4,10 @@
     "url": ""
   },
   "string_terms_and_condition": {
-    "name": "Your PIN will be used to authorise sessions, transactions, redemptions and recover wallet. <tc>",
-    "tc": {
-      "name": "T&C Apply",
-      "url": ""
-    }
+    "name": "Your PIN will be used to authorise sessions, transactions, redemptions and recover wallet. <url_terms_and_condition>"
+  },
+  "url_terms_and_condition": {
+    "name": "T&C Apply",
+    "url": "https://ost.com/terms"
   }
 }

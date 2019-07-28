@@ -26,11 +26,15 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import ost.com.ostsdkui.BaseFragment;
 import ost.com.ostsdkui.R;
 import ost.com.ostsdkui.uicomponents.AppBar;
 import ost.com.ostsdkui.uicomponents.OstTextView;
 import ost.com.ostsdkui.uicomponents.PinEntryEditText;
+import ost.com.ostsdkui.uicomponents.uiutils.content.ContentConfig;
 import ost.com.ostsdkui.util.KeyBoard;
 
 /**
@@ -160,18 +164,30 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
 
     private void showTermsAndPolicyText(OstTextView textView){
 
-        SpannableString spannableString = new SpannableString("Your PIN will be used to authorise sessions, transactions, redemptions and recover wallet.");
-        SpannableString termsOfService = new SpannableString("T&C Apply");
-        ClickableSpan termsClickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(View view) {
-                if (mListener != null) {
-                    mListener.openWebView("https://ost.com/terms");
+        SpannableString linkableText = new SpannableString(ContentConfig.getInstance().getStringConfig("string_terms_and_condition").getString());
+
+        Pattern pattern = Pattern.compile("\\<.+\\>");
+        Matcher m = pattern.matcher(linkableText);
+
+        if (m.find()) {
+            int startIndex = m.start();
+            int endIndex = m.end();
+            String lookupText = linkableText.toString().substring(startIndex+1, endIndex-1);
+            SpannableString stringToReplace = new SpannableString(ContentConfig.getInstance().getStringConfig(lookupText).getString());
+            final String urlString = ContentConfig.getInstance().getStringConfig(lookupText).getUrl();
+            ClickableSpan termsClickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View view) {
+                    if (mListener != null) {
+                        mListener.openWebView(urlString);
+                    }
                 }
-            }
-        };
-        termsOfService.setSpan(termsClickableSpan, 0, termsOfService.toString().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(TextUtils.concat(spannableString, " ", termsOfService));
+            };
+            stringToReplace.setSpan(termsClickableSpan,0,stringToReplace.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            textView.setText(TextUtils.concat(linkableText.subSequence(0,startIndex), " ",stringToReplace));
+        } else {
+            textView.setText(linkableText);
+        }
         textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

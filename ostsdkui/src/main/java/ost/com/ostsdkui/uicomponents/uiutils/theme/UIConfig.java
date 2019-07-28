@@ -2,6 +2,7 @@ package ost.com.ostsdkui.uicomponents.uiutils.theme;
 
 import android.graphics.Color;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -28,6 +29,6 @@ public class UIConfig {
     public void apply(TextView textView) {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         textView.setTextColor(Color.parseColor(color));
-        textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
     }
 }
