@@ -342,8 +342,7 @@ public class SettingsFragment extends BaseFragment implements
                 } else if (userDeviceNotAuthorized()) {
                     if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                    Fragment fragment = DeviceListFragment.initiateRecoveryInstance();
-                    mListener.launchFeatureFragment(fragment);
+                    mListener.initiateDeviceRecovery();
                 } else {
                     msg = "This is an authorized device, recovery applies only to cases where a user has no authorized device.";
                 }
@@ -586,5 +585,6 @@ public class SettingsFragment extends BaseFragment implements
     interface OnFragmentInteractionListener {
         void launchFeatureFragment(Fragment fragment);
         void relaunchApp();
+        void initiateDeviceRecovery();
     }
 }

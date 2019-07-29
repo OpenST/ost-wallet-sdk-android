@@ -380,11 +380,19 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void onDeviceSelectedForRecovery(Device device) {
+        String deviceAddress = null;
+        if (null != device) deviceAddress = device.getDeviceAddress();
+
         String workflowId = OstWalletUI.initiateDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
-                device.getDeviceAddress(),
+                deviceAddress,
                 AppProvider.get().getUserPassphraseCallback());
         SdkInteract.getInstance().subscribe(workflowId, this);
+    }
+
+    @Override
+    public void initiateDeviceRecovery() {
+        onDeviceSelectedForRecovery(null);
     }
 
     @Override

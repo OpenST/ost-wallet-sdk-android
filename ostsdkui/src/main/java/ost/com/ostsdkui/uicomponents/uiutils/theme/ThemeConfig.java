@@ -45,4 +45,34 @@ public class ThemeConfig implements Theme {
     public UIConfig H4() {
         return new UIConfig(mThemeObject.optJSONObject("h4"));
     }
+
+    @Override
+    public UIConfig C1() {
+        return new UIConfig(mThemeObject.optJSONObject("c1"));
+    }
+
+    @Override
+    public UIConfig C2() {
+        return new UIConfig(mThemeObject.optJSONObject("c2"));
+    }
+
+    @Override
+    public UIConfig B1() {
+        return new UIConfig(mThemeObject.optJSONObject("b1"));
+    }
+
+    @Override
+    public UIConfig B2() {
+        return new UIConfig(mThemeObject.optJSONObject("b2"));
+    }
+
+    @Override
+    public UIConfig B3() {
+        return new UIConfig(mThemeObject.optJSONObject("b3"));
+    }
+
+    @Override
+    public UIConfig B4() {
+        return new UIConfig(mThemeObject.optJSONObject("b4"));
+    }
 }

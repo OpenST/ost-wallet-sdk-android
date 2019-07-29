@@ -241,6 +241,43 @@ public class OstJsonApi {
     }
     // endregion
 
+    // region - getDeviceList
+
+    /**
+     * Api to get Device list. Device list of only current logged-in user can be fetched.
+     *
+     * @param userId User Id of the current logged-in user.
+     * @param requestPayload request payload. Such as next-page payload, filters etc.
+     * @param callback callback where to receive data/error.
+     */
+    public static void getDeviceList(@NonNull String userId, @Nullable Map<String, Object> requestPayload, @NonNull OstJsonApiCallback callback) {
+        getAsyncQueue().submit(new Runnable() {
+            @Override
+            public void run() {
+                execGetDeviceList(userId, requestPayload, callback);
+            }
+        });
+    }
+
+    private static void execGetDeviceList(@NonNull String userId, Map<String, Object> requestPayload,  @NonNull OstJsonApiCallback callback) {
+        JSONObject response = null;
+
+        try {
+            OstApiClient apiClient = new OstApiClient(userId);
+            response = apiClient.getDeviceList(requestPayload);
+            JSONObject  data = getDataFromApiResponse( response );
+            sendSuccessCallback(callback, data);
+        } catch (Throwable err) {
+            OstError error = null;
+            if ( err instanceof OstError ) {
+                error = (OstError) err;
+            } else {
+                error = new OstError("ojsonapi_egt_2", ErrorCode.INVALID_API_RESPONSE);
+            }
+            sendErrorCallback(callback, error, response);
+        }
+    }
+    // endregion
 
     // region - Helper Methods
     public static @Nullable String getResultType(@NonNull JSONObject data) {

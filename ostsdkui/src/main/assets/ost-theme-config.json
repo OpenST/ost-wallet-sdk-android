@@ -1,18 +1,56 @@
 {
   "h1": {
     "size": 20,
-    "color": "#438bad"
+    "color": "#438bad",
+    "font_style": "semi_bold"
     },
   "h2": {
     "size": 17,
-    "color": "#666666"
+    "color": "#666666",
+    "font_style": "medium"
   },
   "h3": {
     "size": 15,
-    "color": "#888888"
+    "color": "#888888",
+    "font_style": "regular"
   },
   "h4": {
     "size": 12,
-    "color": "#888888"
+    "color": "#888888",
+    "font_style": "regular"
+  },
+  "c1": {
+    "size": 13,
+    "color": "#484848",
+    "font_style": "bold"
+  },
+  "c2": {
+    "size": 12,
+    "color": "#6f6f6f",
+    "font_style": "regular"
+  },
+  "b1": {
+    "size": 17,
+    "color": "#ffffff",
+    "background_color": "#438bad",
+    "font_style": "medium"
+  },
+  "b2": {
+    "size": 17,
+    "color": "#438bad",
+    "background_color": "#ffffff",
+    "font_style": "semi_bold"
+  },
+  "b3": {
+    "size": 12,
+    "color": "#ffffff",
+    "background_color": "#438bad",
+    "font_style": "medium"
+  },
+  "b4": {
+    "size": 12,
+    "color": "#438bad",
+    "background_color": "#ffffff",
+    "font_style": "medium"
   }
 }

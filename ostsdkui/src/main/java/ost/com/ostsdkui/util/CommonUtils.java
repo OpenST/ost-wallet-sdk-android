@@ -20,8 +20,10 @@ import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class CommonUtils {
     private static final String LOG_TAG = "OstCommonUtils";
@@ -145,5 +147,56 @@ public class CommonUtils {
             e.printStackTrace();
         }
         return mergedObj;
+    }
+
+    public Map<String, Object> convertJsonToMap(JSONObject jsonObject) throws JSONException {
+        Map<String, Object> map = new HashMap<>();
+
+        Iterator<String> iterator = jsonObject.keys();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            Object value = jsonObject.get(key);
+            if (value instanceof JSONObject) {
+                map.put(key, convertJsonToMap((JSONObject) value));
+            } else if (value instanceof JSONArray) {
+                map.put(key, convertJsonToArray((JSONArray) value));
+            } else if (value instanceof Boolean) {
+                map.put(key, (Boolean) value);
+            } else if (value instanceof Integer) {
+                map.put(key, (Integer) value);
+            } else if (value instanceof Double) {
+                map.put(key, (Double) value);
+            } else if (value instanceof String) {
+                map.put(key, (String) value);
+            } else {
+                map.put(key, value.toString());
+            }
+        }
+        return map;
+
+    }
+
+    public List<Object> convertJsonToArray(JSONArray jsonArray) throws JSONException {
+        List<Object> array = new ArrayList<>();
+
+        for (int i = 0; i < jsonArray.length(); i++) {
+            Object value = jsonArray.get(i);
+            if (value instanceof JSONObject) {
+                array.add(convertJsonToMap((JSONObject) value));
+            } else if (value instanceof  JSONArray) {
+                array.add(convertJsonToArray((JSONArray) value));
+            } else if (value instanceof  Boolean) {
+                array.add((Boolean) value);
+            } else if (value instanceof  Integer) {
+                array.add((Integer) value);
+            } else if (value instanceof  Double) {
+                array.add((Double) value);
+            } else if (value instanceof String)  {
+                array.add((String) value);
+            } else {
+                array.add(value.toString());
+            }
+        }
+        return array;
     }
 }
