@@ -14,6 +14,10 @@ package ost.com.ostsdkui.recovery;
 import android.app.Fragment;
 import android.os.Bundle;
 
+import ost.com.ostsdkui.R;
+import ost.com.ostsdkui.util.ChildFragmentUtils;
+import ost.com.ostsdkui.walletsetup.PinFragment;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link InitiateRecoveryFragment#newInstance} factory method to
@@ -36,5 +40,13 @@ public class InitiateRecoveryFragment extends RecoveryFragment {
     @Override
     public RecoveryPresenter getPresenter() {
         return InitiateRecoveryPresenter.getInstance();
+    }
+
+    @Override
+    public void showEnterPin() {
+        ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
+                PinFragment.newInstance("Recover Access to Your Wallet",
+                        "Enter your 6-digit PIN to recover access to your wallet"),
+                this);
     }
 }
