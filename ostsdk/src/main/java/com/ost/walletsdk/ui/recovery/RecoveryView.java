@@ -8,4 +8,13 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-include ':ostsdk', ':ostwallet'
+package com.ost.walletsdk.ui.recovery;
+
+import com.ost.walletsdk.ui.BaseView;
+
+interface RecoveryView extends BaseView {
+
+    void showEnterPin();
+
+    void gotoDashboard(String workflowId);
+}

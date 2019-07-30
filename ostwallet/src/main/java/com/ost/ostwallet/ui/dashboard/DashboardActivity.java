@@ -50,6 +50,8 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.ui.OstWalletUI;
+import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -63,8 +65,6 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
-import ost.com.ostsdkui.OstWalletUI;
-import ost.com.ostsdkui.sdkInteract.SdkInteract;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 

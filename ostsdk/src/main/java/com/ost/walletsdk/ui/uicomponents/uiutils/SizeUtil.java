@@ -8,4 +8,13 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-include ':ostsdk', ':ostwallet'
+package com.ost.walletsdk.ui.uicomponents.uiutils;
+
+import android.content.res.Resources;
+
+public class SizeUtil {
+
+    public static float getTextSize(Resources res, int resPath) {
+        return res.getDimension(resPath)/ res.getDisplayMetrics().density;
+    }
+}

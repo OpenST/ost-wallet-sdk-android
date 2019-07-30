@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white">
+
+    <RelativeLayout
+        android:id="@+id/ll_content_holder"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#f8f8f8">
+
+        <ImageView
+            android:id="@+id/iv_device_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginBottom="50dp"
+            android:contentDescription="Device image"
+            android:src="@drawable/ost_device_icon" />
+
+        <com.ost.walletsdk.ui.uicomponents.OstC1Label
+            android:id="@+id/tv_device_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="18dp"
+            android:layout_toEndOf="@id/iv_device_image"
+            android:text="Device 1" />
+
+        <com.ost.walletsdk.ui.uicomponents.OstC2Label
+            android:id="@+id/tv_device_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="7dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="Device Address"
+            android:layout_below="@id/tv_device_name"
+            android:layout_toEndOf="@id/iv_device_image"/>
+
+        <com.ost.walletsdk.ui.uicomponents.OstC1Label
+            android:id="@+id/tv_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="18dp"
+            android:layout_below="@id/tv_device_address"
+            android:layout_toEndOf="@id/iv_device_image"
+            android:text="0x0000000000000000000000000000000000000000"
+            />
+
+        <com.ost.walletsdk.ui.uicomponents.OstB3Label
+            android:id="@+id/btn_list_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/tv_address"
+            android:layout_toEndOf="@id/iv_device_image"
+            android:text="Start Recovery" />
+    </RelativeLayout>
+</RelativeLayout>

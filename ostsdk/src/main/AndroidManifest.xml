@@ -22,5 +22,11 @@
             android:name="com.ost.walletsdk.biometric.FingerprintAuthenticationDialogActivity"
             android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Material.Dialog.NoActionBar" />
+        <activity
+            android:name="com.ost.walletsdk.ui.OstWorkFlowActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"></activity>
     </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

@@ -28,15 +28,14 @@ import com.ost.ostwallet.util.CommonUtils;
 import com.ost.ostwallet.util.DBLog;
 import com.ost.ostwallet.util.DialogFactory;
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.ui.OstPassphraseAcceptor;
+import com.ost.walletsdk.ui.OstUserPassphraseCallback;
+import com.ost.walletsdk.ui.OstWalletUI;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 
 import org.json.JSONObject;
 
 import java.net.CookieStore;
-
-import ost.com.ostsdkui.OstPassphraseAcceptor;
-import ost.com.ostsdkui.OstWalletUI;
-import ost.com.ostsdkui.OstUserPassphraseCallback;
 
 import static com.ost.ostwallet.entity.CurrentEconomy.MAPPY_API_ENDPOINT;
 import static com.ost.ostwallet.entity.CurrentEconomy.SAAS_API_ENDPOINT;

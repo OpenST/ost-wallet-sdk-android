@@ -8,4 +8,10 @@
  *       http://www.apache.org/licenses/LICENSE-2.0
  */
 
-include ':ostsdk', ':ostwallet'
+package com.ost.walletsdk.ui.managedevices;
+
+import com.ost.walletsdk.ui.BaseView;
+
+interface DeviceListView extends BaseView {
+    void notifyDataSetChanged();
+}
