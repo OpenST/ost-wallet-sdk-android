@@ -22,12 +22,14 @@
   "c1": {
     "size": 13,
     "color": "#484848",
-    "font_style": "bold"
+    "font_style": "bold",
+    "alignment": "left"
   },
   "c2": {
     "size": 12,
     "color": "#6f6f6f",
-    "font_style": "regular"
+    "font_style": "regular",
+    "alignment": "left"
   },
   "b1": {
     "size": 17,

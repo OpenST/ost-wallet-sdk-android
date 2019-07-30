@@ -72,11 +72,11 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Exception while converting payload map", e);
         }
-
+        showProgress(true);
         OstJsonApi.getDeviceList(mUserId, mapPayload, new OstJsonApiCallback() {
             @Override
             public void onOstJsonApiSuccess(@Nullable JSONObject dataJSONObject) {
-
+                showProgress(false);
                 try {
                     nextPayload = dataJSONObject.optJSONObject("meta");
                     hasMoreData = (nextPayload != null && !nextPayload.getJSONObject("next_page_payload").toString().equals("{}"));
@@ -100,10 +100,15 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
             @Override
             public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) {
                 Log.e(LOG_TAG, String.format("Get Current User list error:"));
+                showProgress(false);
                 getMvpView().notifyDataSetChanged();
                 httpRequestPending = false;
             }
         });
+    }
+
+    private void showProgress(boolean show) {
+        if (null != getMvpView()) getMvpView().showProgress(show);
     }
 
     void setDeviceList(List<Device> ostDeviceList) {
