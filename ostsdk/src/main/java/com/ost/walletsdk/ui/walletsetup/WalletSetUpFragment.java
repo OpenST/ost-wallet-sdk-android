@@ -11,6 +11,7 @@
 package com.ost.walletsdk.ui.walletsetup;
 
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -148,6 +149,11 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
         dialog.setCancelable(false);
         dialog.show();
 
+    }
+
+    @Override
+    public Activity getCurrentActivity() {
+        return getActivity();
     }
 
     @Override

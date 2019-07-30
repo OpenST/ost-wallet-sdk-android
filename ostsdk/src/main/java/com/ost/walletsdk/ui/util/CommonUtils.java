@@ -10,6 +10,14 @@
 
 package com.ost.walletsdk.ui.util;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.hardware.fingerprint.FingerprintManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -24,6 +32,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static com.ost.walletsdk.OstSdk.getContext;
 
 public class CommonUtils {
     private static final String LOG_TAG = "OstCommonUtils";
@@ -198,5 +208,44 @@ public class CommonUtils {
             }
         }
         return array;
+    }
+
+    public boolean isBioMetricEnrolled() {
+        return isBioMetric(false);
+    }
+
+    public boolean isBioMetricHardwareAvailable() {
+        return isBioMetric(true);
+    }
+
+    private boolean isBioMetric(boolean checkForHardware) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            //Fingerprint API only available on from Android 6.0 (M)
+            FingerprintManager fingerprintManager = (FingerprintManager) getContext()
+                    .getSystemService(Context.FINGERPRINT_SERVICE);
+            if (null != fingerprintManager) {
+                if (checkForHardware) {
+                    return fingerprintManager.isHardwareDetected();
+                } else {
+                    return fingerprintManager.isHardwareDetected() && fingerprintManager.hasEnrolledFingerprints();
+                }
+            }
+        }
+        return false;
+    }
+
+    public void showEnableBiometricDialog(Activity currentActivity, DialogInterface.OnClickListener onCancelListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
+        builder.setCancelable(true);
+        builder.setMessage("No biometrics available on this device. Please enable via your device settings.");
+        builder.setTitle("Enable Biometric");
+        builder.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which)
+            {
+                currentActivity.startActivity(new Intent(Settings.ACTION_SECURITY_SETTINGS));
+            }
+        });
+        builder.setNegativeButton("Cancel", onCancelListener);
+        builder.create().show();
     }
 }

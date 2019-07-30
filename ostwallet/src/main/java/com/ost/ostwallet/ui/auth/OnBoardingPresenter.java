@@ -65,7 +65,7 @@ public class OnBoardingPresenter extends BasePresenter<OnBoardingView> implement
                         AppProvider.get().setCurrentUser(logInUser);
 
                         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-                        Log.i(LOG_TAG, String.format("Workflow id: %d", workFlowListener.getId()));
+                        Log.i(LOG_TAG, String.format("Workflow id: %s", workFlowListener.getId()));
                         OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), workFlowListener);
 
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
@@ -208,14 +208,14 @@ public class OnBoardingPresenter extends BasePresenter<OnBoardingView> implement
 
     @Override
     public void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        Log.i(LOG_TAG, String.format("%d Flow Complete", workflowId));
+        Log.i(LOG_TAG, String.format("%s Flow Complete", workflowId));
         getMvpView().showProgress(false);
         getMvpView().goToDashBoard();
     }
 
     @Override
     public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        Log.i(LOG_TAG, String.format("%d Flow Interrupt", workflowId));
+        Log.i(LOG_TAG, String.format("%s Flow Interrupt", workflowId));
         getMvpView().showProgress(false);
     }
 

@@ -10,6 +10,7 @@
 
 package com.ost.walletsdk.ui.walletsetup;
 
+import android.content.DialogInterface;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
@@ -18,6 +19,7 @@ import com.ost.walletsdk.ui.BasePresenter;
 import com.ost.walletsdk.ui.OstPassphraseAcceptor;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
+import com.ost.walletsdk.ui.util.CommonUtils;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -56,15 +58,15 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
             if (mFirstPin.equals(pin)) {
                 Log.d(LOG_TAG, "Activate user");
 
-//                if (new CommonUtils().isBioMetricHardwareAvailable() && !new CommonUtils().isBioMetricEnrolled()) {
-//                    new CommonUtils().showEnableBiometricDialog(new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            startWorkFLow(pin);
-//                        }
-//                    });
-//                    return;
-//                }
+                if (new CommonUtils().isBioMetricHardwareAvailable() && !new CommonUtils().isBioMetricEnrolled()) {
+                    new CommonUtils().showEnableBiometricDialog(getMvpView().getCurrentActivity(),new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startWorkFLow(pin);
+                        }
+                    });
+                    return;
+                }
                 startWorkFLow(pin);
             } else {
                 getMvpView().showPinErrorDialog();

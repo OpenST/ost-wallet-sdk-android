@@ -11,6 +11,8 @@
 package com.ost.walletsdk.ui.walletsetup;
 
 
+import android.app.Activity;
+
 import com.ost.walletsdk.ui.BaseView;
 
 interface SetUpView extends BaseView {
@@ -22,4 +24,6 @@ interface SetUpView extends BaseView {
     void gotoDashboard(String workflowId);
 
     void showPinErrorDialog();
+
+    Activity getCurrentActivity();
 }
