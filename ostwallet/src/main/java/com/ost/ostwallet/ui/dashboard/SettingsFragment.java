@@ -342,7 +342,8 @@ public class SettingsFragment extends BaseFragment implements
                 } else if (userDeviceNotAuthorized()) {
                     if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                    mListener.initiateDeviceRecovery();
+                    Fragment fragment = DeviceListFragment.initiateRecoveryInstance();
+                    mListener.launchFeatureFragment(fragment);
                 } else {
                     msg = "This is an authorized device, recovery applies only to cases where a user has no authorized device.";
                 }
@@ -521,12 +522,12 @@ public class SettingsFragment extends BaseFragment implements
     }
 
     @Override
-    public void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         updateCommonCode(ostWorkflowContext);
     }
 
     @Override
-    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         updateCommonCode(ostWorkflowContext);
     }
 
@@ -585,6 +586,5 @@ public class SettingsFragment extends BaseFragment implements
     interface OnFragmentInteractionListener {
         void launchFeatureFragment(Fragment fragment);
         void relaunchApp();
-        void initiateDeviceRecovery();
     }
 }

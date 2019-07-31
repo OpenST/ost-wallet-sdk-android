@@ -72,12 +72,12 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
     }
 
     @Override
-    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         if (null != getMvpView()) getMvpView().showProgress(false);
     }
 
     @Override
-    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         if (null != getMvpView()) {
             getMvpView().showProgress(false);
             getMvpView().showToastMessage("Session authorization request received.", true);

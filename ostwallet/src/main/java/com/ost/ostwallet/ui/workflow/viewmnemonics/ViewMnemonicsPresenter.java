@@ -44,7 +44,7 @@ class ViewMnemonicsPresenter extends BasePresenter<ViewMnemonicsView> implements
     }
 
     @Override
-    public void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         getMvpView().showProgress(false);
         if (OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS.equals(ostWorkflowContext.getWorkflow_type())) {
             if (OstSdk.MNEMONICS.equals(ostContextEntity.getEntityType())) {
@@ -55,7 +55,7 @@ class ViewMnemonicsPresenter extends BasePresenter<ViewMnemonicsView> implements
     }
 
     @Override
-    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         getMvpView().showProgress(false);
         if (OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS.equals(ostWorkflowContext.getWorkflow_type())) {
             getMvpView().showError(ostError.getMessage());
