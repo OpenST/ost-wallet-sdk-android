@@ -127,6 +127,57 @@ Unsubscribes the listner from the specified event of UI Workflow.
 &nbsp;_workflowId: Id of the workflow as returned by methods of OstWalletUI_<br/>
 &nbsp;_listner: Callback implementation object to remove from listing events_<br/>
 
-```Swift
+```java
 SdkInteract.getInstance().unSubscribe(String workflowId, SdkInteractListener listener)
+```
+
+## Workflow Callbacks
+
+### OstUserPassphraseCallback
+
+```java
+/** Get passphrase prefix from application
+  *
+  *   - Parameters:
+  *   - userId: Ost user id
+  *   - ostWorkflowContext: Workflow context
+  *   - ostPassphraseAcceptor: Passphrase prefix accept callback
+  */
+void getPassphrase(String userId, OstWorkflowContext ostWorkflowContext, OstPassphraseAcceptor ostPassphraseAcceptor)
+```
+
+### SdkInteractListener
+
+```java
+/** Acknowledge user about the request which is going to make by SDK.
+  *
+  * - Parameters:
+  *   - workflowId: Workflow id
+  *   - ostWorkflowContext: A context that describes the workflow for which the callback was triggered.
+  *   - ostContextEntity: Context Entity
+  */
+void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
+```
+
+```java
+/** Inform SDK user the the flow is complete.
+  *
+  * - Parameters:
+  *   - workflowId: Workflow id
+  *   - ostWorkflowContext: A context that describes the workflow for which the callback was triggered.
+  *   - ostContextEntity: Context Entity
+  */
+void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
+```
+
+```java
+ /** Inform SDK user that flow is interrupted with errorCode.
+  * Developers should dismiss pin dialog (if open) on this callback.
+  *
+  * - Parameters:
+  *   - workflowId: Workflow id
+  *   - workflowContext: A context that describes the workflow for which the callback was triggered.
+  *   - ostError: Error Entity
+  */
+void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError);
 ```
