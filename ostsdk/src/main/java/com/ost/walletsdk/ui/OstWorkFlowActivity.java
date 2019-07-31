@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.ost.walletsdk.R;
+import com.ost.walletsdk.models.entities.OstDevice;
+import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.managedevices.Device;
 import com.ost.walletsdk.ui.managedevices.DeviceListFragment;
 import com.ost.walletsdk.ui.managedevices.DeviceListRecyclerViewAdapter;
@@ -19,12 +21,18 @@ import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.ui.util.KeyBoard;
 import com.ost.walletsdk.ui.walletsetup.WalletSetUpFragment;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import static com.ost.walletsdk.ui.recovery.RecoveryFragment.DEVICE_ADDRESS;
 
 
 public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFragment.OnFragmentInteractionListener,
-        DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener {
+        DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener,
+        SdkInteract.RequestAcknowledged,
+        SdkInteract.FlowInterrupt {
 
     public static final String WORKFLOW_ID = "workflowId";
     public static final String WORKFLOW_NAME = "workflowName";
@@ -53,10 +61,55 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             finish();
         } else {
             if (ACTIVATE_USER.equalsIgnoreCase(workflow)) {
+                if (!OstUser.CONST_STATUS.CREATED.equalsIgnoreCase(
+                        OstUser.getById(userId).getStatus()
+                )) {
+                    mWorkFlowListener.flowInterrupt(
+                            new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER),
+                            new OstError("owfa_oc_au_1", OstErrors.ErrorCode.USER_ALREADY_ACTIVATED)
+                    );
+                    finish();
+                    return;
+                }
+
+                if (!OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(
+                        OstUser.getById(userId).getCurrentDevice().getStatus()
+                )) {
+                    mWorkFlowListener.flowInterrupt(
+                            new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER),
+                            new OstError("owfa_oc_au_2", OstErrors.ErrorCode.DEVICE_NOT_REGISTERED)
+                    );
+                    finish();
+                    return;
+                }
+
                 FragmentUtils.addFragment(R.id.layout_container,
                         WalletSetUpFragment.newInstance(getIntent().getExtras()),
                         this);
+
             } else if (INITIATE_RECOVERY.equalsIgnoreCase(workflow)) {
+                if (!OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase(
+                        OstUser.getById(userId).getStatus()
+                )) {
+                    mWorkFlowListener.flowInterrupt(
+                            new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY),
+                            new OstError("owfa_oc_ir_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
+                    );
+                    finish();
+                    return;
+                }
+
+                if (!OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(
+                        OstUser.getById(userId).getCurrentDevice().getStatus()
+                )) {
+                    mWorkFlowListener.flowInterrupt(
+                            new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY),
+                            new OstError("owfa_oc_ir_2", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED)
+                    );
+                    finish();
+                    return;
+                }
+
                 String deviceAddress = getIntent().getStringExtra(DEVICE_ADDRESS);
                 if (TextUtils.isEmpty(deviceAddress)) {
                     FragmentUtils.addFragment(R.id.layout_container,
@@ -68,11 +121,23 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
                             this);
                 }
             } else if (ABORT_RECOVERY.equalsIgnoreCase(workflow)) {
+                if (!OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase(
+                        OstUser.getById(userId).getStatus()
+                )) {
+                    mWorkFlowListener.flowInterrupt(
+                            new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY),
+                            new OstError("owfa_oc_ar_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
+                    );
+                    finish();
+                    return;
+                }
+
                 FragmentUtils.addFragment(R.id.layout_container,
                         AbortRecoveryFragment.newInstance(getIntent().getExtras()),
                         this);
             }
         }
+        SdkInteract.getInstance().subscribe(mWorkFlowListener.getId(), this);
     }
 
     @Override
@@ -103,8 +168,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     @Override
     public void activateAcknowledged(String workflowId) {
-        finish();
-//        FragmentUtils.goBack(this);
+
     }
 
     @Override
@@ -136,5 +200,15 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         FragmentUtils.addFragment(R.id.layout_container,
                 AbortRecoveryFragment.newInstance(bundle),
                 this);
+    }
+
+    @Override
+    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        finish();
+    }
+
+    @Override
+    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        finish();
     }
 }

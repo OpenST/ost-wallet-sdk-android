@@ -21,7 +21,7 @@ public class ButtonDrawable extends Drawable {
         int height = getBounds().height();
         int width = getBounds().width();
         RectF rect = new RectF(0.0f, 0.0f, width, height);
-        canvas.drawRoundRect(rect, 30, 30, paint);
+        canvas.drawRoundRect(rect, 15, 15, paint);
     }
 
     @Override
