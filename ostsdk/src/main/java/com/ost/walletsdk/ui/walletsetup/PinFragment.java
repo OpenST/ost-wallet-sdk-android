@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
@@ -129,6 +130,8 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         if(showTermsLine){
             showTermsAndPolicyText((OstTextView) viewGroup.findViewById(R.id.pin_terms_privacy));
         }
+
+        if (null != getActivity()) getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         return viewGroup;
     }

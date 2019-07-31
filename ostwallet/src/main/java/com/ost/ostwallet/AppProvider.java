@@ -146,7 +146,7 @@ public class AppProvider {
         keyValuesEditor.apply();
 
         //Initialize SDK
-        OstSdk.initialize(mApplicationContext, this.currentEconomy.getSaasApiEndpoint());
+        OstWalletUI.initialize(mApplicationContext, this.currentEconomy.getSaasApiEndpoint());
     }
 
     public FabricStateProvider getFabricStateProvider() {

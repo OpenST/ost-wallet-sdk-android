@@ -132,7 +132,7 @@ public class OnBoardingPresenter extends BasePresenter<OnBoardingView> implement
                         LogInUser logInUser = LogInUser.newInstance(loginUserObject);
                         AppProvider.get().setCurrentUser(logInUser);
                         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-                        Log.i(LOG_TAG, String.format("Workflow id: %d", workFlowListener.getId()));
+                        Log.i(LOG_TAG, String.format("Workflow id: %s", workFlowListener.getId()));
                         OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), workFlowListener);
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
                         SdkInteract.getInstance().subscribe(workFlowListener.getId(), OnBoardingPresenter.this);
