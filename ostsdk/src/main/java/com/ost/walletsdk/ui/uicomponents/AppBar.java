@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.ost.walletsdk.R;
-import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
+import com.ost.walletsdk.ui.uicomponents.uiutils.theme.ThemeConfig;
 
 
 public class AppBar extends LinearLayout {
@@ -85,7 +85,7 @@ public class AppBar extends LinearLayout {
     private ImageView getAppBarLogo(Context context) {
         ImageView imageView = new ImageView(context);
         imageView.setId(R.id.app_bar_title);
-        imageView.setImageDrawable(ContentConfig.getInstance().getDrawableConfig("image_nav_bar_logo").getDrawable(context));
+        imageView.setImageDrawable(ThemeConfig.getInstance().getDrawableConfig("nav_bar_logo_image").getDrawable(context));
 
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT,
                 Toolbar.LayoutParams.WRAP_CONTENT,

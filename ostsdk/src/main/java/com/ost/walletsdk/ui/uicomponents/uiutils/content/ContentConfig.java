@@ -25,11 +25,6 @@ public class ContentConfig implements Content {
         }
         return contentConfig;
     }
-    @Override
-    public DrawableConfig getDrawableConfig(String name) {
-        return new DrawableConfig(mContentObject.optJSONObject(name));
-
-    }
 
     @Override
     public JSONObject getStringConfig(String name) {

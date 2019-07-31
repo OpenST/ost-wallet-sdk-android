@@ -21,4 +21,6 @@ public interface Theme {
     UIConfig B3();
 
     UIConfig B4();
+
+    DrawableConfig getDrawableConfig(String image_name);
 }

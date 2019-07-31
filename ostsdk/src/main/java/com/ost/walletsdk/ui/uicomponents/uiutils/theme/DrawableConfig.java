@@ -1,4 +1,4 @@
-package com.ost.walletsdk.ui.uicomponents.uiutils.content;
+package com.ost.walletsdk.ui.uicomponents.uiutils.theme;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -8,12 +8,10 @@ import org.json.JSONObject;
 
 public class DrawableConfig {
 
-    private final String url;
     private final String name;
 
     DrawableConfig(JSONObject drawableObject) {
-        this.url = drawableObject.optString("url");
-        this.name = drawableObject.optString("name");
+        this.name = drawableObject.optString("asset_name");
     }
 
     public Drawable getDrawable(Context context) {

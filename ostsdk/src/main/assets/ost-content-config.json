@@ -1,8 +1,4 @@
 {
-  "image_nav_bar_logo": {
-    "name": "ost_nav_bar_logo",
-    "url": ""
-  },
   "activate_user": {
     "create_pin": {
       "terms_and_condition_url": "https://ost.com/terms"

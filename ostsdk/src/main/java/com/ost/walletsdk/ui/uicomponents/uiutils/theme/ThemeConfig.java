@@ -76,4 +76,9 @@ public class ThemeConfig implements Theme {
     public UIConfig B4() {
         return new UIConfig(mThemeObject.optJSONObject("b4"));
     }
+
+    @Override
+    public DrawableConfig getDrawableConfig(String image_name) {
+        return new DrawableConfig(mThemeObject.optJSONObject(image_name));
+    }
 }

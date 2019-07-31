@@ -1,4 +1,7 @@
 {
+  "nav_bar_logo_image": {
+    "asset_name": "ost_nav_bar_logo"
+  },
   "h1": {
     "size": 20,
     "color": "#438bad",
