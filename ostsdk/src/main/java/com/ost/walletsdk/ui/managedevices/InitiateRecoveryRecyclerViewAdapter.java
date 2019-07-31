@@ -16,12 +16,12 @@ import java.util.List;
 
 
 class InitiateRecoveryRecyclerViewAdapter extends DeviceListRecyclerViewAdapter {
-    private InitiateRecoveryRecyclerViewAdapter(List<Device> items, OnDeviceListInteractionListener listener) {
-        super(items, listener);
+    private InitiateRecoveryRecyclerViewAdapter(List<Device> items, OnDeviceListInteractionListener listener, String userId) {
+        super(items, listener, userId);
     }
 
-    public static InitiateRecoveryRecyclerViewAdapter newInstance(List<Device> deviceList, OnDeviceListInteractionListener deviceListPresenter) {
-        return new InitiateRecoveryRecyclerViewAdapter(deviceList, deviceListPresenter);
+    public static InitiateRecoveryRecyclerViewAdapter newInstance(List<Device> deviceList, OnDeviceListInteractionListener deviceListPresenter, String userId) {
+        return new InitiateRecoveryRecyclerViewAdapter(deviceList, deviceListPresenter, userId);
     }
 
     @Override

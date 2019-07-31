@@ -124,16 +124,14 @@ public class SdkInteract {
     public void unSubscribe(String workflowId, SdkInteractListener listener) {
         List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
         if (null != weakList) {
-            List<Integer> listToRemove = new ArrayList<>();
+            List<WeakReference<SdkInteractListener>> listToRemove = new ArrayList<>();
             for (int i = 0; i<weakList.size(); i++) {
                 WeakReference<SdkInteractListener> weakSdkListener = weakList.get(i);
                 if (weakSdkListener.get() == null || weakSdkListener.get().equals(listener)) {
-                    listToRemove.add(i);
+                    listToRemove.add(weakSdkListener);
                 }
             }
-            for (int index: listToRemove) {
-                weakList.remove(index);
-            }
+            weakList.removeAll(listToRemove);
         }
     }
 
@@ -151,18 +149,16 @@ public class SdkInteract {
 
         List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
         if (null != weakList) {
-            List<Integer> listToRemove = new ArrayList<>();
+            List<WeakReference<SdkInteractListener>> listToRemove = new ArrayList<>();
             for (int i = 0; i<weakList.size(); i++) {
                 WeakReference<SdkInteractListener> weakSdkListener = weakList.get(i);
                 if (weakSdkListener.get() == null) {
-                    listToRemove.add(i);
+                    listToRemove.add(weakSdkListener);
                 } else {
                     fireEventForCallbackType(workflowId, weakSdkListener.get(), callback_type, objects);
                 }
             }
-            for (int index: listToRemove) {
-                weakList.remove(index);
-            }
+            weakList.removeAll(listToRemove);
         }
     }
 

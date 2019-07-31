@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
+import com.ost.walletsdk.models.entities.OstUser;
 
 import java.util.List;
 import java.util.Locale;
@@ -35,14 +36,18 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
     final OnDeviceListInteractionListener mListener;
     final String mCurrentDeviceAddress;
 
-    DeviceListRecyclerViewAdapter(List<Device> items, OnDeviceListInteractionListener listener) {
+    DeviceListRecyclerViewAdapter(List<Device> items, OnDeviceListInteractionListener listener, String userId) {
         mValues = items;
         mListener = listener;
-        mCurrentDeviceAddress = "";//AppProvider.get().getCurrentUser().getOstUser().getCurrentDevice().getAddress();
+        if (null != OstUser.getById(userId)) {
+            mCurrentDeviceAddress = OstUser.getById(userId).getCurrentDevice().getAddress();
+        } else {
+            mCurrentDeviceAddress = "";
+        }
     }
 
-    public static DeviceListRecyclerViewAdapter newInstance(List<Device> deviceList, OnDeviceListInteractionListener deviceListPresenter) {
-        return new DeviceListRecyclerViewAdapter(deviceList, deviceListPresenter);
+    public static DeviceListRecyclerViewAdapter newInstance(List<Device> deviceList, OnDeviceListInteractionListener deviceListPresenter, String userId) {
+        return new DeviceListRecyclerViewAdapter(deviceList, deviceListPresenter, userId);
     }
 
     @Override

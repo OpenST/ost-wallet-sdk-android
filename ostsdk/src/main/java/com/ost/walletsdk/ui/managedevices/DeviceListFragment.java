@@ -118,8 +118,8 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
         mDeviceList = new ArrayList<Device>();
         mDeviceListPresenter.setDeviceList(mDeviceList);
         mDeviceListRecyclerViewAdapter = MANAGE_DEVICE.equalsIgnoreCase(mAction)
-                ? DeviceListRecyclerViewAdapter.newInstance(mDeviceList ,mListener)
-                : InitiateRecoveryRecyclerViewAdapter.newInstance(mDeviceList, mListener);
+                ? DeviceListRecyclerViewAdapter.newInstance(mDeviceList ,mListener, mUserId)
+                : InitiateRecoveryRecyclerViewAdapter.newInstance(mDeviceList, mListener, mUserId);
 
         mDeviceListPresenter.attachView(this);
         final LinearLayoutManager layoutManager = new WrapLinearLayoutManager(getContext());
