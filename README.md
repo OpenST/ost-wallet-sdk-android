@@ -12,14 +12,33 @@ Wallet SDK is a mobile application development SDK that enables developers to in
 - Android version support: 22 and above
 
 
-
 ## Setup
-Add the OST SDK as a dependency in build.gradle
+
+Add the jitpack.io repository to your project.
+```
+allprojects {
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+}       
+```
+Apply maven plugin in app module build.gradle by adding below lines.<br/>
+```
+apply plugin: 'maven' 
+group = 'com.github.ostdotcom'
+```
+
+Add the OST SDK as a dependency in app module build.gradle<br/>
 ```
 dependencies {
-        implementation 'com.ost:ost-wallet-sdk-android:2.2.2'
+        implementation 'com.github.ostdotcom:ost-wallet-sdk-android:2.2.2'
 }
 ```
+Then sync you dependencies through gradle<br/>
+**Note**: Gradle sync might fail for the first time due to build time. Please retry if sync issue happen.
+
 
 ### Add mobile sdk config file
  A config file is needed for application-specific configuration of OST  SDK.</br>
