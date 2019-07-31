@@ -62,6 +62,15 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             finish();
         } else {
             if (ACTIVATE_USER.equalsIgnoreCase(workflow)) {
+                if (null == OstUser.getById(userId)) {
+                    mWorkFlowListener.flowInterrupt(
+                            new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER),
+                            new OstError("owfa_oc_au_3", OstErrors.ErrorCode.DEVICE_NOT_SETUP)
+                    );
+                    finish();
+                    return;
+                }
+
                 if (!OstUser.CONST_STATUS.CREATED.equalsIgnoreCase(
                         OstUser.getById(userId).getStatus()
                 )) {
@@ -89,6 +98,15 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
                         this);
 
             } else if (INITIATE_RECOVERY.equalsIgnoreCase(workflow)) {
+                if (null == OstUser.getById(userId)) {
+                    mWorkFlowListener.flowInterrupt(
+                            new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY),
+                            new OstError("owfa_oc_ir_3", OstErrors.ErrorCode.DEVICE_NOT_SETUP)
+                    );
+                    finish();
+                    return;
+                }
+
                 if (!OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase(
                         OstUser.getById(userId).getStatus()
                 )) {
@@ -126,6 +144,15 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
                             this);
                 }
             } else if (ABORT_RECOVERY.equalsIgnoreCase(workflow)) {
+                if (null == OstUser.getById(userId)) {
+                    mWorkFlowListener.flowInterrupt(
+                            new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY),
+                            new OstError("owfa_oc_ar_2", OstErrors.ErrorCode.DEVICE_NOT_SETUP)
+                    );
+                    finish();
+                    return;
+                }
+
                 if (!OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase(
                         OstUser.getById(userId).getStatus()
                 )) {
