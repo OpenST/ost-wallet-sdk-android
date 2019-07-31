@@ -104,7 +104,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
 
         mSubHeadingTextView = ((TextView) view.findViewById(R.id.tv_sub_heading));
         mSubHeadingTextView.setText(
-                "This is an authorized device, recovery applies only to cases where a user has no authorized device"
+                "Once recovered, the device that initiated recovery will be revoked"
         );
         Context context = view.getContext();
 

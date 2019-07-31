@@ -110,9 +110,9 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
 
     @Override
     public void showAddPin() {
-        PinFragment fragment = PinFragment.newInstance("Create Pin",
-                "Add a 6-digit PIN to secure your wallet.",
-                "(PIN helps you recover your wallet if the phone is lost or stolen)", false);
+        PinFragment fragment = PinFragment.newInstance("Create PIN",
+                "Add a 6-digit PIN to secure your wallet",
+                "PIN helps to recover your wallet if your phone is lost or stolen", false);
         fragment.showTermsLine = true;
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 fragment,
@@ -122,8 +122,8 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     @Override
     public void showRetypePin() {
         PinFragment fragment = PinFragment.newInstance("Confirm PIN",
-                "If you forget your PIN, you cannot recover your wallet.",
-                "(So please be sure to remember it)", true);
+                "If you forget your PIN, you cannot recover your wallet",
+                "So please be sure to remember it", true);
         fragment.showTermsLine = true;
         ChildFragmentUtils.addFragment(R.id.layout_container,
                 fragment,
