@@ -46,7 +46,7 @@ public class AbortRecoveryFragment extends RecoveryFragment {
     public void showEnterPin() {
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 PinFragment.newInstance("Abort Recovery",
-                        "Enter your 6-digit PIN to abort recovery"),
+                        "Enter your 6-digit PIN to abort recovery", "", mShowBackButton),
                 this);
     }
 }

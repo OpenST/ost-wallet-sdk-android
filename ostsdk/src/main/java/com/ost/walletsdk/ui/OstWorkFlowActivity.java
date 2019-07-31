@@ -27,6 +27,7 @@ import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import static com.ost.walletsdk.ui.recovery.RecoveryFragment.DEVICE_ADDRESS;
+import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 
 public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFragment.OnFragmentInteractionListener,
@@ -112,12 +113,16 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
                 String deviceAddress = getIntent().getStringExtra(DEVICE_ADDRESS);
                 if (TextUtils.isEmpty(deviceAddress)) {
+                    Bundle bundle = getIntent().getExtras();
+                    bundle.putBoolean(SHOW_BACK_BUTTON, false);
                     FragmentUtils.addFragment(R.id.layout_container,
-                            DeviceListFragment.initiateRecoveryInstance(getIntent().getExtras()),
+                            DeviceListFragment.initiateRecoveryInstance(bundle),
                             this);
                 } else {
+                    Bundle bundle = getIntent().getExtras();
+                    bundle.putBoolean(SHOW_BACK_BUTTON, false);
                     FragmentUtils.addFragment(R.id.layout_container,
-                            InitiateRecoveryFragment.newInstance(getIntent().getExtras()),
+                            InitiateRecoveryFragment.newInstance(bundle),
                             this);
                 }
             } else if (ABORT_RECOVERY.equalsIgnoreCase(workflow)) {
@@ -132,8 +137,10 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
                     return;
                 }
 
+                Bundle bundle = getIntent().getExtras();
+                bundle.putBoolean(SHOW_BACK_BUTTON, false);
                 FragmentUtils.addFragment(R.id.layout_container,
-                        AbortRecoveryFragment.newInstance(getIntent().getExtras()),
+                        AbortRecoveryFragment.newInstance(bundle),
                         this);
             }
         }

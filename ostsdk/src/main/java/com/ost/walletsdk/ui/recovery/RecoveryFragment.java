@@ -36,8 +36,10 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
 
 
     public static final String DEVICE_ADDRESS = "device_address";
+    public static final String SHOW_BACK_BUTTON = "show_back_button";
 
     RecoveryPresenter recoveryPresenter = getPresenter();
+    boolean mShowBackButton = true;
 
     public RecoveryPresenter getPresenter() {
         return AbortRecoveryPresenter.getInstance();
@@ -71,6 +73,7 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
             mDeviceAddress = getArguments().getString(DEVICE_ADDRESS);
             String userId = getArguments().getString(USER_ID);
             String workflowId = getArguments().getString(WORKFLOW_ID);
+            mShowBackButton = getArguments().getBoolean(SHOW_BACK_BUTTON);
             recoveryPresenter.setArguments(userId, workflowId, mDeviceAddress);
         }
     }

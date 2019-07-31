@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ost.walletsdk.ui.OstWorkFlowActivity.USER_ID;
+import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 /**
  * A fragment representing a list of Items.
@@ -56,6 +57,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
     private Boolean paginationRequestSent = false;
     private String mUserId;
     private TextView mSubHeadingTextView;
+    private boolean mShowBackButton = true;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -88,6 +90,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
         if (getArguments() != null) {
             mAction = getArguments().getString(ACTION_NAME);
             mUserId = getArguments().getString(USER_ID);
+            mShowBackButton = getArguments().getBoolean(SHOW_BACK_BUTTON);
             mDeviceListPresenter.setUserId(mUserId);
         }
     }
@@ -108,8 +111,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
         );
         Context context = view.getContext();
 
-        AppBar appBar = AppBar.newInstance(getContext(),
-                true);
+        AppBar appBar = AppBar.newInstance(getContext(), mShowBackButton);
         setUpAppBar(view, appBar);
 
         mRecyclerView = view.findViewById(R.id.rv_devices);

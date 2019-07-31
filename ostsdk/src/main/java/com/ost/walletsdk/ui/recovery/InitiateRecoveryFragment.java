@@ -46,7 +46,7 @@ public class InitiateRecoveryFragment extends RecoveryFragment {
     public void showEnterPin() {
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 PinFragment.newInstance("Recover Access to Your Wallet",
-                        "Enter your 6-digit PIN to recover access to your wallet"),
+                        "Enter your 6-digit PIN to recover access to your wallet",  "", mShowBackButton),
                 this);
     }
 }
