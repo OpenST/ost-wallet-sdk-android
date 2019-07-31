@@ -13,6 +13,7 @@ import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.theme.ThemeConfig;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class OstWalletUI {
@@ -58,8 +59,96 @@ public class OstWalletUI {
 
     public static void initialize(Context context, String url) {
         OstSdk.initialize(context, url);
-        ThemeConfig.init(context, new JSONObject());
-        ContentConfig.init(context, new JSONObject());
+        try {
+            ThemeConfig.init(context, new JSONObject("{\n" +
+                    "\n" +
+                    "  \"nav_bar_logo_image\": {\n" +
+                    "    \"asset_name\": \"dummy_logo\"\n" +
+                    "  },\n" +
+                    "\n" +
+                    "\"h1\": {\n" +
+                    "  \"size\": 20,\n" +
+                    "  \"font\": \"SFProDisplay\",\n" +
+                    "  \"color\": \"#438bad\",\n" +
+                    "  \"font_style\": \"semi_bold\"\n" +
+                    "},\n" +
+                    "\n" +
+                    "\"h2\": {\n" +
+                    "  \"size\": 17,\n" +
+                    "  \"font\": \"SFProDisplay\",\n" +
+                    "  \"color\": \"#666666\",\n" +
+                    "  \"font_style\": \"medium\"\n" +
+                    "},\n" +
+                    "\n" +
+                    "\"h3\": {\"size\": 15,\n" +
+                    "  \"font\": \"SFProDisplay\",\n" +
+                    "  \"color\": \"#888888\",\n" +
+                    "  \"font_style\": \"regular\"\n" +
+                    "},\n" +
+                    "\n" +
+                    "\"h4\": {\"size\": 12,\n" +
+                    "  \"font\": \"SFProDisplay\",\n" +
+                    "  \"color\": \"#888888\",\n" +
+                    "  \"font_style\": \"regular\"\n" +
+                    "},\n" +
+                    "\n" +
+                    "\"c1\": {\"size\": 14,\n" +
+                    "  \"font\": \"SFProDisplay\",\n" +
+                    "  \"color\": \"#484848\",\n" +
+                    "  \"font_style\": \"bold\"\n" +
+                    "},\n" +
+                    "\n" +
+                    "\"c2\": {\"size\": 12,\n" +
+                    "  \"font\": \"SFProDisplay\",\n" +
+                    "  \"color\": \"#6F6F6F\",\n" +
+                    "  \"font_style\": \"regular\"\n" +
+                    "},\n" +
+                    "\n" +
+                    "\"b1\": {\n" +
+                    "  \"size\": 17,\n" +
+                    "  \"color\": \"#ffffff\",\n" +
+                    "  \"background_color\": \"#438bad\",\n" +
+                    "  \"font_style\": \"medium\"\n" +
+                    "},\n" +
+                    "\n" +
+                    "\"b2\": {\n" +
+                    "  \"size\": 17,\n" +
+                    "  \"color\": \"#438bad\",\n" +
+                    "  \"background_color\": \"#ffffff\",\n" +
+                    "  \"font_style\": \"semi_bold\"\n" +
+                    "},\n" +
+                    "\n" +
+                    "\"b3\": {\n" +
+                    "  \"size\": 12,\n" +
+                    "  \"color\": \"#ffffff\",\n" +
+                    "  \"background_color\": \"#438bad\",\n" +
+                    "  \"font_style\": \"medium\"\n" +
+                    "},\n" +
+                    "\n" +
+                    "\"b4\": {\n" +
+                    "  \"size\": 12,\n" +
+                    "  \"color\": \"#438bad\",\n" +
+                    "  \"background_color\": \"#ffffff\",\n" +
+                    "  \"font_style\": \"medium\"\n" +
+                    "}\n" +
+                    "}"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            ContentConfig.init(context, new JSONObject("{\n" +
+                    "  \"activate_user\": {\n" +
+                    "    \"create_pin\": {\n" +
+                    "      \"terms_and_condition_url\": \"https://www.google.com\"\n" +
+                    "    },\n" +
+                    "    \"confirm_pin\": {\n" +
+                    "      \"terms_and_condition_url\": \"https://view.ost.com\"\n" +
+                    "    }\n" +
+                    "  }\n" +
+                    "}"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void setThemeConfig(Context context, JSONObject themeConfig) {
@@ -69,6 +158,6 @@ public class OstWalletUI {
 
     public static void setContentConfig(Context context, JSONObject contentConfig) {
         if (null == contentConfig) contentConfig = new JSONObject();
-        ContentConfig.init(context, new JSONObject());
+        ContentConfig.init(context, contentConfig);
     }
 }
