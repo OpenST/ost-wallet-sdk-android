@@ -12,7 +12,7 @@ public class ContentConfig implements Content {
     private static Content contentConfig;
 
     private ContentConfig(Context context, JSONObject themeObject) {
-        mContentObject = new CommonUtils().deepMergeJSONObject(themeObject, ContentDefault.getDefaultContent(context));
+        mContentObject = new CommonUtils().deepMergeJSONObject(ContentDefault.getDefaultContent(context), themeObject);
     }
 
     public static void init(Context context, JSONObject contentObject) {
