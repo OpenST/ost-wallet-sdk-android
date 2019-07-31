@@ -13,7 +13,7 @@ public class ThemeConfig implements Theme {
     private static Theme themeConfig;
 
     private ThemeConfig(Context context, JSONObject themeObject) {
-        mThemeObject = new CommonUtils().deepMergeJSONObject(themeObject, ThemeDefault.getDefaultTheme(context));
+        mThemeObject = new CommonUtils().deepMergeJSONObject(ThemeDefault.getDefaultTheme(context), themeObject);
     }
 
     public static void init(Context context, JSONObject themeObject) {

@@ -130,16 +130,16 @@ public class CommonUtils {
     }
 
     public JSONObject deepMergeJSONObject(JSONObject firstObject, JSONObject secondObject) {
-        JSONObject mergedObj = new JSONObject();
+        JSONObject mergedObj = null;
+        try {
+            mergedObj = new JSONObject(firstObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        Iterator firstIterator = firstObject.keys();
         Iterator secondIterator = secondObject.keys();
         String tmp_key;
         try {
-            while (firstIterator.hasNext()) {
-                tmp_key = (String) firstIterator.next();
-                mergedObj.put(tmp_key, firstObject.get(tmp_key));
-            }
             while (secondIterator.hasNext()) {
                 tmp_key = (String) secondIterator.next();
                 if (secondObject.get(tmp_key) instanceof JSONObject) {
