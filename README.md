@@ -655,6 +655,8 @@ public static String convertBTWeiToFiat(String balance, JSONObject pricePointObj
     }
 ```
 
+## OstWalletUI
+You can use available UI from OstSdk. Please refer [OstWalletUI](ostsdk/src/main/java/com/ost/walletsdk/ui/README-UI.md) - `Beta Version`
 
 ## Steps to use Android mobile sdk through AAR lib
 - Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
