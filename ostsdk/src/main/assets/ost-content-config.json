@@ -3,11 +3,12 @@
     "name": "ost_nav_bar_logo",
     "url": ""
   },
-  "string_terms_and_condition": {
-    "name": "Your PIN will be used to authorise sessions, transactions, redemptions and recover wallet. <url_terms_and_condition>"
-  },
-  "url_terms_and_condition": {
-    "name": "T&C Apply",
-    "url": "https://ost.com/terms"
+  "activate_user": {
+    "create_pin": {
+      "terms_and_condition_url": "https://ost.com/terms"
+    },
+    "confirm_pin": {
+      "terms_and_condition_url": "https://ost.com/terms"
+    }
   }
 }

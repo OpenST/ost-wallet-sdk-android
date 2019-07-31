@@ -32,7 +32,7 @@ public class ContentConfig implements Content {
     }
 
     @Override
-    public StringConfig getStringConfig(String name) {
-        return new StringConfig(mContentObject.optJSONObject(name));
+    public JSONObject getStringConfig(String name) {
+        return mContentObject.optJSONObject(name);
     }
 }

@@ -24,8 +24,11 @@ import android.view.ViewGroup;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.ChildFragmentStack;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.util.ChildFragmentUtils;
 import com.ost.walletsdk.ui.util.DialogFactory;
+
+import org.json.JSONObject;
 
 import static com.ost.walletsdk.ui.OstWorkFlowActivity.EXPIRED_AFTER_SECS;
 import static com.ost.walletsdk.ui.OstWorkFlowActivity.SPENDING_LIMIT;
@@ -43,6 +46,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
 
 
     WalletSetUpPresenter mWalletSetupPresenter = WalletSetUpPresenter.getInstance();
+    JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("activate_user");
     private OnFragmentInteractionListener mListener;
 
     public WalletSetUpFragment() {
@@ -114,6 +118,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
                 "Add a 6-digit PIN to secure your wallet",
                 "PIN helps to recover your wallet if your phone is lost or stolen", false);
         fragment.showTermsLine = true;
+        fragment.contentConfig = contentConfig.optJSONObject("create_pin");
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 fragment,
                 this);
@@ -125,6 +130,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
                 "If you forget your PIN, you cannot recover your wallet",
                 "So please be sure to remember it", true);
         fragment.showTermsLine = true;
+        fragment.contentConfig = contentConfig.optJSONObject("confirm_pin");
         ChildFragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);

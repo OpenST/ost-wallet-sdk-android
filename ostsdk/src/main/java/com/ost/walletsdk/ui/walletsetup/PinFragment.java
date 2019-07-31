@@ -31,11 +31,9 @@ import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.uicomponents.AppBar;
 import com.ost.walletsdk.ui.uicomponents.OstTextView;
 import com.ost.walletsdk.ui.uicomponents.PinEntryEditText;
-import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.util.KeyBoard;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.json.JSONObject;
 
 
 /**
@@ -48,6 +46,7 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
     protected static final String SUB_HEADING = "sub_heading";
     private static final String SUB_HEADING_HINT = "sub_heading_hint";
     private static final String SHOW_BACK_BUTTON = "show_back_button";
+    public JSONObject contentConfig = new JSONObject();
     private String mHeading;
     private PinEntryEditText mPinEntryEditText;
     private OnFragmentInteractionListener mListener;
@@ -163,32 +162,23 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         void openWebView(String url);
     }
 
-    private void showTermsAndPolicyText(OstTextView textView){
+    private void showTermsAndPolicyText(OstTextView textView) {
 
-        SpannableString linkableText = new SpannableString(ContentConfig.getInstance().getStringConfig("string_terms_and_condition").getString());
+        SpannableString termsString = new SpannableString("Your PIN will be used to authorise sessions, transactions, redemptions and recover wallet.");
 
-        Pattern pattern = Pattern.compile("\\<.+\\>");
-        Matcher m = pattern.matcher(linkableText);
-
-        if (m.find()) {
-            int startIndex = m.start();
-            int endIndex = m.end();
-            String lookupText = linkableText.toString().substring(startIndex+1, endIndex-1);
-            SpannableString stringToReplace = new SpannableString(ContentConfig.getInstance().getStringConfig(lookupText).getString());
-            final String urlString = ContentConfig.getInstance().getStringConfig(lookupText).getUrl();
-            ClickableSpan termsClickableSpan = new ClickableSpan() {
-                @Override
-                public void onClick(View view) {
-                    if (mListener != null) {
-                        mListener.openWebView(urlString);
-                    }
+        final String urlString = contentConfig.optString("terms_and_condition_url");
+        ClickableSpan termsClickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                if (mListener != null) {
+                    mListener.openWebView(urlString);
                 }
-            };
-            stringToReplace.setSpan(termsClickableSpan,0,stringToReplace.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            textView.setText(TextUtils.concat(linkableText.subSequence(0,startIndex), " ",stringToReplace));
-        } else {
-            textView.setText(linkableText);
-        }
+            }
+        };
+        SpannableString termsAndCondition = new SpannableString("T&C Apply");
+        termsAndCondition.setSpan(termsClickableSpan,0,termsAndCondition.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(TextUtils.concat(termsString," ", termsAndCondition));
+
         textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }
