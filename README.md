@@ -478,7 +478,7 @@ Api to get user transactions. Transactions of only current logged-in user can be
 &nbsp; parameter userId: User Id of the current logged-in user.<br/>
 &nbsp; parameter requestPayload: request payload. Such as next-page payload, filters etc.
 &nbsp; parameter callback: callback where to receive data/error.<br/>
-&nbsp; **getTransactions(userId, callback)**<br/>
+&nbsp; **getTransactions(userId, requestPayload, callback)**<br/>
 ```java
 OstJsonApi.getTransactions(userId, requestPayload, new OstJsonApiCallback() {
         @Override
@@ -498,7 +498,7 @@ Api to get status of pending ongoing recovery.<br/><br/>
 &nbsp; parameter callback: callback where to receive data/error.<br/>
 &nbsp; **getPendingRecovery(userId, callback)**<br/>
 ```java
-OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
+OstJsonApi.getPendingRecovery(userId, new OstJsonApiCallback() {
         @Override
         public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
 
