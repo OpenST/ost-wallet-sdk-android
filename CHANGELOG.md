@@ -1,5 +1,12 @@
 # OST Wallet SDK Changelog
 
+## Version 2.2.2
+### Bug Fix:
+* Crash fixes in OstWallet
+
+### Security Enhancements
+* Trustkit reinitialization check
+
 ## Version 2.2.1
 ### Bug Fix:
 * Add `No Network Access` error to OstApiError

@@ -18,6 +18,7 @@ Wallet SDK is a mobile application development SDK that enables developers to in
 ## Setup
 #### a). Setting minSdkVersion to 22
 ```
+
 android {
     defaultConfig {
         minSdkVersion 22
@@ -25,6 +26,7 @@ android {
         ...
         ...
     }
+
 }
 ```
 
@@ -42,7 +44,7 @@ compileOptions {
 
 ```
 dependencies {
-    implementation 'com.ost:ost-wallet-sdk-android:2.2.1'
+    implementation 'com.ost:ost-wallet-sdk-android:2.2.2'
     ...
     ...
     ...
@@ -176,6 +178,7 @@ This workflow will create and authorize the session key that is needed to do the
                   OstWorkFlowCallback workFlowCallback)
 ```
 
+<<<<<<< HEAD
 | Parameter | Description |
 |---|---|
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform  |
@@ -231,6 +234,7 @@ void executeTransaction(String userId,
                         Map<String,String> options,
                         OstWorkFlowCallback workFlowCallback)
 ```
+
 
 | Parameter | Description |
 |---|---|
@@ -350,6 +354,51 @@ Bitmap getAddDeviceQRCode(String userId)
 | Parameter | Description |
 |---|---|
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
+
+
+### 2. getUser
+This returns the loggedin User entity.
+
+```java
+OstUser getUser(userId)
+```
+
+
+| Parameter | Description |
+|---|---|
+| **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
+
+
+
+### 3. getToken
+This returns the token entity.
+
+```java
+OstToken getToken(tokenId)
+```
+
+
+| Parameter | Description |
+|---|---|
+| **tokenId** <br> **String**	| Unique identifier of token economy in OST Platform |
+
+
+
+
+### 4. isBiometricEnabled
+To get the biometric preferneces call this function.
+
+```java
+boolean isBiometricEnabled(userId)
+```
+
+
+
+| Parameter | Description |
+|---|---|
+| **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
+
+
 
 <br>
 
@@ -579,7 +628,7 @@ Api to get user transactions. Transactions of only current logged-in user can be
 &nbsp; parameter userId: User Id of the current logged-in user.<br/>
 &nbsp; parameter requestPayload: request payload. Such as next-page payload, filters etc.
 &nbsp; parameter callback: callback where to receive data/error.<br/>
-&nbsp; **getTransactions(userId, callback)**<br/>
+&nbsp; **getTransactions(userId, requestPayload, callback)**<br/>
 ```java
 OstJsonApi.getTransactions(userId, requestPayload, new OstJsonApiCallback() {
         @Override
@@ -599,7 +648,7 @@ Api to get status of pending ongoing recovery.<br/><br/>
 &nbsp; parameter callback: callback where to receive data/error.<br/>
 &nbsp; **getPendingRecovery(userId, callback)**<br/>
 ```java
-OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
+OstJsonApi.getPendingRecovery(userId, new OstJsonApiCallback() {
         @Override
         public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
 
@@ -638,6 +687,109 @@ OstJsonApi.getPendingRecovery(userId, requestPayload, new OstJsonApiCallback() {
 |---|---|
 | **err** <br> **OstError**	|	OstError object containing error details	|
 | **response** <br> **JSONObject**	|	Api Response	|
+
+## Application development supporting doc
+ 
+### Entities status on User Activities
+|User Activity |App State|User Status|Device Status|Session status|
+| --- | --- | :---: | :---: | :---: |
+|Installs app for the first time|Not Login|CREATED|UNREGISTED| `NA`|
+|Login in the app for the first time|Log In|CREATED|REGISTERED| `NA`|
+|Initiate Activate Wallet by entering pin|Activating Wallet|ACTIVATING|AUTHORIZING|INITIALIZING|
+|Activates Wallet after waiting|Activated Wallet|ACTIVATED|AUTHORIZED|AUTHORISED|
+|Performs transactions|Activated Wallet|ACTIVATED|AUTHORIZED|AUTHORISED|
+|Session get expired|Activated Wallet|ACTIVATED|AUTHORIZED|EXPIRED|
+|Logout all Sessions|Activated Wallet|ACTIVATED|AUTHORIZED|REVOKING -> REVOKED|
+|Add Session|Activated Wallet|ACTIVATED|AUTHORIZED|INITIALIZING -> AUTHORISED|
+|Log out from app|Not Login|ACTIVATED|AUTHORIZED|AUTHORISED|
+|Log in back to App|Activated Wallet|ACTIVATED|AUTHORIZED|AUTHORISED|
+|Reinstall the App|No Login|CREATED|UNREGISTED| `NA`|
+|Login in the app|Log In|ACTIVATED|REGISTERED| `NA`|
+|Recover Wallet Or Add Wallet|Activating Wallet|ACTIVATED|AUTHORIZING -> AUTHORISED| `NA`|
+|Revoked Device from other device|Activated Wallet|ACTIVATED|REVOKING -> REVOKED| `NA`|
+
+### Get Entity status updates
+To get real time updates of entities like ongoing activation Or transactions, server side sdk's [WebHooks](https://dev.ost.com/platform/docs/api/#webhooks) services can be used.
+
+### Wallet Check on App launch
+* Check whether User need Activation.
+* Check whether Wallet need Device Addition Or Recovery.
+  * For device addition, the current Device which is to be Authorized should used **OstSdk.getAddDeviceQRCode** to generate QR code And **OstSdk.performQRAction()** method should be used to process that QR from AUTHORIZED deivce.
+  * Device can also be added through **OstSdk.authorizeCurrentDeviceWithMnemonics()** by passing AUTHORIZED device mnemonics.
+  * Or Device can be recovered through **OstSdk.initiateDeviceRecovery()** by passing Device address of the Device to be recovered from.
+```java
+if (!(ostUser.isActivated() || ostUser.isActivating())) {
+        //TODO:: Wallet need Activation
+} else if (ostUser.isActivated() && ostUser.getCurrentDevice().canBeAuthorized()) { 
+        //TODO:: Ask user whether he wants to Add device through QR or Mnemonics Or want to recover device. 
+} else {
+        //TODO:: App Dashboard
+}
+```
+### Balance calculation
+* TokenHolder Balance can be shown in Token currency or in Fiat currency.
+  * For Token currency conversion, the fetched balance is in Wei unit, which needs to be converted to Base unit.
+  * For Fiat currency conversion, the fetched balance first need to be converted to fiat equivalent using current converion rate from price points and then to its Base unit.
+```java
+OstJsonApi.getBalanceWithPricePoints(userId, new OstJsonApiCallback() {
+            @Override
+            public void onOstJsonApiSuccess(@Nullable JSONObject jsonObject) {
+                if ( null != jsonObject ) {
+                    String balance = "0";
+                    JSONObject pricePoint = null;
+                    try{
+                        JSONObject balanceData = jsonObject.getJSONObject(jsonObject.getString("result_type"));
+                        balance = balanceData.getString("available_balance");
+                        pricePoint = jsonObject.optJSONObject("price_point");
+                    } catch(Exception e){ 
+                    }
+                    //To user balance in token currency with two decimals.
+                    convertWeiToTokenCurrency(balance);
+                    
+                    //To user balance in fiat(Dollar) with two decimals.
+                    convertBTWeiToFiat(balance, pricePoint)
+                } else {
+                        //Todo:: Show fetch error
+                }
+            }
+
+            @Override
+            public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) {
+                //Todo:: Show fetch error
+            }
+        });
+
+public static String convertWeiToTokenCurrency(String balance) {
+        if (null == balance) return "0";
+
+        OstToken token = OstSdk.getToken(AppProvider.getTokenId());
+        Integer decimals = Integer.parseInt(token.getBtDecimals());
+        BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
+        BigDecimal balance = new BigDecimal(balance).divide(btWeiMultiplier);
+        return balance.setScale(2, RoundingMode.HALF_UP).toString();
+    }
+
+public static String convertBTWeiToFiat(String balance, JSONObject pricePointObject) {
+        if (null == balance || null == pricePointObject) return null;
+
+        try{
+            OstToken token = OstSdk.getToken(AppProvider.getTokenId());
+            double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble("USD");
+            int fiatDecimalExponent = pricePointObject.getJSONObject(token.getBaseToken()).getInt("decimals");
+            BigDecimal fiatToEthConversionFactor = new BigDecimal("10").pow(fiatDecimalExponent);
+
+            BigDecimal tokenToFiatMultiplier = calTokenToFiatMultiplier(pricePointOSTtoUSD, fiatDecimalExponent, token.getConversionFactor(), Integer.parseInt(token.getBtDecimals()));
+
+            BigDecimal fiatBalance = new BigDecimal(balance).multiply(tokenToFiatMultiplier);
+
+            return fiatBalance.divide(fiatToEthConversionFactor, 2, RoundingMode.DOWN).toString();
+
+        } catch (Exception e){
+            return null;
+        }
+    }
+```
+
 
 ## Steps to use Android mobile sdk through AAR lib
 - Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
