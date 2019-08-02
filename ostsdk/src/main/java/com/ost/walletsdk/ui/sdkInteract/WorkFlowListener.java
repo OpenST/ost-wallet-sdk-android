@@ -25,6 +25,7 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +34,7 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
     private static final String LOG_TAG = "OstWorkFlowListener";
     private final SdkInteract mSdkInteract;
+    private WeakReference<SdkInteract.WorkFlowCallbacks> mWorkflowCallbacks;
 
     private OstUserPassphraseCallback mUserPassphraseCallback;
 
@@ -43,6 +45,11 @@ public class WorkFlowListener implements OstWorkFlowCallback {
     private final String mId;
 
     WorkFlowListener() {
+        this(null);
+    }
+
+    WorkFlowListener(SdkInteract.WorkFlowCallbacks workFlowCallbacks) {
+        this.mWorkflowCallbacks = new WeakReference<>(workFlowCallbacks);
         this.mSdkInteract = SdkInteract.getInstance();
         this.mId = UUID.randomUUID().toString();
     }
@@ -56,21 +63,21 @@ public class WorkFlowListener implements OstWorkFlowCallback {
     public void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         Log.d(LOG_TAG, String.format("Get Pin: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
-        mSdkInteract.getPinCallbackListener().getPin(getId(), ostWorkflowContext, userId, ostPinAcceptInterface);
+        if (null != mWorkflowCallbacks.get()) mWorkflowCallbacks.get().getPin(getId(), ostWorkflowContext, userId, ostPinAcceptInterface);
     }
 
     @Override
     public void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         Log.d(LOG_TAG, String.format("Invalid Pin: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
-        mSdkInteract.getPinCallbackListener().invalidPin(getId(), ostWorkflowContext, userId, ostPinAcceptInterface);
+        if (null != mWorkflowCallbacks.get()) mWorkflowCallbacks.get().invalidPin(getId(), ostWorkflowContext, userId, ostPinAcceptInterface);
     }
 
     @Override
     public void pinValidated(OstWorkflowContext ostWorkflowContext, String userId) {
         Log.d(LOG_TAG, String.format("Pin Validated: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
-        mSdkInteract.getPinCallbackListener().pinValidated(getId(), ostWorkflowContext, userId);
+        if (null != mWorkflowCallbacks.get()) mWorkflowCallbacks.get().pinValidated(getId(), ostWorkflowContext, userId);
     }
 
     @Override
@@ -101,7 +108,7 @@ public class WorkFlowListener implements OstWorkFlowCallback {
     public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         Log.d(LOG_TAG, String.format("Verify Data: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
-        mSdkInteract.getVerifyDataCallbackListener().verifyData(getId(), ostWorkflowContext, ostContextEntity, ostVerifyDataInterface);
+        if (null != mWorkflowCallbacks.get()) mWorkflowCallbacks.get().verifyData(getId(), ostWorkflowContext, ostContextEntity, ostVerifyDataInterface);
     }
 
 
@@ -155,5 +162,9 @@ public class WorkFlowListener implements OstWorkFlowCallback {
         } else {
             this.mUserPassphraseCallback.getPassphrase(userId, ostWorkflowContext, ostPassphraseAcceptor);
         }
+    }
+
+    public void setWorkflowCallbacks(SdkInteract.WorkFlowCallbacks workflowCallbacks) {
+        this.mWorkflowCallbacks = new WeakReference<>(workflowCallbacks);
     }
 }

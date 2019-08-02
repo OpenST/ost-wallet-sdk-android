@@ -145,7 +145,7 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(walletDetailsView);
 
-        View addSessionView = getFeatureView("Authenticate Wallet", isUserActive);
+        View addSessionView = getFeatureView("Create Session", isUserActive);
         addSessionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

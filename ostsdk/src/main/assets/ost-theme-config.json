@@ -10,6 +10,9 @@
         "tint_color": "#438bad"
       }
   },
+  "navigation_bar": {
+    "color": ""
+  },
   "h1": {
     "size": 20,
     "color": "#438bad",

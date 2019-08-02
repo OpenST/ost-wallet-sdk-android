@@ -83,6 +83,11 @@ public class ThemeConfig implements Theme {
     }
 
     @Override
+    public DrawableConfig getIconConfig(String imageName) {
+        return new DrawableConfig(mThemeObject.optJSONObject("icon").optJSONObject(imageName));
+    }
+
+    @Override
     public String getFontRelativePath(String font) {
         JSONObject fontConfig = mThemeObject.optJSONObject("fonts");
         return fontConfig.optString(font);

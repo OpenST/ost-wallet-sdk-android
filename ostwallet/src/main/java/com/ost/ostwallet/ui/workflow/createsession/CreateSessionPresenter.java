@@ -41,7 +41,6 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
     }
 
     void createSession(String spendingLimit, String unit, String expiryDays) {
-        if (null != getMvpView()) getMvpView().showProgress(true, "Authorizing session...");
 
         //tokens validation
         //Input spending limit string is in Eth
@@ -60,15 +59,9 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
         BigInteger tokensInWei = spendingLimitBigInt.multiply( new BigInteger("10").pow(decimals));
         spendingLimit = tokensInWei.toString();
 
-        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-        SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
 
-        OstSdk.addSession(
-                AppProvider.get().getCurrentUser().getOstUserId(),
-                spendingLimit,
-                Long.parseLong(expiryDays) * 24 * 60 * 60,
-                workFlowListener
-        );
+        getMvpView().createSession(spendingLimit, Long.parseLong(expiryDays) * 24 * 60 * 60);
+        getMvpView().goBack();
     }
 
     @Override

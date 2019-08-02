@@ -39,6 +39,7 @@ import com.ost.ostwallet.ui.workflow.VerifyDeviceDataFragment;
 import com.ost.ostwallet.ui.workflow.VerifyTransactionDataFragment;
 import com.ost.ostwallet.ui.workflow.WorkFlowPinFragment;
 import com.ost.ostwallet.ui.workflow.WorkFlowVerifyDataFragment;
+import com.ost.ostwallet.ui.workflow.createsession.CreateSessionFragment;
 import com.ost.ostwallet.ui.workflow.transactions.TransactionFragment;
 import com.ost.ostwallet.ui.workflow.walletdetails.WalletDetailsFragment;
 import com.ost.ostwallet.ui.workflow.walletsetup.WalletSetUpFragment;
@@ -72,8 +73,8 @@ public class DashboardActivity extends BaseActivity implements
         TabLayout.OnTabSelectedListener,
         SdkInteract.FlowComplete,
         SdkInteract.FlowInterrupt,
-        SdkInteract.PinCallback,
-        SdkInteract.VerifyDataCallback,
+        SdkInteract.RequestAcknowledged,
+        SdkInteract.WorkFlowCallbacks,
         UserListFragment.OnListFragmentInteractionListener,
         WalletSetUpFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
@@ -82,7 +83,8 @@ public class DashboardActivity extends BaseActivity implements
         DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener,
         WalletDetailsFragment.OnWalletDetailsFragmentListener,
         AuthorizeDeviceOptionsFragment.OnAuthorizeDeviceOptionsFragmentListener,
-        WalletFragment.walletFragmentInteraction {
+        WalletFragment.walletFragmentInteraction,
+        CreateSessionFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = "DashboardActivity";
     private ViewPager mViewPager;
@@ -115,10 +117,6 @@ public class DashboardActivity extends BaseActivity implements
         Objects.requireNonNull(mTabLayout.getTabAt(1)).setIcon(R.drawable.wallet_icon);
         Objects.requireNonNull(mTabLayout.getTabAt(2)).setIcon(R.drawable.settings_icon);
 
-        //Set SdkInteract Pin and verify data listeners
-        SdkInteract.getInstance().setPinCallbackListener(this);
-        SdkInteract.getInstance().setVerifyDataCallbackListener(this);
-        SdkInteract.getInstance().setFlowListeners(this);
 
         setUpDevice();
 
@@ -127,7 +125,7 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     private void setUpDevice() {
-        OstWorkFlowCallback workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        OstWorkFlowCallback workFlowListener = SdkInteract.getInstance().newWorkFlowListener(this);
         LogInUser logInUser = AppProvider.get().getCurrentUser();
         OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), workFlowListener);
     }
@@ -522,5 +520,22 @@ public class DashboardActivity extends BaseActivity implements
                 }
             }
         });
+    }
+
+    @Override
+    public void createSession(String spendingLimit, long expiryTime) {
+        String workflowId = OstWalletUI.createSession(this,
+                AppProvider.get().getCurrentUser().getOstUserId(),
+                expiryTime,
+                spendingLimit,
+                AppProvider.get().getUserPassphraseCallback());
+        SdkInteract.getInstance().subscribe(workflowId, this);
+    }
+
+    @Override
+    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        if (OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION.equals(ostWorkflowContext.getWorkflow_type())) {
+            showToastMessage("Session authorization request received.", true);
+        }
     }
 }

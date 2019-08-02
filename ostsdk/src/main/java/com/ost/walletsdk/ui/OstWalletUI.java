@@ -57,6 +57,19 @@ public class OstWalletUI {
         return workFlowListener.getId();
     }
 
+    public static String createSession(@NonNull Activity currentActivity, String userId, long expiryTime, String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {
+        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
+        Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.CREATE_SESSION);
+        intent.putExtra(OstWorkFlowActivity.EXPIRED_AFTER_SECS, expiryTime);
+        intent.putExtra(OstWorkFlowActivity.SPENDING_LIMIT, spendingLimit);
+        intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
+        currentActivity.startActivity(intent);
+        return workFlowListener.getId();
+    }
+
     public static void initialize(Context context, String url) {
         OstSdk.initialize(context, url);
         try {

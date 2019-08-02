@@ -36,26 +36,6 @@ public class SdkInteract {
     //It holds all the subscribed callbacks
     private WeakHashMap<String, List<WeakReference<SdkInteractListener>>> sdkListeners = new WeakHashMap<>();
 
-    private SdkInteractListener mPinCallbackListener;
-    private SdkInteractListener mVerifyDataCallbackListener;
-    private SdkInteractListener mFlowListener;
-
-    PinCallback getPinCallbackListener() {
-        return (PinCallback) mPinCallbackListener;
-    }
-
-    public VerifyDataCallback getVerifyDataCallbackListener() {
-        return (VerifyDataCallback) mVerifyDataCallbackListener;
-    }
-
-    public void setFlowListeners(SdkInteractListener sdkInteractListener) {
-        mFlowListener = sdkInteractListener;
-    }
-
-    public SdkInteractListener getFlowListener() {
-        return mFlowListener;
-    }
-
     enum CALLBACK_TYPE {
         ALL,
         REGISTER_DEVICE,
@@ -78,6 +58,18 @@ public class SdkInteract {
      */
     public synchronized WorkFlowListener newWorkFlowListener() {
         WorkFlowListener workFlowListener = new WorkFlowListener();
+        workFlowListenerList.add(workFlowListener);
+        listenerHashMap.put(workFlowListener.getId(), workFlowListener);
+        return workFlowListener;
+    }
+
+    /**
+     * Creates new Object of Work flow Listener
+     * @param workFlowCallbacks workflow callbacks object for pin and verfiy data callbacks
+     * @return WorkFlowListener object that implements OstWorkFlowCallback
+     */
+    public synchronized WorkFlowListener newWorkFlowListener(WorkFlowCallbacks workFlowCallbacks) {
+        WorkFlowListener workFlowListener = new WorkFlowListener(workFlowCallbacks);
         workFlowListenerList.add(workFlowListener);
         listenerHashMap.put(workFlowListener.getId(), workFlowListener);
         return workFlowListener;
@@ -135,17 +127,9 @@ public class SdkInteract {
         }
     }
 
-    public void setPinCallbackListener(PinCallback listener) {
-        mPinCallbackListener = listener;
-    }
-
-    public void setVerifyDataCallbackListener(VerifyDataCallback listener) {
-        mVerifyDataCallbackListener = listener;
-    }
-
     void notifyEvent(String workflowId, CALLBACK_TYPE callback_type, Object... objects) {
         //Generic notification
-        fireEventForCallbackType(workflowId, getFlowListener(), callback_type, objects);
+//        fireEventForCallbackType(workflowId, getFlowListener(), callback_type, objects);
 
         List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
         if (null != weakList) {
@@ -199,31 +183,7 @@ public class SdkInteract {
     }
 
     private SdkInteract() {
-        /*
-         * To avoid null pointer exception
-         */
-        mVerifyDataCallbackListener = new VerifyDataCallback() {
-            @Override
-            public void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
 
-            }
-        };
-        mPinCallbackListener = new PinCallback() {
-            @Override
-            public void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-
-            }
-
-            @Override
-            public void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-
-            }
-
-            @Override
-            public void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
-
-            }
-        };
     }
 
     interface SdkInteractListener {
@@ -242,16 +202,13 @@ public class SdkInteract {
         void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
     }
 
-    public interface PinCallback extends SdkInteractListener {
+    public interface WorkFlowCallbacks extends SdkInteractListener {
 
         void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 
         void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 
         void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId);
-    }
-
-    public interface VerifyDataCallback extends SdkInteractListener {
 
         void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface);
     }
