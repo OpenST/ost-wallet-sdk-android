@@ -13,13 +13,7 @@ package com.ost.walletsdk.ui.uicomponents.uiutils;
 import android.content.Context;
 
 public class FontFactory {
-    public enum FONT {
-        LATO
-    }
-    public static Font getInstance(Context context, FONT font) {
-        if (FONT.LATO.equals(font)) {
-            return new LatoFont(context);
-        }
-        return new LatoFont(context);
+    public static Font getInstance(Context context) {
+        return new CustomFont(context);
     }
 }

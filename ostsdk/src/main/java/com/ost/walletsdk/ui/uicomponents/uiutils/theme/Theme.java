@@ -23,4 +23,6 @@ public interface Theme {
     UIConfig B4();
 
     DrawableConfig getDrawableConfig(String image_name);
+
+    String getFontRelativePath(String font);
 }

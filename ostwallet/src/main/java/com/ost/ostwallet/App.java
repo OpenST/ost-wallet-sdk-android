@@ -12,14 +12,12 @@ package com.ost.ostwallet;
 
 import android.app.Application;
 
-import com.ost.walletsdk.OstSdk;
+import com.ost.ostwallet.network.PersistentCookieStore;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.CookieStore;
-
-import com.ost.ostwallet.network.PersistentCookieStore;
 
 public class App extends Application {
 

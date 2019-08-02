@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:focusable="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/layout_holder" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstH1Label
+        android:id="@+id/h1"
+        android:text="Brown Fox"
+        android:layout_margin="10dp"
+        android:layout_below="@id/layout_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstH2Label
+        android:id="@+id/h2"
+        android:text="Brown Fox"
+        android:layout_margin="10dp"
+        android:layout_below="@id/h1"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstH3Label
+        android:id="@+id/h3"
+        android:text="Brown Fox"
+        android:layout_margin="10dp"
+        android:layout_below="@id/h2"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstH4Label
+        android:id="@+id/h4"
+        android:text="Brown Fox"
+        android:layout_margin="10dp"
+        android:layout_below="@id/h3"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstC1Label
+        android:id="@+id/c1"
+        android:text="Brown Fox"
+        android:layout_margin="10dp"
+        android:layout_below="@id/h3"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstC2Label
+        android:id="@+id/c2"
+        android:text="Brown Fox"
+        android:layout_margin="10dp"
+        android:layout_below="@id/c1"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstB1Label
+        android:id="@+id/b1"
+        android:text="Brown Fox"
+        android:layout_margin="10dp"
+        android:layout_below="@id/c2"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstB2Label
+        android:id="@+id/b2"
+        android:text="Brown Fox"
+        android:layout_margin="10dp"
+        android:layout_below="@id/b1"
+        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstB3Label
+        android:id="@+id/b3"
+        android:text="Brown Fox"
+        android:layout_margin="10dp"
+        android:layout_below="@id/b2"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         />
+
+    <com.ost.walletsdk.ui.uicomponents.OstB4Label
+        android:id="@+id/b4"
+        android:text="Brown Fox"
+        android:layout_margin="10dp"
+        android:layout_below="@id/b3"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

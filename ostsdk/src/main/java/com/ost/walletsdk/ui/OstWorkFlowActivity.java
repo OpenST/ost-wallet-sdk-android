@@ -18,6 +18,7 @@ import com.ost.walletsdk.ui.recovery.InitiateRecoveryFragment;
 import com.ost.walletsdk.ui.recovery.RecoveryFragment;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
+import com.ost.walletsdk.ui.test.TestThemeFragment;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.ui.util.KeyBoard;
 import com.ost.walletsdk.ui.walletsetup.WalletSetUpFragment;
@@ -58,8 +59,9 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         String userId = getIntent().getStringExtra(USER_ID);
         mWorkFlowListener = SdkInteract.getInstance().getWorkFlowListener(workflowId);
         if (null == mWorkFlowListener || null == workflow) {
-            Log.e(LOG_TAG,"Work flow is null");
-            finish();
+            FragmentUtils.addFragment(R.id.layout_container,
+                    TestThemeFragment.newInstance(),
+                    this);
         } else {
             if (ACTIVATE_USER.equalsIgnoreCase(workflow)) {
                 if (null == OstUser.getById(userId)) {
@@ -171,7 +173,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
                         this);
             }
         }
-        SdkInteract.getInstance().subscribe(mWorkFlowListener.getId(), this);
+//        SdkInteract.getInstance().subscribe(mWorkFlowListener.getId(), this);
     }
 
     @Override
@@ -190,7 +192,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         if (!consumed) {
             Fragment fragment = FragmentUtils.getTopFragment(this, R.id.layout_container);
             if (!(fragment instanceof WalletSetUpFragment || fragment instanceof RecoveryFragment ||
-                    fragment instanceof DeviceListFragment)) {
+                    fragment instanceof DeviceListFragment) || fragment instanceof TestThemeFragment) {
                 FragmentUtils.goBack(this);
             } else {
                 //hide keyboard if open

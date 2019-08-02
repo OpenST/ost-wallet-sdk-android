@@ -81,13 +81,11 @@ public class OstWalletUI {
                     "},\n" +
                     "\n" +
                     "\"h3\": {\"size\": 15,\n" +
-                    "  \"font\": \"SFProDisplay\",\n" +
                     "  \"color\": \"#888888\",\n" +
                     "  \"font_style\": \"regular\"\n" +
                     "},\n" +
                     "\n" +
                     "\"h4\": {\"size\": 12,\n" +
-                    "  \"font\": \"SFProDisplay\",\n" +
                     "  \"color\": \"#888888\",\n" +
                     "  \"font_style\": \"regular\"\n" +
                     "},\n" +

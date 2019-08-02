@@ -29,7 +29,7 @@ public class UIConfig {
         this.color = jsonObject.optString("color");
         this.size = jsonObject.optInt("size");
         this.backgroundColor = jsonObject.optString("background_color");
-        this.fontStyle = jsonObject.optString("font_style");
+        this.fontWeight = jsonObject.optString("font_weight");
         this.font = jsonObject.optString("font");
         this.alignment = jsonObject.optString("alignment");
     }
@@ -38,7 +38,7 @@ public class UIConfig {
     private int size;
     private String font;
     private String backgroundColor;
-    private String fontStyle;
+    private String fontWeight;
     private String alignment;
 
     public void apply(TextView textView) {
@@ -58,19 +58,7 @@ public class UIConfig {
             drawable.setColorFilter(Color.parseColor(backgroundColor), PorterDuff.Mode.SRC_IN);
             textView.setBackground(drawable);
         }
-        Font font = FontFactory.getInstance(getContext(), FontFactory.FONT.LATO);
-        if (FONT_REGULAR.equals(this.fontStyle)) {
-            textView.setTypeface(font.getLight());
-        } else if (FONT_MEDIUM.equals(this.fontStyle)) {
-            textView.setTypeface(font.getRegular());
-        } else if (FONT_BOLD.equals(this.fontStyle)) {
-            textView.setTypeface(font.getBold());
-        } else if (FONT_SEMI_BOLD.equals(this.fontStyle)) {
-            textView.setTypeface(font.getBold());
-        } else if (FONT_ITALIC.equals(this.fontStyle)) {
-            textView.setTypeface(font.getItalic());
-        } else {
-            textView.setTypeface(font.getRegular());
-        }
+        Font font = FontFactory.getInstance(getContext());
+        textView.setTypeface(font.getFont(this.font));
     }
 }

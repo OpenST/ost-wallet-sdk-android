@@ -38,10 +38,4 @@ public class OstH4Label extends OstTextView {
         super.defineUi(context, attrs, defStyleAttr);
         ThemeConfig.getInstance().H4().apply(this);
     }
-
-    @Override
-    public void setTypeface(@Nullable Typeface tf) {
-        Font font = FontFactory.getInstance(getContext(), FontFactory.FONT.LATO);
-        super.setTypeface(font.getBold());
-    }
 }

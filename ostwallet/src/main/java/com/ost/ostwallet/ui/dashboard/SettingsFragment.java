@@ -13,6 +13,7 @@ package com.ost.ostwallet.ui.dashboard;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstJsonApi;
 import com.ost.walletsdk.network.OstJsonApiCallback;
+import com.ost.walletsdk.ui.OstWorkFlowActivity;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -224,8 +226,10 @@ public class SettingsFragment extends BaseFragment implements
         contactSupportView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = WebViewFragment.newInstance("https://help.ost.com/support/home", "OST Support");
-                mListener.launchFeatureFragment(fragment);
+                Intent intent = new Intent(getContext(), OstWorkFlowActivity.class);
+                getActivity().startActivity(intent);
+//                Fragment fragment = WebViewFragment.newInstance("https://help.ost.com/support/home", "OST Support");
+//                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(contactSupportView);
