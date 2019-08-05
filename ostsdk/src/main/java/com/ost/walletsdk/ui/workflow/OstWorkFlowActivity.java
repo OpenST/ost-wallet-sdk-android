@@ -68,11 +68,11 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         mWorkFlowName = getIntent().getStringExtra(WORKFLOW_NAME);
         mUserId = getIntent().getStringExtra(USER_ID);
         mWorkFlowListener = SdkInteract.getInstance().getWorkFlowListener(mWorkflowId);
-        mWorkFlowListener.setWorkflowCallbacks(this);
         if (null == mWorkFlowListener || null == mWorkFlowName) {
             FragmentUtils.addFragment(R.id.layout_container,
                     TestThemeFragment.newInstance(),
                     this);
+            return;
         }
 
         if (invalidState()) return;
@@ -80,6 +80,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         initiateWorkFlow();
 
         if (null != mWorkFlowListener) {
+            mWorkFlowListener.setWorkflowCallbacks(this);
             SdkInteract.getInstance().subscribe(mWorkFlowListener.getId(), this);
         }
     }

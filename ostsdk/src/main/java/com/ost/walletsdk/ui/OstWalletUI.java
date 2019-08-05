@@ -191,4 +191,9 @@ public class OstWalletUI {
         if (null == contentConfig) contentConfig = new JSONObject();
         ContentConfig.init(context, contentConfig);
     }
+
+    public static void showComponentSheet(@NonNull Activity currentActivity) {
+        Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
+        currentActivity.startActivity(intent);
+    }
 }
