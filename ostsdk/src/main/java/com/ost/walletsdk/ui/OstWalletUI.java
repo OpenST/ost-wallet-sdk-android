@@ -79,74 +79,89 @@ public class OstWalletUI {
         OstSdk.initialize(context, url);
         try {
             ThemeConfig.init(context, new JSONObject("{\n" +
-                    "\n" +
                     "  \"nav_bar_logo_image\": {\n" +
-                    "    \"asset_name\": \"dummy_logo\"\n" +
+                    "    \"asset_name\": \"ost_nav_bar_logo\"\n" +
                     "  },\n" +
-                    "\n" +
-                    "\"h1\": {\n" +
-                    "  \"size\": 20,\n" +
-                    "  \"font\": \"SFProDisplay\",\n" +
-                    "  \"color\": \"#438bad\",\n" +
-                    "  \"font_style\": \"semi_bold\"\n" +
-                    "},\n" +
-                    "\n" +
-                    "\"h2\": {\n" +
-                    "  \"size\": 17,\n" +
-                    "  \"font\": \"SFProDisplay\",\n" +
-                    "  \"color\": \"#666666\",\n" +
-                    "  \"font_style\": \"medium\"\n" +
-                    "},\n" +
-                    "\n" +
-                    "\"h3\": {\"size\": 15,\n" +
-                    "  \"color\": \"#888888\",\n" +
-                    "  \"font_style\": \"regular\"\n" +
-                    "},\n" +
-                    "\n" +
-                    "\"h4\": {\"size\": 12,\n" +
-                    "  \"color\": \"#888888\",\n" +
-                    "  \"font_style\": \"regular\"\n" +
-                    "},\n" +
-                    "\n" +
-                    "\"c1\": {\"size\": 14,\n" +
-                    "  \"font\": \"SFProDisplay\",\n" +
-                    "  \"color\": \"#484848\",\n" +
-                    "  \"font_style\": \"bold\"\n" +
-                    "},\n" +
-                    "\n" +
-                    "\"c2\": {\"size\": 12,\n" +
-                    "  \"font\": \"SFProDisplay\",\n" +
-                    "  \"color\": \"#6F6F6F\",\n" +
-                    "  \"font_style\": \"regular\"\n" +
-                    "},\n" +
-                    "\n" +
-                    "\"b1\": {\n" +
-                    "  \"size\": 17,\n" +
-                    "  \"color\": \"#ffffff\",\n" +
-                    "  \"background_color\": \"#438bad\",\n" +
-                    "  \"font_style\": \"medium\"\n" +
-                    "},\n" +
-                    "\n" +
-                    "\"b2\": {\n" +
-                    "  \"size\": 17,\n" +
-                    "  \"color\": \"#438bad\",\n" +
-                    "  \"background_color\": \"#ffffff\",\n" +
-                    "  \"font_style\": \"semi_bold\"\n" +
-                    "},\n" +
-                    "\n" +
-                    "\"b3\": {\n" +
-                    "  \"size\": 12,\n" +
-                    "  \"color\": \"#ffffff\",\n" +
-                    "  \"background_color\": \"#438bad\",\n" +
-                    "  \"font_style\": \"medium\"\n" +
-                    "},\n" +
-                    "\n" +
-                    "\"b4\": {\n" +
-                    "  \"size\": 12,\n" +
-                    "  \"color\": \"#438bad\",\n" +
-                    "  \"background_color\": \"#ffffff\",\n" +
-                    "  \"font_style\": \"medium\"\n" +
-                    "}\n" +
+                    "  \"icons\": {\n" +
+                    "      \"cross\": {\n" +
+                    "        \"tint_color\": \"#438bad\"\n" +
+                    "      },\n" +
+                    "      \"back\": {\n" +
+                    "        \"tint_color\": \"#438bad\"\n" +
+                    "      }\n" +
+                    "  },\n" +
+                    "  \"navigation_bar\": {\n" +
+                    "    \"tint_color\": \"#ffffff\"\n" +
+                    "  },\n" +
+                    "  \"h1\": {\n" +
+                    "    \"size\": 20,\n" +
+                    "    \"color\": \"#438bad\",\n" +
+                    "    \"font\": \"Lato-Bold\",\n" +
+                    "    \"font_weight\": \"semi_bold\"\n" +
+                    "  },\n" +
+                    "  \"h2\": {\n" +
+                    "    \"size\": 17,\n" +
+                    "    \"color\": \"#666666\",\n" +
+                    "    \"font\": \"Lato-Bold\",\n" +
+                    "    \"font_weight\": \"medium\"\n" +
+                    "  },\n" +
+                    "  \"h3\": {\n" +
+                    "    \"size\": 15,\n" +
+                    "    \"color\": \"#888888\",\n" +
+                    "    \"font\": \"Lato-Bold\",\n" +
+                    "    \"font_weight\": \"regular\"\n" +
+                    "  },\n" +
+                    "  \"h4\": {\n" +
+                    "    \"size\": 12,\n" +
+                    "    \"color\": \"#888888\",\n" +
+                    "    \"font\": \"Lato-Bold\",\n" +
+                    "    \"font_weight\": \"regular\"\n" +
+                    "  },\n" +
+                    "  \"c1\": {\n" +
+                    "    \"size\": 13,\n" +
+                    "    \"color\": \"#484848\",\n" +
+                    "    \"font\": \"Lato-Bold\",\n" +
+                    "    \"font_weight\": \"bold\",\n" +
+                    "    \"alignment\": \"left\"\n" +
+                    "  },\n" +
+                    "  \"c2\": {\n" +
+                    "    \"size\": 12,\n" +
+                    "    \"color\": \"#6f6f6f\",\n" +
+                    "    \"font_weight\": \"regular\",\n" +
+                    "    \"font\": \"Lato-Bold\",\n" +
+                    "    \"alignment\": \"left\"\n" +
+                    "  },\n" +
+                    "  \"b1\": {\n" +
+                    "    \"size\": 17,\n" +
+                    "    \"color\": \"#ffffff\",\n" +
+                    "    \"background_color\": \"#438bad\",\n" +
+                    "    \"font\": \"Lato-Bold\",\n" +
+                    "    \"font_weight\": \"medium\"\n" +
+                    "  },\n" +
+                    "  \"b2\": {\n" +
+                    "    \"size\": 17,\n" +
+                    "    \"color\": \"#438bad\",\n" +
+                    "    \"background_color\": \"#ffffff\",\n" +
+                    "    \"font\": \"Lato-Bold\",\n" +
+                    "    \"font_weight\": \"semi_bold\"\n" +
+                    "  },\n" +
+                    "  \"b3\": {\n" +
+                    "    \"size\": 12,\n" +
+                    "    \"color\": \"#ffffff\",\n" +
+                    "    \"background_color\": \"#438bad\",\n" +
+                    "    \"font\": \"Lato-Bold\",\n" +
+                    "    \"font_weight\": \"medium\"\n" +
+                    "  },\n" +
+                    "  \"b4\": {\n" +
+                    "    \"size\": 12,\n" +
+                    "    \"color\": \"#438bad\",\n" +
+                    "    \"background_color\": \"#ffffff\",\n" +
+                    "    \"font\": \"Lato-Bold\",\n" +
+                    "    \"font_weight\": \"medium\"\n" +
+                    "  },\n" +
+                    "  \"fonts\": {\n" +
+                    "    \"Lato-Bold\": \"fonts/Lato-Italic.ttf\"\n" +
+                    "  }\n" +
                     "}"));
         } catch (JSONException e) {
             e.printStackTrace();

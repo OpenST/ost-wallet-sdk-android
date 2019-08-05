@@ -27,4 +27,6 @@ public interface Theme {
     DrawableConfig getIconConfig(String imageName);
 
     String getFontRelativePath(String font);
+
+    NavigationConfig getNavigationBar();
 }

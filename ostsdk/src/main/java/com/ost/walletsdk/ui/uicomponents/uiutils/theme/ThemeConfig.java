@@ -84,12 +84,17 @@ public class ThemeConfig implements Theme {
 
     @Override
     public DrawableConfig getIconConfig(String imageName) {
-        return new DrawableConfig(mThemeObject.optJSONObject("icon").optJSONObject(imageName));
+        return new DrawableConfig(mThemeObject.optJSONObject("icons").optJSONObject(imageName));
     }
 
     @Override
     public String getFontRelativePath(String font) {
         JSONObject fontConfig = mThemeObject.optJSONObject("fonts");
         return fontConfig.optString(font);
+    }
+
+    @Override
+    public NavigationConfig getNavigationBar() {
+        return new NavigationConfig(mThemeObject.optJSONObject("navigation_bar"));
     }
 }

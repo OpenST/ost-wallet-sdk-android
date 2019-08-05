@@ -11,6 +11,8 @@
 package com.ost.walletsdk.ui.uicomponents;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
@@ -54,6 +56,10 @@ public class AppBar extends LinearLayout {
         mainView = (LinearLayout) inflater.inflate(R.layout.ost_app_bar, this, false);
         addView(mainView);
 
+        mainView.setBackgroundTintList(ColorStateList.valueOf(
+                Color.parseColor(ThemeConfig.getInstance().getNavigationBar().getTintColor())
+        ));
+
         appBar = (Toolbar) mainView.findViewById(R.id.tool_bar);
 
         mImageView = getAppBarLogo(context);
@@ -73,8 +79,12 @@ public class AppBar extends LinearLayout {
         ImageView imageView = new ImageView(context);
         if (mShowBackButton) {
             imageView.setImageDrawable(getResources().getDrawable(R.drawable.ost_back, null));
+            String colorHash = ThemeConfig.getInstance().getIconConfig("back").getTintColor();
+            imageView.setImageTintList(ColorStateList.valueOf(Color.parseColor(colorHash)));
         } else {
             imageView.setImageDrawable(getResources().getDrawable(R.drawable.ost_close, null));
+            String colorHash = ThemeConfig.getInstance().getIconConfig("cross").getTintColor();
+            imageView.setImageTintList(ColorStateList.valueOf(Color.parseColor(colorHash)));
         }
 
         imageView.setLayoutParams(new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,

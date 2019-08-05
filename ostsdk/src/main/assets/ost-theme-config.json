@@ -11,7 +11,7 @@
       }
   },
   "navigation_bar": {
-    "color": ""
+    "tint_color": "#ffffff"
   },
   "h1": {
     "size": 20,
