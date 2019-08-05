@@ -30,7 +30,7 @@ import com.ost.walletsdk.ui.util.WrapLinearLayoutManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ost.walletsdk.ui.OstWorkFlowActivity.USER_ID;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
 import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 /**

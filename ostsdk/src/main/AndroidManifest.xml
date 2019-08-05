@@ -23,7 +23,23 @@
             android:excludeFromRecents="true"
             android:theme="@android:style/Theme.Material.Dialog.NoActionBar" />
         <activity
-            android:name="com.ost.walletsdk.ui.OstWorkFlowActivity"
+            android:name="com.ost.walletsdk.ui.workflow.OstWorkFlowActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name="com.ost.walletsdk.ui.workflow.OstActivateWorkflow"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name="com.ost.walletsdk.ui.workflow.OstCreateSessionWorkflow"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name="com.ost.walletsdk.ui.workflow.OstInitiateRecoveryWorkflow"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name="com.ost.walletsdk.ui.workflow.OstAbortRecoveryWorkflow"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
     </application>

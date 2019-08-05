@@ -30,10 +30,10 @@ import com.ost.walletsdk.ui.util.DialogFactory;
 
 import org.json.JSONObject;
 
-import static com.ost.walletsdk.ui.OstWorkFlowActivity.EXPIRED_AFTER_SECS;
-import static com.ost.walletsdk.ui.OstWorkFlowActivity.SPENDING_LIMIT;
-import static com.ost.walletsdk.ui.OstWorkFlowActivity.USER_ID;
-import static com.ost.walletsdk.ui.OstWorkFlowActivity.WORKFLOW_ID;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.EXPIRED_AFTER_SECS;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.SPENDING_LIMIT;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.WORKFLOW_ID;
 
 /**
  * A simple {@link Fragment} subclass.

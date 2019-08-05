@@ -23,8 +23,8 @@ import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.util.ChildFragmentUtils;
 import com.ost.walletsdk.ui.walletsetup.PinFragment;
 
-import static com.ost.walletsdk.ui.OstWorkFlowActivity.USER_ID;
-import static com.ost.walletsdk.ui.OstWorkFlowActivity.WORKFLOW_ID;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.WORKFLOW_ID;
 
 /**
  * A simple {@link Fragment} subclass.

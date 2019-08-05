@@ -12,6 +12,11 @@ import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.theme.ThemeConfig;
+import com.ost.walletsdk.ui.workflow.OstAbortRecoveryWorkflow;
+import com.ost.walletsdk.ui.workflow.OstActivateWorkflow;
+import com.ost.walletsdk.ui.workflow.OstCreateSessionWorkflow;
+import com.ost.walletsdk.ui.workflow.OstInitiateRecoveryWorkflow;
+import com.ost.walletsdk.ui.workflow.OstWorkFlowActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +27,7 @@ public class OstWalletUI {
                                                 String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
-        Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
+        Intent intent = new Intent(currentActivity, OstActivateWorkflow.class);
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.ACTIVATE_USER);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
@@ -36,7 +41,7 @@ public class OstWalletUI {
                                                     @Nullable String address, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
-        Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
+        Intent intent = new Intent(currentActivity, OstInitiateRecoveryWorkflow.class);
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.INITIATE_RECOVERY);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
@@ -49,7 +54,7 @@ public class OstWalletUI {
                                                        OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
-        Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
+        Intent intent = new Intent(currentActivity, OstAbortRecoveryWorkflow.class);
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.ABORT_RECOVERY);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
@@ -60,7 +65,7 @@ public class OstWalletUI {
     public static String createSession(@NonNull Activity currentActivity, String userId, long expiryTime, String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
-        Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
+        Intent intent = new Intent(currentActivity, OstCreateSessionWorkflow.class);
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.CREATE_SESSION);
         intent.putExtra(OstWorkFlowActivity.EXPIRED_AFTER_SECS, expiryTime);

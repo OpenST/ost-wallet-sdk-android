@@ -53,7 +53,7 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstJsonApi;
 import com.ost.walletsdk.network.OstJsonApiCallback;
-import com.ost.walletsdk.ui.OstWorkFlowActivity;
+import com.ost.walletsdk.ui.workflow.OstWorkFlowActivity;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
