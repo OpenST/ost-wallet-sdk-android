@@ -55,6 +55,7 @@ public class TestThemeFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.ost_test_theme_fragment, container, false);
+        setUpAppBar(viewGroup);
 
         return viewGroup;
     }
