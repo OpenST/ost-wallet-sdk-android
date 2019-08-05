@@ -46,7 +46,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
 
 
     WalletSetUpPresenter mWalletSetupPresenter = WalletSetUpPresenter.getInstance();
-    JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("activate_user");
+    JSONObject activateUserContentConfig = ContentConfig.getInstance().getStringConfig("activate_user");
     private OnFragmentInteractionListener mListener;
 
     public WalletSetUpFragment() {
@@ -118,7 +118,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
                 "Add a 6-digit PIN to secure your wallet",
                 "PIN helps to recover your wallet if your phone is lost or stolen", false);
         fragment.showTermsLine = true;
-        fragment.contentConfig = contentConfig.optJSONObject("create_pin");
+        fragment.contentConfig = activateUserContentConfig.optJSONObject("create_pin");
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 fragment,
                 this);
@@ -130,7 +130,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
                 "If you forget your PIN, you cannot recover your wallet",
                 "So please be sure to remember it", true);
         fragment.showTermsLine = true;
-        fragment.contentConfig = contentConfig.optJSONObject("confirm_pin");
+        fragment.contentConfig = activateUserContentConfig.optJSONObject("confirm_pin");
         ChildFragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
