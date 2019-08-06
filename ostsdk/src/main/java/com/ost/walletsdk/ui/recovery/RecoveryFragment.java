@@ -70,7 +70,6 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mDeviceAddress = getArguments().getString(DEVICE_ADDRESS);
-            mDeviceAddress = getArguments().getString(DEVICE_ADDRESS);
             String userId = getArguments().getString(USER_ID);
             String workflowId = getArguments().getString(WORKFLOW_ID);
             mShowBackButton = getArguments().getBoolean(SHOW_BACK_BUTTON);

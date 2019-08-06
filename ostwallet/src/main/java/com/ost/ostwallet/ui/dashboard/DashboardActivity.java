@@ -394,6 +394,14 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
+    public void resetPin() {
+        String workflowId = OstWalletUI.resetPin(this,
+                AppProvider.get().getCurrentUser().getOstUserId(),
+                AppProvider.get().getUserPassphraseCallback());
+        SdkInteract.getInstance().subscribe(workflowId, this);
+    }
+
+    @Override
     public void onDeviceSelectedToAbortRecovery(Device device) {
         String workflowId = OstWalletUI.abortDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),

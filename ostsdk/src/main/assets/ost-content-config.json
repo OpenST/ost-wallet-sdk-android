@@ -83,5 +83,40 @@
         "text":  ""
       }
     }
+  },
+  "reset_pin": {
+    "current_pin": {
+      "title_label": {
+        "text": "Enter Current Pin"
+      },
+      "lead_label": {
+        "text": "Enter your 6-digit PIN to authorize\n Reset Pin."
+      },
+      "info_label":{
+        "text":  ""
+      }
+    },
+    "new_pin": {
+      "title_label": {
+        "text": "Add New Pin"
+      },
+      "lead_label": {
+        "text": "Add a 6-digit PIN to secure your wallet.\n The PIN is required to recover your\n wallet if you lose your phone."
+      },
+      "info_label":{
+        "text":  ""
+      }
+    },
+    "confirm_pin": {
+      "title_label": {
+        "text": "Confirm New Pin"
+      },
+      "lead_label": {
+        "text": "If you forget your PIN, you cannot\n recover your Wallet. So please be sure\n to remember it."
+      },
+      "info_label":{
+        "text":  ""
+      }
+    }
   }
 }

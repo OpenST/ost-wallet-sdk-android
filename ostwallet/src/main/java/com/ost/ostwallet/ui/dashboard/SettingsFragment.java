@@ -168,8 +168,9 @@ public class SettingsFragment extends BaseFragment implements
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                Fragment fragment = ResetPinFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
+                mListener.resetPin();
+//                Fragment fragment = ResetPinFragment.newInstance();
+//                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(resetPinView);
@@ -588,5 +589,6 @@ public class SettingsFragment extends BaseFragment implements
         void launchFeatureFragment(Fragment fragment);
         void relaunchApp();
         void initiateDeviceRecovery();
+        void resetPin();
     }
 }

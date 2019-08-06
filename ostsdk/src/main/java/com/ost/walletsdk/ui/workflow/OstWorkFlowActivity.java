@@ -18,6 +18,7 @@ import com.ost.walletsdk.ui.managedevices.DeviceListRecyclerViewAdapter;
 import com.ost.walletsdk.ui.recovery.AbortRecoveryFragment;
 import com.ost.walletsdk.ui.recovery.InitiateRecoveryFragment;
 import com.ost.walletsdk.ui.recovery.RecoveryFragment;
+import com.ost.walletsdk.ui.resetpin.ResetPinFragment;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.ui.test.TestThemeFragment;
@@ -54,6 +55,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public static final String INITIATE_RECOVERY = "initiate_recovery";
     public static final String ABORT_RECOVERY = "abort_recovery";
     public static final String CREATE_SESSION = "create_session";
+    public static final String RESET_PIN = "reset_pin";
 
     private static final String LOG_TAG = "OstWorkFlowActivity";
     WorkFlowListener mWorkFlowListener;
@@ -120,7 +122,8 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         if (!consumed) {
             Fragment fragment = FragmentUtils.getTopFragment(this, R.id.layout_container);
             if (null != fragment && !(fragment instanceof WalletSetUpFragment || fragment instanceof RecoveryFragment ||
-                    fragment instanceof DeviceListFragment || fragment instanceof TestThemeFragment || fragment instanceof WorkFlowPinFragment)) {
+                    fragment instanceof DeviceListFragment || fragment instanceof TestThemeFragment ||
+                    fragment instanceof WorkFlowPinFragment || fragment instanceof ResetPinFragment)) {
                 FragmentUtils.goBack(this);
             } else {
                 //hide keyboard if open
