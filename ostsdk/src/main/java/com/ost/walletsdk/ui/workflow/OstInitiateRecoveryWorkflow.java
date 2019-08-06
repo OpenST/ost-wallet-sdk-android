@@ -8,6 +8,7 @@ import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.managedevices.DeviceListFragment;
 import com.ost.walletsdk.ui.recovery.InitiateRecoveryFragment;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -53,9 +54,11 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
         if (TextUtils.isEmpty(deviceAddress)) {
             Bundle bundle = getIntent().getExtras();
             bundle.putBoolean(SHOW_BACK_BUTTON, false);
+            DeviceListFragment fragment = DeviceListFragment.initiateRecoveryInstance(bundle);
             FragmentUtils.addFragment(R.id.layout_container,
-                    DeviceListFragment.initiateRecoveryInstance(bundle),
+                    fragment,
                     this);
+            fragment.contentConfig = ContentConfig.getInstance().getStringConfig("initiate_recovery").optJSONObject("device_list");
         } else {
             Bundle bundle = getIntent().getExtras();
             bundle.putBoolean(SHOW_BACK_BUTTON, false);

@@ -22,6 +22,8 @@ import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
 
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -35,6 +37,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
     private final List<Device> mValues;
     final OnDeviceListInteractionListener mListener;
     final String mCurrentDeviceAddress;
+    public JSONObject mCellConfig = new JSONObject();
 
     DeviceListRecyclerViewAdapter(List<Device> items, OnDeviceListInteractionListener listener, String userId) {
         mValues = items;

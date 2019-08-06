@@ -25,7 +25,10 @@ import android.widget.TextView;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.uicomponents.AppBar;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.ui.util.WrapLinearLayoutManager;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
     private static final String ACTION_NAME = "action_name";
     private static final String INITIATED_RECOVERY = "initiate_recovery";
     private static final String MANAGE_DEVICE = "manage_device";
+    public JSONObject contentConfig = new JSONObject();
 
     private DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener mListener;
     private RecyclerView mRecyclerView;
@@ -75,7 +79,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
         return fragment;
     }
 
-    public static Fragment initiateRecoveryInstance(Bundle bundle) {
+    public static DeviceListFragment initiateRecoveryInstance(Bundle bundle) {
         DeviceListFragment fragment = new DeviceListFragment();
         Bundle args = new Bundle();
         args.putString(ACTION_NAME, INITIATED_RECOVERY);
@@ -102,12 +106,12 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
 
         mHeadingTextView = ((TextView) view.findViewById(R.id.tv_heading));
         mHeadingTextView.setText(
-                 "Device Recovery"
+                StringConfig.instance(contentConfig.optJSONObject("title_label")).getString()
         );
 
         mSubHeadingTextView = ((TextView) view.findViewById(R.id.tv_sub_heading));
         mSubHeadingTextView.setText(
-                "Once recovered, the device that initiated recovery will be revoked"
+                StringConfig.instance(contentConfig.optJSONObject("lead_label")).getString()
         );
         Context context = view.getContext();
 
@@ -122,6 +126,8 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
         mDeviceListRecyclerViewAdapter = MANAGE_DEVICE.equalsIgnoreCase(mAction)
                 ? DeviceListRecyclerViewAdapter.newInstance(mDeviceList ,mListener, mUserId)
                 : InitiateRecoveryRecyclerViewAdapter.newInstance(mDeviceList, mListener, mUserId);
+
+        mDeviceListRecyclerViewAdapter.mCellConfig = contentConfig.optJSONObject("cell");
 
         mDeviceListPresenter.attachView(this);
         final LinearLayoutManager layoutManager = new WrapLinearLayoutManager(getContext());

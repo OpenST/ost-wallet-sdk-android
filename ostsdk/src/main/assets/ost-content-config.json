@@ -46,17 +46,30 @@
     }
   },
   "initiate_recovery": {
-      "get_pin": {
-        "title_label": {
-          "text": "Initiate Recovery Get PIN"
-        },
-        "lead_label": {
-          "text": "If you forget your PIN, you cannot recover your wallet"
-        },
-        "info_label":{
-          "text":  ""
+    "device_list": {
+      "title_label": {
+        "text": "Device Recovery"
+      },
+      "lead_label": {
+        "text": "This is an authorized device, recovery applies only to cases where a user has no authorized device"
+      },
+      "cell": {
+        "action_button": {
+          "text": "Recovery"
         }
       }
+    },
+    "get_pin": {
+      "title_label": {
+        "text": "Initiate Recovery Get PIN"
+      },
+      "lead_label": {
+        "text": "If you forget your PIN, you cannot recover your wallet"
+      },
+      "info_label": {
+        "text": ""
+      }
+    }
   },
   "abort_recovery": {
     "get_pin": {
