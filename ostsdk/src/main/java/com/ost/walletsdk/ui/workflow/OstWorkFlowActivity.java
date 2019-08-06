@@ -32,6 +32,9 @@ import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import static com.ost.walletsdk.ui.recovery.RecoveryFragment.DEVICE_ADDRESS;
 
 
@@ -204,7 +207,9 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     }
 
     private void showGetPinFragment(String workflowId, String userId, OstWorkflowContext ostWorkflowContext, OstPinAcceptInterface ostPinAcceptInterface) {
+        JSONObject stringConfigJsonObject = getContentString(ostWorkflowContext);
         WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin));
+        fragment.contentConfig = stringConfigJsonObject;
         fragment.setPinCallback(ostPinAcceptInterface);
         fragment.setUserId(userId);
         fragment.setWorkflowId(workflowId);
@@ -213,6 +218,24 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
+    }
+
+    JSONObject getContentString(OstWorkflowContext ostWorkflowContext) {
+        try {
+            return new JSONObject("{\n" +
+                    "        \"title_label\": {\n" +
+                    "          \"text\": \"Get PIN\"\n" +
+                    "        },\n" +
+                    "        \"lead_label\": {\n" +
+                    "          \"text\": \"If you forget your PIN, you cannot recover your wallet\"\n" +
+                    "        },\n" +
+                    "        \"info_label\":{\n" +
+                    "          \"text\":  \"\"\n" +
+                    "        }\n" +
+                    "      }");
+        } catch (JSONException e) {
+            return null;
+        }
     }
 
     @Override

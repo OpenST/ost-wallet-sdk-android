@@ -5,9 +5,12 @@ import android.os.Bundle;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
+
+import org.json.JSONObject;
 
 import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
@@ -40,5 +43,12 @@ public class OstCreateSessionWorkflow extends OstWorkFlowActivity {
         bundle.putBoolean(SHOW_BACK_BUTTON, false);
         showProgress(true,"Adding Session");
         OstSdk.addSession(mUserId, spendingLimit, expiredAfterSecs, mWorkFlowListener);
+    }
+
+    @Override
+    JSONObject getContentString(OstWorkflowContext ostWorkflowContext) {
+        return ContentConfig.getInstance()
+                .getStringConfig("add_session")
+                .optJSONObject("get_pin");
     }
 }

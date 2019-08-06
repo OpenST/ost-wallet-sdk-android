@@ -44,5 +44,44 @@
         }
       }
     }
+  },
+  "initiate_recovery": {
+      "get_pin": {
+        "title_label": {
+          "text": "Initiate Recovery Get PIN"
+        },
+        "lead_label": {
+          "text": "If you forget your PIN, you cannot recover your wallet"
+        },
+        "info_label":{
+          "text":  ""
+        }
+      }
+  },
+  "abort_recovery": {
+    "get_pin": {
+      "title_label": {
+        "text": "Abort Recovery Get PIN"
+      },
+      "lead_label": {
+        "text": "If you forget your PIN, you cannot recover your wallet"
+      },
+      "info_label":{
+        "text":  ""
+      }
+    }
+  },
+  "add_session": {
+    "get_pin": {
+      "title_label": {
+        "text": "Add Session Get PIN"
+      },
+      "lead_label": {
+        "text": "If you forget your PIN, you cannot recover your wallet"
+      },
+      "info_label":{
+        "text":  ""
+      }
+    }
   }
 }
