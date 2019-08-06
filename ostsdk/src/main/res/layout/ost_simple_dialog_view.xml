@@ -6,7 +6,7 @@
     android:padding="12dp">
 
 
-    <com.ost.ostwallet.uicomponents.OstBoldTextView
+    <com.ost.walletsdk.ui.uicomponents.OstH1Label
         android:id="@+id/tv_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:text="Heading"
         android:textAlignment="center"/>
 
-    <com.ost.ostwallet.uicomponents.OstSubHeaderTextView
+    <com.ost.walletsdk.ui.uicomponents.OstH3Label
         android:id="@+id/tv_sub_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
         android:text="Sub heading"
         android:textAlignment="center"/>
 
-    <com.ost.ostwallet.uicomponents.OstLinkButton
+    <com.ost.walletsdk.ui.uicomponents.OstB4Label
         android:id="@+id/buttonOk"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
