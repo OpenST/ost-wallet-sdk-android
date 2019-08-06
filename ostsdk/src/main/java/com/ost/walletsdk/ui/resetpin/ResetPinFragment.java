@@ -83,7 +83,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 fragment,
                 this);
-        fragment.contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin").optJSONObject("new_pin");
+        fragment.contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin").optJSONObject("set_new_pin");
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 fragment,
                 this);
-        fragment.contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin").optJSONObject("confirm_pin");
+        fragment.contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin").optJSONObject("confirm_new_pin");
     }
 
     @Override
@@ -102,7 +102,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 fragment,
                 this);
-        fragment.contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin").optJSONObject("current_pin");
+        fragment.contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin").optJSONObject("get_pin");
     }
 
     @Override

@@ -85,7 +85,7 @@
     }
   },
   "reset_pin": {
-    "current_pin": {
+    "get_pin": {
       "title_label": {
         "text": "Enter Current Pin"
       },
@@ -96,7 +96,7 @@
         "text":  ""
       }
     },
-    "new_pin": {
+    "set_new_pin": {
       "title_label": {
         "text": "Add New Pin"
       },
@@ -107,7 +107,7 @@
         "text":  ""
       }
     },
-    "confirm_pin": {
+    "confirm_new_pin": {
       "title_label": {
         "text": "Confirm New Pin"
       },
