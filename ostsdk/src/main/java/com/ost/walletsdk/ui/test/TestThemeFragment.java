@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
+import com.ost.walletsdk.ui.uicomponents.PinEntryEditText;
 
 
 /**
@@ -55,6 +56,10 @@ public class TestThemeFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.ost_test_theme_fragment, container, false);
+        PinEntryEditText pinEntryEditText = viewGroup.findViewById(R.id.pinEntryEditText);
+        pinEntryEditText.setText("123");
+        pinEntryEditText.setEnable(false);
+
         setUpAppBar(viewGroup);
 
         return viewGroup;

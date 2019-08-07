@@ -217,4 +217,19 @@ public class PinEntryEditText extends LinearLayout {
     public void setError(boolean show) {
 
     }
+
+    public void setEnable(boolean enabled) {
+        invisiblePinEditText.setEnabled(enabled);
+        invisiblePinEditText.setFocusable(enabled);
+        if (enabled) {
+            setupOnClickListener();
+        } else {
+            invisiblePinEditText.setOnClickListener(null);
+        }
+    }
+
+    public void setText(String text) {
+        invisiblePinEditText.setText(text);
+        updatePinView();
+    }
 }

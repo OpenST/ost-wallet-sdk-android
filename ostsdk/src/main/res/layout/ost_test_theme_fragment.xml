@@ -117,6 +117,14 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="10dp"
                 android:text="B4: Quick Brown Fox Jumps Over The Lazy Dog" />
+
+            <com.ost.walletsdk.ui.uicomponents.PinEntryEditText
+                android:id="@+id/pinEntryEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/b4"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp" />
         </RelativeLayout>
     </ScrollView>
 
