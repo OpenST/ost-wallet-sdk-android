@@ -42,7 +42,8 @@ import static com.ost.walletsdk.ui.recovery.RecoveryFragment.DEVICE_ADDRESS;
 public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFragment.OnFragmentInteractionListener,
         DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener,
         SdkInteract.RequestAcknowledged,
-        SdkInteract.FlowInterrupt ,
+        SdkInteract.FlowInterrupt,
+        SdkInteract.FlowComplete,
         SdkInteract.WorkFlowCallbacks,
         WorkFlowPinFragment.OnFragmentInteractionListener {
 
@@ -56,6 +57,8 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public static final String ABORT_RECOVERY = "abort_recovery";
     public static final String CREATE_SESSION = "create_session";
     public static final String RESET_PIN = "reset_pin";
+    public static final String UPDATE_BIOMETRIC_PREFERENCE = "update_biometric_pref";
+    public static final String ENABLE = "enable";
 
     private static final String LOG_TAG = "OstWorkFlowActivity";
     WorkFlowListener mWorkFlowListener;
@@ -177,6 +180,12 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     @Override
     public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        showProgress(false);
+        finish();
+    }
+
+    @Override
+    public void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
         finish();
     }

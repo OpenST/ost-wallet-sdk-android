@@ -280,10 +280,7 @@ public class SettingsFragment extends BaseFragment implements
                     return;
                 }
                 String userId = AppProvider.get().getCurrentUser().getOstUserId();
-                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
-                showProgress(true, "Updating biometric...");
-                SdkInteract.getInstance().subscribe(workFlowListener.getId(), SettingsFragment.this);
-                OstSdk.updateBiometricPreference(userId, !OstSdk.isBiometricEnabled(userId), workFlowListener);
+                mListener.updateBiometricPreference(!OstSdk.isBiometricEnabled(userId));
             }
         });
         if (new CommonUtils().isBioMetricHardwareAvailable()) {
@@ -590,5 +587,6 @@ public class SettingsFragment extends BaseFragment implements
         void relaunchApp();
         void initiateDeviceRecovery();
         void resetPin();
+        void updateBiometricPreference(boolean enable);
     }
 }

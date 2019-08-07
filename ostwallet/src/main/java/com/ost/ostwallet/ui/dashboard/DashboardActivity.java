@@ -216,6 +216,11 @@ public class DashboardActivity extends BaseActivity implements
             showUserActivationToast = true;
             notifyActivate();
             return;
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.UPDATE_BIOMETRIC_PREFERENCE
+                .equals(
+                        ostWorkflowContext.getWorkflow_type()
+                )) {
+            mSettingsFragment.reDrawView();
         }
         JSONObject trxWorkflow = null;
         trxWorkflow = transactionWorkflows.optJSONObject(String.format("%s", workflowId));
@@ -397,6 +402,17 @@ public class DashboardActivity extends BaseActivity implements
     public void resetPin() {
         String workflowId = OstWalletUI.resetPin(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
+                AppProvider.get().getUserPassphraseCallback());
+        SdkInteract.getInstance().subscribe(workflowId, this);
+    }
+
+    @Override
+    public void updateBiometricPreference(boolean enable) {
+        String userId = AppProvider.get().getCurrentUser().getOstUserId();
+
+        String workflowId = OstWalletUI.updateBiometricPreference(this,
+                userId,
+                enable,
                 AppProvider.get().getUserPassphraseCallback());
         SdkInteract.getInstance().subscribe(workflowId, this);
     }

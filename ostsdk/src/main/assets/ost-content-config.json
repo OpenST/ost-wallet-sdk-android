@@ -131,5 +131,21 @@
         "text":  ""
       }
     }
+  },
+  "biometric_preference": {
+    "get_pin": {
+      "title_label": {
+        "text": "Update Biometric Preference"
+      },
+      "lead_label": {
+        "text": "Enter your 6-digit PIN to update biometric preference"
+      },
+      "info_label":{
+        "text": ""
+      },
+      "terms_and_condition_label": {
+        "text": ""
+      }
+    }
   }
 }

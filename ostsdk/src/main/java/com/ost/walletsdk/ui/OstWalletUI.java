@@ -14,6 +14,7 @@ import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.theme.ThemeConfig;
 import com.ost.walletsdk.ui.workflow.OstAbortRecoveryWorkflow;
 import com.ost.walletsdk.ui.workflow.OstActivateWorkflow;
+import com.ost.walletsdk.ui.workflow.OstBiometricPrefWorkflow;
 import com.ost.walletsdk.ui.workflow.OstCreateSessionWorkflow;
 import com.ost.walletsdk.ui.workflow.OstInitiateRecoveryWorkflow;
 import com.ost.walletsdk.ui.workflow.OstResetPinWorkflow;
@@ -82,6 +83,27 @@ public class OstWalletUI {
         Intent intent = new Intent(currentActivity, OstResetPinWorkflow.class);
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.RESET_PIN);
+        intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
+        currentActivity.startActivity(intent);
+        return workFlowListener.getId();
+    }
+
+    /**
+     * To update Biometric preference
+     *
+     * @param currentActivity context for current Activity for the application
+     * @param userId - user Id
+     * @param enable - to enable or disable
+     * @param userPassphraseCallback  - A workflow callback handler.
+     */
+    public static String updateBiometricPreference(@NonNull Activity currentActivity, String userId,
+                                                 boolean enable, OstUserPassphraseCallback userPassphraseCallback) {
+        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
+        Intent intent = new Intent(currentActivity, OstBiometricPrefWorkflow.class);
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.UPDATE_BIOMETRIC_PREFERENCE);
+        intent.putExtra(OstWorkFlowActivity.ENABLE, enable);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
         currentActivity.startActivity(intent);
         return workFlowListener.getId();
