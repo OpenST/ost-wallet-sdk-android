@@ -81,5 +81,9 @@
   },
   "fonts": {
     "Lato-Bold": "fonts/Lato-Italic.ttf"
+  },
+  "pin_input": {
+    "empty_color": "#c7c7cc",
+    "filled_color": "#438bad"
   }
 }

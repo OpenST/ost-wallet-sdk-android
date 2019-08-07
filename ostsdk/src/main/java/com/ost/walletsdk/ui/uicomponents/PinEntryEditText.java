@@ -12,6 +12,8 @@ package com.ost.walletsdk.ui.uicomponents;
 
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -27,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ost.walletsdk.R;
+import com.ost.walletsdk.ui.uicomponents.uiutils.theme.PinDrawable;
+import com.ost.walletsdk.ui.uicomponents.uiutils.theme.ThemeConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +44,9 @@ public class PinEntryEditText extends LinearLayout {
     private EditText invisiblePinEditText;
     private int pinLenght;
     private TextView.OnEditorActionListener mOnEditorActionListener;
+
+    private int filledColor = Color.parseColor(ThemeConfig.getInstance().getPinViewConfig().getFilledColor());
+    private int emptyColor = Color.parseColor(ThemeConfig.getInstance().getPinViewConfig().getEmptyColor());
 
     public PinEntryEditText(Context context) {
         super(context);
@@ -191,11 +198,15 @@ public class PinEntryEditText extends LinearLayout {
     }
 
     private void fillPin(View pin) {
-        pin.setBackground(getResources().getDrawable(R.drawable.bg_pin_round_fill, null));
+        PinDrawable pinDrawable = new PinDrawable();
+        pinDrawable.setColorFilter(filledColor, PorterDuff.Mode.SRC_IN);
+        pin.setBackground(pinDrawable);
     }
 
     private void unfillPin(View pin) {
-        pin.setBackground(getResources().getDrawable(R.drawable.bg_pin_round_unfill, null));
+        PinDrawable pinDrawable = new PinDrawable();
+        pinDrawable.setColorFilter(emptyColor, PorterDuff.Mode.SRC_IN);
+        pin.setBackground(pinDrawable);
     }
 
     public void setOnEditorActionListener(TextView.OnEditorActionListener onEditorActionListener) {

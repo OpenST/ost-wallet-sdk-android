@@ -97,4 +97,9 @@ public class ThemeConfig implements Theme {
     public NavigationConfig getNavigationBar() {
         return new NavigationConfig(mThemeObject.optJSONObject("navigation_bar"));
     }
+
+    @Override
+    public PinViewConfig getPinViewConfig() {
+        return new PinViewConfig(mThemeObject.optJSONObject("pin_input"));
+    }
 }

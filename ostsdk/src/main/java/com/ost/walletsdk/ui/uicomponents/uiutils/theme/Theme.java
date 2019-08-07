@@ -29,4 +29,6 @@ public interface Theme {
     String getFontRelativePath(String font);
 
     NavigationConfig getNavigationBar();
+
+    PinViewConfig getPinViewConfig();
 }
