@@ -25,6 +25,7 @@ import com.ost.walletsdk.ui.test.TestThemeFragment;
 import com.ost.walletsdk.ui.util.DialogFactory;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.ui.util.KeyBoard;
+import com.ost.walletsdk.ui.viewmnemonics.ViewMnemonicsFragment;
 import com.ost.walletsdk.ui.walletsetup.WalletSetUpFragment;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -59,6 +60,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public static final String RESET_PIN = "reset_pin";
     public static final String UPDATE_BIOMETRIC_PREFERENCE = "update_biometric_pref";
     public static final String ENABLE = "enable";
+    public static final String GET_DEVICE_MNEMONICS = "get_device_mnemonics";
 
     private static final String LOG_TAG = "OstWorkFlowActivity";
     WorkFlowListener mWorkFlowListener;
@@ -126,7 +128,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             Fragment fragment = FragmentUtils.getTopFragment(this, R.id.layout_container);
             if (null != fragment && !(fragment instanceof WalletSetUpFragment || fragment instanceof RecoveryFragment ||
                     fragment instanceof DeviceListFragment || fragment instanceof TestThemeFragment ||
-                    fragment instanceof WorkFlowPinFragment || fragment instanceof ResetPinFragment)) {
+                    fragment instanceof WorkFlowPinFragment || fragment instanceof ResetPinFragment || fragment instanceof ViewMnemonicsFragment)) {
                 FragmentUtils.goBack(this);
             } else {
                 //hide keyboard if open

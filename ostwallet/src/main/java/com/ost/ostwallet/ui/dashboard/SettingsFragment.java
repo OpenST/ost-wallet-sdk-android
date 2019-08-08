@@ -185,8 +185,9 @@ public class SettingsFragment extends BaseFragment implements
                 if (userDeviceNotAuthorized()) {
                     openDeviceAuthorizationFragment();
                 } else {
-                    Fragment fragment = ViewMnemonicsFragment.newInstance();
-                    mListener.launchFeatureFragment(fragment);
+                    mListener.viewMnemonics();
+//                    Fragment fragment = ViewMnemonicsFragment.newInstance();
+//                    mListener.launchFeatureFragment(fragment);
                 }
             }
         });
@@ -588,5 +589,6 @@ public class SettingsFragment extends BaseFragment implements
         void initiateDeviceRecovery();
         void resetPin();
         void updateBiometricPreference(boolean enable);
+        void viewMnemonics();
     }
 }

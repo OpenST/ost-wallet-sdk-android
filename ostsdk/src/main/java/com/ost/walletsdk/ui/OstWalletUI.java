@@ -16,6 +16,7 @@ import com.ost.walletsdk.ui.workflow.OstAbortRecoveryWorkflow;
 import com.ost.walletsdk.ui.workflow.OstActivateWorkflow;
 import com.ost.walletsdk.ui.workflow.OstBiometricPrefWorkflow;
 import com.ost.walletsdk.ui.workflow.OstCreateSessionWorkflow;
+import com.ost.walletsdk.ui.workflow.OstGetDeviceMnemonics;
 import com.ost.walletsdk.ui.workflow.OstInitiateRecoveryWorkflow;
 import com.ost.walletsdk.ui.workflow.OstResetPinWorkflow;
 import com.ost.walletsdk.ui.workflow.OstWorkFlowActivity;
@@ -83,6 +84,17 @@ public class OstWalletUI {
         Intent intent = new Intent(currentActivity, OstResetPinWorkflow.class);
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.RESET_PIN);
+        intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
+        currentActivity.startActivity(intent);
+        return workFlowListener.getId();
+    }
+
+    public static String getDeviceMnemonics(@NonNull Activity currentActivity, String userId, OstUserPassphraseCallback userPassphraseCallback) {
+        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
+        Intent intent = new Intent(currentActivity, OstGetDeviceMnemonics.class);
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.GET_DEVICE_MNEMONICS);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
         currentActivity.startActivity(intent);
         return workFlowListener.getId();

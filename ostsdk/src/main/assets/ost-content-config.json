@@ -147,5 +147,32 @@
         "text": ""
       }
     }
+  },
+  "view_mnemonics": {
+    "get_pin": {
+      "title_label": {
+        "text": "View Mnemonics"
+      },
+      "lead_label": {
+        "text": "Enter your 6-digit PIN"
+      },
+      "info_label": {
+        "text": ""
+      },
+      "terms_and_condition_label": {
+        "text": ""
+      }
+    },
+    "show_mnemonics": {
+      "title_label": {
+        "text": "Your Mnemonics Phrase"
+      },
+      "lead_label": {
+        "text": "Please write down your 12-word mnemonic phrase and store safely."
+      },
+      "terms_and_condition_label": {
+        "text": "You can write the phrases down in a piece of paper or save in a secure password manager. Don’t email them or screenshot them. The order of words is important."
+      }
+    }
   }
 }
