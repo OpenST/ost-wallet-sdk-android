@@ -252,8 +252,8 @@ void executeTransaction(String userId,
 | **tokenHolderAddresses** <br> **List**	|  **TokenHolder**  addresses of amount receiver |
 | **amounts** <br> **List**	| Amount to be transferred in atto.  |
 | **ruleName** <br> **String**	|  Rule name to be executed.  |
-| **meta** <br> **Map<String,String>**	|  Transaction Meta properties. <br> Example: `{"name": "transaction name","type": "user-to-user","details": "like"}`  |
-| **options** <br> **Map<String,String>**	| Optional settings parameters. You can set following values: <br> 1. `currency_code`: Currency code for the pay currency. <br> 2. `wait_for_finalization`: If set `false` then SDK will stop polling for transaction status. By default the SDK will do polling to check the transaction status. <br> Example: `{"currency_code": "USD", "wait_for_finalization": false}`|
+| **meta** <br> **Map<String,String>**	|  Transaction Meta properties. <br> Example: <br>{"name": "transaction name",<br>"type": "user-to-user" (it can take one of the following values: `user_to_user`, `user_to_company` and `company_to_user`), <br> "details": "like"}  |
+| **options** <br> **Map<String,String>**	| Optional settings parameters. You can set following values: <br> 1. `currency_code`: Currency code for the pay currency. <br> Example: `{"currency_code": "USD"}`|
 | **workFlowCallback** <br> **OstWorkFlowCallback**	|An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface).  |
 
 
