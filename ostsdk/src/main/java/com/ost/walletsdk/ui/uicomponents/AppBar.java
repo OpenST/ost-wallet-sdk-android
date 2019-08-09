@@ -96,12 +96,11 @@ public class AppBar extends LinearLayout {
         ImageView imageView = new ImageView(context);
         imageView.setId(R.id.app_bar_title);
         imageView.setImageDrawable(ThemeConfig.getInstance().getDrawableConfig("nav_bar_logo_image").getDrawable(context));
-        int padding = (int) context.getResources().getDimension(R.dimen.dp_30);
-        imageView.setPadding(padding,padding,padding,padding);
-
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT,
                 Toolbar.LayoutParams.WRAP_CONTENT,
                 Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+        layoutParams.leftMargin = (int) context.getResources().getDimension(R.dimen.dp_30);
+        layoutParams.rightMargin = (int) context.getResources().getDimension(R.dimen.dp_30);
         imageView.setLayoutParams(layoutParams);
 
         return imageView;
