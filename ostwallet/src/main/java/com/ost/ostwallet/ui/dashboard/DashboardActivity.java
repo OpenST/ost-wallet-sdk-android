@@ -426,6 +426,23 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
+    public void revokeDevice() {
+        String workflowId = OstWalletUI.revokeDevice(this,
+                AppProvider.get().getCurrentUser().getOstUserId(),
+                null,
+                AppProvider.get().getUserPassphraseCallback());
+        SdkInteract.getInstance().subscribe(workflowId, this);
+    }
+
+    @Override
+    public void authorizeDeviceWithMnemonics() {
+        String workflowId = OstWalletUI.authorizeCurrentDeviceWithMnemonics(this,
+                AppProvider.get().getCurrentUser().getOstUserId(),
+                AppProvider.get().getUserPassphraseCallback());
+        SdkInteract.getInstance().subscribe(workflowId, this);
+    }
+
+    @Override
     public void onDeviceSelectedToAbortRecovery(Device device) {
         String workflowId = OstWalletUI.abortDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
@@ -568,6 +585,10 @@ public class DashboardActivity extends BaseActivity implements
     public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         if (OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION.equals(ostWorkflowContext.getWorkflow_type())) {
             showToastMessage("Session authorization request received.", true);
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE.equals(ostWorkflowContext.getWorkflow_type())) {
+            showToastMessage("Device Revoke request received.", true);
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS.equals(ostWorkflowContext.getWorkflow_type())) {
+            showToastMessage("Authorize device request received", true);
         }
     }
 }

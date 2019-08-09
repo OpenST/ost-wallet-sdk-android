@@ -29,7 +29,8 @@ public class OstWorkflowContext {
         ABORT_DEVICE_RECOVERY,
         REVOKE_DEVICE_WITH_QR_CODE,
         RESET_PIN,
-        LOGOUT_ALL_SESSIONS
+        LOGOUT_ALL_SESSIONS,
+        REVOKE_DEVICE
     }
     private WORKFLOW_TYPE workflow_type;
 

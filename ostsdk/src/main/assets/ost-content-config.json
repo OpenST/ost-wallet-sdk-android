@@ -174,5 +174,40 @@
         "text": "You can write the phrases down in a piece of paper or save in a secure password manager. Don’t email them or screenshot them. The order of words is important."
       }
     }
+  },
+  "revoke_device": {
+    "device_list": {
+      "title_label": {
+        "text": "Revoke Access to Your Wallet"
+      },
+      "lead_label": {
+        "text": "You currently have these authorized devices"
+      },
+      "info_label": {
+        "text": ""
+      },
+      "terms_and_condition_label": {
+        "text": ""
+      },
+      "cell": {
+        "action_button": {
+          "text": "Revoke Device"
+        }
+      }
+    },
+    "get_pin": {
+      "title_label": {
+        "text": "Revoke Access to Your Wallet"
+      },
+      "lead_label": {
+        "text": "Enter your 6-digit PIN"
+      },
+      "info_label":{
+        "text": ""
+      },
+      "terms_and_condition_label": {
+        "text": ""
+      }
+    }
   }
 }

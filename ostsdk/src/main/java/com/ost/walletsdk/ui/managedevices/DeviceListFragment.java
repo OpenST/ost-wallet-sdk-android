@@ -71,10 +71,11 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
     }
 
 
-    public static DeviceListFragment manageDeviceInstance() {
+    public static DeviceListFragment revokeDeviceInstance(Bundle bundle) {
         DeviceListFragment fragment = new DeviceListFragment();
         Bundle args = new Bundle();
         args.putString(ACTION_NAME, MANAGE_DEVICE);
+        args.putAll(bundle);
         fragment.setArguments(args);
         return fragment;
     }

@@ -35,14 +35,10 @@ import com.ost.ostwallet.sdkInteract.SdkInteract;
 import com.ost.ostwallet.sdkInteract.WorkFlowListener;
 import com.ost.ostwallet.ui.BaseFragment;
 import com.ost.ostwallet.ui.managedevices.AuthorizeDeviceOptionsFragment;
-import com.ost.ostwallet.ui.managedevices.DeviceListFragment;
 import com.ost.ostwallet.ui.workflow.authrorizedeviceqr.AuthorizeDeviceQRFragment;
 import com.ost.ostwallet.ui.workflow.createsession.CreateSessionFragment;
-import com.ost.ostwallet.ui.workflow.entermnemonics.EnterMnemonicsFragment;
 import com.ost.ostwallet.ui.workflow.qrfragment.QRFragment;
 import com.ost.ostwallet.ui.workflow.recovery.AbortRecoveryFragment;
-import com.ost.ostwallet.ui.workflow.resetpin.ResetPinFragment;
-import com.ost.ostwallet.ui.workflow.viewmnemonics.ViewMnemonicsFragment;
 import com.ost.ostwallet.ui.workflow.walletdetails.WalletDetailsFragment;
 import com.ost.ostwallet.uicomponents.AppBar;
 import com.ost.ostwallet.uicomponents.OstTextView;
@@ -257,8 +253,7 @@ public class SettingsFragment extends BaseFragment implements
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                Fragment fragment = EnterMnemonicsFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
+                mListener.authorizeDeviceWithMnemonics();
             }
         });
         mScrollViewSettings.addView(authorizeDeviceViaMnemonics);
@@ -308,8 +303,7 @@ public class SettingsFragment extends BaseFragment implements
 
                 if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
 
-                Fragment fragment = DeviceListFragment.manageDeviceInstance();
-                mListener.launchFeatureFragment(fragment);
+                mListener.revokeDevice();
             }
         });
         mScrollViewSettings.addView(manageDevices);
@@ -590,5 +584,7 @@ public class SettingsFragment extends BaseFragment implements
         void resetPin();
         void updateBiometricPreference(boolean enable);
         void viewMnemonics();
+        void revokeDevice();
+        void authorizeDeviceWithMnemonics();
     }
 }

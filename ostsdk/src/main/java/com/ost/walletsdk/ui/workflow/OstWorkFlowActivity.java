@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.BaseActivity;
@@ -61,6 +62,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public static final String UPDATE_BIOMETRIC_PREFERENCE = "update_biometric_pref";
     public static final String ENABLE = "enable";
     public static final String GET_DEVICE_MNEMONICS = "get_device_mnemonics";
+    public static final String AUTHORIZE_DEVICE_WITH_MNEMONICS = "authorize_device_with_mnemonics";
 
     private static final String LOG_TAG = "OstWorkFlowActivity";
     WorkFlowListener mWorkFlowListener;
@@ -153,7 +155,8 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     @Override
     public void onDeviceSelectToRevoke(Device device) {
-
+        showProgress(true, "Revoking device...");
+        OstSdk.revokeDevice(mUserId, device.getDeviceAddress(), mWorkFlowListener);
     }
 
     @Override
