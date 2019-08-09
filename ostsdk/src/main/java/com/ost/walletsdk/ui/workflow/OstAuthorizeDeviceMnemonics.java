@@ -22,7 +22,7 @@ public class OstAuthorizeDeviceMnemonics extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY),
+                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS),
                     new OstError("owfa_oc_adwm_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
             );
             finish();
@@ -33,7 +33,7 @@ public class OstAuthorizeDeviceMnemonics extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY),
+                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS),
                     new OstError("owfa_oc_adwm_2", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED)
             );
             finish();
@@ -54,7 +54,7 @@ public class OstAuthorizeDeviceMnemonics extends OstWorkFlowActivity {
     @Override
     JSONObject getContentString(OstWorkflowContext ostWorkflowContext) {
         return ContentConfig.getInstance()
-                .getStringConfig("revoke_device")
+                .getStringConfig("add_current_device_with_mnemonics")
                 .optJSONObject("get_pin");
     }
 }

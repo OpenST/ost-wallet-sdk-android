@@ -69,7 +69,10 @@ public class ViewMnemonicsFragment extends BaseFragment {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.ost_fragment_view_mnemonics, container, true);
 
         mOstTextView1 = viewGroup.findViewById(R.id.mnemonics_tv_1);
+        mOstTextView1.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
         mOstTextView2 = viewGroup.findViewById(R.id.mnemonics_tv_2);
+        mOstTextView2.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+
         TextView labelHeading = viewGroup.findViewById(R.id.labelHeading);
         labelHeading.setText(
                 StringConfig.instance(contentConfig.optJSONObject("title_label")).getString()

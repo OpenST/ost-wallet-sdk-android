@@ -182,8 +182,6 @@ public class SettingsFragment extends BaseFragment implements
                     openDeviceAuthorizationFragment();
                 } else {
                     mListener.viewMnemonics();
-//                    Fragment fragment = ViewMnemonicsFragment.newInstance();
-//                    mListener.launchFeatureFragment(fragment);
                 }
             }
         });
@@ -326,7 +324,7 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(transactionViaQR);
 
-        View initiateRecovery = getFeatureView("Initiate Recovery", ostUser.getCurrentDevice().canBeAuthorized());
+        View initiateRecovery = getFeatureView("Initiate Recovery", null != ostUser.getCurrentDevice() && ostUser.getCurrentDevice().canBeAuthorized());
         initiateRecovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

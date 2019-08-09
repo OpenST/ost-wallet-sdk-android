@@ -13,6 +13,7 @@ import com.ost.walletsdk.ui.BaseActivity;
 import com.ost.walletsdk.ui.ChildFragmentStack;
 import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.WorkFlowPinFragment;
+import com.ost.walletsdk.ui.entermnemonics.EnterMnemonicsFragment;
 import com.ost.walletsdk.ui.managedevices.Device;
 import com.ost.walletsdk.ui.managedevices.DeviceListFragment;
 import com.ost.walletsdk.ui.managedevices.DeviceListRecyclerViewAdapter;
@@ -130,7 +131,8 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             Fragment fragment = FragmentUtils.getTopFragment(this, R.id.layout_container);
             if (null != fragment && !(fragment instanceof WalletSetUpFragment || fragment instanceof RecoveryFragment ||
                     fragment instanceof DeviceListFragment || fragment instanceof TestThemeFragment ||
-                    fragment instanceof WorkFlowPinFragment || fragment instanceof ResetPinFragment || fragment instanceof ViewMnemonicsFragment)) {
+                    fragment instanceof WorkFlowPinFragment || fragment instanceof ResetPinFragment ||
+                    fragment instanceof ViewMnemonicsFragment || fragment instanceof EnterMnemonicsFragment)) {
                 FragmentUtils.goBack(this);
             } else {
                 //hide keyboard if open

@@ -209,5 +209,32 @@
         "text": ""
       }
     }
+  },
+  "add_current_device_with_mnemonics": {
+    "get_pin": {
+      "title_label": {
+        "text": "Add device with Mnemonics"
+      },
+      "lead_label": {
+        "text": "Enter your 6-digit PIN"
+      },
+      "info_label": {
+        "text": ""
+      },
+      "terms_and_condition_label": {
+        "text": ""
+      }
+    }
+  },
+  "provide_mnemonics": {
+    "title_label": {
+      "text": "Add device with QR"
+    },
+    "lead_label": {
+      "text": ""
+    },
+    "action_button": {
+      "text": "Authorize Device"
+    }
   }
 }

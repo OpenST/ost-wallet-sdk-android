@@ -10,6 +10,7 @@
 
 package com.ost.ostwallet.ui.dashboard;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -51,11 +52,13 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.ui.OstWalletUI;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -63,6 +66,7 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 import io.fabric.sdk.android.Fabric;
@@ -143,7 +147,7 @@ public class DashboardActivity extends BaseActivity implements
                     AppProvider.get().getUserPassphraseCallback());
             SdkInteract.getInstance().subscribe(workflowId, this);
             mViewPager.setCurrentItem(1);
-        } else if(ostUser.getCurrentDevice().canBeAuthorized()) {
+        } else if(null != ostUser.getCurrentDevice() && ostUser.getCurrentDevice().canBeAuthorized()) {
             handleCrashAnalytics();
             mSettingsFragment.setOpenDeviceAuthorization(true);
             mViewPager.setCurrentItem(2);
@@ -253,6 +257,34 @@ public class DashboardActivity extends BaseActivity implements
     @Override
     public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         showProgress(false);
+
+        Log.d(LOG_TAG, String.format("Flow Interrupted: WorkFlow Id: %s of Workflow %s", workflowId ,ostWorkflowContext.getWorkflow_type().toString()));
+
+        //region Sdk Error Handling
+        if (OstErrors.ErrorCode.WORKFLOW_CANCELLED == ostError.getErrorCode()) {
+            //Test-App has cancelled the workflow
+            Log.i(LOG_TAG, "Interrupt Reason: Test-App cancelled the workflow.");
+        } else if (ostError.isApiError()) {
+            OstApiError apiError = (OstApiError) ostError;
+            if (apiError.isApiSignerUnauthorized()) {
+                // The device has been revoked and can not make any more calls to OST Platform.
+                // Apps must logout users at this point.
+                // For purpose of testing the sdk, lets give users an option.
+                deviceUnauthorized(apiError);
+            } else {
+                //Let's log the error
+                logSdkError(ostWorkflowContext, ostError);
+            }
+        } else if (OstErrors.ErrorCode.DEVICE_NOT_SETUP == ostError.getErrorCode()) {
+            // Device needs to be registered or new device keys need to be created.
+            // To perform this operation, Test-App needs to call OstSdk.setupDevice()
+            // If app believe that user is authenticated, they should logout user here.
+            deviceUnauthorized(ostError);
+        } else {
+            //Let's log the error
+            logSdkError(ostWorkflowContext, ostError);
+        }
+
         JSONObject trxWorkflow = null;
         try{
             trxWorkflow = transactionWorkflows.getJSONObject(String.format("%s", workflowId));
@@ -590,5 +622,70 @@ public class DashboardActivity extends BaseActivity implements
         } else if (OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS.equals(ostWorkflowContext.getWorkflow_type())) {
             showToastMessage("Authorize device request received", true);
         }
+    }
+
+    private void logSdkError(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        StringBuilder errorStringBuilder = new StringBuilder();
+
+        String errorString = String.format("Error: %s " +
+                        "\nwith error code: %s" +
+                        "\ninternal error code: %s",
+                ostError.getMessage(),
+                ostError.getErrorCode(),
+                ostError.getInternalErrorCode()
+        );
+        errorStringBuilder.append(errorString);
+
+        if (ostError.isApiError()) {
+            OstApiError ostApiError = ((OstApiError) ostError);
+            String apiErrorCodeMsg = String.format(
+                    "\n%s: %s",
+                    ostApiError.getErrCode(),
+                    ostApiError.getErrMsg());
+
+            errorStringBuilder.append(apiErrorCodeMsg);
+
+            errorStringBuilder.append(
+                    String.format("\napi_internal_id: %s", ostApiError.getApiInternalId())
+            );
+
+            List<OstApiError.ApiErrorData> apiErrorDataList = ostApiError.getErrorData();
+            for (OstApiError.ApiErrorData apiErrorData : apiErrorDataList) {
+                String errorData = String.format(
+                        "\n%s: %s",
+                        apiErrorData.getParameter(),
+                        apiErrorData.getMsg());
+
+                errorStringBuilder.append(errorData);
+            }
+        }
+        String stringFormattedError = errorStringBuilder.toString();
+        Log.e(LOG_TAG, stringFormattedError);
+
+    }
+
+    private void deviceUnauthorized(OstError ostError) {
+        String title = "Device not registered";
+        String message = "Please login again to register your device.";
+        if (ostError.isApiError()) {
+            OstApiError apiError = (OstApiError) ostError;
+            if (apiError.isApiSignerUnauthorized()) {
+                title = "Device Revoked";
+            }
+        }
+        Log.e(LOG_TAG, title);
+        showLogoutDialog(title, message);
+    }
+
+    public void showLogoutDialog(String title, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(AppProvider.get().getCurrentActivity());
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        builder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                AppProvider.get().relaunchApp();
+            }});
+        builder.create().show();
     }
 }

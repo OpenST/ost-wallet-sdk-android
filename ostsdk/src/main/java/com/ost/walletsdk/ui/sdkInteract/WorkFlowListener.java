@@ -12,7 +12,6 @@ package com.ost.walletsdk.ui.sdkInteract;
 
 import android.util.Log;
 
-import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.ui.OstPassphraseAcceptor;
 import com.ost.walletsdk.ui.OstUserPassphraseCallback;
 import com.ost.walletsdk.workflows.OstContextEntity;
@@ -26,7 +25,6 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -109,47 +107,6 @@ public class WorkFlowListener implements OstWorkFlowCallback {
         Log.d(LOG_TAG, String.format("Verify Data: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
         if (null != mWorkflowCallbacks.get()) mWorkflowCallbacks.get().verifyData(getId(), ostWorkflowContext, ostContextEntity, ostVerifyDataInterface);
-    }
-
-
-    private void logSdkError(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        StringBuilder errorStringBuilder = new StringBuilder();
-
-        String errorString = String.format("Error: %s " +
-                        "\nwith error code: %s" +
-                        "\ninternal error code: %s",
-                ostError.getMessage(),
-                ostError.getErrorCode(),
-                ostError.getInternalErrorCode()
-        );
-        errorStringBuilder.append(errorString);
-
-        if (ostError.isApiError()) {
-            OstApiError ostApiError = ((OstApiError) ostError);
-            String apiErrorCodeMsg = String.format(
-                    "\n%s: %s",
-                    ostApiError.getErrCode(),
-                    ostApiError.getErrMsg());
-
-            errorStringBuilder.append(apiErrorCodeMsg);
-
-            errorStringBuilder.append(
-                    String.format("\napi_internal_id: %s", ostApiError.getApiInternalId())
-            );
-
-            List<OstApiError.ApiErrorData> apiErrorDataList = ostApiError.getErrorData();
-            for (OstApiError.ApiErrorData apiErrorData : apiErrorDataList) {
-                String errorData = String.format(
-                        "\n%s: %s",
-                        apiErrorData.getParameter(),
-                        apiErrorData.getMsg());
-
-                errorStringBuilder.append(errorData);
-            }
-        }
-        String stringFormattedError = errorStringBuilder.toString();
-        Log.e(LOG_TAG, stringFormattedError);
-
     }
 
     public void setUserPassPhraseCallback(OstUserPassphraseCallback userPassphraseCallback) {
