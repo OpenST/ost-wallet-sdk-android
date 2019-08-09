@@ -4,7 +4,7 @@
 Wallet SDK is a mobile application development SDK that enables developers to integrate the functionality of a non-custodial crypto-wallet into consumer applications. The SDK:
 
 - Safely generates and stores keys on the user's mobile device
-- Signs ethereum transactions and data as defined by contracts using EIP-1077
+- Signs data as defined by contracts using EIP-1077 and EIP-712
 - Enables users to recover access to their Brand Tokens in case the user loses their authorized device</br>
 
 ## Support
@@ -44,12 +44,13 @@ compileOptions {
 
 ```
 dependencies {
-    implementation 'com.ost:ost-wallet-sdk-android:2.2.2'
+    implementation 'com.ost:ost-wallet-sdk-android:2.2.3'
     ...
     ...
     ...
 }
 ```
+
 ### Add mobile sdk config file
  A config file is needed for application-specific configuration of OST  SDK.</br>
  - Create file "ost-mobilesdk.json" with application specific configurations using  the json below as an example
@@ -64,6 +65,15 @@ dependencies {
         "USE_SEED_PASSWORD": false
   }
  ```
+
+1. BLOCK_GENERATION_TIME: The time in seconds it takes to mine a block on auxiliary chain.
+2. PRICE_POINT_CURRENCY_SYMBOL: It is the symbol of quote currency used in price conversion.
+3. REQUEST_TIMEOUT_DURATION: Request timeout in seconds for https calls made by ostWalletSdk.
+4. PIN_MAX_RETRY_COUNT: Maximum retry count to get the wallet Pin from user.
+5. SESSION_BUFFER_TIME: Buffer expiration time for session keys in seconds. Default value is 3600 seconds.
+6. USE_SEED_PASSWORD: The seed password is salt to PBKDF2 used to generate seed from the mnemonic. When `UseSeedPassword` set to true, different deterministic salts are used for different keys.
+
+
 - Place the file under main directory's assets folder <br>
 
   File path example: app -> src -> main -> assets -> ost-mobilesdk.json</br>
@@ -85,8 +95,9 @@ dependencies {
 
 2. `Getters`: These functions are synchronous and will return the value when requested.
 
-## Workflows
+3. `JSON APIs`: Methods that allows application to access OST Platform APIs. 
 
+## Workflows
 
 ### 1. initialize
 
@@ -178,7 +189,7 @@ This workflow will create and authorize the session key that is needed to do the
                   OstWorkFlowCallback workFlowCallback)
 ```
 
-<<<<<<< HEAD
+
 | Parameter | Description |
 |---|---|
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform  |
@@ -249,6 +260,7 @@ void executeTransaction(String userId,
 
 
 <br>
+
 ### 8. authorizeCurrentDeviceWithMnemonics
 This workflow should be used to add a new device using 12 words recovery phrase. 
 
@@ -307,6 +319,7 @@ void initiateDeviceRecovery(String userId,
 | **deviceAddressToRecover** <br> **String**	| Address of device to recover  |
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](/platform/docs/sdk/references/wallet_sdk/android/latest/interfaces/). |
 <br>
+
 ### 11. abortDeviceRecovery
 This workflow can be used to abort the initiated device recovery.
 
@@ -341,8 +354,6 @@ void logoutAllSessions(String userId,
 <br>
 
 ## Getters
-
-
 
 ### 1. getAddDeviceQRCode
 This getter function will return the QRCode Bitmap that can be used to show on screen. This QRCode can then be scanned to add the new device.
@@ -403,7 +414,134 @@ boolean isBiometricEnabled(userId)
 <br>
 
 
-## Interface
+
+## OST JSON APIs
+
+### 1. getBalance
+
+Api to get user balance. Balance of only current logged-in user can be fetched.<br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: User Id of the current logged-in user.<br/>
+&nbsp; parameter callback: callback where to receive data/error.<br/>
+&nbsp; **getBalance(userId, callback)**<br/>
+```java
+OstJsonApi.getBalance(userId, new OstJsonApiCallback() {
+        @Override
+        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+
+        @Override
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
+    }
+);
+```
+
+### 2. getPricePoints
+
+Api to get Price Points. 
+It will provide latest conversion rates of base token to fiat currency.<br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: User Id of the current logged-in user.<br/>
+&nbsp; parameter callback: callback where to receive data/error.<br/>
+&nbsp; **getPricePoints(userId, callback)**<br/>
+```java
+OstJsonApi.getPricePoints(userId, new OstJsonApiCallback() {
+        @Override
+        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+
+        @Override
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
+    }
+);
+```
+
+### 3. getBalanceWithPricePoints
+
+Api to get user balance and Price Points. Balance of only current logged-in user can be fetched.
+It will also provide latest conversion rates of base token to fiat currency.<br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: User Id of the current logged-in user.<br/>
+&nbsp; parameter callback: callback where to receive data/error.<br/>
+&nbsp; **getBalanceWithPricePoints(userId, callback)**<br/>
+```java
+OstJsonApi.getBalanceWithPricePoints(userId, new OstJsonApiCallback() {
+        @Override
+        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+
+        @Override
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
+    }
+);
+```
+
+### 4. getTransactions
+
+Api to get user transactions. Transactions of only current logged-in user can be fetched.<br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: User Id of the current logged-in user.<br/>
+&nbsp; parameter requestPayload: request payload. Such as next-page payload, filters etc.
+&nbsp; parameter callback: callback where to receive data/error.<br/>
+&nbsp; **getTransactions(userId, requestPayload, callback)**<br/>
+```java
+OstJsonApi.getTransactions(userId, requestPayload, new OstJsonApiCallback() {
+        @Override
+        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+
+        @Override
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
+    }
+);
+```
+
+### 5. getPendingRecovery
+
+Api to get status of pending ongoing recovery.<br/><br/>
+**Parameters**<br/>
+&nbsp; parameter userId: User Id of the current logged-in user.<br/>
+&nbsp; parameter callback: callback where to receive data/error.<br/>
+&nbsp; **getPendingRecovery(userId, callback)**<br/>
+```java
+OstJsonApi.getPendingRecovery(userId, new OstJsonApiCallback() {
+        @Override
+        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+
+        @Override
+        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
+    }
+);
+```
+
+## Json Api Response Callback
+&nbsp; Callbacks to be implemented by application before calling any of the above OstJsonApis.
+
+### 1. onOstJsonApiSuccess
+
+```java
+   /**
+     * Inform SDK user about Success of OstJsonApi
+     * @param data Response data
+     */
+    public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
+```
+| Argument | Description |
+|---|---|
+| **data** <br> **JSONObject**	|	Api Response data	|
+
+
+### 2. onOstJsonApiError
+```java
+   /**
+     * Inform SDK user about Failure of OstJsonApi
+     * @param err      OstError object containing error details
+     * @param response Api response
+     */
+    public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
+```
+| Argument | Description |
+|---|---|
+| **err** <br> **OstError**	|	OstError object containing error details	|
+| **response** <br> **JSONObject**	|	Api Response	|
+
+## OstWorkFlowCallback Interface
 Android SDK provides an interface to be implemented by the Java class calling the `workflows`. 
 <br>
 The interface name is `OstWorkFlowCallback`
@@ -414,7 +552,7 @@ The interface name is `OstWorkFlowCallback`
 import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 ```
 
-![walletSDKCommunication](/platform/docs/sdk/assets/wallet-sdk-communication.png)
+![walletSDKCommunication](https://dev.ost.com/platform/docs/sdk/assets/wallet-sdk-communication.png)
 
 
 ## Interface Functions
@@ -562,131 +700,6 @@ void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostConte
 | **ostVerifyDataInterface** <br> **OstVerifyDataInterface**	| **ostVerifyDataInterface.dataVerified()** should be called if the data is verified successfully. <br>In case data is not verified the current workflow should be canceled by developer by calling **ostVerifyDataInterface.cancelFlow()** |
 
 
-
-## OST JSON APIs
-
-### 1. getBalance
-
-Api to get user balance. Balance of only current logged-in user can be fetched.<br/><br/>
-**Parameters**<br/>
-&nbsp; parameter userId: User Id of the current logged-in user.<br/>
-&nbsp; parameter callback: callback where to receive data/error.<br/>
-&nbsp; **getBalance(userId, callback)**<br/>
-```java
-OstJsonApi.getBalance(userId, new OstJsonApiCallback() {
-        @Override
-        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
-
-        @Override
-        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
-    }
-);
-```
-
-### 2. getPricePoints
-
-Api to get Price Points. 
-It will provide latest conversion rates of base token to fiat currency.<br/><br/>
-**Parameters**<br/>
-&nbsp; parameter userId: User Id of the current logged-in user.<br/>
-&nbsp; parameter callback: callback where to receive data/error.<br/>
-&nbsp; **getPricePoints(userId, callback)**<br/>
-```java
-OstJsonApi.getPricePoints(userId, new OstJsonApiCallback() {
-        @Override
-        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
-
-        @Override
-        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
-    }
-);
-```
-
-### 3. getBalanceWithPricePoints
-
-Api to get user balance and Price Points. Balance of only current logged-in user can be fetched.
-It will also provide latest conversion rates of base token to fiat currency.<br/><br/>
-**Parameters**<br/>
-&nbsp; parameter userId: User Id of the current logged-in user.<br/>
-&nbsp; parameter callback: callback where to receive data/error.<br/>
-&nbsp; **getBalanceWithPricePoints(userId, callback)**<br/>
-```java
-OstJsonApi.getBalanceWithPricePoints(userId, new OstJsonApiCallback() {
-        @Override
-        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
-
-        @Override
-        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
-    }
-);
-```
-
-### 4. getTransactions
-
-Api to get user transactions. Transactions of only current logged-in user can be fetched.<br/><br/>
-**Parameters**<br/>
-&nbsp; parameter userId: User Id of the current logged-in user.<br/>
-&nbsp; parameter requestPayload: request payload. Such as next-page payload, filters etc.
-&nbsp; parameter callback: callback where to receive data/error.<br/>
-&nbsp; **getTransactions(userId, requestPayload, callback)**<br/>
-```java
-OstJsonApi.getTransactions(userId, requestPayload, new OstJsonApiCallback() {
-        @Override
-        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
-
-        @Override
-        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
-    }
-);
-```
-
-### 5. getPendingRecovery
-
-Api to get status of pending ongoing recovery.<br/><br/>
-**Parameters**<br/>
-&nbsp; parameter userId: User Id of the current logged-in user.<br/>
-&nbsp; parameter callback: callback where to receive data/error.<br/>
-&nbsp; **getPendingRecovery(userId, callback)**<br/>
-```java
-OstJsonApi.getPendingRecovery(userId, new OstJsonApiCallback() {
-        @Override
-        public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
-
-        @Override
-        public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
-    }
-);
-```
-## Json Api Response Callback
-&nbsp; Callbacks to be implemented by application before calling any of the above OstJsonApis.
-
-### 1. onOstJsonApiSuccess
-
-```java
-   /**
-     * Inform SDK user about Success of OstJsonApi
-     * @param data Response data
-     */
-    public void onOstJsonApiSuccess(@Nullable JSONObject data) { }
-```
-| Argument | Description |
-|---|---|
-| **data** <br> **JSONObject**	|	Api Response data	|
-
-
-### 2. onOstJsonApiError
-```java
-   /**
-     * Inform SDK user about Failure of OstJsonApi
-     * @param err      OstError object containing error details
-     * @param response Api response
-     */
-    public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) { }
-```
-| Argument | Description |
-|---|---|
-| **err** <br> **OstError**	|	OstError object containing error details	|
-| **response** <br> **JSONObject**	|	Api Response	|
 
 ## Application development supporting doc
  
@@ -840,7 +853,7 @@ dependencies {
 This class is used to provide error details in [flowInterrupt](/platform/docs/sdk/references/wallet_sdk/android/latest/interfaces/#2-flowinterrupt) callback function. 
 
 
-You can call [methods](#i-methods) on this object to get more details about the error.
+You can call the following methods on this object to get more details about the error.
 
 #### i). Methods
 
@@ -852,7 +865,7 @@ You can call [methods](#i-methods) on this object to get more details about the 
 This class provides context about the `entity` that is being changed during a [workflow](/platform/docs/sdk/references/wallet_sdk/android/latest/methods/#workflows). Callback functions that needs to know about the `entity` will receive an object of this class as an argument. 
 
 
-You can call [methods](#i-methods-1) on this object to get more details about the entity.
+You can call the following methods on this object to get more details about the entity.
 
 #### i). Methods
 
@@ -866,7 +879,7 @@ You can call [methods](#i-methods-1) on this object to get more details about th
 ### 3. OstWorkflowContext
 This class provides context about the current [workflow](/platform/docs/sdk/references/wallet_sdk/android/latest/methods/#workflows). Callback function that needs to know about the current [workflow](/platform/docs/sdk/references/wallet_sdk/android/latest/methods/#workflows) will get the object of this class as an argument.
 
-You can call [methods](#i-methods-2) on this object to get more details about the current [workflow](/platform/docs/sdk/references/wallet_sdk/android/latest/methods/#workflows).
+You can call the following methods on this object to get more details about the current [workflow](/platform/docs/sdk/references/wallet_sdk/android/latest/methods/#workflows).
 
 
 The `getWorkflow_type()` methods will return one of the strings from this enum.
