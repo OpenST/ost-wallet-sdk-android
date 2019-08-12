@@ -34,7 +34,7 @@ import com.ost.walletsdk.workflows.services.OstSessionPollingService;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -57,6 +57,15 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
     }
 
 
+    @Override
+    void ensureValidParams() {
+        super.ensureValidParams();
+        try {
+            new BigInteger(mSpendingLimit);
+        } catch (Exception ex) {
+            throw new OstError("wf_oas_evp_1", OstErrors.ErrorCode.INVALID_SESSION_SPENDING_LIMIT);
+        }
+    }
 
     @Override
     AsyncStatus performOnAuthenticated() {
