@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.ost.walletsdk.R;
+import com.ost.walletsdk.ui.uicomponents.uiutils.SizeUtil;
 import com.ost.walletsdk.ui.uicomponents.uiutils.theme.ThemeConfig;
 
 
@@ -86,7 +87,8 @@ public class AppBar extends LinearLayout {
             String colorHash = ThemeConfig.getInstance().getIconConfig("cross").getTintColor();
             imageView.setImageTintList(ColorStateList.valueOf(Color.parseColor(colorHash)));
         }
-
+        int pxPadding = new SizeUtil().dpToPx(20);
+        imageView.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
         imageView.setLayoutParams(new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.START | Gravity.CENTER_VERTICAL));
         return imageView;
