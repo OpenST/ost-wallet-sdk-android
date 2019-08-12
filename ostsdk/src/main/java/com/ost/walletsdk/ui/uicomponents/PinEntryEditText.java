@@ -64,14 +64,15 @@ public class PinEntryEditText extends LinearLayout {
     }
 
     private void init() {
-        pinLenght = getResources().getInteger(R.integer.type_your_pin_lenght);
-        int inputType = getResources().getInteger(R.integer.type_your_pin_input_type);
-        int marginSize = getResources().getDimensionPixelSize(R.dimen.type_your_pin_margins);
-        int height = getResources().getDimensionPixelSize(R.dimen.type_your_pin_size);
-        int width = getResources().getDimensionPixelSize(R.dimen.type_your_pin_size);
+        pinLenght = getResources().getInteger(R.integer.ost_type_your_pin_lenght);
+        int inputType = getResources().getInteger(R.integer.ost_type_your_pin_input_type);
+        int marginSize = getResources().getDimensionPixelSize(R.dimen.ost_type_your_pin_margins);
+        int height = getResources().getDimensionPixelSize(R.dimen.ost_type_your_pin_size);
+        int width = getResources().getDimensionPixelSize(R.dimen.ost_type_your_pin_size);
 
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER);
+        setPadding(0, marginSize,0, marginSize);
         setSize(this, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         setupOnClickListener();
         setFocusableInTouchMode(false);
@@ -82,7 +83,6 @@ public class PinEntryEditText extends LinearLayout {
             View pin = new View(getContext());
             setSize(pin, width, height);
             setMarginLeft(pin, marginSize);
-
             if (isLastPin(i, pinLenght)) {
                 setMarginRight(pin, marginSize);
             }

@@ -65,6 +65,6 @@
     <dimen name="list_item_spacing_half">8dp</dimen>
 
     <!--Pin entry text box-->
-    <dimen name="type_your_pin_margins">20dp</dimen>
-    <dimen name="type_your_pin_size">20dp</dimen>
+    <dimen name="ost_type_your_pin_margins">23dp</dimen>
+    <dimen name="ost_type_your_pin_size">12dp</dimen>
 </resources>

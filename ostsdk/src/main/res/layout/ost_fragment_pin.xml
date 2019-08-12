@@ -25,7 +25,7 @@
     <com.ost.walletsdk.ui.uicomponents.OstH1Label
         android:id="@+id/shtv_pin_heading"
         android:layout_below="@id/layout_holder"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="48dp"
         android:layout_marginStart="48dp"
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
     <com.ost.walletsdk.ui.uicomponents.OstH2Label
         android:id="@+id/shtv_pin_sub_heading"
         android:layout_below="@id/shtv_pin_heading"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="48dp"
         android:layout_marginStart="48dp"
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
     <com.ost.walletsdk.ui.uicomponents.OstH3Label
         android:id="@+id/shtv_pin_sub_heading_hint"
         android:layout_below="@id/shtv_pin_sub_heading"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="48dp"
         android:layout_marginStart="48dp"
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
 
     <com.ost.walletsdk.ui.uicomponents.PinEntryEditText
         android:id="@+id/txt_pin_entry"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="14dp"
         android:layout_below="@id/shtv_pin_sub_heading_hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
