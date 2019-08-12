@@ -17,37 +17,37 @@
     "size": 20,
     "color": "#438bad",
     "font": "Lato-Regular",
-    "font_weight": "semi_bold"
+    "system_font_weight": "semi_bold"
   },
   "h2": {
     "size": 17,
     "color": "#666666",
     "font": "Lato-Regular",
-    "font_weight": "medium"
+    "system_font_weight": "medium"
   },
   "h3": {
     "size": 15,
     "color": "#888888",
     "font": "Lato-Regular",
-    "font_weight": "regular"
+    "system_font_weight": "regular"
   },
   "h4": {
     "size": 12,
     "color": "#888888",
     "font": "Lato-Regular",
-    "font_weight": "regular"
+    "system_font_weight": "regular"
   },
   "c1": {
     "size": 13,
     "color": "#484848",
     "font": "Lato-Regular",
-    "font_weight": "bold",
+    "system_font_weight": "bold",
     "alignment": "left"
   },
   "c2": {
     "size": 12,
     "color": "#6f6f6f",
-    "font_weight": "regular",
+    "system_font_weight": "regular",
     "font": "Lato-Regular",
     "alignment": "left"
   },
@@ -56,28 +56,28 @@
     "color": "#ffffff",
     "background_color": "#438bad",
     "font": "Lato-Regular",
-    "font_weight": "medium"
+    "system_font_weight": "medium"
   },
   "b2": {
     "size": 17,
     "color": "#438bad",
     "background_color": "#ffffff",
     "font": "Lato-Regular",
-    "font_weight": "semi_bold"
+    "system_font_weight": "semi_bold"
   },
   "b3": {
     "size": 12,
     "color": "#ffffff",
     "background_color": "#438bad",
     "font": "Lato-Regular",
-    "font_weight": "medium"
+    "system_font_weight": "medium"
   },
   "b4": {
     "size": 12,
     "color": "#438bad",
     "background_color": "#ffffff",
     "font": "Lato-Regular",
-    "font_weight": "medium"
+    "system_font_weight": "medium"
   },
   "fonts": {
     "Lato-Regular": "fonts/Lato-Regular.ttf"

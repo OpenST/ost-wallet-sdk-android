@@ -30,7 +30,7 @@ public class UIConfig {
         this.color = jsonObject.optString("color");
         this.size = jsonObject.optInt("size");
         this.backgroundColor = jsonObject.optString("background_color");
-        this.fontWeight = jsonObject.optString("font_weight");
+        this.fontWeight = jsonObject.optString("system_font_weight");
         this.font = jsonObject.optString("font");
         this.alignment = jsonObject.optString("alignment");
     }
@@ -67,19 +67,16 @@ public class UIConfig {
         Typeface typeface = font.getFont(this.font);
         if (FONT_REGULAR.equals(this.fontWeight)) {
             if (null == typeface) typeface = Typeface.create("sans-serif", Typeface.NORMAL);
-            textView.setTypeface(typeface, Typeface.NORMAL);
+            textView.setTypeface(typeface);
         } else if (FONT_MEDIUM.equals(this.fontWeight)) {
             if (null == typeface) typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL);
             textView.setTypeface(typeface);
         } else if (FONT_BOLD.equals(this.fontWeight)) {
             if (null == typeface) typeface = Typeface.create("sans-serif-medium", Typeface.BOLD);
-            textView.setTypeface(typeface, Typeface.BOLD);
+            textView.setTypeface(typeface);
         } else if (FONT_SEMI_BOLD.equals(this.fontWeight)) {
             if (null == typeface) typeface = Typeface.create("sans-serif", Typeface.BOLD);
             textView.setTypeface(typeface);
-        } else if (FONT_ITALIC.equals(this.fontWeight)) {
-            if (null == typeface) typeface = Typeface.create("sans-serif", Typeface.ITALIC);
-            textView.setTypeface(typeface,Typeface.ITALIC);
         } else {
             textView.setTypeface(typeface);
         }
