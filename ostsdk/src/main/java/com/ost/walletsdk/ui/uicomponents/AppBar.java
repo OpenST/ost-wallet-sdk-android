@@ -101,8 +101,8 @@ public class AppBar extends LinearLayout {
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(Toolbar.LayoutParams.WRAP_CONTENT,
                 Toolbar.LayoutParams.WRAP_CONTENT,
                 Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-        layoutParams.leftMargin = (int) context.getResources().getDimension(R.dimen.dp_30);
-        layoutParams.rightMargin = (int) context.getResources().getDimension(R.dimen.dp_30);
+//        layoutParams.leftMargin = (int) context.getResources().getDimension(R.dimen.dp_30);
+//        layoutParams.rightMargin = (int) context.getResources().getDimension(R.dimen.dp_30);
         imageView.setLayoutParams(layoutParams);
 
         return imageView;
