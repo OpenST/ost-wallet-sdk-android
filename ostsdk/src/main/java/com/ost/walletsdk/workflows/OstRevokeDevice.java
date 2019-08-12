@@ -146,7 +146,7 @@ public class OstRevokeDevice extends OstBaseWorkFlow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE;
+        return WORKFLOW_TYPE.REVOKE_DEVICE;
     }
 
     static class RevokeDeviceDataDefinitionInstance extends OstDeviceDataDefinitionInstance {
@@ -178,7 +178,7 @@ public class OstRevokeDevice extends OstBaseWorkFlow {
 
         @Override
         public WORKFLOW_TYPE getWorkFlowType() {
-            return WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE;
+            return WORKFLOW_TYPE.REVOKE_DEVICE;
         }
     }
 }
