@@ -2,6 +2,7 @@ package com.ost.walletsdk.ui.uicomponents.uiutils.theme;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -58,7 +59,29 @@ public class UIConfig {
             drawable.setColorFilter(Color.parseColor(backgroundColor), PorterDuff.Mode.SRC_IN);
             textView.setBackground(drawable);
         }
+        setFontAndWeight(textView);
+    }
+
+    private void setFontAndWeight(TextView textView) {
         Font font = FontFactory.getInstance(getContext());
-        textView.setTypeface(font.getFont(this.font));
+        Typeface typeface = font.getFont(this.font);
+        if (FONT_REGULAR.equals(this.fontWeight)) {
+            if (null == typeface) typeface = Typeface.create("sans-serif", Typeface.NORMAL);
+            textView.setTypeface(typeface, Typeface.NORMAL);
+        } else if (FONT_MEDIUM.equals(this.fontWeight)) {
+            if (null == typeface) typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL);
+            textView.setTypeface(typeface);
+        } else if (FONT_BOLD.equals(this.fontWeight)) {
+            if (null == typeface) typeface = Typeface.create("sans-serif-medium", Typeface.BOLD);
+            textView.setTypeface(typeface, Typeface.BOLD);
+        } else if (FONT_SEMI_BOLD.equals(this.fontWeight)) {
+            if (null == typeface) typeface = Typeface.create("sans-serif", Typeface.BOLD);
+            textView.setTypeface(typeface);
+        } else if (FONT_ITALIC.equals(this.fontWeight)) {
+            if (null == typeface) typeface = Typeface.create("sans-serif", Typeface.ITALIC);
+            textView.setTypeface(typeface,Typeface.ITALIC);
+        } else {
+            textView.setTypeface(typeface);
+        }
     }
 }

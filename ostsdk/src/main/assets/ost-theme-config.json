@@ -16,31 +16,31 @@
   "h1": {
     "size": 20,
     "color": "#438bad",
-    "font": "Lato-Bold",
+    "font": "Lato-Regular",
     "font_weight": "semi_bold"
   },
   "h2": {
     "size": 17,
     "color": "#666666",
-    "font": "Lato-Bold",
+    "font": "Lato-Regular",
     "font_weight": "medium"
   },
   "h3": {
     "size": 15,
     "color": "#888888",
-    "font": "Lato-Bold",
+    "font": "Lato-Regular",
     "font_weight": "regular"
   },
   "h4": {
     "size": 12,
     "color": "#888888",
-    "font": "Lato-Bold",
+    "font": "Lato-Regular",
     "font_weight": "regular"
   },
   "c1": {
     "size": 13,
     "color": "#484848",
-    "font": "Lato-Bold",
+    "font": "Lato-Regular",
     "font_weight": "bold",
     "alignment": "left"
   },
@@ -48,39 +48,39 @@
     "size": 12,
     "color": "#6f6f6f",
     "font_weight": "regular",
-    "font": "Lato-Bold",
+    "font": "Lato-Regular",
     "alignment": "left"
   },
   "b1": {
     "size": 17,
     "color": "#ffffff",
     "background_color": "#438bad",
-    "font": "Lato-Bold",
+    "font": "Lato-Regular",
     "font_weight": "medium"
   },
   "b2": {
     "size": 17,
     "color": "#438bad",
     "background_color": "#ffffff",
-    "font": "Lato-Bold",
+    "font": "Lato-Regular",
     "font_weight": "semi_bold"
   },
   "b3": {
     "size": 12,
     "color": "#ffffff",
     "background_color": "#438bad",
-    "font": "Lato-Bold",
+    "font": "Lato-Regular",
     "font_weight": "medium"
   },
   "b4": {
     "size": 12,
     "color": "#438bad",
     "background_color": "#ffffff",
-    "font": "Lato-Bold",
+    "font": "Lato-Regular",
     "font_weight": "medium"
   },
   "fonts": {
-    "Lato-Bold": "fonts/Lato-Italic.ttf"
+    "Lato-Regular": "fonts/Lato-Regular.ttf"
   },
   "pin_input": {
     "empty_color": "#c7c7cc",
