@@ -23,7 +23,7 @@ public class OstAbortRecoveryWorkflow extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY),
+                    getWorkflowContext(),
                     new OstError("owfa_oc_ar_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
             );
             finish();
@@ -40,5 +40,10 @@ public class OstAbortRecoveryWorkflow extends OstWorkFlowActivity {
         FragmentUtils.addFragment(R.id.layout_container,
                 AbortRecoveryFragment.newInstance(bundle),
                 this);
+    }
+
+    @Override
+    OstWorkflowContext getWorkflowContext() {
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY);
     }
 }

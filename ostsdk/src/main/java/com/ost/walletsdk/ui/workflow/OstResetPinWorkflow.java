@@ -20,7 +20,7 @@ public class OstResetPinWorkflow extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN),
+                    getWorkflowContext(),
                     new OstError("owfa_oc_rp_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
             );
             finish();
@@ -37,5 +37,10 @@ public class OstResetPinWorkflow extends OstWorkFlowActivity {
                 ResetPinFragment.newInstance(bundle),
                 this);
 
+    }
+
+    @Override
+    OstWorkflowContext getWorkflowContext() {
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN);
     }
 }

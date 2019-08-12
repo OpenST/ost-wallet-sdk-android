@@ -20,8 +20,8 @@ public class OstBiometricPrefWorkflow extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.UPDATE_BIOMETRIC_PREFERENCE),
-                    new OstError("owfa_oc_ubp_1", OstErrors.ErrorCode.DEVICE_NOT_SETUP)
+                    getWorkflowContext(),
+                    new OstError("owfa_oc_ubp_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED)
             );
             finish();
             return true;
@@ -43,5 +43,10 @@ public class OstBiometricPrefWorkflow extends OstWorkFlowActivity {
         return ContentConfig.getInstance()
                 .getStringConfig("biometric_preference")
                 .optJSONObject("get_pin");
+    }
+
+    @Override
+    OstWorkflowContext getWorkflowContext() {
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.UPDATE_BIOMETRIC_PREFERENCE);
     }
 }

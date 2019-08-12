@@ -20,7 +20,7 @@ public class OstActivateWorkflow extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER),
+                    getWorkflowContext(),
                     new OstError("owfa_oc_au_1", OstErrors.ErrorCode.USER_ALREADY_ACTIVATED)
             );
             finish();
@@ -31,7 +31,7 @@ public class OstActivateWorkflow extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER),
+                    getWorkflowContext(),
                     new OstError("owfa_oc_au_2", OstErrors.ErrorCode.DEVICE_NOT_REGISTERED)
             );
             finish();
@@ -47,5 +47,10 @@ public class OstActivateWorkflow extends OstWorkFlowActivity {
         FragmentUtils.addFragment(R.id.layout_container,
                 WalletSetUpFragment.newInstance(getIntent().getExtras()),
                 this);
+    }
+
+    @Override
+    OstWorkflowContext getWorkflowContext() {
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER);
     }
 }

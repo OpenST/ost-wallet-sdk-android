@@ -105,13 +105,17 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     boolean invalidState() {
         if (null == OstUser.getById(mUserId)) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER),
-                    new OstError("owfa_oc_au_3", OstErrors.ErrorCode.DEVICE_NOT_SETUP)
+                    getWorkflowContext(),
+                    new OstError("owfa_oc_is_1", OstErrors.ErrorCode.DEVICE_NOT_SETUP)
             );
             finish();
             return true;
         }
         return false;
+    }
+
+    OstWorkflowContext getWorkflowContext() {
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.UNKNOWN);
     }
 
     @Override

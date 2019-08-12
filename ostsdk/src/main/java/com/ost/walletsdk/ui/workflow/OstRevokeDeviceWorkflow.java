@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
+import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.managedevices.DeviceListFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
@@ -24,12 +25,12 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
     boolean invalidState() {
         if (super.invalidState()) return true;
 
-        if (!OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase(
-                OstUser.getById(mUserId).getStatus()
+        if (!OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(
+                OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE),
-                    new OstError("owfa_oc_rd_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
+                    getWorkflowContext(),
+                    new OstError("owfa_oc_rd_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED)
             );
             finish();
             return true;
@@ -59,5 +60,10 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
         return ContentConfig.getInstance()
                 .getStringConfig("revoke_device")
                 .optJSONObject("get_pin");
+    }
+
+    @Override
+    OstWorkflowContext getWorkflowContext() {
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE);
     }
 }

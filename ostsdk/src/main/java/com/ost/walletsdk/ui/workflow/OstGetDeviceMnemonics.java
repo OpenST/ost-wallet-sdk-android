@@ -24,8 +24,8 @@ public class OstGetDeviceMnemonics extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS),
-                    new OstError("owfa_oc_gdm_1", OstErrors.ErrorCode.DEVICE_NOT_SETUP)
+                    getWorkflowContext(),
+                    new OstError("owfa_oc_gdm_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED)
             );
             finish();
             return true;
@@ -56,5 +56,10 @@ public class OstGetDeviceMnemonics extends OstWorkFlowActivity {
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
+    }
+
+    @Override
+    OstWorkflowContext getWorkflowContext() {
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS);
     }
 }

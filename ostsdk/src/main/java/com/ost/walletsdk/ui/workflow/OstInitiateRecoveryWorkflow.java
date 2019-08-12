@@ -27,7 +27,7 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY),
+                    getWorkflowContext(),
                     new OstError("owfa_oc_ir_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
             );
             finish();
@@ -38,7 +38,7 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY),
+                    getWorkflowContext(),
                     new OstError("owfa_oc_ir_2", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED)
             );
             finish();
@@ -66,5 +66,10 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
                     InitiateRecoveryFragment.newInstance(bundle),
                     this);
         }
+    }
+
+    @Override
+    OstWorkflowContext getWorkflowContext() {
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY);
     }
 }

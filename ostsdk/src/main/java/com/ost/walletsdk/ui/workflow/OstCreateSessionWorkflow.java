@@ -24,8 +24,8 @@ public class OstCreateSessionWorkflow extends OstWorkFlowActivity {
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
             mWorkFlowListener.flowInterrupt(
-                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION),
-                    new OstError("owfa_oc_cs_2", OstErrors.ErrorCode.DEVICE_NOT_SETUP)
+                    getWorkflowContext(),
+                    new OstError("owfa_oc_cs_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED)
             );
             finish();
             return true;
@@ -50,5 +50,10 @@ public class OstCreateSessionWorkflow extends OstWorkFlowActivity {
         return ContentConfig.getInstance()
                 .getStringConfig("add_session")
                 .optJSONObject("get_pin");
+    }
+
+    @Override
+    OstWorkflowContext getWorkflowContext() {
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION);
     }
 }
