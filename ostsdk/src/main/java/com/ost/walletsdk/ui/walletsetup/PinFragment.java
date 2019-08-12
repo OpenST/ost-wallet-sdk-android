@@ -201,10 +201,6 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
             };
 
             stringToReplace.setSpan(termsClickableSpan,0,stringToReplace.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                Font font = FontFactory.getInstance(getContext());
-                stringToReplace.setSpan(new TypefaceSpan(font.getFont(lookUpTextStringConfig.getFont())),0,stringToReplace.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
             stringToReplace.setSpan(new ForegroundColorSpan(Color.parseColor(lookUpTextStringConfig.getColor())),0,stringToReplace.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             textView.setText(TextUtils.concat(linkableText.subSequence(0,startIndex), " ",stringToReplace));
         } else {

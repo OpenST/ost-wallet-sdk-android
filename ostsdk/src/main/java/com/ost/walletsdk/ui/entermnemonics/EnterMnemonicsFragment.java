@@ -18,12 +18,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.ui.uicomponents.AppBar;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
+
+import org.json.JSONObject;
 
 import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
 import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.WORKFLOW_ID;
@@ -39,6 +44,7 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
 
     EnterMnemonicsPresenter mEnterMnemonicsPresenter = EnterMnemonicsPresenter.getInstance();
 
+    JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("add_current_device_with_mnemonics").optJSONObject("provide_mnemonics");
     public EnterMnemonicsFragment() {
         // Required empty public constructor
     }
@@ -71,9 +77,29 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
         // Inflate the layout for this fragment
         ViewGroup viewGroup =  (ViewGroup) inflater.inflate(R.layout.ost_fragment_enter_mnemonics, container, true);
 
+        TextView headingView = viewGroup.findViewById(R.id.labelHeading);
+        headingView.setText(
+                StringConfig.instance(contentConfig.optJSONObject("title_label")).getString()
+        );
+
+        TextView subHeadingView = viewGroup.findViewById(R.id.labelSubHeading);
+        subHeadingView.setText(
+                StringConfig.instance(contentConfig.optJSONObject("info_label")).getString()
+        );
+
+        TextView hintView = viewGroup.findViewById(R.id.labelHint);
+        hintView.setText(
+                StringConfig.instance(contentConfig.optJSONObject("terms_and_condition_label")).getString()
+        );
+
+        Button recoverButton = viewGroup.findViewById(R.id.pbtn_recover_wallet);
+        recoverButton.setText(
+                StringConfig.instance(contentConfig.optJSONObject("action_button")).getString()
+        );
+
         final EditText mnemonicsPhrase = ((EditText)viewGroup.findViewById(R.id.et_mnemonics_phrase));
 
-        ((Button)viewGroup.findViewById(R.id.pbtn_recover_wallet)).setOnClickListener(new View.OnClickListener() {
+        recoverButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mEnterMnemonicsPresenter.recoverWallet(mnemonicsPhrase.getText().toString());
