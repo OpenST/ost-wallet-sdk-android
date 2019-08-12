@@ -141,6 +141,8 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             } else {
                 //hide keyboard if open
                 KeyBoard.hideKeyboard(OstWorkFlowActivity.this);
+                //interrupt workflow
+                mWorkFlowListener.flowInterrupt(getWorkflowContext(), new OstError("owfa_gb", OstErrors.ErrorCode.WORKFLOW_CANCELLED));
                 super.goBack();
             }
         }
