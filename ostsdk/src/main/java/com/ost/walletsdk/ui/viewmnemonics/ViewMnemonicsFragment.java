@@ -13,8 +13,8 @@ package com.ost.walletsdk.ui.viewmnemonics;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -22,7 +22,6 @@ import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.uicomponents.AppBar;
 import com.ost.walletsdk.ui.uicomponents.OstH2Label;
-import com.ost.walletsdk.ui.uicomponents.uiutils.content.Content;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 
@@ -69,9 +68,9 @@ public class ViewMnemonicsFragment extends BaseFragment {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.ost_fragment_view_mnemonics, container, true);
 
         mOstTextView1 = viewGroup.findViewById(R.id.mnemonics_tv_1);
-        mOstTextView1.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        mOstTextView1.setGravity(Gravity.START);
         mOstTextView2 = viewGroup.findViewById(R.id.mnemonics_tv_2);
-        mOstTextView2.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        mOstTextView2.setGravity(Gravity.START);
 
         TextView labelHeading = viewGroup.findViewById(R.id.labelHeading);
         labelHeading.setText(
