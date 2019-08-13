@@ -117,7 +117,7 @@ public class WorkFlowPinFragment extends PinFragment {
         goBack();
     }
 
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListener extends PinFragment.OnFragmentInteractionListener {
         void popTopFragment();
         void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
     }

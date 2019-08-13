@@ -157,6 +157,11 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     }
 
     @Override
+    public void onPinEntered(String pin) {
+        // Do do anything
+    }
+
+    @Override
     public void openWebView(String url) {
         WebViewFragment fragment = WebViewFragment.newInstance(url);
         FragmentUtils.addFragment(R.id.layout_container,

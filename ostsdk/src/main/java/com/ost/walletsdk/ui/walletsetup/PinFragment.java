@@ -16,6 +16,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -135,9 +136,9 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         AppBar appBar = AppBar.newInstance(getContext(), mShowBackButton);
         setUpAppBar(viewGroup, appBar);
 
-        if(showTermsLine){
+//        if(showTermsLine){
             showTermsAndPolicyText((OstTextView) viewGroup.findViewById(R.id.pin_terms_privacy));
-        }
+//        }
 
         return viewGroup;
     }
@@ -174,12 +175,16 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
 
     private void showTermsAndPolicyText(OstTextView textView) {
 
-        SpannableString linkableText = new SpannableString(StringConfig.instance(contentConfig.optJSONObject("terms_and_condition_label")).getString());
+        CharSequence linkableText = new SpannableString(StringConfig.instance(contentConfig.optJSONObject("terms_and_condition_label")).getString());
 
-        Pattern pattern = Pattern.compile("\\{\\{.+?\\}\\}");
-        Matcher m = pattern.matcher(linkableText);
+        while (true) {
+            Pattern pattern = Pattern.compile("\\{\\{.+?\\}\\}");
+            Matcher m = pattern.matcher(linkableText);
 
-        if (m.find()) {
+            if (!m.find()) {
+                break;
+            }
+
             int startIndex = m.start();
             int endIndex = m.end();
             String lookupText = linkableText.toString().substring(startIndex+2, endIndex-2);
@@ -190,22 +195,30 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
                     lookUpTextStringConfig.getString()
             );
 
-            final String urlString = lookUpTextStringConfig.getUrl();
-            ClickableSpan termsClickableSpan = new ClickableSpan() {
-                @Override
-                public void onClick(View view) {
-                    if (mListener != null) {
-                        mListener.openWebView(urlString);
-                    }
-                }
-            };
-
-            stringToReplace.setSpan(termsClickableSpan,0,stringToReplace.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringToReplace.setSpan(new ExtendedClickableSpan(mListener, lookUpTextStringConfig.getUrl()),0,stringToReplace.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             stringToReplace.setSpan(new ForegroundColorSpan(Color.parseColor(lookUpTextStringConfig.getColor())),0,stringToReplace.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            textView.setText(TextUtils.concat(linkableText.subSequence(0,startIndex), " ",stringToReplace));
-        } else {
-            textView.setText(linkableText);
+            linkableText = TextUtils.concat(linkableText.subSequence(0, startIndex), stringToReplace, linkableText.subSequence(endIndex, linkableText.length()));
         }
+
+        textView.setText(linkableText);
+
         textView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    class ExtendedClickableSpan extends ClickableSpan {
+
+        private final String mUrlString;
+        private final OnFragmentInteractionListener mListener;
+
+        ExtendedClickableSpan(OnFragmentInteractionListener listener, String urlString) {
+            mListener = listener;
+            mUrlString = urlString;
+        }
+        @Override
+        public void onClick(@NonNull View widget) {
+            if (mListener != null) {
+                mListener.openWebView(mUrlString);
+            }
+        }
     }
 }
