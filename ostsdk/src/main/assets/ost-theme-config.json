@@ -1,87 +1,86 @@
 {
+
   "nav_bar_logo_image": {
     "asset_name": "ost_nav_bar_logo"
   },
-  "icons": {
-      "cross": {
-        "tint_color": "#438bad"
-      },
-      "back": {
-        "tint_color": "#438bad"
-      }
-  },
-  "navigation_bar": {
-    "tint_color": "#ffffff"
-  },
-  "h1": {
-    "size": 20,
+
+  "h1": {"size": 20,
     "color": "#438bad",
-    "font": "Lato-Regular",
-    "system_font_weight": "semi_bold"
+    "system_font_weight": "semi_bold",
+    "alignment": "center"
   },
-  "h2": {
-    "size": 17,
+
+  "h2": {"size": 17,
     "color": "#666666",
-    "font": "Lato-Regular",
-    "system_font_weight": "medium"
+    "system_font_weight": "medium",
+    "alignment": "center"
   },
-  "h3": {
-    "size": 15,
+
+  "h3": {"size": 15,
     "color": "#888888",
-    "font": "Lato-Regular",
-    "system_font_weight": "regular"
+    "system_font_weight": "regular",
+    "alignment": "center"
   },
-  "h4": {
-    "size": 12,
+
+  "h4": {"size": 12,
     "color": "#888888",
-    "font": "Lato-Regular",
-    "system_font_weight": "regular"
+    "system_font_weight": "regular",
+    "alignment": "center"
   },
-  "c1": {
-    "size": 13,
+
+  "c1": {"size": 14,
     "color": "#484848",
-    "font": "Lato-Regular",
     "system_font_weight": "bold",
     "alignment": "left"
   },
-  "c2": {
-    "size": 12,
-    "color": "#6f6f6f",
+
+  "c2": {"size": 12,
+    "color": "#6F6F6F",
     "system_font_weight": "regular",
-    "font": "Lato-Regular",
     "alignment": "left"
   },
+
   "b1": {
     "size": 17,
     "color": "#ffffff",
     "background_color": "#438bad",
-    "font": "Lato-Regular",
     "system_font_weight": "medium"
   },
+
   "b2": {
     "size": 17,
     "color": "#438bad",
-    "background_color": "#ffffff",
-    "font": "Lato-Regular",
+    "background_color": "#f8f8f8",
     "system_font_weight": "semi_bold"
   },
+
   "b3": {
     "size": 12,
     "color": "#ffffff",
     "background_color": "#438bad",
-    "font": "Lato-Regular",
     "system_font_weight": "medium"
   },
+
   "b4": {
     "size": 12,
     "color": "#438bad",
     "background_color": "#ffffff",
-    "font": "Lato-Regular",
     "system_font_weight": "medium"
   },
-  "fonts": {
-    "Lato-Regular": "fonts/Lato-Regular.ttf"
+
+  "navigation_bar": {
+    "tint_color": "#ffffff"
   },
+
+  "icons": {
+    "close": {
+      "tint_color": "#438bad"
+    },
+    "back":{
+      "tint_color": "#438bad"
+    }
+  },
+
   "pin_input": {
     "empty_color": "#c7c7cc",
     "filled_color": "#438bad"

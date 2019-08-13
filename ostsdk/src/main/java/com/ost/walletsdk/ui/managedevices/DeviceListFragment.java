@@ -112,7 +112,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
 
         mSubHeadingTextView = ((TextView) view.findViewById(R.id.tv_sub_heading));
         mSubHeadingTextView.setText(
-                StringConfig.instance(contentConfig.optJSONObject("lead_label")).getString()
+                StringConfig.instance(contentConfig.optJSONObject("info_label")).getString()
         );
         Context context = view.getContext();
 

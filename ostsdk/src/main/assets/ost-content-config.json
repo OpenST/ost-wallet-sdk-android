@@ -66,7 +66,7 @@
       "title_label": {
         "text": "Device Recovery"
       },
-      "lead_label": {
+      "info_label": {
         "text": "This is a list of all the devices that are authorized to access your wallet"
       },
       "cell": {
@@ -113,7 +113,7 @@
       "title_label": {
         "text": "Revoke Device"
       },
-      "lead_label": {
+      "info_label": {
         "text": "This is a list of all the devices that are authorized to access your wallet"
       },
       "cell": {
@@ -223,13 +223,10 @@
       "title_label": {
         "text": "View Mnemonics"
       },
-      "lead_label": {
-        "text": ""
-      },
       "info_label": {
         "text": "Write down your 12-word mnemonic phrase and store them securely"
       },
-      "terms_and_condition_label": {
+      "bottom_label": {
         "text": "You can write the phrases down in a piece of paper or save in a password manager. Don’t email them or screenshot them. The order of words are important too."
       }
     }
@@ -255,60 +252,14 @@
       "title_label": {
         "text": "Enter Recovery Phrase"
       },
-      "lead_label": {
-        "text": ""
-      },
       "info_label": {
         "text": "Please enter the 12-word recovery phrase that you wrote down."
       },
-      "terms_and_condition_label": {
+      "bottom_label": {
         "text": "If you don’t have the recovery phrase, try using PIN or a second authorized device."
       },
       "action_button": {
         "text": "Authorize Device"
-      }
-    }
-  },
-
-  "add_device_with_qr": {
-    "get_pin": {
-      "title_label": {
-        "text": "Add device with QR"
-      },
-      "lead_label": {
-        "text": "Enter your 6-digit PIN to authorize your action"
-      },
-      "info_label":{
-        "text":  ""
-      },
-      "terms_and_condition_label": {
-        "text": ""
-      }
-    },
-
-    "verify_device_address": {
-      "title_label": {
-        "text": "Add device with QR"
-      },
-      "lead_label": {
-        "text": "Please verify device address which is going to be authorized."
-      },
-      "action_button": {
-        "text": "Authorize Device"
-      }
-    }
-  },
-
-  "execute_transaction_via_qr": {
-    "verify_transaction": {
-      "title_label": {
-        "text": "Verify transaction"
-      },
-      "lead_label": {
-        "text": ""
-      },
-      "action_button": {
-        "text": "Execute Transaction"
       }
     }
   }

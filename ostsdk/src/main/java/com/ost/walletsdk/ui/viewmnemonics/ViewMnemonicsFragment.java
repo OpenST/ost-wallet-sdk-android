@@ -79,12 +79,12 @@ public class ViewMnemonicsFragment extends BaseFragment {
 
         TextView labelSubHeading = viewGroup.findViewById(R.id.labelSubHeading);
         labelSubHeading.setText(
-                StringConfig.instance(contentConfig.optJSONObject("lead_label")).getString()
+                StringConfig.instance(contentConfig.optJSONObject("info_label")).getString()
         );
 
         TextView labelCaution = viewGroup.findViewById(R.id.labelCaution);
         labelCaution.setText(
-                StringConfig.instance(contentConfig.optJSONObject("terms_and_condition_label")).getString()
+                StringConfig.instance(contentConfig.optJSONObject("bottom_label")).getString()
         );
 
         AppBar appBar = AppBar.newInstance(getContext(), false);
