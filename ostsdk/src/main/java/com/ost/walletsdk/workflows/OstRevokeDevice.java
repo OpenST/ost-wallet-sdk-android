@@ -72,7 +72,7 @@ public class OstRevokeDevice extends OstBaseWorkFlow {
         }
 
         //request acknowledge
-        postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+        postRequestAcknowledge(getWorkflowContext(),
                 new OstContextEntity(OstDevice.getById(mDeviceToBeRevoked), OstSdk.DEVICE));
 
 

@@ -109,7 +109,7 @@ public class OstResetPin extends OstBaseWorkFlow {
             return postErrorInterrupt("wf_rp_udv_1", OstErrors.ErrorCode.INVALID_API_RESPONSE);
         }
 
-        postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));
+        postRequestAcknowledge(getWorkflowContext(), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));
 
         Log.i(TAG, "Waiting for update");
         Bundle bundle = OstRecoveryPollingService.startPolling(mUserId, newRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZED,

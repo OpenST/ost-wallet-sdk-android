@@ -127,7 +127,7 @@ public class OstActivateUser extends OstBaseWorkFlow implements OstPollingCallba
                     expirationHeight, mSpendingLimit, recoveryAddress);
 
             // Let the app know that kit has accepted the request.
-            OstWorkflowContext workflowContext = new OstWorkflowContext(getWorkflowType());
+            OstWorkflowContext workflowContext = getWorkflowContext();
             OstContextEntity ostContextEntity = new OstContextEntity(OstUser.getById(mUserId), OstSdk.USER);
             postRequestAcknowledge(workflowContext, ostContextEntity);
 

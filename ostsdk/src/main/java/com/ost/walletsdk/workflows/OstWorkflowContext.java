@@ -10,6 +10,8 @@
 
 package com.ost.walletsdk.workflows;
 
+import android.support.annotation.NonNull;
+
 /**
  * WorkflowContext to hold work flow type
  */
@@ -32,9 +34,15 @@ public class OstWorkflowContext {
         LOGOUT_ALL_SESSIONS
     }
     private WORKFLOW_TYPE workflow_type;
+    private String workflowId;
 
     public OstWorkflowContext(WORKFLOW_TYPE workflow_type) {
         this.workflow_type = workflow_type;
+    }
+
+    public OstWorkflowContext(@NonNull String workflowId, @NonNull WORKFLOW_TYPE workflow_type) {
+        this.workflow_type = workflow_type;
+        this.workflowId = workflowId;
     }
 
     public OstWorkflowContext() {
@@ -43,5 +51,14 @@ public class OstWorkflowContext {
 
     public WORKFLOW_TYPE getWorkflow_type() {
         return workflow_type;
+    }
+
+    public String getWorkflowId() {
+        return workflowId;
+    }
+
+    //Added so that getWorkflow_type can be deprecated in future releases.
+    public WORKFLOW_TYPE getWorkflowType() {
+        return this.getWorkflow_type();
     }
 }

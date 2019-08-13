@@ -115,7 +115,7 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
             return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.SDK_ERROR);
         }
         //Request Acknowledge
-        postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+        postRequestAcknowledge(getWorkflowContext(),
                 new OstContextEntity(OstSession.getById(sessionAddress), OstSdk.SESSION));
 
         //increment nonce
