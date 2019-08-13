@@ -20,6 +20,13 @@ public class ThemeConfig implements Theme {
         themeConfig = new ThemeConfig(context, themeObject);
     }
 
+    public static boolean isInitialized() {
+        if ( null == themeConfig ) {
+            return false;
+        }
+        return true;
+    }
+
     public static Theme getInstance() {
         if (null == themeConfig) {
             throw new RuntimeException("ThemeConfig is not initialized");

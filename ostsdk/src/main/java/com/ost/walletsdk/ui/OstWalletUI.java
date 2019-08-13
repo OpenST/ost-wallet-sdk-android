@@ -168,8 +168,12 @@ public class OstWalletUI {
 
     public static void initialize(Context context, String url) {
         OstSdk.initialize(context, url);
-        setThemeConfig(context, null);
-        setContentConfig(context, null);
+        if ( !ThemeConfig.isInitialized() ) {
+            setThemeConfig(context, null);
+        }
+        if ( !ContentConfig.isInitialized() ) {
+            setContentConfig(context, null);
+        }
     }
 
     public static void setThemeConfig(Context context, JSONObject themeConfig) {
