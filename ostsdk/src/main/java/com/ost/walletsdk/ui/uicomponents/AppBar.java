@@ -84,7 +84,7 @@ public class AppBar extends LinearLayout {
             imageView.setImageTintList(ColorStateList.valueOf(Color.parseColor(colorHash)));
         } else {
             imageView.setImageDrawable(getResources().getDrawable(R.drawable.ost_close, null));
-            String colorHash = ThemeConfig.getInstance().getIconConfig("cross").getTintColor();
+            String colorHash = ThemeConfig.getInstance().getIconConfig("close").getTintColor();
             imageView.setImageTintList(ColorStateList.valueOf(Color.parseColor(colorHash)));
         }
         int pxPadding = new SizeUtil().dpToPx(20);

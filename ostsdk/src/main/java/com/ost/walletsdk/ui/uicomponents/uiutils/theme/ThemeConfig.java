@@ -90,6 +90,7 @@ public class ThemeConfig implements Theme {
     @Override
     public String getFontRelativePath(String font) {
         JSONObject fontConfig = mThemeObject.optJSONObject("fonts");
+        if (null == fontConfig) return null;
         return fontConfig.optString(font);
     }
 

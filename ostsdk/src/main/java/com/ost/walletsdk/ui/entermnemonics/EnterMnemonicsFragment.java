@@ -89,7 +89,7 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
 
         TextView hintView = viewGroup.findViewById(R.id.labelHint);
         hintView.setText(
-                StringConfig.instance(contentConfig.optJSONObject("terms_and_condition_label")).getString()
+                StringConfig.instance(contentConfig.optJSONObject("bottom_label")).getString()
         );
 
         Button recoverButton = viewGroup.findViewById(R.id.pbtn_recover_wallet);
