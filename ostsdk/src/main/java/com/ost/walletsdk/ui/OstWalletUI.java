@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.ui.interfaces.OstWalletUIListener;
 import com.ost.walletsdk.ui.recovery.RecoveryFragment;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
@@ -146,6 +147,24 @@ public class OstWalletUI {
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
         currentActivity.startActivity(intent);
         return workFlowListener.getId();
+    }
+
+    /**
+     * Use it to subscribe for any particular Workflow callback
+     * @param workflowId id of workflow to subscribe to.
+     * @param listener OstWalletUIListener object that implements respective workflow callback
+     */
+    public void subscribe(String workflowId, OstWalletUIListener listener) {
+        SdkInteract.getInstance().subscribe(workflowId, listener);
+    }
+
+    /**
+     *
+     * @param workflowId id of workflow to subscribe to.
+     * @param listener
+     */
+    public void unSubscribe(String workflowId, OstWalletUIListener listener) {
+        SdkInteract.getInstance().unSubscribe(workflowId, listener);
     }
 
     public static void initialize(Context context, String url) {

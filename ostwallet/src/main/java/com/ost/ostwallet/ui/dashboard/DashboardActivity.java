@@ -54,6 +54,9 @@ import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.ui.OstWalletUI;
+import com.ost.walletsdk.ui.interfaces.FlowCompleteListener;
+import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
+import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -75,9 +78,9 @@ import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class DashboardActivity extends BaseActivity implements
         TabLayout.OnTabSelectedListener,
-        SdkInteract.FlowComplete,
-        SdkInteract.FlowInterrupt,
-        SdkInteract.RequestAcknowledged,
+        FlowCompleteListener,
+        FlowInterruptListener,
+        RequestAcknowledgedListener,
         SdkInteract.WorkFlowCallbacks,
         UserListFragment.OnListFragmentInteractionListener,
         WalletSetUpFragment.OnFragmentInteractionListener,

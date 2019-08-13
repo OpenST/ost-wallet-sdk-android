@@ -14,6 +14,9 @@ import com.ost.walletsdk.ui.ChildFragmentStack;
 import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.WorkFlowPinFragment;
 import com.ost.walletsdk.ui.entermnemonics.EnterMnemonicsFragment;
+import com.ost.walletsdk.ui.interfaces.FlowCompleteListener;
+import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
+import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.managedevices.Device;
 import com.ost.walletsdk.ui.managedevices.DeviceListFragment;
 import com.ost.walletsdk.ui.managedevices.DeviceListRecyclerViewAdapter;
@@ -44,9 +47,9 @@ import static com.ost.walletsdk.ui.recovery.RecoveryFragment.DEVICE_ADDRESS;
 
 public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFragment.OnFragmentInteractionListener,
         DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener,
-        SdkInteract.RequestAcknowledged,
-        SdkInteract.FlowInterrupt,
-        SdkInteract.FlowComplete,
+        RequestAcknowledgedListener,
+        FlowInterruptListener,
+        FlowCompleteListener,
         SdkInteract.WorkFlowCallbacks,
         WorkFlowPinFragment.OnFragmentInteractionListener {
 

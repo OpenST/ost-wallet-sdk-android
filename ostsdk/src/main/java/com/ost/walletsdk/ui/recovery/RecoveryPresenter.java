@@ -15,6 +15,8 @@ import android.util.Log;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ui.BasePresenter;
 import com.ost.walletsdk.ui.OstPassphraseAcceptor;
+import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
+import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.workflows.OstContextEntity;
@@ -22,8 +24,8 @@ import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 
 class RecoveryPresenter extends BasePresenter<RecoveryView> implements
-        SdkInteract.RequestAcknowledged,
-        SdkInteract.FlowInterrupt {
+        RequestAcknowledgedListener,
+        FlowInterruptListener {
 
     private static final String LOG_TAG = "OstRecoveryPresenter";
     private String mDeviceAddress;

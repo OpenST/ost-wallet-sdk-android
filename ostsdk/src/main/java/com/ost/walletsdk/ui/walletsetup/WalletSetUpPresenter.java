@@ -17,6 +17,8 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ui.BasePresenter;
 import com.ost.walletsdk.ui.OstPassphraseAcceptor;
+import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
+import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.ui.util.CommonUtils;
@@ -24,8 +26,8 @@ import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 
-class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkInteract.RequestAcknowledged,
-        SdkInteract.FlowInterrupt {
+class WalletSetUpPresenter extends BasePresenter<SetUpView> implements RequestAcknowledgedListener,
+        FlowInterruptListener {
 
     private static final String LOG_TAG = "WalletSetUpPresenter";
     private String mFirstPin;

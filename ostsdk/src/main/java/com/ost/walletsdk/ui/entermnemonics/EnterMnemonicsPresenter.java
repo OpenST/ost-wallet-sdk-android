@@ -12,7 +12,9 @@ package com.ost.walletsdk.ui.entermnemonics;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ui.BasePresenter;
-import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
+import com.ost.walletsdk.ui.interfaces.FlowCompleteListener;
+import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
+import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -20,9 +22,9 @@ import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 class EnterMnemonicsPresenter extends BasePresenter<EnterMnemonicsView> implements
-        SdkInteract.FlowComplete,
-        SdkInteract.FlowInterrupt,
-        SdkInteract.RequestAcknowledged {
+        FlowCompleteListener,
+        FlowInterruptListener,
+        RequestAcknowledgedListener {
 
     private static final String LOG_TAG = "OstEnterMnemonicsPresenter";
     private OstWorkFlowCallback mWorkFlowListener;
