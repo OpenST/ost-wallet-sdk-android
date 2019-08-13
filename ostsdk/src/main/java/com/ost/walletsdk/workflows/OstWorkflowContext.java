@@ -27,10 +27,9 @@ public class OstWorkflowContext {
         AUTHORIZE_DEVICE_WITH_MNEMONICS,
         INITIATE_DEVICE_RECOVERY,
         ABORT_DEVICE_RECOVERY,
-        REVOKE_DEVICE_WITH_QR_CODE,
+        REVOKE_DEVICE,
         RESET_PIN,
-        LOGOUT_ALL_SESSIONS,
-        REVOKE_DEVICE
+        LOGOUT_ALL_SESSIONS
     }
     private WORKFLOW_TYPE workflow_type;
 

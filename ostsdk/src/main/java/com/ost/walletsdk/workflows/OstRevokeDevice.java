@@ -34,7 +34,6 @@ import com.ost.walletsdk.workflows.services.OstPollingService;
 import org.json.JSONObject;
 import org.web3j.crypto.WalletUtils;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
