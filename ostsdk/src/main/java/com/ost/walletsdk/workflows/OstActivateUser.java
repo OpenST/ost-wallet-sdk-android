@@ -11,7 +11,6 @@
 package com.ost.walletsdk.workflows;
 
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.ost.walletsdk.OstSdk;
@@ -23,8 +22,8 @@ import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.models.entities.OstBaseEntity;
 import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstUser;
-import com.ost.walletsdk.network.polling.interfaces.OstPollingCallback;
 import com.ost.walletsdk.network.polling.OstUserPollingHelper;
+import com.ost.walletsdk.network.polling.interfaces.OstPollingCallback;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.utils.CommonUtils;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -33,7 +32,7 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
+import java.math.BigInteger;
 
 public class OstActivateUser extends OstBaseWorkFlow implements OstPollingCallback {
 
@@ -93,7 +92,9 @@ public class OstActivateUser extends OstBaseWorkFlow implements OstPollingCallba
         if (null == mPassphrase) {
             throw new OstError("wf_au_evp_1", ErrorCode.INVALID_USER_PASSPHRASE);
         }
-        if (TextUtils.isEmpty(mSpendingLimit)) {
+        try {
+            new BigInteger(mSpendingLimit);
+        } catch (Exception ex) {
             throw new OstError("wf_au_evp_2", ErrorCode.INVALID_SESSION_SPENDING_LIMIT);
         }
         if (mExpiresAfterInSecs < 0) {
