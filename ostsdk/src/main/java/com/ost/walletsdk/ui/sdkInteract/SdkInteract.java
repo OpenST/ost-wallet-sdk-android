@@ -117,7 +117,7 @@ public class SdkInteract {
         weakList.add(new WeakReference<>(listener));
     }
 
-    public void unSubscribe(String workflowId, OstWalletUIListener listener) {
+    public void unsubscribe(String workflowId, OstWalletUIListener listener) {
         List<WeakReference<OstWalletUIListener>> weakList = sdkListeners.get(workflowId);
         if (null != weakList) {
             List<WeakReference<OstWalletUIListener>> listToRemove = new ArrayList<>();

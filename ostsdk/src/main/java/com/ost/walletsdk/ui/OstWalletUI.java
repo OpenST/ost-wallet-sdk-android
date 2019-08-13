@@ -24,7 +24,6 @@ import com.ost.walletsdk.ui.workflow.OstResetPinWorkflow;
 import com.ost.walletsdk.ui.workflow.OstRevokeDeviceWorkflow;
 import com.ost.walletsdk.ui.workflow.OstWorkFlowActivity;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class OstWalletUI {
@@ -150,21 +149,21 @@ public class OstWalletUI {
     }
 
     /**
-     * Use it to subscribe for any particular Workflow callback
+     * Subscribe for any particular Workflow callback
      * @param workflowId id of workflow to subscribe to.
      * @param listener OstWalletUIListener object that implements respective workflow callback
      */
-    public void subscribe(String workflowId, OstWalletUIListener listener) {
+    public static void subscribe(String workflowId, OstWalletUIListener listener) {
         SdkInteract.getInstance().subscribe(workflowId, listener);
     }
 
     /**
-     *
+     * Unsubscribe the listener.
      * @param workflowId id of workflow to subscribe to.
      * @param listener
      */
-    public void unSubscribe(String workflowId, OstWalletUIListener listener) {
-        SdkInteract.getInstance().unSubscribe(workflowId, listener);
+    public  static void unsubscribe(String workflowId, OstWalletUIListener listener) {
+        SdkInteract.getInstance().unsubscribe(workflowId, listener);
     }
 
     public static void initialize(Context context, String url) {

@@ -148,7 +148,7 @@ public class DashboardActivity extends BaseActivity implements
                     expiredAfterInSecs,
                     spendingLimit,
                     AppProvider.get().getUserPassphraseCallback());
-            SdkInteract.getInstance().subscribe(workflowId, this);
+            OstWalletUI.subscribe(workflowId, this);
             mViewPager.setCurrentItem(1);
         } else if(null != ostUser.getCurrentDevice() && ostUser.getCurrentDevice().canBeAuthorized()) {
             handleCrashAnalytics();
@@ -425,7 +425,7 @@ public class DashboardActivity extends BaseActivity implements
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 deviceAddress,
                 AppProvider.get().getUserPassphraseCallback());
-        SdkInteract.getInstance().subscribe(workflowId, this);
+        OstWalletUI.subscribe(workflowId, this);
     }
 
     @Override
@@ -438,7 +438,7 @@ public class DashboardActivity extends BaseActivity implements
         String workflowId = OstWalletUI.resetPin(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 AppProvider.get().getUserPassphraseCallback());
-        SdkInteract.getInstance().subscribe(workflowId, this);
+        OstWalletUI.subscribe(workflowId, this);
     }
 
     @Override
@@ -449,7 +449,7 @@ public class DashboardActivity extends BaseActivity implements
                 userId,
                 enable,
                 AppProvider.get().getUserPassphraseCallback());
-        SdkInteract.getInstance().subscribe(workflowId, this);
+        OstWalletUI.subscribe(workflowId, this);
     }
 
     @Override
@@ -457,7 +457,7 @@ public class DashboardActivity extends BaseActivity implements
         String workflowId = OstWalletUI.getDeviceMnemonics(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 AppProvider.get().getUserPassphraseCallback());
-        SdkInteract.getInstance().subscribe(workflowId, this);
+        OstWalletUI.subscribe(workflowId, this);
     }
 
     @Override
@@ -466,7 +466,7 @@ public class DashboardActivity extends BaseActivity implements
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 null,
                 AppProvider.get().getUserPassphraseCallback());
-        SdkInteract.getInstance().subscribe(workflowId, this);
+        OstWalletUI.subscribe(workflowId, this);
     }
 
     @Override
@@ -474,7 +474,7 @@ public class DashboardActivity extends BaseActivity implements
         String workflowId = OstWalletUI.authorizeCurrentDeviceWithMnemonics(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 AppProvider.get().getUserPassphraseCallback());
-        SdkInteract.getInstance().subscribe(workflowId, this);
+        OstWalletUI.subscribe(workflowId, this);
     }
 
     @Override
@@ -482,7 +482,7 @@ public class DashboardActivity extends BaseActivity implements
         String workflowId = OstWalletUI.abortDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 AppProvider.get().getUserPassphraseCallback());
-        SdkInteract.getInstance().subscribe(workflowId, this);
+        OstWalletUI.subscribe(workflowId, this);
     }
 
     @Override
@@ -613,7 +613,7 @@ public class DashboardActivity extends BaseActivity implements
                 expiryTime,
                 spendingLimit,
                 AppProvider.get().getUserPassphraseCallback());
-        SdkInteract.getInstance().subscribe(workflowId, this);
+        OstWalletUI.subscribe(workflowId, this);
     }
 
     @Override
