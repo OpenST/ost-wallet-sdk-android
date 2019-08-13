@@ -51,10 +51,10 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
 
 
     @Override
-    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for Activate user");
         getMvpView().showProgress(false);
-        (getMvpView()).gotoDashboard(workflowId);
+        (getMvpView()).gotoDashboard(ostWorkflowContext.getWorkflowId());
     }
 
     public void onPinEntered(String pin) {
@@ -104,7 +104,7 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
     }
 
     @Override
-    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
 
     }
 

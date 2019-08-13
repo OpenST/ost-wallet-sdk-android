@@ -38,6 +38,7 @@ public class OstWorkflowContext {
 
     public OstWorkflowContext(WORKFLOW_TYPE workflow_type) {
         this.workflow_type = workflow_type;
+        this.workflowId = "UNDEFINED";
     }
 
     public OstWorkflowContext(@NonNull String workflowId, @NonNull WORKFLOW_TYPE workflow_type) {
@@ -49,6 +50,10 @@ public class OstWorkflowContext {
         this.workflow_type = WORKFLOW_TYPE.UNKNOWN;
     }
 
+    /**
+     * @deprecated
+     * Use {@link #getWorkflowType()} instead
+     */
     public WORKFLOW_TYPE getWorkflow_type() {
         return workflow_type;
     }
@@ -59,6 +64,6 @@ public class OstWorkflowContext {
 
     //Added so that getWorkflow_type can be deprecated in future releases.
     public WORKFLOW_TYPE getWorkflowType() {
-        return this.getWorkflow_type();
+        return workflow_type;
     }
 }

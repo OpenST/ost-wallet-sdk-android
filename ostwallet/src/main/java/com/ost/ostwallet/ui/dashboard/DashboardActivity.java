@@ -214,24 +214,25 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        String workflowId = ostWorkflowContext.getWorkflowId();
         showProgress(false);
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(
-                        ostWorkflowContext.getWorkflow_type()
+                        ostWorkflowContext.getWorkflowType()
                 )) {
             showUserActivationToast = true;
             notifyActivate();
             return;
         } else if (OstWorkflowContext.WORKFLOW_TYPE.UPDATE_BIOMETRIC_PREFERENCE
                 .equals(
-                        ostWorkflowContext.getWorkflow_type()
+                        ostWorkflowContext.getWorkflowType()
                 )) {
             mSettingsFragment.reDrawView();
         }
         JSONObject trxWorkflow = null;
         trxWorkflow = transactionWorkflows.optJSONObject(String.format("%s", workflowId));
-        String successMessage = new CommonUtils().formatWorkflowSuccessToast(ostWorkflowContext.getWorkflow_type(), trxWorkflow);
+        String successMessage = new CommonUtils().formatWorkflowSuccessToast(ostWorkflowContext.getWorkflowType(), trxWorkflow);
         if(successMessage != null){
             if(trxWorkflow != null){
                 refreshWalletAfter(500);
@@ -258,10 +259,10 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
         showProgress(false);
 
-        Log.d(LOG_TAG, String.format("Flow Interrupted: WorkFlow Id: %s of Workflow %s", workflowId ,ostWorkflowContext.getWorkflow_type().toString()));
+        Log.d(LOG_TAG, String.format("Flow Interrupted: WorkFlow Id: %s of Workflow %s", ostWorkflowContext.getWorkflowId() ,ostWorkflowContext.getWorkflowType().toString()));
 
         //region Sdk Error Handling
         if (OstErrors.ErrorCode.WORKFLOW_CANCELLED == ostError.getErrorCode()) {
@@ -290,9 +291,9 @@ public class DashboardActivity extends BaseActivity implements
 
         JSONObject trxWorkflow = null;
         try{
-            trxWorkflow = transactionWorkflows.getJSONObject(String.format("%s", workflowId));
+            trxWorkflow = transactionWorkflows.getJSONObject(String.format("%s", ostWorkflowContext.getWorkflowId()));
         } catch (Exception e){}
-        String failMessage = new CommonUtils().formatWorkflowFailedToast(ostWorkflowContext.getWorkflow_type(), ostError, trxWorkflow);
+        String failMessage = new CommonUtils().formatWorkflowFailedToast(ostWorkflowContext.getWorkflowType(), ostError, trxWorkflow);
         if(failMessage != null){
             showToastMessage(failMessage, false);
         }
@@ -300,7 +301,7 @@ public class DashboardActivity extends BaseActivity implements
 
         if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER
                 .equals(
-                        ostWorkflowContext.getWorkflow_type()
+                        ostWorkflowContext.getWorkflowType()
                 )) {
             Log.e(LOG_TAG, "User Activate failed");
             checkForActiveUserAndDevice();
@@ -617,12 +618,12 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
-    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        if (OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION.equals(ostWorkflowContext.getWorkflow_type())) {
+    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        if (OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION.equals(ostWorkflowContext.getWorkflowType())) {
             showToastMessage("Session authorization request received.", true);
-        } else if (OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE.equals(ostWorkflowContext.getWorkflow_type())) {
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE.equals(ostWorkflowContext.getWorkflowType())) {
             showToastMessage("Device Revoke request received.", true);
-        } else if (OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS.equals(ostWorkflowContext.getWorkflow_type())) {
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS.equals(ostWorkflowContext.getWorkflowType())) {
             showToastMessage("Authorize device request received", true);
         }
     }

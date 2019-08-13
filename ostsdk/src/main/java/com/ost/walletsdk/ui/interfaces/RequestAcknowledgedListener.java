@@ -4,5 +4,5 @@ import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 
 public interface RequestAcknowledgedListener extends OstWalletUIListener {
-    void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
+    void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
 }

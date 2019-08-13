@@ -557,7 +557,7 @@ public class SettingsFragment extends BaseFragment implements
 
     private void updateCommonCode(OstWorkflowContext ostWorkflowContext) {
         if (OstWorkflowContext.WORKFLOW_TYPE.UPDATE_BIOMETRIC_PREFERENCE
-                .equals(ostWorkflowContext.getWorkflow_type())) {
+                .equals(ostWorkflowContext.getWorkflowType())) {
             updateBiometricView(mToggleBiometric);
         }
     }

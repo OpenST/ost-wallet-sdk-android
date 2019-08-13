@@ -4,5 +4,5 @@ import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 
 public interface FlowCompleteListener extends OstWalletUIListener {
-    void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
+    void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
 }

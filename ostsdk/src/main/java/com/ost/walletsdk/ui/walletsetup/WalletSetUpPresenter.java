@@ -105,11 +105,11 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements RequestAc
     }
 
     @Override
-    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for Activate user");
         if (onScreen) {
             getMvpView().showProgress(false);
-            (getMvpView()).gotoDashboard(workflowId);
+            (getMvpView()).gotoDashboard(ostWorkflowContext.getWorkflowId());
         } else {
             requestAcknowledgedActionPending = true;
         }
@@ -146,10 +146,10 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements RequestAc
     }
 
     @Override
-    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
         if (onScreen) {
             getMvpView().showProgress(false);
-            (getMvpView()).gotoDashboard(workflowId);
+            (getMvpView()).gotoDashboard(ostWorkflowContext.getWorkflowId());
         } else {
             requestAcknowledgedActionPending = true;
         }

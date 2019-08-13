@@ -157,7 +157,6 @@ public class SdkInteract {
             case FLOW_COMPLETE:
                 if (sdkInteractListener instanceof FlowCompleteListener) {
                     ((FlowCompleteListener) sdkInteractListener).flowComplete(
-                            workflowId,
                             (OstWorkflowContext) objects[0],
                             (OstContextEntity) objects[1]
                     );
@@ -167,7 +166,6 @@ public class SdkInteract {
             case FLOW_INTERRUPT:
                 if (sdkInteractListener instanceof FlowInterruptListener) {
                     ((FlowInterruptListener) sdkInteractListener).flowInterrupt(
-                            workflowId,
                             (OstWorkflowContext) objects[0],
                             (OstError) objects[1]
                     );
@@ -177,7 +175,6 @@ public class SdkInteract {
             case REQUEST_ACK:
                 if (sdkInteractListener instanceof RequestAcknowledgedListener) {
                     ((RequestAcknowledgedListener) sdkInteractListener).requestAcknowledged(
-                            workflowId,
                             (OstWorkflowContext) objects[0],
                             (OstContextEntity) objects[1]
                     );

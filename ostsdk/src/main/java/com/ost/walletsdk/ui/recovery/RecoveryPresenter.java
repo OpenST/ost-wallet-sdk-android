@@ -42,11 +42,11 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
 
 
     @Override
-    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for recovery");
         getMvpView().showProgress(false);
         showToast();
-        (getMvpView()).gotoDashboard(workflowId);
+        (getMvpView()).gotoDashboard(ostWorkflowContext.getWorkflowId());
     }
 
     void onPinEntered(final String pin) {
@@ -77,7 +77,7 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
     }
 
     @Override
-    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
         getMvpView().showProgress(false);
     }
 

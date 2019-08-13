@@ -49,7 +49,7 @@ public class OstGetDeviceMnemonics extends OstWorkFlowActivity {
     }
 
     @Override
-    public void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
         byte[] mnemonics = (byte[]) ostContextEntity.getEntity();
         ViewMnemonicsFragment fragment = ViewMnemonicsFragment.newInstance(new String(mnemonics));
