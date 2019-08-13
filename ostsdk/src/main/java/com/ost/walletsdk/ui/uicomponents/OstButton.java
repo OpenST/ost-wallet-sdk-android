@@ -12,12 +12,11 @@ package com.ost.walletsdk.ui.uicomponents;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatButton;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.widget.Button;
-import android.widget.TextView;
 
-import static android.view.View.TEXT_ALIGNMENT_CENTER;
+import com.ost.walletsdk.ui.uicomponents.uiutils.SizeUtil;
 
 
 public abstract class OstButton extends AppCompatButton {
@@ -42,6 +41,10 @@ public abstract class OstButton extends AppCompatButton {
         setLineSpacing(0, (float) 0.3);
         setGravity(Gravity.CENTER);
         setTextAlignment(TEXT_ALIGNMENT_CENTER);
+        setSingleLine();
+        setEllipsize(TextUtils.TruncateAt.END);
+        int padding = new SizeUtil().dpToPx(15);
+        setPadding(padding, 0, padding, 0);
     }
 
     @Override
