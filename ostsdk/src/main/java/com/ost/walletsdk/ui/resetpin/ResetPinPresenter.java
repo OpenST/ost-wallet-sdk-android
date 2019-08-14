@@ -117,4 +117,17 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
         mUserId = userId;
         mWorkflowId = workflowId;
     }
+
+    void goBackChildFragment() {
+        pinCounter--;
+        if(pinCounter == 1) {
+            getMvpView().showSetNewPin();
+        } else {
+            getMvpView().showEnterCurrentPin();
+        }
+    }
+
+    boolean haveBackStackFragment() {
+        return pinCounter > 0;
+    }
 }

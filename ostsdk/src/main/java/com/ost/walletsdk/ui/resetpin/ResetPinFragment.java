@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
+import com.ost.walletsdk.ui.ChildFragmentStack;
 import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.util.ChildFragmentUtils;
@@ -36,7 +37,8 @@ import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.WORKFLOW_ID;
  * create an instance of this fragment.
  */
 public class ResetPinFragment extends BaseFragment implements ResetPinView,
-        PinFragment.OnFragmentInteractionListener {
+        PinFragment.OnFragmentInteractionListener,
+        ChildFragmentStack {
 
 
     ResetPinPresenter mResetPinPresenter = ResetPinPresenter.getInstance();
@@ -136,5 +138,14 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
         ChildFragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
+    }
+
+    @Override
+    public boolean popBack() {
+        if (mResetPinPresenter.haveBackStackFragment()) {
+            mResetPinPresenter.goBackChildFragment();
+            return true;
+        }
+        return false;
     }
 }
