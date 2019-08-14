@@ -16,17 +16,11 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ui.BasePresenter;
 import com.ost.walletsdk.ui.OstPassphraseAcceptor;
-import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
-import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
-import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
-import com.ost.walletsdk.workflows.errors.OstError;
 
-class ResetPinPresenter extends BasePresenter<ResetPinView> implements
-        RequestAcknowledgedListener,
-        FlowInterruptListener {
+class ResetPinPresenter extends BasePresenter<ResetPinView> {
 
     private static final String LOG_TAG = "OstResetPinPresenter";
     private int pinCounter;
@@ -50,13 +44,6 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
     }
 
 
-    @Override
-    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        Log.d(LOG_TAG, "Request Ack for Activate user");
-        getMvpView().showProgress(false);
-        (getMvpView()).gotoDashboard(ostWorkflowContext.getWorkflowId());
-    }
-
     public void onPinEntered(String pin) {
         if (0 == pinCounter) {
             Log.d(LOG_TAG,"Current pin is entered");
@@ -73,7 +60,6 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
         } else {
             if (mFirstNewPin.equals(pin)) {
                 Log.d(LOG_TAG,"Retyped Pin is equal");
-                ResetPinPresenter resetPinPresenter = this;
                 getMvpView().showProgress(true, "Resetting PIN...");
 
                 final WorkFlowListener workFlowListener = SdkInteract.getInstance().getWorkFlowListener(mWorkflowId);
@@ -82,7 +68,6 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
                     public void setPassphrase(String passphrase) {
                         UserPassphrase currentUserPassPhrase = new UserPassphrase(mUserId, mCurrentPin, passphrase);
                         UserPassphrase newUserPassPhrase = new UserPassphrase(mUserId, mFirstNewPin, passphrase);
-                        SdkInteract.getInstance().subscribe(workFlowListener.getId(), resetPinPresenter);
 
                         OstSdk.resetPin(mUserId, currentUserPassPhrase, newUserPassPhrase, workFlowListener);
                     }
@@ -101,11 +86,6 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> implements
                 getMvpView().showPinErrorDialog();
             }
         }
-    }
-
-    @Override
-    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-
     }
 
     void resetResetPin() {

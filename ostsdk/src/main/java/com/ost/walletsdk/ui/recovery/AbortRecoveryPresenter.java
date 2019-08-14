@@ -37,11 +37,6 @@ class AbortRecoveryPresenter extends RecoveryPresenter {
     }
 
     @Override
-    void showToast(){
-        getMvpView().showToastMessage("Request to abort recovery received ", true);
-    }
-
-    @Override
     protected OstWorkflowContext getWorkFlowContext() {
         return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY);
     }

@@ -38,11 +38,6 @@ class InitiateRecoveryPresenter extends RecoveryPresenter {
     }
 
     @Override
-    void showToast(){
-        getMvpView().showToastMessage("Recovery request received ", true);
-    }
-
-    @Override
     protected OstWorkflowContext getWorkFlowContext() {
         return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY);
     }

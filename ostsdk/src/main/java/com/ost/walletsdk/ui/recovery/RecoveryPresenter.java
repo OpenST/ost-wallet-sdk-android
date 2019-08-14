@@ -15,17 +15,11 @@ import android.util.Log;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ui.BasePresenter;
 import com.ost.walletsdk.ui.OstPassphraseAcceptor;
-import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
-import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
-import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
-import com.ost.walletsdk.workflows.errors.OstError;
 
-class RecoveryPresenter extends BasePresenter<RecoveryView> implements
-        RequestAcknowledgedListener,
-        FlowInterruptListener {
+class RecoveryPresenter extends BasePresenter<RecoveryView> {
 
     private static final String LOG_TAG = "OstRecoveryPresenter";
     private String mDeviceAddress;
@@ -40,23 +34,12 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
         getMvpView().showEnterPin();
     }
 
-
-    @Override
-    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        Log.d(LOG_TAG, "Request Ack for recovery");
-        getMvpView().showProgress(false);
-        showToast();
-        (getMvpView()).gotoDashboard(ostWorkflowContext.getWorkflowId());
-    }
-
     void onPinEntered(final String pin) {
-        final RecoveryPresenter recoveryPresenter = this;
         final WorkFlowListener workFlowListener = SdkInteract.getInstance().getWorkFlowListener(mWorkflowId);
         workFlowListener.getPassphrase(mUserId, getWorkFlowContext() ,new OstPassphraseAcceptor() {
             @Override
             public void setPassphrase(String passphrase) {
                 UserPassphrase userPassphrase = new UserPassphrase(mUserId, pin, passphrase);
-                SdkInteract.getInstance().subscribe(workFlowListener.getId(), recoveryPresenter);
                 startWorkFlow(mUserId, userPassphrase ,mDeviceAddress, workFlowListener);
             }
 
@@ -73,15 +56,6 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
     }
 
     void startWorkFlow(String ostUserId, UserPassphrase currentUserPassPhrase, String mDeviceAddress, WorkFlowListener workFlowListener) {
-
-    }
-
-    @Override
-    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        getMvpView().showProgress(false);
-    }
-
-    void showToast(){
 
     }
 
