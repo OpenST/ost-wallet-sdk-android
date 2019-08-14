@@ -61,7 +61,6 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
 
 
         getMvpView().createSession(spendingLimit, Long.parseLong(expiryDays) * 24 * 60 * 60);
-        getMvpView().goBack();
     }
 
     @Override

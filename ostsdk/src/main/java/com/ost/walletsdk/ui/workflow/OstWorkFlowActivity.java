@@ -43,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.ost.walletsdk.ui.recovery.RecoveryFragment.DEVICE_ADDRESS;
+import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 
 public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFragment.OnFragmentInteractionListener,
@@ -136,7 +137,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         }
         if (!consumed) {
             Fragment fragment = FragmentUtils.getTopFragment(this, R.id.layout_container);
-            if (null != fragment && !(fragment instanceof WalletSetUpFragment || fragment instanceof RecoveryFragment ||
+            if (null != fragment && !(fragment instanceof WalletSetUpFragment ||
                     fragment instanceof DeviceListFragment || fragment instanceof TestThemeFragment ||
                     fragment instanceof WorkFlowPinFragment || fragment instanceof ResetPinFragment ||
                     fragment instanceof ViewMnemonicsFragment || fragment instanceof EnterMnemonicsFragment)) {
@@ -179,6 +180,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public void onDeviceSelectedForRecovery(Device device) {
         Bundle bundle = mIntent.getExtras();
         bundle.putString(DEVICE_ADDRESS, device.getDeviceAddress());
+        bundle.putBoolean(SHOW_BACK_BUTTON, true);
         FragmentUtils.addFragment(R.id.layout_container,
                 InitiateRecoveryFragment.newInstance(bundle),
                 this);
@@ -188,6 +190,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public void onDeviceSelectedToAbortRecovery(Device device) {
         Bundle bundle = mIntent.getExtras();
         bundle.putString(DEVICE_ADDRESS, device.getDeviceAddress());
+        bundle.putBoolean(SHOW_BACK_BUTTON, true);
         FragmentUtils.addFragment(R.id.layout_container,
                 AbortRecoveryFragment.newInstance(bundle),
                 this);
