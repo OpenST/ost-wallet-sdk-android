@@ -138,11 +138,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             consumed = ((ChildFragmentStack)topFragment).popBack();
         }
         if (!consumed) {
-            Fragment fragment = FragmentUtils.getTopFragment(this, R.id.layout_container);
-            if (null != fragment && !(fragment instanceof WalletSetUpFragment ||
-                    fragment instanceof DeviceListFragment || fragment instanceof TestThemeFragment ||
-                    fragment instanceof WorkFlowPinFragment || fragment instanceof ResetPinFragment ||
-                    fragment instanceof ViewMnemonicsFragment || fragment instanceof EnterMnemonicsFragment)) {
+            if (this.getSupportFragmentManager().getBackStackEntryCount() > 1) {
                 FragmentUtils.goBack(this);
             } else {
                 //hide keyboard if open

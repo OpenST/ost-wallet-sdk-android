@@ -15,8 +15,17 @@
     android:focusable="true">
 
     <ImageView
+        android:id="@+id/emptyDrawerImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:src="@drawable/ost_empty_drawer"/>
+        android:src="@drawable/ost_empty_drawer" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstH3Label
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emptyDrawerImage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:text="No devices found" />
 </RelativeLayout>

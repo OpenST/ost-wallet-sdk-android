@@ -88,7 +88,7 @@ public class AppBar extends LinearLayout {
             imageView.setImageTintList(ColorStateList.valueOf(Color.parseColor(colorHash)));
         }
         int pxPadding = new SizeUtil().dpToPx(20);
-        imageView.setPadding(pxPadding, pxPadding, pxPadding, pxPadding);
+        imageView.setPadding(pxPadding, pxPadding, 0, pxPadding);
         imageView.setLayoutParams(new Toolbar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.START | Gravity.CENTER_VERTICAL));
         return imageView;
