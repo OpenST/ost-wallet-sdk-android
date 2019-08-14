@@ -35,10 +35,14 @@ import com.ost.ostwallet.sdkInteract.SdkInteract;
 import com.ost.ostwallet.sdkInteract.WorkFlowListener;
 import com.ost.ostwallet.ui.BaseFragment;
 import com.ost.ostwallet.ui.managedevices.AuthorizeDeviceOptionsFragment;
+import com.ost.ostwallet.ui.managedevices.DeviceListFragment;
 import com.ost.ostwallet.ui.workflow.authrorizedeviceqr.AuthorizeDeviceQRFragment;
 import com.ost.ostwallet.ui.workflow.createsession.CreateSessionFragment;
+import com.ost.ostwallet.ui.workflow.entermnemonics.EnterMnemonicsFragment;
 import com.ost.ostwallet.ui.workflow.qrfragment.QRFragment;
 import com.ost.ostwallet.ui.workflow.recovery.AbortRecoveryFragment;
+import com.ost.ostwallet.ui.workflow.resetpin.ResetPinFragment;
+import com.ost.ostwallet.ui.workflow.viewmnemonics.ViewMnemonicsFragment;
 import com.ost.ostwallet.ui.workflow.walletdetails.WalletDetailsFragment;
 import com.ost.ostwallet.uicomponents.AppBar;
 import com.ost.ostwallet.uicomponents.OstTextView;
@@ -48,7 +52,6 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstJsonApi;
 import com.ost.walletsdk.network.OstJsonApiCallback;
-import com.ost.walletsdk.ui.OstWalletUI;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -140,7 +143,7 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(walletDetailsView);
 
-        View addSessionView = getFeatureView("Create Session", isUserActive);
+        View addSessionView = getFeatureView("Authenticate Wallet", isUserActive);
         addSessionView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,9 +167,8 @@ public class SettingsFragment extends BaseFragment implements
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                mListener.resetPin();
-//                Fragment fragment = ResetPinFragment.newInstance();
-//                mListener.launchFeatureFragment(fragment);
+                Fragment fragment = ResetPinFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(resetPinView);
@@ -181,7 +183,8 @@ public class SettingsFragment extends BaseFragment implements
                 if (userDeviceNotAuthorized()) {
                     openDeviceAuthorizationFragment();
                 } else {
-                    mListener.viewMnemonics();
+                    Fragment fragment = ViewMnemonicsFragment.newInstance();
+                    mListener.launchFeatureFragment(fragment);
                 }
             }
         });
@@ -221,9 +224,8 @@ public class SettingsFragment extends BaseFragment implements
         contactSupportView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                OstWalletUI.showComponentSheet(getActivity());
-//                Fragment fragment = WebViewFragment.newInstance("https://help.ost.com/support/home", "OST Support");
-//                mListener.launchFeatureFragment(fragment);
+                Fragment fragment = WebViewFragment.newInstance("https://help.ost.com/support/home", "OST Support");
+                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(contactSupportView);
@@ -251,7 +253,8 @@ public class SettingsFragment extends BaseFragment implements
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                mListener.authorizeDeviceWithMnemonics();
+                Fragment fragment = EnterMnemonicsFragment.newInstance();
+                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(authorizeDeviceViaMnemonics);
@@ -274,7 +277,10 @@ public class SettingsFragment extends BaseFragment implements
                     return;
                 }
                 String userId = AppProvider.get().getCurrentUser().getOstUserId();
-                mListener.updateBiometricPreference(!OstSdk.isBiometricEnabled(userId));
+                WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+                showProgress(true, "Updating biometric...");
+                SdkInteract.getInstance().subscribe(workFlowListener.getId(), SettingsFragment.this);
+                OstSdk.updateBiometricPreference(userId, !OstSdk.isBiometricEnabled(userId), workFlowListener);
             }
         });
         if (new CommonUtils().isBioMetricHardwareAvailable()) {
@@ -301,7 +307,8 @@ public class SettingsFragment extends BaseFragment implements
 
                 if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
 
-                mListener.revokeDevice();
+                Fragment fragment = DeviceListFragment.manageDeviceInstance();
+                mListener.launchFeatureFragment(fragment);
             }
         });
         mScrollViewSettings.addView(manageDevices);
@@ -324,7 +331,7 @@ public class SettingsFragment extends BaseFragment implements
         });
         mScrollViewSettings.addView(transactionViaQR);
 
-        View initiateRecovery = getFeatureView("Initiate Recovery", null != ostUser.getCurrentDevice() && ostUser.getCurrentDevice().canBeAuthorized());
+        View initiateRecovery = getFeatureView("Initiate Recovery", ostUser.getCurrentDevice().canBeAuthorized());
         initiateRecovery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -335,7 +342,8 @@ public class SettingsFragment extends BaseFragment implements
                 } else if (userDeviceNotAuthorized()) {
                     if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                    mListener.initiateDeviceRecovery();
+                    Fragment fragment = DeviceListFragment.initiateRecoveryInstance();
+                    mListener.launchFeatureFragment(fragment);
                 } else {
                     msg = "This is an authorized device, recovery applies only to cases where a user has no authorized device.";
                 }
@@ -514,12 +522,12 @@ public class SettingsFragment extends BaseFragment implements
     }
 
     @Override
-    public void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         updateCommonCode(ostWorkflowContext);
     }
 
     @Override
-    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         updateCommonCode(ostWorkflowContext);
     }
 
@@ -557,7 +565,7 @@ public class SettingsFragment extends BaseFragment implements
 
     private void updateCommonCode(OstWorkflowContext ostWorkflowContext) {
         if (OstWorkflowContext.WORKFLOW_TYPE.UPDATE_BIOMETRIC_PREFERENCE
-                .equals(ostWorkflowContext.getWorkflowType())) {
+                .equals(ostWorkflowContext.getWorkflow_type())) {
             updateBiometricView(mToggleBiometric);
         }
     }
@@ -578,11 +586,5 @@ public class SettingsFragment extends BaseFragment implements
     interface OnFragmentInteractionListener {
         void launchFeatureFragment(Fragment fragment);
         void relaunchApp();
-        void initiateDeviceRecovery();
-        void resetPin();
-        void updateBiometricPreference(boolean enable);
-        void viewMnemonics();
-        void revokeDevice();
-        void authorizeDeviceWithMnemonics();
     }
 }

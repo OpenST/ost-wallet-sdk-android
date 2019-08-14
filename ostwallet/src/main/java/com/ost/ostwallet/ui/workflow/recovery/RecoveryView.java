@@ -16,5 +16,5 @@ interface RecoveryView extends BaseView {
 
     void showEnterPin();
 
-    void gotoDashboard(String workflowId);
+    void gotoDashboard(long workflowId);
 }

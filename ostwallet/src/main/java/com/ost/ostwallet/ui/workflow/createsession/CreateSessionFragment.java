@@ -11,9 +11,8 @@
 package com.ost.ostwallet.ui.workflow.createsession;
 
 
-import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +22,9 @@ import android.widget.Toast;
 
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.R;
-import com.ost.ostwallet.ui.BaseFragment;
 import com.ost.ostwallet.uicomponents.AppBar;
 import com.ost.ostwallet.uicomponents.OstPrimaryEditTextView;
+import com.ost.ostwallet.ui.BaseFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,7 +36,6 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
 
     CreateSessionPresenter mCreateSessionPresenter;
     private OstPrimaryEditTextView mSpendingLimitEditText;
-    private OnFragmentInteractionListener mListener;
 
     public CreateSessionFragment() {
         // Required empty public constructor
@@ -60,17 +58,6 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-        }
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof CreateSessionFragment.OnFragmentInteractionListener) {
-            mListener = (CreateSessionFragment.OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -132,14 +119,5 @@ public class CreateSessionFragment extends BaseFragment implements CreateSession
     @Override
     public void invalidSpendingLimit() {
         mSpendingLimitEditText.showErrorString("Invalid Spending limit");
-    }
-
-    @Override
-    public void createSession(String spendingLimit, long expiryTime) {
-        mListener.createSession(spendingLimit, expiryTime);
-    }
-
-    public interface OnFragmentInteractionListener {
-        void createSession(String spendingLimit, long expiryTime);
     }
 }
