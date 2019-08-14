@@ -13,6 +13,7 @@ package com.ost.walletsdk.ui.resetpin;
 
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -42,6 +43,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
 
 
     ResetPinPresenter mResetPinPresenter = ResetPinPresenter.getInstance();
+    private OnFragmentInteractionListener mListener;
 
     public ResetPinFragment() {
         // Required empty public constructor
@@ -66,6 +68,16 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
             String userId = getArguments().getString(USER_ID);
             String workflowId = getArguments().getString(WORKFLOW_ID);
             mResetPinPresenter.setArguments(userId, workflowId);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException("Activity using ResetPinFragment should implement ResetPinFragment.OnFragmentInteractionListener");
         }
     }
 
@@ -134,10 +146,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
 
     @Override
     public void openWebView(String url) {
-        WebViewFragment fragment = WebViewFragment.newInstance(url);
-        ChildFragmentUtils.addFragment(R.id.layout_container,
-                fragment,
-                this);
+        mListener.openWebView(url);
     }
 
     @Override
@@ -147,5 +156,9 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
             return true;
         }
         return false;
+    }
+
+    public interface OnFragmentInteractionListener {
+        void openWebView(String url);
     }
 }

@@ -12,6 +12,7 @@ package com.ost.walletsdk.ui.recovery;
 
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,6 @@ import android.view.ViewGroup;
 
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
-import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.util.ChildFragmentUtils;
 import com.ost.walletsdk.ui.walletsetup.PinFragment;
 
@@ -40,6 +40,7 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
 
     RecoveryPresenter recoveryPresenter = getPresenter();
     boolean mShowBackButton = true;
+    private OnFragmentInteractionListener mListener;
 
     public RecoveryPresenter getPresenter() {
         return AbortRecoveryPresenter.getInstance();
@@ -78,6 +79,16 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RecoveryFragment.OnFragmentInteractionListener) {
+            mListener = (RecoveryFragment.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException("Activity using RecoveryFragment should implement RecoveryFragment.OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.ost_fragment_workflow_holder, container, false);
@@ -107,9 +118,10 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
 
     @Override
     public void openWebView(String url) {
-        WebViewFragment fragment = WebViewFragment.newInstance(url);
-        ChildFragmentUtils.addFragment(R.id.layout_container,
-                fragment,
-                this);
+        mListener.openWebView(url);
+    }
+
+    public interface OnFragmentInteractionListener {
+        void openWebView(String url);
     }
 }

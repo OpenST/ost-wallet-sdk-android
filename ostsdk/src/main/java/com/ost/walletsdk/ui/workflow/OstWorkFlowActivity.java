@@ -52,7 +52,9 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         FlowInterruptListener,
         FlowCompleteListener,
         SdkInteract.WorkFlowCallbacks,
-        WorkFlowPinFragment.OnFragmentInteractionListener {
+        WorkFlowPinFragment.OnFragmentInteractionListener,
+        ResetPinFragment.OnFragmentInteractionListener,
+        RecoveryFragment.OnFragmentInteractionListener {
 
     public static final String WORKFLOW_ID = "workflowId";
     public static final String WORKFLOW_NAME = "workflowName";
