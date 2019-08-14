@@ -10,7 +10,7 @@
 
 package com.ost.walletsdk.workflows;
 
-import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -18,25 +18,25 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstRecoveryManager;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedResetRecoveryStruct;
+import com.ost.walletsdk.models.entities.OstBaseEntity;
 import com.ost.walletsdk.models.entities.OstRecoveryOwner;
+import com.ost.walletsdk.network.polling.OstResetPinPollingHelper;
+import com.ost.walletsdk.network.polling.interfaces.OstPollingCallback;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
-import com.ost.walletsdk.workflows.services.OstPollingService;
-import com.ost.walletsdk.workflows.services.OstRecoveryPollingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * It will change current passPhrase recoveryAddress with new passPhrase recoveryAddress.
  */
-public class OstResetPin extends OstBaseWorkFlow {
+public class OstResetPin extends OstBaseWorkFlow implements OstPollingCallback {
 
     private static final String TAG = "OstResetPin";
 
@@ -111,19 +111,10 @@ public class OstResetPin extends OstBaseWorkFlow {
 
         postRequestAcknowledge(getWorkflowContext(), new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER));
 
-        Log.i(TAG, "Waiting for update");
-        Bundle bundle = OstRecoveryPollingService.startPolling(mUserId, newRecoveryOwnerAddress, OstRecoveryOwner.CONST_STATUS.AUTHORIZED,
-                OstRecoveryOwner.CONST_STATUS.AUTHORIZATION_FAILED);
+        Log.i(TAG, "start reset pin polling");
+        new OstResetPinPollingHelper(ostRecoveryOwner.getAddress(), mUserId, this);
 
-        if (bundle.getBoolean(OstPollingService.EXTRA_IS_POLLING_TIMEOUT, true)) {
-            Log.d(TAG, String.format("Polling time out for recovery owner Id: %s", newRecoveryOwnerAddress));
-            return postErrorInterrupt("wf_rp_udv_2", OstErrors.ErrorCode.POLLING_TIMEOUT);
-        }
-
-        Log.i(TAG, "Response received for RecoveryOwner");
-        return postFlowComplete(
-                new OstContextEntity(ostRecoveryOwner, OstSdk.RECOVERY_OWNER)
-        );
+        return new AsyncStatus(true);
     }
 
     private Map<String, Object> buildApiRequest(String newRecoveryOwnerAddress, String recoveryOwnerAddress,
@@ -134,5 +125,19 @@ public class OstResetPin extends OstBaseWorkFlow {
         map.put(SIGNER, recoveryOwnerAddress);
         map.put(SIGNATURE, signature);
         return map;
+    }
+
+    @Override
+    public void onOstPollingSuccess(@Nullable OstBaseEntity entity, @Nullable JSONObject data) {
+        Log.i(TAG, "Recovery Owner with Id " + entity.getId() + " authorized successfully");
+        postFlowComplete( new OstContextEntity(entity, OstSdk.RECOVERY_OWNER));
+        goToState(WorkflowStateManager.COMPLETED);
+    }
+
+    @Override
+    public void onOstPollingFailed(OstError error) {
+        Log.e(TAG, "Reset Pin FAILED to authorize recovery owner");
+        postErrorInterrupt( error );
+        goToState(WorkflowStateManager.COMPLETED_WITH_ERROR);
     }
 }
