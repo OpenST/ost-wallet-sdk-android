@@ -67,6 +67,7 @@ public class WorkFlowPinFragment extends PinFragment {
 
     @Override
     protected void setListener(Context context) {
+        super.setListener(context);
         if (context instanceof WorkFlowPinFragment.OnFragmentInteractionListener) {
             mListener = (WorkFlowPinFragment.OnFragmentInteractionListener) context;
         } else {

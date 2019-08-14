@@ -110,6 +110,8 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         android.support.v4.app.Fragment parentFragment = getParentFragment();
         if (parentFragment instanceof PinFragment.OnFragmentInteractionListener) {
             mListener = (PinFragment.OnFragmentInteractionListener) parentFragment;
+        } else if (context instanceof PinFragment.OnFragmentInteractionListener) {
+            mListener = (PinFragment.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(parentFragment.toString()
                     + " must implement PinFragment.OnFragmentInteractionListener");
