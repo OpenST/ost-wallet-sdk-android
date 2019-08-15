@@ -28,8 +28,57 @@ import org.json.JSONObject;
 
 public class OstWalletUI {
 
+    /**
+     * To initialize OstWallet before performing any workflow operations
+     *
+     * @param context Application context
+     * @param url     Ost Platform url
+     */
+    public static void initialize(Context context, String url) {
+        OstSdk.initialize(context, url);
+        if (!ThemeConfig.isInitialized()) {
+            setThemeConfig(context, null);
+        }
+        if (!ContentConfig.isInitialized()) {
+            setContentConfig(context, null);
+        }
+    }
+
+    /**
+     * To Set Theme Configuration of components
+     *
+     * @param context     Application context
+     * @param themeConfig ThemeConfig JSONObject
+     */
+    public static void setThemeConfig(Context context, JSONObject themeConfig) {
+        if (null == themeConfig) themeConfig = new JSONObject();
+        ThemeConfig.init(context, themeConfig);
+    }
+
+    /**
+     * To set Content Configuration of Wallet UI Workflow
+     *
+     * @param context       Application context
+     * @param contentConfig ContentConfig JSONObject
+     */
+    public static void setContentConfig(Context context, JSONObject contentConfig) {
+        if (null == contentConfig) contentConfig = new JSONObject();
+        ContentConfig.init(context, contentConfig);
+    }
+
+    /**
+     * User activation refers to the deployment of smart-contracts that form the user's Brand Token wallet.
+     * An activated user can engage with a Brand Token economy.
+     *
+     * @param currentActivity        Context of current activity of the application from which workflow will initiate
+     * @param userId                 OST Platform user id provided by application server
+     * @param expiredAfterSecs       Session key valid duration
+     * @param spendingLimit          Spending limit in a transaction in atto BT
+     * @param userPassphraseCallback Callback implementation object to get passphrase prefix from application
+     * @return workflow Id
+     */
     public static String activateUser(@NonNull Activity currentActivity, String userId, long expiredAfterSecs,
-                                                String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {
+                                      String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
         Intent intent = new Intent(currentActivity, OstActivateWorkflow.class);
@@ -42,8 +91,18 @@ public class OstWalletUI {
         return workFlowListener.getId();
     }
 
+    /**
+     * A user can control their Brand Tokens using their authorized devices. If they lose their authorized device,
+     * they can recover access to their BrandTokens by authorizing a new device via the recovery process .
+     *
+     * @param currentActivity        Context of current activity of the application from which workflow will initiate
+     * @param userId                 OST Platform user id provided by application server
+     * @param address                Device address which wants to recover
+     * @param userPassphraseCallback Callback implementation object to get passphrase prefix from application
+     * @return workflow Id
+     */
     public static String initiateDeviceRecovery(@NonNull Activity currentActivity, String userId,
-                                                    @Nullable String address, OstUserPassphraseCallback userPassphraseCallback) {
+                                                @Nullable String address, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
         Intent intent = new Intent(currentActivity, OstInitiateRecoveryWorkflow.class);
@@ -55,8 +114,16 @@ public class OstWalletUI {
         return workFlowListener.getId();
     }
 
+    /**
+     * To abort initiated device recovery.
+     *
+     * @param currentActivity        Context of current activity of the application from which workflow will initiate
+     * @param userId                 OST Platform user id provided by application server
+     * @param userPassphraseCallback Callback implementation object to get passphrase prefix from application
+     * @return workflow Id
+     */
     public static String abortDeviceRecovery(@NonNull Activity currentActivity, String userId,
-                                                       OstUserPassphraseCallback userPassphraseCallback) {
+                                             OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
         Intent intent = new Intent(currentActivity, OstAbortRecoveryWorkflow.class);
@@ -67,19 +134,39 @@ public class OstWalletUI {
         return workFlowListener.getId();
     }
 
-    public static String createSession(@NonNull Activity currentActivity, String userId, long expiryTime, String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {
+    /**
+     * A session is a period of time during which a sessionKey is authorized to sign transactions under a pre-set limit on behalf of the user.
+     * The device manager, which controls the tokens, authorizes sessions.
+     *
+     * @param currentActivity        Context of current activity of the application from which workflow will initiate
+     * @param userId                 OST Platform user id provided by application server
+     * @param expiredAfterSecs       Session key valid duration
+     * @param spendingLimit          Spending limit in a transaction in atto BT
+     * @param userPassphraseCallback Callback implementation object to get passphrase prefix from application
+     * @return workflow Id
+     */
+    public static String createSession(@NonNull Activity currentActivity, String userId, long expiredAfterSecs, String spendingLimit, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
         Intent intent = new Intent(currentActivity, OstCreateSessionWorkflow.class);
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.CREATE_SESSION);
-        intent.putExtra(OstWorkFlowActivity.EXPIRED_AFTER_SECS, expiryTime);
+        intent.putExtra(OstWorkFlowActivity.EXPIRED_AFTER_SECS, expiredAfterSecs);
         intent.putExtra(OstWorkFlowActivity.SPENDING_LIMIT, spendingLimit);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
         currentActivity.startActivity(intent);
         return workFlowListener.getId();
     }
 
+    /**
+     * The user's PIN is set when activating the user.
+     * This method supports re-setting a PIN and re-creating the recoveryOwner as part of that.
+     *
+     * @param currentActivity        Context of current activity of the application from which workflow will initiate
+     * @param userId                 OST Platform user id provided by application server
+     * @param userPassphraseCallback Callback implementation object to get passphrase prefix from application
+     * @return workflow Id
+     */
     public static String resetPin(@NonNull Activity currentActivity, String userId, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
@@ -91,6 +178,14 @@ public class OstWalletUI {
         return workFlowListener.getId();
     }
 
+    /**
+     * The mnemonic phrase represents a human-readable way to authorize a new device. This phrase is 12 words long.
+     *
+     * @param currentActivity        Context of current activity of the application from which workflow will initiate
+     * @param userId                 OST Platform user id provided by application server
+     * @param userPassphraseCallback Callback implementation object to get passphrase prefix from application
+     * @return workflow Id
+     */
     public static String getDeviceMnemonics(@NonNull Activity currentActivity, String userId, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
@@ -102,8 +197,17 @@ public class OstWalletUI {
         return workFlowListener.getId();
     }
 
+    /**
+     * To revoke device address
+     *
+     * @param currentActivity        Context of current activity of the application from which workflow will initiate
+     * @param userId                 OST Platform user id provided by application server
+     * @param address                Device address to revoke
+     * @param userPassphraseCallback Callback implementation object to get passphrase prefix from application
+     * @return workflow Id
+     */
     public static String revokeDevice(@NonNull Activity currentActivity, String userId,
-                                                @Nullable String address, OstUserPassphraseCallback userPassphraseCallback) {
+                                      @Nullable String address, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
         Intent intent = new Intent(currentActivity, OstRevokeDeviceWorkflow.class);
@@ -115,6 +219,14 @@ public class OstWalletUI {
         return workFlowListener.getId();
     }
 
+    /**
+     * To authorize device with mnemonics passphrase
+     *
+     * @param currentActivity        Context of current activity of the application from which workflow will initiate
+     * @param userId                 OST Platform user id provided by application server
+     * @param userPassphraseCallback Callback implementation object to get passphrase prefix from application
+     * @return workflow Id
+     */
     public static String authorizeCurrentDeviceWithMnemonics(@NonNull Activity currentActivity, String userId,
                                                              OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
@@ -128,15 +240,15 @@ public class OstWalletUI {
     }
 
     /**
-     * To update Biometric preference
+     * This method can be used to enable or disable the biometric.
      *
-     * @param currentActivity context for current Activity for the application
-     * @param userId - user Id
-     * @param enable - to enable or disable
-     * @param userPassphraseCallback  - A workflow callback handler.
+     * @param currentActivity        Context for current Activity for the application
+     * @param userId                 - user Id
+     * @param enable                 - to enable or disable
+     * @param userPassphraseCallback - A workflow callback handler.
      */
     public static String updateBiometricPreference(@NonNull Activity currentActivity, String userId,
-                                                 boolean enable, OstUserPassphraseCallback userPassphraseCallback) {
+                                                   boolean enable, OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
         Intent intent = new Intent(currentActivity, OstBiometricPrefWorkflow.class);
@@ -150,8 +262,9 @@ public class OstWalletUI {
 
     /**
      * Subscribe for any particular Workflow callback
+     *
      * @param workflowId id of workflow to subscribe to.
-     * @param listener OstWalletUIListener object that implements respective workflow callback
+     * @param listener   OstWalletUIListener object that implements respective workflow callback
      */
     public static void subscribe(String workflowId, OstWalletUIListener listener) {
         SdkInteract.getInstance().subscribe(workflowId, listener);
@@ -159,33 +272,20 @@ public class OstWalletUI {
 
     /**
      * Unsubscribe the listener.
+     *
      * @param workflowId id of workflow to subscribe to.
-     * @param listener
+     * @param listener   wallet listener
      */
-    public  static void unsubscribe(String workflowId, OstWalletUIListener listener) {
+    public static void unsubscribe(String workflowId, OstWalletUIListener listener) {
         SdkInteract.getInstance().unsubscribe(workflowId, listener);
     }
 
-    public static void initialize(Context context, String url) {
-        OstSdk.initialize(context, url);
-        if ( !ThemeConfig.isInitialized() ) {
-            setThemeConfig(context, null);
-        }
-        if ( !ContentConfig.isInitialized() ) {
-            setContentConfig(context, null);
-        }
-    }
-
-    public static void setThemeConfig(Context context, JSONObject themeConfig) {
-        if (null == themeConfig) themeConfig = new JSONObject();
-        ThemeConfig.init(context, themeConfig);
-    }
-
-    public static void setContentConfig(Context context, JSONObject contentConfig) {
-        if (null == contentConfig) contentConfig = new JSONObject();
-        ContentConfig.init(context, contentConfig);
-    }
-
+    /**
+     * Component sheet is collection of all components present in OstWalletUI.
+     * Developers can verify how components are going to look with provied theme.
+     *
+     * @param currentActivity Context for current Activity for the application
+     */
     public static void showComponentSheet(@NonNull Activity currentActivity) {
         Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
         currentActivity.startActivity(intent);
