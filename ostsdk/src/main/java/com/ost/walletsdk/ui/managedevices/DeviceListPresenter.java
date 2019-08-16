@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
+import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstJsonApi;
 import com.ost.walletsdk.network.OstJsonApiCallback;
 import com.ost.walletsdk.ui.BasePresenter;
@@ -34,6 +35,7 @@ import java.util.Map;
 class DeviceListPresenter extends BasePresenter<DeviceListView> {
     private static final String LOG_TAG = "OstDeviceListPresenter";
     private String mUserId;
+    private String currentDeviceAddress;
 
     private DeviceListPresenter() {}
 
@@ -50,6 +52,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
     @Override
     public void attachView(DeviceListView mvpView) {
         super.attachView(mvpView);
+        currentDeviceAddress = OstUser.getById(mUserId).getCurrentDevice().getAddress();
         updateDeviceList(true);
     }
 
@@ -84,9 +87,12 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
                     for (int i = 0; i < deviceJSONArray.length(); i++) {
                         JSONObject deviceJSONObject = deviceJSONArray.getJSONObject(i);
                         Device device = Device.newInstance(deviceJSONObject);
-                        if (device.isAuthorized()) {
+                        if (device.isAuthorized() && !device.getDeviceAddress().equalsIgnoreCase(currentDeviceAddress)) {
                             ostDeviceList.add(device);
                         }
+                    }
+                    if (ostDeviceList.isEmpty()) {
+                        ostDeviceList.add(Device.newInstance(new JSONObject()));
                     }
                 } catch (JSONException e) {
                     //Exception not expected

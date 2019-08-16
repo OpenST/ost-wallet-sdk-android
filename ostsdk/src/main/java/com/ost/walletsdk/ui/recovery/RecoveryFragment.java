@@ -12,6 +12,7 @@ package com.ost.walletsdk.ui.recovery;
 
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,12 +20,11 @@ import android.view.ViewGroup;
 
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
-import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.util.ChildFragmentUtils;
 import com.ost.walletsdk.ui.walletsetup.PinFragment;
 
-import static com.ost.walletsdk.ui.OstWorkFlowActivity.USER_ID;
-import static com.ost.walletsdk.ui.OstWorkFlowActivity.WORKFLOW_ID;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.WORKFLOW_ID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +40,7 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
 
     RecoveryPresenter recoveryPresenter = getPresenter();
     boolean mShowBackButton = true;
+    private OnFragmentInteractionListener mListener;
 
     public RecoveryPresenter getPresenter() {
         return AbortRecoveryPresenter.getInstance();
@@ -70,11 +71,20 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mDeviceAddress = getArguments().getString(DEVICE_ADDRESS);
-            mDeviceAddress = getArguments().getString(DEVICE_ADDRESS);
             String userId = getArguments().getString(USER_ID);
             String workflowId = getArguments().getString(WORKFLOW_ID);
             mShowBackButton = getArguments().getBoolean(SHOW_BACK_BUTTON);
             recoveryPresenter.setArguments(userId, workflowId, mDeviceAddress);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RecoveryFragment.OnFragmentInteractionListener) {
+            mListener = (RecoveryFragment.OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException("Activity using RecoveryFragment should implement RecoveryFragment.OnFragmentInteractionListener");
         }
     }
 
@@ -108,9 +118,10 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
 
     @Override
     public void openWebView(String url) {
-        WebViewFragment fragment = WebViewFragment.newInstance(url);
-        ChildFragmentUtils.addFragment(R.id.layout_container,
-                fragment,
-                this);
+        mListener.openWebView(url);
+    }
+
+    public interface OnFragmentInteractionListener {
+        void openWebView(String url);
     }
 }

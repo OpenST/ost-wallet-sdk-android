@@ -59,10 +59,6 @@ public class Device {
     }
 
     public boolean isAuthorized() {
-        return (OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.REVOKING.equalsIgnoreCase(status)
-                || OstDevice.CONST_STATUS.RECOVERING.equalsIgnoreCase(status)
-                );
+        return (OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status));
     }
 }

@@ -37,10 +37,4 @@ public class OstB3Label extends OstButton {
         super.defineUi(context, attrs, defStyleAttr);
         ThemeConfig.getInstance().B3().apply(this);
     }
-
-    @Override
-    public void setTypeface(@Nullable Typeface tf) {
-        Font font = FontFactory.getInstance(getContext(), FontFactory.FONT.LATO);
-        super.setTypeface(font.getBold());
-    }
 }

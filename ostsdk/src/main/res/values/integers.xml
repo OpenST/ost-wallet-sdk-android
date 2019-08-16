@@ -11,6 +11,6 @@
 
 <resources>
     <integer name="activity_animation_duration">250</integer>
-    <integer name="type_your_pin_lenght">6</integer>
-    <integer name="type_your_pin_input_type">2</integer>
+    <integer name="ost_type_your_pin_lenght">6</integer>
+    <integer name="ost_type_your_pin_input_type">2</integer>
 </resources>

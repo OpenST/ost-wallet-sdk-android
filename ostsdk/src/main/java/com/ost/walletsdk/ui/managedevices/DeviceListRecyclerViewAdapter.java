@@ -11,6 +11,7 @@
 package com.ost.walletsdk.ui.managedevices;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,9 @@ import android.widget.TextView;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
+
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Locale;
@@ -32,9 +36,12 @@ import java.util.Locale;
  */
 public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceListRecyclerViewAdapter.ViewHolder> {
 
+    private static final int EMPTY_VIEW = 0;
+    private static final int DEVICE_VIEW = 1;
     private final List<Device> mValues;
     final OnDeviceListInteractionListener mListener;
     final String mCurrentDeviceAddress;
+    public JSONObject mCellConfig = new JSONObject();
 
     DeviceListRecyclerViewAdapter(List<Device> items, OnDeviceListInteractionListener listener, String userId) {
         mValues = items;
@@ -52,17 +59,22 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.ost_view_device, parent, false);
-
+        View view = null;
+        if (DEVICE_VIEW == viewType) {
+            view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.ost_view_device, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.ost_empty_drawer, parent, false);
+        }
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        if (getItemViewType(position) == EMPTY_VIEW) return;
+
         holder.mDevice = mValues.get(position);
-
-
         holder.mUserName.setText(String.format(Locale.getDefault(), "Device %d", position + 1));
         holder.mAddress.setText(holder.mDevice.getDeviceAddress());
         holder.mActionButton.setVisibility(View.VISIBLE);
@@ -72,7 +84,7 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
     void handleView(final ViewHolder holder) {
         String status = holder.mDevice.getStatus();
         if (OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(status)) {
-            holder.mActionButton.setText("Start Recovery");
+            holder.mActionButton.setText(StringConfig.instance(mCellConfig.optJSONObject("action_button")).getString());
             holder.mActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -95,6 +107,15 @@ public class DeviceListRecyclerViewAdapter extends RecyclerView.Adapter<DeviceLi
 
         if (OstDevice.CONST_STATUS.REVOKING.equalsIgnoreCase(status)) {
             holder.mActionButton.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (TextUtils.isEmpty(mValues.get(position).getOstUserId())) {
+            return EMPTY_VIEW;
+        } else {
+            return DEVICE_VIEW;
         }
     }
 

@@ -15,6 +15,14 @@ public class ContentConfig implements Content {
         mContentObject = new CommonUtils().deepMergeJSONObject(ContentDefault.getDefaultContent(context), contentConfig);
     }
 
+
+    public static boolean isInitialized() {
+        if ( null == contentConfig ) {
+            return false;
+        }
+        return true;
+    }
+
     public static void init(Context context, JSONObject contentObject) {
         contentConfig = new ContentConfig(context, contentObject);
     }

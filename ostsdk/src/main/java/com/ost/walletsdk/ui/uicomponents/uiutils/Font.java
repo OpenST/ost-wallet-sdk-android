@@ -13,15 +13,5 @@ package com.ost.walletsdk.ui.uicomponents.uiutils;
 import android.graphics.Typeface;
 
 public interface Font {
-    Typeface getRegular();
-
-    Typeface getLightItalic();
-
-    Typeface getLight();
-
-    Typeface getItalic();
-
-    Typeface getBoldItalic();
-
-    Typeface getBold();
+    Typeface getFont(String font);
 }

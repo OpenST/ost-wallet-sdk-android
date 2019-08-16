@@ -13,12 +13,17 @@ package com.ost.walletsdk.ui.walletsetup;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.TypefaceSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,9 +36,15 @@ import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.uicomponents.AppBar;
 import com.ost.walletsdk.ui.uicomponents.OstTextView;
 import com.ost.walletsdk.ui.uicomponents.PinEntryEditText;
+import com.ost.walletsdk.ui.uicomponents.uiutils.Font;
+import com.ost.walletsdk.ui.uicomponents.uiutils.FontFactory;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.ui.util.KeyBoard;
 
 import org.json.JSONObject;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -99,6 +110,8 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         android.support.v4.app.Fragment parentFragment = getParentFragment();
         if (parentFragment instanceof PinFragment.OnFragmentInteractionListener) {
             mListener = (PinFragment.OnFragmentInteractionListener) parentFragment;
+        } else if (context instanceof PinFragment.OnFragmentInteractionListener) {
+            mListener = (PinFragment.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(parentFragment.toString()
                     + " must implement PinFragment.OnFragmentInteractionListener");
@@ -114,20 +127,20 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         mPinEntryEditText.setOnEditorActionListener(this);
 
         TextView pinHeadingTextView = (TextView) viewGroup.findViewById(R.id.shtv_pin_heading);
-        pinHeadingTextView.setText(mHeading);
+        pinHeadingTextView.setText(StringConfig.instance(contentConfig.optJSONObject("title_label")).getString());
 
         TextView pinSubHeadingTextView = (TextView) viewGroup.findViewById(R.id.shtv_pin_sub_heading);
-        pinSubHeadingTextView.setText(mSubHeading);
+        pinSubHeadingTextView.setText(StringConfig.instance(contentConfig.optJSONObject("lead_label")).getString());
 
         TextView pinSubHeadingHintTextView = (TextView) viewGroup.findViewById(R.id.shtv_pin_sub_heading_hint);
-        pinSubHeadingHintTextView.setText(mSubHeadingHint);
+        pinSubHeadingHintTextView.setText(StringConfig.instance(contentConfig.optJSONObject("info_label")).getString());
 
         AppBar appBar = AppBar.newInstance(getContext(), mShowBackButton);
         setUpAppBar(viewGroup, appBar);
 
-        if(showTermsLine){
+//        if(showTermsLine){
             showTermsAndPolicyText((OstTextView) viewGroup.findViewById(R.id.pin_terms_privacy));
-        }
+//        }
 
         return viewGroup;
     }
@@ -164,21 +177,50 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
 
     private void showTermsAndPolicyText(OstTextView textView) {
 
-        SpannableString termsString = new SpannableString("Your PIN will be used to authorise sessions, transactions, redemptions and recover wallet.");
+        CharSequence linkableText = new SpannableString(StringConfig.instance(contentConfig.optJSONObject("terms_and_condition_label")).getString());
 
-        final String urlString = contentConfig.optString("terms_and_condition_url");
-        ClickableSpan termsClickableSpan = new ClickableSpan() {
-            @Override
-            public void onClick(View view) {
-                if (mListener != null) {
-                    mListener.openWebView(urlString);
-                }
+        while (true) {
+            Pattern pattern = Pattern.compile("\\{\\{.+?\\}\\}");
+            Matcher m = pattern.matcher(linkableText);
+
+            if (!m.find()) {
+                break;
             }
-        };
-        SpannableString termsAndCondition = new SpannableString("T&C Apply");
-        termsAndCondition.setSpan(termsClickableSpan,0,termsAndCondition.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setText(TextUtils.concat(termsString," ", termsAndCondition));
+
+            int startIndex = m.start();
+            int endIndex = m.end();
+            String lookupText = linkableText.toString().substring(startIndex+2, endIndex-2);
+
+            StringConfig lookUpTextStringConfig = StringConfig.instance(contentConfig.optJSONObject("placeholders").optJSONObject(lookupText));
+
+            SpannableString stringToReplace = new SpannableString(
+                    lookUpTextStringConfig.getString()
+            );
+
+            stringToReplace.setSpan(new ExtendedClickableSpan(mListener, lookUpTextStringConfig.getUrl()),0,stringToReplace.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            stringToReplace.setSpan(new ForegroundColorSpan(Color.parseColor(lookUpTextStringConfig.getColor())),0,stringToReplace.toString().length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            linkableText = TextUtils.concat(linkableText.subSequence(0, startIndex), stringToReplace, linkableText.subSequence(endIndex, linkableText.length()));
+        }
+
+        textView.setText(linkableText);
 
         textView.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    class ExtendedClickableSpan extends ClickableSpan {
+
+        private final String mUrlString;
+        private final OnFragmentInteractionListener mListener;
+
+        ExtendedClickableSpan(OnFragmentInteractionListener listener, String urlString) {
+            mListener = listener;
+            mUrlString = urlString;
+        }
+        @Override
+        public void onClick(@NonNull View widget) {
+            if (mListener != null) {
+                mListener.openWebView(mUrlString);
+            }
+        }
     }
 }

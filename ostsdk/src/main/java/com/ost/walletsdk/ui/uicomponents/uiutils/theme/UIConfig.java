@@ -2,6 +2,7 @@ package com.ost.walletsdk.ui.uicomponents.uiutils.theme;
 
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -29,7 +30,7 @@ public class UIConfig {
         this.color = jsonObject.optString("color");
         this.size = jsonObject.optInt("size");
         this.backgroundColor = jsonObject.optString("background_color");
-        this.fontStyle = jsonObject.optString("font_style");
+        this.fontWeight = jsonObject.optString("system_font_weight");
         this.font = jsonObject.optString("font");
         this.alignment = jsonObject.optString("alignment");
     }
@@ -38,7 +39,7 @@ public class UIConfig {
     private int size;
     private String font;
     private String backgroundColor;
-    private String fontStyle;
+    private String fontWeight;
     private String alignment;
 
     public void apply(TextView textView) {
@@ -58,19 +59,26 @@ public class UIConfig {
             drawable.setColorFilter(Color.parseColor(backgroundColor), PorterDuff.Mode.SRC_IN);
             textView.setBackground(drawable);
         }
-        Font font = FontFactory.getInstance(getContext(), FontFactory.FONT.LATO);
-        if (FONT_REGULAR.equals(this.fontStyle)) {
-            textView.setTypeface(font.getLight());
-        } else if (FONT_MEDIUM.equals(this.fontStyle)) {
-            textView.setTypeface(font.getRegular());
-        } else if (FONT_BOLD.equals(this.fontStyle)) {
-            textView.setTypeface(font.getBold());
-        } else if (FONT_SEMI_BOLD.equals(this.fontStyle)) {
-            textView.setTypeface(font.getBold());
-        } else if (FONT_ITALIC.equals(this.fontStyle)) {
-            textView.setTypeface(font.getItalic());
+        setFontAndWeight(textView);
+    }
+
+    private void setFontAndWeight(TextView textView) {
+        Font font = FontFactory.getInstance(getContext());
+        Typeface typeface = font.getFont(this.font);
+        if (FONT_REGULAR.equals(this.fontWeight)) {
+            if (null == typeface) typeface = Typeface.create("sans-serif", Typeface.NORMAL);
+            textView.setTypeface(typeface);
+        } else if (FONT_MEDIUM.equals(this.fontWeight)) {
+            if (null == typeface) typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL);
+            textView.setTypeface(typeface);
+        } else if (FONT_BOLD.equals(this.fontWeight)) {
+            if (null == typeface) typeface = Typeface.create("sans-serif-medium", Typeface.BOLD);
+            textView.setTypeface(typeface);
+        } else if (FONT_SEMI_BOLD.equals(this.fontWeight)) {
+            if (null == typeface) typeface = Typeface.create("sans-serif", Typeface.BOLD);
+            textView.setTypeface(typeface);
         } else {
-            textView.setTypeface(font.getRegular());
+            textView.setTypeface(typeface);
         }
     }
 }

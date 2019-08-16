@@ -11,12 +11,8 @@
 package com.ost.walletsdk.ui.uicomponents;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
-import com.ost.walletsdk.ui.uicomponents.uiutils.Font;
-import com.ost.walletsdk.ui.uicomponents.uiutils.FontFactory;
 import com.ost.walletsdk.ui.uicomponents.uiutils.theme.ThemeConfig;
 
 
@@ -37,11 +33,5 @@ public class OstB1Label extends OstButton {
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
         super.defineUi(context, attrs, defStyleAttr);
         ThemeConfig.getInstance().B1().apply(this);
-    }
-
-    @Override
-    public void setTypeface(@Nullable Typeface tf) {
-        Font font = FontFactory.getInstance(getContext(), FontFactory.FONT.LATO);
-        super.setTypeface(font.getBold());
     }
 }

@@ -12,6 +12,10 @@ package com.ost.walletsdk.ui.sdkInteract;
 
 import android.support.annotation.Nullable;
 
+import com.ost.walletsdk.ui.interfaces.FlowCompleteListener;
+import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
+import com.ost.walletsdk.ui.interfaces.OstWalletUIListener;
+import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -34,27 +38,7 @@ public class SdkInteract {
     private HashMap<String, WorkFlowListener> listenerHashMap = new HashMap<>();
 
     //It holds all the subscribed callbacks
-    private WeakHashMap<String, List<WeakReference<SdkInteractListener>>> sdkListeners = new WeakHashMap<>();
-
-    private SdkInteractListener mPinCallbackListener;
-    private SdkInteractListener mVerifyDataCallbackListener;
-    private SdkInteractListener mFlowListener;
-
-    PinCallback getPinCallbackListener() {
-        return (PinCallback) mPinCallbackListener;
-    }
-
-    public VerifyDataCallback getVerifyDataCallbackListener() {
-        return (VerifyDataCallback) mVerifyDataCallbackListener;
-    }
-
-    public void setFlowListeners(SdkInteractListener sdkInteractListener) {
-        mFlowListener = sdkInteractListener;
-    }
-
-    public SdkInteractListener getFlowListener() {
-        return mFlowListener;
-    }
+    private WeakHashMap<String, List<WeakReference<OstWalletUIListener>>> sdkListeners = new WeakHashMap<>();
 
     enum CALLBACK_TYPE {
         ALL,
@@ -84,6 +68,18 @@ public class SdkInteract {
     }
 
     /**
+     * Creates new Object of Work flow Listener
+     * @param workFlowCallbacks workflow callbacks object for pin and verfiy data callbacks
+     * @return WorkFlowListener object that implements OstWorkFlowCallback
+     */
+    public synchronized WorkFlowListener newWorkFlowListener(WorkFlowCallbacks workFlowCallbacks) {
+        WorkFlowListener workFlowListener = new WorkFlowListener(workFlowCallbacks);
+        workFlowListenerList.add(workFlowListener);
+        listenerHashMap.put(workFlowListener.getId(), workFlowListener);
+        return workFlowListener;
+    }
+
+    /**
      * Get Object of Work flow Listener
      * @return WorkFlowListener object that implements OstWorkFlowCallback
      */
@@ -105,15 +101,15 @@ public class SdkInteract {
      * @param workflowId Integer work flow listener Id
      * @param listener SdkInteractListener object that implements respective workflow callback
      */
-    public void subscribe(String workflowId, SdkInteractListener listener) {
-        List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
+    public void subscribe(String workflowId, OstWalletUIListener listener) {
+        List<WeakReference<OstWalletUIListener>> weakList = sdkListeners.get(workflowId);
         if (null == weakList) {
             weakList = new LinkedList<>();
             sdkListeners.put(workflowId, weakList);
         }
-        ListIterator<WeakReference<SdkInteractListener>> iter = weakList.listIterator();
+        ListIterator<WeakReference<OstWalletUIListener>> iter = weakList.listIterator();
         while(iter.hasNext()){
-            WeakReference<SdkInteractListener> weakSdkListener = iter.next();
+            WeakReference<OstWalletUIListener> weakSdkListener = iter.next();
             if(weakSdkListener.get().equals(listener)){
                 return;
             }
@@ -121,12 +117,12 @@ public class SdkInteract {
         weakList.add(new WeakReference<>(listener));
     }
 
-    public void unSubscribe(String workflowId, SdkInteractListener listener) {
-        List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
+    public void unsubscribe(String workflowId, OstWalletUIListener listener) {
+        List<WeakReference<OstWalletUIListener>> weakList = sdkListeners.get(workflowId);
         if (null != weakList) {
-            List<WeakReference<SdkInteractListener>> listToRemove = new ArrayList<>();
+            List<WeakReference<OstWalletUIListener>> listToRemove = new ArrayList<>();
             for (int i = 0; i<weakList.size(); i++) {
-                WeakReference<SdkInteractListener> weakSdkListener = weakList.get(i);
+                WeakReference<OstWalletUIListener> weakSdkListener = weakList.get(i);
                 if (weakSdkListener.get() == null || weakSdkListener.get().equals(listener)) {
                     listToRemove.add(weakSdkListener);
                 }
@@ -135,23 +131,15 @@ public class SdkInteract {
         }
     }
 
-    public void setPinCallbackListener(PinCallback listener) {
-        mPinCallbackListener = listener;
-    }
-
-    public void setVerifyDataCallbackListener(VerifyDataCallback listener) {
-        mVerifyDataCallbackListener = listener;
-    }
-
     void notifyEvent(String workflowId, CALLBACK_TYPE callback_type, Object... objects) {
         //Generic notification
-        fireEventForCallbackType(workflowId, getFlowListener(), callback_type, objects);
+//        fireEventForCallbackType(workflowId, getFlowListener(), callback_type, objects);
 
-        List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
+        List<WeakReference<OstWalletUIListener>> weakList = sdkListeners.get(workflowId);
         if (null != weakList) {
-            List<WeakReference<SdkInteractListener>> listToRemove = new ArrayList<>();
+            List<WeakReference<OstWalletUIListener>> listToRemove = new ArrayList<>();
             for (int i = 0; i<weakList.size(); i++) {
-                WeakReference<SdkInteractListener> weakSdkListener = weakList.get(i);
+                WeakReference<OstWalletUIListener> weakSdkListener = weakList.get(i);
                 if (weakSdkListener.get() == null) {
                     listToRemove.add(weakSdkListener);
                 } else {
@@ -163,13 +151,12 @@ public class SdkInteract {
     }
 
 
-    private void fireEventForCallbackType(String workflowId, SdkInteractListener sdkInteractListener, CALLBACK_TYPE callback_type, Object... objects) {
+    private void fireEventForCallbackType(String workflowId, OstWalletUIListener sdkInteractListener, CALLBACK_TYPE callback_type, Object... objects) {
         switch (callback_type) {
 
             case FLOW_COMPLETE:
-                if (sdkInteractListener instanceof FlowComplete) {
-                    ((FlowComplete) sdkInteractListener).flowComplete(
-                            workflowId,
+                if (sdkInteractListener instanceof FlowCompleteListener) {
+                    ((FlowCompleteListener) sdkInteractListener).flowComplete(
                             (OstWorkflowContext) objects[0],
                             (OstContextEntity) objects[1]
                     );
@@ -177,9 +164,8 @@ public class SdkInteract {
 
                 break;
             case FLOW_INTERRUPT:
-                if (sdkInteractListener instanceof FlowInterrupt) {
-                    ((FlowInterrupt) sdkInteractListener).flowInterrupt(
-                            workflowId,
+                if (sdkInteractListener instanceof FlowInterruptListener) {
+                    ((FlowInterruptListener) sdkInteractListener).flowInterrupt(
                             (OstWorkflowContext) objects[0],
                             (OstError) objects[1]
                     );
@@ -187,9 +173,8 @@ public class SdkInteract {
                 break;
 
             case REQUEST_ACK:
-                if (sdkInteractListener instanceof RequestAcknowledged) {
-                    ((RequestAcknowledged) sdkInteractListener).requestAcknowledged(
-                            workflowId,
+                if (sdkInteractListener instanceof RequestAcknowledgedListener) {
+                    ((RequestAcknowledgedListener) sdkInteractListener).requestAcknowledged(
                             (OstWorkflowContext) objects[0],
                             (OstContextEntity) objects[1]
                     );
@@ -199,59 +184,16 @@ public class SdkInteract {
     }
 
     private SdkInteract() {
-        /*
-         * To avoid null pointer exception
-         */
-        mVerifyDataCallbackListener = new VerifyDataCallback() {
-            @Override
-            public void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
-
-            }
-        };
-        mPinCallbackListener = new PinCallback() {
-            @Override
-            public void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-
-            }
-
-            @Override
-            public void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-
-            }
-
-            @Override
-            public void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
-
-            }
-        };
-    }
-
-    interface SdkInteractListener {
 
     }
 
-    public interface FlowComplete extends SdkInteractListener {
-        void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
-    }
-
-    public interface FlowInterrupt extends SdkInteractListener {
-        void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError);
-    }
-
-    public interface RequestAcknowledged extends SdkInteractListener {
-        void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
-    }
-
-    public interface PinCallback extends SdkInteractListener {
+    public interface WorkFlowCallbacks extends OstWalletUIListener {
 
         void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 
         void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 
         void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId);
-    }
-
-    public interface VerifyDataCallback extends SdkInteractListener {
 
         void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface);
     }

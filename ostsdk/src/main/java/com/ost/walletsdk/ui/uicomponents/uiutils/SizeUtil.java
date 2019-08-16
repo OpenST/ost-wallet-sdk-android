@@ -17,4 +17,8 @@ public class SizeUtil {
     public static float getTextSize(Resources res, int resPath) {
         return res.getDimension(resPath)/ res.getDisplayMetrics().density;
     }
+
+    public int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
+    }
 }

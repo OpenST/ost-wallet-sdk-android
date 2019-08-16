@@ -15,6 +15,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 
 import com.ost.walletsdk.R;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.util.ChildFragmentUtils;
 import com.ost.walletsdk.ui.walletsetup.PinFragment;
 
@@ -44,9 +45,12 @@ public class InitiateRecoveryFragment extends RecoveryFragment {
 
     @Override
     public void showEnterPin() {
-        ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
-                PinFragment.newInstance("Recover Access to Your Wallet",
-                        "Enter your 6-digit PIN to recover access to your wallet",  "", mShowBackButton),
-                this);
+        PinFragment fragment = PinFragment.newInstance("Recover Access to Your Wallet",
+                "Enter your 6-digit PIN to recover access to your wallet",  "", mShowBackButton);
+        ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container, fragment, this);
+
+        fragment.contentConfig = ContentConfig.getInstance()
+                .getStringConfig("initiate_recovery")
+                .optJSONObject("get_pin");
     }
 }

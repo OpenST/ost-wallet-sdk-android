@@ -12,6 +12,8 @@ package com.ost.walletsdk.ui.uicomponents;
 
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -27,6 +29,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ost.walletsdk.R;
+import com.ost.walletsdk.ui.uicomponents.uiutils.theme.PinDrawable;
+import com.ost.walletsdk.ui.uicomponents.uiutils.theme.ThemeConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +44,9 @@ public class PinEntryEditText extends LinearLayout {
     private EditText invisiblePinEditText;
     private int pinLenght;
     private TextView.OnEditorActionListener mOnEditorActionListener;
+
+    private int filledColor = Color.parseColor(ThemeConfig.getInstance().getPinViewConfig().getFilledColor());
+    private int emptyColor = Color.parseColor(ThemeConfig.getInstance().getPinViewConfig().getEmptyColor());
 
     public PinEntryEditText(Context context) {
         super(context);
@@ -57,14 +64,15 @@ public class PinEntryEditText extends LinearLayout {
     }
 
     private void init() {
-        pinLenght = getResources().getInteger(R.integer.type_your_pin_lenght);
-        int inputType = getResources().getInteger(R.integer.type_your_pin_input_type);
-        int marginSize = getResources().getDimensionPixelSize(R.dimen.type_your_pin_margins);
-        int height = getResources().getDimensionPixelSize(R.dimen.type_your_pin_size);
-        int width = getResources().getDimensionPixelSize(R.dimen.type_your_pin_size);
+        pinLenght = getResources().getInteger(R.integer.ost_type_your_pin_lenght);
+        int inputType = getResources().getInteger(R.integer.ost_type_your_pin_input_type);
+        int marginSize = getResources().getDimensionPixelSize(R.dimen.ost_type_your_pin_margins);
+        int height = getResources().getDimensionPixelSize(R.dimen.ost_type_your_pin_size);
+        int width = getResources().getDimensionPixelSize(R.dimen.ost_type_your_pin_size);
 
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER);
+        setPadding(0, marginSize,0, marginSize);
         setSize(this, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         setupOnClickListener();
         setFocusableInTouchMode(false);
@@ -75,7 +83,6 @@ public class PinEntryEditText extends LinearLayout {
             View pin = new View(getContext());
             setSize(pin, width, height);
             setMarginLeft(pin, marginSize);
-
             if (isLastPin(i, pinLenght)) {
                 setMarginRight(pin, marginSize);
             }
@@ -191,11 +198,15 @@ public class PinEntryEditText extends LinearLayout {
     }
 
     private void fillPin(View pin) {
-        pin.setBackground(getResources().getDrawable(R.drawable.bg_pin_round_fill, null));
+        PinDrawable pinDrawable = new PinDrawable();
+        pinDrawable.setColorFilter(filledColor, PorterDuff.Mode.SRC_IN);
+        pin.setBackground(pinDrawable);
     }
 
     private void unfillPin(View pin) {
-        pin.setBackground(getResources().getDrawable(R.drawable.bg_pin_round_unfill, null));
+        PinDrawable pinDrawable = new PinDrawable();
+        pinDrawable.setColorFilter(emptyColor, PorterDuff.Mode.SRC_IN);
+        pin.setBackground(pinDrawable);
     }
 
     public void setOnEditorActionListener(TextView.OnEditorActionListener onEditorActionListener) {
@@ -205,5 +216,20 @@ public class PinEntryEditText extends LinearLayout {
 
     public void setError(boolean show) {
 
+    }
+
+    public void setEnable(boolean enabled) {
+        invisiblePinEditText.setEnabled(enabled);
+        invisiblePinEditText.setFocusable(enabled);
+        if (enabled) {
+            setupOnClickListener();
+        } else {
+            invisiblePinEditText.setOnClickListener(null);
+        }
+    }
+
+    public void setText(String text) {
+        invisiblePinEditText.setText(text);
+        updatePinView();
     }
 }

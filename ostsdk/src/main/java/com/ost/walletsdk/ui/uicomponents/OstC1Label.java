@@ -36,12 +36,5 @@ public class OstC1Label extends OstTextView {
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
         super.defineUi(context, attrs, defStyleAttr);
         ThemeConfig.getInstance().C1().apply(this);
-
-    }
-
-    @Override
-    public void setTypeface(@Nullable Typeface tf) {
-        Font font = FontFactory.getInstance(getContext(), FontFactory.FONT.LATO);
-        super.setTypeface(font.getBold());
     }
 }

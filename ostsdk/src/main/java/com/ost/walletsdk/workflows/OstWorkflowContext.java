@@ -10,6 +10,8 @@
 
 package com.ost.walletsdk.workflows;
 
+import android.support.annotation.NonNull;
+
 /**
  * WorkflowContext to hold work flow type
  */
@@ -27,21 +29,41 @@ public class OstWorkflowContext {
         AUTHORIZE_DEVICE_WITH_MNEMONICS,
         INITIATE_DEVICE_RECOVERY,
         ABORT_DEVICE_RECOVERY,
-        REVOKE_DEVICE_WITH_QR_CODE,
+        REVOKE_DEVICE,
         RESET_PIN,
         LOGOUT_ALL_SESSIONS
     }
     private WORKFLOW_TYPE workflow_type;
+    private String workflowId;
 
     public OstWorkflowContext(WORKFLOW_TYPE workflow_type) {
         this.workflow_type = workflow_type;
+        this.workflowId = "UNDEFINED";
+    }
+
+    public OstWorkflowContext(@NonNull String workflowId, @NonNull WORKFLOW_TYPE workflow_type) {
+        this.workflow_type = workflow_type;
+        this.workflowId = workflowId;
     }
 
     public OstWorkflowContext() {
         this.workflow_type = WORKFLOW_TYPE.UNKNOWN;
     }
 
+    /**
+     * @deprecated
+     * Use {@link #getWorkflowType()} instead
+     */
     public WORKFLOW_TYPE getWorkflow_type() {
+        return workflow_type;
+    }
+
+    public String getWorkflowId() {
+        return workflowId;
+    }
+
+    //Added so that getWorkflow_type can be deprecated in future releases.
+    public WORKFLOW_TYPE getWorkflowType() {
         return workflow_type;
     }
 }

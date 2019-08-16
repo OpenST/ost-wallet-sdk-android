@@ -34,7 +34,6 @@ import com.ost.walletsdk.workflows.services.OstPollingService;
 import org.json.JSONObject;
 import org.web3j.crypto.WalletUtils;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -73,7 +72,7 @@ public class OstRevokeDevice extends OstBaseWorkFlow {
         }
 
         //request acknowledge
-        postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+        postRequestAcknowledge(getWorkflowContext(),
                 new OstContextEntity(OstDevice.getById(mDeviceToBeRevoked), OstSdk.DEVICE));
 
 
@@ -146,7 +145,7 @@ public class OstRevokeDevice extends OstBaseWorkFlow {
 
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
-        return OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE;
+        return WORKFLOW_TYPE.REVOKE_DEVICE;
     }
 
     static class RevokeDeviceDataDefinitionInstance extends OstDeviceDataDefinitionInstance {
@@ -178,7 +177,7 @@ public class OstRevokeDevice extends OstBaseWorkFlow {
 
         @Override
         public WORKFLOW_TYPE getWorkFlowType() {
-            return WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE;
+            return WORKFLOW_TYPE.REVOKE_DEVICE;
         }
     }
 }

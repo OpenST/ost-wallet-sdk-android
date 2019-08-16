@@ -15,8 +15,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import com.ost.walletsdk.R;
-import com.ost.walletsdk.ui.uicomponents.uiutils.Font;
-import com.ost.walletsdk.ui.uicomponents.uiutils.FontFactory;
 
 public class OstTextView extends AppCompatTextView {
     public OstTextView(Context context) {
@@ -35,8 +33,6 @@ public class OstTextView extends AppCompatTextView {
     }
 
     void defineUi(Context context, AttributeSet attrs, int defStyleAttr) {
-        Font font = FontFactory.getInstance(context, FontFactory.FONT.LATO);
-        this.setTypeface(font.getRegular());
     }
 
     public void setDisabled(){
