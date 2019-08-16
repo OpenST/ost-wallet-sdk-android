@@ -6,12 +6,12 @@ Wallet UI SDK is useful to integrate OstWalletSdk in application with available 
 
 ## Setup
 
-To setup OstWalletUI, please refer [setup](../../README.md#setup).
+To setup OstWalletUI, please refer [setup](../README.md#setup).
 
 ## OstWalletUI SDK APIs
 ### Important Notes
-1. App must [initialize](../../README.md#initialize-the-sdk) the sdk <em><b>before</b></em> initiating any UI workflows.
-2. App must perform [setupDevice](../../README.md#set-up-the-device) workflow <em><b>before</b></em> initiating any UI workflows.
+1. App must [initialize](../README.md#initialize-the-sdk) the sdk <em><b>before</b></em> initiating any UI workflows.
+2. App must perform [setupDevice](../README.md#set-up-the-device) workflow <em><b>before</b></em> initiating any UI workflows.
 
 
 To use OstWalletUI 
