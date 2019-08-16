@@ -1,5 +1,9 @@
 # OST Wallet SDK Changelog
 
+## Version 2.3.0
+### Changes:
+* OstSdk now supports OstWalletUI, which provides themeable and customizable UI of workflows.
+
 ## Version 2.2.2
 ### Bug Fix:
 * Crash fixes in OstWallet
