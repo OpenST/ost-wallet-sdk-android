@@ -52,7 +52,7 @@ public class OstPerformTest {
         OstSdk.performQRAction(userId, data, new AbsWorkFlowCallback() {
             @Override
             public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
-                Assert.assertEquals(ostWorkflowContext.getWorkflow_type(), OstWorkflowContext.WORKFLOW_TYPE.PERFORM_QR_ACTION);
+                Assert.assertEquals(ostWorkflowContext.getWorkflowType(), OstWorkflowContext.WORKFLOW_TYPE.PERFORM_QR_ACTION);
                 Assert.assertTrue(ostContextEntity.getEntityType().equalsIgnoreCase(OstSdk.DEVICE));
 
                 countDownLatch.countDown();

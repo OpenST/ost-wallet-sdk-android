@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.ost.walletsdk.ui.uicomponents.OstH1Label
+        android:id="@+id/labelHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:text="" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstH3Label
+        android:id="@+id/labelSubHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:text="@string/enter_mnemonics_sub_heading" />
+
+    <EditText
+        android:id="@+id/et_mnemonics_phrase"
+        android:background="@drawable/rounded_corner_edittext_bg"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/dp_10"
+        android:gravity="left"
+        android:inputType="textMultiLine"
+        android:letterSpacing="-0.02"
+        android:lineSpacingExtra="7sp"
+        android:textSize="16sp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/primary_edittext_text"
+        android:hint="@string/enter_mnemonics_hint_phrase"
+        android:textColorHint="@color/primary_edittext_hint_text"/>
+
+    <com.ost.walletsdk.ui.uicomponents.OstB1Label
+        android:id="@+id/pbtn_recover_wallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="Recover Wallet" />
+
+    <com.ost.walletsdk.ui.uicomponents.OstH4Label
+        android:id="@+id/labelHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:text="" />
+</merge>

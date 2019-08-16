@@ -56,6 +56,7 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -72,6 +73,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     final String mUserId;
     final Handler mHandler;
     final boolean mShouldPoll;
+    final String mWorkflowId;
 
     WorkflowStateManager stateManager;
     
@@ -124,6 +126,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         mShouldPoll = shouldPoll;
         mHandler = new Handler(Looper.getMainLooper());
         workFlowCallbackWeakReference = new WeakReference<>(callback);
+        this.mWorkflowId = UUID.randomUUID().toString();
         initApiClient();
         setStateManager();
     }
@@ -536,7 +539,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
             public void run() {
                 OstWorkFlowCallback callback = getCallback();
                 if ( null != callback ) {
-                    callback.pinValidated(new OstWorkflowContext(getWorkflowType()), mUserId);
+                    callback.pinValidated(getWorkflowContext(), mUserId);
                 }
             }
         });
@@ -550,7 +553,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
             public void run() {
                 OstWorkFlowCallback callback = getCallback();
                 if ( null != callback ) {
-                    callback.invalidPin(new OstWorkflowContext(getWorkflowType()), mUserId, pinAcceptInterface);
+                    callback.invalidPin(getWorkflowContext(), mUserId, pinAcceptInterface);
                 } else {
                     goToState(WorkflowStateManager.CALLBACK_LOST);
                 }
@@ -573,7 +576,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
             public void run() {
                 OstWorkFlowCallback callback = getCallback();
                 if ( null != callback ) {
-                    callback.getPin(new OstWorkflowContext(getWorkflowType()), mUserId, pinAcceptInterface);
+                    callback.getPin(getWorkflowContext(), mUserId, pinAcceptInterface);
                 } else {
                     goToState(WorkflowStateManager.CALLBACK_LOST);
                 }
@@ -588,7 +591,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
             public void run() {
                 OstWorkFlowCallback callback = getCallback();
                 if ( null != callback ) {
-                    callback.flowComplete(new OstWorkflowContext(getWorkflowType()), ostContextEntity);
+                    callback.flowComplete(getWorkflowContext(), ostContextEntity);
                 }
             }
         });
@@ -611,7 +614,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
             public void run() {
                 OstWorkFlowCallback callback = getCallback();
                 if ( null != callback ) {
-                    callback.flowInterrupt(new OstWorkflowContext(getWorkflowType()), error);
+                    callback.flowInterrupt(getWorkflowContext(), error);
                 }
             }
         });
@@ -619,7 +622,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     }
 
     void postRequestAcknowledge(OstContextEntity ostContextEntity) {
-        OstWorkflowContext workflowContext = new OstWorkflowContext(getWorkflowType());
+        OstWorkflowContext workflowContext = getWorkflowContext();
         postRequestAcknowledge(workflowContext, ostContextEntity);
     }
 
@@ -647,7 +650,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
                 OstWorkFlowCallback callback = getCallback();
                 if ( null != callback ) {
                     callback.verifyData(
-                            new OstWorkflowContext(workFlowType),
+                            getWorkflowContext(),
                             ostContextEntity,
                             ostVerifyDataInterface
                     );
@@ -808,5 +811,11 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     String getBiometricHeading() {
         return new CommonUtils().getStringRes(R.string.authorize);
     }
+
+    OstWorkflowContext getWorkflowContext() {
+        return new OstWorkflowContext(this.mWorkflowId, this.getWorkflowType());
+    }
+
+
     //endregion
 }

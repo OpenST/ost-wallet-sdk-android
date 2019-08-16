@@ -96,7 +96,7 @@ public class OstAddCurrentDeviceWithMnemonics extends OstBaseWorkFlow implements
 
         if ( apiCallStatus.isSuccess() ) {
             //request acknowledge
-            postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+            postRequestAcknowledge(getWorkflowContext(),
                     new OstContextEntity(OstDevice.getById(mAddedDeviceAddress), OstSdk.DEVICE));
 
             //increment nonce

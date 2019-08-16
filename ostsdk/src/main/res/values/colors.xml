@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2019 OST.com Inc
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,7 +9,66 @@
   -->
 
 <resources>
+    <color name="colorPrimary">#168dc1</color>
+    <color name="colorPrimaryDark">#168dc1</color>
+    <color name="colorAccent">#168dc1</color>
+    <color name="color_app_bar">#61B2D6</color>
+
+    <color name="black_overlay">#66000000</color>
+
+    <color name="button_border">#34445b</color>
+    <color name="text_view_primary">#34445b</color>
+
+    <color name="pin_normal">#6B767E</color>
+
     <color name="warning_color">#f2291c</color>
     <color name="hint_color">#8a000000</color>
     <color name="success_color">#e4b030</color>
+
+    <!--Primary Button colors-->
+    <color name="primary_button">#168DC1</color>
+    <color name="primary_button_text">#ffffff</color>
+    <color name="primary_button_text_disabled">#efefef</color>
+    <color name="primary_button_disabled">#B9DCEC</color>
+    <color name="primary_button_pressed">#61B2D6</color>
+
+    <!--Secondary Button-->
+    <color name="secondary_button">#168dc1</color>
+    <color name="secondary_button_text">#168dc1</color>
+    <color name="secondary_button_text_disabled">#e0e0e0</color>
+    <color name="secondary_button_disabled">#e0e0e0</color>
+    <color name="secondary_button_pressed">#168dc1</color>
+
+    <!--Link Button-->
+    <color name="link_button_text">#168dc1</color>
+    <color name="link_button">#0000</color>
+    <color name="link_button_text_disabled">#efefef</color>
+
+    <!--Primary Edit Text-->
+    <color name="primary_edittext_hint_text">#8034445b</color>
+    <color name="primary_edittext_text">#4a4a4a</color>
+    <color name="sub_header_text">#4a4a4a</color>
+
+    <!--Device Recycler View cell -->
+    <color name="view_cell_sub_text">#9b9b9b</color>
+    <color name="color_34445b">#34445b</color>
+    <color name="color_f4f4f4">#f4f4f4</color>
+    <color name="color_9b9b9b">#9b9b9b</color>
+    <color name="color_b9d18f">#B9D18F</color>
+    <color name="color_ff8485">#ff8485</color>
+    <color name="color_168dc1">#168dc1</color>
+    <color name="color_e7f3f8">#E7F3F8</color>
+    <color name="color_wallet_text">#34445b</color>
+
+    <!--User list-->
+    <color name="user_list_user_name">#597a84</color>
+    <color name="user_list_sub_header">#34445b</color>
+
+    <!--QR fragment-->
+    <color name="qr_footer_bg">#34445b</color>
+    <color name="qr_header_text">#34445b</color>
+
+    <!--Transaction amount-->
+    <color name="received_token_amount">#438bad</color>
+    <color name="sent_token_amount">#9b9b9b</color>
 </resources>

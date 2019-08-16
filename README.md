@@ -12,9 +12,6 @@ Wallet SDK is a mobile application development SDK that enables developers to in
 - Android version support: 22 and above
 
 
-
-
-
 ## Setup
 #### a). Setting minSdkVersion to 22
 ```
@@ -44,12 +41,15 @@ compileOptions {
 
 ```
 dependencies {
-    implementation 'com.ost:ost-wallet-sdk-android:2.2.3'
+    implementation 'com.ost:ost-wallet-sdk-android:2.3.0'
     ...
     ...
     ...
 }
 ```
+Then sync you dependencies through gradle<br/>
+**Note**: Gradle sync might fail for the first time due to build time. Please retry if sync issue happen.
+
 
 ### Add mobile sdk config file
  A config file is needed for application-specific configuration of OST  SDK.</br>
@@ -801,45 +801,6 @@ public static String convertBTWeiToFiat(String balance, JSONObject pricePointObj
     }
 ```
 
-
-## Steps to use Android mobile sdk through AAR lib
-- Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
-- Create libs folder under app directory in your application project.
-- In libs folder add your downloaded aar file.
-- Add aar lib dependency to your build.gradle file
-```
- implementation files('libs/ostsdk-release.aar')
-```
-- Also add dependencies of ostsdk in you build.gradle
-
-```groovy
-dependencies {
-
-    // your app dependencies
-
-    //--- Section to Copy  ----
-
-    // Room components
-    implementation "android.arch.persistence.room:runtime:1.1.1"
-    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
-    implementation 'com.madgag.spongycastle:core:1.56.0.0'
-    implementation 'org.web3j:core:4.1.0-android'
-    // Lifecycle components
-    implementation "android.arch.lifecycle:extensions:1.1.1"
-    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
-    // https://mvnrepository.com/artifact/com.google.guava/guava
-    implementation 'com.google.guava:guava:18.0'
-    // Zxing barcode dependency
-    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
-
-    //---Section to Copy  ----
-
-}
-```
-
-- Clean and then Build your Android project.
-
-
 ## Classes
 
 1. OstError
@@ -906,3 +867,43 @@ public enum WORKFLOW_TYPE {
 1. `public OstWorkflowContext(WORKFLOW_TYPE workflow_type)`
 2. `public OstWorkflowContext()`
 3. `public WORKFLOW_TYPE getWorkflow_type()`
+
+## OstWalletUI
+Starting version `2.3.0` the SDK also provides built-in User Interface Components which are theamable and support content customization. Please refer [OstWalletUI](./documentation/OstWalletUI.md)
+
+## Steps to use Android mobile sdk through AAR lib
+- Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
+- Create libs folder under app directory in your application project.
+- In libs folder add your downloaded aar file.
+- Add aar lib dependency to your build.gradle file
+```
+ implementation files('libs/ostsdk-release.aar')
+```
+- Also add dependencies of ostsdk in you build.gradle
+
+```groovy
+dependencies {
+
+    // your app dependencies
+
+    //--- Section to Copy  ----
+
+    // Room components
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+    implementation 'com.madgag.spongycastle:core:1.56.0.0'
+    implementation 'org.web3j:core:4.1.0-android'
+    // Lifecycle components
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation 'com.google.guava:guava:18.0'
+    // Zxing barcode dependency
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
+
+    //---Section to Copy  ----
+
+}
+```
+
+- Clean and then Build your Android project.
