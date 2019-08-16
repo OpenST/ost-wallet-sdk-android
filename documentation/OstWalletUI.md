@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Wallet UI SDK is useful to integrate OstWalletSdk in application with available UI components.
+For quick and easy integration with SDK, developers can use built-in User Interface Components which are themeable and support content customization.
 
 ## Setup
 
@@ -21,12 +21,13 @@ import com.ost.walletsdk.ui.OstWalletUI;
 
 ### Set Theme Config
 
-Theme for OstWalletUI can be initialized by calling `setThemeConfig` API
+Theme for OstWalletUI can be initialized by calling `setThemeConfig` API.
+To define custom theme config, please refer [ThemeConfig](./ThemeConfig.md) documentation.
 
 **Parameters**<br/>
 &nbsp;_config: Config to use for UI_<br/>
 
-* Create config file by title `theme-config.json in assets directory`
+* Create config file by title `theme-config.json` in assets directory
 
 ```java
 try {
@@ -52,11 +53,13 @@ OstWalletUI.setThemeConfig(themeConfig)
 ### Set Content Config
 
 Content for OstWalletUI can be initialized by calling `setContentConfig` API.
+To define custom content config, please refer [ContentConfig](./ContentConfig.md) documentation.
 
 **Parameters**<br/>
 &nbsp;_config: Config to use for UI_<br/>
 
-* Create config file by title `content-config.json in assets directory`
+* Create config file by title `content-config.json` in assets directory
+For detailed explaination of how to build Content Config. [Ref](ContentConfig.md)
 
 ```java
 try {
@@ -161,12 +164,14 @@ OstWalletUI.resetPin(@NonNull Activity currentActivity,
 
 ### Initialize Recovery
 
-A user can control their Brand Tokens using their authorized devices. If they lose their authorized device, they can recover access to their BrandTokens by authorizing a new device via the recovery process .
+A user can control their Brand Tokens using their authorized devices.
+If they lose their authorized device, they can recover access to their BrandTokens by authorizing a new device via the recovery process.
+To use built-in device list UI, pass `recoverDeviceAddress` as `null`.
 
 **Parameters**<br/>
 &nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
 &nbsp;_userId: OST Platform user id provided by application server_<br/>
-&nbsp;_recoverDeviceAddress: Device address which wants to recover_<br/>
+&nbsp;_recoverDeviceAddress: Device address which wants to recover. When null is passed, the user is asked to choose a device._<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
 &nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
@@ -201,12 +206,12 @@ OstWalletUI.abortDeviceRecovery(@NonNull Activity currentActivity,
 
 ###  Revoke Device
 
-To revoke device access.
+To revoke device access. To use built-in device list UI, pass `revokeDeviceAddress` as `null`.
 
 **Parameters**<br/>
 &nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
 &nbsp;_userId: OST Platform user id provided by application server_<br/>
-&nbsp;_revokeDeviceAddress: Device address to revoke_<br/>
+&nbsp;_revokeDeviceAddress: Device address to revoke. When null is passed, the user is asked to choose a device._<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
 &nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
@@ -275,51 +280,81 @@ Component sheet is collection of all components present in OstWalletUI. Develope
 OstWalletUI.showComponentSheet(@NonNull Activity currentActivity)
 ```
 
-## Workflow Delegates
+## UI Workflow Delegates
 
 ### OstUserPassphraseCallback
 
 ```java
-/**
+   /**
      * Get passphrase prefix from application
      * @param userId Ost user id
      * @param ostWorkflowContext Workflow context
      * @param ostPassphraseAcceptor Passphrase prefix accept callback
      */
-void getPassphrase(String userId,
+   void getPassphrase(String userId,
                    OstWorkflowContext ostWorkflowContext,
                    OstPassphraseAcceptor ostPassphraseAcceptor)
+
+  /**
+    * To get workflowId call workflowContext.getWorkflowId() method.
+    * To identify the workflow type, use workflowContext.getWorkflowType() property.
+    */
 ```
 
-### OstWorkflowUIDelegate
+### OstWalletUIListener
+
+This is a markup interface. It is not expected to be used.
+
+### RequestAcknowledgedListener
+Use this listener to get request acknowlege updates of UI workflow.
 
 ```java
-/**
+   /**
      * Acknowledge user about the request which is going to make by SDK.
      * @param ostWorkflowContext A context that describes the workflow for which the callback was triggered with workflow id.
      * @param ostContextEntity Context Entity
      */
-void requestAcknowledged(OstWorkflowContext ostWorkflowContext,
+   void requestAcknowledged(OstWorkflowContext ostWorkflowContext,
                          OstContextEntity ostContextEntity)
+
+  /**
+    * To get workflowId call workflowContext.getWorkflowId() method.
+    * To identify the workflow type, use workflowContext.getWorkflowType() property.
+    */
 ```
 
+### FlowCompleteListener
+Use this listener to get flow complete update of UI workflow
+
 ```java
- /**
+   /**
      * Inform SDK user the the flow is complete.
      * @param ostWorkflowContext A context that describes the workflow for which the callback was triggered with workflow id.
      * @param ostContextEntity Context Entity
      */
-void flowComplete(OstWorkflowContext ostWorkflowContext,
+   void flowComplete(OstWorkflowContext ostWorkflowContext,
                   OstContextEntity ostContextEntity);
+
+  /**
+    * To get workflowId call workflowContext.getWorkflowId() method.
+    * To identify the workflow type, use workflowContext.getWorkflowType() property.
+    */
 ```
 
+### FlowInterruptListener
+Use this listener to get flow interrupt update of UI workflow
+
 ```java
-/**
+   /**
      * Inform SDK user that flow is interrupted with errorCode.
-     * Developers should dismiss pin dialog (if open) on this callback.
      * @param ostWorkflowContext A context that describes the workflow for which the callback was triggered with workflow id.
      * @param ostError Error Entity
      */
-void flowInterrupt(OstWorkflowContext ostWorkflowContext,
+   void flowInterrupt(OstWorkflowContext ostWorkflowContext,
                    OstError ostError);
+
+  /**
+    * To get workflowId call workflowContext.getWorkflowId() method.
+    * To identify the workflow type, use workflowContext.getWorkflowType() property.
+    */
 ```
