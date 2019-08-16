@@ -178,11 +178,6 @@ public class OstApiClient {
         return mOstHttpRequestClient.get(String.format("/users/%s/transactions/%s", mUserId, transactionId), requestMap);
     }
 
-    public JSONObject getAllTransactions() throws OstError {
-        Map<String, Object> requestMap = getPrerequisiteMap();
-        return mOstHttpRequestClient.get(String.format("/users/%s/transactions", mUserId), requestMap);
-    }
-
     public JSONObject getTransactions(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         if ( null != map ) {
@@ -252,5 +247,13 @@ public class OstApiClient {
     public JSONObject getTokenHolder() throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         return mOstHttpRequestClient.get(String.format("/users/%s/token-holder", mUserId), requestMap);
+    }
+
+    public JSONObject getDeviceList(Map<String, Object> map) {
+        Map<String, Object> requestMap = getPrerequisiteMap();
+        if ( null != map ) {
+            requestMap.putAll(map);
+        }
+        return mOstHttpRequestClient.get(String.format("/users/%s/devices", mUserId), requestMap);
     }
 }

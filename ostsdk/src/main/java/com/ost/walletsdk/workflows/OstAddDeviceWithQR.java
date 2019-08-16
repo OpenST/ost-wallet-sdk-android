@@ -63,7 +63,7 @@ public class OstAddDeviceWithQR extends OstBaseWorkFlow {
         }
 
         //request acknowledge
-        postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+        postRequestAcknowledge(getWorkflowContext(),
                 new OstContextEntity(OstDevice.getById(mDeviceAddressToBeAdded), OstSdk.DEVICE));
 
 

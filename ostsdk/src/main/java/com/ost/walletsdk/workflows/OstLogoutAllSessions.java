@@ -69,7 +69,7 @@ public class OstLogoutAllSessions extends OstBaseWorkFlow {
 
         Log.i(TAG, "Request Acknowledged");
         postRequestAcknowledge(
-                new OstWorkflowContext(getWorkflowType()),
+                getWorkflowContext(),
                 new OstContextEntity(mOstUser.getTokenHolder(), OstSdk.TOKEN_HOLDER)
         );
 

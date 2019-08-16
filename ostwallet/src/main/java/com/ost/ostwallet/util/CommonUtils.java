@@ -296,7 +296,7 @@ public class CommonUtils {
             return "Wallet recovery has been initiated. Unless interrupted, your device will authorized in about 12 hours.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY)){
             return "Recovery has been successfully aborted. Existing authorized devices may be used.";
-        } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE)){
+        } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE)){
             return "The chosen device has been revoked. It can no longer access your Wallet.";
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN)){
             return "Your PIN has been reset. Please remember this new PIN.";
@@ -348,7 +348,7 @@ public class CommonUtils {
             return ("Recovery could not be initiated. Please verify PIN.");
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY)){
             return ("Abort recovery failed.\n" + errMsg);
-        } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE_WITH_QR_CODE)){
+        } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE)){
             return ("Revokation failed. A device cannot revoke itself.\n" + errMsg);
         } else if(workflowType.equals(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN)){
             return ("Reset PIN failed. Please verify that you entered the correct PIN!");

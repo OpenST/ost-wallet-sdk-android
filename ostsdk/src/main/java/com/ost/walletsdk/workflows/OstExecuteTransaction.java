@@ -111,7 +111,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
         sessionAddress = signedTransactionStruct.getSignerAddress();
 
         //Request Acknowledge
-        postRequestAcknowledge(new OstWorkflowContext(getWorkflowType()),
+        postRequestAcknowledge(getWorkflowContext(),
                 new OstContextEntity(OstTransaction.getById(transactionId), OstSdk.TRANSACTION));
 
         Log.i(TAG, "start polling");
@@ -130,7 +130,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
         Log.e(TAG, "Transaction " + this.transactionId + " mined.");
         if ( getCallback() instanceof OstTransactionWorkflowCallback) {
             OstContextEntity tx = new OstContextEntity(OstTransaction.getById(transactionId), OstSdk.TRANSACTION);
-            OstWorkflowContext context = new OstWorkflowContext(getWorkflowType());
+            OstWorkflowContext context = getWorkflowContext();
             OstTransactionWorkflowCallback cb = (OstTransactionWorkflowCallback) getCallback();
             // Callback on main thread.
             mHandler.post(new Runnable() {

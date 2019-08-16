@@ -110,6 +110,7 @@ public class OstRecoveryOwner extends OstBaseEntity {
     }
 
     public static class CONST_STATUS {
+        public static final String UNKNOWN = "unknown";
         public static final String AUTHORIZATION_FAILED = "authorization_failed";
         public static final String AUTHORIZING = "authorizing";
         public static final String AUTHORIZED = "authorized";
