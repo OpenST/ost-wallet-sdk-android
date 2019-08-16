@@ -1,6 +1,7 @@
 package com.ost.walletsdk.ui.workflow;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,12 +14,10 @@ import com.ost.walletsdk.ui.BaseActivity;
 import com.ost.walletsdk.ui.ChildFragmentStack;
 import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.WorkFlowPinFragment;
-import com.ost.walletsdk.ui.entermnemonics.EnterMnemonicsFragment;
 import com.ost.walletsdk.ui.interfaces.FlowCompleteListener;
 import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
 import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.managedevices.Device;
-import com.ost.walletsdk.ui.managedevices.DeviceListFragment;
 import com.ost.walletsdk.ui.managedevices.DeviceListRecyclerViewAdapter;
 import com.ost.walletsdk.ui.recovery.AbortRecoveryFragment;
 import com.ost.walletsdk.ui.recovery.InitiateRecoveryFragment;
@@ -30,7 +29,6 @@ import com.ost.walletsdk.ui.test.TestThemeFragment;
 import com.ost.walletsdk.ui.util.DialogFactory;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.ui.util.KeyBoard;
-import com.ost.walletsdk.ui.viewmnemonics.ViewMnemonicsFragment;
 import com.ost.walletsdk.ui.walletsetup.WalletSetUpFragment;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -221,11 +219,14 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     @Override
     public void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
-        showGetPinFragment(workflowId, userId, ostWorkflowContext, ostPinAcceptInterface);
-
         Dialog dialog = DialogFactory.createSimpleOkErrorDialog(OstWorkFlowActivity.this,
                 "Incorrect PIN",
-                "Please enter your valid PIN to authorize");
+                "Please enter your valid PIN to authorize", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        showGetPinFragment(workflowId, userId, ostWorkflowContext, ostPinAcceptInterface);
+                    }
+                });
         dialog.setCancelable(false);
         dialog.show();
     }
