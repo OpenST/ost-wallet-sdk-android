@@ -50,20 +50,6 @@ The following UI components properties supported by label:
 | alignment            | string             |
 | system_font_weight   | string             |
 
-To support custom, *font* value should be the key defining font location.
-
-```js
-{
-  "h1": {
-    size: 12,
-    font: "Lato-Bold"
-  },
-  "fonts": {
-    "Lato-Bold": "font/Lato-Bold.ttf"
-  }
-}
-```
-
 Supported Values for *alignment* are:
 * left
 * right
@@ -92,6 +78,23 @@ The following UI components properties supported by button:
 | color                | hex value(String)  |
 | background_color     | hex value(String)  |
 | system_font_weight   | string             |
+
+### Custom Fonts
+
+To support custom fonts in ThemeConfig json, Add object with key **fonts** having mapping of font with font relative path from asset directory. 
+To use custom font in component, add components with *font* key with value pointing to custom font mapping object. Refer below example
+
+```js
+{
+  "h1": {
+    size: 12,
+    font: "Lato-Bold"
+  },
+  "fonts": {
+    "Lato-Bold": "font/Lato-Bold.ttf"
+  }
+}
+```
 
  ### Navigation Bar
  
