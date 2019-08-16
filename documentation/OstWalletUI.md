@@ -328,7 +328,7 @@ Use this listener to get flow complete update of UI workflow
 
 ```java
    /**
-     * Inform SDK user the the flow is complete.
+     * Inform SDK user that the flow is complete.
      * @param ostWorkflowContext A context that describes the workflow for which the callback was triggered with workflow id.
      * @param ostContextEntity Context Entity
      */
