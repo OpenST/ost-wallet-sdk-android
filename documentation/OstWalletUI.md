@@ -1,4 +1,4 @@
-# OST Wallet UI iOS
+# OST Wallet UI Android
 
 ## Introduction
 
