@@ -869,7 +869,7 @@ public enum WORKFLOW_TYPE {
 3. `public WORKFLOW_TYPE getWorkflow_type()`
 
 ## OstWalletUI
-You can use available UI from OstSdk. Please refer [OstWalletUI](ostsdk/src/main/java/com/ost/walletsdk/ui/README-UI.md) - `Beta Version`
+Starting version `2.3.0` the SDK also provides built-in User Interface Components which are theamable and support content customization. Please refer [OstWalletUI](./documentation/OstWalletUI.md)
 
 ## Steps to use Android mobile sdk through AAR lib
 - Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
