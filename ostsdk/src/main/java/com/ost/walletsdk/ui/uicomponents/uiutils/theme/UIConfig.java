@@ -81,4 +81,28 @@ public class UIConfig {
             textView.setTypeface(typeface);
         }
     }
+
+    protected String getColor() {
+        return color;
+    }
+
+    protected int getSize() {
+        return size;
+    }
+
+    protected String getFont() {
+        return font;
+    }
+
+    protected String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    protected String getFontWeight() {
+        return fontWeight;
+    }
+
+    protected String getAlignment() {
+        return alignment;
+    }
 }

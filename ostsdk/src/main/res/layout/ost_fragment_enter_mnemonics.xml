@@ -28,24 +28,21 @@
         android:layout_marginEnd="48dp"
         android:text="@string/enter_mnemonics_sub_heading" />
 
-    <EditText
+    <com.ost.walletsdk.ui.uicomponents.OstEditText
         android:id="@+id/et_mnemonics_phrase"
         android:background="@drawable/rounded_corner_edittext_bg"
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_gravity="center_horizontal"
         android:padding="@dimen/dp_10"
-        android:gravity="left"
+        android:gravity="start"
         android:inputType="textMultiLine"
         android:letterSpacing="-0.02"
         android:lineSpacingExtra="7sp"
         android:textSize="16sp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginTop="20dp"
-        android:textColor="@color/primary_edittext_text"
-        android:hint="@string/enter_mnemonics_hint_phrase"
-        android:textColorHint="@color/primary_edittext_hint_text"/>
+        android:layout_marginTop="20dp" />
 
     <com.ost.walletsdk.ui.uicomponents.OstB1Label
         android:id="@+id/pbtn_recover_wallet"
