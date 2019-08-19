@@ -44,7 +44,7 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
 
 
     @Override
-    public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for recovery");
         getMvpView().showProgress(false);
         showToast();
@@ -90,7 +90,7 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
     }
 
     @Override
-    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         getMvpView().showProgress(false);
     }
 
@@ -104,7 +104,7 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> implements
 
     private void recoverySaltFetchFailed(){
         getMvpView().showProgress(false);
-        getMvpView().gotoDashboard(0);
+        getMvpView().gotoDashboard(null);
         AppProvider.get().getCurrentActivity().showToastMessage("Recovery could not be initiated. Please try after sometime.", false);
     }
 }
