@@ -87,7 +87,6 @@ public class WorkFlowPinFragment extends PinFragment {
 
                 //Close fragment by notifying DashBoard activity
                 mListener.popTopFragment();
-                showProgress(true, "Authenticating...");
             }
 
             @Override

@@ -48,7 +48,6 @@ public class OstCreateSessionWorkflow extends OstWorkFlowActivity {
         long expiredAfterSecs = bundle.getLong(EXPIRED_AFTER_SECS, 100000);
         String spendingLimit = bundle.getString(SPENDING_LIMIT);
         bundle.putBoolean(SHOW_BACK_BUTTON, false);
-        showProgress(true,"Adding Session");
         OstSdk.addSession(mUserId, spendingLimit, expiredAfterSecs, mWorkFlowListener);
     }
 
