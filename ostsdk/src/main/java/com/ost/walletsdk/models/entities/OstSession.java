@@ -33,6 +33,8 @@ import org.web3j.utils.Numeric;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -85,7 +87,7 @@ public class OstSession extends OstBaseEntity {
     }
     private static List<OstSession> getSessions(String parentId, String ...statuses) {
         OstSession[] ostSessions = getSessionsByParentId(parentId);
-        List<OstSession> activeSessionList = new ArrayList<>();
+        ArrayList<OstSession> activeSessionList = new ArrayList<>();
         for (OstSession ostSession: ostSessions) {
             for (String status : statuses) {
                 if (status.equalsIgnoreCase(ostSession.getStatus())) {
@@ -95,6 +97,20 @@ public class OstSession extends OstBaseEntity {
             }
 
         }
+        Collections.sort(activeSessionList, new Comparator<OstSession>() {
+            @Override
+            public int compare(OstSession o1, OstSession o2) {
+                Double sessionATimestamp = o1.getUpdatedTimestamp();
+                sessionATimestamp = Math.abs( sessionATimestamp );
+
+                Double sessionBTimestamp = o2.getUpdatedTimestamp();
+                sessionBTimestamp = Math.abs( sessionBTimestamp );
+
+                // Sort in descending order.
+                Double diff = (sessionBTimestamp - sessionATimestamp);
+                return diff.intValue();
+            }
+        });
         return activeSessionList;
     }
 
