@@ -13,11 +13,17 @@ package com.ost.walletsdk.ui.recovery;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
+
+import org.json.JSONObject;
 
 class InitiateRecoveryPresenter extends RecoveryPresenter {
 
     private static final String LOG_TAG = "OstIRPresenter";
+
+    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("initiate_recovery");
 
     private InitiateRecoveryPresenter() {
     }
@@ -28,7 +34,9 @@ class InitiateRecoveryPresenter extends RecoveryPresenter {
 
     @Override
     void startWorkFlow(String ostUserId, UserPassphrase currentUserPassPhrase, String deviceAddress, WorkFlowListener workFlowListener) {
-        getMvpView().showProgress(true, "Initiating recovery...");
+
+        getMvpView().showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
+
         OstSdk.initiateDeviceRecovery(
                 ostUserId,
                 currentUserPassPhrase,

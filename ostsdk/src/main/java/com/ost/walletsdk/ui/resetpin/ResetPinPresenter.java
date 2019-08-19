@@ -18,7 +18,11 @@ import com.ost.walletsdk.ui.BasePresenter;
 import com.ost.walletsdk.ui.OstPassphraseAcceptor;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
+
+import org.json.JSONObject;
 
 class ResetPinPresenter extends BasePresenter<ResetPinView> {
 
@@ -29,6 +33,7 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> {
     private String mUserId;
     private String mWorkflowId;
 
+    private final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin");
 
     private ResetPinPresenter() {
         pinCounter = 0;
@@ -60,7 +65,7 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> {
         } else {
             if (mFirstNewPin.equals(pin)) {
                 Log.d(LOG_TAG,"Retyped Pin is equal");
-                getMvpView().showProgress(true, "Resetting PIN...");
+                getMvpView().showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
 
                 final WorkFlowListener workFlowListener = SdkInteract.getInstance().getWorkFlowListener(mWorkflowId);
                 workFlowListener.getPassphrase(mUserId, new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN), new OstPassphraseAcceptor() {

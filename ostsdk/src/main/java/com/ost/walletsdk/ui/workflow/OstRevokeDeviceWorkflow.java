@@ -7,8 +7,10 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.ui.managedevices.Device;
 import com.ost.walletsdk.ui.managedevices.DeviceListFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -20,6 +22,8 @@ import static com.ost.walletsdk.ui.recovery.RecoveryFragment.DEVICE_ADDRESS;
 import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
+
+    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("revoke_device");
 
     @Override
     boolean invalidState() {
@@ -51,6 +55,8 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
                     this);
             fragment.contentConfig = ContentConfig.getInstance().getStringConfig("revoke_device").optJSONObject("device_list");
         } else {
+
+            showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
             OstSdk.revokeDevice(mUserId, deviceAddress, mWorkFlowListener);
         }
     }
@@ -65,5 +71,18 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
     @Override
     OstWorkflowContext getWorkflowContext() {
         return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE);
+    }
+
+    @Override
+    public void onDeviceSelectToRevoke(Device device) {
+        super.onDeviceSelectToRevoke(device);
+        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
+    }
+
+    @Override
+    public void popTopFragment() {
+        super.popTopFragment();
+
+        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
     }
 }

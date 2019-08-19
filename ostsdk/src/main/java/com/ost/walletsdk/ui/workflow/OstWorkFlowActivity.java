@@ -168,7 +168,6 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     @Override
     public void onDeviceSelectToRevoke(Device device) {
-        showProgress(true, "Revoking device...");
         OstSdk.revokeDevice(mUserId, device.getDeviceAddress(), mWorkFlowListener);
     }
 

@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.ChildFragmentStack;
-import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.util.ChildFragmentUtils;
 import com.ost.walletsdk.ui.util.DialogFactory;

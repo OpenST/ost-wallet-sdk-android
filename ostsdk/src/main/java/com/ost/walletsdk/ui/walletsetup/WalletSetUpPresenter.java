@@ -21,10 +21,14 @@ import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
 import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.ui.util.CommonUtils;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
+
+import org.json.JSONObject;
 
 class WalletSetUpPresenter extends BasePresenter<SetUpView> implements RequestAcknowledgedListener,
         FlowInterruptListener {
@@ -38,6 +42,8 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements RequestAc
     private String workflowId;
     private long expiredAfterSecs;
     private String spendingLimit;
+
+    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("activate_user");
 
     private WalletSetUpPresenter() {
         pinCounter = 0;
@@ -77,7 +83,9 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements RequestAc
     }
 
     private void startWorkFLow(final String pin) {
-        getMvpView().showProgress(true, "Activating user...");
+
+        getMvpView().showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
+
         final WalletSetUpPresenter walletSetUpPresenter = this;
         final WorkFlowListener workFlowListener = SdkInteract.getInstance().getWorkFlowListener(workflowId);
         workFlowListener.getPassphrase(userId,
