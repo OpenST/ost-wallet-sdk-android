@@ -13,6 +13,7 @@ package com.ost.walletsdk;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.datatheorem.android.trustkit.TrustKit;
@@ -23,6 +24,7 @@ import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
 import com.ost.walletsdk.models.Impls.OstModelFactory;
 import com.ost.walletsdk.models.entities.OstDevice;
+import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.utils.QRCode;
@@ -48,6 +50,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,12 +170,76 @@ public class OstSdk {
         return BASE_URL;
     }
 
+    /**
+     * Method to get Token by Id.
+     * This is a synchronous method and must be used only after calling `setupDevice` workflow.
+     * This method returns OstToken only if available with SDK. Returns `null` otherwise.
+     * It does NOT make any server side calls.
+     *
+     * @param tokenId Id of the token.
+     * @return OstToken returns null if token is not present with the SDK.
+     */
     public static OstToken getToken(String tokenId) {
         return OstModelFactory.getTokenModel().getEntityById(tokenId);
     }
 
-    public static OstUser getUser(String id) {
-        return OstModelFactory.getUserModel().getEntityById(id);
+    /**
+     * Method to get User by Id.
+     * This is a synchronous method and must be used only after calling `setupDevice` workflow.
+     * This method returns OstUser only if available with SDK. Returns `null` otherwise.
+     * It does NOT make any server side calls.
+     *
+     * @param userId user Id whose information needs to be provided.
+     * @return OstUser
+     */
+    public static OstUser getUser(String userId) {
+        return OstModelFactory.getUserModel().getEntityById(userId);
+    }
+
+    /**
+     * Method to get User's current device by Id.
+     * This is a synchronous method and must be used only after calling `setupDevice` workflow.
+     * This method returns OstToken only if available with SDK. Returns `null` otherwise.
+     * It does NOT make any server side calls.
+     *
+     * @param userId user Id whose current device information is needed.
+     * @return OstDevice
+     */
+
+    public static OstDevice getCurrentDeviceForUserId(String userId) {
+        OstUser user = OstSdk.getUser( userId );
+        if ( null == user ) {
+            return null;
+        }
+        return user.getCurrentDevice();
+    }
+
+    /**
+     * Method to get user's active sessions available in current device.
+     * This is a synchronous method and must be used only after calling `setupDevice` workflow.
+     *
+     * @param userId user Id whose active session information is needed.
+     * @return List<OstSession> List of active sessions
+     */
+
+    public static List<OstSession> getActiveSessionsForUserId(@NonNull String userId) {
+        return OstSdk.getActiveSessionsForUserId( userId, null );
+    }
+
+    /**
+     * Method to get user's active sessions available in current device that can execute transactions of given spending limit.
+     * This is a synchronous method and must be used only after calling `setupDevice` workflow.
+     *
+     * @param userId user Id whose active session information is needed.
+     * @param minimumSpendingLimitInWei Minimum spending limit of the sessions.
+     * @return List<OstSession> List of active sessions
+     */
+    public static @NonNull List<OstSession> getActiveSessionsForUserId(@NonNull String userId, @Nullable String minimumSpendingLimitInWei ) {
+        OstUser user = OstSdk.getUser( userId );
+        if ( null == user ) {
+            return new ArrayList<OstSession>();
+        }
+        return user.getActiveSessionsForBtAmountInWei(minimumSpendingLimitInWei);
     }
 
     /**

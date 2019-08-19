@@ -50,7 +50,6 @@ public class OstSessionTest {
         jsonObject.put(OstSession.ADDRESS, "0x2901239");
         jsonObject.put(OstSession.USER_ID, "1234");
         jsonObject.put(OstSession.STATUS, "status");
-        jsonObject.put(OstSession.TOKEN_HOLDER_ADDRESS, "123");
         jsonObject.put(OstSession.EXPIRATION_HEIGHT, "1000");
         jsonObject.put(OstSession.SPENDING_LIMIT, "9999");
         jsonObject.put(OstSession.NONCE, 1);
@@ -59,7 +58,6 @@ public class OstSessionTest {
         OstSession ostSession = new OstSession(jsonObject);
         assertEquals("0x2901239", ostSession.getAddress());
         assertEquals("status", ostSession.getStatus());
-        assertEquals("123", ostSession.getTokenHolderAddress());
         assertEquals("9999", ostSession.getSpendingLimit());
         assertEquals("0x2901239", ostSession.getId());
         assertEquals(1, ostSession.getNonce());

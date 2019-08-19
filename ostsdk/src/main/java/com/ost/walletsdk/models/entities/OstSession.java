@@ -220,6 +220,10 @@ public class OstSession extends OstBaseEntity {
     }
 
 
+    /**
+     * @deprecated TokenHolderAddress is not available in Session. Please use user.getTokenHolderAddress method instead.
+     * @return Will always return null.
+     */
     public String getTokenHolderAddress() {
         String tokenHolderAddress = this.getJsonDataPropertyAsString(OstSession.TOKEN_HOLDER_ADDRESS);
         if (null != tokenHolderAddress) {
