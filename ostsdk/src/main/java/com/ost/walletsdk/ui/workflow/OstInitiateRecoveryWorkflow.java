@@ -58,7 +58,7 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
             FragmentUtils.addFragment(R.id.layout_container,
                     fragment,
                     this);
-            fragment.contentConfig = ContentConfig.getInstance().getStringConfig("initiate_recovery").optJSONObject("device_list");
+            fragment.contentConfig = ContentConfig.getInstance().getStringConfig("initiate_recovery");
         } else {
             Bundle bundle = getIntent().getExtras();
             bundle.putBoolean(SHOW_BACK_BUTTON, false);

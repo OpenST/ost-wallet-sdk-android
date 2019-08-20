@@ -53,7 +53,7 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
             FragmentUtils.addFragment(R.id.layout_container,
                     fragment,
                     this);
-            fragment.contentConfig = ContentConfig.getInstance().getStringConfig("revoke_device").optJSONObject("device_list");
+            fragment.contentConfig = ContentConfig.getInstance().getStringConfig("revoke_device");
         } else {
 
             showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());

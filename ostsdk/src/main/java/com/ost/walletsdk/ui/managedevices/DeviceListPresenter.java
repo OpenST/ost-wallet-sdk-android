@@ -36,6 +36,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
     private static final String LOG_TAG = "OstDeviceListPresenter";
     private String mUserId;
     private String currentDeviceAddress;
+    private String mLoaderString = "Loading...";
 
     private DeviceListPresenter() {}
 
@@ -113,7 +114,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
     }
 
     private void showProgress(boolean show) {
-        if (null != getMvpView()) getMvpView().showProgress(show);
+        if (null != getMvpView()) getMvpView().showProgress(show, mLoaderString);
     }
 
     void setDeviceList(List<Device> ostDeviceList) {
@@ -122,5 +123,9 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
 
     public void setUserId(String userId) {
         this.mUserId = userId;
+    }
+
+    public void setLoaderString(String initialLoaderString) {
+        mLoaderString = initialLoaderString;
     }
 }
