@@ -23,6 +23,7 @@ import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
 
+    private boolean mShowBackButton = false;
     final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("revoke_device");
 
     @Override
@@ -47,6 +48,7 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
         super.initiateWorkFlow();
         String deviceAddress = getIntent().getStringExtra(DEVICE_ADDRESS);
         if (TextUtils.isEmpty(deviceAddress)) {
+            mShowBackButton = true;
             Bundle bundle = getIntent().getExtras();
             bundle.putBoolean(SHOW_BACK_BUTTON, false);
             DeviceListFragment fragment = DeviceListFragment.revokeDeviceInstance(bundle);
@@ -55,7 +57,7 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
                     this);
             fragment.contentConfig = ContentConfig.getInstance().getStringConfig("revoke_device");
         } else {
-
+            mShowBackButton = false;
             showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
             OstSdk.revokeDevice(mUserId, deviceAddress, mWorkFlowListener);
         }
@@ -84,5 +86,18 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
         super.popTopFragment();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
+    }
+
+    @Override
+    boolean showBackButton() {
+        return mShowBackButton;
+    }
+
+    @Override
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        if (!mShowBackButton) {
+            super.flowInterrupt(ostWorkflowContext, ostError);
+        }
+        showProgress(false);
     }
 }

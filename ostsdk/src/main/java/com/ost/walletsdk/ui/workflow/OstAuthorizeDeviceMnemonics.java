@@ -72,4 +72,14 @@ public class OstAuthorizeDeviceMnemonics extends OstWorkFlowActivity {
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
     }
+
+    @Override
+    boolean showBackButton() {
+        return true;
+    }
+
+    @Override
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        showProgress(false);
+    }
 }

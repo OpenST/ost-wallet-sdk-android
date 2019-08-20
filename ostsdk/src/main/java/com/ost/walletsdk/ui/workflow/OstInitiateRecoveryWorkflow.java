@@ -19,6 +19,8 @@ import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
 
+    private boolean mShowBackButton = false;
+
     @Override
     boolean invalidState() {
         if (super.invalidState()) return true;
@@ -52,6 +54,7 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
         super.initiateWorkFlow();
         String deviceAddress = getIntent().getStringExtra(DEVICE_ADDRESS);
         if (TextUtils.isEmpty(deviceAddress)) {
+            mShowBackButton = true;
             Bundle bundle = getIntent().getExtras();
             bundle.putBoolean(SHOW_BACK_BUTTON, false);
             DeviceListFragment fragment = DeviceListFragment.initiateRecoveryInstance(bundle);
@@ -60,6 +63,7 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
                     this);
             fragment.contentConfig = ContentConfig.getInstance().getStringConfig("initiate_recovery");
         } else {
+            mShowBackButton = false;
             Bundle bundle = getIntent().getExtras();
             bundle.putBoolean(SHOW_BACK_BUTTON, false);
             FragmentUtils.addFragment(R.id.layout_container,
@@ -71,5 +75,18 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
     @Override
     OstWorkflowContext getWorkflowContext() {
         return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY);
+    }
+
+    @Override
+    boolean showBackButton() {
+        return mShowBackButton;
+    }
+
+    @Override
+    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        if (!mShowBackButton) {
+            super.flowInterrupt(ostWorkflowContext, ostError);
+        }
+        showProgress(false);
     }
 }

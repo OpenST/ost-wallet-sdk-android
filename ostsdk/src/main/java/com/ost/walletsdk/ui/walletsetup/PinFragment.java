@@ -56,7 +56,7 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
     protected static final String HEADING = "heading";
     protected static final String SUB_HEADING = "sub_heading";
     private static final String SUB_HEADING_HINT = "sub_heading_hint";
-    private static final String SHOW_BACK_BUTTON = "show_back_button";
+    protected static final String SHOW_BACK_BUTTON = "show_back_button";
     public JSONObject contentConfig = new JSONObject();
     private String mHeading;
     private PinEntryEditText mPinEntryEditText;
@@ -138,9 +138,7 @@ public class PinFragment extends BaseFragment implements TextView.OnEditorAction
         AppBar appBar = AppBar.newInstance(getContext(), mShowBackButton);
         setUpAppBar(viewGroup, appBar);
 
-//        if(showTermsLine){
-            showTermsAndPolicyText((OstTextView) viewGroup.findViewById(R.id.pin_terms_privacy));
-//        }
+        showTermsAndPolicyText((OstTextView) viewGroup.findViewById(R.id.pin_terms_privacy));
 
         return viewGroup;
     }

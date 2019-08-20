@@ -242,7 +242,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     private void showGetPinFragment(String workflowId, String userId, OstWorkflowContext ostWorkflowContext, OstPinAcceptInterface ostPinAcceptInterface) {
         JSONObject stringConfigJsonObject = getContentString(ostWorkflowContext);
-        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin));
+        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin), showBackButton());
         fragment.contentConfig = stringConfigJsonObject;
         fragment.setPinCallback(ostPinAcceptInterface);
         fragment.setUserId(userId);
@@ -252,6 +252,10 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
+    }
+
+    boolean showBackButton() {
+        return false;
     }
 
     JSONObject getContentString(OstWorkflowContext ostWorkflowContext) {

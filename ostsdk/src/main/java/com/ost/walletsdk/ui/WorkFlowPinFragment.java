@@ -37,14 +37,15 @@ public class WorkFlowPinFragment extends PinFragment {
 
 
     public static WorkFlowPinFragment newInstance(String heading) {
-        return newInstance(heading, null);
+        return newInstance(heading, null, false);
     }
 
-    public static WorkFlowPinFragment newInstance(String heading, String subHeading) {
+    public static WorkFlowPinFragment newInstance(String heading, String subHeading, boolean showBackButton) {
         WorkFlowPinFragment fragment = new WorkFlowPinFragment();
         Bundle args = new Bundle();
         args.putString(HEADING, heading);
         args.putString(SUB_HEADING, subHeading);
+        args.putBoolean(SHOW_BACK_BUTTON, showBackButton);
         fragment.setArguments(args);
         return fragment;
     }

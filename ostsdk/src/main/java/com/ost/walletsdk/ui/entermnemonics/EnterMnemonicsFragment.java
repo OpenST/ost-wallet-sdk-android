@@ -111,7 +111,7 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
         });
 
         mEnterMnemonicsPresenter.attachView(this);
-        AppBar appBar = AppBar.newInstance(getContext(), true);
+        AppBar appBar = AppBar.newInstance(getContext(), false);
         setUpAppBar(viewGroup, appBar);
     }
 
