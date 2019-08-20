@@ -74,6 +74,7 @@ public class OstSdk {
     public static final String DEVICE_MANAGER = "device_manager";
     public static final String DEVICE = "device";
     public static final String RECOVERY_OWNER = "recovery_owner";
+    public static final String BOOLEAN = "boolean";
     // endregion
 
 

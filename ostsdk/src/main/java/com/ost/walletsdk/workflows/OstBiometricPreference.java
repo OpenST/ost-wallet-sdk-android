@@ -1,5 +1,6 @@
 package com.ost.walletsdk.workflows;
 
+import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.OstBiometricManager;
 import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -36,7 +37,7 @@ public class OstBiometricPreference extends OstBaseWorkFlow {
         } else {
             ostBiometricManager.disableBiometric();
         }
-        return postFlowComplete();
+        return postFlowComplete( new OstContextEntity(mEnable, OstSdk.BOOLEAN));
     }
 
     @Override
