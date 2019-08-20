@@ -106,8 +106,8 @@ public class OstSession extends OstBaseEntity {
                 Double sessionBTimestamp = o2.getUpdatedTimestamp();
                 sessionBTimestamp = Math.abs( sessionBTimestamp );
 
-                // Sort in descending order.
-                Double diff = (sessionBTimestamp - sessionATimestamp);
+                // Sort in increasing order of timestamp.
+                Double diff = (sessionATimestamp - sessionBTimestamp);
                 return diff.intValue();
             }
         });

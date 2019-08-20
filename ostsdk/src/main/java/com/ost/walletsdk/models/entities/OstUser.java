@@ -87,16 +87,12 @@ public class OstUser extends OstBaseEntity {
     }
 
     public OstSession getActiveSession(String spendingBtAmountInWei) {
-        List<OstSession> ostActiveSessionList = OstSession.getActiveSessions(getId());
-        String currentTime = String.valueOf(System.currentTimeMillis());
-        for (OstSession ostSession : ostActiveSessionList) {
-            String expirationTimestamp = ostSession.getExpirationTimestamp();
-            BigInteger spendingLimitBI = new BigInteger(ostSession.getSpendingLimit());
-            BigInteger spendingBtAmountInWeiBI = new BigInteger(spendingBtAmountInWei);
-            if (spendingLimitBI.compareTo(spendingBtAmountInWeiBI) >= 0 && expirationTimestamp.compareTo(currentTime) > 0) {
-                return ostSession;
-            }
+        List<OstSession> ostActiveSessionList = this.getActiveSessionsForBtAmountInWei(spendingBtAmountInWei);
+        if ( null != ostActiveSessionList && ostActiveSessionList.size() > 0  ) {
+            // Always use the first one as list is ordered in increasing order of absolute value of `updated_timestamp` of session key.
+            return ostActiveSessionList.get(0);
         }
+
         Log.e(TAG, "No Active session key available");
         return null;
     }
