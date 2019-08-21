@@ -27,20 +27,14 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
     final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("revoke_device");
 
     @Override
-    boolean invalidState() {
-        if (super.invalidState()) return true;
+    void ensureValidState() {
+        super.ensureValidState();
 
         if (!OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_rd_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_rd_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED);
         }
-        return false;
     }
 
     @Override

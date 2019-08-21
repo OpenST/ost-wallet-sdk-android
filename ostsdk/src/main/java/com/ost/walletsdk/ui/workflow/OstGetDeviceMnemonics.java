@@ -20,21 +20,14 @@ public class OstGetDeviceMnemonics extends OstWorkFlowActivity {
     final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("view_mnemonics");
 
     @Override
-    boolean invalidState() {
-        if (super.invalidState()) return true;
+    void ensureValidState() {
+        super.ensureValidState();
 
         if (!OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_gdm_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_gdm_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED);
         }
-
-        return false;
     }
 
     @Override

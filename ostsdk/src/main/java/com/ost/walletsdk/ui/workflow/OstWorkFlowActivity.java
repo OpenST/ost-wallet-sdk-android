@@ -90,7 +90,19 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             return;
         }
 
-        if (invalidState()) return;
+        try {
+            ensureValidState();
+        } catch (OstError error) {
+            mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
+            finish();
+            return;
+        } catch (Throwable th) {
+            OstError error = new OstError("owfa_onc_1", OstErrors.ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+            error.setStackTrace( th.getStackTrace() );
+            mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
+            finish();
+            return;
+        }
 
         initiateWorkFlow();
 
@@ -103,16 +115,10 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         // Don't do anything here
     }
 
-    boolean invalidState() {
-        if (null == OstUser.getById(mUserId)) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_is_1", OstErrors.ErrorCode.DEVICE_NOT_SETUP)
-            );
-            finish();
-            return true;
+    void ensureValidState() throws OstError {
+        if (null == OstUser.getById(mUserId) || null == OstUser.getById(mUserId).getCurrentDevice() ) {
+            throw new OstError("owfa_oc_is_1", OstErrors.ErrorCode.DEVICE_NOT_SETUP);
         }
-        return false;
     }
 
     OstWorkflowContext getWorkflowContext() {

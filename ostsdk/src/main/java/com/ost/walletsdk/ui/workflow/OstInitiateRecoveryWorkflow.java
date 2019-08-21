@@ -22,31 +22,20 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
     private boolean mShowBackButton = false;
 
     @Override
-    boolean invalidState() {
-        if (super.invalidState()) return true;
+    void ensureValidState() {
+        super.ensureValidState();
 
         if (!OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_ir_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_ir_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
         }
 
         if (!OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_ir_2", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_ir_2", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
         }
-        return false;
     }
 
     @Override

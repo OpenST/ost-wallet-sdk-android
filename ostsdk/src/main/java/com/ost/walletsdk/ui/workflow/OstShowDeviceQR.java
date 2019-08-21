@@ -30,31 +30,19 @@ public class OstShowDeviceQR extends OstWorkFlowActivity implements
     final String loaderString = StringConfig.instance(contentConfig.optJSONObject("loader")).getString();
 
     @Override
-    boolean invalidState() {
-        if (super.invalidState()) return true;
-
+    void ensureValidState() {
+        super.ensureValidState();
         if (!OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_sdqr_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_sdqr_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
         }
 
         if (!OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_sdqr_2", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_sdqr_2", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
         }
-        return false;
     }
 
     @Override

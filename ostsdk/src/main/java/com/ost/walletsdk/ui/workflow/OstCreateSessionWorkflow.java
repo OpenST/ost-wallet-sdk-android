@@ -21,21 +21,14 @@ public class OstCreateSessionWorkflow extends OstWorkFlowActivity {
 
 
     @Override
-    boolean invalidState() {
-        if (super.invalidState()) return true;
+    void ensureValidState() {
+        super.ensureValidState();
 
         if (!OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_cs_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_cs_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED);
         }
-
-        return false;
     }
 
     @Override
