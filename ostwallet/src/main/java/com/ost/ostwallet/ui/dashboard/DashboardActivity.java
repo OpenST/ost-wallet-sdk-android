@@ -11,7 +11,6 @@
 package com.ost.ostwallet.ui.dashboard;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,10 +35,7 @@ import com.ost.ostwallet.ui.auth.OnBoardingActivity;
 import com.ost.ostwallet.ui.managedevices.AuthorizeDeviceOptionsFragment;
 import com.ost.ostwallet.ui.managedevices.DeviceListRecyclerViewAdapter;
 import com.ost.ostwallet.ui.workflow.ChildFragmentStack;
-import com.ost.ostwallet.ui.workflow.VerifyDeviceDataFragment;
-import com.ost.ostwallet.ui.workflow.VerifyTransactionDataFragment;
 import com.ost.ostwallet.ui.workflow.WorkFlowPinFragment;
-import com.ost.ostwallet.ui.workflow.WorkFlowVerifyDataFragment;
 import com.ost.ostwallet.ui.workflow.createsession.CreateSessionFragment;
 import com.ost.ostwallet.ui.workflow.transactions.TransactionFragment;
 import com.ost.ostwallet.ui.workflow.walletdetails.WalletDetailsFragment;
@@ -49,7 +45,6 @@ import com.ost.ostwallet.util.DialogFactory;
 import com.ost.ostwallet.util.FragmentUtils;
 import com.ost.ostwallet.util.KeyBoard;
 import com.ost.walletsdk.OstSdk;
-import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstApiError;
@@ -63,7 +58,6 @@ import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstPinAcceptInterface;
-import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
@@ -81,7 +75,6 @@ public class DashboardActivity extends BaseActivity implements
         FlowCompleteListener,
         FlowInterruptListener,
         RequestAcknowledgedListener,
-        SdkInteract.WorkFlowCallbacks,
         UserListFragment.OnListFragmentInteractionListener,
         WalletSetUpFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener,
@@ -132,7 +125,7 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     private void setUpDevice() {
-        OstWorkFlowCallback workFlowListener = SdkInteract.getInstance().newWorkFlowListener(this);
+        OstWorkFlowCallback workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         LogInUser logInUser = AppProvider.get().getCurrentUser();
         OstSdk.setupDevice(logInUser.getOstUserId(), logInUser.getTokenId(), workFlowListener);
     }
@@ -315,54 +308,10 @@ public class DashboardActivity extends BaseActivity implements
                 this);
     }
 
-    @Override
-    public void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-        showProgress(false);
-        showGetPinFragment(ostPinAcceptInterface);
-    }
-
-    @Override
-    public void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-        showProgress(false);
-        showGetPinFragment(ostPinAcceptInterface);
-
-        Dialog dialog = DialogFactory.createSimpleOkErrorDialog(DashboardActivity.this,
-                "Incorrect PIN",
-                "Please enter your valid PIN to authorize");
-        dialog.setCancelable(false);
-        dialog.show();
-    }
 
     private void showGetPinFragment(OstPinAcceptInterface ostPinAcceptInterface) {
         WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin));
         fragment.setPinCallback(ostPinAcceptInterface);
-        FragmentUtils.addFragment(R.id.layout_container,
-                fragment,
-                this);
-    }
-
-    @Override
-    public void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
-
-    }
-
-    @Override
-    public void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
-        showProgress(false);
-        JSONObject jsonObject;
-        String dataToVerify = null;
-        WorkFlowVerifyDataFragment fragment = null;
-        if (OstSdk.DEVICE.equalsIgnoreCase(ostContextEntity.getEntityType())) {
-            fragment = VerifyDeviceDataFragment.newInstance();
-            OstDevice ostDevice = ((OstDevice) ostContextEntity.getEntity());
-            fragment.setDataToVerify(ostDevice);
-        } else {
-            fragment = VerifyTransactionDataFragment.newInstance();
-            jsonObject = (JSONObject) ostContextEntity.getEntity();
-            fragment.setDataToVerify(jsonObject);
-        }
-
-        fragment.setVerifyDataCallback(ostVerifyDataInterface);
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
@@ -475,6 +424,13 @@ public class DashboardActivity extends BaseActivity implements
         String workflowId = OstWalletUI.authorizeCurrentDeviceWithMnemonics(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 AppProvider.get().getUserPassphraseCallback());
+        OstWalletUI.subscribe(workflowId, this);
+    }
+
+    @Override
+    public void showAddDeviceQR() {
+        String workflowId = OstWalletUI.getAddDeviceQRCode(this,
+                AppProvider.get().getCurrentUser().getOstUserId());
         OstWalletUI.subscribe(workflowId, this);
     }
 

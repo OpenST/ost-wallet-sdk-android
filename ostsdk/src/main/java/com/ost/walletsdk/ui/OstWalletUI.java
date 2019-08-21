@@ -22,6 +22,7 @@ import com.ost.walletsdk.ui.workflow.OstGetDeviceMnemonics;
 import com.ost.walletsdk.ui.workflow.OstInitiateRecoveryWorkflow;
 import com.ost.walletsdk.ui.workflow.OstResetPinWorkflow;
 import com.ost.walletsdk.ui.workflow.OstRevokeDeviceWorkflow;
+import com.ost.walletsdk.ui.workflow.OstShowDeviceQR;
 import com.ost.walletsdk.ui.workflow.OstWorkFlowActivity;
 
 import org.json.JSONObject;
@@ -246,6 +247,7 @@ public class OstWalletUI {
      * @param userId                 - user Id
      * @param enable                 - to enable or disable
      * @param userPassphraseCallback - A workflow callback handler.
+     * @return workflow Id
      */
     public static String updateBiometricPreference(@NonNull Activity currentActivity, String userId,
                                                    boolean enable, OstUserPassphraseCallback userPassphraseCallback) {
@@ -255,6 +257,23 @@ public class OstWalletUI {
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.UPDATE_BIOMETRIC_PREFERENCE);
         intent.putExtra(OstWorkFlowActivity.ENABLE, enable);
+        intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
+        currentActivity.startActivity(intent);
+        return workFlowListener.getId();
+    }
+
+    /**
+     * This method provides QR code to authorize current device from authorized device
+     *
+     * @param currentActivity - Context for current Activity for the application
+     * @param userId          - OST Platform user id provided by application server
+     * @return workflow Id
+     */
+    public static String getAddDeviceQRCode(@NonNull Activity currentActivity, String userId) {
+        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        Intent intent = new Intent(currentActivity, OstShowDeviceQR.class);
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
+        intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.SHOW_QR);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
         currentActivity.startActivity(intent);
         return workFlowListener.getId();

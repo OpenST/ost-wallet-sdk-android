@@ -83,10 +83,11 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
     }
 
     @Override
-    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         if (!mShowBackButton || !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
-            super.flowInterrupt(ostWorkflowContext, ostError);
+            return super.flowInterrupt(workflowId, ostWorkflowContext, ostError);
         }
         showProgress(false);
+        return false;
     }
 }

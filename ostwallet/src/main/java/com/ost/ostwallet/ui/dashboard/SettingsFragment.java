@@ -288,8 +288,9 @@ public class SettingsFragment extends BaseFragment implements
 
                 if (new CommonUtils().handleActivatingStateCheck(getActivity())) return;
 
-                Fragment fragment = QRFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
+//                Fragment fragment = QRFragment.newInstance();
+//                mListener.launchFeatureFragment(fragment);
+                mListener.showAddDeviceQR();
             }
         });
         mScrollViewSettings.addView(viewShowDeviceQR);
@@ -584,5 +585,6 @@ public class SettingsFragment extends BaseFragment implements
         void viewMnemonics();
         void revokeDevice();
         void authorizeDeviceWithMnemonics();
+        void showAddDeviceQR();
     }
 }

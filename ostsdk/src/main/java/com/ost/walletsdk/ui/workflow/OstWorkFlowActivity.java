@@ -46,9 +46,6 @@ import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFragment.OnFragmentInteractionListener,
         DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener,
-        RequestAcknowledgedListener,
-        FlowInterruptListener,
-        FlowCompleteListener,
         SdkInteract.WorkFlowCallbacks,
         WorkFlowPinFragment.OnFragmentInteractionListener,
         ResetPinFragment.OnFragmentInteractionListener,
@@ -68,6 +65,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public static final String ENABLE = "enable";
     public static final String GET_DEVICE_MNEMONICS = "get_device_mnemonics";
     public static final String AUTHORIZE_DEVICE_WITH_MNEMONICS = "authorize_device_with_mnemonics";
+    public static final String SHOW_QR = "show_qr";
 
     private static final String LOG_TAG = "OstWorkFlowActivity";
     WorkFlowListener mWorkFlowListener;
@@ -98,7 +96,6 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
         if (null != mWorkFlowListener) {
             mWorkFlowListener.setWorkflowCallbacks(this);
-            SdkInteract.getInstance().subscribe(mWorkFlowListener.getId(), this);
         }
     }
 
@@ -192,31 +189,14 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     }
 
     @Override
-    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        showProgress(false);
-        finish();
-    }
-
-    @Override
-    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        showProgress(false);
-        finish();
-    }
-
-    @Override
-    public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        showProgress(false);
-        finish();
-    }
-
-    @Override
-    public void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+    public boolean getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
         showGetPinFragment(workflowId, userId, ostWorkflowContext, ostPinAcceptInterface);
+        return false;
     }
 
     @Override
-    public void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+    public boolean invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
         Dialog dialog = DialogFactory.createSimpleOkErrorDialog(OstWorkFlowActivity.this,
                 "Incorrect PIN",
@@ -228,16 +208,38 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
                 });
         dialog.setCancelable(false);
         dialog.show();
+        return false;
     }
 
     @Override
-    public void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
-
+    public boolean pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
+        return false;
     }
 
     @Override
-    public void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+    public boolean flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        showProgress(false);
+        finish();
+        return false;
+    }
 
+    @Override
+    public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        showProgress(false);
+        finish();
+        return false;
+    }
+
+    @Override
+    public boolean requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        showProgress(false);
+        finish();
+        return false;
+    }
+
+    @Override
+    public boolean verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+        return false;
     }
 
     private void showGetPinFragment(String workflowId, String userId, OstWorkflowContext ostWorkflowContext, OstPinAcceptInterface ostPinAcceptInterface) {
