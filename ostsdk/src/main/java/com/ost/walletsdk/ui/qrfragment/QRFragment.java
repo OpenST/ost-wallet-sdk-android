@@ -25,6 +25,9 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.uicomponents.AppBar;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
+
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,6 +38,7 @@ public class QRFragment extends BaseFragment {
 
     private String mUserId;
     private OnFragmentInteractionListener mListener;
+    private JSONObject mContentConfig;
 
     public QRFragment() {
         // Required empty public constructor
@@ -81,21 +85,36 @@ public class QRFragment extends BaseFragment {
         AppBar appBar = AppBar.newInstance(getContext(), false);
         setUpAppBar(viewGroup, appBar);
 
+        ((TextView)viewGroup.findViewById(R.id.h1QRLabel)).setText(
+                StringConfig.instance(mContentConfig.optJSONObject("title_label")).getString()
+        );
+
+        ((TextView)viewGroup.findViewById(R.id.h2QRLabel)).setText(
+                StringConfig.instance(mContentConfig.optJSONObject("lead_label")).getString()
+        );
+
         ImageView imageView = ((ImageView) viewGroup.findViewById(R.id.iv_qr_view));
         imageView.setImageBitmap(OstSdk.getAddDeviceQRCode(mUserId));
 
         TextView deviceAddressTextView = ((TextView) viewGroup.findViewById(R.id.atv_device_address));
         deviceAddressTextView.setText(OstSdk.getUser(mUserId).getCurrentDevice().getAddress());
 
-        ((Button) viewGroup.findViewById(R.id.pbtn_check_device_status)).setOnClickListener(new View.OnClickListener() {
+        Button checkStatusButton = ((Button) viewGroup.findViewById(R.id.pbtn_check_device_status));
+        checkStatusButton.setText(
+                StringConfig.instance(mContentConfig.optJSONObject("action_button")).getString()
+        );
+        checkStatusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showProgress(true, "Checking...");
                 mListener.onCheckDevice();
             }
         });
 
         return viewGroup;
+    }
+
+    public void setContentConfig(JSONObject contentConfig) {
+        mContentConfig = contentConfig;
     }
 
     public interface OnFragmentInteractionListener {
