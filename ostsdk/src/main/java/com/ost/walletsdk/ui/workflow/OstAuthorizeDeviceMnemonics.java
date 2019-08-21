@@ -80,6 +80,9 @@ public class OstAuthorizeDeviceMnemonics extends OstWorkFlowActivity {
 
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        if (!OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
+            super.flowInterrupt(ostWorkflowContext, ostError);
+        }
         showProgress(false);
     }
 }

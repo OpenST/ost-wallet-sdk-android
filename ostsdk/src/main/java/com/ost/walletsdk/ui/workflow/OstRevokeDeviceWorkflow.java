@@ -95,7 +95,7 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
 
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        if (!mShowBackButton) {
+        if (!mShowBackButton || !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
             super.flowInterrupt(ostWorkflowContext, ostError);
         }
         showProgress(false);
