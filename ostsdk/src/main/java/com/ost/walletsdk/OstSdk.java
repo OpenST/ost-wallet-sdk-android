@@ -139,7 +139,11 @@ public class OstSdk {
         BASE_URL = validateSdkUrl(baseUrl);
 
         if(!mTrustKitInitialised) {
-            TrustKit.initializeWithNetworkSecurityConfiguration(mApplicationContext);
+            try {
+                TrustKit.initializeWithNetworkSecurityConfiguration(mApplicationContext);
+            } catch (IllegalStateException exception) {
+                // Already initialized by app.
+            }
             mTrustKitInitialised = true;
         }
     }
