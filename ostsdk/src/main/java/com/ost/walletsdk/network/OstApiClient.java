@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -53,11 +54,11 @@ public class OstApiClient {
         return mResponseParser;
     }
 
-    public OstApiClient(String userId, String baseUrl) {
+    public OstApiClient(String userId, String baseUrl, boolean enableResponseLog) {
         mUserId = userId;
         mOstUser = OstSdk.getUser(userId);
 
-        mOstHttpRequestClient = new OstHttpRequestClient(baseUrl);
+        mOstHttpRequestClient = new OstHttpRequestClient(baseUrl, enableResponseLog);
         mApiSigner = new OstApiSigner(mUserId);
         mOstHttpRequestClient.setOstApiSigner(mApiSigner);
 
@@ -66,7 +67,11 @@ public class OstApiClient {
     }
 
     public OstApiClient(String userId) {
-        this(userId, OstSdk.get().get_BASE_URL());
+        this(userId, OstSdk.get().get_BASE_URL(), true);
+    }
+
+    public OstApiClient(String userId, boolean enableResponseLog) {
+        this(userId, OstSdk.get().get_BASE_URL(), enableResponseLog);
     }
 
     public OstHttpRequestClient getOstHttpRequestClient() {
@@ -78,14 +83,14 @@ public class OstApiClient {
         return mOstHttpRequestClient.get("/tokens/", requestMap);
     }
 
-    public JSONObject postUserActivate(String sessionAddress,
+    public JSONObject postUserActivate(List<String> sessionAddresses,
                                        String expirationHeight,
                                        String spendingLimit,
                                        String recoveryOwnerAddress) throws OstError {
 
         Map<String, Object> requestMap = new HashMap<>();
 
-        requestMap.put(SESSION_ADDRESSES, Arrays.asList(sessionAddress));
+        requestMap.put(SESSION_ADDRESSES, sessionAddresses);
         requestMap.put(EXPIRATION_HEIGHT, expirationHeight);
         requestMap.put(SPENDING_LIMIT, spendingLimit);
         requestMap.put(RECOVERY_OWNER_ADDRESS, recoveryOwnerAddress);

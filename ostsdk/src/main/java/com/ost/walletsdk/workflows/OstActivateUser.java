@@ -13,6 +13,7 @@ package com.ost.walletsdk.workflows;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ecKeyInteracts.OstBiometricManager;
@@ -33,6 +34,7 @@ import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 import org.json.JSONObject;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 public class OstActivateUser extends OstBaseWorkFlow implements OstPollingCallback {
 
@@ -115,15 +117,28 @@ public class OstActivateUser extends OstBaseWorkFlow implements OstPollingCallba
             String recoveryAddress = new OstRecoveryManager(mUserId).getRecoveryAddressFor(mPassphrase);
 
             // Create session key
-            String sessionAddress = new OstKeyManager(mUserId).createSessionKey();
+
+            ArrayList<String> sessionAddresses = new ArrayList<>();
+            int noOfSessions = OstConfigs.getInstance().getNoOfSessionsOnActivateUser();
+            Log.d(TAG, "Creating " + noOfSessions + " session keys. Addresses:");
+            for( int cnt = 0; cnt < noOfSessions; cnt++ ) {
+                String sessionAddress = new OstKeyManager(mUserId).createSessionKey();
+                OstSession.init(sessionAddress, mUserId);
+
+                // Create session locally if the request is accepted.
+                // For polling purpose
+                sessionAddresses.add( sessionAddress );
+                Log.d(TAG, "\t" + sessionAddress);
+            }
 
             // Post the Api call.
-            Log.i(TAG, "Activate user");
-            Log.d(TAG, String.format("SessionAddress: %s, expirationHeight: %s,"
-                            + " SpendingLimit: %s, RecoveryAddress: %s", sessionAddress,
+            Log.i(TAG, "post activate user api call");
+
+            Log.d(TAG, String.format("expirationHeight: %s,"
+                            + " SpendingLimit: %s, RecoveryAddress: %s",
                     expirationHeight, mSpendingLimit, recoveryAddress));
 
-            JSONObject response = mOstApiClient.postUserActivate(sessionAddress,
+            JSONObject response = mOstApiClient.postUserActivate(sessionAddresses,
                     expirationHeight, mSpendingLimit, recoveryAddress);
 
             // Let the app know that kit has accepted the request.
@@ -131,9 +146,6 @@ public class OstActivateUser extends OstBaseWorkFlow implements OstPollingCallba
             OstContextEntity ostContextEntity = new OstContextEntity(OstUser.getById(mUserId), OstSdk.USER);
             postRequestAcknowledge(workflowContext, ostContextEntity);
 
-            // Create session locally if the request is accepted.
-            // For polling purpose
-            OstSession.init(sessionAddress, mUserId);
 
         } catch (OstError error) {
             return postErrorInterrupt(error);

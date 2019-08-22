@@ -162,10 +162,14 @@ public class OstSdk {
      * @param context Application context
      * @param baseUrl base Url of OST Platform
      */
-    public static void initialize(Context context, String baseUrl) {
+    public static void initialize(@NonNull Context context, @NonNull String baseUrl) {
+        OstSdk.initialize(context, baseUrl, null);
+    }
+
+    public static void initialize(@NonNull Context context, @NonNull String baseUrl, @Nullable JSONObject config) {
         synchronized (OstSdk.class) {
             //Create Config.
-            OstConfigs.init(context);
+            OstConfigs.init(context, config);
             //Create instance.
             INSTANCE = new OstSdk(context, baseUrl);
         }
