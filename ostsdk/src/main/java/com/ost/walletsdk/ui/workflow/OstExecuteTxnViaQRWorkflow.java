@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 
+import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
@@ -64,10 +65,33 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
     @Override
     public void onResultString(Intent data) {
         Log.d(LOG_TAG, String.format("QR process result %s", data));
-        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
         if (data != null && data.getData() != null) {
             String returnedResult = data.getData().toString();
 
+            //QR validation check
+            try {
+                if (!OstConstants.DATA_DEFINITION_TRANSACTION.equalsIgnoreCase(
+                        new JSONObject(returnedResult).getString(OstConstants.QR_DATA_DEFINITION
+                        ))) {
+                    throw new Exception("Invalid QR");
+                }
+            } catch (Exception exception) {
+
+                DialogFactory.createSimpleOkErrorDialog(OstExecuteTxnViaQRWorkflow.this
+                        , "Invalid QR-Code"
+                        , "QR-Code scanned for execute Transaction is invalid. Please scan valid QR-Code to execute transaction."
+                        , new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mQrScannerFragment.onResume();
+                            }
+                        }
+                ).show();
+                return;
+            }
+
+            //Initiate workflow
+            showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
             try {
                 OstSdk.performQRAction(
                         mUserId,
@@ -85,21 +109,6 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
     @Override
     public boolean verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         showProgress(false);
-
-        if (!(ostContextEntity.getEntity() instanceof JSONObject)) {
-            ostVerifyDataInterface.cancelFlow();
-            DialogFactory.createSimpleOkErrorDialog(OstExecuteTxnViaQRWorkflow.this
-                    , "Invalid QR-Code"
-                    , "QR-Code scanned for execute Transaction is invalid. Please scan valid QR-Code to execute transaction."
-                    , new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mQrScannerFragment.onResume();
-                        }
-                    }
-            ).show();
-            return true;
-        }
 
         OstVerifyTxnFragment bottomSheet = new OstVerifyTxnFragment();
         bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
