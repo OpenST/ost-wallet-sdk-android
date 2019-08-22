@@ -208,16 +208,16 @@ public class OstSession extends OstBaseEntity {
         super.processJson(jsonObject);
     }
 
-    public String signTransaction(JSONObject jsonObject, String userId) throws Exception {
-        byte[] data = new OstSecureKeyModelRepository().getByKey(getAddress()).getData();
-        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(jsonObject).toEIP1077TransactionHash()), ECKeyPair.create(OstAndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data)));
-        String signedMessage = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + Integer.toHexString(signatureData.getV() & 0xFF);
-        return signedMessage;
-    }
-
-    public String signTransaction(OstSession.Transaction transaction, String userId) throws Exception {
-        return signTransaction(transaction.toJSONObject(), userId);
-    }
+//    public String signTransaction(JSONObject jsonObject, String userId) throws Exception {
+//        byte[] data = new OstSecureKeyModelRepository().getByKey(getAddress()).getData();
+//        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(jsonObject).toEIP1077TransactionHash()), ECKeyPair.create(OstAndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data)));
+//        String signedMessage = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + Integer.toHexString(signatureData.getV() & 0xFF);
+//        return signedMessage;
+//    }
+//
+//    public String signTransaction(OstSession.Transaction transaction, String userId) throws Exception {
+//        return signTransaction(transaction.toJSONObject(), userId);
+//    }
 
     @Override
     public String getId() {
