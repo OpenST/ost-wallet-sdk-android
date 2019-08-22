@@ -71,12 +71,12 @@ public class OstVerifyTxnFragment extends BottomSheetDialogFragment {
 
         TextView heading = (TextView) mViewGroup.findViewById(R.id.h2VerifyHeading);
         heading.setText(
-                StringConfig.instance(mVerifyTxnConfig.optJSONObject("title_label")).getString()
+                StringConfig.instance(mVerifyTxnConfig.optJSONObject("lead_label")).getString()
         );
 
         TextView subHeading = (TextView) mViewGroup.findViewById(R.id.h3VerifyHeading);
         subHeading.setText(
-                StringConfig.instance(mVerifyTxnConfig.optJSONObject("title_label")).getString()
+                StringConfig.instance(mVerifyTxnConfig.optJSONObject("info_label")).getString()
         );
 
         mAmountInBt = (TextView) mViewGroup.findViewById(R.id.h1AmountInBt);

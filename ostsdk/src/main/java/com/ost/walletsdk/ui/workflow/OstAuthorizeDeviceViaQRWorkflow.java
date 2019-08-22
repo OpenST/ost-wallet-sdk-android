@@ -1,5 +1,6 @@
 package com.ost.walletsdk.ui.workflow;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import com.ost.walletsdk.ui.OstVerifyDataFragment;
 import com.ost.walletsdk.ui.qrscanner.QRScannerFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
+import com.ost.walletsdk.ui.util.DialogFactory;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -26,7 +28,7 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
         OstVerifyDataFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = "OstADVQRWorkflow";
-    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("authorize_device_qr");
+    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("authorize_device_via_qr");
     private QRScannerFragment mQrScannerFragment;
 
     @Override
@@ -83,6 +85,21 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
     @Override
     public boolean verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         showProgress(false);
+
+        if (!(ostContextEntity.getEntity() instanceof OstDevice)) {
+            ostVerifyDataInterface.cancelFlow();
+            DialogFactory.createSimpleOkErrorDialog(OstAuthorizeDeviceViaQRWorkflow.this
+                    , "Invalid QR-Code"
+                    , "QR-Code scanned for authorize device is invalid. Please scan valid QR-Code to authorize device."
+                    , new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mQrScannerFragment.onResume();
+                        }
+                    }
+            ).show();
+            return true;
+        }
 
         OstVerifyDataFragment bottomSheet = new OstVerifyDataFragment();
         bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());

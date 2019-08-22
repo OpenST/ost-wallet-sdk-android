@@ -65,7 +65,7 @@ public class OstVerifyDataFragment extends BottomSheetDialogFragment {
 
         TextView heading = (TextView) mViewGroup.findViewById(R.id.h2VerifyHeading);
         heading.setText(
-                StringConfig.instance(mVerifyDeviceConfig.optJSONObject("title_label")).getString()
+                StringConfig.instance(mVerifyDeviceConfig.optJSONObject("lead_label")).getString()
         );
 
         TextView deviceAddress = (TextView) mViewGroup.findViewById(R.id.tv_address);

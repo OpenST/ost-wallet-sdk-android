@@ -347,13 +347,10 @@
       "text": "Initializing..."
     }
   },
-  "authorize_device_qr": {
+  "authorize_device_via_qr": {
     "verify_device": {
-      "title_label": {
+      "lead_label": {
         "text": "Authorize New Device"
-      },
-      "info_label": {
-        "text": ""
       },
       "accept_button": {
         "text": "Authorize Device"
@@ -362,7 +359,6 @@
         "text": "Deny Request"
       }
     },
-
     "get_pin": {
       "title_label": {
         "text": "Authorize Device"
@@ -381,7 +377,30 @@
       "text": "Authoring Device..."
     },
     "initial_loader": {
-      "text": "Initializing"
+      "text": "Initializing..."
+    }
+  },
+
+  "execute_transaction_via_qr": {
+    "verify_transaction": {
+      "lead_label": {
+        "text": "Transaction Details"
+      },
+      "info_label": {
+        "text": "This is a one-time transaction approval. Further purchases will be asked for a confirmation again."
+      },
+      "accept_button": {
+        "text": "Confirm Transaction"
+      },
+      "reject_button": {
+        "text": "Decline"
+      }
+    },
+    "loader": {
+      "text": "Executing Transaction..."
+    },
+    "initial_loader": {
+      "text": "Initializing..."
     }
   }
 }
