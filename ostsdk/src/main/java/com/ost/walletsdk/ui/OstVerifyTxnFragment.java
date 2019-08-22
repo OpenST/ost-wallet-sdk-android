@@ -27,6 +27,7 @@ import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
+import com.ost.walletsdk.ui.util.CommonUtils;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
 import org.json.JSONArray;
@@ -48,6 +49,8 @@ public class OstVerifyTxnFragment extends BottomSheetDialogFragment {
     private JSONObject mVerifyTxnConfig = new JSONObject();
     private TextView mAmountInBt;
     private TextView mAmountInFiat;
+    private JSONObject mPricePoint;
+    private String mUserId;
 
     public OstVerifyTxnFragment() {
         // Required empty public constructor
@@ -136,7 +139,7 @@ public class OstVerifyTxnFragment extends BottomSheetDialogFragment {
         JSONArray tokenHolderAmountsList = mDataToVerify.optJSONArray(OstConstants.AMOUNTS);
         JSONObject optionData = mDataToVerify.optJSONObject(OstConstants.TRANSACTION_OPTIONS);
         String currencySymbol = OstConfigs.getInstance().getPRICE_POINT_CURRENCY_SYMBOL();
-        String mCurrencySign;
+        String mCurrencySign = "$";
         if (null != optionData) {
             currencySymbol = optionData.optString(OstConstants.QR_CURRENCY_CODE, OstConfigs.getInstance().getPRICE_POINT_CURRENCY_SYMBOL());
             mCurrencySign = optionData.optString(OstConstants.QR_CURRENCY_SIGN, "$");
@@ -150,16 +153,19 @@ public class OstVerifyTxnFragment extends BottomSheetDialogFragment {
         }
 
         mAmountInBt.setText(String.format("%s", totalTransferAmount.toString()));
-//        mAmountInFiat.setText(String.format(""))
-//        if(isDirectTransfers){
-//            ((TextView) viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: %s %s",
-//                    CommonUtils.convertWeiToTokenCurrency(AppProvider.get().getCurrentUser().getBalance()).toString(),
-//                    AppProvider.get().getCurrentEconomy().getTokenSymbol()));
-//        } else {
-//            ((TextView) viewGroup.findViewById(R.id.tv_balance)).setText(String.format(Locale.getDefault(), "Balance: %s %s",
-//                    mCurrencySign, CommonUtils.convertBTWeiToFiat(AppProvider.get().getCurrentUser().getBalance(), mPricePointData)));
-//        }
+        mAmountInFiat.setText(String.format("%s%s", mCurrencySign,
+                new CommonUtils().convertBTWeiToFiat(mUserId, totalTransferAmount.toString(),
+                        mPricePoint)));
     }
+
+    public void setPricePointData(JSONObject pricePointData) {
+        mPricePoint = pricePointData;
+    }
+
+    public void setUserId(String userId) {
+        mUserId = userId;
+    }
+
     public interface OnFragmentInteractionListener {
         void onDataVerified();
         void onDataRejected();

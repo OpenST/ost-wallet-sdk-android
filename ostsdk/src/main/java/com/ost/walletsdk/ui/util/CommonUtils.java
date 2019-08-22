@@ -21,12 +21,16 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.models.entities.OstToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -247,5 +251,49 @@ public class CommonUtils {
         });
         builder.setNegativeButton("Cancel", onCancelListener);
         builder.create().show();
+    }
+
+    public String convertBTWeiToFiat(String userId, String balance, JSONObject pricePointObject) {
+        if (null == balance || null == pricePointObject) return null;
+
+        try{
+            OstToken token = OstSdk.getToken(OstSdk.getUser(userId).getTokenId());
+            double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble("USD");
+            int fiatDecimalExponent = pricePointObject.getJSONObject(token.getBaseToken()).getInt("decimals");
+            BigDecimal fiatToEthConversionFactor = new BigDecimal("10").pow(fiatDecimalExponent);
+
+            BigDecimal tokenToFiatMultiplier = calTokenToFiatMultiplier(pricePointOSTtoUSD, fiatDecimalExponent, token.getConversionFactor(), Integer.parseInt(token.getBtDecimals()));
+
+            BigDecimal fiatBalance = new BigDecimal(balance).multiply(tokenToFiatMultiplier);
+
+            return fiatBalance.divide(fiatToEthConversionFactor, 2, RoundingMode.DOWN).toString();
+
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    private BigDecimal calTokenToFiatMultiplier(
+            double oneOstToUsd,
+            int usdDecimalExponent,
+            String oneOstToBT,
+            int btDecimalExponent) {
+        // weiDecimal = OstToUsd * 10^decimalExponent
+        BigDecimal bigDecimal = new BigDecimal(String.valueOf(oneOstToUsd));
+        BigDecimal toWeiMultiplier = new BigDecimal(10).pow(usdDecimalExponent);
+        BigDecimal usdWeiDecimalNumerator = bigDecimal.multiply(toWeiMultiplier);
+
+        // toBtWeiMultiplier = 10^btDecimal
+        BigDecimal toBtWeiMultiplier = new BigDecimal(10).pow(btDecimalExponent);
+
+        // btInWeiNumerator = conversionFactorOstToPin * toBtWeiMultiplier
+        BigDecimal conversionFactorOstToBT = new BigDecimal(String.valueOf(oneOstToBT));
+        BigDecimal btInWeiDenominator = conversionFactorOstToBT.multiply(toBtWeiMultiplier);
+
+        int precision = btDecimalExponent - usdDecimalExponent;
+        if (precision < 1) precision = 2;
+
+        // multiplierForFiat = btInWeiNumerator / usdWeiDecimalDenominator
+        return usdWeiDecimalNumerator.divide(btInWeiDenominator, precision, RoundingMode.DOWN);
     }
 }

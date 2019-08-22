@@ -2,6 +2,8 @@ package com.ost.walletsdk.ui.workflow;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -9,6 +11,8 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
+import com.ost.walletsdk.network.OstJsonApi;
+import com.ost.walletsdk.network.OstJsonApiCallback;
 import com.ost.walletsdk.ui.OstVerifyTxnFragment;
 import com.ost.walletsdk.ui.qrscanner.QRScannerFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
@@ -108,14 +112,42 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
 
     @Override
     public boolean verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
-        showProgress(false);
+        OstJsonApi.getBalanceWithPricePoints(mUserId, new OstJsonApiCallback() {
+            @Override
+            public void onOstJsonApiSuccess(@Nullable JSONObject jsonObject) {
+                if ( null != jsonObject ) {
+                    String balance = "0";
+                    try{
+                        JSONObject balanceData = jsonObject.getJSONObject(jsonObject.getString(OstConstants.RESULT_TYPE));
+                        balance = balanceData.getString("available_balance");
+                        JSONObject pricePointData = jsonObject.optJSONObject("price_point");
 
-        OstVerifyTxnFragment bottomSheet = new OstVerifyTxnFragment();
-        bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
+                        showProgress(false);
 
-        bottomSheet.setDataToVerify((JSONObject) ostContextEntity.getEntity());
-        bottomSheet.setVerifyDataCallback(ostVerifyDataInterface);
-        bottomSheet.setStringConfig(contentConfig.optJSONObject("verify_transaction"));
+                        OstVerifyTxnFragment bottomSheet = new OstVerifyTxnFragment();
+                        bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
+
+                        bottomSheet.setDataToVerify((JSONObject) ostContextEntity.getEntity());
+                        bottomSheet.setVerifyDataCallback(ostVerifyDataInterface);
+                        bottomSheet.setStringConfig(contentConfig.optJSONObject("verify_transaction"));
+                        bottomSheet.setPricePointData(pricePointData);
+                        bottomSheet.setUserId(mUserId);
+                    } catch(Exception e){ }
+                        showProgress(false);
+                } else {
+                    Log.d("VerifyTransactionData", "getBalanceWithPricePoints data is null.");
+                    showProgress(false);
+                    ostVerifyDataInterface.cancelFlow();
+                }
+            }
+
+            @Override
+            public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject data) {
+                Log.e("VerifyTransactionData", "getBalanceWithPricePoints InternalErrorCode:" + err.getInternalErrorCode());
+                showProgress(false);
+                ostVerifyDataInterface.cancelFlow();
+            }
+        });
         return true;
     }
 
