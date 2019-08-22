@@ -12,6 +12,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ost.walletsdk">
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
