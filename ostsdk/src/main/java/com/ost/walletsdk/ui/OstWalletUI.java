@@ -38,7 +38,18 @@ public class OstWalletUI {
      * @param url     Ost Platform url
      */
     public static void initialize(Context context, String url) {
-        OstSdk.initialize(context, url);
+        OstWalletUI.initialize(context, url, null);
+    }
+
+    /**
+     * To initialize OstWallet before performing any workflow operations
+     *
+     * @param context Application context
+     * @param url     Ost Platform url
+     * @param config Application Config
+     */
+    public static void initialize(Context context, String url, @Nullable JSONObject config) {
+        OstSdk.initialize(context, url, config);
         if (!ThemeConfig.isInitialized()) {
             setThemeConfig(context, null);
         }
