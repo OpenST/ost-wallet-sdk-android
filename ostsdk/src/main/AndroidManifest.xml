@@ -58,5 +58,8 @@
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstAuthorizeDeviceViaQRWorkflow"
             android:theme="@style/AppTheme"/>
+        <activity
+            android:name="com.ost.walletsdk.ui.workflow.OstExecuteTxnViaQRWorkflow"
+            android:theme="@style/AppTheme"/>
     </application>
 </manifest>

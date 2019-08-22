@@ -66,6 +66,8 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public static final String GET_DEVICE_MNEMONICS = "get_device_mnemonics";
     public static final String AUTHORIZE_DEVICE_WITH_MNEMONICS = "authorize_device_with_mnemonics";
     public static final String SHOW_QR = "show_qr";
+    public static final String AUTHORIZE_DEVICE_VIA_QR = "authorize_device_via_qr";
+    public static final String AUTHORIZE_TXN_VIA_QR = "authorize_txn_via_qr";
 
     private static final String LOG_TAG = "OstWorkFlowActivity";
     WorkFlowListener mWorkFlowListener;

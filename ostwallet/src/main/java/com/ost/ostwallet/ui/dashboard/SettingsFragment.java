@@ -316,9 +316,7 @@ public class SettingsFragment extends BaseFragment implements
                 if (userDeviceNotAuthorized()) {
                     openDeviceAuthorizationFragment();
                 } else {
-                    //QR scanning is independent of workflow so AuthorizeDeviceQRFragment is used as generic for qr workflow
-                    Fragment fragment = AuthorizeDeviceQRFragment.newInstance();
-                    mListener.launchFeatureFragment(fragment);
+                    mListener.executeTransactionViaQR();
                 }
             }
         });
@@ -586,5 +584,6 @@ public class SettingsFragment extends BaseFragment implements
         void authorizeDeviceWithMnemonics();
         void showAddDeviceQR();
         void authorizeDeviceViaQR();
+        void executeTransactionViaQR();
     }
 }

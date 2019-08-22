@@ -7,7 +7,7 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
-import com.ost.walletsdk.ui.OstVerifyDataFragment;
+import com.ost.walletsdk.ui.OstVerifyTxnFragment;
 import com.ost.walletsdk.ui.qrscanner.QRScannerFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
@@ -21,11 +21,11 @@ import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity implements
+public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
         QRScannerFragment.OnFragmentInteractionListener,
-        OstVerifyDataFragment.OnFragmentInteractionListener {
+        OstVerifyTxnFragment.OnFragmentInteractionListener {
 
-    private static final String LOG_TAG = "OstADVQRWorkflow";
+    private static final String LOG_TAG = "OstETVQRWorkflow";
     final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("authorize_device_qr");
     private QRScannerFragment mQrScannerFragment;
 
@@ -36,7 +36,7 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
         if (!OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
-            throw new OstError("owfa_evs_advqr_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED);
+            throw new OstError("owfa_evs_etvqr_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED);
         }
     }
 
@@ -84,10 +84,10 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
     public boolean verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         showProgress(false);
 
-        OstVerifyDataFragment bottomSheet = new OstVerifyDataFragment();
+        OstVerifyTxnFragment bottomSheet = new OstVerifyTxnFragment();
         bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
-        OstDevice ostDevice = ((OstDevice) ostContextEntity.getEntity());
-        bottomSheet.setDataToVerify(ostDevice);
+
+        bottomSheet.setDataToVerify((JSONObject) ostContextEntity.getEntity());
         bottomSheet.setVerifyDataCallback(ostVerifyDataInterface);
         bottomSheet.setStringConfig(contentConfig.optJSONObject("verify_device"));
         return true;
