@@ -369,19 +369,19 @@ public class OstHttpRequestClient {
 
     private void errorLog(String tag, String msg) {
         if( this.enableLog ) {
-            errorLog(tag, msg);
+            Log.e(tag, msg);
         }
     }
 
     private void debugLog(String tag, String msg) {
         if( this.enableLog ) {
-            debugLog(tag, msg);
+            Log.d(tag, msg);
         }
     }
 
     private void infoLog(String tag, String msg) {
         if( this.enableLog ) {
-            infoLog(tag, msg);
+            Log.i(tag, msg);
         }
     }
 
