@@ -238,8 +238,7 @@ public class SettingsFragment extends BaseFragment implements
 
                 if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
 
-                Fragment fragment = AuthorizeDeviceQRFragment.newInstance();
-                mListener.launchFeatureFragment(fragment);
+                mListener.authorizeDeviceViaQR();
             }
         });
         mScrollViewSettings.addView(authorizeDeviceViaQR);
@@ -586,5 +585,6 @@ public class SettingsFragment extends BaseFragment implements
         void revokeDevice();
         void authorizeDeviceWithMnemonics();
         void showAddDeviceQR();
+        void authorizeDeviceViaQR();
     }
 }

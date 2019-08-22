@@ -346,5 +346,42 @@
     "initial_loader": {
       "text": "Initializing..."
     }
+  },
+  "authorize_device_qr": {
+    "verify_device": {
+      "title_label": {
+        "text": "Authorize New Device"
+      },
+      "info_label": {
+        "text": ""
+      },
+      "accept_button": {
+        "text": "Authorize Device"
+      },
+      "reject_button": {
+        "text": "Deny Request"
+      }
+    },
+
+    "get_pin": {
+      "title_label": {
+        "text": "Authorize Device"
+      },
+      "lead_label": {
+        "text": "Enter your 6-digit PIN to authorize device"
+      },
+      "info_label":{
+        "text":  ""
+      },
+      "terms_and_condition_label": {
+        "text": ""
+      }
+    },
+    "loader": {
+      "text": "Authoring Device..."
+    },
+    "initial_loader": {
+      "text": "Initializing"
+    }
   }
 }

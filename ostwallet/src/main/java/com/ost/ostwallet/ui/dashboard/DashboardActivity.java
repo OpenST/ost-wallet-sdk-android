@@ -435,6 +435,14 @@ public class DashboardActivity extends BaseActivity implements
     }
 
     @Override
+    public void authorizeDeviceViaQR() {
+        String workflowId = OstWalletUI.authorizeDeviceViaQR(this,
+                AppProvider.get().getCurrentUser().getOstUserId(),
+                AppProvider.get().getUserPassphraseCallback());
+        OstWalletUI.subscribe(workflowId, this);
+    }
+
+    @Override
     public void onDeviceSelectedToAbortRecovery(Device device) {
         String workflowId = OstWalletUI.abortDeviceRecovery(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
