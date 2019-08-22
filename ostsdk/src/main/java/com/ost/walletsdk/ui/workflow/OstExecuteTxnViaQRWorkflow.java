@@ -63,7 +63,7 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
 
     @Override
     OstWorkflowContext getWorkflowContext() {
-        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_QR_CODE);
+        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.EXECUTE_TRANSACTION);
     }
 
     @Override
