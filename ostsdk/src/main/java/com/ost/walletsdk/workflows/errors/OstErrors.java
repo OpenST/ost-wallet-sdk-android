@@ -187,6 +187,8 @@ public class OstErrors {
                 return "Invalid configuration 'REQUEST_TIMEOUT_DURATION'. It must be Integer greater than zero.";
             case INVALID_NO_OF_SESSIONS_ON_ACTIVATE_USER:
                 return "Invalid configuration 'NO_OF_SESSIONS_ON_ACTIVATE_USER'. It must be an Integer greater than zero and less than 6";
+            case INVALID_USER_AUTH_VALIDITY_DURATION:
+                return "Invalid configuration 'USER_AUTH_VALIDITY_DURATION'. It must be an Integer greater than or equal to zero";
 
             case LOGOUT_ALL_SESSIONS_FAILED:
                 return "Logout request of all sessions failed";
@@ -300,6 +302,7 @@ public class OstErrors {
         INVALID_REQUEST_TIMEOUT_DURATION,
         INVALID_SESSION_BUFFER_TIME,
         INVALID_NO_OF_SESSIONS_ON_ACTIVATE_USER,
+        INVALID_USER_AUTH_VALIDITY_DURATION,
         INVALID_JSON_STRING,
         INVALID_JSON_ARRAY,
 

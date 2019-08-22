@@ -64,7 +64,8 @@ Then sync you dependencies through gradle<br/>
         "PRICE_POINT_CURRENCY_SYMBOL": "USD",
         "PRICE_POINT_TOKEN_SYMBOL": "OST",
         "USE_SEED_PASSWORD": false,
-        "NO_OF_SESSIONS_ON_ACTIVATE_USER": 1
+        "NO_OF_SESSIONS_ON_ACTIVATE_USER": 1,
+        "USER_AUTH_VALIDITY_DURATION": 0
   }
  ```
 
@@ -75,7 +76,8 @@ Then sync you dependencies through gradle<br/>
 5. SESSION_BUFFER_TIME: Buffer expiration time for session keys in seconds. Default value is 3600 seconds.
 6. USE_SEED_PASSWORD: The seed password is salt to PBKDF2 used to generate seed from the mnemonic. When `UseSeedPassword` set to true, different deterministic salts are used for different keys.
 7. PRICE_POINT_TOKEN_SYMBOL: This is the symbol of base currency. So its value will be `OST`.
-8. NO_OF_SESSIONS_ON_ACTIVATE_USER: No of session keys to be created and whitelisted while activating user. 
+8. NO_OF_SESSIONS_ON_ACTIVATE_USER: No of session keys to be created and whitelisted while activating user.
+9. USER_AUTH_VALIDITY_DURATION: Duration in seconds for which user's authentication (biometric or pin) remains valid. 
 
 
 - Place the file under main directory's assets folder <br>

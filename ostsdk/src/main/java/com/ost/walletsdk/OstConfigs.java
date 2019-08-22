@@ -71,6 +71,12 @@ public class OstConfigs {
     private boolean USE_SEED_PASSWORD;
     private int NO_OF_SESSIONS_ON_ACTIVATE_USER;
 
+    public long getUserAuthValidityDuration() {
+        return USER_AUTH_VALIDITY_DURATION;
+    }
+
+    private long USER_AUTH_VALIDITY_DURATION;
+
     private OstConfigs(@NonNull final Context context, @Nullable JSONObject config) {
         if ( null == config ) {
             try {
@@ -114,6 +120,11 @@ public class OstConfigs {
         NO_OF_SESSIONS_ON_ACTIVATE_USER = config.optInt("NO_OF_SESSIONS_ON_ACTIVATE_USER", 1);
         if (NO_OF_SESSIONS_ON_ACTIVATE_USER < 1 || NO_OF_SESSIONS_ON_ACTIVATE_USER > 5) {
             throw new OstError("Ost_config_sc_nosoau", ErrorCode.INVALID_NO_OF_SESSIONS_ON_ACTIVATE_USER);
+        }
+
+        USER_AUTH_VALIDITY_DURATION = config.optInt("USER_AUTH_VALIDITY_DURATION", 0);
+        if (USER_AUTH_VALIDITY_DURATION < 0 ) {
+            throw new OstError("Ost_config_sc_u_auth_vd", ErrorCode.INVALID_USER_AUTH_VALIDITY_DURATION);
         }
     }
 

@@ -16,6 +16,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -26,12 +27,16 @@ import com.ost.walletsdk.R;
 import com.ost.walletsdk.biometric.OstBiometricAuthentication;
 import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.ecKeyInteracts.OstRecoveryManager;
+import com.ost.walletsdk.ecKeyInteracts.OstSecureStorage;
 import com.ost.walletsdk.ecKeyInteracts.UserPassphrase;
+import com.ost.walletsdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
 import com.ost.walletsdk.ecKeyInteracts.structs.SignedAddDeviceStruct;
+import com.ost.walletsdk.models.Impls.OstSecureKeyModelRepository;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstDeviceManager;
 import com.ost.walletsdk.models.entities.OstDeviceManagerOperation;
 import com.ost.walletsdk.models.entities.OstRule;
+import com.ost.walletsdk.models.entities.OstSecureKey;
 import com.ost.walletsdk.models.entities.OstToken;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstApiClient;
@@ -61,6 +66,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     private static final String TAG = "OstBaseWorkFlow";
@@ -204,24 +210,13 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
                     return performUserDeviceValidation(stateObject);
 
                 case WorkflowStateManager.DEVICE_VALIDATED:
-                    Log.i(TAG, "Ask for authentication");
-                    if (shouldAskForAuthentication()) {
-                        if (shouldAskForBioMetric()) {
-                            new OstBiometricAuthentication(OstSdk.getContext(), getBiometricHeading(), getBioMetricCallBack());
-                        } else {
-                            return goToState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
-                        }
-                    } else {
-                        return goToState(WorkflowStateManager.AUTHENTICATED);
-                    }
-                    break;
+                    return authenticateUserIfNeeded();
 
                 case WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED:
-                    postGetPin(this);
-                    break;
+                    return postGetPin(this);
 
                 case WorkflowStateManager.PIN_INFO_RECEIVED:
-                    return verifyUserPin( (UserPassphrase) stateObject );
+                    return verifyUserByPin( (UserPassphrase) stateObject );
 
                 case WorkflowStateManager.AUTHENTICATED:
                     //Call the abstract method.
@@ -290,7 +285,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
 
     //region - Entity ensure methods
-    protected AsyncStatus performValidations(Object stateObject) {
+    private AsyncStatus performValidations(Object stateObject) {
         try {
             ensureValidParams();
         } catch (OstError ostError) {
@@ -511,7 +506,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
     }
 
-    AsyncStatus verifyUserPin(UserPassphrase passphrase) {
+    private AsyncStatus verifyUserByPin(UserPassphrase passphrase) {
 
         OstRecoveryManager recoveryManager = new OstRecoveryManager(mUserId);
         boolean isValid = recoveryManager.validatePassphrase(passphrase);
@@ -519,6 +514,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
         if ( isValid ) {
             postPinValidated();
             recoveryManager = null;
+            storeUserAuthInfoInDb(AuthenticationModes.USER_PIN);
             return goToState(WorkflowStateManager.AUTHENTICATED);
         }
 
@@ -569,7 +565,7 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
 
     //region - Post methods for app
-    AsyncStatus postGetPin(OstPinAcceptInterface pinAcceptInterface) {
+    private AsyncStatus postGetPin(OstPinAcceptInterface pinAcceptInterface) {
         Log.i(TAG, "get Pin");
         mHandler.post(new Runnable() {
             @Override
@@ -658,18 +654,41 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
 
 
     //region - Biometric methods
-    OstBiometricAuthentication.Callback getBioMetricCallBack() {
+    private AsyncStatus authenticateUserIfNeeded() {
+        if (shouldAskForAuthentication()) {
+            if ( isUserAuthenticationValid() ) {
+                return goToState(WorkflowStateManager.AUTHENTICATED);
+            }
+            if (shouldAskForBioMetric()) {
+                Log.i(TAG, "Ask for authentication");
+                return verifyUserByBiometric();
+            } else {
+                Log.i(TAG, "Biometric authentication turned off");
+                return goToState(WorkflowStateManager.PIN_AUTHENTICATION_REQUIRED);
+            }
+        }
+        return goToState(WorkflowStateManager.AUTHENTICATED);
+    }
+
+    private AsyncStatus verifyUserByBiometric() {
+        new OstBiometricAuthentication(OstSdk.getContext(), getBiometricHeading(), getBioMetricCallBack());
+        return new AsyncStatus(true);
+    }
+
+
+    private OstBiometricAuthentication.Callback getBioMetricCallBack() {
         if (null == mBioMetricCallBack) {
             mBioMetricCallBack = new OstBiometricAuthentication.Callback() {
                 @Override
                 public void onAuthenticated() {
-                    Log.d(TAG, "Biometric authentication success");
+                    Log.d(TAG, "Biometric authentication successful.");
+                    storeUserAuthInfoInDb(AuthenticationModes.BIOMETRIC);
                     onBioMetricAuthenticationSuccess();
                 }
 
                 @Override
                 public void onError() {
-                    Log.d(TAG, "Biometric authentication fail");
+                    Log.d(TAG, "Biometric authentication failed.");
                     onBioMetricAuthenticationFail();
                 }
             };
@@ -811,7 +830,107 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
     OstWorkflowContext getWorkflowContext() {
         return new OstWorkflowContext(this.mWorkflowId, this.getWorkflowType());
     }
+    //endregion
 
+
+    // region - User Auth Info.
+    private static final String USER_AUTH_INFO_HASH_FOR_ = "user_auth_meta_for_";
+    private static OstSecureKeyModelRepository modelRepo = null;
+    public enum AuthenticationModes {
+        BIOMETRIC,
+        USER_PIN
+    }
+    /**
+     * Helper method to create id for User Authentication Meta.
+     */
+    private String getUserAuthInfoId() {
+        return USER_AUTH_INFO_HASH_FOR_ + this.mUserId;
+    }
+
+    private boolean isUserAuthenticationValid() {
+        long maxValidity = OstConfigs.getInstance().getUserAuthValidityDuration();
+        if ( maxValidity < 1) {
+            return false;
+        }
+        // Convert into milliseconds.
+        maxValidity = maxValidity * 1000;
+
+        JSONObject userAuthInfo = getUserAuthInfo();
+        if ( null == userAuthInfo) {
+            return false;
+        }
+
+        // get the uts.
+        long lastAuthTime = userAuthInfo.optLong("uts", 0);
+        if ( lastAuthTime < 1) {
+            return false;
+        }
+        long timeNow = System.currentTimeMillis();
+        if ( ( lastAuthTime + maxValidity ) < timeNow ) {
+            return false;
+        }
+        return true;
+    }
+
+    private @Nullable JSONObject getUserAuthInfo() {
+        String authInfoId = getUserAuthInfoId();
+        OstSecureKey ostSecureKey = getByteStorageRepo().getByKey( authInfoId );
+        if (null == ostSecureKey) {
+            return null;
+        }
+
+        byte[] encryptedData = ostSecureKey.getData();
+        if ( null == encryptedData || encryptedData.length < 1) {
+            return null;
+        }
+
+        // Try to decrypt it.
+        Context context = OstSdk.getContext();
+        OstSecureStorage secureStorage = OstAndroidSecureStorage.getInstance(context, mUserId);
+        byte[] decryptedData = secureStorage.decrypt(encryptedData);
+        if ( null == decryptedData ) {
+            return null;
+        }
+        String jsonString = new String(decryptedData);
+        try {
+            return new JSONObject(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Generates and stores encrypted user auth info in Database.
+     */
+    private void storeUserAuthInfoInDb(AuthenticationModes mode) {
+        if ( null == mOstUser || null == mOstUser.getRecoveryOwnerAddress() ) {
+            // ignore the call. User is not activated
+            // OstActivateUser uses the verify biometric feature as a way to enable bio-metrics.
+            return;
+        }
+        try {
+            JSONObject userPresenceAuthInfo = new JSONObject();
+            userPresenceAuthInfo.putOpt("uts", System.currentTimeMillis() );
+            userPresenceAuthInfo.putOpt("mode", mode);
+            userPresenceAuthInfo.putOpt("recover_owner_address", mOstUser.getRecoveryOwnerAddress());
+            byte[] encrypted = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).encrypt(userPresenceAuthInfo.toString().getBytes());
+            String dataId = getUserAuthInfoId();
+            Future f = getByteStorageRepo().insertSecureKey(new OstSecureKey(dataId, encrypted));
+            f.get(1, TimeUnit.SECONDS);
+            Log.d(TAG, "User auth info updated");
+        } catch (Exception ex) {
+            Log.e(TAG, "Failed to store user auth info");
+        }
+    }
+
+
+    private OstSecureKeyModelRepository getByteStorageRepo() {
+        if ( null == modelRepo ) {
+            modelRepo = new OstSecureKeyModelRepository();
+        }
+        return modelRepo;
+    }
 
     //endregion
 }
