@@ -5,11 +5,15 @@ import android.support.annotation.Nullable;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
+import com.ost.walletsdk.models.entities.OstBaseEntity;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstJsonApi;
 import com.ost.walletsdk.network.OstJsonApiCallback;
+import com.ost.walletsdk.network.polling.OstDevicePollingHelper;
+import com.ost.walletsdk.network.polling.interfaces.OstPollingCallback;
 import com.ost.walletsdk.ui.qrfragment.QRFragment;
+import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.ui.util.DialogFactory;
@@ -65,10 +69,17 @@ public class OstShowDeviceQR extends OstWorkFlowActivity implements
                 .equalsIgnoreCase(
                         ostDevice.getStatus()
                 )) {
-            mWorkFlowListener.flowComplete(
+
+            mWorkFlowListener.requestAcknowledged(
                     new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.SHOW_DEVICE_QR),
                     new OstContextEntity(ostDevice, OstSdk.DEVICE)
             );
+            new OstDevicePollingHelper(
+                    mUserId,
+                    ostDevice.getAddress(),
+                    new OstDevicePollingCallbackImpl(ostDevice.getAddress(), mWorkFlowListener)
+            );
+
         } else {
             String title = qrContentConfig.optJSONObject("unauthorized_alert").optString("title");
             String message = qrContentConfig.optJSONObject("unauthorized_alert").optString("message");
@@ -98,5 +109,33 @@ public class OstShowDeviceQR extends OstWorkFlowActivity implements
     @Override
     OstWorkflowContext getWorkflowContext() {
         return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.SHOW_DEVICE_QR);
+    }
+
+    static class OstDevicePollingCallbackImpl implements OstPollingCallback {
+
+        private final WorkFlowListener mWorkflowListener;
+        private final String mDeviceAddress;
+
+        OstDevicePollingCallbackImpl(String deviceAddress, WorkFlowListener workflowListener) {
+            this.mDeviceAddress = deviceAddress;
+            this.mWorkflowListener = workflowListener;
+        }
+        @Override
+        public void onOstPollingSuccess(@Nullable OstBaseEntity entity, @Nullable JSONObject data) {
+
+            mWorkflowListener.flowComplete(
+                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.SHOW_DEVICE_QR),
+                    new OstContextEntity(OstDevice.getById(mDeviceAddress), OstSdk.DEVICE)
+            );
+        }
+
+        @Override
+        public void onOstPollingFailed(OstError error) {
+
+            mWorkflowListener.flowInterrupt(
+                    new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.SHOW_DEVICE_QR),
+                    error
+            );
+        }
     }
 }
