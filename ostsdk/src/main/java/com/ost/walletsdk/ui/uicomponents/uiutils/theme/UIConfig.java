@@ -47,9 +47,9 @@ public class UIConfig {
         textView.setTextColor(Color.parseColor(color));
 
         if (ALIGN_RIGHT.equalsIgnoreCase(alignment)) {
-            textView.setGravity(Gravity.RIGHT);
+            textView.setGravity(Gravity.END);
         } else if (ALIGN_LEFT.equalsIgnoreCase(alignment)) {
-            textView.setGravity(Gravity.LEFT);
+            textView.setGravity(Gravity.START);
         } else {
             textView.setGravity(Gravity.CENTER);
         }

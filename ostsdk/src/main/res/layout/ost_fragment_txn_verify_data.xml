@@ -43,6 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="19dp"
+                android:layout_centerHorizontal="true"
                 android:text="80" />
 
             <com.ost.walletsdk.ui.uicomponents.OstH4Label
@@ -52,6 +53,7 @@
                 android:layout_below="@id/h1AmountInBt"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="13dp"
+                android:layout_centerHorizontal="true"
                 android:text="$10" />
 
         </RelativeLayout>

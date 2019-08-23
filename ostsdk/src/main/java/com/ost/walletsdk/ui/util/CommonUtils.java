@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
@@ -253,12 +254,45 @@ public class CommonUtils {
         builder.create().show();
     }
 
-    public String convertBTWeiToFiat(String userId, String balance, JSONObject pricePointObject) {
+    public String convertWeiToTokenCurrency(String userId, String balance) {
+        if (null == balance) return "0";
+
+        OstToken token = OstSdk.getToken(OstSdk.getUser(userId).getTokenId());
+        Integer decimals = Integer.parseInt(token.getBtDecimals());
+        BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
+        BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
+        BigDecimal newBal = bal.setScale(2, RoundingMode.HALF_UP);
+        return newBal.toString();
+    }
+
+    public String convertFiatWeiToFiat(String amount) {
+        if (null == amount) return "";
+        BigDecimal btWeiMultiplier = new BigDecimal(10).pow(18);
+        BigDecimal bal = new BigDecimal(amount).divide(btWeiMultiplier);
+        return bal.setScale(2, RoundingMode.DOWN).toString();
+    }
+
+    public String convertFiatWeiToBt(String userId, String fiatInWei, JSONObject pricePointObject,@NonNull String currencySymbol) {
+        try{
+            OstToken token = OstSdk.getToken(OstSdk.getUser(userId).getTokenId());
+            Double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble(currencySymbol);
+            BigDecimal weiMultiplier = new BigDecimal(10).pow(18);
+            BigDecimal usdWei = new BigDecimal(fiatInWei);
+            BigDecimal pricePointOSTtoUSDWei = new BigDecimal(String.valueOf(pricePointOSTtoUSD)).multiply(weiMultiplier).setScale(0);
+            BigDecimal baseCurrency = usdWei.divide(pricePointOSTtoUSDWei, 5, RoundingMode.DOWN);
+            BigDecimal bt = baseCurrency.multiply(new BigDecimal(token.getConversionFactor()));
+            return bt.setScale(2, RoundingMode.DOWN).toString();
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+    public String convertBTWeiToFiat(String userId, String balance, JSONObject pricePointObject,@NonNull String currencySymbol) {
         if (null == balance || null == pricePointObject) return null;
 
         try{
             OstToken token = OstSdk.getToken(OstSdk.getUser(userId).getTokenId());
-            double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble("USD");
+            double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble(currencySymbol);
             int fiatDecimalExponent = pricePointObject.getJSONObject(token.getBaseToken()).getInt("decimals");
             BigDecimal fiatToEthConversionFactor = new BigDecimal("10").pow(fiatDecimalExponent);
 

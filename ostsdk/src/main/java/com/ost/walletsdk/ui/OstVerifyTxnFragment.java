@@ -26,6 +26,8 @@ import android.widget.TextView;
 import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.R;
+import com.ost.walletsdk.models.entities.OstToken;
+import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.ui.util.CommonUtils;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
@@ -106,6 +108,8 @@ public class OstVerifyTxnFragment extends BottomSheetDialogFragment {
             }
         });
 
+        updateView();
+
         return mViewGroup;
     }
 
@@ -129,7 +133,7 @@ public class OstVerifyTxnFragment extends BottomSheetDialogFragment {
         return StringConfig.instance(mVerifyTxnConfig.optJSONObject("accept_button")).getString();
     }
 
-    void updateBalance() {
+    void updateView() {
 
         String pricerRule = mDataToVerify.optString(OstConstants.RULE_NAME);
 
@@ -152,10 +156,22 @@ public class OstVerifyTxnFragment extends BottomSheetDialogFragment {
             totalTransferAmount = totalTransferAmount.add(new BigDecimal(tokenHolderAmount));
         }
 
-        mAmountInBt.setText(String.format("%s", totalTransferAmount.toString()));
-        mAmountInFiat.setText(String.format("%s%s", mCurrencySign,
-                new CommonUtils().convertBTWeiToFiat(mUserId, totalTransferAmount.toString(),
-                        mPricePoint)));
+        if (isDirectTransfers) {
+            mAmountInBt.setText(String.format("%s %s", new CommonUtils().convertWeiToTokenCurrency(mUserId,
+                    totalTransferAmount.toString()), OstToken.getById(OstUser.getById(mUserId).getTokenId()).getSymbol()));
+
+            mAmountInFiat.setText(String.format("%s %s", mCurrencySign,
+                    new CommonUtils().convertBTWeiToFiat(mUserId, totalTransferAmount.toString(),
+                            mPricePoint,
+                            currencySymbol)));
+        } else {
+            mAmountInBt.setText(String.format("%s %s",
+                    new CommonUtils().convertFiatWeiToBt(mUserId, totalTransferAmount.toString(), mPricePoint, currencySymbol),
+                    OstToken.getById(OstUser.getById(mUserId).getTokenId()).getSymbol()));
+
+            mAmountInFiat.setText(String.format("%s %s", mCurrencySign,
+                    new CommonUtils().convertFiatWeiToFiat(totalTransferAmount.toString())));
+        }
     }
 
     public void setPricePointData(JSONObject pricePointData) {
