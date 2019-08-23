@@ -348,6 +348,11 @@
     }
   },
   "authorize_device_via_qr": {
+    "scan_qr": {
+      "title_label": {
+        "text": "Scan QR Code"
+      }
+    },
     "verify_device": {
       "lead_label": {
         "text": "Authorize New Device"
@@ -382,6 +387,11 @@
   },
 
   "execute_transaction_via_qr": {
+    "scan_qr": {
+      "title_label": {
+        "text": "Scan QR Code"
+      }
+    },
     "verify_transaction": {
       "lead_label": {
         "text": "Transaction Details"

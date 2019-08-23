@@ -46,7 +46,12 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
     @Override
     void initiateWorkFlow() {
         super.initiateWorkFlow();
-        mQrScannerFragment = QRScannerFragment.newInstance("Scan QR Code");
+
+        final String scanQRTitle = StringConfig.instance(
+                contentConfig.optJSONObject("scan_qr").optJSONObject("title_label")
+        ).getString();
+
+        mQrScannerFragment = QRScannerFragment.newInstance(scanQRTitle);
         FragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 mQrScannerFragment,
                 this);
