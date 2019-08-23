@@ -32,10 +32,10 @@ import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link OstVerifyDataFragment} factory method to
+ * Use the {@link OstVerifyDeviceFragment} factory method to
  * create an instance of this fragment.
  */
-public class OstVerifyDataFragment extends BottomSheetDialogFragment {
+public class OstVerifyDeviceFragment extends BottomSheetDialogFragment {
 
     OstVerifyDataInterface mOstVerifyDataInterface;
     private OstDevice mOstDevice;
@@ -43,7 +43,7 @@ public class OstVerifyDataFragment extends BottomSheetDialogFragment {
     private OnFragmentInteractionListener mListener;
     private JSONObject mVerifyDeviceConfig = new JSONObject();
 
-    public OstVerifyDataFragment() {
+    public OstVerifyDeviceFragment() {
         // Required empty public constructor
     }
 
@@ -54,7 +54,7 @@ public class OstVerifyDataFragment extends BottomSheetDialogFragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener)context;
         } else {
-            throw new RuntimeException("Activity Launching OstVerifyDataFragment does not implements OstVerifyDataFragment.OnFragmentInteractionListener");
+            throw new RuntimeException("Activity Launching OstVerifyDeviceFragment does not implements OstVerifyDeviceFragment.OnFragmentInteractionListener");
         }
     }
 

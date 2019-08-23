@@ -9,7 +9,7 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
-import com.ost.walletsdk.ui.OstVerifyDataFragment;
+import com.ost.walletsdk.ui.OstVerifyDeviceFragment;
 import com.ost.walletsdk.ui.qrscanner.QRScannerFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity implements
         QRScannerFragment.OnFragmentInteractionListener,
-        OstVerifyDataFragment.OnFragmentInteractionListener {
+        OstVerifyDeviceFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = "OstADVQRWorkflow";
     final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("authorize_device_via_qr");
@@ -110,7 +110,7 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
     public boolean verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         showProgress(false);
 
-        OstVerifyDataFragment bottomSheet = new OstVerifyDataFragment();
+        OstVerifyDeviceFragment bottomSheet = new OstVerifyDeviceFragment();
         bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
         OstDevice ostDevice = ((OstDevice) ostContextEntity.getEntity());
         bottomSheet.setDataToVerify(ostDevice);
