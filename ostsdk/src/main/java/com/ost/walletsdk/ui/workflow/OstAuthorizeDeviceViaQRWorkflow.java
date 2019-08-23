@@ -148,7 +148,7 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
 
     @Override
     public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        if (!OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
+        if (isCrossButtonClicked(ostError) || !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
             return super.flowInterrupt(workflowId, ostWorkflowContext, ostError);
         }
         mQrScannerFragment.onResume();

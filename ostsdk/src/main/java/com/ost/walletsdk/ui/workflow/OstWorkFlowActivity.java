@@ -70,6 +70,8 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public static final String AUTHORIZE_TXN_VIA_QR = "authorize_txn_via_qr";
 
     private static final String LOG_TAG = "OstWorkFlowActivity";
+    private static final String CROSS_BUTTON_CLICK_CODE = "owfa_gb";
+
     WorkFlowListener mWorkFlowListener;
     private Intent mIntent;
     String mWorkflowId;
@@ -147,7 +149,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
                 //hide keyboard if open
                 KeyBoard.hideKeyboard(OstWorkFlowActivity.this);
                 //interrupt workflow
-                if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), new OstError("owfa_gb", OstErrors.ErrorCode.WORKFLOW_CANCELLED));
+                if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), new OstError(CROSS_BUTTON_CLICK_CODE, OstErrors.ErrorCode.WORKFLOW_CANCELLED));
                 super.goBack();
             }
         }
@@ -294,5 +296,9 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     @Override
     public void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         ostPinAcceptInterface.cancelFlow();
+    }
+
+    protected boolean isCrossButtonClicked(OstError ostError) {
+        return CROSS_BUTTON_CLICK_CODE.equals(ostError.getInternalErrorCode());
     }
 }
