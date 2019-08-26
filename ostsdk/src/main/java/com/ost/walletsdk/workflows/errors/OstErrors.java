@@ -163,7 +163,7 @@ public class OstErrors {
 
             case WORKFLOW_CANCELLED:return "Workflow got cancelled, possibly because one or more input parameters require a different type of information.";
 
-            case UNKNOWN_DATA_DEFINITION: return "The QR code does not contain valid data definition. To know the data definition for QR code based on type of operations please visit https://dev.ost.com/platform";
+            case INVALID_QR_CODE: return "The QR code does not contain valid data definition. To know the data definition for QR code based on type of operations please visit https://dev.ost.com/platform";
 
             case DEVICE_ALREADY_REVOKED:
                 return "Device is already in revoked state.";
@@ -272,6 +272,7 @@ public class OstErrors {
         INVALID_REVOKE_DEVICE_ADDRESS,
         USER_ALREADY_ACTIVATED,
         INVALID_QR_TRANSACTION_DATA,
+        INVALID_QR_CODE,
         NO_PENDING_RECOVERY,
         DEVICE_NOT_REGISTERED,
         INVALID_SESSION_SPENDING_LIMIT,
@@ -458,12 +459,6 @@ public class OstErrors {
 
 
         /**
-         * @deprecated UNKNOWN_DATA_DEFINITION has been deprecated.
-         */
-        UNKNOWN_DATA_DEFINITION,
-
-
-        /**
          * @deprecated ADD_DEVICE_API_FAILED has been deprecated.
          */
         ADD_DEVICE_API_FAILED,
@@ -504,7 +499,7 @@ public class OstErrors {
             case OST_PLATFORM_API_ERROR: return  "API_RESPONSE_ERROR" ;
             case FAILED_TO_GENERATE_ETH_KEY: return "GENERATE_PRIVATE_KEY_FAIL";
             case NO_SESSION_FOUND : return "SESSION_NOT_FOUND";
-            case INVALID_QR_TRANSACTION_DATA : return "INVALID_QR_CODE";
+            case INVALID_QR_CODE : return "INVALID_QR_CODE";
             case RECOVERY_PASSPHRASE_OWNER_NOT_SET : return "RECOVERY_OWNER_ADDRESS_NOT_FOUND";
             case UNCAUGHT_EXCEPTION_HANDELED: return "SDK_ERROR";
             default:

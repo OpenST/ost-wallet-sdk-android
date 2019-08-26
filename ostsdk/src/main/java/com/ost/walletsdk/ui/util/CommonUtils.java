@@ -261,7 +261,7 @@ public class CommonUtils {
         Integer decimals = Integer.parseInt(token.getBtDecimals());
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
         BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
-        BigDecimal newBal = bal.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal newBal = bal.setScale(5, RoundingMode.HALF_UP);
         return newBal.toString();
     }
 
@@ -281,7 +281,7 @@ public class CommonUtils {
             BigDecimal pricePointOSTtoUSDWei = new BigDecimal(String.valueOf(pricePointOSTtoUSD)).multiply(weiMultiplier).setScale(0);
             BigDecimal baseCurrency = usdWei.divide(pricePointOSTtoUSDWei, 5, RoundingMode.DOWN);
             BigDecimal bt = baseCurrency.multiply(new BigDecimal(token.getConversionFactor()));
-            return bt.setScale(2, RoundingMode.DOWN).toString();
+            return bt.setScale(5, RoundingMode.DOWN).toString();
         } catch (Exception e){
             return null;
         }

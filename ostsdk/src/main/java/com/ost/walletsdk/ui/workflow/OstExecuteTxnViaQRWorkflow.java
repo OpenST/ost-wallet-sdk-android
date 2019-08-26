@@ -1,6 +1,5 @@
 package com.ost.walletsdk.ui.workflow;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,7 +16,6 @@ import com.ost.walletsdk.ui.OstVerifyTxnFragment;
 import com.ost.walletsdk.ui.qrscanner.QRScannerFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
-import com.ost.walletsdk.ui.util.DialogFactory;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -85,17 +83,7 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
                     throw new Exception("Invalid QR");
                 }
             } catch (Exception exception) {
-
-                DialogFactory.createSimpleOkErrorDialog(OstExecuteTxnViaQRWorkflow.this
-                        , "Invalid QR-Code"
-                        , "QR-Code scanned for execute Transaction is invalid. Please scan valid QR-Code to execute transaction."
-                        , new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mQrScannerFragment.onResume();
-                            }
-                        }
-                ).show();
+                if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), new OstError("oetvqr_ors_etvqr_1", OstErrors.ErrorCode.INVALID_QR_CODE));
                 return;
             }
 
@@ -130,6 +118,7 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
                         showProgress(false);
 
                         OstVerifyTxnFragment bottomSheet = new OstVerifyTxnFragment();
+                        bottomSheet.setCancelable(false);
                         bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
 
                         bottomSheet.setDataToVerify((JSONObject) ostContextEntity.getEntity());
@@ -165,7 +154,7 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
 
     @Override
     public void onDataVerified() {
-        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
+        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
     }
 
     @Override

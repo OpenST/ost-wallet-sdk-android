@@ -1,6 +1,5 @@
 package com.ost.walletsdk.ui.workflow;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 
@@ -13,7 +12,6 @@ import com.ost.walletsdk.ui.OstVerifyDeviceFragment;
 import com.ost.walletsdk.ui.qrscanner.QRScannerFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
-import com.ost.walletsdk.ui.util.DialogFactory;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -81,17 +79,7 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
                     throw new Exception("Invalid QR");
                 }
             } catch (Exception exception) {
-
-                DialogFactory.createSimpleOkErrorDialog(OstAuthorizeDeviceViaQRWorkflow.this
-                        , "Invalid QR-Code"
-                        , "QR-Code scanned for authorize device is invalid. Please scan valid QR-Code to authorize device."
-                        , new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mQrScannerFragment.onResume();
-                            }
-                        }
-                ).show();
+                if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), new OstError("oadvqrw_ors_advqr_1", OstErrors.ErrorCode.INVALID_QR_CODE));
                 return;
             }
 
@@ -116,6 +104,7 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
         showProgress(false);
 
         OstVerifyDeviceFragment bottomSheet = new OstVerifyDeviceFragment();
+        bottomSheet.setCancelable(false);
         bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
         OstDevice ostDevice = ((OstDevice) ostContextEntity.getEntity());
         bottomSheet.setDataToVerify(ostDevice);
@@ -133,7 +122,7 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
 
     @Override
     public void onDataVerified() {
-        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
+        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
     }
 
     @Override

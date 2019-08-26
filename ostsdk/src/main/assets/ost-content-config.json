@@ -379,10 +379,10 @@
       }
     },
     "loader": {
-      "text": "Authoring Device..."
+      "text": "Authorizing Device..."
     },
     "initial_loader": {
-      "text": "Initializing..."
+      "text": "Verifying Device..."
     }
   },
 
@@ -410,7 +410,7 @@
       "text": "Executing Transaction..."
     },
     "initial_loader": {
-      "text": "Initializing..."
+      "text": "Verifying Transaction..."
     }
   }
 }
