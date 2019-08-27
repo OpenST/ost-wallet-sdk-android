@@ -37,6 +37,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
     private String mUserId;
     private String currentDeviceAddress;
     private String mLoaderString = "Loading...";
+    private boolean mRunningLoader = false;
 
     private DeviceListPresenter() {}
 
@@ -54,6 +55,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
     public void attachView(DeviceListView mvpView) {
         super.attachView(mvpView);
         currentDeviceAddress = OstUser.getById(mUserId).getCurrentDevice().getAddress();
+        showLoaderProgress(true);
         updateDeviceList(true);
     }
 
@@ -79,6 +81,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
         OstJsonApi.getDeviceList(mUserId, mapPayload, new OstJsonApiCallback() {
             @Override
             public void onOstJsonApiSuccess(@Nullable JSONObject dataJSONObject) {
+                showLoaderProgress(false);
                 showProgress(false);
                 if (null == dataJSONObject) {
                     httpRequestPending = false;
@@ -112,6 +115,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
             @Override
             public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) {
                 Log.e(LOG_TAG, String.format("Get Current User list error:"));
+                showLoaderProgress(false);
                 showProgress(false);
                 getMvpView().notifyDataSetChanged();
                 httpRequestPending = false;
@@ -120,6 +124,12 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
     }
 
     private void showProgress(boolean show) {
+        if (mRunningLoader) return;
+        if (null != getMvpView()) getMvpView().setRefreshing(show);
+    }
+
+    private void showLoaderProgress(boolean show) {
+        mRunningLoader = show;
         if (null != getMvpView()) getMvpView().showProgress(show, mLoaderString);
     }
 

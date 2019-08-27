@@ -13,7 +13,6 @@ package com.ost.walletsdk.ui.managedevices;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,8 +32,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
 import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
 
 /**
  * A fragment representing a list of Items.
@@ -193,5 +192,10 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
     public void notifyDataSetChanged() {
         mDeviceListRecyclerViewAdapter.notifyDataSetChanged();
         updateDeviceCount(mDeviceListRecyclerViewAdapter.getItemCount());
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        mPullToRefresh.setRefreshing(refreshing);
     }
 }

@@ -22,6 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
         android:text="Scan QR to Authorize"/>
 
     <com.ost.walletsdk.ui.uicomponents.OstH2Label
@@ -29,8 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
         android:text="Please scan the QR Code from your old device to authorize this device"/>
 
     <ImageView
@@ -52,19 +54,21 @@
 
         <com.ost.walletsdk.ui.uicomponents.OstC1Label
             android:id="@+id/lbl_device_address"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="This Device Address"
-            android:layout_centerHorizontal="true" />
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="This Device Address" />
 
         <com.ost.walletsdk.ui.uicomponents.OstH4Label
             android:id="@+id/atv_device_address"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_below="@id/lbl_device_address"
             android:text="0xbbfb321ba9531Ca0a8dE212f364A24b5dA1d7794" />
     </RelativeLayout>
