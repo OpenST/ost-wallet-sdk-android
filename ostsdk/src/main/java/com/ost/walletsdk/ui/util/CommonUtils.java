@@ -32,6 +32,7 @@ import org.web3j.crypto.Keys;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -261,15 +262,14 @@ public class CommonUtils {
         Integer decimals = Integer.parseInt(token.getBtDecimals());
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
         BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier);
-        BigDecimal newBal = bal.setScale(5, RoundingMode.HALF_UP);
-        return newBal.toString();
+        return new DecimalFormat("#.#####").format(bal);
     }
 
     public String convertFiatWeiToFiat(String amount) {
         if (null == amount) return "";
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(18);
         BigDecimal bal = new BigDecimal(amount).divide(btWeiMultiplier);
-        return bal.setScale(2, RoundingMode.DOWN).toString();
+        return new DecimalFormat("#.##").format(bal);
     }
 
     public String convertFiatWeiToBt(String userId, String fiatInWei, JSONObject pricePointObject,@NonNull String currencySymbol) {
@@ -281,13 +281,13 @@ public class CommonUtils {
             BigDecimal pricePointOSTtoUSDWei = new BigDecimal(String.valueOf(pricePointOSTtoUSD)).multiply(weiMultiplier).setScale(0);
             BigDecimal baseCurrency = usdWei.divide(pricePointOSTtoUSDWei, 5, RoundingMode.DOWN);
             BigDecimal bt = baseCurrency.multiply(new BigDecimal(token.getConversionFactor()));
-            return bt.setScale(5, RoundingMode.DOWN).toString();
+            return new DecimalFormat("#.#####").format(bt);
         } catch (Exception e){
             return null;
         }
     }
 
-    public String convertBTWeiToFiat(String userId, String balance, JSONObject pricePointObject,@NonNull String currencySymbol) {
+    public String convertBTWeiToFiat(String userId, String balance, JSONObject pricePointObject, @NonNull String currencySymbol) {
         if (null == balance || null == pricePointObject) return null;
 
         try{
@@ -300,10 +300,9 @@ public class CommonUtils {
 
             BigDecimal fiatBalance = new BigDecimal(balance).multiply(tokenToFiatMultiplier);
 
-            return fiatBalance.divide(fiatToEthConversionFactor, 2, RoundingMode.DOWN).toString();
-
+            return new DecimalFormat("#.##").format(fiatBalance);
         } catch (Exception e){
-            return null;
+            return "0";
         }
     }
 
