@@ -38,6 +38,10 @@ OstWalletUI supports 8 workflows
 | biometric_preference | Update Biometric Preference |
 | reset_pin            | Reset a User's PIN          |
 | view_mnemonics       | Get Mnemonic Phrase         |
+| show_add_device_qr   | Get current Device QR code  |
+| add_current_device_with_mnemonics | Authorize device using mnemonics |
+| authorize_device_via_qr           | Authorize device via QR          |
+| execute_transaction_via_qr        | Execute transaction via QR       |
 
 ## Supported Views
 ### Activate User Workflow Views
@@ -95,6 +99,41 @@ OstWalletUI supports 8 workflows
 | get_pin              | Get Pin View where user provides pin for authentication    |
 | show_mnemonics       | Displays 12 word mnemonics of device                       |
 
+### Show Add Device QR View
+
+| Configuration Keys   | Views                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| show_qr              | Displays QR code of device                                 |
+
+### Add Current Device With Mnemonics Views
+
+| Configuration Keys   | Views                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| provide_mnemonics    | Display View to get 12 word mnemonics from user            |
+| get_pin              | Get Pin View where user provides pin for authentication    |
+
+### Authorize Device Via QR Views
+
+| Configuration Keys   | Views                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| scan_qr              | View to scan Device QR                                     |
+| verify_device        | View which displays Device data to be verified             |
+| get_pin              | Get Pin View where user provides pin for authentication    |
+
+
+### Execute Transaction Via QR Views
+
+| Configuration Keys   | Views                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| scan_qr              | View to scan Transaction QR                                |
+| verify_transaction   | View which displays Transaction data to be verified        |
+| get_pin              | Get Pin View where user provides pin for authentication    |
+
+## Loader Content View Components
+In every workflow we support two loaders with text configuration:
+* initial_loader 
+
+* loader
 
 ## Supported UI Components in PIN Input Views
 Here, we refer follwing views as 'Pin Input' views:
@@ -106,7 +145,7 @@ Here, we refer follwing views as 'Pin Input' views:
 
 The following UI components are supported by Pin Input views.
 
-| Configuration Keys        | Component Type | 
+| Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
 | title_label               | label          |
 | lead_label                | label          |
@@ -146,7 +185,7 @@ Below is a sample configuration to achive the same:
 ```
 #### NOTE
 ```
-As of now, `placeholder` is only applicable to `terms_and_condition_label` 
+As of now, `placeholder` is only applicable to `terms_and_condition_label`
 and is NOT supported by other labels.
 ```
 
@@ -155,7 +194,7 @@ and is NOT supported by other labels.
 
 The following UI components are supported by Device List Views.
 
-| Configuration Keys        | Component Type | 
+| Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
 | title_label               | label          |
 | info_label                | label          |
@@ -169,7 +208,7 @@ Here is Device List View looks like:
 
 The following UI components are supported by Show Mnemonics Views.
 
-| Configuration Keys        | Component Type | 
+| Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
 | title_label               | label          |
 | info_label                | label          |
