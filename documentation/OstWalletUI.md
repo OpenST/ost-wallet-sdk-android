@@ -264,9 +264,9 @@ OstWalletUI.authorizeCurrentDeviceWithMnemonics(@NonNull Activity currentActivit
                                       ) -> String
 ```
 
-### Get Add Device QR-Code
+### Get Add Device QR Code
 
-This workflow shows QR-Code to scan from another authorized device
+This workflow shows QR Code to scan from another authorized device
 
 **Parameters**<br/>
 &nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
@@ -280,20 +280,11 @@ OstWalletUI.getAddDeviceQRCode(@NonNull Activity currentActivity,
                                       ) -> String
 ```
 
-### Scan QR-Code To Authorize Device
+### Scan QR Code To Authorize Device
 
-This workflow can be used to authorize device by scanning device QR-Code.
-
-QR-Code Sample:
-```json
-{
-    "dd":"AD",
-    "ddv":"1.1.0",
-    "d":{
-        "da": "0x7701af46018fc57c443b63e839eb24872755a2f8"
-    }
-}
-```
+This workflow can be used to authorize device by scanning QR Code.
+> The device to be authorized must be a `REGISTERED` device and must be associated with the same user.
+> To display the QR code on registered device, application can use `OstWalletUI.getAddDeviceQRCode` workflow.
 
 **Parameters**<br/>
 &nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
@@ -303,17 +294,17 @@ QR-Code Sample:
 &nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
 
 ```java
-OstWalletUI.authorizeDeviceViaQR(@NonNull Activity currentActivity,
+OstWalletUI.scanQRCodeToAuthorizeDevice(@NonNull Activity currentActivity,
                                       String userId,
                                       OstUserPassphraseCallback userPassphraseCallback
                                       ) -> String
 ```
 
-### Scan QR-Code To Execute Transaction
+### Scan QR Code To Execute Transaction
 
-This workflow can be used to execute transaction via device by scanning transaction QR-Code.
+This workflow can be used to execute transaction by scanning transaction QR Code.
 
-QR-Code Sample:
+QR Code Sample:
 ```json
 {
     "dd":"TX",
@@ -349,7 +340,7 @@ QR-Code Sample:
 &nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
 
 ```java
-OstWalletUI.executeTransactionViaQR(@NonNull Activity currentActivity,
+OstWalletUI.scanQRCodeToExecuteTransaction(@NonNull Activity currentActivity,
                                       String userId,
                                       ) -> String
 ```
@@ -411,10 +402,11 @@ OstWalletUI.showComponentSheet(@NonNull Activity currentActivity)
 
 ### OstWalletUIListener
 
-This is a markup interface. It is not expected to be used.
+This is a markup interface and does not define any methods. The the interfaces defined below are extended from this interface.
 
-### RequestAcknowledgedListener
-Use this listener to get request acknowlege updates of UI workflow.
+
+### Request Acknowledged Listener
+Implement `RequestAcknowledgedListener` interface to get request acknowlege updates of UI workflow.
 
 ```java
    /**
@@ -431,8 +423,8 @@ Use this listener to get request acknowlege updates of UI workflow.
     */
 ```
 
-### FlowCompleteListener
-Use this listener to get flow complete update of UI workflow
+### Flow Complete Listener
+Implement `FlowCompleteListener` interface to get flow complete update of UI workflow
 
 ```java
    /**
@@ -449,8 +441,8 @@ Use this listener to get flow complete update of UI workflow
     */
 ```
 
-### FlowInterruptListener
-Use this listener to get flow interrupt update of UI workflow
+### Flow Interrupt Listener
+Implement `FlowInterruptListener` interface to get flow interrupt update of UI workflow
 
 ```java
    /**

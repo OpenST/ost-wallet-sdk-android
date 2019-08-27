@@ -293,14 +293,14 @@ public class OstWalletUI {
     }
 
     /**
-     * Authorize device via QR
+     * Authorize device by scanning QR code.
      * @param currentActivity        Context for current Activity for the application
      * @param userId                 - user Id
      * @param userPassphraseCallback - A workflow callback handler.
      * @return workflow Id
      */
-    public static String authorizeDeviceViaQR(@NonNull Activity currentActivity, String userId,
-                                              OstUserPassphraseCallback userPassphraseCallback) {
+    public static String scanQRCodeToAuthorizeDevice(@NonNull Activity currentActivity, String userId,
+                                                     OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
         Intent intent = new Intent(currentActivity, OstAuthorizeDeviceViaQRWorkflow.class);
@@ -313,14 +313,14 @@ public class OstWalletUI {
 
 
     /**
-     * Authorize Transaction via QR
+     * Execute Transaction by scanning the QR
      * @param currentActivity        Context for current Activity for the application
      * @param userId                 - user Id
      * @param userPassphraseCallback - A workflow callback handler.
      * @return workflow Id
      */
-    public static String executeTransactionViaQR(@NonNull Activity currentActivity, String userId,
-                                              OstUserPassphraseCallback userPassphraseCallback) {
+    public static String scanQRCodeToExecuteTransaction(@NonNull Activity currentActivity, String userId,
+                                                        OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
         Intent intent = new Intent(currentActivity, OstExecuteTxnViaQRWorkflow.class);

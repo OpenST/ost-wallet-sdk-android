@@ -436,7 +436,7 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void authorizeDeviceViaQR() {
-        String workflowId = OstWalletUI.authorizeDeviceViaQR(this,
+        String workflowId = OstWalletUI.scanQRCodeToAuthorizeDevice(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 AppProvider.get().getUserPassphraseCallback());
         OstWalletUI.subscribe(workflowId, this);
@@ -444,7 +444,7 @@ public class DashboardActivity extends BaseActivity implements
 
     @Override
     public void executeTransactionViaQR() {
-        String workflowId = OstWalletUI.executeTransactionViaQR(this,
+        String workflowId = OstWalletUI.scanQRCodeToExecuteTransaction(this,
                 AppProvider.get().getCurrentUser().getOstUserId(),
                 AppProvider.get().getUserPassphraseCallback());
         OstWalletUI.subscribe(workflowId, this);
