@@ -7,11 +7,11 @@
       "lead_label": {
         "text": "Add a 6-digit PIN to secure your wallet"
       },
-      "info_label":{
-        "text":  "PIN helps you recover your wallet if the phone is lost or stolen"
+      "info_label": {
+        "text": "Your PIN will help you to recover your wallet if your phone is lost or stolen"
       },
       "terms_and_condition_label": {
-        "text": "Your PIN will be used to authorise sessions, transactions, redemptions and recover wallet. {{terms_and_condition}}"
+        "text": "Your PIN will be used to authorize sessions, transactions, redemptions and recover your wallet. {{terms_and_condition}}"
       },
       "placeholders": {
         "terms_and_condition": {
@@ -26,13 +26,13 @@
         "text": "Confirm PIN"
       },
       "lead_label": {
-        "text": "If you forget your PIN, you cannot recover your wallet"
+        "text": "If you forget your PIN, you may not be able to recover your wallet"
       },
-      "info_label":{
-        "text":  "So please be sure to remember it"
+      "info_label": {
+        "text": "Please be sure to remember it!"
       },
       "terms_and_condition_label": {
-        "text": "Your PIN will be used to authorise sessions, transactions, redemptions and recover wallet. {{terms_and_condition}}"
+        "text": "Your PIN will be used to authorize sessions, transactions, redemptions and recover your wallet. {{terms_and_condition}}"
       },
       "placeholders": {
         "terms_and_condition": {
@@ -49,17 +49,16 @@
       "text": "Initializing..."
     }
   },
-
   "add_session": {
     "get_pin": {
       "title_label": {
         "text": "Create Session"
       },
       "lead_label": {
-        "text": "Add a 6-digit PIN to secure your wallet"
+        "text": "Enter your 6-digit PIN"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
@@ -72,14 +71,13 @@
       "text": "Initializing..."
     }
   },
-
   "initiate_recovery": {
     "device_list": {
       "title_label": {
         "text": "Device Recovery"
       },
       "info_label": {
-        "text": "This is a list of all the devices that are authorized to access your wallet"
+        "text": "This is a list of all devices that are authorized to access your wallet"
       },
       "cell": {
         "action_button": {
@@ -94,8 +92,8 @@
       "lead_label": {
         "text": "Enter your 6-digit PIN to recover access to your wallet"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
@@ -108,17 +106,16 @@
       "text": "Fetching Device List..."
     }
   },
-
   "abort_recovery": {
     "get_pin": {
       "title_label": {
         "text": "Abort Recovery"
       },
       "lead_label": {
-        "text": "Enter your 6-digit PIN to abort recovery"
+        "text": "Enter your 6-digit PIN"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
@@ -131,14 +128,13 @@
       "text": "Initializing..."
     }
   },
-
   "revoke_device": {
     "device_list": {
       "title_label": {
         "text": "Revoke Device"
       },
       "info_label": {
-        "text": "This is a list of all the devices that are authorized to access your wallet"
+        "text": "This is a list of all devices that are authorized to access your wallet"
       },
       "cell": {
         "action_button": {
@@ -146,16 +142,15 @@
         }
       }
     },
-
     "get_pin": {
       "title_label": {
         "text": "Revoke Device"
       },
       "lead_label": {
-        "text": "Enter your 6-digit PIN to authorize your action"
+        "text": "Enter your 6-digit PIN"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
@@ -168,17 +163,16 @@
       "text": "Fetching Device List..."
     }
   },
-
   "biometric_preference": {
     "get_pin": {
       "title_label": {
         "text": "Biometric Preference"
       },
       "lead_label": {
-        "text": "Enter your 6-digit PIN to authorize your action"
+        "text": "Enter your 6-digit PIN"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
@@ -191,7 +185,6 @@
       "text": "Initializing..."
     }
   },
-
   "reset_pin": {
     "get_pin": {
       "title_label": {
@@ -200,38 +193,36 @@
       "lead_label": {
         "text": "Enter your current 6-digit PIN"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
       }
     },
-
     "set_new_pin": {
       "title_label": {
-        "text": "Add New Pin"
+        "text": "Add New PIN"
       },
       "lead_label": {
         "text": "Add a 6-digit PIN to secure your wallet"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
       }
     },
-
     "confirm_new_pin": {
       "title_label": {
         "text": "Confirm New Pin"
       },
       "lead_label": {
-        "text": "If you forget your PIN, you cannot recover your wallet"
+        "text": "If you forget your PIN, you may not be able to recover your wallet"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
@@ -244,32 +235,30 @@
       "text": "Initializing..."
     }
   },
-
   "view_mnemonics": {
     "get_pin": {
       "title_label": {
         "text": "View Mnemonics"
       },
       "lead_label": {
-        "text": "Enter your 6-digit PIN to authorize your action"
+        "text": "Enter your 6-digit PIN"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
       }
     },
-
     "show_mnemonics": {
       "title_label": {
         "text": "View Mnemonics"
       },
       "info_label": {
-        "text": "Write down your 12-word mnemonic phrase and store them securely"
+        "text": "Write down your 12-word mnemonic phrase and store it securely"
       },
       "bottom_label": {
-        "text": "You can write the phrases down in a piece of paper or save in a password manager. Don’t email them or screenshot them. The order of words are important too."
+        "text": "You can write the phrase down on a piece of paper or save it in a secure password manager. Don’t email them or screenshot them. The order of words is important."
       }
     },
     "loader": {
@@ -279,7 +268,6 @@
       "text": "Initializing..."
     }
   },
-
   "add_current_device_with_mnemonics": {
     "get_pin": {
       "title_label": {
@@ -288,29 +276,28 @@
       "lead_label": {
         "text": "Enter your 6-digit PIN to authorize your action"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
       }
     },
-
     "provide_mnemonics": {
       "title_label": {
-        "text": "Enter Recovery Phrase"
+        "text": "Enter Mnemonic Phrase"
       },
       "info_label": {
-        "text": "Please enter the 12-word recovery phrase that you wrote down."
+        "text": "Please enter your 12-word mnemonic phrase"
       },
       "bottom_label": {
-        "text": "If you don’t have the recovery phrase, try using PIN or a second authorized device."
+        "text": "If you don’t have your mnemonic phrase, try using your PIN or a second authorized device."
       },
       "action_button": {
         "text": "Authorize Device"
       },
       "placeholder": {
-        "text": "Enter Recovery Phrase..."
+        "text": "Enter Mnemonic Phrase..."
       }
     },
     "loader": {
@@ -323,10 +310,10 @@
   "show_add_device_qr": {
     "show_qr": {
       "title_label": {
-        "text": "Scan QR to Authorize"
+        "text": "Scan QR Code to Authorize"
       },
       "lead_label": {
-        "text": "Please scan the QR Code from your old device to authorize this device"
+        "text": "Please scan QR Code from an authorized device to authorize this device."
       },
       "action_button": {
         "text": "Verify Device Status"
@@ -336,8 +323,8 @@
         "message": "Unable to fetch device. Please try again."
       },
       "unauthorized_alert": {
-        "title": "Device not Authorized",
-        "message": "Please scan device QR-Code from authorized device and verify device status"
+        "title": "Device Not Authorized",
+        "message": "Your device is not authorized. Please scan QR Code from an authorized device."
       }
     },
     "loader": {
@@ -347,7 +334,6 @@
       "text": "Initializing..."
     }
   },
-
   "scan_qr_to_authorize_device": {
     "scan_qr": {
       "title_label": {
@@ -362,7 +348,7 @@
         "text": "Authorize Device"
       },
       "reject_button": {
-        "text": "Deny Request"
+        "text": "Cancel"
       }
     },
     "get_pin": {
@@ -372,8 +358,8 @@
       "lead_label": {
         "text": "Enter your 6-digit PIN to authorize device"
       },
-      "info_label":{
-        "text":  ""
+      "info_label": {
+        "text": ""
       },
       "terms_and_condition_label": {
         "text": ""
@@ -386,7 +372,6 @@
       "text": "Verifying Device..."
     }
   },
-
   "scan_qr_to_execute_transaction": {
     "scan_qr": {
       "title_label": {
@@ -398,7 +383,7 @@
         "text": "Transaction Details"
       },
       "info_label": {
-        "text": "This is a one-time transaction approval. Further purchases will be asked for a confirmation again."
+        "text": "Each transaction needs to be confirmed before it is executed."
       },
       "accept_button": {
         "text": "Confirm Transaction"
