@@ -172,7 +172,7 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
         if (isCrossButtonClicked(ostError) || !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
             return super.flowInterrupt(workflowId, ostWorkflowContext, ostError);
         }
-        mQrScannerFragment.onResume();
+        mQrScannerFragment.restartScanning();
         showProgress(false);
         return true;
     }

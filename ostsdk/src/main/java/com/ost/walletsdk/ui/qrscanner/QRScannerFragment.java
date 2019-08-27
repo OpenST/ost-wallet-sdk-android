@@ -62,6 +62,11 @@ public class QRScannerFragment extends BaseFragment implements ZXingScannerView.
     private OnFragmentInteractionListener mListener;
     private String mTitle;
 
+    /**
+     * To handle when to resume QR scanning after onResultString
+     */
+    private boolean mOnResultScreenFreeze = false;
+
     public QRScannerFragment() {
         // Required empty public constructor
     }
@@ -136,8 +141,10 @@ public class QRScannerFragment extends BaseFragment implements ZXingScannerView.
                     new String[]{Manifest.permission.CAMERA},
                     QR_SCANNER_PERMISSIONS_REQUEST_CAMERA);
         } else {
-            mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
-            mScannerView.startCamera();// Start camera on resume
+            if (!mOnResultScreenFreeze) {
+                mScannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
+                mScannerView.startCamera();// Start camera on resume
+            }
         }
     }
 
@@ -154,11 +161,17 @@ public class QRScannerFragment extends BaseFragment implements ZXingScannerView.
         Log.v(LOG_TAG, rawResult.getText()); // Prints scan results
         Log.v(LOG_TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         String text = rawResult.getText();
+        mOnResultScreenFreeze = true;
         if (!TextUtils.isEmpty(text)) {
             Intent data = new Intent();
             data.setData(Uri.parse(text));
             mListener.onResultString(data);
         }
+    }
+
+    public void restartScanning() {
+        mOnResultScreenFreeze = false;
+        onResume();
     }
 
     @Override

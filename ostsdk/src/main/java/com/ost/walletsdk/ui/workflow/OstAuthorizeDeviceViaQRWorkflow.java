@@ -140,7 +140,7 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
         if (isCrossButtonClicked(ostError) || !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
             return super.flowInterrupt(workflowId, ostWorkflowContext, ostError);
         }
-        mQrScannerFragment.onResume();
+        mQrScannerFragment.restartScanning();
         showProgress(false);
         return true;
     }
