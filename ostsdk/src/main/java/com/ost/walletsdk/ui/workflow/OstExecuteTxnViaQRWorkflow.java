@@ -31,7 +31,7 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
         OstVerifyTxnFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = "OstETVQRWorkflow";
-    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("execute_transaction_via_qr");
+    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("scan_qr_to_execute_transaction");
     private QRScannerFragment mQrScannerFragment;
 
     @Override

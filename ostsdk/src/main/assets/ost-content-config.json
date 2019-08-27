@@ -347,7 +347,8 @@
       "text": "Initializing..."
     }
   },
-  "authorize_device_via_qr": {
+
+  "scan_qr_to_authorize_device": {
     "scan_qr": {
       "title_label": {
         "text": "Scan QR Code"
@@ -386,7 +387,7 @@
     }
   },
 
-  "execute_transaction_via_qr": {
+  "scan_qr_to_execute_transaction": {
     "scan_qr": {
       "title_label": {
         "text": "Scan QR Code"
