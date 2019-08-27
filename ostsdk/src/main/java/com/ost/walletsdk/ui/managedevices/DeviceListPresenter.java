@@ -80,9 +80,15 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
             @Override
             public void onOstJsonApiSuccess(@Nullable JSONObject dataJSONObject) {
                 showProgress(false);
+                if (null == dataJSONObject) {
+                    httpRequestPending = false;
+                    return;
+                }
                 try {
-                    nextPayload = dataJSONObject.optJSONObject("meta");
-                    hasMoreData = (nextPayload != null && !nextPayload.getJSONObject("next_page_payload").toString().equals("{}"));
+                    JSONObject meta = dataJSONObject.optJSONObject("meta");
+                    if (null != meta) nextPayload = meta.optJSONObject("next_page_payload");
+
+                    hasMoreData = (nextPayload != null && !nextPayload.toString().equals("{}"));
                     JSONArray deviceJSONArray = (JSONArray) dataJSONObject.get(dataJSONObject.getString(OstConstants.RESULT_TYPE));
 
                     for (int i = 0; i < deviceJSONArray.length(); i++) {
