@@ -380,8 +380,22 @@ OstUser getUser(userId)
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
 
 
+### 3. getCurrentDeviceForUserId
+Method to get User's current device by Id.</br>
+This is a synchronous method and must be used only after calling `setupDevice` workflow.</br>
+This method returns OstToken only if available with SDK. Returns `null` otherwise.</br>
+It does NOT make any server side calls.
 
-### 3. getToken
+```java
+OstDevice getCurrentDeviceForUserId(String userId)
+```
+  
+| Parameter | Description |
+|---|---|
+| **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
+
+
+### 4. getToken
 This returns the token entity.
 
 ```java
@@ -396,7 +410,7 @@ OstToken getToken(tokenId)
 
 
 
-### 4. isBiometricEnabled
+### 5. isBiometricEnabled
 To get the biometric preferneces call this function.
 
 ```java
@@ -411,6 +425,25 @@ boolean isBiometricEnabled(userId)
 
 
 
+### 6. getActiveSessionsForUserId
+
+Method to get user's active sessions available in current device that can execute transactions of given spending limit.</br>
+This is a synchronous method and must be used only after calling `setupDevice` workflow.
+
+```java
+List<OstSession> getActiveSessionsForUserId(@NonNull String userId, @Nullable String minimumSpendingLimitInWei)
+```
+
+| Parameter | Description |
+|---|---|
+| **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
+| **minimumSpendingLimitInWei** <br> **String**	| Minimum spending limit of the sessions |
+
+This can also be initialized without `minimumSpendingLimitInWei`</br>
+
+```java
+List<OstSession> getActiveSessionsForUserId(@NonNull String userId)
+```
 <br>
 
 
