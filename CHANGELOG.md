@@ -1,7 +1,5 @@
 # OST Wallet SDK Changelog
 
-# OST Wallet SDK Changelog
-
 ## Version 2.3.1
 ### Feature:
 * OstWalletUI now supports
