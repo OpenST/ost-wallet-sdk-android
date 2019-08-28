@@ -227,13 +227,13 @@ The following UI components are supported by Show QR-Code to Authorize Deivce.
 | lead_label                | label          |
 | action_button             | button text    |
 
-![copy-framework-file](images/ViewMnemonicsLabelTypes.png)
+![copy-framework-file](images/ShowQR.png)
 
 ## Supported UI Components in Provide Mnemonics (provide_mnemonics)
 
 The following UI components are supported by Provide Mnemonics.
 
-| Configuration Keys        | Component Type | 
+| Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
 | title_label               | label          |
 | info_label                | label          |
@@ -241,39 +241,39 @@ The following UI components are supported by Provide Mnemonics.
 | action_button             | button text    |
 | placeholder               | label          |
 
-![copy-framework-file](images/ViewMnemonicsLabelTypes.png)
+![copy-framework-file](images/ProvideMnemonics.png)
 
 ## Supported UI Components in Scan QR (scan_qr)
 
 The following UI components are supported by Scan QR.
 
-| Configuration Keys        | Component Type | 
+| Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
 | title_label               | label          |
 
-![copy-framework-file](images/ViewMnemonicsLabelTypes.png)
+![copy-framework-file](images/ScanQR.png)
 
 ## Supported UI Components in Verify Device (verify_device)
 
 The following UI components are supported by Verify Device.
 
-| Configuration Keys        | Component Type | 
+| Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
 | lead_label                | label          |
 | accept_button             | button text    |
 | reject_button             | button text    |
 
-![copy-framework-file](images/ViewMnemonicsLabelTypes.png)
+![copy-framework-file](images/VerifyDevice.png)
 
 ## Supported UI Components in Verify Transaction (verify_transaction)
 
 The following UI components are supported by Verify Transaction.
 
-| Configuration Keys        | Component Type | 
+| Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
 | lead_label                | label          |
 | info_label                | label          |
 | accept_button             | button text    |
 | reject_button             | button text    |
 
-![copy-framework-file](images/ViewMnemonicsLabelTypes.png)
+![copy-framework-file](images/VerifyTX.png)
