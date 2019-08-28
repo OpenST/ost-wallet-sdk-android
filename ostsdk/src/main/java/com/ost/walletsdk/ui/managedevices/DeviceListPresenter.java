@@ -64,7 +64,6 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
             return;
         }
         if(clearList){
-            ostDeviceList.clear();
             nextPayload = new JSONObject();
         } else if(!hasMoreData){
             return;
@@ -94,6 +93,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
                     hasMoreData = (nextPayload != null && !nextPayload.toString().equals("{}"));
                     JSONArray deviceJSONArray = (JSONArray) dataJSONObject.get(dataJSONObject.getString(OstConstants.RESULT_TYPE));
 
+                    if (clearList) ostDeviceList.clear();
                     for (int i = 0; i < deviceJSONArray.length(); i++) {
                         JSONObject deviceJSONObject = deviceJSONArray.getJSONObject(i);
                         Device device = Device.newInstance(deviceJSONObject);
