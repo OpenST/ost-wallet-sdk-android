@@ -28,7 +28,7 @@ public class OstLogEvent {
     private long id;
 
     @ColumnInfo(name = "workflow_id")
-    private String workflowId;
+    private long workflowId;
 
     @ColumnInfo(name = "workflow")
     private String workflow;
@@ -39,7 +39,7 @@ public class OstLogEvent {
     @ColumnInfo(name = "details")
     private String details;
 
-    public OstLogEvent(String workflowId, String workflow, String callbackName, String details) {
+    public OstLogEvent(long workflowId, String workflow, String callbackName, String details) {
         id = System.currentTimeMillis();
         this.workflowId = workflowId;
         this.workflow = workflow;
@@ -51,7 +51,7 @@ public class OstLogEvent {
         return id;
     }
 
-    public String getWorkflowId() {
+    public long getWorkflowId() {
         return workflowId;
     }
 
@@ -71,7 +71,7 @@ public class OstLogEvent {
         this.id = id;
     }
 
-    public void setWorkflowId(String workflowId) {
+    public void setWorkflowId(long workflowId) {
         this.workflowId = workflowId;
     }
 

@@ -41,6 +41,7 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
     }
 
     void createSession(String spendingLimit, String unit, String expiryDays) {
+        if (null != getMvpView()) getMvpView().showProgress(true, "Authorizing session...");
 
         //tokens validation
         //Input spending limit string is in Eth
@@ -59,17 +60,24 @@ class CreateSessionPresenter extends BasePresenter<CreateSessionView> implements
         BigInteger tokensInWei = spendingLimitBigInt.multiply( new BigInteger("10").pow(decimals));
         spendingLimit = tokensInWei.toString();
 
+        WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
+        SdkInteract.getInstance().subscribe(workFlowListener.getId(), this);
 
-        getMvpView().createSession(spendingLimit, Long.parseLong(expiryDays) * 24 * 60 * 60);
+        OstSdk.addSession(
+                AppProvider.get().getCurrentUser().getOstUserId(),
+                spendingLimit,
+                Long.parseLong(expiryDays) * 24 * 60 * 60,
+                workFlowListener
+        );
     }
 
     @Override
-    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         if (null != getMvpView()) getMvpView().showProgress(false);
     }
 
     @Override
-    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         if (null != getMvpView()) {
             getMvpView().showProgress(false);
             getMvpView().showToastMessage("Session authorization request received.", true);

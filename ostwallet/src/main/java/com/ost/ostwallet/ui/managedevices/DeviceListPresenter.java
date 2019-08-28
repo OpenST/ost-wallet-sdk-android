@@ -63,11 +63,8 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
                 if (new CommonUtils().isValidResponse(jsonObject)) {
                     try {
                         JSONObject dataJSONObject =  new CommonUtils().parseJSONData(jsonObject);
-
-                        JSONObject meta = dataJSONObject.optJSONObject("meta");
-                        if (null != meta) nextPayload = meta.optJSONObject("next_page_payload");
-
-                        hasMoreData = (nextPayload != null && !nextPayload.toString().equals("{}"));
+                        nextPayload = dataJSONObject.optJSONObject("meta");
+                        hasMoreData = (nextPayload != null && !nextPayload.getJSONObject("next_page_payload").toString().equals("{}"));
                         JSONArray deviceJSONArray = (JSONArray) new CommonUtils()
                                 .parseResponseForResultType(jsonObject);
 
