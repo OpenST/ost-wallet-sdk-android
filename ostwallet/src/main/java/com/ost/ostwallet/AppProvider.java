@@ -17,12 +17,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.ost.ostwallet.util.CommonUtils;
-import com.ost.ostwallet.util.DialogFactory;
-import com.ost.walletsdk.OstSdk;
-
-import java.net.CookieStore;
-
 import com.ost.ostwallet.database.OstAppDatabase;
 import com.ost.ostwallet.entity.CurrentEconomy;
 import com.ost.ostwallet.entity.LogInUser;
@@ -30,9 +24,18 @@ import com.ost.ostwallet.network.MappyNetworkClient;
 import com.ost.ostwallet.network.NetworkClient;
 import com.ost.ostwallet.ui.BaseActivity;
 import com.ost.ostwallet.ui.auth.OnBoardingActivity;
+import com.ost.ostwallet.util.CommonUtils;
 import com.ost.ostwallet.util.DBLog;
+import com.ost.ostwallet.util.DialogFactory;
+import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.ui.OstPassphraseAcceptor;
+import com.ost.walletsdk.ui.OstUserPassphraseCallback;
+import com.ost.walletsdk.ui.OstWalletUI;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
 
 import org.json.JSONObject;
+
+import java.net.CookieStore;
 
 import static com.ost.ostwallet.entity.CurrentEconomy.MAPPY_API_ENDPOINT;
 import static com.ost.ostwallet.entity.CurrentEconomy.SAAS_API_ENDPOINT;
@@ -64,6 +67,11 @@ public class AppProvider {
     public static void init(Context context) {
         INSTANCE = new AppProvider(context);
         OstAppDatabase.initDatabase(context);
+        if (null != AppProvider.get().getCurrentEconomy()) {
+            OstWalletUI.initialize(context.getApplicationContext(),
+                    AppProvider.get().getCurrentEconomy().getSaasApiEndpoint());
+        }
+
     }
 
     public static AppProvider get() {
@@ -138,7 +146,7 @@ public class AppProvider {
         keyValuesEditor.apply();
 
         //Initialize SDK
-        OstSdk.initialize(mApplicationContext, this.currentEconomy.getSaasApiEndpoint());
+        OstWalletUI.initialize(mApplicationContext, this.currentEconomy.getSaasApiEndpoint());
     }
 
     public FabricStateProvider getFabricStateProvider() {
@@ -189,6 +197,10 @@ public class AppProvider {
 
     public BaseActivity getCurrentActivity() {
         return mCurrentActivity;
+    }
+
+    public OstUserPassphraseCallback getUserPassphraseCallback() {
+        return new SdkHelperImp();
     }
 
     public static class FabricStateProvider {
@@ -267,6 +279,34 @@ public class AppProvider {
 
         public interface Callback {
             void returnedPreference(Integer preference);
+        }
+    }
+
+    static class SdkHelperImp implements OstUserPassphraseCallback {
+
+        @Override
+        public void getPassphrase(String userId, OstWorkflowContext ostWorkflowContext, OstPassphraseAcceptor ostPassphraseAcceptor) {
+            AppProvider.get().getMappyClient().getLoggedInUserPinSalt(new MappyNetworkClient.ResponseCallback() {
+                @Override
+                public void onSuccess(JSONObject jsonObject) {
+                    if (new CommonUtils().isValidResponse(jsonObject)){
+                        try {
+                            JSONObject userSaltObject = (JSONObject) new CommonUtils().parseResponseForResultType(jsonObject);
+                            String userPinSalt = userSaltObject.getString("recovery_pin_salt");
+                            ostPassphraseAcceptor.setPassphrase(userPinSalt);
+                        } catch (Exception e){
+                            Log.d("getPinSalt", "Exception in fetching Pin Salt.");
+                            ostPassphraseAcceptor.cancelFlow();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    Log.d("getPinSalt", String.format("Error in fetching Pin Salt. %s", (null != throwable ? throwable.getMessage() : "")));
+                    ostPassphraseAcceptor.cancelFlow();
+                }
+            });
         }
     }
 }

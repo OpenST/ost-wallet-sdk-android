@@ -189,13 +189,19 @@ public class SdkInteract {
 
     public interface WorkFlowCallbacks extends OstWalletUIListener {
 
-        void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
+        boolean getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 
-        void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
+        boolean invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 
-        void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId);
+        boolean pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId);
 
-        void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface);
+        boolean flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
+
+        boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError);
+
+        boolean requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
+
+        boolean verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface);
     }
 
     public interface UserPinSaltCallback {

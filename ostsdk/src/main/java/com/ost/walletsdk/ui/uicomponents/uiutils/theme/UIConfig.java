@@ -47,9 +47,9 @@ public class UIConfig {
         textView.setTextColor(Color.parseColor(color));
 
         if (ALIGN_RIGHT.equalsIgnoreCase(alignment)) {
-            textView.setGravity(Gravity.RIGHT);
+            textView.setGravity(Gravity.END);
         } else if (ALIGN_LEFT.equalsIgnoreCase(alignment)) {
-            textView.setGravity(Gravity.LEFT);
+            textView.setGravity(Gravity.START);
         } else {
             textView.setGravity(Gravity.CENTER);
         }
@@ -80,5 +80,29 @@ public class UIConfig {
         } else {
             textView.setTypeface(typeface);
         }
+    }
+
+    protected String getColor() {
+        return color;
+    }
+
+    protected int getSize() {
+        return size;
+    }
+
+    protected String getFont() {
+        return font;
+    }
+
+    protected String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    protected String getFontWeight() {
+        return fontWeight;
+    }
+
+    protected String getAlignment() {
+        return alignment;
     }
 }

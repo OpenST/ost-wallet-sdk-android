@@ -118,7 +118,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
     }
 
     @Override
-    public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for Activate user");
         if (onScreen) {
             getMvpView().showProgress(false);
@@ -143,7 +143,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements SdkIntera
         onScreen = true;
         if (requestAcknowledgedActionPending) {
             getMvpView().showProgress(false);
-            (getMvpView()).gotoDashboard(-1);
+            (getMvpView()).gotoDashboard(null);
         }
     }
 

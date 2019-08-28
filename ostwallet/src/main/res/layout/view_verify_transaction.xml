@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_transaction_header"
         android:layout_marginTop="13dp"
-        android:background="@drawable/rounded_corner_bg">
+        android:background="@drawable/ost_rounded_corner_bg">
 
         <com.ost.ostwallet.uicomponents.OstTextView
             android:id="@+id/lbl_rule_name"

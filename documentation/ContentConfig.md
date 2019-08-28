@@ -38,6 +38,10 @@ OstWalletUI supports 8 workflows
 | biometric_preference | Update Biometric Preference |
 | reset_pin            | Reset a User's PIN          |
 | view_mnemonics       | Get Mnemonic Phrase         |
+| show_add_device_qr   | Get current Device QR code  |
+| add_current_device_with_mnemonics     | Authorize device using mnemonics   |
+| scan_qr_to_authorize_device           | Authorize device by scanning QR    |
+| scan_qr_to_execute_transaction        | Execute transaction by scanning QR |
 
 ## Supported Views
 ### Activate User Workflow Views
@@ -95,6 +99,42 @@ OstWalletUI supports 8 workflows
 | get_pin              | Get Pin View where user provides pin for authentication    |
 | show_mnemonics       | Displays 12 word mnemonics of device                       |
 
+### Show Add Device QR View
+
+| Configuration Keys   | Views                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| show_qr              | Displays QR code of device                                 |
+
+### Add Current Device With Mnemonics Views
+
+| Configuration Keys   | Views                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| provide_mnemonics    | Display View to get 12 word mnemonics from user            |
+| get_pin              | Get Pin View where user provides pin for authentication    |
+
+### Authorize Device Via QR Views
+
+| Configuration Keys   | Views                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| scan_qr              | View to scan Device QR                                     |
+| verify_device        | View which displays Device data to be verified             |
+| get_pin              | Get Pin View where user provides pin for authentication    |
+
+
+### Execute Transaction Via QR Views
+
+| Configuration Keys   | Views                                                      |
+| -------------------- | ---------------------------------------------------------- |
+| scan_qr              | View to scan Transaction QR                                |
+| verify_transaction   | View which displays Transaction data to be verified        |
+| get_pin              | Get Pin View where user provides pin for authentication    |
+
+## Loader Content View Components
+In every workflow we support two loaders with text configuration:
+* initial_loader</br>
+Loader shown before workflow request construct
+* loader</br>
+Loader shown after workflow request construct
 
 ## Supported UI Components in PIN Input Views
 Here, we refer follwing views as 'Pin Input' views:
@@ -106,7 +146,7 @@ Here, we refer follwing views as 'Pin Input' views:
 
 The following UI components are supported by Pin Input views.
 
-| Configuration Keys        | Component Type | 
+| Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
 | title_label               | label          |
 | lead_label                | label          |
@@ -146,7 +186,7 @@ Below is a sample configuration to achive the same:
 ```
 #### NOTE
 ```
-As of now, `placeholder` is only applicable to `terms_and_condition_label` 
+As of now, `placeholder` is only applicable to `terms_and_condition_label`
 and is NOT supported by other labels.
 ```
 
@@ -155,7 +195,7 @@ and is NOT supported by other labels.
 
 The following UI components are supported by Device List Views.
 
-| Configuration Keys        | Component Type | 
+| Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
 | title_label               | label          |
 | info_label                | label          |
@@ -169,10 +209,71 @@ Here is Device List View looks like:
 
 The following UI components are supported by Show Mnemonics Views.
 
-| Configuration Keys        | Component Type | 
+| Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
 | title_label               | label          |
 | info_label                | label          |
 | bottom_label              | label          |
 
 ![copy-framework-file](images/ViewMnemonicsLabelTypes.png)
+
+## Supported UI Components in Show QR-Code to Authorize Deivce (show_qr)
+
+The following UI components are supported by Show QR-Code to Authorize Deivce.
+
+| Configuration Keys        | Component Type | 
+| ------------------------- |:--------------:|
+| title_label               | label          |
+| lead_label                | label          |
+| action_button             | button text    |
+
+![copy-framework-file](images/ShowQR.png)
+
+## Supported UI Components in Provide Mnemonics (provide_mnemonics)
+
+The following UI components are supported by Provide Mnemonics.
+
+| Configuration Keys        | Component Type |
+| ------------------------- |:--------------:|
+| title_label               | label          |
+| info_label                | label          |
+| bottom_label              | label          |
+| action_button             | button text    |
+| placeholder               | label          |
+
+![copy-framework-file](images/ProvideMnemonics.png)
+
+## Supported UI Components in Scan QR (scan_qr)
+
+The following UI components are supported by Scan QR.
+
+| Configuration Keys        | Component Type |
+| ------------------------- |:--------------:|
+| title_label               | label          |
+
+![copy-framework-file](images/ScanQR.png)
+
+## Supported UI Components in Verify Device (verify_device)
+
+The following UI components are supported by Verify Device.
+
+| Configuration Keys        | Component Type |
+| ------------------------- |:--------------:|
+| lead_label                | label          |
+| accept_button             | button text    |
+| reject_button             | button text    |
+
+![copy-framework-file](images/VerifyDevice.png)
+
+## Supported UI Components in Verify Transaction (verify_transaction)
+
+The following UI components are supported by Verify Transaction.
+
+| Configuration Keys        | Component Type |
+| ------------------------- |:--------------:|
+| lead_label                | label          |
+| info_label                | label          |
+| accept_button             | button text    |
+| reject_button             | button text    |
+
+![copy-framework-file](images/VerifyTX.png)

@@ -19,32 +19,23 @@ import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
 
+    private boolean mShowBackButton = false;
+
     @Override
-    boolean invalidState() {
-        if (super.invalidState()) return true;
+    void ensureValidState() {
+        super.ensureValidState();
 
         if (!OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_ir_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_ir_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
         }
 
         if (!OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_ir_2", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_ir_2", OstErrors.ErrorCode.DEVICE_CAN_NOT_BE_AUTHORIZED);
         }
-        return false;
     }
 
     @Override
@@ -52,14 +43,16 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
         super.initiateWorkFlow();
         String deviceAddress = getIntent().getStringExtra(DEVICE_ADDRESS);
         if (TextUtils.isEmpty(deviceAddress)) {
+            mShowBackButton = true;
             Bundle bundle = getIntent().getExtras();
             bundle.putBoolean(SHOW_BACK_BUTTON, false);
             DeviceListFragment fragment = DeviceListFragment.initiateRecoveryInstance(bundle);
             FragmentUtils.addFragment(R.id.layout_container,
                     fragment,
                     this);
-            fragment.contentConfig = ContentConfig.getInstance().getStringConfig("initiate_recovery").optJSONObject("device_list");
+            fragment.contentConfig = ContentConfig.getInstance().getStringConfig("initiate_recovery");
         } else {
+            mShowBackButton = false;
             Bundle bundle = getIntent().getExtras();
             bundle.putBoolean(SHOW_BACK_BUTTON, false);
             FragmentUtils.addFragment(R.id.layout_container,
@@ -71,5 +64,19 @@ public class OstInitiateRecoveryWorkflow extends OstWorkFlowActivity {
     @Override
     OstWorkflowContext getWorkflowContext() {
         return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY);
+    }
+
+    @Override
+    boolean showBackButton() {
+        return mShowBackButton;
+    }
+
+    @Override
+    public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        if (isCrossButtonClicked(ostError) || !mShowBackButton || !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
+            return super.flowInterrupt(workflowId, ostWorkflowContext, ostError);
+        }
+        showProgress(false);
+        return false;
     }
 }

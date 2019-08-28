@@ -40,7 +40,7 @@ public class OstRecoveryManager {
     private OstApiClient apiClient;
     public OstRecoveryManager(String userId) {
         this.userId = userId;
-        apiClient = new OstApiClient(userId);
+        apiClient = new OstApiClient(userId, false);
     }
 
     private OstUser ostUser() {

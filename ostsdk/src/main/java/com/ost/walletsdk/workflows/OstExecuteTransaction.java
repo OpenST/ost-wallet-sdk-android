@@ -99,8 +99,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
         try {
             transactionId = postTransactionApi(map);
         } catch (OstApiError ostApiError) {
-            new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.SESSION).perform();
-            throw ostApiError;
+            handleSessionSync(signedTransactionStruct.getSignerAddress());
         }
 
         Log.i(TAG, "Increment nonce");
@@ -288,6 +287,16 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
     @Override
     public OstWorkflowContext.WORKFLOW_TYPE getWorkflowType() {
         return OstWorkflowContext.WORKFLOW_TYPE.EXECUTE_TRANSACTION;
+    }
+
+    private void handleSessionSync(String sessionAddress) {
+        try {
+            mOstApiClient.getSession(sessionAddress);
+        } catch (OstApiError ostApiError) {
+            if (ostApiError.isNotFound()) {
+                new OstSdkSync(mUserId, OstSdkSync.SYNC_ENTITY.SESSION).perform();
+            }
+        }
     }
 
     static class TransactionDataDefinitionInstance implements OstPerform.DataDefinitionInstance {

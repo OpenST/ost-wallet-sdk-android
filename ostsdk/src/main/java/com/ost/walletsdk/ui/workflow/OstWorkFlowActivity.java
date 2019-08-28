@@ -46,9 +46,6 @@ import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFragment.OnFragmentInteractionListener,
         DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener,
-        RequestAcknowledgedListener,
-        FlowInterruptListener,
-        FlowCompleteListener,
         SdkInteract.WorkFlowCallbacks,
         WorkFlowPinFragment.OnFragmentInteractionListener,
         ResetPinFragment.OnFragmentInteractionListener,
@@ -68,8 +65,13 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public static final String ENABLE = "enable";
     public static final String GET_DEVICE_MNEMONICS = "get_device_mnemonics";
     public static final String AUTHORIZE_DEVICE_WITH_MNEMONICS = "authorize_device_with_mnemonics";
+    public static final String SHOW_QR = "show_qr";
+    public static final String AUTHORIZE_DEVICE_VIA_QR = "authorize_device_via_qr";
+    public static final String AUTHORIZE_TXN_VIA_QR = "authorize_txn_via_qr";
 
     private static final String LOG_TAG = "OstWorkFlowActivity";
+    private static final String CROSS_BUTTON_CLICK_CODE = "owfa_gb";
+
     WorkFlowListener mWorkFlowListener;
     private Intent mIntent;
     String mWorkflowId;
@@ -92,13 +94,24 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             return;
         }
 
-        if (invalidState()) return;
+        try {
+            ensureValidState();
+        } catch (OstError error) {
+            mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
+            finish();
+            return;
+        } catch (Throwable th) {
+            OstError error = new OstError("owfa_onc_1", OstErrors.ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+            error.setStackTrace( th.getStackTrace() );
+            mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
+            finish();
+            return;
+        }
 
         initiateWorkFlow();
 
         if (null != mWorkFlowListener) {
             mWorkFlowListener.setWorkflowCallbacks(this);
-            SdkInteract.getInstance().subscribe(mWorkFlowListener.getId(), this);
         }
     }
 
@@ -106,16 +119,10 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         // Don't do anything here
     }
 
-    boolean invalidState() {
-        if (null == OstUser.getById(mUserId)) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_is_1", OstErrors.ErrorCode.DEVICE_NOT_SETUP)
-            );
-            finish();
-            return true;
+    void ensureValidState() throws OstError {
+        if (null == OstUser.getById(mUserId) || null == OstUser.getById(mUserId).getCurrentDevice() ) {
+            throw new OstError("owfa_oc_is_1", OstErrors.ErrorCode.DEVICE_NOT_SETUP);
         }
-        return false;
     }
 
     OstWorkflowContext getWorkflowContext() {
@@ -142,7 +149,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
                 //hide keyboard if open
                 KeyBoard.hideKeyboard(OstWorkFlowActivity.this);
                 //interrupt workflow
-                if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), new OstError("owfa_gb", OstErrors.ErrorCode.WORKFLOW_CANCELLED));
+                if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), new OstError(CROSS_BUTTON_CLICK_CODE, OstErrors.ErrorCode.WORKFLOW_CANCELLED));
                 super.goBack();
             }
         }
@@ -168,7 +175,6 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     @Override
     public void onDeviceSelectToRevoke(Device device) {
-        showProgress(true, "Revoking device...");
         OstSdk.revokeDevice(mUserId, device.getDeviceAddress(), mWorkFlowListener);
     }
 
@@ -193,31 +199,14 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     }
 
     @Override
-    public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        showProgress(false);
-        finish();
-    }
-
-    @Override
-    public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        showProgress(false);
-        finish();
-    }
-
-    @Override
-    public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        showProgress(false);
-        finish();
-    }
-
-    @Override
-    public void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+    public boolean getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
         showGetPinFragment(workflowId, userId, ostWorkflowContext, ostPinAcceptInterface);
+        return false;
     }
 
     @Override
-    public void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+    public boolean invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         showProgress(false);
         Dialog dialog = DialogFactory.createSimpleOkErrorDialog(OstWorkFlowActivity.this,
                 "Incorrect PIN",
@@ -229,21 +218,43 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
                 });
         dialog.setCancelable(false);
         dialog.show();
+        return false;
     }
 
     @Override
-    public void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
-
+    public boolean pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
+        return false;
     }
 
     @Override
-    public void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+    public boolean flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        showProgress(false);
+        finish();
+        return false;
+    }
 
+    @Override
+    public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        showProgress(false);
+        finish();
+        return false;
+    }
+
+    @Override
+    public boolean requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        showProgress(false);
+        finish();
+        return false;
+    }
+
+    @Override
+    public boolean verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+        return false;
     }
 
     private void showGetPinFragment(String workflowId, String userId, OstWorkflowContext ostWorkflowContext, OstPinAcceptInterface ostPinAcceptInterface) {
         JSONObject stringConfigJsonObject = getContentString(ostWorkflowContext);
-        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin));
+        WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin), showBackButton());
         fragment.contentConfig = stringConfigJsonObject;
         fragment.setPinCallback(ostPinAcceptInterface);
         fragment.setUserId(userId);
@@ -253,6 +264,10 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
+    }
+
+    boolean showBackButton() {
+        return false;
     }
 
     JSONObject getContentString(OstWorkflowContext ostWorkflowContext) {
@@ -281,5 +296,9 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     @Override
     public void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
         ostPinAcceptInterface.cancelFlow();
+    }
+
+    protected boolean isCrossButtonClicked(OstError ostError) {
+        return CROSS_BUTTON_CLICK_CODE.equals(ostError.getInternalErrorCode());
     }
 }

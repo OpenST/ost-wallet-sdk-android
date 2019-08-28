@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <com.ost.walletsdk.ui.uicomponents.OstH2Label
+        android:id="@+id/h2VerifyHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="19dp"
+        android:text="Transaction Details"/>
+
+    <com.ost.walletsdk.ui.uicomponents.OstH3Label
+        android:id="@+id/h3VerifyHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/h2VerifyHeading"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="5dp"
+        android:text="This is a one-time transaction approval. Further purchases will be asked for a confirmation again."/>
+
+    <RelativeLayout
+        android:id="@+id/ll_content_holder"
+        android:layout_below="@id/h3VerifyHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
+        android:background="#f8f8f8">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_toEndOf="@id/iv_device_image">
+
+            <com.ost.walletsdk.ui.uicomponents.OstH1Label
+                android:id="@+id/h1AmountInBt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="19dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="80" />
+
+            <com.ost.walletsdk.ui.uicomponents.OstH4Label
+                android:id="@+id/h4AmountInFiat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/h1AmountInBt"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="13dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:text="$10" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+    <com.ost.walletsdk.ui.uicomponents.OstB1Label
+        android:id="@+id/btnAcceptRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_content_holder"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="Confirm Transaction"/>
+
+    <com.ost.walletsdk.ui.uicomponents.OstB2Label
+        android:id="@+id/btnDenyRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnAcceptRequest"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="23dp"
+        android:text="Decline"/>
+
+</RelativeLayout>
