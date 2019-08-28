@@ -261,14 +261,14 @@ public class CommonUtils {
         OstToken token = OstSdk.getToken(OstSdk.getUser(userId).getTokenId());
         Integer decimals = Integer.parseInt(token.getBtDecimals());
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(decimals);
-        BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier, 5 , RoundingMode.UP);
+        BigDecimal bal = new BigDecimal(balance).divide(btWeiMultiplier, 5 , RoundingMode.HALF_UP);
         return new DecimalFormat("#.#####").format(bal);
     }
 
     public String convertFiatWeiToFiat(String amount) {
         if (null == amount) return "";
         BigDecimal btWeiMultiplier = new BigDecimal(10).pow(18);
-        BigDecimal bal = new BigDecimal(amount).divide(btWeiMultiplier, 5, RoundingMode.UP);
+        BigDecimal bal = new BigDecimal(amount).divide(btWeiMultiplier, 5, RoundingMode.HALF_UP);
         return new DecimalFormat("#.##").format(bal);
     }
 
@@ -278,8 +278,8 @@ public class CommonUtils {
             Double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble(currencySymbol);
             BigDecimal weiMultiplier = new BigDecimal(10).pow(18);
             BigDecimal usdWei = new BigDecimal(fiatInWei);
-            BigDecimal pricePointOSTtoUSDWei = new BigDecimal(String.valueOf(pricePointOSTtoUSD)).multiply(weiMultiplier).setScale(0, RoundingMode.UP);
-            BigDecimal baseCurrency = usdWei.divide(pricePointOSTtoUSDWei, 5, RoundingMode.UP);
+            BigDecimal pricePointOSTtoUSDWei = new BigDecimal(String.valueOf(pricePointOSTtoUSD)).multiply(weiMultiplier).setScale(0, RoundingMode.HALF_UP);
+            BigDecimal baseCurrency = usdWei.divide(pricePointOSTtoUSDWei, 5, RoundingMode.HALF_UP);
             BigDecimal bt = baseCurrency.multiply(new BigDecimal(token.getConversionFactor()));
             return new DecimalFormat("#.#####").format(bt);
         } catch (Exception e){
@@ -300,7 +300,7 @@ public class CommonUtils {
 
             BigDecimal fiatBalance = new BigDecimal(balance).multiply(tokenToFiatMultiplier);
 
-            BigDecimal fiatBalanceInEth = fiatBalance.divide(fiatToEthConversionFactor, 5, RoundingMode.UP);
+            BigDecimal fiatBalanceInEth = fiatBalance.divide(fiatToEthConversionFactor, 5, RoundingMode.HALF_UP);
             return new DecimalFormat("#.##").format(fiatBalanceInEth);
         } catch (Exception e){
             return "0";
@@ -328,6 +328,6 @@ public class CommonUtils {
         if (precision < 1) precision = 2;
 
         // multiplierForFiat = btInWeiNumerator / usdWeiDecimalDenominator
-        return usdWeiDecimalNumerator.divide(btInWeiDenominator, precision, RoundingMode.UP);
+        return usdWeiDecimalNumerator.divide(btInWeiDenominator, precision, RoundingMode.HALF_UP);
     }
 }
