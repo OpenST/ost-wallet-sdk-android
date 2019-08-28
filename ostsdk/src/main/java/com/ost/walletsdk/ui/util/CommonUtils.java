@@ -278,7 +278,7 @@ public class CommonUtils {
             Double pricePointOSTtoUSD = pricePointObject.getJSONObject(token.getBaseToken()).getDouble(currencySymbol);
             BigDecimal weiMultiplier = new BigDecimal(10).pow(18);
             BigDecimal usdWei = new BigDecimal(fiatInWei);
-            BigDecimal pricePointOSTtoUSDWei = new BigDecimal(String.valueOf(pricePointOSTtoUSD)).multiply(weiMultiplier).setScale(0, RoundingMode.HALF_UP);
+            BigDecimal pricePointOSTtoUSDWei = new BigDecimal(String.valueOf(pricePointOSTtoUSD)).multiply(weiMultiplier);
             BigDecimal baseCurrency = usdWei.divide(pricePointOSTtoUSDWei, 5, RoundingMode.HALF_UP);
             BigDecimal bt = baseCurrency.multiply(new BigDecimal(token.getConversionFactor()));
             return new DecimalFormat("#.#####").format(bt);
