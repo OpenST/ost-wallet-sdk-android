@@ -6,6 +6,7 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
@@ -16,32 +17,30 @@ import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
 
 public class OstCreateSessionWorkflow extends OstWorkFlowActivity {
 
+    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("add_session");
+
+
     @Override
-    boolean invalidState() {
-        if (super.invalidState()) return true;
+    void ensureValidState() {
+        super.ensureValidState();
 
         if (!OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_cs_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_cs_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED);
         }
-
-        return false;
     }
 
     @Override
     void initiateWorkFlow() {
         super.initiateWorkFlow();
+
+        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
+
         Bundle bundle = getIntent().getExtras();
         long expiredAfterSecs = bundle.getLong(EXPIRED_AFTER_SECS, 100000);
         String spendingLimit = bundle.getString(SPENDING_LIMIT);
         bundle.putBoolean(SHOW_BACK_BUTTON, false);
-        showProgress(true,"Adding Session");
         OstSdk.addSession(mUserId, spendingLimit, expiredAfterSecs, mWorkFlowListener);
     }
 
@@ -55,5 +54,12 @@ public class OstCreateSessionWorkflow extends OstWorkFlowActivity {
     @Override
     OstWorkflowContext getWorkflowContext() {
         return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION);
+    }
+
+    @Override
+    public void popTopFragment() {
+        super.popTopFragment();
+
+        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
     }
 }

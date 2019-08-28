@@ -110,4 +110,9 @@ public class ThemeConfig implements Theme {
     public PinViewConfig getPinViewConfig() {
         return new PinViewConfig(mThemeObject.optJSONObject("pin_input"));
     }
+
+    @Override
+    public EditTextUIConfig getEditText() {
+        return new EditTextUIConfig(mThemeObject.optJSONObject("edit_text"));
+    }
 }

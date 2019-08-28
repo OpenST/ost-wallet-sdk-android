@@ -16,20 +16,14 @@ public class OstAbortRecoveryWorkflow extends OstWorkFlowActivity {
 
 
     @Override
-    boolean invalidState() {
-        if (super.invalidState()) return true;
+    void ensureValidState() {
+        super.ensureValidState();
 
         if (!OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_ar_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_ar_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
         }
-        return false;
     }
 
     @Override

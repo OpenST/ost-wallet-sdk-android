@@ -36,6 +36,8 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
     private static final String LOG_TAG = "OstDeviceListPresenter";
     private String mUserId;
     private String currentDeviceAddress;
+    private String mLoaderString = "Loading...";
+    private boolean mRunningLoader = false;
 
     private DeviceListPresenter() {}
 
@@ -53,6 +55,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
     public void attachView(DeviceListView mvpView) {
         super.attachView(mvpView);
         currentDeviceAddress = OstUser.getById(mUserId).getCurrentDevice().getAddress();
+        showLoaderProgress(true);
         updateDeviceList(true);
     }
 
@@ -61,7 +64,6 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
             return;
         }
         if(clearList){
-            ostDeviceList.clear();
             nextPayload = new JSONObject();
         } else if(!hasMoreData){
             return;
@@ -78,12 +80,20 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
         OstJsonApi.getDeviceList(mUserId, mapPayload, new OstJsonApiCallback() {
             @Override
             public void onOstJsonApiSuccess(@Nullable JSONObject dataJSONObject) {
+                showLoaderProgress(false);
                 showProgress(false);
+                if (null == dataJSONObject) {
+                    httpRequestPending = false;
+                    return;
+                }
                 try {
-                    nextPayload = dataJSONObject.optJSONObject("meta");
-                    hasMoreData = (nextPayload != null && !nextPayload.getJSONObject("next_page_payload").toString().equals("{}"));
+                    JSONObject meta = dataJSONObject.optJSONObject("meta");
+                    if (null != meta) nextPayload = meta.optJSONObject("next_page_payload");
+
+                    hasMoreData = (nextPayload != null && !nextPayload.toString().equals("{}"));
                     JSONArray deviceJSONArray = (JSONArray) dataJSONObject.get(dataJSONObject.getString(OstConstants.RESULT_TYPE));
 
+                    if (clearList) ostDeviceList.clear();
                     for (int i = 0; i < deviceJSONArray.length(); i++) {
                         JSONObject deviceJSONObject = deviceJSONArray.getJSONObject(i);
                         Device device = Device.newInstance(deviceJSONObject);
@@ -105,6 +115,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
             @Override
             public void onOstJsonApiError(@NonNull OstError err, @Nullable JSONObject response) {
                 Log.e(LOG_TAG, String.format("Get Current User list error:"));
+                showLoaderProgress(false);
                 showProgress(false);
                 getMvpView().notifyDataSetChanged();
                 httpRequestPending = false;
@@ -113,7 +124,13 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
     }
 
     private void showProgress(boolean show) {
-        if (null != getMvpView()) getMvpView().showProgress(show);
+        if (mRunningLoader) return;
+        if (null != getMvpView()) getMvpView().setRefreshing(show);
+    }
+
+    private void showLoaderProgress(boolean show) {
+        mRunningLoader = show;
+        if (null != getMvpView()) getMvpView().showProgress(show, mLoaderString);
     }
 
     void setDeviceList(List<Device> ostDeviceList) {
@@ -122,5 +139,9 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
 
     public void setUserId(String userId) {
         this.mUserId = userId;
+    }
+
+    public void setLoaderString(String initialLoaderString) {
+        mLoaderString = initialLoaderString;
     }
 }

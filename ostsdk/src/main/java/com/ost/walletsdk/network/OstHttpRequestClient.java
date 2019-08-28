@@ -63,8 +63,7 @@ public class OstHttpRequestClient {
     private OkHttpClient client;
     private static final Escaper FormParameterEscaper = UrlEscapers.urlFormParameterEscaper();
     private static final Charset UTF_8 = Charset.forName("UTF-8");
-    private static Boolean DEBUG = ("true").equalsIgnoreCase(System.getenv("OST_KYC_SDK_DEBUG"));
-    private static Boolean VERBOSE = false;
+    private final Boolean enableLog;
     private OstApiSigner mOstApiSigner;
     private ResponseParser mResponseParser;
 
@@ -107,7 +106,8 @@ public class OstHttpRequestClient {
 
     }
 
-    public OstHttpRequestClient(String baseUrl) {
+    public OstHttpRequestClient(String baseUrl, boolean enableLog) {
+        this.enableLog = enableLog;
         this.apiEndpoint = baseUrl;
         this.timeout = 30;
 
@@ -120,7 +120,7 @@ public class OstHttpRequestClient {
         try {
             hostName = new URL(baseUrl).getHost();
         } catch (MalformedURLException e) {
-            Log.e(TAG, "URL parsing error");
+            errorLog(TAG, "URL parsing error");
         }
         client = new OkHttpClient.Builder()
                 .sslSocketFactory(TrustKit.getInstance().getSSLSocketFactory(hostName),
@@ -229,7 +229,7 @@ public class OstHttpRequestClient {
             qsInputBuffer.writeUtf8(paramKey);
             qsInputBuffer.writeByte('=');
             qsInputBuffer.writeUtf8(paramVal);
-            Log.d(TAG, "paramKey " + paramKey + " paramVal " + paramVal);
+            debugLog(TAG, "paramKey " + paramKey + " paramVal " + paramVal);
 
             if (GET_REQUEST.equalsIgnoreCase(requestType)) {
                 urlBuilder.addEncodedQueryParameter(paramKey, paramVal);
@@ -250,7 +250,7 @@ public class OstHttpRequestClient {
         }
         // Build the url.
         url = urlBuilder.build();
-        Log.i(TAG, "url = " + url.toString());
+        infoLog(TAG, "url = " + url.toString());
 
         // Set url in requestBuilder.
         requestBuilder.url(url);
@@ -262,9 +262,9 @@ public class OstHttpRequestClient {
             requestBuilder.get().addHeader("User-Agent", OstConstants.USER_AGENT);
         } else {
             FormBody formBody = formBodyBuilder.build();
-            if (DEBUG && VERBOSE) {
+            if ( this.enableLog ) {
                 for (int i = 0; i < formBody.size(); i++) {
-                    Log.d(TAG, formBody.name(i) + "\t\t" + formBody.value(i));
+                    debugLog(TAG, formBody.name(i) + "\t\t" + formBody.value(i));
                 }
             }
 
@@ -278,13 +278,13 @@ public class OstHttpRequestClient {
         try {
             if (isNetworkAvailable()) {
                 okhttp3.Response response = call.execute();
-                responseBody = getResponseBodyAsString(response);
+                responseBody = this.getResponseBodyAsString(response);
             } else {
                 responseBody = NetworkExceptionString;
             }
         }
         catch (SocketTimeoutException e) {
-            Log.e(TAG, "SocketTimeoutException occurred.");
+            errorLog(TAG, "SocketTimeoutException occurred.");
             responseBody =  SocketTimeoutExceptionString;
         } catch (SSLHandshakeException e) {
             throw new OstApiError("ost_hrc_s_3", OstErrors.ErrorCode.INVALID_CERTIFICATE, CertificateErrorJsonResponse);
@@ -322,24 +322,24 @@ public class OstHttpRequestClient {
     private String signQueryParams(Buffer qsInputBuffer) {
         // Generate Signature for Params.
         byte[] bytes = qsInputBuffer.readByteArray();
-        Log.d(TAG,"bytes to sign: " + new String(bytes, UTF_8));
+        debugLog(TAG,"bytes to sign: " + new String(bytes, UTF_8));
         // Encryption of bytes
 
         String signature = mOstApiSigner.sign(bytes);
-        Log.d(TAG,"signature:" + signature);
+        debugLog(TAG,"signature:" + signature);
         return signature;
     }
 
     private static String SOMETHING_WRONG_RESPONSE = "{'success': false, 'err': {'code': 'SOMETHING_WENT_WRONG', 'internal_id': 'SDK(SOMETHING_WENT_WRONG)', 'msg': '', 'error_data':[]}}";
 
-    private static String getResponseBodyAsString(okhttp3.Response response) {
+    private String getResponseBodyAsString(okhttp3.Response response) {
         // Process the response.
         String responseBody;
         if (response.body() != null) {
             try {
                 responseBody = response.body().string();
                 if (responseBody.length() > 0) {
-                    Log.d(TAG,"responseCode:" + response.code()+ "\nresponseBody:\n" + responseBody + "\n");
+                    debugLog(TAG,"responseCode:" + response.code()+ "\nresponseBody:\n" + responseBody + "\n");
                     return responseBody;
                 }
             } catch (IOException e) {
@@ -363,8 +363,26 @@ public class OstHttpRequestClient {
                 responseBody = SOMETHING_WRONG_RESPONSE;
         }
 
-        Log.d(TAG, "local responseBody:\n" + responseBody + "\n");
+        debugLog(TAG, "local responseBody:\n" + responseBody + "\n");
         return responseBody;
+    }
+
+    private void errorLog(String tag, String msg) {
+        if( this.enableLog ) {
+            Log.e(tag, msg);
+        }
+    }
+
+    private void debugLog(String tag, String msg) {
+        if( this.enableLog ) {
+            Log.d(tag, msg);
+        }
+    }
+
+    private void infoLog(String tag, String msg) {
+        if( this.enableLog ) {
+            Log.i(tag, msg);
+        }
     }
 
     private static JSONObject buildApiResponse(String jsonString) {

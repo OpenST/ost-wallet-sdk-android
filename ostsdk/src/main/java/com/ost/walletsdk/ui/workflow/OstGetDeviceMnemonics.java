@@ -5,6 +5,7 @@ import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.ui.viewmnemonics.ViewMnemonicsFragment;
 import com.ost.walletsdk.workflows.OstContextEntity;
@@ -16,28 +17,25 @@ import org.json.JSONObject;
 
 public class OstGetDeviceMnemonics extends OstWorkFlowActivity {
 
+    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("view_mnemonics");
+
     @Override
-    boolean invalidState() {
-        if (super.invalidState()) return true;
+    void ensureValidState() {
+        super.ensureValidState();
 
         if (!OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_gdm_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_gdm_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED);
         }
-
-        return false;
     }
 
     @Override
     void initiateWorkFlow() {
         super.initiateWorkFlow();
-        showProgress(true, "Getting device mnemonics...");
+
+        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
+
         OstSdk.getDeviceMnemonics(mUserId, mWorkFlowListener);
     }
 
@@ -49,17 +47,25 @@ public class OstGetDeviceMnemonics extends OstWorkFlowActivity {
     }
 
     @Override
-    public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public boolean flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
         byte[] mnemonics = (byte[]) ostContextEntity.getEntity();
         ViewMnemonicsFragment fragment = ViewMnemonicsFragment.newInstance(new String(mnemonics));
         FragmentUtils.addFragment(R.id.layout_container,
                 fragment,
                 this);
+        return false;
     }
 
     @Override
     OstWorkflowContext getWorkflowContext() {
         return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS);
+    }
+
+    @Override
+    public void popTopFragment() {
+        super.popTopFragment();
+
+        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
     }
 }

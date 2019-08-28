@@ -13,31 +13,20 @@ public class OstActivateWorkflow extends OstWorkFlowActivity {
 
 
     @Override
-    boolean invalidState() {
-        if  (super.invalidState()) return true;
+    void ensureValidState() {
+        super.ensureValidState();
 
         if (!OstUser.CONST_STATUS.CREATED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_au_1", OstErrors.ErrorCode.USER_ALREADY_ACTIVATED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_au_1", OstErrors.ErrorCode.USER_ALREADY_ACTIVATED);
         }
 
         if (!OstDevice.CONST_STATUS.REGISTERED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getCurrentDevice().getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_au_2", OstErrors.ErrorCode.DEVICE_NOT_REGISTERED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_au_2", OstErrors.ErrorCode.DEVICE_NOT_REGISTERED);
         }
-        return false;
     }
 
     @Override

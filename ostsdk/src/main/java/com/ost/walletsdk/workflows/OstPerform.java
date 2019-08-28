@@ -120,7 +120,7 @@ public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterfac
                     mUserId,
                     getCallback());
         } else {
-            throw new OstError("wf_pe_pr_1", OstErrors.ErrorCode.INVALID_QR_TRANSACTION_DATA);
+            throw new OstError("wf_pe_pr_1", OstErrors.ErrorCode.INVALID_QR_CODE);
         }
     }
 
@@ -140,13 +140,13 @@ public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterfac
 
     private void validatePayload() {
         if (null == mPayload) {
-            throw new OstError("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_QR_TRANSACTION_DATA);
+            throw new OstError("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_QR_CODE);
         }
         boolean hasDataDefinition = mPayload.has(OstConstants.QR_DATA_DEFINITION);
         boolean hasDataDefinitionVersion = mPayload.has(OstConstants.QR_DATA_DEFINITION_VERSION);
         boolean data = mPayload.has(OstConstants.QR_DATA);
         if (!(hasDataDefinition && hasDataDefinitionVersion && data)) {
-            throw new OstError("wf_pe_pr_3", OstErrors.ErrorCode.INVALID_QR_TRANSACTION_DATA);
+            throw new OstError("wf_pe_pr_3", OstErrors.ErrorCode.INVALID_QR_CODE);
         }
     }
 

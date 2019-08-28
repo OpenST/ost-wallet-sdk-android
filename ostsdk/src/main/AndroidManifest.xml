@@ -12,6 +12,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ost.walletsdk">
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -24,43 +25,42 @@
             android:theme="@android:style/Theme.Material.Dialog.NoActionBar" />
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstWorkFlowActivity"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstActivateWorkflow"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstCreateSessionWorkflow"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstInitiateRecoveryWorkflow"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstAbortRecoveryWorkflow"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstResetPinWorkflow"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstBiometricPrefWorkflow"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstGetDeviceMnemonics"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstRevokeDeviceWorkflow"
-            android:label="@string/app_name"
             android:theme="@style/AppTheme"/>
         <activity
             android:name="com.ost.walletsdk.ui.workflow.OstAuthorizeDeviceMnemonics"
-            android:label="@string/app_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name="com.ost.walletsdk.ui.workflow.OstShowDeviceQR"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name="com.ost.walletsdk.ui.workflow.OstAuthorizeDeviceViaQRWorkflow"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name="com.ost.walletsdk.ui.workflow.OstExecuteTxnViaQRWorkflow"
             android:theme="@style/AppTheme"/>
     </application>
 </manifest>

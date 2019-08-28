@@ -246,6 +246,105 @@ OstWalletUI.updateBiometricPreference(@NonNull Activity currentActivity,
                                       ) -> String
 ```
 
+### Authorize Current Device With Mnemonics
+
+This workflow should be used to add a new device using 12 words recovery phrase.
+
+**Parameters**<br/>
+&nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
+&nbsp;_userId: OST Platform user id provided by application server_<br/>
+&nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
+
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+
+```java
+OstWalletUI.authorizeCurrentDeviceWithMnemonics(@NonNull Activity currentActivity,
+                                      String userId,
+                                      OstUserPassphraseCallback userPassphraseCallback
+                                      ) -> String
+```
+
+### Get Add Device QR Code
+
+This workflow shows QR Code to scan from another authorized device
+
+**Parameters**<br/>
+&nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
+&nbsp;_userId: OST Platform user id provided by application server_<br/>
+
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+
+```java
+OstWalletUI.getAddDeviceQRCode(@NonNull Activity currentActivity,
+                                      String userId,
+                                      ) -> String
+```
+
+### Scan QR Code To Authorize Device
+
+This workflow can be used to authorize device by scanning QR Code.
+> The device to be authorized must be a `REGISTERED` device and must be associated with the same user.
+> To display the QR code on registered device, application can use `OstWalletUI.getAddDeviceQRCode` workflow.
+
+**Parameters**<br/>
+&nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
+&nbsp;_userId: OST Platform user id provided by application server_<br/>
+&nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
+
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+
+```java
+OstWalletUI.scanQRCodeToAuthorizeDevice(@NonNull Activity currentActivity,
+                                      String userId,
+                                      OstUserPassphraseCallback userPassphraseCallback
+                                      ) -> String
+```
+
+### Scan QR Code To Execute Transaction
+
+This workflow can be used to execute transaction by scanning transaction QR Code.
+
+QR Code Sample:
+```json
+{
+    "dd":"TX",
+    "ddv":"1.1.0",
+    "d":{
+            "rn":"direct transfer",
+            "ads":[
+                "0x7701af46018fc57c443b63e839eb24872755a2f8",
+                "0xed09dc167a72d939ecf3d3854ad0978fb13a8fe9"
+            ],
+            "ams":[
+                "1000000000000000000",
+                "1000000000000000000"
+            ],
+            "tid": 1140,
+            "o":{
+                    "cs":"USD",
+                    "s": "$"
+            }
+        },
+    "m":{
+            "tn":"comment",
+            "tt":"user_to_user",
+            "td":"Thanks for comment"
+        }
+}
+```
+
+**Parameters**<br/>
+&nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
+&nbsp;_userId: OST Platform user id provided by application server_<br/>
+
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+
+```java
+OstWalletUI.scanQRCodeToExecuteTransaction(@NonNull Activity currentActivity,
+                                      String userId,
+                                      ) -> String
+```
+
 ### Subscribe 
 
 Subscribe to specified event of UI Workflow
@@ -303,10 +402,11 @@ OstWalletUI.showComponentSheet(@NonNull Activity currentActivity)
 
 ### OstWalletUIListener
 
-This is a markup interface. It is not expected to be used.
+This is a markup interface and does not define any methods. The the interfaces defined below are extended from this interface.
 
-### RequestAcknowledgedListener
-Use this listener to get request acknowlege updates of UI workflow.
+
+### Request Acknowledged Listener
+Implement `RequestAcknowledgedListener` interface to get request acknowlege updates of UI workflow.
 
 ```java
    /**
@@ -323,8 +423,8 @@ Use this listener to get request acknowlege updates of UI workflow.
     */
 ```
 
-### FlowCompleteListener
-Use this listener to get flow complete update of UI workflow
+### Flow Complete Listener
+Implement `FlowCompleteListener` interface to get flow complete update of UI workflow
 
 ```java
    /**
@@ -341,8 +441,8 @@ Use this listener to get flow complete update of UI workflow
     */
 ```
 
-### FlowInterruptListener
-Use this listener to get flow interrupt update of UI workflow
+### Flow Interrupt Listener
+Implement `FlowInterruptListener` interface to get flow interrupt update of UI workflow
 
 ```java
    /**
