@@ -16,10 +16,14 @@ import com.ost.walletsdk.ui.interfaces.FlowCompleteListener;
 import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
 import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
+
+import org.json.JSONObject;
 
 class EnterMnemonicsPresenter extends BasePresenter<EnterMnemonicsView> implements
         FlowCompleteListener,
@@ -30,6 +34,7 @@ class EnterMnemonicsPresenter extends BasePresenter<EnterMnemonicsView> implemen
     private OstWorkFlowCallback mWorkFlowListener;
     private String mUserId;
 
+    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("add_current_device_with_mnemonics");
 
     private EnterMnemonicsPresenter() {
     }
@@ -46,7 +51,7 @@ class EnterMnemonicsPresenter extends BasePresenter<EnterMnemonicsView> implemen
             return;
         }
 
-        getMvpView().showProgress(true, "Authorizing...");
+        getMvpView().showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
 
         OstSdk.authorizeCurrentDeviceWithMnemonics(
                 mUserId,

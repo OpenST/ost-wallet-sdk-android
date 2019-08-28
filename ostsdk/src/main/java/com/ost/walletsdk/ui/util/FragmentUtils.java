@@ -32,6 +32,10 @@ public class FragmentUtils {
 
     public static void addFragment(int contId, Fragment fg,
                                    FragmentActivity fragmentAct, String tag) {
+        if (WorkflowActivityLifecycleListener.getInstance().isAppInBackground()) {
+            WorkflowActivityLifecycleListener.getInstance().setPendingAddFragment(contId, fg ,fragmentAct, tag);
+            return;
+        }
         KeyBoard.hideKeyboard(fragmentAct);
         FragmentTransaction transaction = fragmentAct
                 .getSupportFragmentManager().beginTransaction();
@@ -42,6 +46,10 @@ public class FragmentUtils {
 
     public static void addFragmentWithoutBackStack(int contId, Fragment fg,
                                                    FragmentActivity fragmentAct) {
+        if (WorkflowActivityLifecycleListener.getInstance().isAppInBackground()) {
+            WorkflowActivityLifecycleListener.getInstance().setPendingAddFragmentWithoutBackStack(contId, fg ,fragmentAct);
+            return;
+        }
         KeyBoard.hideKeyboard(fragmentAct);
         FragmentTransaction transaction = fragmentAct
                 .getSupportFragmentManager().beginTransaction();
@@ -124,6 +132,10 @@ public class FragmentUtils {
     }
 
     public static void goBack(FragmentActivity fragmentAct) {
+        if (WorkflowActivityLifecycleListener.getInstance().isAppInBackground()) {
+            WorkflowActivityLifecycleListener.getInstance().goBack(fragmentAct);
+            return;
+        }
         KeyBoard.hideKeyboard(fragmentAct);
         FragmentTransaction transaction = fragmentAct.getSupportFragmentManager().beginTransaction();
         transaction.remove(FragmentUtils.getTopFragment(fragmentAct, R.id.layout_container));

@@ -13,20 +13,14 @@ import com.ost.walletsdk.workflows.errors.OstErrors;
 public class OstResetPinWorkflow extends OstWorkFlowActivity {
 
     @Override
-    boolean invalidState() {
-        if (super.invalidState()) return true;
+    void ensureValidState() {
+        super.ensureValidState();
 
         if (!OstUser.CONST_STATUS.ACTIVATED.equalsIgnoreCase(
                 OstUser.getById(mUserId).getStatus()
         )) {
-            mWorkFlowListener.flowInterrupt(
-                    getWorkflowContext(),
-                    new OstError("owfa_oc_rp_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED)
-            );
-            finish();
-            return true;
+            throw new OstError("owfa_evs_rp_1", OstErrors.ErrorCode.USER_NOT_ACTIVATED);
         }
-        return false;
     }
 
     @Override

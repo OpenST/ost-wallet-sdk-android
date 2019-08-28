@@ -33,6 +33,8 @@ import org.web3j.utils.Numeric;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -85,7 +87,7 @@ public class OstSession extends OstBaseEntity {
     }
     private static List<OstSession> getSessions(String parentId, String ...statuses) {
         OstSession[] ostSessions = getSessionsByParentId(parentId);
-        List<OstSession> activeSessionList = new ArrayList<>();
+        ArrayList<OstSession> activeSessionList = new ArrayList<>();
         for (OstSession ostSession: ostSessions) {
             for (String status : statuses) {
                 if (status.equalsIgnoreCase(ostSession.getStatus())) {
@@ -95,6 +97,20 @@ public class OstSession extends OstBaseEntity {
             }
 
         }
+        Collections.sort(activeSessionList, new Comparator<OstSession>() {
+            @Override
+            public int compare(OstSession o1, OstSession o2) {
+                Double sessionATimestamp = o1.getUpdatedTimestamp();
+                sessionATimestamp = Math.abs( sessionATimestamp );
+
+                Double sessionBTimestamp = o2.getUpdatedTimestamp();
+                sessionBTimestamp = Math.abs( sessionBTimestamp );
+
+                // Sort in increasing order of timestamp.
+                Double diff = (sessionATimestamp - sessionBTimestamp);
+                return diff.intValue();
+            }
+        });
         return activeSessionList;
     }
 
@@ -192,16 +208,16 @@ public class OstSession extends OstBaseEntity {
         super.processJson(jsonObject);
     }
 
-    public String signTransaction(JSONObject jsonObject, String userId) throws Exception {
-        byte[] data = new OstSecureKeyModelRepository().getByKey(getAddress()).getData();
-        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(jsonObject).toEIP1077TransactionHash()), ECKeyPair.create(OstAndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data)));
-        String signedMessage = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + Integer.toHexString(signatureData.getV() & 0xFF);
-        return signedMessage;
-    }
-
-    public String signTransaction(OstSession.Transaction transaction, String userId) throws Exception {
-        return signTransaction(transaction.toJSONObject(), userId);
-    }
+//    public String signTransaction(JSONObject jsonObject, String userId) throws Exception {
+//        byte[] data = new OstSecureKeyModelRepository().getByKey(getAddress()).getData();
+//        Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(new EIP1077(jsonObject).toEIP1077TransactionHash()), ECKeyPair.create(OstAndroidSecureStorage.getInstance(OstSdk.getContext(), userId).decrypt(data)));
+//        String signedMessage = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + Integer.toHexString(signatureData.getV() & 0xFF);
+//        return signedMessage;
+//    }
+//
+//    public String signTransaction(OstSession.Transaction transaction, String userId) throws Exception {
+//        return signTransaction(transaction.toJSONObject(), userId);
+//    }
 
     @Override
     public String getId() {
@@ -220,6 +236,10 @@ public class OstSession extends OstBaseEntity {
     }
 
 
+    /**
+     * @deprecated TokenHolderAddress is not available in Session. Please use user.getTokenHolderAddress method instead.
+     * @return Will always return null.
+     */
     public String getTokenHolderAddress() {
         String tokenHolderAddress = this.getJsonDataPropertyAsString(OstSession.TOKEN_HOLDER_ADDRESS);
         if (null != tokenHolderAddress) {

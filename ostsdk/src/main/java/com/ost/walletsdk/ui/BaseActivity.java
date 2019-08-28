@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.util.DialogFactory;
+import com.ost.walletsdk.ui.util.WorkflowActivityLifecycleListener;
 
 
 public abstract class BaseActivity extends AppCompatActivity implements BaseView {
@@ -53,8 +54,21 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        WorkflowActivityLifecycleListener.getInstance().onActivityResumed(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        WorkflowActivityLifecycleListener.getInstance().onActivityPaused(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        WorkflowActivityLifecycleListener.getInstance().onActivityDestroyed(this);
     }
 
     @Override

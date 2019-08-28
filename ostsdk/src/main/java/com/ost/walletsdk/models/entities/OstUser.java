@@ -12,20 +12,23 @@ package com.ost.walletsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;
 import com.ost.walletsdk.models.Impls.OstModelFactory;
+import com.ost.walletsdk.models.Impls.OstSessionKeyModelRepository;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.web3j.crypto.Keys;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import io.reactivex.annotations.NonNull;
 
 /**
  * To hold User info
@@ -84,18 +87,47 @@ public class OstUser extends OstBaseEntity {
     }
 
     public OstSession getActiveSession(String spendingBtAmountInWei) {
-        List<OstSession> ostActiveSessionList = OstSession.getActiveSessions(getId());
-        String currentTime = String.valueOf(System.currentTimeMillis());
-        for (OstSession ostSession : ostActiveSessionList) {
-            String expirationTimestamp = ostSession.getExpirationTimestamp();
-            BigInteger spendingLimitBI = new BigInteger(ostSession.getSpendingLimit());
-            BigInteger spendingBtAmountInWeiBI = new BigInteger(spendingBtAmountInWei);
-            if (spendingLimitBI.compareTo(spendingBtAmountInWeiBI) >= 0 && expirationTimestamp.compareTo(currentTime) > 0) {
-                return ostSession;
-            }
+        List<OstSession> ostActiveSessionList = this.getActiveSessionsForBtAmountInWei(spendingBtAmountInWei);
+        if ( null != ostActiveSessionList && ostActiveSessionList.size() > 0  ) {
+            // Always use the first one as list is ordered in increasing order of absolute value of `updated_timestamp` of session key.
+            return ostActiveSessionList.get(0);
         }
+
         Log.e(TAG, "No Active session key available");
         return null;
+    }
+
+    public List<OstSession> getActiveSessionsForBtAmountInWei(@Nullable String minimumSpendingLimitInWei) {
+        List<OstSession> activeSessionList = new ArrayList<>();
+
+        //Sanitize
+        if ( null == minimumSpendingLimitInWei) {
+            minimumSpendingLimitInWei = "0";
+        }
+
+        // Prepare for comparision.
+        BigInteger minimumSpendingLimit = new BigInteger(minimumSpendingLimitInWei);
+        String currentTime = String.valueOf(System.currentTimeMillis());
+        OstSessionKeyModelRepository keyModelRepository = new OstSessionKeyModelRepository();
+
+        // Get all active sessions from DB.
+        List<OstSession> allActiveSessionList = OstSession.getActiveSessions(getId());
+
+        for (OstSession ostSession : allActiveSessionList) {
+            String expirationTimestamp = ostSession.getExpirationTimestamp();
+            // Session spending limit.
+            BigInteger sessionSpendingLimit = new BigInteger(ostSession.getSpendingLimit());
+
+            //Make sure the session meets criteria.
+            if (sessionSpendingLimit.compareTo( minimumSpendingLimit ) >= 0 && expirationTimestamp.compareTo( currentTime ) > 0) {
+                // Make sure sdk has the session key.
+                OstSessionKey sessionKey = keyModelRepository.getByKey(ostSession.getAddress());
+                if ( null != sessionKey ) {
+                    activeSessionList.add( ostSession );
+                }
+            }
+        }
+        return activeSessionList;
     }
 
     public enum UserStatus {
@@ -105,7 +137,7 @@ public class OstUser extends OstBaseEntity {
         ACTIVATED
     }
 
-    public static UserStatus statusFromString(@NonNull  String status) {
+    public static UserStatus statusFromString(@NonNull String status) {
         switch ( status.toLowerCase() ) {
             case "created": return UserStatus.CREATED;
             case "activating": return UserStatus.ACTIVATING;

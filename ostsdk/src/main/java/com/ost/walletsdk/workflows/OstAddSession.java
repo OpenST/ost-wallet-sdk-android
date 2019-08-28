@@ -130,9 +130,6 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
             return postErrorInterrupt("wf_as_pr_as_4", OstErrors.ErrorCode.POLLING_TIMEOUT);
         }
 
-        Log.i(TAG, "Syncing Entity: Sessions");
-        new OstSdkSync(mUserId,OstSdkSync.SYNC_ENTITY.SESSION).perform();
-
         Log.i(TAG, "Response received for Add session");
         return postFlowComplete(
                 new OstContextEntity(OstSession.getById(sessionAddress), OstSdk.SESSION)

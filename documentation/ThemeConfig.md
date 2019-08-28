@@ -71,7 +71,7 @@ Here, we refer follwing components as 'Button':
 
 The following UI components properties supported by button:
 
-| Configuration Keys   | Type               | 
+| Configuration Keys   | Type               |
 | -------------------- | :----------------: |
 | size                 | number             |
 | font                 | string             |
@@ -79,9 +79,29 @@ The following UI components properties supported by button:
 | background_color     | hex value(String)  |
 | system_font_weight   | string             |
 
+### EditText
+
+The following UI component properties supported by EditText:
+
+| Configuration Keys   | Type               |
+| -------------------- | :----------------: |
+| size                 | number             |
+| color                | hex value(String)  |
+| background_color     | hex value(String)  |
+| system_font_weight   | string             |
+| placeholder          | JSON Object        |
+
+The following are the placeholder properties
+
+| Configuration Keys   | Type               |
+| -------------------- | :----------------: |
+| size                 | number             |
+| color                | hex value(String)  |
+| system_font_weight   | string             |
+
 ### Custom Fonts
 
-To support custom fonts in ThemeConfig json, Add object with key **fonts** having mapping of font with font relative path from asset directory. 
+To support custom fonts in ThemeConfig json, Add object with key **fonts** having mapping of font with font relative path from asset directory.
 To use custom font in component, add components with *font* key with value pointing to custom font mapping object. Refer below example
 
 ```js
@@ -96,28 +116,27 @@ To use custom font in component, add components with *font* key with value point
 }
 ```
 
- ### Navigation Bar
- 
- The following UI components properties supported by navigation bar:
- 
-| Configurable component | Value to Modify                 | 
+### Navigation Bar
+
+The following UI components properties supported by navigation bar:
+
+| Configurable component | Value to Modify                 |
 | ---------------------- | :-----------------------------: |
 | bar logo               | nav_bar_logo_image.asset_name   |
 | bar tint color         | navigation_bar.tint_color       |
 | close icon tint color  | icons.close.tint_color          |
 | close icon tint color  | icons.back.tint_color           |
 
- ### Pin Input(pin_input)
- 
+### Pin Input(pin_input)
+
  The following UI components properties supported by pin component:
- 
-| Configuration Keys   | Type               | 
+
+| Configuration Keys   | Type               |
 | -------------------- | :----------------: |
 | empty_color          | hex value(String)  |
 | filled_color         | hex value(String)  |
- 
 
-## UI Components 
+## UI Components
 
 ![copy-framework-file](images/NavBar.png)
 

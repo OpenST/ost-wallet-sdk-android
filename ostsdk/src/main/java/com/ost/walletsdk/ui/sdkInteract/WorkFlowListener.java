@@ -85,6 +85,11 @@ public class WorkFlowListener implements OstWorkFlowCallback {
         OstUIWorkflowContext uiContext = getContext(ostWorkflowContext);
         Log.d(LOG_TAG, String.format("Flow Complete: WorkFlow Id: %s of Workflow %s", getId(), uiContext.getWorkflowType().toString()));
 
+        if (null != mWorkflowCallbacks.get()) {
+            boolean consumed = mWorkflowCallbacks.get().flowComplete(getId(), getContext(uiContext), ostContextEntity);
+            if (consumed) return;
+        }
+
         mSdkInteract.notifyEvent(getId(), SdkInteract.CALLBACK_TYPE.FLOW_COMPLETE, uiContext, ostContextEntity);
         mSdkInteract.unRegister(this);
     }
@@ -94,6 +99,11 @@ public class WorkFlowListener implements OstWorkFlowCallback {
         OstUIWorkflowContext uiContext = getContext(ostWorkflowContext);
         Log.d(LOG_TAG, String.format("Flow Interrupted: WorkFlow Id: %s of Workflow %s", getId(), uiContext.getWorkflowType().toString()));
 
+        if (null != mWorkflowCallbacks.get()) {
+            boolean consumed = mWorkflowCallbacks.get().flowInterrupt(getId(), getContext(uiContext), ostError);
+            if (consumed) return;
+        }
+
         mSdkInteract.notifyEvent(getId(), SdkInteract.CALLBACK_TYPE.FLOW_INTERRUPT,uiContext, ostError);
         mSdkInteract.unRegister(this);
     }
@@ -102,6 +112,12 @@ public class WorkFlowListener implements OstWorkFlowCallback {
     public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         OstUIWorkflowContext uiContext = getContext(ostWorkflowContext);
         Log.d(LOG_TAG, String.format("Request Acknowledged: WorkFlow Id: %s of Workflow %s", getId(), uiContext.getWorkflowType().toString()));
+
+        if (null != mWorkflowCallbacks.get()) {
+            boolean consumed = mWorkflowCallbacks.get().requestAcknowledged(getId(), getContext(uiContext), ostContextEntity);
+            if (consumed) return;
+        }
+
         mSdkInteract.notifyEvent(getId(), SdkInteract.CALLBACK_TYPE.REQUEST_ACK, uiContext, ostContextEntity);
     }
 

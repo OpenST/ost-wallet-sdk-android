@@ -13,7 +13,6 @@ package com.ost.walletsdk.ui.managedevices;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -33,8 +32,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
 import static com.ost.walletsdk.ui.recovery.RecoveryFragment.SHOW_BACK_BUTTON;
+import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
 
 /**
  * A fragment representing a list of Items.
@@ -97,6 +96,10 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
             mUserId = getArguments().getString(USER_ID);
             mShowBackButton = getArguments().getBoolean(SHOW_BACK_BUTTON);
             mDeviceListPresenter.setUserId(mUserId);
+
+            mDeviceListPresenter.setLoaderString(
+                    StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString()
+            );
         }
     }
 
@@ -105,14 +108,16 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
                              Bundle savedInstanceState) {
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.ost_fragment_device_list, container, false);
 
+        final JSONObject contentPageConfig = contentConfig.optJSONObject("device_list");
+
         mHeadingTextView = ((TextView) view.findViewById(R.id.tv_heading));
         mHeadingTextView.setText(
-                StringConfig.instance(contentConfig.optJSONObject("title_label")).getString()
+                StringConfig.instance(contentPageConfig.optJSONObject("title_label")).getString()
         );
 
         mSubHeadingTextView = ((TextView) view.findViewById(R.id.tv_sub_heading));
         mSubHeadingTextView.setText(
-                StringConfig.instance(contentConfig.optJSONObject("info_label")).getString()
+                StringConfig.instance(contentPageConfig.optJSONObject("info_label")).getString()
         );
         Context context = view.getContext();
 
@@ -128,7 +133,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
                 ? DeviceListRecyclerViewAdapter.newInstance(mDeviceList ,mListener, mUserId)
                 : InitiateRecoveryRecyclerViewAdapter.newInstance(mDeviceList, mListener, mUserId);
 
-        mDeviceListRecyclerViewAdapter.mCellConfig = contentConfig.optJSONObject("cell");
+        mDeviceListRecyclerViewAdapter.mCellConfig = contentPageConfig.optJSONObject("cell");
 
         mDeviceListPresenter.attachView(this);
         final LinearLayoutManager layoutManager = new WrapLinearLayoutManager(getContext());
@@ -187,5 +192,10 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
     public void notifyDataSetChanged() {
         mDeviceListRecyclerViewAdapter.notifyDataSetChanged();
         updateDeviceCount(mDeviceListRecyclerViewAdapter.getItemCount());
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        mPullToRefresh.setRefreshing(refreshing);
     }
 }
