@@ -63,7 +63,8 @@ Then sync you dependencies through gradle<br/>
         "SESSION_BUFFER_TIME": 3600,
         "PRICE_POINT_CURRENCY_SYMBOL": "USD",
         "PRICE_POINT_TOKEN_SYMBOL": "OST",
-        "USE_SEED_PASSWORD": false
+        "USE_SEED_PASSWORD": false,
+        "NO_OF_SESSIONS_ON_ACTIVATE_USER": 1
   }
  ```
 
@@ -74,6 +75,7 @@ Then sync you dependencies through gradle<br/>
 5. SESSION_BUFFER_TIME: Buffer expiration time for session keys in seconds. Default value is 3600 seconds.
 6. USE_SEED_PASSWORD: The seed password is salt to PBKDF2 used to generate seed from the mnemonic. When `UseSeedPassword` set to true, different deterministic salts are used for different keys.
 7. PRICE_POINT_TOKEN_SYMBOL: This is the symbol of base currency. So its value will be `OST`.
+8. NO_OF_SESSIONS_ON_ACTIVATE_USER: No of session keys to be created and whitelisted while activating user. 
 
 
 - Place the file under main directory's assets folder <br>
@@ -378,8 +380,22 @@ OstUser getUser(userId)
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
 
 
+### 3. getCurrentDeviceForUserId
+Method to get User's current device by Id.</br>
+This is a synchronous method and must be used only after calling `setupDevice` workflow.</br>
+This method returns OstToken only if available with SDK. Returns `null` otherwise.</br>
+It does NOT make any server side calls.
 
-### 3. getToken
+```java
+OstDevice getCurrentDeviceForUserId(String userId)
+```
+  
+| Parameter | Description |
+|---|---|
+| **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
+
+
+### 4. getToken
 This returns the token entity.
 
 ```java
@@ -394,7 +410,7 @@ OstToken getToken(tokenId)
 
 
 
-### 4. isBiometricEnabled
+### 5. isBiometricEnabled
 To get the biometric preferneces call this function.
 
 ```java
@@ -409,6 +425,25 @@ boolean isBiometricEnabled(userId)
 
 
 
+### 6. getActiveSessionsForUserId
+
+Method to get user's active sessions available in current device that can execute transactions of given spending limit.</br>
+This is a synchronous method and must be used only after calling `setupDevice` workflow.
+
+```java
+List<OstSession> getActiveSessionsForUserId(@NonNull String userId, @Nullable String minimumSpendingLimitInWei)
+```
+
+| Parameter | Description |
+|---|---|
+| **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
+| **minimumSpendingLimitInWei** <br> **String**	| Minimum spending limit of the sessions |
+
+This can also be initialized without `minimumSpendingLimitInWei`</br>
+
+```java
+List<OstSession> getActiveSessionsForUserId(@NonNull String userId)
+```
 <br>
 
 

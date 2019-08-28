@@ -31,4 +31,6 @@ public interface Theme {
     NavigationConfig getNavigationBar();
 
     PinViewConfig getPinViewConfig();
+
+    EditTextUIConfig getEditText();
 }

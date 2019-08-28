@@ -99,6 +99,10 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
 
         final EditText mnemonicsPhrase = ((EditText)viewGroup.findViewById(R.id.et_mnemonics_phrase));
 
+        mnemonicsPhrase.setHint(
+                StringConfig.instance(contentConfig.optJSONObject("placeholder")).getString()
+        );
+
         recoverButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,7 +111,7 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
         });
 
         mEnterMnemonicsPresenter.attachView(this);
-        AppBar appBar = AppBar.newInstance(getContext(), true);
+        AppBar appBar = AppBar.newInstance(getContext(), false);
         setUpAppBar(viewGroup, appBar);
     }
 

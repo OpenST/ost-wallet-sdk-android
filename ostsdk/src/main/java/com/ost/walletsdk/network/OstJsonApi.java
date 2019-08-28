@@ -1,9 +1,11 @@
 package com.ost.walletsdk.network;
 
+import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 
@@ -13,7 +15,6 @@ import org.json.JSONObject;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
-import android.os.Handler;
 
 public class OstJsonApi {
     private final static ThreadPoolExecutor REQUEST_API_THREAD_POOL_EXECUTOR = (ThreadPoolExecutor) Executors
@@ -273,6 +274,43 @@ public class OstJsonApi {
                 error = (OstError) err;
             } else {
                 error = new OstError("ojsonapi_egt_2", ErrorCode.INVALID_API_RESPONSE);
+            }
+            sendErrorCallback(callback, error, response);
+        }
+    }
+    // endregion
+
+    // region - getPendingRecovery
+    /**
+     * Api to get current user device.
+     *
+     * @param userId User Id of the current logged-in user.
+     * @param callback callback where to receive data/error.
+     */
+    public static void getCurrentDevice(@NonNull String userId, @NonNull OstJsonApiCallback callback) {
+        getAsyncQueue().submit(new Runnable() {
+            @Override
+            public void run() {
+                execGetCurrentDevice(userId, callback);
+            }
+        });
+    }
+
+    private static void execGetCurrentDevice(@NonNull String userId, @NonNull OstJsonApiCallback callback) {
+        JSONObject response = null;
+
+        try {
+            OstApiClient apiClient = new OstApiClient(userId);
+            String currentDevice = OstSdk.getUser(userId).getCurrentDevice().getAddress();
+            response = apiClient.getDevice(currentDevice);
+            JSONObject data = getDataFromApiResponse( response );
+            sendSuccessCallback(callback, data);
+        } catch (Throwable err) {
+            OstError error = null;
+            if ( err instanceof OstError ) {
+                error = (OstError) err;
+            } else {
+                error = new OstError("ojsonapi_egcd_1", ErrorCode.SDK_ERROR);
             }
             sendErrorCallback(callback, error, response);
         }
