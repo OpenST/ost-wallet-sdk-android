@@ -189,7 +189,7 @@ public class App extends Application {
 
 1. `Workflows`: Workflows are the core functions provided by wallet SDK to do wallet related actions. Workflows can be called directly by importing the SDK.
 
-* Application must confirm to `OstWorkFlowCallback` interface. The `OstWorkFlowCallback` interface defines methods that allow applications to interact with Android Wallet SDK.
+    * Application must confirm to `OstWorkFlowCallback` interface. The `OstWorkFlowCallback` interface defines methods that allow applications to interact with Android Wallet SDK.
 
 2. `Getters`: The SDK provides getter methods that applications can use for various purposes. These methods provide the application with data as available in the device's database. These functions are synchronous and will return the value when requested. 
 
