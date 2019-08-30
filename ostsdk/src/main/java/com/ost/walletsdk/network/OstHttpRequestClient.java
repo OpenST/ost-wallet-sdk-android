@@ -16,6 +16,8 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.datatheorem.android.trustkit.TrustKit;
+import com.datatheorem.android.trustkit.config.DomainPinningPolicy;
+import com.datatheorem.android.trustkit.config.TrustKitConfiguration;
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
 import com.ost.walletsdk.OstConfigs;
@@ -122,6 +124,9 @@ public class OstHttpRequestClient {
         } catch (MalformedURLException e) {
             errorLog(TAG, "URL parsing error");
         }
+
+        ensureTrustKitInitialization(hostName);
+
         client = new OkHttpClient.Builder()
                 .sslSocketFactory(TrustKit.getInstance().getSSLSocketFactory(hostName),
                         TrustKit.getInstance().getTrustManager(hostName))
@@ -131,6 +136,16 @@ public class OstHttpRequestClient {
                 .dispatcher(dispatcher)
                 .retryOnConnectionFailure(false)
                 .build();
+
+    }
+
+    private void ensureTrustKitInitialization(String hostName) {
+        TrustKitConfiguration configuration = TrustKit.getInstance().getConfiguration();
+        DomainPinningPolicy domainPinningPolicy = configuration.getPolicyForHostname(hostName);
+        if (null == domainPinningPolicy) {
+            throw new RuntimeException("OstSdk policy not initialized");
+        }
+        //Todo:: Public key check Set<PublicKeyPin> publicKeyPins = domainPinningPolicy.getPublicKeyPins();
 
     }
 
