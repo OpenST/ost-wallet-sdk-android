@@ -193,7 +193,7 @@ public class App extends Application {
 
 2. `Getters`: The SDK provides getter methods that applications can use for various purposes. These methods provide the application with data as available in the device's database. These functions are synchronous and will return the value when requested. 
 
-3. `JSON APIs`: Allow application to access OST Platform APIs
+3. `JSON APIs`: Allows application to access OST Platform APIs
 
 
 ## Workflows
