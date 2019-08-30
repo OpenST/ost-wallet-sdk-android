@@ -353,7 +353,7 @@ To change the PIN.
 
 
 ### initiateDeviceRecovery
-A user can control their tokens using their authorized devices. If the user loses their authorized device, she can recover access to their tokens by authorizing a new device by initiating the recovery process.
+A user can control their tokens using their authorized device(s). If a user loses their authorized device, the user can recover access to her tokens by authorizing a new device by initiating the recovery process.
 
 ```java
 void initiateDeviceRecovery(String userId, 
