@@ -2,7 +2,6 @@
 
 OST JSON APIs are a set of *asynchronous* methods that make API calls to OST Platform servers.
 
-
 ## Table of Contents
 
 - [Before We Begin](#before-we-begin)
@@ -35,8 +34,6 @@ OST JSON APIs are a set of *asynchronous* methods that make API calls to OST Pla
     - [Sample Response](#sample-response-6)
 
 
-
-
 <a id="before-we-begin"></a>
 ## Before We Begin
 - Although it is **NOT RECOMMENDED**, but if your app needs to allow multiple users to login on same device, the app must:
@@ -46,14 +43,14 @@ OST JSON APIs are a set of *asynchronous* methods that make API calls to OST Pla
 - App must perform [setupDevice](../README.md#1-setupdevice) workflow <em><b>before</b></em> initiating any JSON API.
 - All `OstJsonApi` methods expect `userId` as first parameter because all requests need to be signed by the user's API key.
 - It's always good to check if the device can make API calls by calling `OstSdk.getCurrentDeviceForUserId` method.
-  - Any device with status `REGISTERED`, `AUTHORIZING`, `AUTHORIZED`, `RECOVERING` or `REVOKING` can make the API call.
+  - Any device with status `REGISTERED`, `AUTHORIZING`, `AUTHORIZED`, `RECOVERING` or `REVOKING` can make this API call.
 
 
 <a id="json-api-types"></a>
 ## JSON API Types
 The JSON APIs can be categorized into 2 groups.
-* [Entity API](#entity-api) - The APIs that get entities (E.G. current-device, price-point, balance etc).
-* [List API](#list-api) - The APIs that get list of entities and support pagination (E.G. device list, transactions).
+* [Entity API](#entity-api) - The APIs that get entities (e.g. current-device, price-point, balance etc.)
+* [List API](#list-api) - The APIs that get list of entities and support pagination (e.g. device list, transactions)
 
 
 <a id="importing-ostjsonapi"></a>
@@ -86,10 +83,9 @@ import com.ost.walletsdk.OstSdk;
 
 <a id="get-current-device"></a>
 ### Get Current Device
-
 API to get user's current device.
-> While the equivalent getter method `OstSdk.getCurrentDeviceForUserId` gives the data stored in Sdk's database, 
-> this method makes an API call to OST-Platform.
+> While the equivalent getter method `OstSdk.getCurrentDeviceForUserId` gives the data stored in SDK's database, 
+> this method makes an API call to OST Platform.
 
 <a id="usage"></a>
 ##### Usage
@@ -127,10 +123,8 @@ OstJsonApi.getCurrentDevice(userId, ostJsonApiCallback);
 }
 ```
 
-
 <a id="get-balance"></a>
 ### Get Balance
-
 API to get user's balance.
 
 <a id="usage-1"></a>
@@ -170,8 +164,7 @@ OstJsonApi.getBalance(userId, ostJsonApiCallback);
 
 <a id="get-price-points"></a>
 ### Get Price Point
-
-API to get price-points of Token's staking currency (e.g. USDC, OST).
+API to get price-points of token's staking currency (OST or USDC).
 > This API call is generally needed to compute the current fiat value to your brand-tokens. 
 > E.g. displaying user's balance in fiat.
 
@@ -212,10 +205,8 @@ OstJsonApi.getPricePoints(userId, ostJsonApiCallback);
 }
 ```
 
-
 <a id="get-balance-and-price-points"></a>
 ### Get Balance And Price Points
-
 This is a convenience method that makes `OstJsonApi.getBalanceForUserId` and `OstJsonApi.getPricePointForUserId` API calls and merges the response.
 
 <a id="usage-3"></a>
@@ -264,7 +255,6 @@ OstJsonApi.getBalanceWithPricePoints(userId, ostJsonApiCallback);
 
 <a id="get-pending-recovery"></a>
 ### Get Pending Recovery
-
 API to get user's pending recovery. A pending recovery is created when the user recovers the device using their PIN.
 > This API will respond with `UNPROCESSABLE_ENTITY` API error code when user does not have any recovery in progress.
 
@@ -341,14 +331,12 @@ The `getPendingRecoveryForUserId` API will respond with `UNPROCESSABLE_ENTITY` A
 
 <a id="list-api"></a>
 ## List API
-
 All `List` APIs support pagination. The response of all `List` APIs has an extra attribute `meta`.
 To determine if next page is available, the app should look at `meta["next_page_payload"]`. 
 If `meta["next_page_payload"]` is an empty object (`{}`), next page is not available.
 
 <a id="get-transactions"></a>
 ### Get Transactions
-
 API to get user's transactions.
 
 <a id="usage-5"></a>
@@ -363,7 +351,6 @@ String userId = "71c59448-ff77-484c-99d8-abea8a419836";
 JSONObject nextPagePayload = null;
 
 OstJsonApiCallbackImpl ostJsonApiCallback = new OstJsonApiCallbackImpl();
-
 
  /**
      * Api to get user transactions. Transactions of only current logged-in user can be fetched.
@@ -383,10 +370,9 @@ OstJsonApi.getTransactions(userId, nextPagePayload, ostJsonApiCallback);
 */
 ```
 
-
 <a id="sample-response-5"></a>
 ##### Sample Response
-Please refer [Transaction Object](https://dev.ost.com/platform/docs/api/#transactions) for detailed description.
+Please refer to the [Transactions Object](https://dev.ost.com/platform/docs/api/#transactions) for a detailed description.
 ```json
 {
   "meta": {
