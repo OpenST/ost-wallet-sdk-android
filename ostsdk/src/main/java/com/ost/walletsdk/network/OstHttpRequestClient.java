@@ -168,8 +168,8 @@ public class OstHttpRequestClient {
         Set<PublicKeyPin> sdkPublicKeyPins = sdkDomainPinningPolicy.getPublicKeyPins();
         Set<PublicKeyPin> publicKeyPins = domainPinningPolicy.getPublicKeyPins();
 
-        for (PublicKeyPin publicKeyPin: (PublicKeyPin[]) sdkPublicKeyPins.toArray()) {
-            if (!publicKeyPins.contains(publicKeyPin)) {
+        for (PublicKeyPin sdkPublicKeyPin : sdkPublicKeyPins) {
+            if (!publicKeyPins.contains(sdkPublicKeyPin)) {
                 throw new OstError("ost_hrc_etki_3", OstErrors.ErrorCode.INVALID_CERTIFICATE);
             }
         }
