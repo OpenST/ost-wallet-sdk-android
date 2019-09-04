@@ -12,6 +12,7 @@ package com.ost.ostwallet;
 
 import android.app.Application;
 
+import com.datatheorem.android.trustkit.TrustKit;
 import com.ost.ostwallet.network.PersistentCookieStore;
 
 import java.net.CookieHandler;
@@ -30,6 +31,7 @@ public class App extends Application {
                 CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(cookieManager);
 
+        TrustKit.initializeWithNetworkSecurityConfiguration(getApplicationContext(), R.xml.network_security_config);
         AppProvider.init(getApplicationContext());
         AppProvider.get().setPersistentCookieStore(persistentCookieStore);
     }

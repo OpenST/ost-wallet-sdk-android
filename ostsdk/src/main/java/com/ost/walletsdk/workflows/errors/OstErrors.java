@@ -26,6 +26,7 @@ public class OstErrors {
             case INVALID_CERTIFICATE: return "Certificate provided by Ost platform is invalid Or it has been compromised. Please re-try in some other network and if the problem persists contact support@ost.com .";
             case INVALID_USER_ID: return "Unable to recognize the user id. Please inspect for what is being sent, rectify and re-submit.";
             case INVALID_SDK_URL: return "Invalid OST server url";
+            case INVALID_NETWORK_SECURITY_CONFIG: return "Invalid network_security_config file";
             case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
             case OST_PLATFORM_API_ERROR: return "OST Platform Api returned error.";
 
@@ -257,6 +258,7 @@ public class OstErrors {
         INVALID_API_RESPONSE,
         INVALID_USER_ID,
         INVALID_SDK_URL,
+        INVALID_NETWORK_SECURITY_CONFIG,
         INVALID_WORKFLOW_CALLBACK,
         DEVICE_NOT_SETUP,
         USER_NOT_ACTIVATED,

@@ -33,6 +33,8 @@ android {
         }
     }
 
+    resourcePrefix 'OST_'
+
     sourceSets {
         androidTest.assets.srcDirs +=
                 files("$projectDir/schemas".toString())
@@ -74,15 +76,13 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$rootProject.roomVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.roomVersion"
 
-
     // https://mvnrepository.com/artifact/com.google.guava/guava
     api 'com.google.guava:guava:18.0'
-
 
     // Zxing barcode dependency
     api 'me.dm7.barcodescanner:zxing:1.9.8'
 
-    implementation 'com.datatheorem.android.trustkit:trustkit:1.1.2'
+    api 'com.datatheorem.android.trustkit:trustkit:1.1.2'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'android.arch.persistence.room:testing:1.1.1'
