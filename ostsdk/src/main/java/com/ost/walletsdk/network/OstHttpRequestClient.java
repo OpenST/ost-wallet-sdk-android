@@ -130,7 +130,7 @@ public class OstHttpRequestClient {
             errorLog(TAG, "URL parsing error");
         }
 
-        ensureTrustKitInitialization(hostName);
+        ensureTrustKitInitialization();
 
         client = new OkHttpClient.Builder()
                 .sslSocketFactory(TrustKit.getInstance().getSSLSocketFactory(hostName),
@@ -144,42 +144,41 @@ public class OstHttpRequestClient {
 
     }
 
-    private void ensureTrustKitInitialization(String hostName) {
-        TrustKitConfiguration configuration = TrustKit.getInstance().getConfiguration();
-
-        //ensure sdk api config policy present or not
-        DomainPinningPolicy domainPinningPolicy = configuration.getPolicyForHostname(hostName);
-        if (null == domainPinningPolicy) {
-            throw new OstError("ost_hrc_etki_1", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
-        }
+    private void ensureTrustKitInitialization() {
+        TrustKitConfiguration appTrustKitConfiguration = TrustKit.getInstance().getConfiguration();
 
         //Get Sdk TrustKitConfiguration
-        TrustKitConfiguration trustKitConfiguration;
+        TrustKitConfiguration sdkTrustKitConfiguration;
         try {
-            trustKitConfiguration = TrustKitConfiguration.fromXmlPolicy(
+            sdkTrustKitConfiguration = TrustKitConfiguration.fromXmlPolicy(
                     OstSdk.getContext(), OstSdk.getContext().getResources().getXml(R.xml.ost_network_security_config)
             );
         } catch (XmlPullParserException | IOException e) {
-            throw new OstError("ost_hrc_etki_2", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+            throw new OstError("ost_hrc_etki_1", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
         } catch (CertificateException e) {
-            throw new OstError("ost_hrc_etki_3", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+            throw new OstError("ost_hrc_etki_2", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
         }
 
-        //Get Sdk and public key pins
-        DomainPinningPolicy sdkDomainPinningPolicy =  trustKitConfiguration.getPolicyForHostname(hostName);
-        if (null == sdkDomainPinningPolicy) throw new OstError("ost_hrc_etki_4", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+        //ensure sdk api config policy present or not
+        for (DomainPinningPolicy sdkDomainPinningPolicy: sdkTrustKitConfiguration.getAllPolicies()) {
+            String hostName = sdkDomainPinningPolicy.getHostname();
+            DomainPinningPolicy appDomainPinningPolicy = appTrustKitConfiguration.getPolicyForHostname(hostName);
+            if (null == appDomainPinningPolicy) {
+                throw new OstError("ost_hrc_etki_3", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+            }
 
-        //Get Sdk and public key pins
-        Set<PublicKeyPin> sdkPublicKeyPins = sdkDomainPinningPolicy.getPublicKeyPins();
-        Set<PublicKeyPin> publicKeyPins = domainPinningPolicy.getPublicKeyPins();
+            //Get Sdk and public key pins
+            Set<PublicKeyPin> sdkPublicKeyPins = sdkDomainPinningPolicy.getPublicKeyPins();
+            Set<PublicKeyPin> publicKeyPins = appDomainPinningPolicy.getPublicKeyPins();
 
-        //Validation public key Pins
-        if (sdkPublicKeyPins.size() != publicKeyPins.size()) {
-            throw new OstError("ost_hrc_etki_5", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
-        }
-        for (PublicKeyPin sdkPublicKeyPin : sdkPublicKeyPins) {
-            if (!publicKeyPins.contains(sdkPublicKeyPin)) {
-                throw new OstError("ost_hrc_etki_6", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+            //Validation public key Pins
+            if (sdkPublicKeyPins.size() != publicKeyPins.size()) {
+                throw new OstError("ost_hrc_etki_5", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+            }
+            for (PublicKeyPin sdkPublicKeyPin : sdkPublicKeyPins) {
+                if (!publicKeyPins.contains(sdkPublicKeyPin)) {
+                    throw new OstError("ost_hrc_etki_6", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+                }
             }
         }
     }

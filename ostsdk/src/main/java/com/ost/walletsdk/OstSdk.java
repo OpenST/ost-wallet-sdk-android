@@ -144,8 +144,6 @@ public class OstSdk {
                 TrustKit.initializeWithNetworkSecurityConfiguration(mApplicationContext, R.xml.ost_network_security_config);
             } catch (IllegalStateException exception) {
                 // Already initialized by app.
-            } catch (ConfigurationException exception) {
-                // Configuration is different because app is initializing with different config
             }
             mTrustKitInitialised = true;
         }
