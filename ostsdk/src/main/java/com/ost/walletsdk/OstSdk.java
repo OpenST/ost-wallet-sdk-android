@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.datatheorem.android.trustkit.TrustKit;
+import com.datatheorem.android.trustkit.config.ConfigurationException;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.ost.walletsdk.database.OstSdkDatabase;
 import com.ost.walletsdk.database.OstSdkKeyDatabase;
@@ -143,6 +144,8 @@ public class OstSdk {
                 TrustKit.initializeWithNetworkSecurityConfiguration(mApplicationContext, R.xml.ost_network_security_config);
             } catch (IllegalStateException exception) {
                 // Already initialized by app.
+            } catch (ConfigurationException exception) {
+                // Configuration is different because app is initializing with different config
             }
             mTrustKitInitialised = true;
         }
