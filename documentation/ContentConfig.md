@@ -1,4 +1,4 @@
-# OstWalletUI Content Config
+# OST Wallet UI Content Config
 App developers can configure the text shown on various views displayed by OstWalletUI.
 
 To configure the content, the sdk needs to be provided with [`JSON`](https://developer.android.com/reference/org/json/JSONObject).
@@ -144,7 +144,7 @@ Here, we refer follwing views as 'Pin Input' views:
 * set_new_pin
 * confirm_new_pin
 
-The following UI components are supported by Pin Input views.
+The following UI components are supported by PIN Input views.
 
 | Configuration Keys        | Component Type |
 | ------------------------- |:--------------:|
@@ -153,7 +153,7 @@ The following UI components are supported by Pin Input views.
 | info_label                | label          |
 | terms_and_condition_label | label          |
 
-Here is PIN Input View looks like:
+Here is an example of what the PIN Input View looks like:
 
 ![copy-framework-file](images/PinViewLabelTypes.png)
 
@@ -190,7 +190,6 @@ As of now, `placeholder` is only applicable to `terms_and_condition_label`
 and is NOT supported by other labels.
 ```
 
-
 ## Supported UI Components in Device List Views (device_list)
 
 The following UI components are supported by Device List Views.
@@ -201,7 +200,7 @@ The following UI components are supported by Device List Views.
 | info_label                | label          |
 | action_button             | button text    |
 
-Here is Device List View looks like:
+Here is an example fo what the Device List View looks like:
 
 ![copy-framework-file](images/DeviceListLabelTypes.png)
 

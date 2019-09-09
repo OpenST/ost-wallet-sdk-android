@@ -1,4 +1,4 @@
-# OstWalletUI Theme Config
+# OST Wallet UI Theme Config
 App developers can configure the UI Components available in OstWalletUI.
 
 To configure the content, the sdk needs to be provided with [`JSON`](https://developer.android.com/reference/org/json/JSONObject)
@@ -6,7 +6,6 @@ To configure the content, the sdk needs to be provided with [`JSON`](https://dev
 The default configuration can be found [here](../ostsdk/src/main/assets/ost-theme-config.json).
 
 To support custom font for application, please add your font in <project-directory>/src/main/assets directory
-
 
 ## Dictionary Data Structure
 Here is the small sample `json` representation of the configuration.
@@ -100,9 +99,7 @@ The following are the placeholder properties
 | system_font_weight   | string             |
 
 ### Custom Fonts
-
-To support custom fonts in ThemeConfig json, Add object with key **fonts** having mapping of font with font relative path from asset directory.
-To use custom font in component, add components with *font* key with value pointing to custom font mapping object. Refer below example
+To support custom fonts in ThemeConfig json, Add object with key **fonts** having mapping of font with font relative path from asset directory. To use custom font in component, add components with *font* key with value pointing to custom font mapping object. Refer below example
 
 ```js
 {
@@ -117,7 +114,6 @@ To use custom font in component, add components with *font* key with value point
 ```
 
 ### Navigation Bar
-
 The following UI components properties supported by navigation bar:
 
 | Configurable component | Value to Modify                 |
