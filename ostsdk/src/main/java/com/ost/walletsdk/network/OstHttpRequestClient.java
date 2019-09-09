@@ -16,28 +16,35 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.datatheorem.android.trustkit.TrustKit;
+import com.datatheorem.android.trustkit.config.DomainPinningPolicy;
+import com.datatheorem.android.trustkit.config.PublicKeyPin;
+import com.datatheorem.android.trustkit.config.TrustKitConfiguration;
 import com.google.common.escape.Escaper;
 import com.google.common.net.UrlEscapers;
 import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
+import com.ost.walletsdk.R;
 import com.ost.walletsdk.ecKeyInteracts.OstApiSigner;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
@@ -122,6 +129,9 @@ public class OstHttpRequestClient {
         } catch (MalformedURLException e) {
             errorLog(TAG, "URL parsing error");
         }
+
+        ensureTrustKitInitialization();
+
         client = new OkHttpClient.Builder()
                 .sslSocketFactory(TrustKit.getInstance().getSSLSocketFactory(hostName),
                         TrustKit.getInstance().getTrustManager(hostName))
@@ -132,6 +142,45 @@ public class OstHttpRequestClient {
                 .retryOnConnectionFailure(false)
                 .build();
 
+    }
+
+    private void ensureTrustKitInitialization() {
+        TrustKitConfiguration appTrustKitConfiguration = TrustKit.getInstance().getConfiguration();
+
+        //Get Sdk TrustKitConfiguration
+        TrustKitConfiguration sdkTrustKitConfiguration;
+        try {
+            sdkTrustKitConfiguration = TrustKitConfiguration.fromXmlPolicy(
+                    OstSdk.getContext(), OstSdk.getContext().getResources().getXml(R.xml.ost_network_security_config)
+            );
+        } catch (XmlPullParserException | IOException e) {
+            throw new OstError("ost_hrc_etki_1", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+        } catch (CertificateException e) {
+            throw new OstError("ost_hrc_etki_2", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+        }
+
+        //ensure sdk api config policy present or not
+        for (DomainPinningPolicy sdkDomainPinningPolicy: sdkTrustKitConfiguration.getAllPolicies()) {
+            String hostName = sdkDomainPinningPolicy.getHostname();
+            DomainPinningPolicy appDomainPinningPolicy = appTrustKitConfiguration.getPolicyForHostname(hostName);
+            if (null == appDomainPinningPolicy) {
+                throw new OstError("ost_hrc_etki_3", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+            }
+
+            //Get Sdk and public key pins
+            Set<PublicKeyPin> sdkPublicKeyPins = sdkDomainPinningPolicy.getPublicKeyPins();
+            Set<PublicKeyPin> publicKeyPins = appDomainPinningPolicy.getPublicKeyPins();
+
+            //Validation public key Pins
+            if (sdkPublicKeyPins.size() != publicKeyPins.size()) {
+                throw new OstError("ost_hrc_etki_5", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+            }
+            for (PublicKeyPin sdkPublicKeyPin : sdkPublicKeyPins) {
+                if (!publicKeyPins.contains(sdkPublicKeyPin)) {
+                    throw new OstError("ost_hrc_etki_6", OstErrors.ErrorCode.INVALID_NETWORK_SECURITY_CONFIG);
+                }
+            }
+        }
     }
 
     private static String GET_REQUEST = "GET";
