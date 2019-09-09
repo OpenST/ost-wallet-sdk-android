@@ -33,8 +33,6 @@ android {
         }
     }
 
-    resourcePrefix 'OST_'
-
     sourceSets {
         androidTest.assets.srcDirs +=
                 files("$projectDir/schemas".toString())
