@@ -118,7 +118,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     }
 
     @Override
-    public void gotoDashboard(String workflowId) {
+    public void gotoDashboard(long workflowId) {
         mListener.activateAcknowledged(workflowId);
     }
 
@@ -160,7 +160,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
 
     public interface OnFragmentInteractionListener {
 
-        void activateAcknowledged(String workflowId);
+        void activateAcknowledged(long workflowId);
 
         void openWebView(String url);
     }

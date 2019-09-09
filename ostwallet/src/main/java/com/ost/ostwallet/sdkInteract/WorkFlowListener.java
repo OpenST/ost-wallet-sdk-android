@@ -30,7 +30,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.UUID;
 
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.entity.OstLogEvent;
@@ -45,18 +44,19 @@ public class WorkFlowListener implements OstWorkFlowCallback {
     private static final String LOG_TAG = "OstWorkFlowListener";
     private final SdkInteract mSdkInteract;
 
+    private static long identifier = 0;
     private final DBLog dbLogger;
 
-    public String getId() {
+    public long getId() {
         return mId;
     }
 
-    private final String mId;
+    private final long mId;
 
     WorkFlowListener() {
         this.mSdkInteract = SdkInteract.getInstance();
         this.dbLogger = AppProvider.get().getDBLogger();
-        this.mId = UUID.randomUUID().toString();
+        this.mId = identifier++;
     }
 
     @Override
@@ -103,10 +103,10 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
     @Override
     public void getPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-        Log.d(LOG_TAG, String.format("Get Pin: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflowType().toString()));
+        Log.d(LOG_TAG, String.format("Get Pin: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
         //Store event in db
         dbLogger.log(new OstLogEvent(getId(),
-                ostWorkflowContext.getWorkflowType().toString(),
+                ostWorkflowContext.getWorkflow_type().toString(),
                 "getPin",
                 ""));
 
@@ -115,10 +115,10 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
     @Override
     public void invalidPin(OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
-        Log.d(LOG_TAG, String.format("Invalid Pin: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflowType().toString()));
+        Log.d(LOG_TAG, String.format("Invalid Pin: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
         //Store event in db
         dbLogger.log(new OstLogEvent(getId(),
-                ostWorkflowContext.getWorkflowType().toString(),
+                ostWorkflowContext.getWorkflow_type().toString(),
                 "invalidPin",
                 ""));
 
@@ -127,10 +127,10 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
     @Override
     public void pinValidated(OstWorkflowContext ostWorkflowContext, String userId) {
-        Log.d(LOG_TAG, String.format("Pin Validated: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflowType().toString()));
+        Log.d(LOG_TAG, String.format("Pin Validated: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
         //Store event in db
         dbLogger.log(new OstLogEvent(getId(),
-                ostWorkflowContext.getWorkflowType().toString(),
+                ostWorkflowContext.getWorkflow_type().toString(),
                 "pinValidated",
                 ""));
 
@@ -139,12 +139,12 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
     @Override
     public void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        Log.d(LOG_TAG, String.format("Flow Complete: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflowType().toString()));
+        Log.d(LOG_TAG, String.format("Flow Complete: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
         //Store event in db
         String completeString = String.format("Entity %s ",
-                ostWorkflowContext.getWorkflowType(), null == ostContextEntity ? "null" : ostContextEntity.getEntityType());
+                ostWorkflowContext.getWorkflow_type(), null == ostContextEntity ? "null" : ostContextEntity.getEntityType());
         dbLogger.log(new OstLogEvent(getId(),
-                ostWorkflowContext.getWorkflowType().toString(),
+                ostWorkflowContext.getWorkflow_type().toString(),
                 "flowComplete",
                 completeString));
 
@@ -154,7 +154,7 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
     @Override
     public void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        Log.d(LOG_TAG, String.format("Flow Interrupted: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflowType().toString()));
+        Log.d(LOG_TAG, String.format("Flow Interrupted: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
 
         //region Sdk Error Handling
         if (OstErrors.ErrorCode.WORKFLOW_CANCELLED == ostError.getErrorCode()) {
@@ -162,7 +162,7 @@ public class WorkFlowListener implements OstWorkFlowCallback {
             Log.i(LOG_TAG, "Interrupt Reason: Test-App cancelled the workflow.");
             //Store event in db
             dbLogger.log(new OstLogEvent(getId(),
-                    ostWorkflowContext.getWorkflowType().toString(),
+                    ostWorkflowContext.getWorkflow_type().toString(),
                     "flowInterrupt",
                     "Interrupt Reason: Test-App cancelled the workflow."));
         } else if (ostError.isApiError()) {
@@ -192,10 +192,10 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
     @Override
     public void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        Log.d(LOG_TAG, String.format("Request Acknowledged: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflowType().toString()));
+        Log.d(LOG_TAG, String.format("Request Acknowledged: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
         //Store event in db
         dbLogger.log(new OstLogEvent(getId(),
-                ostWorkflowContext.getWorkflowType().toString(),
+                ostWorkflowContext.getWorkflow_type().toString(),
                 "requestAcknowledged",
                 String.format("Entity type: %s",
                         null == ostContextEntity ? "null" : ostContextEntity.getEntityType())));
@@ -205,10 +205,10 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
     @Override
     public void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
-        Log.d(LOG_TAG, String.format("Verify Data: WorkFlow Id: %s of Workflow %s", getId(), ostWorkflowContext.getWorkflowType().toString()));
+        Log.d(LOG_TAG, String.format("Verify Data: WorkFlow Id: %d of Workflow %s", getId(), ostWorkflowContext.getWorkflow_type().toString()));
         //Store event in db
         dbLogger.log(new OstLogEvent(getId(),
-                ostWorkflowContext.getWorkflowType().toString(),
+                ostWorkflowContext.getWorkflow_type().toString(),
                 "verifyData",
                 String.format("Verify data: %s",
                         (null == ostContextEntity ? new JSONObject() : ostContextEntity.getEntity()).toString()
@@ -258,7 +258,7 @@ public class WorkFlowListener implements OstWorkFlowCallback {
 
         //Store event in db
         dbLogger.log(new OstLogEvent(getId(),
-                ostWorkflowContext.getWorkflowType().toString(),
+                ostWorkflowContext.getWorkflow_type().toString(),
                 "flowInterrupt",
                 stringFormattedError));
     }

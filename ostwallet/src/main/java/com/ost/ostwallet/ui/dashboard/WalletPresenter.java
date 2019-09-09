@@ -84,11 +84,8 @@ class WalletPresenter extends BasePresenter<WalletView> implements
                 if (new CommonUtils().isValidResponse(jsonObject)) {
                     try {
                         JSONObject dataJSONObject =  new CommonUtils().parseJSONData(jsonObject);
-
-                        JSONObject meta = dataJSONObject.optJSONObject("meta");
-                        if (null != meta) nextPayload = meta.optJSONObject("next_page_payload");
-
-                        hasMoreData = (nextPayload != null && !nextPayload.toString().equals("{}"));
+                        nextPayload = dataJSONObject.optJSONObject("meta");
+                        hasMoreData = (nextPayload != null && !nextPayload.getJSONObject("next_page_payload").toString().equals("{}"));
                         JSONArray transactionJSONArray = (JSONArray) new CommonUtils()
                                 .parseResponseForResultType(jsonObject);
                         JSONObject transactionUsers = dataJSONObject.optJSONObject("transaction_users");
