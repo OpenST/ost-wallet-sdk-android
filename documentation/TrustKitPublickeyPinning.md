@@ -1,14 +1,14 @@
 # Public Key Pinning Using TrustKit
-OstSdk uses [TrustKit v1.1.2](https://github.com/datatheorem/TrustKit-Android/tree/1.1.2) for public key pinning. App can have single instance of TrustKit at a time.</br>
-For App to use TrustKit they can initialize TrustKit with their pinning policy.</br>
-**Note:** App have to make sure they initialize TrustKit before OstSdk initialization.
+OstSdk uses [TrustKit v1.1.2](https://github.com/datatheorem/TrustKit-Android/tree/1.1.2) for public key pinning. 
+If your application also uses `TrustKit`, the application may crash. This happens because `  TrustKit.initializeWithNetworkSecurityConfiguration` can be called only once during the application life-cycle. 
+Please read through this document so that both application and sdk can use TrustKit.
+</br>
 
-## TrustKit usage
-Deploying SSL pinning in the App requires initializing TrustKit with a pinning policy (domains, pins, and additional settings). The policy is wrapped in the official [Android N Network Security Configuration](https://developer.android.com/training/articles/security-config.html) </br>
+## Setup TrustKit
+Define your application's `network_security_config` file. 
+> Do not use `ost_network_security_config` as file name. Please use a different name.
 
-App have to define its pinning policy in *network_security_config* file (Don't use *ost_network_security_config* as file name).</br>
-App also have to add pinning policy of OstSdk.
-Please add the below file with you app pinning policy in **Application Pinning Policy** section.
+## Add `api.ost.com` domain-config to `network_security_config`
 ```xml
 <!-- res/xml/network_security_config.xml -->
 <?xml version="1.0" encoding="utf-8"?>
@@ -32,11 +32,15 @@ Please add the below file with you app pinning policy in **Application Pinning P
     </domain-config>
 </network-security-config>
 ```
-## Initializing TrustKit with the Pinning Policy
 
-The path to the XML policy should be specified [in the App's manifest](https://developer.android.com/training/articles/security-config.html#manifest) in order to enable it as the App's [Network Security Configuration](https://developer.android.com/training/articles/security-config.html) on Android N.</br>
-To resolve duplicate networkSecurityConfig error, App should add *tools:replace="android:networkSecurityConfig"* in mainfest:
-
+## Add the `networkSecurityConfig` to the application's `Manifest` file
+To resolve networkSecurityConfig error</br>
+```java
+java.lang.RuntimeException: Manifest merger failed : Attribute application@networkSecurityConfig value=(@xml/network_security_config) from AndroidManifest.xml:25:9-69
+	is also present at [:ostsdk] AndroidManifest.xml:26:18-82 value=(@xml/ost_network_security_config).
+	Suggestion: add 'tools:replace="android:networkSecurityConfig"' to <application> element at AndroidManifest.xml:17:5-55:19 to override.
+```
+App must add `tools:replace="android:networkSecurityConfig"` in mainfest:
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <manifest ... >
@@ -46,11 +50,9 @@ To resolve duplicate networkSecurityConfig error, App should add *tools:replace=
         ...
     </application>
 </manifest>
-
 ```
 
-Then, TrustKit should be initialized:
-
+## Initialize TrustKit before OST Wallet SDK
 ```java
 @Override
 protected void onCreate(Bundle savedInstanceState) {
@@ -66,3 +68,4 @@ protected void onCreate(Bundle savedInstanceState) {
   // Initalize OstSdk  
   OstWalletUI.initialize(getApplicationContext(), BASE_URL);
 }
+```
