@@ -77,7 +77,9 @@ OST Android Wallet SDK...
     + [i). Methods](#i--methods-2)
 - [Steps to use Android mobile SDK through AAR lib](#steps-to-use-android-mobile-sdk-through-aar-lib)
 - [OST Wallet UI](#ost-wallet-ui)
-
+- [Certificate Public Key Pinning](#certificate-public-key-pinning)
+  * [TrustKit usage](#trustKit-usage)
+  * [Initializing TrustKit with the Pinning Policy](#initializing-trustKit-with-the-pinning-policy)
 
 ## Setup
 #### a). Setting minSdkVersion to 22
@@ -946,16 +948,16 @@ dependencies {
 For quick and easy integration with SDK, developers can use built-in user interface components which are configurable and support content and theme customization. All OstWalletSdkUI workflows return workflow-id. The application can subscribe to the events of the workflow using the workflow-id. Please refer [OstWalletUI](./documentation/OstWalletUI.md).
 
 ## Certificate Public Key Pinning
-Application can do certificate public key pinning with the help of OstSdk. 
-Application can leverage TrustKit used by OstSdk for certificate pinning.</br>
-OstSdk exposes TrustKit library apis, So application does not have add TrustKit dependency separately.</br>
+App can do certificate public key pinning with the help of OstSdk. 
+App can leverage TrustKit(Part of OstSdk)for certificate pinning.</br>
+OstSdk exposes TrustKit library apis, So app does not have add TrustKit dependency separately.</br>
 **Note** Application have to make sure they initialize TrustKit before OstSdk initialization.
 
 
 ### TrustKit usage
 Deploying SSL pinning in the App requires initializing TrustKit with a pinning policy (domains, pins, and additional settings). The policy is wrapped in the official [Android N Network Security Configuration](https://developer.android.com/training/articles/security-config.html) </br>
 
-App have to define a security config file having pinning policy of itself and of OstSdk as well.
+App have to define its pinning policy in *network_security_config* file and should also add pinning policy of OstSdk.
 Please add the below file with you app pinning policy in **Application Pinning Policy** section.
 ```xml
 <!-- res/xml/network_security_config.xml -->
@@ -964,6 +966,8 @@ Please add the below file with you app pinning policy in **Application Pinning P
     <!-- Application Pinning Policy Begin -->
     
     <!-- Application Pinning Policy End -->
+    
+    <!-- Pinning Policy of OstSdk -->
     <domain-config>
         <domain includeSubdomains="false">api.ost.com</domain>
         <pin-set>
@@ -1007,6 +1011,8 @@ protected void onCreate(Bundle savedInstanceState) {
 
   // OR using a custom resource (TrustKit can't be initialized twice)
   TrustKit.initializeWithNetworkSecurityConfiguration(this, R.xml.network_security_config);
+  
+  // String BASE_URL = <OstPlatform Url>
   // Initalize OstSdk  
   OstWalletUI.initialize(getApplicationContext(), BASE_URL);
 }
