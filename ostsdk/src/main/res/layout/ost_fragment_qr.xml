@@ -54,11 +54,12 @@
 
         <com.ost.walletsdk.ui.uicomponents.OstC1Label
             android:id="@+id/lbl_device_address"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:layout_centerHorizontal="true"
             android:text="This Device Address" />
 
         <com.ost.walletsdk.ui.uicomponents.OstH4Label

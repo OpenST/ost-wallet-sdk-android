@@ -28,7 +28,7 @@ public class OstErrors {
             case INVALID_SDK_URL: return "Invalid OST server url";
             case INVALID_NETWORK_SECURITY_CONFIG: return "Invalid network_security_config file";
             case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
-            case OST_PLATFORM_API_ERROR: return "OST Platform Api returned error.";
+            case OST_PLATFORM_API_ERROR: return "OST HTTPS certificates were not pinned and initialization has failed. Please check your config file.";
 
 
 
