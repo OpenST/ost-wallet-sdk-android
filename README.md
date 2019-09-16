@@ -77,7 +77,7 @@ OST Android Wallet SDK...
     + [i). Methods](#i--methods-2)
 - [Steps to use Android mobile SDK through AAR lib](#steps-to-use-android-mobile-sdk-through-aar-lib)
 - [OST Wallet UI](#ost-wallet-ui)
-
+- [Public Key Pinning Using TrustKit](#certificate-public-key-pinning)
 
 ## Setup
 #### a). Setting minSdkVersion to 22
@@ -944,3 +944,6 @@ dependencies {
 
 ## OST Wallet UI 
 For quick and easy integration with SDK, developers can use built-in user interface components which are configurable and support content and theme customization. All OstWalletSdkUI workflows return workflow-id. The application can subscribe to the events of the workflow using the workflow-id. Please refer [OstWalletUI](./documentation/OstWalletUI.md).
+
+## Public Key Pinning Using TrustKit
+If your Application is using TrustKit, Please refer [TrustKit Public Key Pinning](./documentation/TrustKitPublickeyPinning.md)
