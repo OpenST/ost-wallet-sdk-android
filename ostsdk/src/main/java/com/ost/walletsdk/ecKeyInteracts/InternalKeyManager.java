@@ -663,6 +663,8 @@ class InternalKeyManager {
             long endTime = System.currentTimeMillis();
             Log.d(TAG+"_CRK", "Ending SCrypt in CRK. Total Time in milliseconds = " + (endTime - startTime) );
             return Bip32ECKeyPair.generateKeyPair(seed);
+        } catch (OutOfMemoryError error) {
+            throw new OstError("c_ikm_crk_2", ErrorCode.OUT_OF_MEMORY_ERROR);
         } catch (Throwable th) {
             //Suppress Error.
             throw new OstError("c_ikm_crk_1", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
@@ -693,6 +695,8 @@ class InternalKeyManager {
         try {
             ecKeyPair = createRecoveryKey(userPassphrase,salt);
             return getKeyAddress(ecKeyPair);
+        } catch (OstError ostError) {
+          throw ostError;
         } catch(Throwable th) {
             //Suppress Error.
             throw new OstError("c_ikm_gra_2", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);

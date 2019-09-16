@@ -29,7 +29,7 @@ public class OstErrors {
             case INVALID_NETWORK_SECURITY_CONFIG: return "Invalid network_security_config file";
             case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
             case OST_PLATFORM_API_ERROR: return "OST Platform Api returned error.";
-
+            case OUT_OF_MEMORY_ERROR: return "Out of Memory Error. Reduce the number of App running on your device and re-enter the pin";
 
 
             case INVALID_WORKFLOW_PARAMS:
@@ -314,7 +314,7 @@ public class OstErrors {
         FAILED_TO_GENERATE_ETH_KEY,
         OST_PLATFORM_API_ERROR,
         CONFIG_READ_FAILED,
-
+        OUT_OF_MEMORY_ERROR,
         USER_ACTIVATING,
 
         //Deprecated
