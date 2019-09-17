@@ -74,8 +74,7 @@ public class PinEntryEditText extends RelativeLayout {
         int width = getResources().getDimensionPixelSize(R.dimen.ost_type_your_pin_size);
 
         setGravity(Gravity.CENTER);
-        setBackgroundColor(Color.RED);
-//        setPadding(0, marginSize,0, marginSize);
+        setBackgroundColor(Color.WHITE);
         setSize(this, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         setupOnClickListener();
         setFocusableInTouchMode(false);
@@ -84,7 +83,7 @@ public class PinEntryEditText extends RelativeLayout {
 
         LinearLayout pinLayout = new LinearLayout(getContext());
         pinLayout.setPadding(0,marginSize, 0, marginSize);
-        pinLayout.setBackgroundColor(Color.GRAY);
+        pinLayout.setBackgroundColor(Color.WHITE);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.addRule(CENTER_IN_PARENT, TRUE);
         pinLayout.setLayoutParams(params);
@@ -97,17 +96,12 @@ public class PinEntryEditText extends RelativeLayout {
             space.setBackgroundColor(Color.WHITE);
             setSize(space, width, height);
             setSize(pin, width, height);
-//            setMarginLeft(pin, marginSize);
-            if (isLastPin(i, pinLenght)) {
-//                setMarginRight(pin, marginSize);
-            }
             pins.add(pin);
             unfillPin(pin);
             pinLayout.addView(pin);
 
             if (!isLastPin(i, pinLenght)) {
                 pinLayout.addView(space);
-//                setMarginRight(pin, marginSize);
             }
         }
     }
@@ -133,15 +127,9 @@ public class PinEntryEditText extends RelativeLayout {
     private void setInvisibleEditText(int pinLenght, int inputType) {
         invisiblePinEditText = new AppCompatEditText(getContext());
         invisiblePinEditText.setTextSize(1);
-//        invisiblePinEditText.setTextColor(Color.WHITE);
-//        invisiblePinEditText.setPadding(0, 0,0,0);
-
-//        invisiblePinEditText.setBackgroundColor(Color.WHITE);
         setSize(invisiblePinEditText, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-//        params.setMargins(0,0,0,0);
-//        params.addRule(CENTER_IN_PARENT, TRUE);
         params.addRule(CENTER_IN_PARENT,TRUE);
         invisiblePinEditText.setLayoutParams(params);
 
