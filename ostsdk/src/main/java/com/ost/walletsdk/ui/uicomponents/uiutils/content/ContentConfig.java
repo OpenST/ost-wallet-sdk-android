@@ -2,6 +2,7 @@ package com.ost.walletsdk.ui.uicomponents.uiutils.content;
 
 import android.content.Context;
 
+import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ui.util.CommonUtils;
 
 import org.json.JSONObject;
@@ -29,7 +30,7 @@ public class ContentConfig implements Content {
 
     public static Content getInstance() {
         if (null == contentConfig) {
-            throw new RuntimeException("ContentConfig is not initialized");
+            init(OstSdk.getContext(), new JSONObject());
         }
         return contentConfig;
     }

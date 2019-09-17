@@ -2,6 +2,7 @@ package com.ost.walletsdk.ui.uicomponents.uiutils.theme;
 
 import android.content.Context;
 
+import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ui.util.CommonUtils;
 
 import org.json.JSONObject;
@@ -29,7 +30,8 @@ public class ThemeConfig implements Theme {
 
     public static Theme getInstance() {
         if (null == themeConfig) {
-            throw new RuntimeException("ThemeConfig is not initialized");
+            Context appContext = OstSdk.getContext();
+            init(appContext, new JSONObject());
         }
         return themeConfig;
     }
