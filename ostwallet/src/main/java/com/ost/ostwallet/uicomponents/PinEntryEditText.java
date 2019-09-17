@@ -107,7 +107,7 @@ public class PinEntryEditText extends LinearLayout {
         invisiblePinEditText = new EditText(getContext());
         setSize(invisiblePinEditText, 0, 0);
         invisiblePinEditText.setRawInputType(Configuration.KEYBOARD_12KEY);
-        invisiblePinEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        invisiblePinEditText.setInputType(InputType.TYPE_CLASS_NUMBER );
         invisiblePinEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(pinLenght)});
         invisiblePinEditText.setImeOptions(IME_ACTION_DONE);
         addView(invisiblePinEditText);
