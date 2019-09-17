@@ -126,7 +126,7 @@ public class PinEntryEditText extends RelativeLayout {
 //        invisiblePinEditText.setTextColor(Color.WHITE);
 //        invisiblePinEditText.setPadding(0, 0,0,0);
 
-        invisiblePinEditText.setBackgroundColor(Color.WHITE);
+//        invisiblePinEditText.setBackgroundColor(Color.WHITE);
         setSize(invisiblePinEditText, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
