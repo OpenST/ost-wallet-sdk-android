@@ -12,6 +12,7 @@ package com.ost.ostwallet.uicomponents;
 
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -105,7 +106,8 @@ public class PinEntryEditText extends LinearLayout {
     private void setInvisibleEditText(int pinLenght, int inputType) {
         invisiblePinEditText = new EditText(getContext());
         setSize(invisiblePinEditText, 0, 0);
-        invisiblePinEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        invisiblePinEditText.setRawInputType(Configuration.KEYBOARD_12KEY);
+        invisiblePinEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
         invisiblePinEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(pinLenght)});
         invisiblePinEditText.setImeOptions(IME_ACTION_DONE);
         addView(invisiblePinEditText);
