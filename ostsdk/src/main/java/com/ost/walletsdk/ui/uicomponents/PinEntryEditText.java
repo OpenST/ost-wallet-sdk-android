@@ -12,6 +12,7 @@ package com.ost.walletsdk.ui.uicomponents;
 
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.Nullable;
