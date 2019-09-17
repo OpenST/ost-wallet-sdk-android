@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.ost.ostwallet.uicomponents.PinEntryEditText
+    <com.ost.walletsdk.ui.uicomponents.PinEntryEditText
         android:id="@+id/txt_pin_entry"
         android:layout_below="@id/shtv_pin_sub_heading"
         android:layout_width="match_parent"

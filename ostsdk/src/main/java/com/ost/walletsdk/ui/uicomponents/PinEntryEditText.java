@@ -24,9 +24,11 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ost.walletsdk.R;
@@ -39,7 +41,7 @@ import java.util.List;
 import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 
 
-public class PinEntryEditText extends LinearLayout {
+public class PinEntryEditText extends RelativeLayout {
 
     List<View> pins = new ArrayList<>();
     private AppCompatEditText invisiblePinEditText;
@@ -71,14 +73,21 @@ public class PinEntryEditText extends LinearLayout {
         int height = getResources().getDimensionPixelSize(R.dimen.ost_type_your_pin_size);
         int width = getResources().getDimensionPixelSize(R.dimen.ost_type_your_pin_size);
 
-        setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER);
+        setBackgroundColor(Color.WHITE);
         setPadding(0, marginSize,0, marginSize);
         setSize(this, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         setupOnClickListener();
         setFocusableInTouchMode(false);
 
         setInvisibleEditText(pinLenght, inputType);
+
+        LinearLayout pinLayout = new LinearLayout(getContext());
+        pinLayout.setBackgroundColor(Color.WHITE);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        pinLayout.setLayoutParams(params);
+        pinLayout.setOrientation(LinearLayout.HORIZONTAL);
+        addView(pinLayout);
 
         for (int i = 1; i <= pinLenght; i++) {
             View pin = new View(getContext());
@@ -89,7 +98,7 @@ public class PinEntryEditText extends LinearLayout {
             }
             pins.add(pin);
             unfillPin(pin);
-            addView(pin);
+            pinLayout.addView(pin);
         }
     }
 
@@ -113,7 +122,18 @@ public class PinEntryEditText extends LinearLayout {
 
     private void setInvisibleEditText(int pinLenght, int inputType) {
         invisiblePinEditText = new AppCompatEditText(getContext());
+        invisiblePinEditText.setTextSize(1);
+        invisiblePinEditText.setTextColor(Color.WHITE);
+        invisiblePinEditText.setPadding(0, 0,0,0);
+
+        invisiblePinEditText.setBackgroundColor(Color.WHITE);
         setSize(invisiblePinEditText, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        params.setMargins(0,0,0,0);
+        params.addRule(CENTER_IN_PARENT, TRUE);
+        setLayoutParams(params);
+
         invisiblePinEditText.setRawInputType(Configuration.KEYBOARD_12KEY);
         invisiblePinEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
         invisiblePinEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(pinLenght)});
