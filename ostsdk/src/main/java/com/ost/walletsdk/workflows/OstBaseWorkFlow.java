@@ -248,6 +248,9 @@ abstract class OstBaseWorkFlow implements OstPinAcceptInterface {
                     Log.w(TAG, "The callback instance has been lost. Workflow class name: " + getClass().getName());
                     return new AsyncStatus(false);
             }
+        } catch (OutOfMemoryError outOfMemoryError) {
+            OstError ostError = new OstError("bua_wf_osc_outofmemory", ErrorCode.OUT_OF_MEMORY_ERROR);
+            return postErrorInterrupt(ostError);
         } catch (OstError ostError) {
             return postErrorInterrupt(ostError);
         } catch (Throwable throwable) {
