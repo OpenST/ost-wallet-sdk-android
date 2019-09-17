@@ -16,6 +16,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -25,7 +26,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -42,7 +42,7 @@ import static android.view.inputmethod.EditorInfo.IME_ACTION_DONE;
 public class PinEntryEditText extends LinearLayout {
 
     List<View> pins = new ArrayList<>();
-    private EditText invisiblePinEditText;
+    private AppCompatEditText invisiblePinEditText;
     private int pinLenght;
     private TextView.OnEditorActionListener mOnEditorActionListener;
 
@@ -112,7 +112,7 @@ public class PinEntryEditText extends LinearLayout {
     }
 
     private void setInvisibleEditText(int pinLenght, int inputType) {
-        invisiblePinEditText = new EditText(getContext());
+        invisiblePinEditText = new AppCompatEditText(getContext());
         setSize(invisiblePinEditText, 0, 0);
         invisiblePinEditText.setRawInputType(Configuration.KEYBOARD_12KEY);
         invisiblePinEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
@@ -157,7 +157,7 @@ public class PinEntryEditText extends LinearLayout {
     }
 
 
-    private void setupEditTextPinListener(final EditText editText) {
+    private void setupEditTextPinListener(final AppCompatEditText editText) {
         editText.addTextChangedListener(new TextWatcher() {
             int lastTextLenght = 0;
 
