@@ -74,8 +74,8 @@ public class PinEntryEditText extends RelativeLayout {
         int width = getResources().getDimensionPixelSize(R.dimen.ost_type_your_pin_size);
 
         setGravity(Gravity.CENTER);
-        setBackgroundColor(Color.WHITE);
-        setPadding(0, marginSize,0, marginSize);
+        setBackgroundColor(Color.RED);
+//        setPadding(0, marginSize,0, marginSize);
         setSize(this, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         setupOnClickListener();
         setFocusableInTouchMode(false);
@@ -84,22 +84,31 @@ public class PinEntryEditText extends RelativeLayout {
 
         LinearLayout pinLayout = new LinearLayout(getContext());
         pinLayout.setPadding(0,marginSize, 0, marginSize);
-        pinLayout.setBackgroundColor(Color.WHITE);
+        pinLayout.setBackgroundColor(Color.GRAY);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(CENTER_IN_PARENT, TRUE);
         pinLayout.setLayoutParams(params);
         pinLayout.setOrientation(LinearLayout.HORIZONTAL);
         addView(pinLayout);
 
         for (int i = 1; i <= pinLenght; i++) {
             View pin = new View(getContext());
+            View space = new View(getContext());
+            space.setBackgroundColor(Color.WHITE);
+            setSize(space, width, height);
             setSize(pin, width, height);
-            setMarginLeft(pin, marginSize);
+//            setMarginLeft(pin, marginSize);
             if (isLastPin(i, pinLenght)) {
-                setMarginRight(pin, marginSize);
+//                setMarginRight(pin, marginSize);
             }
             pins.add(pin);
             unfillPin(pin);
             pinLayout.addView(pin);
+
+            if (!isLastPin(i, pinLenght)) {
+                pinLayout.addView(space);
+//                setMarginRight(pin, marginSize);
+            }
         }
     }
 
@@ -137,7 +146,7 @@ public class PinEntryEditText extends RelativeLayout {
         invisiblePinEditText.setLayoutParams(params);
 
         invisiblePinEditText.setRawInputType(Configuration.KEYBOARD_12KEY);
-        invisiblePinEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        invisiblePinEditText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
         invisiblePinEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(pinLenght)});
         invisiblePinEditText.setImeOptions(IME_ACTION_DONE);
         addView(invisiblePinEditText);
