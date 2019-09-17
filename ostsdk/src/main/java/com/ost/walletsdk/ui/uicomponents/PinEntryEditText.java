@@ -122,9 +122,9 @@ public class PinEntryEditText extends RelativeLayout {
 
     private void setInvisibleEditText(int pinLenght, int inputType) {
         invisiblePinEditText = new AppCompatEditText(getContext());
-//        invisiblePinEditText.setTextSize(1);
-        invisiblePinEditText.setTextColor(Color.WHITE);
-        invisiblePinEditText.setPadding(0, 0,0,0);
+        invisiblePinEditText.setTextSize(1);
+//        invisiblePinEditText.setTextColor(Color.WHITE);
+//        invisiblePinEditText.setPadding(0, 0,0,0);
 
         invisiblePinEditText.setBackgroundColor(Color.WHITE);
         setSize(invisiblePinEditText, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -133,7 +133,7 @@ public class PinEntryEditText extends RelativeLayout {
 //        params.setMargins(0,0,0,0);
 //        params.addRule(CENTER_IN_PARENT, TRUE);
         params.addRule(ALIGN_PARENT_LEFT,TRUE);
-        setLayoutParams(params);
+        invisiblePinEditText.setLayoutParams(params);
 
         invisiblePinEditText.setRawInputType(Configuration.KEYBOARD_12KEY);
         invisiblePinEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
