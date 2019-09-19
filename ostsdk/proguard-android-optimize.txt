@@ -1,21 +1,4 @@
-#Don't ignore non-public library classes.
--dontskipnonpubliclibraryclasses
-#Don't mix class names
--dontusemixedcaseclassnames
-#Don't preverify
--dontpreverify
 #Don't do arithmetic and variable simplification
 -optimizations !code/simplification/arithmetic,!code/allocation/variable
-#Don't obfuscate the input class files.
--keep class **
--keepclassmembers class *{*;}
--keepattributes *
 #Number of Optimization passes
 -optimizationpasses 5
-#show logs
--verbose
-#strip down debug and verbose logs
--assumenosideeffects class android.util.Log {
-    public static *** d(...);
-    public static *** v(...);
-}
