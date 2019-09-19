@@ -1,9 +1,15 @@
 #Don't ignore non-public library classes.
 -dontskipnonpubliclibraryclasses
+#Don't mix class names
+-dontusemixedcaseclassnames
+#Don't preverify
+-dontpreverify
+#Don't do arithmetic and variable simplification
+-optimizations !code/simplification/arithmetic,!code/allocation/variable
 #Don't obfuscate the input class files.
--dontobfuscate
-#Specifies to process the input, even if the output seems up to date.
--forceprocessing
+-keep class **
+-keepclassmembers class *{*;}
+-keepattributes *
 #Number of Optimization passes
 -optimizationpasses 5
 #show logs
