@@ -20,11 +20,19 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# This will strip `Log.v`, `Log.d`, and `Log.i` statements and will leave `Log.w` and `Log.e` statements intact.
-
+#Don't mix class names
+-dontusemixedcaseclassnames
+#Don't ignore non-public library classes.
+-dontskipnonpubliclibraryclasses
+-dontpreverify
+#show logs
+-verbose
+#Don't obfuscate the input class files.
+-keep class **
+-keepclassmembers class *{*;}
+-keepattributes *
+#strip down debug and verbose logs
 -assumenosideeffects class android.util.Log {
-    public static boolean isLoggable(java.lang.String, int);
-    public static int v(...);
-    public static int d(...);
-    public static int i(...);
+    public static *** d(...);
+    public static *** v(...);
 }
