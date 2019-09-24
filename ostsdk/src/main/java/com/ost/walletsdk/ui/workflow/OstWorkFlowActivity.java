@@ -305,7 +305,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        OstError error = new OstError("owfa_ond_2", OstErrors.ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
+        OstError error = new OstError("owfa_ond_2", OstErrors.ErrorCode.WORKFLOW_VIEW_DESTROYED);
         if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
     }
 }
