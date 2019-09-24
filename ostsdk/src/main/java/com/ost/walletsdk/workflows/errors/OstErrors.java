@@ -201,6 +201,9 @@ public class OstErrors {
             case WORKFLOW_FAILED:
                 return "Something went wrong, please try again";
 
+            case WORKFLOW_VIEW_DESTROYED:
+                return "The application interrupted the workflow. The view got terminated while performing the workflow";
+
             //deprecated
             case GET_USER_API_FAILED:
                 return "Failed to fetch user information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
@@ -310,6 +313,7 @@ public class OstErrors {
         UNKNOWN,
         WORKFLOW_CANCELLED,
         WORKFLOW_FAILED,
+        WORKFLOW_VIEW_DESTROYED,
         UNCAUGHT_EXCEPTION_HANDELED,
         FAILED_TO_GENERATE_ETH_KEY,
         OST_PLATFORM_API_ERROR,

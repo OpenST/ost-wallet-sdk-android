@@ -301,4 +301,11 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     protected boolean isCrossButtonClicked(OstError ostError) {
         return CROSS_BUTTON_CLICK_CODE.equals(ostError.getInternalErrorCode());
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OstError error = new OstError("owfa_ond_2", OstErrors.ErrorCode.WORKFLOW_VIEW_DESTROYED);
+        if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
+    }
 }
