@@ -11,6 +11,11 @@
 apply plugin: 'com.android.library'
 apply from: 'maven-push.gradle'
 
+/**
+ * Run Proguard to shrink the Java bytecode in release builds.
+ */
+def enableProguardInReleaseBuilds = true
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -40,7 +45,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {

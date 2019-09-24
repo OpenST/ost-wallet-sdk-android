@@ -1,0 +1,4 @@
+#Don't do arithmetic and variable simplification
+-optimizations !code/simplification/arithmetic,!code/allocation/variable
+#Number of Optimization passes
+-optimizationpasses 5
