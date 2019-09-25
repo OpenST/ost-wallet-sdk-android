@@ -98,13 +98,13 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             ensureValidState();
         } catch (OstError error) {
             mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
-            finish();
+            finishActivity();
             return;
         } catch (Throwable th) {
             OstError error = new OstError("owfa_onc_1", OstErrors.ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
             error.setStackTrace( th.getStackTrace() );
             mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
-            finish();
+            finishActivity();
             return;
         }
 
@@ -229,21 +229,21 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     @Override
     public boolean flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
-        finish();
+        finishActivity();
         return false;
     }
 
     @Override
     public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         showProgress(false);
-        finish();
+        finishActivity();
         return false;
     }
 
     @Override
     public boolean requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
-        finish();
+        finishActivity();
         return false;
     }
 
@@ -252,6 +252,10 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         return false;
     }
 
+    private void finishActivity() {
+        mWorkFlowListener = null;
+        finish();
+    }
     private void showGetPinFragment(String workflowId, String userId, OstWorkflowContext ostWorkflowContext, OstPinAcceptInterface ostPinAcceptInterface) {
         JSONObject stringConfigJsonObject = getContentString(ostWorkflowContext);
         WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin), showBackButton());
