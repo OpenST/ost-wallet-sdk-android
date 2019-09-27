@@ -75,17 +75,19 @@ public class OstUser extends OstBaseEntity {
     }
 
     public OstDevice getCurrentDevice() {
+        OstDevice currentDevice = null;
         if (null == mCurrentDeviceAddress) {
             OstKeyManager ostKeyManager = new OstKeyManager(getId());
             String currentDeviceAddress = ostKeyManager.getDeviceAddress();
             mCurrentDeviceAddress = currentDeviceAddress;
             if (null != currentDeviceAddress) {
+                currentDevice = OstDevice.getById(mCurrentDeviceAddress);
                 Log.d(TAG, String.format("currentDeviceAddress: %s", currentDeviceAddress));
             } else {
-                Log.e(TAG, "Not Expected Current Device Address null");
+                Log.e(TAG, "Current Device address is null, seems like device has been revoked");
             }
         }
-        OstDevice currentDevice = OstDevice.getById(mCurrentDeviceAddress);
+
         return currentDevice;
     }
 
