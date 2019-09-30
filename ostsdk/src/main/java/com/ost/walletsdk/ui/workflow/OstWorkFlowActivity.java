@@ -71,7 +71,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     private static final String CROSS_BUTTON_CLICK_CODE = "owfa_gb";
 
     WorkFlowListener mWorkFlowListener;
-    private boolean workflowFinished = false;
+    private boolean uiWorkflowFinished = false;
     private Intent mIntent;
     String mWorkflowId;
     String mWorkFlowName;
@@ -242,6 +242,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     @Override
     public boolean requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
+        setUiWorkFLowFinished();
         finish();
         return false;
     }
@@ -253,9 +254,14 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     private void finishWorkflow() {
         mWorkFlowListener = null;
-        workflowFinished = true;
+        setUiWorkFLowFinished();
         finish();
     }
+
+    private void setUiWorkFLowFinished() {
+        uiWorkflowFinished = true;
+    }
+
     private void showGetPinFragment(String workflowId, String userId, OstWorkflowContext ostWorkflowContext, OstPinAcceptInterface ostPinAcceptInterface) {
         JSONObject stringConfigJsonObject = getContentString(ostWorkflowContext);
         WorkFlowPinFragment fragment = WorkFlowPinFragment.newInstance("Get Pin", getResources().getString(R.string.pin_sub_heading_get_pin), showBackButton());
@@ -310,7 +316,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     protected void onDestroy() {
         super.onDestroy();
         OstError error = new OstError("owfa_ond_2", OstErrors.ErrorCode.WORKFLOW_VIEW_DESTROYED);
-        if (null != mWorkFlowListener && !workflowFinished) {
+        if (null != mWorkFlowListener && !uiWorkflowFinished) {
             Log.d(LOG_TAG, "Workflow view destroyed");
             mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
         }
