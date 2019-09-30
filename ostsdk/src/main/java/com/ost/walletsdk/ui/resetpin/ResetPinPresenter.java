@@ -21,6 +21,8 @@ import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import org.json.JSONObject;
 
@@ -81,8 +83,8 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> {
                     public void cancelFlow() {
                         Log.d("getPinSalt", "Exception in fetching Pin Salt.");
                         getMvpView().showProgress(false);
-                        getMvpView().showToastMessage("Reset PIN failed. Please try after sometime.", false);
-                        getMvpView().gotoDashboard(null);
+                        OstError error = new OstError("rpp_ope_cf", OstErrors.ErrorCode.WORKFLOW_CANCELLED);
+                        workFlowListener.flowInterrupt(new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN), error);
                     }
                 });
 
