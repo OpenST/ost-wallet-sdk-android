@@ -34,10 +34,12 @@ import java.util.Map;
 
 class DeviceListPresenter extends BasePresenter<DeviceListView> {
     private static final String LOG_TAG = "OstDeviceListPresenter";
+    private static final int MINIMUM_DEVICES = 5;
     private String mUserId;
     private String currentDeviceAddress;
     private String mLoaderString = "Loading...";
     private boolean mRunningLoader = false;
+    private boolean mClearDeviceList;
 
     private DeviceListPresenter() {}
 
@@ -59,57 +61,72 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
         updateDeviceList(true);
     }
 
-    void updateDeviceList(Boolean clearList) {
+    void updateDeviceList(boolean clearList) {
         if(httpRequestPending){
             return;
         }
+        httpRequestPending = true;
         if(clearList){
-            ostDeviceList.clear();
+            mClearDeviceList = true;
             nextPayload = new JSONObject();
         } else if(!hasMoreData){
             return;
         }
-        httpRequestPending = true;
+        showProgress(true);
+        getDeviceList();
+    }
 
+    private void getDeviceList() {
         Map<String ,Object> mapPayload = new HashMap<>();
         try {
             mapPayload = new CommonUtils().convertJsonToMap(nextPayload);
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Exception while converting payload map", e);
         }
-        showProgress(true);
         OstJsonApi.getDeviceList(mUserId, mapPayload, new OstJsonApiCallback() {
             @Override
             public void onOstJsonApiSuccess(@Nullable JSONObject dataJSONObject) {
+                if (null != dataJSONObject) {
+                    try {
+                        JSONObject meta = dataJSONObject.optJSONObject("meta");
+                        if (null != meta) nextPayload = meta.optJSONObject("next_page_payload");
+
+
+                        hasMoreData = (nextPayload != null && !nextPayload.toString().equals("{}"));
+                        JSONArray deviceJSONArray = (JSONArray) dataJSONObject.get(dataJSONObject.getString(OstConstants.RESULT_TYPE));
+
+                        //Clear list if new device request received
+                        if (mClearDeviceList) {
+                            ostDeviceList.clear();
+                            mClearDeviceList = false;
+                        }
+
+                        //Populate authorized device in the list
+                        for (int i = 0; i < deviceJSONArray.length(); i++) {
+                            JSONObject deviceJSONObject = deviceJSONArray.getJSONObject(i);
+                            Device device = Device.newInstance(deviceJSONObject);
+                            if (device.isAuthorized() && !device.getDeviceAddress().equalsIgnoreCase(currentDeviceAddress)) {
+                                ostDeviceList.add(device);
+                            }
+                        }
+
+                        if (ostDeviceList.isEmpty()) {
+                            ostDeviceList.add(Device.newInstance(new JSONObject()));
+                        }
+
+                        // Make request if did not get enough devices
+                        if (hasMoreData && ostDeviceList.size() < MINIMUM_DEVICES) {
+                            getDeviceList();
+                            return;
+                        }
+                    } catch (JSONException e) {
+                        //Exception not expected
+                    }
+                }
+                httpRequestPending = false;
                 showLoaderProgress(false);
                 showProgress(false);
-                if (null == dataJSONObject) {
-                    httpRequestPending = false;
-                    return;
-                }
-                try {
-                    JSONObject meta = dataJSONObject.optJSONObject("meta");
-                    if (null != meta) nextPayload = meta.optJSONObject("next_page_payload");
-
-                    hasMoreData = (nextPayload != null && !nextPayload.toString().equals("{}"));
-                    JSONArray deviceJSONArray = (JSONArray) dataJSONObject.get(dataJSONObject.getString(OstConstants.RESULT_TYPE));
-
-                    for (int i = 0; i < deviceJSONArray.length(); i++) {
-                        JSONObject deviceJSONObject = deviceJSONArray.getJSONObject(i);
-                        Device device = Device.newInstance(deviceJSONObject);
-                        if (device.isAuthorized() && !device.getDeviceAddress().equalsIgnoreCase(currentDeviceAddress)) {
-                            ostDeviceList.add(device);
-                        }
-                    }
-                    if (ostDeviceList.isEmpty()) {
-                        ostDeviceList.add(Device.newInstance(new JSONObject()));
-                    }
-                } catch (JSONException e) {
-                    //Exception not expected
-                }
                 getMvpView().notifyDataSetChanged();
-
-                httpRequestPending = false;
             }
 
             @Override
@@ -122,7 +139,6 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
             }
         });
     }
-
     private void showProgress(boolean show) {
         if (mRunningLoader) return;
         if (null != getMvpView()) getMvpView().setRefreshing(show);
