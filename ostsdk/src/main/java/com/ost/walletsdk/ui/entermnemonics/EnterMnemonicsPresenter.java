@@ -47,9 +47,10 @@ class EnterMnemonicsPresenter extends BasePresenter<EnterMnemonicsView> implemen
         //mnemonics validation
         String[] mnemonicsArray = mnemonicsPhrase.split(" ");
         if (mnemonicsArray.length != 12) {
-            getMvpView().showToastMessage("Mnemonics length should be of 12 words", false);
+            getMvpView().showErrorMessage(true);
             return;
         }
+        getMvpView().showErrorMessage(false);
 
         getMvpView().showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
 

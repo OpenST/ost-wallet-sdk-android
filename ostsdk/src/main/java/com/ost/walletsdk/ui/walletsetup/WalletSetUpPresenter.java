@@ -27,6 +27,7 @@ import com.ost.walletsdk.ui.util.CommonUtils;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import org.json.JSONObject;
 
@@ -107,7 +108,8 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements RequestAc
             @Override
             public void cancelFlow() {
                 getMvpView().showProgress(false);
-                getMvpView().showToastMessage("User Activation failed. Please try after sometime.", false);
+                OstError error = new OstError("ws_swf_cf", OstErrors.ErrorCode.WORKFLOW_CANCELLED);
+                workFlowListener.flowInterrupt(new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER), error);
             }
         });
     }

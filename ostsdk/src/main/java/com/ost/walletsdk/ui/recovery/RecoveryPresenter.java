@@ -18,6 +18,8 @@ import com.ost.walletsdk.ui.OstPassphraseAcceptor;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 
 class RecoveryPresenter extends BasePresenter<RecoveryView> {
 
@@ -46,7 +48,9 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> {
             @Override
             public void cancelFlow() {
                 Log.d("getPinSalt", "Exception in fetching Pin Salt.");
-                recoverySaltFetchFailed();
+                getMvpView().showProgress(false);
+                OstError error = new OstError("ws_wsp_cf", OstErrors.ErrorCode.WORKFLOW_CANCELLED);
+                workFlowListener.flowInterrupt(getWorkFlowContext(), error);
             }
         });
     }
@@ -57,12 +61,6 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> {
 
     void startWorkFlow(String ostUserId, UserPassphrase currentUserPassPhrase, String mDeviceAddress, WorkFlowListener workFlowListener) {
 
-    }
-
-    private void recoverySaltFetchFailed(){
-        getMvpView().showProgress(false);
-        getMvpView().gotoDashboard(null);
-        getMvpView().showToastMessage("Recovery could not be initiated. Please try after sometime.", false);
     }
 
     public void setArguments(String userId, String workflowId, String deviceAddress) {
