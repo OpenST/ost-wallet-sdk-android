@@ -29,7 +29,7 @@ public class OstErrors {
             case INVALID_NETWORK_SECURITY_CONFIG: return "Invalid network_security_config file";
             case INVALID_WORKFLOW_CALLBACK: return "Callback is essential for a workflow to continue running, it cannot be null.";
             case OST_PLATFORM_API_ERROR: return "OST HTTPS certificates were not pinned and initialization has failed. Please check your config file.";
-
+            case OUT_OF_MEMORY_ERROR: return "Out of Memory Error. Reduce the number of App running on your device and re-enter the pin";
 
 
             case INVALID_WORKFLOW_PARAMS:
@@ -201,6 +201,9 @@ public class OstErrors {
             case WORKFLOW_FAILED:
                 return "Something went wrong, please try again";
 
+            case WORKFLOW_VIEW_DESTROYED:
+                return "The application interrupted the workflow. The view got terminated while performing the workflow";
+
             //deprecated
             case GET_USER_API_FAILED:
                 return "Failed to fetch user information. Either OST server is unavailable temporarily OR your connection is going idle. Check your connection and re-submit the request a bit later.";
@@ -310,11 +313,12 @@ public class OstErrors {
         UNKNOWN,
         WORKFLOW_CANCELLED,
         WORKFLOW_FAILED,
+        WORKFLOW_VIEW_DESTROYED,
         UNCAUGHT_EXCEPTION_HANDELED,
         FAILED_TO_GENERATE_ETH_KEY,
         OST_PLATFORM_API_ERROR,
         CONFIG_READ_FAILED,
-
+        OUT_OF_MEMORY_ERROR,
         USER_ACTIVATING,
 
         //Deprecated

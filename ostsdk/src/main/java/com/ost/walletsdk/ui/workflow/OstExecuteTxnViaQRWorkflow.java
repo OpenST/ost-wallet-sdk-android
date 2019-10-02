@@ -98,7 +98,6 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "Exception in Data;");
                 showProgress(false);
-                showToastMessage("QR Reading failed.. Try Again", false);
             }
         }
     }

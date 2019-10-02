@@ -1,5 +1,13 @@
 # OST Wallet SDK Changelog
 
+## Version 2.3.3
+### Changes:
+* Proguard usage to remove verbose and debug logs.
+
+## Version 2.3.2
+### Bug Fixes:
+* Fixed a bug where some android phones were not able to provide pin.
+
 ## Version 2.3.1
 ### Feature:
 * OstWalletUI now supports

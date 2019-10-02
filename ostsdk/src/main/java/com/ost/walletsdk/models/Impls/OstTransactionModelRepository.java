@@ -18,7 +18,7 @@ import com.ost.walletsdk.models.entities.OstTransaction;
 
 class OstTransactionModelRepository extends OstBaseModelCacheRepository implements OstTransactionModel {
 
-    private static final int LRU_CACHE_SIZE = 5;
+    private static final int LRU_CACHE_SIZE = 150;
     private OstTransactionDao mOstTransactionDao;
 
     OstTransactionModelRepository() {

@@ -50,6 +50,17 @@
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="10dp"/>
     </RelativeLayout>
+    <com.ost.walletsdk.ui.uicomponents.OstTextView
+        android:id="@+id/otv_error_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/invalid_passphrase"
+        android:textSize="@dimen/sp_12"
+        android:textColor="@android:color/holo_red_light"
+        android:visibility="invisible"/>
 
     <com.ost.walletsdk.ui.uicomponents.OstB1Label
         android:id="@+id/pbtn_recover_wallet"
