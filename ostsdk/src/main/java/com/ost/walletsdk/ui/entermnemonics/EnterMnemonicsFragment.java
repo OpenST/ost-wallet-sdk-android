@@ -25,6 +25,7 @@ import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.ui.uicomponents.AppBar;
+import com.ost.walletsdk.ui.uicomponents.OstTextView;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 
@@ -45,6 +46,8 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
     EnterMnemonicsPresenter mEnterMnemonicsPresenter = EnterMnemonicsPresenter.getInstance();
 
     JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("add_current_device_with_mnemonics").optJSONObject("provide_mnemonics");
+    private OstTextView mErrorMessage;
+
     public EnterMnemonicsFragment() {
         // Required empty public constructor
     }
@@ -110,6 +113,8 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
             }
         });
 
+        mErrorMessage = viewGroup.findViewById(R.id.otv_error_message);
+
         mEnterMnemonicsPresenter.attachView(this);
         AppBar appBar = AppBar.newInstance(getContext(), false);
         setUpAppBar(viewGroup, appBar);
@@ -120,5 +125,14 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
         super.onDestroyView();
         mEnterMnemonicsPresenter.detachView();
         mEnterMnemonicsPresenter = null;
+    }
+
+    @Override
+    public void showErrorMessage(boolean show) {
+        if (show) {
+            mErrorMessage.setVisibility(View.VISIBLE);
+        } else {
+            mErrorMessage.setVisibility(View.INVISIBLE);
+        }
     }
 }

@@ -1,5 +1,11 @@
 # OST Wallet SDK Changelog
 
+## Version 2.3.4
+### Bug Fixes:
+* Device list inconsistency fix in manage devices.
+* User entity current device caching fix.
+* Converted Toast error message of enter mnemonics view to inline error message
+
 ## Version 2.3.3
 ### Changes:
 * Proguard usage to remove verbose and debug logs.
