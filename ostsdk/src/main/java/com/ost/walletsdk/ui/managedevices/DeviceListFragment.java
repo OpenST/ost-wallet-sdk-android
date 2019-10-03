@@ -46,6 +46,7 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
     private static final String ACTION_NAME = "action_name";
     private static final String INITIATED_RECOVERY = "initiate_recovery";
     private static final String MANAGE_DEVICE = "manage_device";
+    private static final int SCROLL_ITEM_THRESHOLD = 5;
     public JSONObject contentConfig = new JSONObject();
 
     private DeviceListRecyclerViewAdapter.OnDeviceListInteractionListener mListener;
@@ -148,8 +149,8 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
                 int visibleItemCount = layoutManager.getChildCount();
                 int totalItemCount = layoutManager.getItemCount();
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
-                if (!paginationRequestSent && dy > 0 && (visibleItemCount + firstVisibleItemPosition) >=
-                        totalItemCount && firstVisibleItemPosition >= 0) {
+                if (!paginationRequestSent && dy > 0 && (SCROLL_ITEM_THRESHOLD + firstVisibleItemPosition) >=
+                        totalItemCount) {
                     paginationRequestSent = true;
                     mDeviceListPresenter.updateDeviceList(false);
                 }
@@ -197,5 +198,6 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
     @Override
     public void setRefreshing(boolean refreshing) {
         mPullToRefresh.setRefreshing(refreshing);
+        paginationRequestSent = false;
     }
 }

@@ -20,7 +20,7 @@ import org.web3j.crypto.Keys;
 
 class OstDeviceManagerModelRepository extends OstBaseModelCacheRepository implements OstDeviceManagerModel {
 
-    private static final int LRU_CACHE_SIZE = 5;
+    private static final int LRU_CACHE_SIZE = 150;
     private OstDeviceManagerDao mOstDeviceManagerDao;
 
     OstDeviceManagerModelRepository() {

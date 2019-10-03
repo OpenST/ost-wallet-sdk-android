@@ -14,5 +14,5 @@ package com.ost.walletsdk.ui.entermnemonics;
 import com.ost.walletsdk.ui.BaseView;
 
 interface EnterMnemonicsView extends BaseView {
-
+    void showErrorMessage(boolean show);
 }
