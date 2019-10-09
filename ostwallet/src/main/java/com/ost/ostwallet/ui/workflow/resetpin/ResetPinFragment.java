@@ -93,7 +93,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
     }
 
     @Override
-    public void gotoDashboard(long workflowId) {
+    public void gotoDashboard(String workflowId) {
         goBack();
     }
 

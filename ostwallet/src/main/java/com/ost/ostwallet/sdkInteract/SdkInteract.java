@@ -30,7 +30,7 @@ public class SdkInteract {
     private List<WorkFlowListener> workFlowListenerList = new LinkedList<>();
 
     //It holds all the subscribed callbacks
-    private WeakHashMap<Long, List<WeakReference<SdkInteractListener>>> sdkListeners = new WeakHashMap<>();
+    private WeakHashMap<String, List<WeakReference<SdkInteractListener>>> sdkListeners = new WeakHashMap<>();
 
     private SdkInteractListener mPinCallbackListener;
     private SdkInteractListener mVerifyDataCallbackListener;
@@ -91,7 +91,7 @@ public class SdkInteract {
      * @param workflowId Integer work flow listener Id
      * @param listener SdkInteractListener object that implements respective workflow callback
      */
-    public void subscribe(long workflowId, SdkInteractListener listener) {
+    public void subscribe(String workflowId, SdkInteractListener listener) {
         List<WeakReference<SdkInteractListener>> weakList = sdkListeners.get(workflowId);
         if (null == weakList) {
             weakList = new LinkedList<>();
@@ -131,7 +131,7 @@ public class SdkInteract {
         mVerifyDataCallbackListener = listener;
     }
 
-    void notifyEvent(long workflowId, CALLBACK_TYPE callback_type, Object... objects) {
+    void notifyEvent(String workflowId, CALLBACK_TYPE callback_type, Object... objects) {
         //Generic notification
         fireEventForCallbackType(workflowId, getFlowListener(), callback_type, objects);
 
@@ -153,7 +153,7 @@ public class SdkInteract {
     }
 
 
-    private void fireEventForCallbackType(long workflowId, SdkInteractListener sdkInteractListener, CALLBACK_TYPE callback_type, Object... objects) {
+    private void fireEventForCallbackType(String workflowId, SdkInteractListener sdkInteractListener, CALLBACK_TYPE callback_type, Object... objects) {
         switch (callback_type) {
 
             case FLOW_COMPLETE:
@@ -194,23 +194,23 @@ public class SdkInteract {
          */
         mVerifyDataCallbackListener = new VerifyDataCallback() {
             @Override
-            public void verifyData(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
+            public void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
 
             }
         };
         mPinCallbackListener = new PinCallback() {
             @Override
-            public void getPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+            public void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
 
             }
 
             @Override
-            public void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
+            public void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface) {
 
             }
 
             @Override
-            public void pinValidated(long workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
+            public void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId) {
 
             }
         };
@@ -221,28 +221,28 @@ public class SdkInteract {
     }
 
     public interface FlowComplete extends SdkInteractListener {
-        void flowComplete(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
+        void flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
     }
 
     public interface FlowInterrupt extends SdkInteractListener {
-        void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError);
+        void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError);
     }
 
     public interface RequestAcknowledged extends SdkInteractListener {
-        void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
+        void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity);
     }
 
     public interface PinCallback extends SdkInteractListener {
 
-        void getPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
+        void getPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 
-        void invalidPin(long workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
+        void invalidPin(String workflowId, OstWorkflowContext ostWorkflowContext, String userId, OstPinAcceptInterface ostPinAcceptInterface);
 
-        void pinValidated(long workflowId, OstWorkflowContext ostWorkflowContext, String userId);
+        void pinValidated(String workflowId, OstWorkflowContext ostWorkflowContext, String userId);
     }
 
     public interface VerifyDataCallback extends SdkInteractListener {
 
-        void verifyData(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface);
+        void verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface);
     }
 }

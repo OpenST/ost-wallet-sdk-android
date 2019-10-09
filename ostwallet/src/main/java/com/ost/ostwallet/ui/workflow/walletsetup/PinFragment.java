@@ -33,9 +33,9 @@ import com.ost.ostwallet.R;
 import com.ost.ostwallet.ui.BaseFragment;
 import com.ost.ostwallet.uicomponents.AppBar;
 import com.ost.ostwallet.uicomponents.OstTextView;
+import com.ost.ostwallet.uicomponents.PinEntryEditText;
 import com.ost.ostwallet.uicomponents.uiutils.FontCache;
 import com.ost.ostwallet.util.KeyBoard;
-import com.ost.walletsdk.ui.uicomponents.PinEntryEditText;
 
 /**
  * A simple {@link Fragment} subclass.

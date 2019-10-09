@@ -20,7 +20,7 @@ interface ResetPinView extends BaseView {
 
     void showEnterCurrentPin();
 
-    void gotoDashboard(long workflowId);
+    void gotoDashboard(String workflowId);
 
     void showPinErrorDialog();
 }
