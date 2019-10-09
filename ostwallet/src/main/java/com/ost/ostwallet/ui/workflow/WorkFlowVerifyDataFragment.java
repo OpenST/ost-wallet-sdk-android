@@ -47,7 +47,7 @@ public class WorkFlowVerifyDataFragment extends BaseFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment OstVerifyDeviceFragment.
+     * @return A new instance of fragment WorkFlowVerifyDataFragment.
      */
     public static WorkFlowVerifyDataFragment newInstance() {
         WorkFlowVerifyDataFragment fragment = new WorkFlowVerifyDataFragment();

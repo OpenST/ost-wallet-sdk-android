@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 
 import com.ost.walletsdk.OstSdk;
@@ -14,9 +15,6 @@ import com.ost.walletsdk.ui.BaseActivity;
 import com.ost.walletsdk.ui.ChildFragmentStack;
 import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.WorkFlowPinFragment;
-import com.ost.walletsdk.ui.interfaces.FlowCompleteListener;
-import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;
-import com.ost.walletsdk.ui.interfaces.RequestAcknowledgedListener;
 import com.ost.walletsdk.ui.managedevices.Device;
 import com.ost.walletsdk.ui.managedevices.DeviceListRecyclerViewAdapter;
 import com.ost.walletsdk.ui.recovery.AbortRecoveryFragment;
@@ -73,6 +71,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     private static final String CROSS_BUTTON_CLICK_CODE = "owfa_gb";
 
     WorkFlowListener mWorkFlowListener;
+    private boolean mUiWorkflowFinished = false;
     private Intent mIntent;
     String mWorkflowId;
     String mWorkFlowName;
@@ -98,13 +97,13 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             ensureValidState();
         } catch (OstError error) {
             mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
-            finish();
+            finishWorkflow();
             return;
         } catch (Throwable th) {
             OstError error = new OstError("owfa_onc_1", OstErrors.ErrorCode.UNCAUGHT_EXCEPTION_HANDELED);
             error.setStackTrace( th.getStackTrace() );
             mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
-            finish();
+            finishWorkflow();
             return;
         }
 
@@ -229,20 +228,21 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     @Override
     public boolean flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
-        finish();
+        finishWorkflow();
         return false;
     }
 
     @Override
     public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         showProgress(false);
-        finish();
+        finishWorkflow();
         return false;
     }
 
     @Override
     public boolean requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         showProgress(false);
+        setUiWorkfLowFinished();
         finish();
         return false;
     }
@@ -250,6 +250,15 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     @Override
     public boolean verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         return false;
+    }
+
+    private void finishWorkflow() {
+        setUiWorkfLowFinished();
+        finish();
+    }
+
+    private void setUiWorkfLowFinished() {
+        mUiWorkflowFinished = true;
     }
 
     private void showGetPinFragment(String workflowId, String userId, OstWorkflowContext ostWorkflowContext, OstPinAcceptInterface ostPinAcceptInterface) {
@@ -306,6 +315,9 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     protected void onDestroy() {
         super.onDestroy();
         OstError error = new OstError("owfa_ond_2", OstErrors.ErrorCode.WORKFLOW_VIEW_DESTROYED);
-        if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
+        if (!mUiWorkflowFinished) {
+            Log.d(LOG_TAG, "Workflow view destroyed");
+            if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
+        }
     }
 }

@@ -87,7 +87,7 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
     }
 
     @Override
-    public void gotoDashboard(String workflowId) {
+    public void gotoDashboard(long workflowId) {
         goBack();
     }
 

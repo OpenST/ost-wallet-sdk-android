@@ -47,14 +47,14 @@ class AuthorizeDeviceQRPresenter extends BasePresenter<AuthorizeDeviceQRView> im
 
 
     @Override
-    public void requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+    public void requestAcknowledged(long workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         Log.d(LOG_TAG, "Request Ack for Activate user");
         getMvpView().showProgress(false);
         (getMvpView()).gotoDashboard(workflowId);
     }
 
     @Override
-    public void flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
+    public void flowInterrupt(long workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         Log.e(LOG_TAG, "Flow Interrupt");
         getMvpView().showProgress(false);
         if (!OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())){

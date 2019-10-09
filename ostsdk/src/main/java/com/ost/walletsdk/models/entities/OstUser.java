@@ -50,7 +50,7 @@ public class OstUser extends OstBaseEntity {
     }
 
     @Ignore
-    private OstDevice currentDevice = null;
+    private String mCurrentDeviceAddress = null;
 
     public static OstUser getById(String id) {
         return OstModelFactory.getUserModel().getEntityById(id);
@@ -75,14 +75,17 @@ public class OstUser extends OstBaseEntity {
     }
 
     public OstDevice getCurrentDevice() {
-        if (null == currentDevice) {
+        OstDevice currentDevice = null;
+        if (null == mCurrentDeviceAddress) {
             OstKeyManager ostKeyManager = new OstKeyManager(getId());
-            String currentDeviceAddress = ostKeyManager.getDeviceAddress();
-            if (null != currentDeviceAddress) {
-                currentDevice = OstDevice.getById(currentDeviceAddress);
-                Log.d(TAG, String.format("currentDeviceAddress: %s", currentDeviceAddress));
+            mCurrentDeviceAddress = ostKeyManager.getDeviceAddress();
+            if (null == mCurrentDeviceAddress) {
+                Log.e(TAG, "Current Device address is null, seems like device has been revoked");
+                return null;
             }
         }
+        Log.d(TAG, String.format("currentDeviceAddress: %s", mCurrentDeviceAddress));
+        currentDevice = OstDevice.getById(mCurrentDeviceAddress);
         return currentDevice;
     }
 
@@ -289,7 +292,7 @@ public class OstUser extends OstBaseEntity {
     }
 
     public void flushCurrentDevice() {
-        this.currentDevice = null;
+        this.mCurrentDeviceAddress = null;
     }
 
     public UserStatus getUserStatus() {

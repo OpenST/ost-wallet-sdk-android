@@ -1,16 +1,83 @@
 # OST Wallet SDK Android
 
 ## Introduction
-Wallet SDK is a mobile application development SDK that enables developers to integrate the functionality of a non-custodial crypto-wallet into consumer applications. The SDK:
+OST Android Wallet SDK is a mobile application development SDK that enables developers to integrate the functionality of a non-custodial crypto-wallet into consumer applications. 
+
+OST Android Wallet SDK...
 
 - Safely generates and stores keys on the user's mobile device
 - Signs data as defined by contracts using EIP-1077 and EIP-712
-- Enables users to recover access to their Brand Tokens in case the user loses their authorized device</br>
+- Enables users to recover access to their Brand Tokens in case the user loses their authorized device
 
 ## Support
 - Java Compile version: 1.7
 - Android version support: 22 and above
 
+
+## Table of Contents
+
+- [Setup](#setup)
+    + [a). Setting minSdkVersion to 22](#a--setting-minsdkversion-to-22)
+    + [b). Adding compile options](#b--adding-compile-options)
+    + [c). Adding Android Wallet SDK package in dependencies](#c--adding-android-wallet-sdk-package-in-dependencies)
+  * [Add mobile SDK config file](#add-mobile-sdk-config-file)
+  * [Initialize the Wallet SDK](#initialize-the-wallet-sdk)
+- [OST SDK Methods](#ost-sdk-methods)
+  * [Types of Methods](#types-of-methods)
+- [Workflows](#workflows)
+  * [setupDevice](#setupdevice)
+  * [activateUser](#activateuser)
+  * [addSession](#addsession)
+  * [performQRAction](#performqraction)
+  * [getDeviceMnemonics](#getdevicemnemonics)
+  * [executeTransaction](#executetransaction)
+  * [authorizeCurrentDeviceWithMnemonics](#authorizecurrentdevicewithmnemonics)
+  * [resetPin](#resetpin)
+  * [initiateDeviceRecovery](#initiatedevicerecovery)
+  * [abortDeviceRecovery](#abortdevicerecovery)
+  * [logoutAllSessions](#logoutallsessions)
+- [Getters](#getters)
+  * [getAddDeviceQRCode](#getadddeviceqrcode)
+  * [getUser](#getuser)
+  * [getCurrentDeviceForUserId](#getcurrentdeviceforuserid)
+  * [getToken](#gettoken)
+  * [isBiometricEnabled](#isbiometricenabled)
+  * [getActiveSessionsForUserId](#getactivesessionsforuserid)
+- [OST JSON APIs](#ost-json-apis)
+  * [getBalance](#getbalance)
+  * [getPricePoints](#getpricepoints)
+  * [getBalanceWithPricePoints](#getbalancewithpricepoints)
+  * [getTransactions](#gettransactions)
+  * [getPendingRecovery](#getpendingrecovery)
+- [JSON API Response Callback](#json-api-response-callback)
+  * [onOstJsonApiSuccess](#onostjsonapisuccess)
+  * [onOstJsonApiError](#onostjsonapierror)
+- [OST Workflow Callback Interface](#ost-workflow-callback-interface)
+  * [Importing the interface](#importing-the-interface)
+  * [Interface Functions](#interface-functions)
+    + [flowComplete](#flowcomplete)
+    + [flowInterrupt](#flowinterrupt)
+    + [requestAcknowledged](#requestacknowledged)
+    + [getPin](#getpin)
+    + [pinValidated](#pinvalidated)
+    + [invalidPin](#invalidpin)
+    + [registerDevice](#registerdevice)
+    + [verifyData](#verifydata)
+- [Application development supporting documentation](#application-development-supporting-documentation)
+  * [Entities status on User Activities](#entities-status-on-user-activities)
+  * [Get Entity Status Updates](#get-entity-status-updates)
+  * [Wallet Check on App Launch](#wallet-check-on-app-launch)
+  * [Balance Calculation](#balance-calculation)
+- [Classes](#classes)
+  * [OstError](#osterror)
+    + [i). Methods](#i--methods)
+  * [OstContextEntity](#ostcontextentity)
+    + [i). Methods](#i--methods-1)
+  * [OstWorkflowContext](#ostworkflowcontext)
+    + [i). Methods](#i--methods-2)
+- [Steps to use Android mobile SDK through AAR lib](#steps-to-use-android-mobile-sdk-through-aar-lib)
+- [OST Wallet UI](#ost-wallet-ui)
+- [Public Key Pinning Using TrustKit](#certificate-public-key-pinning)
 
 ## Setup
 #### a). Setting minSdkVersion to 22
@@ -37,23 +104,22 @@ compileOptions {
     }
 ```
 
-#### c). Adding android wallet sdk package in dependencies
+#### c). Adding Android Wallet SDK package in dependencies
 
 ```
 dependencies {
-    implementation 'com.ost:ost-wallet-sdk-android:2.3.0'
+    implementation 'com.ost:ost-wallet-sdk-android:2.3.4'
     ...
     ...
     ...
 }
 ```
-Then sync you dependencies through gradle<br/>
-**Note**: Gradle sync might fail for the first time due to build time. Please retry if sync issue happen.
+Then sync your dependencies through gradle<br/>
+**Note**: Gradle sync might fail for the first time due to build time. Please retry if this happens.
 
-
-### Add mobile sdk config file
- A config file is needed for application-specific configuration of OST  SDK.</br>
- - Create file "ost-mobilesdk.json" with application specific configurations using  the json below as an example
+### Add mobile SDK config file
+ A config file is needed for application-specific configuration of OST SDK.</br>
+ - Create file "ost-mobilesdk.json" with application specific configurations using the JSON below as an example
 
  ```json
   {
@@ -81,12 +147,10 @@ Then sync you dependencies through gradle<br/>
 - Place the file under main directory's assets folder <br>
 
   File path example: app -> src -> main -> assets -> ost-mobilesdk.json</br>
- **NOTE:These configurations are MANDATORY for successful operation. Failing to set them will significantly impact usage.**
- 
- 
- ### Initialize the Wallet SDK
+  **NOTE: These configurations are MANDATORY for successful operation. Failing to set them will significantly impact usage.**
 
-SDK initialization should happen before calling any other `workflow`. To initialize the SDK, we need to call `initialize` method of Wallet SDK.
+### Initialize the Wallet SDK
+SDK initialization should happen before calling any other `workflow`. To initialize the SDK, you need to call `initialize` method of Wallet SDK.
 
 **Recommended location to call init() is in Application sub-class.**
 
@@ -119,27 +183,22 @@ public class App extends Application {
 | **context** <br> **ApplicationContext**	| Application context can be retrieved by calling **getApplicationContext()**  |
 | **baseUrl** <br> **String**	| OST Platform API endpoints: <br> 1. Sandbox Environment: `https://api.ost.com/testnet/v2/` <br> 2. Production Environment: `https://api.ost.com/mainnet/v2/` |
 
-
-## [Android SDK Usage](https://dev.ost.com/platform/docs/sdk/wallet_sdk_setup/android/#4-initialize-the-wallet-sdk)
-
-
 ## OST SDK Methods
 
 ### Types of Methods
 
 1. `Workflows`: Workflows are the core functions provided by wallet SDK to do wallet related actions. Workflows can be called directly by importing the SDK.
 
-	* Application must confirm to `OstWorkFlowCallback` interface. The `OstWorkFlowCallback` interface defines methods that allow application to interact with Android Wallet SDK.
+    * Application must confirm to `OstWorkFlowCallback` interface. The `OstWorkFlowCallback` interface defines methods that allow applications to interact with Android Wallet SDK.
 
+2. `Getters`: The SDK provides getter methods that applications can use for various purposes. These methods provide the application with data as available in the device's database. These functions are synchronous and will return the value when requested. 
 
-2. `Getters`: These functions are synchronous and will return the value when requested.
+3. `JSON APIs`: Allows application to access OST Platform APIs
 
-3. `JSON APIs`: Methods that allows application to access OST Platform APIs. 
 
 ## Workflows
 
-
-### 1. setupDevice
+### setupDevice
 This workflow needs `userId` and `tokenId` so `setupDevice` should be called after your app login or signup is successful.
 Using the mapping between userId in OST Platform and your app user, you have access to `userId` and `tokenId`.
 
@@ -158,10 +217,9 @@ void setupDevice( String userId,
 | **tokenId** <br> **String**	| Unique identifier for the token economy |
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface).<br> This should implement `registerDevice` function. `registerDevice` will be called during the execution of this workflow.  |
 
-<br>
 
-### 2. activateUser
-It `authorizes` the registered device and activates the user. User activation deploys  **TokenHolder**, Device manager  contracts on blockchain. Session keys are also created and authorized during `activateUser` workflow. So after `user activation`, users can perform wallet actions like executing transactions and reset pin. 
+### activateUser
+It `authorizes` the registered device and activates the user. User activation deploys the TokenHolder and Device manager  contracts on blockchain. Session keys are also created and authorized during `activateUser` workflow. So after `user activation`, users can perform wallet actions like executing transactions and reset PIN. 
 
 ```
 void activateUser(UserPassphrase passphrase, 
@@ -177,9 +235,8 @@ void activateUser(UserPassphrase passphrase,
 | **spendingLimit** <br> **String**	| Spending limit of session key in [atto BT](https://dev.ost.com/platform/docs/guides/execute-transactions/).  |
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface).  |
 
-<br>
 
-### 3. addSession
+### addSession
 This workflow will create and authorize the session key that is needed to do the transactions. This flow should be called if the session key is expired or not present. 
 
 ```
@@ -197,10 +254,9 @@ This workflow will create and authorize the session key that is needed to do the
 | **spendingLimit** <br> **String**	| Spending limit of session key in [atto BT](https://dev.ost.com/platform/docs/guides/execute-transactions/).   |
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface).   |
 
-<br>
 
-### 4. performQRAction
-This workflow will perform operations after reading data from a QRCode. This workflow can used to add a new device and to do the transactions.
+### performQRAction
+This workflow will perform operations after reading data from a QRCode. This workflow can used to add a new device and to execute transactions.
 
 ```
   void performQRAction(String userId, 
@@ -214,9 +270,8 @@ This workflow will perform operations after reading data from a QRCode. This wor
 | **data** <br> **String**	| JSON object string scanned from QR code. |
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface).   |
 
-<br>
 
-### 5. getDeviceMnemonics
+### getDeviceMnemonics
 To get the 12 words recovery phrase of the current device key. Users will use it to prove that it is their wallet.  
 
 ```
@@ -230,10 +285,8 @@ To get the 12 words recovery phrase of the current device key. Users will use it
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface).  |
 
 
-<br>
-
-### 6. executeTransaction
-Workflow should be used to do the `user-to-company` and `user-to-user` transactions.
+### executeTransaction
+To do `user-to-company` and `user-to-user` transactions.
 
 ```java
 void executeTransaction(String userId, 
@@ -259,10 +312,8 @@ void executeTransaction(String userId,
 | **workFlowCallback** <br> **OstWorkFlowCallback**	|An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface).  |
 
 
-<br>
-
-### 7. authorizeCurrentDeviceWithMnemonics
-This workflow should be used to add a new device using 12 words recovery phrase. 
+### authorizeCurrentDeviceWithMnemonics
+To add a new device using 12 words recovery phrase. 
 
 ```
 void addDeviceUsingMnemonics( String userId, 
@@ -277,10 +328,9 @@ void addDeviceUsingMnemonics( String userId,
 | **mnemonics** <br> **byte[]**	| byte array of 12 words. |
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface).   |
 
-<br>
 
-### 8. resetPin
-This workflow can be used to change the PIN.
+### resetPin
+To change the PIN.
 
 **User will have to provide the current PIN in order to change it.**
 
@@ -300,10 +350,10 @@ This workflow can be used to change the PIN.
 | **currentPin** <br> **String**	| Current PIN  |
 | **newPin** <br> **String**	| New PIN |
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface). |
-<br>
 
-### 9. initiateDeviceRecovery
-A user can control their Brand Tokens using their authorized devices. If they lose their authorized device, they can recover access to their Brand Tokens by authorizing a new device by initiating the recovery process.
+
+### initiateDeviceRecovery
+A user can control their tokens using their authorized device(s). If a user loses their authorized device, the user can recover access to her tokens by authorizing a new device by initiating the recovery process.
 
 ```java
 void initiateDeviceRecovery(String userId, 
@@ -318,10 +368,10 @@ void initiateDeviceRecovery(String userId,
 | **passphrase** <br> **UserPassphrase**	| A simple struct to hold and transfer pin information via app and SDK.  |
 | **deviceAddressToRecover** <br> **String**	| Address of device to recover  |
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface). |
-<br>
 
-### 10. abortDeviceRecovery
-This workflow can be used to abort the initiated device recovery.
+
+### abortDeviceRecovery
+To abort the initiated device recovery.
 
 ```java
 void abortDeviceRecovery(String userId, 
@@ -336,10 +386,8 @@ void abortDeviceRecovery(String userId,
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface). |
 
 
-<br>
-
-### 11. logoutAllSessions
-This workflow will revoke all the sessions associated with the provided userId.
+### logoutAllSessions
+To revoke all the sessions associated with provided userId.
 
 ```java
 void logoutAllSessions(String userId, 
@@ -351,11 +399,10 @@ void logoutAllSessions(String userId,
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
 | **workFlowCallback** <br> **OstWorkFlowCallback**	| An object that implements the callback functions available in `OstWorkFlowCallback` interface. These callback functions are needed for communication between app and wallet SDK. Implement `flowComplete` and `flowInterrupt` callback functions to get the workflow status. Details about other callback function can be found in [OstWorkFlowCallback interface reference](#ostworkflowcallback-interface). |
 
-<br>
 
 ## Getters
 
-### 1. getAddDeviceQRCode
+### getAddDeviceQRCode
 This getter function will return the QRCode Bitmap that can be used to show on screen. This QRCode can then be scanned to add the new device.
 
 ```
@@ -367,21 +414,20 @@ Bitmap getAddDeviceQRCode(String userId)
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
 
 
-### 2. getUser
+### getUser
 This returns the loggedin User entity.
 
 ```java
 OstUser getUser(userId)
 ```
 
-
 | Parameter | Description |
 |---|---|
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
 
 
-### 3. getCurrentDeviceForUserId
-Method to get User's current device by Id.</br>
+### getCurrentDeviceForUserId
+Method to get user's current device by Id.</br>
 This is a synchronous method and must be used only after calling `setupDevice` workflow.</br>
 This method returns OstToken only if available with SDK. Returns `null` otherwise.</br>
 It does NOT make any server side calls.
@@ -395,22 +441,19 @@ OstDevice getCurrentDeviceForUserId(String userId)
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
 
 
-### 4. getToken
+### getToken
 This returns the token entity.
 
 ```java
 OstToken getToken(tokenId)
 ```
 
-
 | Parameter | Description |
 |---|---|
 | **tokenId** <br> **String**	| Unique identifier of token economy in OST Platform |
 
 
-
-
-### 5. isBiometricEnabled
+### isBiometricEnabled
 To get the biometric preferneces call this function.
 
 ```java
@@ -418,15 +461,12 @@ boolean isBiometricEnabled(userId)
 ```
 
 
-
 | Parameter | Description |
 |---|---|
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
 
 
-
-### 6. getActiveSessionsForUserId
-
+### getActiveSessionsForUserId
 Method to get user's active sessions available in current device that can execute transactions of given spending limit.</br>
 This is a synchronous method and must be used only after calling `setupDevice` workflow.
 
@@ -439,20 +479,17 @@ List<OstSession> getActiveSessionsForUserId(@NonNull String userId, @Nullable St
 | **userId** <br> **String**	| Unique identifier of the user stored in OST Platform |
 | **minimumSpendingLimitInWei** <br> **String**	| Minimum spending limit of the sessions |
 
-This can also be initialized without `minimumSpendingLimitInWei`</br>
+This can also be initialized without `minimumSpendingLimitInWei` <br>
 
 ```java
 List<OstSession> getActiveSessionsForUserId(@NonNull String userId)
 ```
-<br>
-
-
 
 ## OST JSON APIs
 
-### 1. getBalance
+### getBalance
+Api to get user balance. Balance of only current logged-in user can be fetched.
 
-Api to get user balance. Balance of only current logged-in user can be fetched.<br/><br/>
 **Parameters**<br/>
 &nbsp; parameter userId: User Id of the current logged-in user.<br/>
 &nbsp; parameter callback: callback where to receive data/error.<br/>
@@ -468,10 +505,10 @@ OstJsonApi.getBalance(userId, new OstJsonApiCallback() {
 );
 ```
 
-### 2. getPricePoints
-
+### getPricePoints
 Api to get Price Points. 
-It will provide latest conversion rates of base token to fiat currency.<br/><br/>
+It will provide latest conversion rates of base token to fiat currency.
+
 **Parameters**<br/>
 &nbsp; parameter userId: User Id of the current logged-in user.<br/>
 &nbsp; parameter callback: callback where to receive data/error.<br/>
@@ -487,10 +524,10 @@ OstJsonApi.getPricePoints(userId, new OstJsonApiCallback() {
 );
 ```
 
-### 3. getBalanceWithPricePoints
-
+### getBalanceWithPricePoints
 Api to get user balance and Price Points. Balance of only current logged-in user can be fetched.
-It will also provide latest conversion rates of base token to fiat currency.<br/><br/>
+It will also provide latest conversion rates of base token to fiat currency.
+
 **Parameters**<br/>
 &nbsp; parameter userId: User Id of the current logged-in user.<br/>
 &nbsp; parameter callback: callback where to receive data/error.<br/>
@@ -506,9 +543,9 @@ OstJsonApi.getBalanceWithPricePoints(userId, new OstJsonApiCallback() {
 );
 ```
 
-### 4. getTransactions
+### getTransactions
+Api to get user transactions. Transactions of only current logged-in user can be fetched.
 
-Api to get user transactions. Transactions of only current logged-in user can be fetched.<br/><br/>
 **Parameters**<br/>
 &nbsp; parameter userId: User Id of the current logged-in user.<br/>
 &nbsp; parameter requestPayload: request payload. Such as next-page payload, filters etc.
@@ -525,9 +562,9 @@ OstJsonApi.getTransactions(userId, requestPayload, new OstJsonApiCallback() {
 );
 ```
 
-### 5. getPendingRecovery
+### getPendingRecovery
+Api to get status of pending ongoing recovery.
 
-Api to get status of pending ongoing recovery.<br/><br/>
 **Parameters**<br/>
 &nbsp; parameter userId: User Id of the current logged-in user.<br/>
 &nbsp; parameter callback: callback where to receive data/error.<br/>
@@ -543,10 +580,10 @@ OstJsonApi.getPendingRecovery(userId, new OstJsonApiCallback() {
 );
 ```
 
-## Json Api Response Callback
+## JSON API Response Callback
 &nbsp; Callbacks to be implemented by application before calling any of the above OstJsonApis.
 
-### 1. onOstJsonApiSuccess
+### onOstJsonApiSuccess
 
 ```java
    /**
@@ -560,7 +597,7 @@ OstJsonApi.getPendingRecovery(userId, new OstJsonApiCallback() {
 | **data** <br> **JSONObject**	|	Api Response data	|
 
 
-### 2. onOstJsonApiError
+### onOstJsonApiError
 ```java
    /**
      * Inform SDK user about Failure of OstJsonApi
@@ -574,9 +611,9 @@ OstJsonApi.getPendingRecovery(userId, new OstJsonApiCallback() {
 | **err** <br> **OstError**	|	OstError object containing error details	|
 | **response** <br> **JSONObject**	|	Api Response	|
 
-## OstWorkFlowCallback Interface
+## OST Workflow Callback Interface
 Android SDK provides an interface to be implemented by the Java class calling the `workflows`. 
-<br>
+
 The interface name is `OstWorkFlowCallback`
 
 ### Importing the interface
@@ -587,11 +624,9 @@ import com.ost.mobilesdk.workflows.interfaces.OstWorkFlowCallback;
 
 ![walletSDKCommunication](https://dev.ost.com/platform/docs/sdk/assets/wallet-sdk-communication.png)
 
+### Interface Functions
 
-## Interface Functions
-
-
-### 1. flowComplete
+#### flowComplete
 
 This function will be called by wallet SDK when a workflow is completed. The details of workflow and the entity that was updated during the workflow will be available in arguments.
 
@@ -605,13 +640,7 @@ void flowComplete(OstWorkflowContext ostWorkflowContext, OstContextEntity ostCon
 | **ostContextEntity** <br> **OstContextEntity**	| Information about the entity |
 
 
-
-<br>
-
-
-
-
-### 2. flowInterrupt
+#### flowInterrupt
 This function will be called by wallet SDK when a workflow is cancelled. The workflow details and error details will be available in arguments.
 
 ```
@@ -623,14 +652,7 @@ void flowInterrupt(OstWorkflowContext ostWorkflowContext, OstError ostError)
 | **ostWorkflowContext** <br> **OstWorkflowContext**	| Information about the workflow |
 | **ostError** <br> **OstError**	| ostError object will have details about the error that interrupted the flow |
 
-
-
-<br>
-
-
-
-
-### 3. requestAcknowledged
+#### requestAcknowledged
 This function will be called by wallet SDK when the core API request was successful which happens during the execution of workflows. At this stage the workflow is not completed but it shows that the main communication between the wallet SDK and OST Platform server is complete. <br>Once the workflow is complete the `app` will receive the details in `flowComplete` (described below) function. 
 
 ```
@@ -642,13 +664,11 @@ void requestAcknowledged(OstWorkflowContext ostWorkflowContext, OstContextEntity
 | **ostWorkflowContext** <br> **OstWorkflowContext**	| Information about the workflow	|
 | **ostContextEntity** <br> **OstContextEntity**	| Information about the entity |
 
-<br>
 
 
-
-
-### 4. getPin
+#### getPin
 This function will be called by wallet SDK when it needs to get the PIN from the `app` user to authenticate any authorised action.
+
 <br>**Expected Function Definition:** Developers of client company are expected to launch their user interface to get the PIN from the user and pass back this PIN to SDK by calling **ostPinAcceptInterface.pinEntered()** 
 
 ```
@@ -661,12 +681,7 @@ void getPin(String userId, OstPinAcceptInterface ostPinAcceptInterface)
 | **ostPinAcceptInterface** <br> **OstPinAcceptInterface**	| **ostPinAcceptInterface.pinEntered()** should be called to pass the PIN back to SDK. <br> For some reason if the developer wants to cancel the current workflow they can do it by calling **ostPinAcceptInterface.cancelFlow()** |
 
 
-<br>
-
-
-
-
-### 5. pinValidated
+#### pinValidated
 This function will be called by wallet SDK when the last entered PIN is validated. 
 
 ```
@@ -678,14 +693,8 @@ void pinValidated(String userId)
 | **userId** <br> **String**	| Unique identifier of the user |
 
 
-
-
-<br>
-
-
-
-### 6. invalidPin
-This function will be called by wallet SDK when the last entered PIN was wrong and `app` user has to provide the PIN again. Developers are expected to repeat the `getPin` method here and pass back the PIN again back to the SDK by calling  **ostPinAcceptInterface.pinEntered()** .
+#### invalidPin
+This function will be called by wallet SDK when the last entered PIN was wrong and `app` user has to provide the PIN again. Developers are expected to repeat the `getPin` method here and pass back the PIN again back to the SDK by calling **ostPinAcceptInterface.pinEntered()** .
 
 ```
 void invalidPin(String userId, OstPinAcceptInterface ostPinAcceptInterface)
@@ -697,10 +706,7 @@ void invalidPin(String userId, OstPinAcceptInterface ostPinAcceptInterface)
 | **ostPinAcceptInterface** <br> **OstPinAcceptInterface**	| **ostPinAcceptInterface.pinEntered()** should be called to again pass the PIN back to SDK. <br> For some reason if the developer wants to cancel the current workflow they can do it by calling **ostPinAcceptInterface.cancelFlow()**  |
 
 
-<br>
-
-
-### 7. registerDevice
+#### registerDevice
 This function will be called by wallet SDK to register the device.<br>**Expected Function Definition:** Developers of client company are expected to register the device by communicating with client company's server. On client company's server they can use `Server SDK` to register this device in OST Platform. Once the device is registered on OST Platform client company's server will receive the newly created `device` entity. This device entity should be passed back to the `app`.<br>
 Finally they should pass back this newly created device entity back to the wallet SDK by calling **OstDeviceRegisteredInterface.deviceRegistered(JSONObject newDeviceEntity )**.
 
@@ -714,10 +720,7 @@ void registerDevice(JSONObject apiParams, OstDeviceRegisteredInterface ostDevice
 | **ostDeviceRegisteredInterface** <br> **OstDeviceRegisteredInterface**	| **OstDeviceRegisteredInterface.deviceRegistered(JSONObject newDeviceEntity )** should be called to pass the newly created device entity back to SDK. <br>In case data is not verified the current workflow should be canceled by developer by calling **OstDeviceRegisteredInterface.cancelFlow()**  |
 
 
-
-<br>
-
-### 8. verifyData
+#### verifyData
 This function will be called by wallet SDK to verify data during `performQRAction` workflow.
 
 
@@ -734,7 +737,7 @@ void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostConte
 
 
 
-## Application development supporting doc
+## Application development supporting documentation
  
 ### Entities status on User Activities
 |User Activity |App State|User Status|Device Status|Session status|
@@ -754,10 +757,10 @@ void verifyData(OstWorkflowContext ostWorkflowContext, OstContextEntity ostConte
 |Recover Wallet Or Add Wallet|Activating Wallet|ACTIVATED|AUTHORIZING -> AUTHORISED| `NA`|
 |Revoked Device from other device|Activated Wallet|ACTIVATED|REVOKING -> REVOKED| `NA`|
 
-### Get Entity status updates
-To get real time updates of entities like ongoing activation Or transactions, server side sdk's [WebHooks](https://dev.ost.com/platform/docs/api/#webhooks) services can be used.
+### Get Entity Status Updates
+To get real time updates of entities like ongoing activation Or transactions, server side SDK's [WebHooks](https://dev.ost.com/platform/docs/api/#webhooks) services can be used.
 
-### Wallet Check on App launch
+### Wallet Check on App Launch
 * Check whether User need Activation.
 * Check whether Wallet need Device Addition Or Recovery.
   * For device addition, the current Device which is to be Authorized should used **OstSdk.getAddDeviceQRCode** to generate QR code And **OstSdk.performQRAction()** method should be used to process that QR from AUTHORIZED deivce.
@@ -772,7 +775,7 @@ if (!(ostUser.isActivated() || ostUser.isActivating())) {
         //TODO:: App Dashboard
 }
 ```
-### Balance calculation
+### Balance Calculation
 * TokenHolder Balance can be shown in Token currency or in Fiat currency.
   * For Token currency conversion, the fetched balance is in Wei unit, which needs to be converted to Base unit.
   * For Fiat currency conversion, the fetched balance first need to be converted to fiat equivalent using current converion rate from price points and then to its Base unit.
@@ -843,7 +846,7 @@ public static String convertBTWeiToFiat(String balance, JSONObject pricePointObj
 3. OstWorkflowContext
 
 
-### 1. OstError
+### OstError
 This class is used to provide error details in [flowInterrupt](#ostworkflowcallback-interface#2-flowinterrupt) callback function. 
 
 
@@ -855,7 +858,7 @@ You can call the following methods on this object to get more details about the 
 2. `public String getInternalErrorCode()`
 3. `public boolean isApiError()`
 
-### 2. OstContextEntity
+### OstContextEntity
 This class provides context about the `entity` that is being changed during a [workflow](#workflows). Callback functions that needs to know about the `entity` will receive an object of this class as an argument. 
 
 
@@ -870,11 +873,10 @@ You can call the following methods on this object to get more details about the 
 5. `public String getEntityType()`
 
 
-### 3. OstWorkflowContext
+### OstWorkflowContext
 This class provides context about the current [workflow](#workflows). Callback function that needs to know about the current [workflow](#workflows) will get the object of this class as an argument.
 
 You can call the following methods on this object to get more details about the current [workflow](#workflows).
-
 
 The `getWorkflow_type()` methods will return one of the strings from this enum.
 
@@ -903,10 +905,7 @@ public enum WORKFLOW_TYPE {
 2. `public OstWorkflowContext()`
 3. `public WORKFLOW_TYPE getWorkflow_type()`
 
-## OstWalletUI
-Starting version `2.3.0` the SDK also provides built-in User Interface Components which are theamable and support content customization. Please refer [OstWalletUI](./documentation/OstWalletUI.md)
-
-## Steps to use Android mobile sdk through AAR lib
+## Steps to use Android mobile SDK through AAR lib
 - Download AAR file from S3 [Download link](https://sdk.stagingost.com.s3.amazonaws.com/Android/release/ostsdk-release.aar)
 - Create libs folder under app directory in your application project.
 - In libs folder add your downloaded aar file.
@@ -942,3 +941,9 @@ dependencies {
 ```
 
 - Clean and then Build your Android project.
+
+## OST Wallet UI 
+For quick and easy integration with SDK, developers can use built-in user interface components which are configurable and support content and theme customization. All OstWalletSdkUI workflows return workflow-id. The application can subscribe to the events of the workflow using the workflow-id. Please refer [OstWalletUI](./documentation/OstWalletUI.md).
+
+## Public Key Pinning Using TrustKit
+If your Application is using TrustKit, Please refer [TrustKit Public Key Pinning](./documentation/TrustKitPublickeyPinning.md)

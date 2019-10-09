@@ -32,11 +32,11 @@ android {
 
 
     defaultConfig {
-        applicationId "com.ost.testostwallet"
+        applicationId "com.ost.ostwallet"
         minSdkVersion 22
         targetSdkVersion 27
-        versionCode 8
-        versionName "0.1.2"
+        versionCode 7
+        versionName "0.1.1"
 
         javaCompileOptions {
             annotationProcessorOptions {

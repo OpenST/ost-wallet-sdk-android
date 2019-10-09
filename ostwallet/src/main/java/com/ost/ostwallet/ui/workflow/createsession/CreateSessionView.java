@@ -14,6 +14,4 @@ import com.ost.ostwallet.ui.BaseView;
 
 interface CreateSessionView extends BaseView {
     void invalidSpendingLimit();
-
-    void createSession(String spendingLimit, long l);
 }

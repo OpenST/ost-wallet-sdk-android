@@ -1,5 +1,29 @@
 # OST Wallet SDK Changelog
 
+## Version 2.3.4
+### Bug Fixes:
+* Device list inconsistency fix in manage devices.
+* User entity current device caching fix.
+* Converted Toast error message of enter mnemonics view to inline error message
+
+## Version 2.3.3
+### Changes:
+* Proguard usage to remove verbose and debug logs.
+
+## Version 2.3.2
+### Bug Fixes:
+* Fixed a bug where some android phones were not able to provide pin.
+
+## Version 2.3.1
+### Feature:
+* OstWalletUI now supports
+    - get add device QR-Code
+    - scan QR-Code to authorize device
+    - scan QR-Code to execute transaction
+    - authorize current device with mnemonics
+* Api provided to fetch current device from OstPlatform.
+* Now supports getting active sessions from Sdk.
+
 ## Version 2.3.0
 ### Feature:
 * OstWalletSdk now contains UI.

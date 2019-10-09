@@ -35,6 +35,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_users"
+            android:name="ost.com.demoapp.ui.dashboard.UserFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"

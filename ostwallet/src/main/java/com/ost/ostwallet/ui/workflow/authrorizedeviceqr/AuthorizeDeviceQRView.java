@@ -13,7 +13,7 @@ package com.ost.ostwallet.ui.workflow.authrorizedeviceqr;
 import com.ost.ostwallet.ui.BaseView;
 
 interface AuthorizeDeviceQRView extends BaseView {
-    void gotoDashboard(String workflowId);
+    void gotoDashboard(long workflowId);
 
     void launchQRScanner();
 }
