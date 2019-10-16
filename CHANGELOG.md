@@ -3,7 +3,7 @@
 ## Version 2.3.5
 ### Security Enhancements:
 * Use of FLAG_SECURE flag to protect show mnemonices view against screen recording and screen shotting.
-* Use of filterTouchesWhenObscured security flag in base view to protects against the so-calledTapjacking attacks.
+* Use of filterTouchesWhenObscured security flag in base view to protects against the tapjacking attacks.
 
 ## Version 2.3.4
 ### Bug Fixes:
