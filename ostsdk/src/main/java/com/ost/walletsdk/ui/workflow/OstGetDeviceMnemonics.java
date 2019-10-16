@@ -1,5 +1,8 @@
 package com.ost.walletsdk.ui.workflow;
 
+import android.os.Bundle;
+import android.view.WindowManager;
+
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
@@ -18,6 +21,14 @@ import org.json.JSONObject;
 public class OstGetDeviceMnemonics extends OstWorkFlowActivity {
 
     final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("view_mnemonics");
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //Setting FLAG_SECURE flag to protect view against screen recording and screen shotting
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE);
+    }
 
     @Override
     void ensureValidState() {
