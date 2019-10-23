@@ -13,7 +13,7 @@ package com.ost.walletsdk.ui.uicomponents;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;

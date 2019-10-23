@@ -15,11 +15,10 @@ import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-import android.security.keystore.StrongBoxUnavailableException;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.ost.walletsdk.annotations.NonNull;
 import com.ost.walletsdk.ecKeyInteracts.OstSecureStorage;
 
 import java.math.BigInteger;
@@ -96,45 +95,24 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
 
     private void generateKey() throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(RSA, ANDROID_KEY_STORE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            try {
-                generateKeyWithStrongBox(keyPairGenerator);
-                return;
-            } catch (StrongBoxUnavailableException exception) {
-                //Strong box not available
-                Log.e(TAG, "Strong box is not available for this device fallback to TEE");
-            }
-        }
-        generateKeyWithoutStrongBox(keyPairGenerator);
-    }
-
-    private void generateKeyWithoutStrongBox(KeyPairGenerator keyPairGenerator) throws InvalidAlgorithmParameterException {
         AlgorithmParameterSpec algorithmParameterSpec;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             algorithmParameterSpec = initGeneratorWithKeyPairGeneratorSpec();
         } else {
-            algorithmParameterSpec = initGeneratorWithKeyGenParameterSpec(false);
+            algorithmParameterSpec = initGeneratorWithKeyGenParameterSpec();
         }
         keyPairGenerator.initialize(algorithmParameterSpec);
         keyPairGenerator.genKeyPair();
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.P)
-    private void generateKeyWithStrongBox(KeyPairGenerator keyPairGenerator) throws InvalidAlgorithmParameterException, StrongBoxUnavailableException {
-        AlgorithmParameterSpec algorithmParameterSpec = initGeneratorWithKeyGenParameterSpec(true);
-        keyPairGenerator.initialize(algorithmParameterSpec);
-        keyPairGenerator.genKeyPair();
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private KeyGenParameterSpec initGeneratorWithKeyGenParameterSpec(boolean setIsStrongBoxBacked) {
+    private KeyGenParameterSpec initGeneratorWithKeyGenParameterSpec() {
         KeyGenParameterSpec.Builder builder = new KeyGenParameterSpec.Builder(mKeyAlias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
                 .setBlockModes(KeyProperties.BLOCK_MODE_ECB)
                 .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
                 .setUserAuthenticationRequired(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            builder.setIsStrongBoxBacked(setIsStrongBoxBacked);
-        }
+
         return builder.build();
     }
 

@@ -10,7 +10,7 @@
 
 package com.ost.walletsdk.ui.sdkInteract;
 
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.Nullable;
 
 import com.ost.walletsdk.ui.interfaces.FlowCompleteListener;
 import com.ost.walletsdk.ui.interfaces.FlowInterruptListener;

@@ -13,7 +13,7 @@ package com.ost.walletsdk.models.entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
+import com.ost.walletsdk.annotations.NonNull;
 
 @Entity(tableName = "bytes_storage")
 //To-Do Rename OstSecureKey

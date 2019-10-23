@@ -16,7 +16,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import com.ost.walletsdk.annotations.NonNull;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;

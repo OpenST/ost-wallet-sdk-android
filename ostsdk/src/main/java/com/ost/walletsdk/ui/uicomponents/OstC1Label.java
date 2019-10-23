@@ -12,7 +12,7 @@ package com.ost.walletsdk.ui.uicomponents;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.Nullable;
 import android.util.AttributeSet;
 
 import com.ost.walletsdk.ui.uicomponents.uiutils.Font;

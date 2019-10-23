@@ -1,7 +1,7 @@
 package com.ost.walletsdk.ui.workflow;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;

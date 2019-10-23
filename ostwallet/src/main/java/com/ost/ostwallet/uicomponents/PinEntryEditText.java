@@ -13,7 +13,7 @@ package com.ost.ostwallet.uicomponents;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.Nullable;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;

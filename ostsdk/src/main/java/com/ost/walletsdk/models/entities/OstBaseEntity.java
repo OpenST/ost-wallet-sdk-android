@@ -13,7 +13,7 @@ package com.ost.walletsdk.models.entities;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
+import com.ost.walletsdk.annotations.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 

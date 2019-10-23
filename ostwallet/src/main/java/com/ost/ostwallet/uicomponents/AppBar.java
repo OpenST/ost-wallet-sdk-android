@@ -13,7 +13,7 @@ package com.ost.ostwallet.uicomponents;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
