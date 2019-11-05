@@ -10,8 +10,8 @@
 
 package com.ost.walletsdk.ui.managedevices;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;

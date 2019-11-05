@@ -11,8 +11,8 @@
 package com.ost.walletsdk;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 

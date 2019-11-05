@@ -10,7 +10,7 @@
 
 package com.ost.ostwallet.ui.dashboard;
 
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;

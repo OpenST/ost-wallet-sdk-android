@@ -3,8 +3,8 @@ package com.ost.walletsdk.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ui.interfaces.OstWalletUIListener;

@@ -10,16 +10,15 @@
 
 package com.ost.walletsdk.ecKeyInteracts.impls;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.ost.walletsdk.annotations.NonNull;
 import com.ost.walletsdk.ecKeyInteracts.OstSecureStorage;
 
 import java.math.BigInteger;

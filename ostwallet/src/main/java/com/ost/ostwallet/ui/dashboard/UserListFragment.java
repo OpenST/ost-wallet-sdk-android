@@ -12,7 +12,7 @@ package com.ost.ostwallet.ui.dashboard;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import com.ost.walletsdk.annotations.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

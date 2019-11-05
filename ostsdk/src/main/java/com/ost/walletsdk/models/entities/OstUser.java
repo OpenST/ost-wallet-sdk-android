@@ -12,8 +12,8 @@ package com.ost.walletsdk.models.entities;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.ecKeyInteracts.OstKeyManager;

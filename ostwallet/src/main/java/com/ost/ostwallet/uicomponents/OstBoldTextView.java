@@ -13,7 +13,7 @@ package com.ost.ostwallet.uicomponents;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.Nullable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 
