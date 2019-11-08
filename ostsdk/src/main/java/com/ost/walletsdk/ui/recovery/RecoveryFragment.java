@@ -112,6 +112,11 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
     }
 
     @Override
+    public void onPostAuthentication() {
+        getBaseActivity().getWorkflowLoader().onPostAuthentication();
+    }
+
+    @Override
     public void onPinEntered(String pin) {
         recoveryPresenter.onPinEntered(pin);
     }

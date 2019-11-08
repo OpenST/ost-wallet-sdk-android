@@ -200,4 +200,9 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
         mPullToRefresh.setRefreshing(refreshing);
         paginationRequestSent = false;
     }
+
+    @Override
+    public void onInitialize() {
+        getBaseActivity().getWorkflowLoader().onInitLoader();
+    }
 }

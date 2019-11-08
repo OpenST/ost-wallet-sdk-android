@@ -11,12 +11,12 @@
 package com.ost.walletsdk.ui;
 
 
-import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -24,14 +24,15 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.ost.walletsdk.R;
-import com.ost.walletsdk.ui.util.DialogFactory;
+import com.ost.walletsdk.ui.loader.LoaderFragment;
+import com.ost.walletsdk.ui.loader.OstWorkflowLoader;
 import com.ost.walletsdk.ui.util.WorkflowActivityLifecycleListener;
 
 
 public abstract class BaseActivity extends AppCompatActivity implements BaseView {
 
     private boolean isRestored;
-    private ProgressDialog progressDlg;
+    private DialogFragment mProgressDlg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,13 +150,14 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     @Override
     public void showProgress(boolean show, String progressString) {
         if (show) {
-            ProgressDialog dialog = DialogFactory.createProgressDialog(this, progressString);
-            dialog.setCancelable(false);
-            dialog.show();
-            progressDlg = dialog;
+            LoaderFragment loaderFragment = createDialogFragment();
+            loaderFragment.show(getSupportFragmentManager(), "DialogFragment");
+            loaderFragment.setLoaderString(progressString);
+            loaderFragment.setCancelable(false);
+            mProgressDlg = loaderFragment;
         } else {
-            if (null != progressDlg) {
-                progressDlg.dismiss();
+            if (null != mProgressDlg) {
+                mProgressDlg.dismiss();
             }
         }
     }
@@ -177,6 +179,14 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     protected abstract View getRootView();
+
+    protected LoaderFragment createDialogFragment() {
+        return new LoaderFragment();
+    }
+
+    public OstWorkflowLoader getWorkflowLoader() {
+        return (OstWorkflowLoader) mProgressDlg;
+    }
 
     private int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

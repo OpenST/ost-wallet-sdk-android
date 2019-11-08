@@ -139,6 +139,11 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
     }
 
     @Override
+    public void onPostAuthentication() {
+        getBaseActivity().getWorkflowLoader().onPostAuthentication();
+    }
+
+    @Override
     public void onPinEntered(String pin) {
         mResetPinPresenter.onPinEntered(pin);
     }

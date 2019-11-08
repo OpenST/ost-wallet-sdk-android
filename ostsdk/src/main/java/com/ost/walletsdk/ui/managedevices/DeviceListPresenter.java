@@ -73,6 +73,7 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
             return;
         }
         showProgress(true);
+        getMvpView().onInitialize();
 
         getDeviceList(new DeviceListCallback() {
             @Override

@@ -13,8 +13,10 @@ import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.BaseActivity;
 import com.ost.walletsdk.ui.ChildFragmentStack;
+import com.ost.walletsdk.ui.OstLoaderProvider;
 import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.WorkFlowPinFragment;
+import com.ost.walletsdk.ui.loader.LoaderFragment;
 import com.ost.walletsdk.ui.managedevices.Device;
 import com.ost.walletsdk.ui.managedevices.DeviceListRecyclerViewAdapter;
 import com.ost.walletsdk.ui.recovery.AbortRecoveryFragment;
@@ -47,7 +49,8 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         SdkInteract.WorkFlowCallbacks,
         WorkFlowPinFragment.OnFragmentInteractionListener,
         ResetPinFragment.OnFragmentInteractionListener,
-        RecoveryFragment.OnFragmentInteractionListener {
+        RecoveryFragment.OnFragmentInteractionListener,
+        WorkflowCompleteDelegate {
 
     public static final String WORKFLOW_ID = "workflowId";
     public static final String WORKFLOW_NAME = "workflowName";
@@ -227,20 +230,25 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     @Override
     public boolean flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        showProgress(false);
-        finishWorkflow();
+        getWorkflowLoader().onSuccess(ostWorkflowContext, ostContextEntity, OstWorkFlowActivity.this);
         return false;
     }
 
     @Override
     public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        showProgress(false);
-        finishWorkflow();
+        getWorkflowLoader().onFailure(ostWorkflowContext, ostError, OstWorkFlowActivity.this);
+
         return false;
     }
 
     @Override
     public boolean requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        boolean waitForFinalization = OstLoaderProvider.getBaseWorkflowLoader().waitForFinalization(ostWorkflowContext.getWorkflowType());
+        if (waitForFinalization) {
+            getWorkflowLoader().onAcknowledge();
+            return false;
+        }
+
         showProgress(false);
         setUiWorkfLowFinished();
         finish();
@@ -319,5 +327,16 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
             Log.d(LOG_TAG, "Workflow view destroyed");
             if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
         }
+    }
+
+    @Override
+    protected LoaderFragment createDialogFragment() {
+        return OstLoaderProvider.getBaseWorkflowLoader().getLoader(getWorkflowContext().getWorkflowType());
+    }
+
+    @Override
+    public void dismissWorkflow() {
+        //showProgress(false);
+        finishWorkflow();
     }
 }

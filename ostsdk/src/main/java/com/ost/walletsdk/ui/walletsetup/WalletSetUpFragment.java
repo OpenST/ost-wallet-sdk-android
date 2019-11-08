@@ -163,6 +163,11 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
     }
 
     @Override
+    public void onInitialize() {
+        getBaseActivity().getWorkflowLoader().onInitLoader();
+    }
+
+    @Override
     public void onPinEntered(String pin) {
         mWalletSetupPresenter.onPinEntered(pin);
     }

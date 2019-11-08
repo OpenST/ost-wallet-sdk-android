@@ -36,6 +36,7 @@ class AbortRecoveryPresenter extends RecoveryPresenter {
     void startWorkFlow(String ostUserId, UserPassphrase currentUserPassPhrase, String deviceAddress, WorkFlowListener workFlowListener) {
 
         getMvpView().showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
+        getMvpView().onPostAuthentication();
 
         OstSdk.abortDeviceRecovery(
                 ostUserId,
