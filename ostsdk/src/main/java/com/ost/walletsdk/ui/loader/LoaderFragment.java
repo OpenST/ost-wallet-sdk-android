@@ -19,9 +19,9 @@ import com.ost.walletsdk.workflows.errors.OstError;
 
 public class LoaderFragment extends DialogFragment implements OstWorkflowLoader {
 
-    private ProgressBar mProgressBar;
-    private boolean mViewActive;
     private String mLoaderString = "Loading...";
+
+    private ProgressBar mProgressBar;
     private TextView mLoaderTextView;
 
     public static LoaderFragment newInstance() {
@@ -31,17 +31,16 @@ public class LoaderFragment extends DialogFragment implements OstWorkflowLoader 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.FullScreenDialogStyle);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.loader_fragment, container, false);
-        mViewActive = true;
         mProgressBar = viewGroup.findViewById(R.id.progressBar);
         mLoaderTextView = viewGroup.findViewById(R.id.loaderText);
         mLoaderTextView.setText(mLoaderString);
+        mProgressBar.animate();
         return viewGroup;
     }
 
@@ -51,29 +50,12 @@ public class LoaderFragment extends DialogFragment implements OstWorkflowLoader 
 
     @Override
     public void onInitLoader() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (mViewActive)  {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    mLoaderTextView.setVisibility(View.VISIBLE);
-                    mProgressBar.animate();
-                }
-            }
-        });
+
     }
 
     @Override
     public void onPostAuthentication() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (mViewActive)  {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    mLoaderTextView.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+
     }
 
     @Override
@@ -83,47 +65,16 @@ public class LoaderFragment extends DialogFragment implements OstWorkflowLoader 
 
     @Override
     public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, final WorkflowCompleteDelegate delegate) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (mViewActive)  {
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    mLoaderTextView.setVisibility(View.VISIBLE);
-                    mLoaderTextView.setText("Success");
-                    mLoaderTextView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            delegate.dismissWorkflow();
-                        }
-                    });
-                }
-            }
-        });
+
     }
 
     @Override
     public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, final WorkflowCompleteDelegate delegate) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (mViewActive)  {
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    mLoaderTextView.setVisibility(View.VISIBLE);
-                    mLoaderTextView.setText("Failed");
-                    mLoaderTextView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            delegate.dismissWorkflow();
-                        }
-                    });
-                }
-            }
-        });
+
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mViewActive = false;
     }
 }

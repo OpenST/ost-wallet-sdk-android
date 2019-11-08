@@ -11,6 +11,6 @@ public class OstSdkWorkflowLoader implements OstLoaderDelegate {
 
     @Override
     public boolean waitForFinalization(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
-        return true;
+        return false;
     }
 }
