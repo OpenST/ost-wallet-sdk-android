@@ -185,6 +185,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     public OstWorkflowLoader getWorkflowLoader() {
+        if (null == mProgressDlg) mProgressDlg = createDialogFragment();
         return (OstWorkflowLoader) mProgressDlg;
     }
 

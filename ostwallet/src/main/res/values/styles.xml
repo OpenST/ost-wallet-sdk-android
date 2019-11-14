@@ -65,7 +65,7 @@
         <item name="android:windowIsFloating">false</item>
 
         <!-- This is important! Don't forget to set window background -->
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@color/transparent_gray</item>
 
     </style>
 </resources>

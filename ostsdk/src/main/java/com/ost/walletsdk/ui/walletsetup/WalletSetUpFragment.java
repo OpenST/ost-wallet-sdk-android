@@ -21,10 +21,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.ChildFragmentStack;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
+import com.ost.walletsdk.ui.uicomponents.uiutils.theme.ThemeConfig;
 import com.ost.walletsdk.ui.util.ChildFragmentUtils;
 import com.ost.walletsdk.ui.util.DialogFactory;
 
@@ -164,7 +166,7 @@ public class WalletSetUpFragment extends BaseFragment implements SetUpView,
 
     @Override
     public void onInitialize() {
-        getBaseActivity().getWorkflowLoader().onInitLoader();
+        getBaseActivity().getWorkflowLoader().onInitLoader(activateUserContentConfig);
     }
 
     @Override

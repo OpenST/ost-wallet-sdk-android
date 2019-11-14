@@ -28,6 +28,8 @@ import com.ost.walletsdk.ui.util.ChildFragmentUtils;
 import com.ost.walletsdk.ui.util.DialogFactory;
 import com.ost.walletsdk.ui.walletsetup.PinFragment;
 
+import org.json.JSONObject;
+
 import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
 import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.WORKFLOW_ID;
 
@@ -41,6 +43,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
         ChildFragmentStack {
 
 
+    JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin");
     ResetPinPresenter mResetPinPresenter = ResetPinPresenter.getInstance();
     private OnFragmentInteractionListener mListener;
 
@@ -96,7 +99,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 fragment,
                 this);
-        fragment.contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin").optJSONObject("set_new_pin");
+        fragment.contentConfig = contentConfig.optJSONObject("set_new_pin");
     }
 
     @Override
@@ -105,7 +108,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 fragment,
                 this);
-        fragment.contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin").optJSONObject("confirm_new_pin");
+        fragment.contentConfig = contentConfig.optJSONObject("confirm_new_pin");
     }
 
     @Override
@@ -115,7 +118,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
         ChildFragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
                 fragment,
                 this);
-        fragment.contentConfig = ContentConfig.getInstance().getStringConfig("reset_pin").optJSONObject("get_pin");
+        fragment.contentConfig = contentConfig.optJSONObject("get_pin");
     }
 
     @Override
@@ -140,7 +143,7 @@ public class ResetPinFragment extends BaseFragment implements ResetPinView,
 
     @Override
     public void onPostAuthentication() {
-        getBaseActivity().getWorkflowLoader().onPostAuthentication();
+        getBaseActivity().getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 
     @Override

@@ -60,7 +60,7 @@ public class OstAuthorizeDeviceMnemonics extends OstWorkFlowActivity {
         super.popTopFragment();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
-        getWorkflowLoader().onPostAuthentication();
+        getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 
     @Override

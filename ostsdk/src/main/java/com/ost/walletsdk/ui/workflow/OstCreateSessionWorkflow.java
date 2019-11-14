@@ -36,7 +36,7 @@ public class OstCreateSessionWorkflow extends OstWorkFlowActivity {
         super.initiateWorkFlow();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
-        getWorkflowLoader().onInitLoader();
+        getWorkflowLoader().onInitLoader(contentConfig);
 
         Bundle bundle = getIntent().getExtras();
         long expiredAfterSecs = bundle.getLong(EXPIRED_AFTER_SECS, 100000);
@@ -62,6 +62,6 @@ public class OstCreateSessionWorkflow extends OstWorkFlowActivity {
         super.popTopFragment();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
-        getWorkflowLoader().onPostAuthentication();
+        getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 }

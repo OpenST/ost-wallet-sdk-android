@@ -14,6 +14,7 @@ import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.BaseActivity;
 import com.ost.walletsdk.ui.ChildFragmentStack;
 import com.ost.walletsdk.ui.OstLoaderProvider;
+import com.ost.walletsdk.ui.OstResourceProvider;
 import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.WorkFlowPinFragment;
 import com.ost.walletsdk.ui.loader.LoaderFragment;
@@ -26,6 +27,7 @@ import com.ost.walletsdk.ui.resetpin.ResetPinFragment;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
 import com.ost.walletsdk.ui.test.TestThemeFragment;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.util.DialogFactory;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.ui.util.KeyBoard;
@@ -50,7 +52,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         WorkFlowPinFragment.OnFragmentInteractionListener,
         ResetPinFragment.OnFragmentInteractionListener,
         RecoveryFragment.OnFragmentInteractionListener,
-        WorkflowCompleteDelegate {
+        OstLoaderCompletionDelegate {
 
     public static final String WORKFLOW_ID = "workflowId";
     public static final String WORKFLOW_NAME = "workflowName";
@@ -245,7 +247,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public boolean requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
         boolean waitForFinalization = OstLoaderProvider.getBaseWorkflowLoader().waitForFinalization(ostWorkflowContext.getWorkflowType());
         if (waitForFinalization) {
-            getWorkflowLoader().onAcknowledge();
+            getWorkflowLoader().onAcknowledge(getContentConfig(ostWorkflowContext.getWorkflowType()));
             return false;
         }
 
@@ -253,6 +255,37 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
         setUiWorkfLowFinished();
         finish();
         return false;
+    }
+
+    private JSONObject getContentConfig(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
+        String contentConfigKey = null;
+        if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER.equals(workflowType)) {
+            contentConfigKey = "activate_user";
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN.equals(workflowType)) {
+            contentConfigKey = "reset_pin";
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.ADD_SESSION.equals(workflowType)) {
+            contentConfigKey = "add_session";
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.GET_DEVICE_MNEMONICS.equals(workflowType)) {
+            contentConfigKey = "view_mnemonics";
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.UPDATE_BIOMETRIC_PREFERENCE.equals(workflowType)) {
+            contentConfigKey = "biometric_preference";
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.ABORT_DEVICE_RECOVERY.equals(workflowType)) {
+            contentConfigKey = "abort_recovery";
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.SHOW_DEVICE_QR.equals(workflowType)) {
+            contentConfigKey = "show_add_device_qr";
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_QR_CODE.equals(workflowType)) {
+            contentConfigKey = "scan_qr_to_authorize_device";
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_MNEMONICS.equals(workflowType)) {
+            contentConfigKey = "add_current_device_with_mnemonics";
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.INITIATE_DEVICE_RECOVERY.equals(workflowType)) {
+            contentConfigKey = "initiate_recovery";
+        } else if (OstWorkflowContext.WORKFLOW_TYPE.REVOKE_DEVICE.equals(workflowType)) {
+            contentConfigKey = "revoke_device";
+        } else {
+            return null;
+        }
+
+        return ContentConfig.getInstance().getStringConfig(contentConfigKey);
     }
 
     @Override
@@ -331,7 +364,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     @Override
     protected LoaderFragment createDialogFragment() {
-        return OstLoaderProvider.getBaseWorkflowLoader().getLoader(getWorkflowContext().getWorkflowType());
+        return OstResourceProvider.getLoaderManager().getLoader(getWorkflowContext().getWorkflowType());
     }
 
     @Override

@@ -2,11 +2,11 @@ package com.ost.walletsdk.ui.loader;
 
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 
-public class OstSdkWorkflowLoader implements OstLoaderDelegate {
+public class OstSdkLoaderManager implements OstLoaderDelegate {
 
     @Override
     public LoaderFragment getLoader(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
-        return new LoaderFragment();
+        return LoaderFragment.newInstance(workflowType);
     }
 
     @Override

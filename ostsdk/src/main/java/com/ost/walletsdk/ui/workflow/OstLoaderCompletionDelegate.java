@@ -1,5 +1,5 @@
 package com.ost.walletsdk.ui.workflow;
 
-public interface WorkflowCompleteDelegate {
+public interface OstLoaderCompletionDelegate {
     void dismissWorkflow();
 }

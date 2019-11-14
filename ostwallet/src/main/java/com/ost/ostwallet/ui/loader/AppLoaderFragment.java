@@ -8,23 +8,29 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ost.ostwallet.R;
 import com.ost.walletsdk.ui.loader.LoaderFragment;
 import com.ost.walletsdk.ui.loader.OstWorkflowLoader;
-import com.ost.walletsdk.ui.workflow.WorkflowCompleteDelegate;
+import com.ost.walletsdk.ui.uicomponents.OstB1Label;
+import com.ost.walletsdk.ui.workflow.OstLoaderCompletionDelegate;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 
+import org.json.JSONObject;
+
 
 public class AppLoaderFragment extends LoaderFragment implements OstWorkflowLoader {
-    private ProgressBar mProgressBar;
+    private HeartBeatView heartBeatView;
     private boolean mViewActive;
     private String mLoaderString = "Loading...";
     private TextView mLoaderTextView;
+    private AppProgress mProgressHorizontal;
+    private ViewGroup mViewGroup;
+    private OstB1Label mStatusButton;
+    private View mStatusImageView;
 
     public static AppLoaderFragment newInstance() {
         return new AppLoaderFragment();
@@ -39,12 +45,17 @@ public class AppLoaderFragment extends LoaderFragment implements OstWorkflowLoad
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_app_loader, container, false);
+        mViewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_app_loader, container, false);
         mViewActive = true;
-        mProgressBar = viewGroup.findViewById(R.id.progressBar);
-        mLoaderTextView = viewGroup.findViewById(R.id.loaderText);
+        heartBeatView = mViewGroup.findViewById(R.id.progressBar);
+        mLoaderTextView = mViewGroup.findViewById(R.id.loaderText);
+        mProgressHorizontal = mViewGroup.findViewById(R.id.progressBarIndef);
+
+        mStatusButton = mViewGroup.findViewById(R.id.statusButton);
+        mStatusImageView = mViewGroup.findViewById(R.id.statusImageView);
+
         mLoaderTextView.setText(mLoaderString);
-        return viewGroup;
+        return mViewGroup;
     }
 
     public void setLoaderString(String loaderString) {
@@ -52,47 +63,50 @@ public class AppLoaderFragment extends LoaderFragment implements OstWorkflowLoad
     }
 
     @Override
-    public void onInitLoader() {
+    public void onInitLoader(JSONObject contentConfig) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 if (mViewActive)  {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    mLoaderTextView.setVisibility(View.VISIBLE);
-                    mProgressBar.animate();
+                    hideStatus();
+
+                    showLoader();
                 }
             }
         });
     }
 
     @Override
-    public void onPostAuthentication() {
+    public void onPostAuthentication(JSONObject contentConfig) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 if (mViewActive)  {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    mLoaderTextView.setVisibility(View.VISIBLE);
+                    hideStatus();
+
+                    showLoader();
                 }
             }
         });
     }
 
     @Override
-    public void onAcknowledge() {
-
+    public void onAcknowledge(JSONObject contentConfig) {
+        mLoaderTextView.setText("Request Acknowledged");
     }
 
     @Override
-    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, final WorkflowCompleteDelegate delegate) {
+    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, final OstLoaderCompletionDelegate delegate) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 if (mViewActive)  {
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    mLoaderTextView.setVisibility(View.VISIBLE);
-                    mLoaderTextView.setText("Success");
-                    mLoaderTextView.setOnClickListener(new View.OnClickListener() {
+
+                    hideLoader();
+
+                    showSuccessStatus(ostWorkflowContext, ostContextEntity);
+
+                    mViewGroup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             delegate.dismissWorkflow();
@@ -104,28 +118,70 @@ public class AppLoaderFragment extends LoaderFragment implements OstWorkflowLoad
     }
 
     @Override
-    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, final WorkflowCompleteDelegate delegate) {
+    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, final OstLoaderCompletionDelegate delegate) {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
                 if (mViewActive)  {
-                    mProgressBar.setVisibility(View.INVISIBLE);
-                    mLoaderTextView.setVisibility(View.VISIBLE);
-                    mLoaderTextView.setText("Failed");
-                    mLoaderTextView.setOnClickListener(new View.OnClickListener() {
+
+                    hideLoader();
+
+                    showFailureStatus(ostWorkflowContext, ostError);
+
+                    View.OnClickListener  listener = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             delegate.dismissWorkflow();
                         }
-                    });
+                    };
+                    mViewGroup.setOnClickListener(listener);
+                    mStatusButton.setOnClickListener(listener);
                 }
             }
         });
+    }
+
+    private void hideStatus() {
+        mStatusButton.setVisibility(View.GONE);
+        mStatusImageView.setVisibility(View.GONE);
+    }
+
+    private void showSuccessStatus(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
+        mStatusImageView.setVisibility(View.VISIBLE);
+        mStatusButton.setVisibility(View.GONE);
+        mLoaderTextView.setVisibility(View.VISIBLE);
+        mLoaderTextView.setText("Success");
+
+        mStatusImageView.setBackground(getResources().getDrawable(R.drawable.toast_success, null));
+    }
+
+    private void showFailureStatus(OstWorkflowContext ostWorkflowContext, OstError ostError) {
+        mStatusImageView.setVisibility(View.VISIBLE);
+        mStatusButton.setVisibility(View.VISIBLE);
+        mLoaderTextView.setVisibility(View.VISIBLE);
+
+        mLoaderTextView.setText(new OstSdkErrors().getErrorMessage(ostWorkflowContext, ostError));
+        mStatusImageView.setBackground(getResources().getDrawable(R.drawable.toast_error, null));
+        mStatusButton.setText("Failure");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mViewActive = false;
+    }
+
+    private void showLoader() {
+        heartBeatView.setVisibility(View.VISIBLE);
+        mLoaderTextView.setVisibility(View.VISIBLE);
+        heartBeatView.start();
+        mProgressHorizontal.start();
+    }
+
+    private void hideLoader() {
+        heartBeatView.setVisibility(View.GONE);
+        heartBeatView.stop();
+        mProgressHorizontal.setVisibility(View.GONE);
+        mProgressHorizontal.stop();
     }
 }

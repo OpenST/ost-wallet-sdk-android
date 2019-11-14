@@ -89,7 +89,7 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
 
             //Initiate workflow
             showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
-            getWorkflowLoader().onInitLoader();
+            getWorkflowLoader().onInitLoader(contentConfig);
             try {
                 OstSdk.performQRAction(
                         mUserId,
@@ -150,13 +150,13 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
         super.popTopFragment();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
-        getWorkflowLoader().onPostAuthentication();
+        getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 
     @Override
     public void onDataVerified() {
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
-        getWorkflowLoader().onPostAuthentication();
+        getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 
     @Override

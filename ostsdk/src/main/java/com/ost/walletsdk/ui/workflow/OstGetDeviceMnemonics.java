@@ -46,7 +46,7 @@ public class OstGetDeviceMnemonics extends OstWorkFlowActivity {
         super.initiateWorkFlow();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
-        getWorkflowLoader().onInitLoader();
+        getWorkflowLoader().onInitLoader(contentConfig);
 
         OstSdk.getDeviceMnemonics(mUserId, mWorkFlowListener);
     }
@@ -79,6 +79,6 @@ public class OstGetDeviceMnemonics extends OstWorkFlowActivity {
         super.popTopFragment();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
-        getWorkflowLoader().onPostAuthentication();
+        getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 }

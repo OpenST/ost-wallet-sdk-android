@@ -203,6 +203,6 @@ public class DeviceListFragment extends BaseFragment implements DeviceListView {
 
     @Override
     public void onInitialize() {
-        getBaseActivity().getWorkflowLoader().onInitLoader();
+        getBaseActivity().getWorkflowLoader().onInitLoader(contentConfig);
     }
 }

@@ -53,7 +53,7 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
         } else {
             mShowBackButton = false;
             showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
-            getWorkflowLoader().onPostAuthentication();
+            getWorkflowLoader().onPostAuthentication(contentConfig);
 
             OstSdk.revokeDevice(mUserId, deviceAddress, mWorkFlowListener);
         }
@@ -75,7 +75,7 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
     public void onDeviceSelectToRevoke(Device device) {
         super.onDeviceSelectToRevoke(device);
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
-        getWorkflowLoader().onPostAuthentication();
+        getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class OstRevokeDeviceWorkflow extends OstWorkFlowActivity {
         super.popTopFragment();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
-        getWorkflowLoader().onPostAuthentication();
+        getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 
     @Override

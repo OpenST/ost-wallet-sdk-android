@@ -67,4 +67,6 @@
     <!--Transaction amount-->
     <color name="received_token_amount">#438bad</color>
     <color name="sent_token_amount">#9b9b9b</color>
+
+    <color name="transparent_gray">#33000000</color>
 </resources>

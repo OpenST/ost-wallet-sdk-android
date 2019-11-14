@@ -367,7 +367,8 @@ public class OstWalletUI {
      * To set delegate to get custom loader of UI workflow
      * @param ostLoaderDelegate loader delegate
      */
-    public static void setLoaderProvider(@NonNull OstLoaderDelegate ostLoaderDelegate) {
+    public static void setLoaderManager(@NonNull OstLoaderDelegate ostLoaderDelegate) {
+        OstResourceProvider.setApplicationLoaderManager(ostLoaderDelegate);
         OstLoaderProvider.setLoaderManager(ostLoaderDelegate);
     }
 }

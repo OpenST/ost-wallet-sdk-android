@@ -1,7 +1,6 @@
 package com.ost.walletsdk.ui.loader;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -12,20 +11,28 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ost.walletsdk.R;
-import com.ost.walletsdk.ui.workflow.WorkflowCompleteDelegate;
+import com.ost.walletsdk.ui.workflow.OstLoaderCompletionDelegate;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
 
+import org.json.JSONObject;
+
 public class LoaderFragment extends DialogFragment implements OstWorkflowLoader {
 
+    private OstWorkflowContext.WORKFLOW_TYPE mWorkflowType;
     private String mLoaderString = "Loading...";
 
     private ProgressBar mProgressBar;
     private TextView mLoaderTextView;
 
-    public static LoaderFragment newInstance() {
-        return new LoaderFragment();
+    public LoaderFragment() {
+    }
+
+    public static LoaderFragment newInstance(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
+        LoaderFragment loaderFragment = new LoaderFragment();
+        loaderFragment.mWorkflowType = workflowType;
+        return loaderFragment;
     }
 
     @Override
@@ -49,27 +56,27 @@ public class LoaderFragment extends DialogFragment implements OstWorkflowLoader 
     }
 
     @Override
-    public void onInitLoader() {
+    public void onInitLoader(JSONObject contentConfig) {
 
     }
 
     @Override
-    public void onPostAuthentication() {
+    public void onPostAuthentication(JSONObject contentConfig) {
 
     }
 
     @Override
-    public void onAcknowledge() {
+    public void onAcknowledge(JSONObject contentConfig) {
 
     }
 
     @Override
-    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, final WorkflowCompleteDelegate delegate) {
+    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, final OstLoaderCompletionDelegate delegate) {
 
     }
 
     @Override
-    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, final WorkflowCompleteDelegate delegate) {
+    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, final OstLoaderCompletionDelegate delegate) {
 
     }
 

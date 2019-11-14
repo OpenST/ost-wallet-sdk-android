@@ -70,7 +70,7 @@ public class AppProvider {
         if (null != AppProvider.get().getCurrentEconomy()) {
             OstWalletUI.initialize(context.getApplicationContext(),
                     AppProvider.get().getCurrentEconomy().getSaasApiEndpoint());
-            OstWalletUI.setLoaderProvider(LoaderManager.getInstance());
+            OstWalletUI.setLoaderManager(LoaderManager.getInstance());
         }
 
     }
