@@ -6,9 +6,11 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
         android:layout_centerInParent="true">
 
         <ImageView
@@ -36,17 +38,19 @@
             android:textSize="15sp"
             android:text="Loading..."/>
 
-        <com.ost.walletsdk.ui.uicomponents.OstB1Label
+        <Button
             android:id="@+id/statusButton"
             android:layout_marginTop="25dp"
             android:layout_gravity="center_horizontal"
             android:text="Success"
-            android:layout_width="wrap_content"
+            android:textSize="15sp"
+            android:background="@android:color/holo_red_light"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <com.ost.ostwallet.ui.loader.AppProgress
             android:id="@+id/progressBarIndef"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="25dp" />

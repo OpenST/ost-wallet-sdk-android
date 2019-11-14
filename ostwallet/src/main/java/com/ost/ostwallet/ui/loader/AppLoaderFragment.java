@@ -8,12 +8,12 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.ost.ostwallet.R;
 import com.ost.walletsdk.ui.loader.LoaderFragment;
 import com.ost.walletsdk.ui.loader.OstWorkflowLoader;
-import com.ost.walletsdk.ui.uicomponents.OstB1Label;
 import com.ost.walletsdk.ui.workflow.OstLoaderCompletionDelegate;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -29,7 +29,7 @@ public class AppLoaderFragment extends LoaderFragment implements OstWorkflowLoad
     private TextView mLoaderTextView;
     private AppProgress mProgressHorizontal;
     private ViewGroup mViewGroup;
-    private OstB1Label mStatusButton;
+    private Button mStatusButton;
     private View mStatusImageView;
 
     public static AppLoaderFragment newInstance() {
