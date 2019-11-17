@@ -90,6 +90,7 @@ public class OstShowDeviceQR extends OstWorkFlowActivity implements
     @Override
     public void onCheckDevice() {
         showProgress(true, loaderString);
+        getWorkflowLoader().onInitLoader(contentConfig);
         OstJsonApi.getCurrentDevice(mUserId, this);
     }
 

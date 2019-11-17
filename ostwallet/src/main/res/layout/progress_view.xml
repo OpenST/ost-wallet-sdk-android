@@ -15,8 +15,8 @@
 
     <View
         android:id="@+id/progress_intermediate"
-        android:layout_width="50dp"
-        android:layout_height="5dp"
+        android:layout_width="100dp"
+        android:layout_height="15dp"
         android:background="@android:color/holo_red_light"/>
 
 </RelativeLayout>
