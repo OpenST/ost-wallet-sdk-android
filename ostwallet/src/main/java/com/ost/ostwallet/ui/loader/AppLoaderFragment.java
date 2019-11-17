@@ -64,30 +64,20 @@ public class AppLoaderFragment extends LoaderFragment implements OstWorkflowLoad
 
     @Override
     public void onInitLoader(JSONObject contentConfig) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (mViewActive)  {
-                    hideStatus();
+        if (mViewActive) {
+            hideStatus();
 
-                    showLoader();
-                }
-            }
-        });
+            showLoader();
+        }
     }
 
     @Override
     public void onPostAuthentication(JSONObject contentConfig) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (mViewActive)  {
-                    hideStatus();
+        if (mViewActive) {
+            hideStatus();
 
-                    showLoader();
-                }
-            }
-        });
+            showLoader();
+        }
     }
 
     @Override
@@ -97,48 +87,37 @@ public class AppLoaderFragment extends LoaderFragment implements OstWorkflowLoad
 
     @Override
     public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, final OstLoaderCompletionDelegate delegate) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (mViewActive)  {
+        if (mViewActive) {
+            hideLoader();
 
-                    hideLoader();
+            showSuccessStatus(ostWorkflowContext, ostContextEntity);
 
-                    showSuccessStatus(ostWorkflowContext, ostContextEntity);
-
-                    mViewGroup.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            delegate.dismissWorkflow();
-                        }
-                    });
+            mViewGroup.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    delegate.dismissWorkflow();
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
     public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, final OstLoaderCompletionDelegate delegate) {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (mViewActive)  {
+        if (mViewActive) {
 
-                    hideLoader();
+            hideLoader();
 
-                    showFailureStatus(ostWorkflowContext, ostError);
+            showFailureStatus(ostWorkflowContext, ostError);
 
-                    View.OnClickListener  listener = new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            delegate.dismissWorkflow();
-                        }
-                    };
-                    mViewGroup.setOnClickListener(listener);
-                    mStatusButton.setOnClickListener(listener);
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    delegate.dismissWorkflow();
                 }
-            }
-        });
+            };
+            mViewGroup.setOnClickListener(listener);
+            mStatusButton.setOnClickListener(listener);
+        }
     }
 
     private void hideStatus() {
