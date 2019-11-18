@@ -86,7 +86,7 @@ public class AppLoaderFragment extends LoaderFragment implements OstWorkflowLoad
     }
 
     @Override
-    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, final OstLoaderCompletionDelegate delegate) {
+    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, JSONObject contentConfig ,final OstLoaderCompletionDelegate delegate) {
         if (mViewActive) {
             hideLoader();
 
@@ -102,7 +102,7 @@ public class AppLoaderFragment extends LoaderFragment implements OstWorkflowLoad
     }
 
     @Override
-    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, final OstLoaderCompletionDelegate delegate) {
+    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, JSONObject contentConfig, final OstLoaderCompletionDelegate delegate) {
         if (mViewActive) {
 
             hideLoader();

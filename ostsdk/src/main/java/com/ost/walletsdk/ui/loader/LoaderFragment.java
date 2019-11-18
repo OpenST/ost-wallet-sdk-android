@@ -71,12 +71,12 @@ public class LoaderFragment extends DialogFragment implements OstWorkflowLoader 
     }
 
     @Override
-    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, final OstLoaderCompletionDelegate delegate) {
+    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, JSONObject contentConfig, final OstLoaderCompletionDelegate delegate) {
 
     }
 
     @Override
-    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, final OstLoaderCompletionDelegate delegate) {
+    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, JSONObject contentConfig, final OstLoaderCompletionDelegate delegate) {
 
     }
 

@@ -50,21 +50,21 @@ public class LoaderOnMainThreadWrapper implements OstWorkflowLoader {
     }
 
     @Override
-    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstLoaderCompletionDelegate delegate) {
+    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, JSONObject contentConfig, OstLoaderCompletionDelegate delegate) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                mLoader.onSuccess(ostWorkflowContext, ostContextEntity, delegate);
+                mLoader.onSuccess(ostWorkflowContext, ostContextEntity, contentConfig, delegate);
             }
         });
     }
 
     @Override
-    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, OstLoaderCompletionDelegate delegate) {
+    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, JSONObject contentConfig, OstLoaderCompletionDelegate delegate) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                mLoader.onFailure(ostWorkflowContext, ostError, delegate);
+                mLoader.onFailure(ostWorkflowContext, ostError, contentConfig, delegate);
             }
         });
     }

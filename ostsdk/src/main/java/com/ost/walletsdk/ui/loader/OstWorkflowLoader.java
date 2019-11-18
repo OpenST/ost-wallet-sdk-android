@@ -14,7 +14,7 @@ public interface OstWorkflowLoader {
 
     void onAcknowledge(JSONObject contentConfig);
 
-    void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstLoaderCompletionDelegate delegate);
+    void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, JSONObject contentConfig ,OstLoaderCompletionDelegate delegate);
 
-    void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, OstLoaderCompletionDelegate delegate);
+    void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, JSONObject contentConfig ,OstLoaderCompletionDelegate delegate);
 }

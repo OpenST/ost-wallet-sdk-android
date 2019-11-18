@@ -232,13 +232,13 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     @Override
     public boolean flowComplete(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        getWorkflowLoader().onSuccess(ostWorkflowContext, ostContextEntity, OstWorkFlowActivity.this);
+        getWorkflowLoader().onSuccess(ostWorkflowContext, ostContextEntity, getContentConfig(ostWorkflowContext.getWorkflowType()), OstWorkFlowActivity.this);
         return false;
     }
 
     @Override
     public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        getWorkflowLoader().onFailure(ostWorkflowContext, ostError, OstWorkFlowActivity.this);
+        getWorkflowLoader().onFailure(ostWorkflowContext, ostError, getContentConfig(ostWorkflowContext.getWorkflowType()),OstWorkFlowActivity.this);
 
         return false;
     }
