@@ -24,7 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.ost.walletsdk.R;
-import com.ost.walletsdk.ui.loader.LoaderFragment;
+import com.ost.walletsdk.ui.loader.OstLoaderFragment;
 import com.ost.walletsdk.ui.loader.LoaderOnMainThreadWrapper;
 import com.ost.walletsdk.ui.loader.OstWorkflowLoader;
 import com.ost.walletsdk.ui.util.WorkflowActivityLifecycleListener;
@@ -151,7 +151,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     @Override
     public void showProgress(boolean show, String progressString) {
         if (show) {
-            LoaderFragment loaderFragment = createDialogFragment();
+            OstLoaderFragment loaderFragment = createDialogFragment();
             loaderFragment.show(getSupportFragmentManager(), "DialogFragment");
             loaderFragment.setLoaderString(progressString);
             loaderFragment.setCancelable(false);
@@ -181,8 +181,8 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     protected abstract View getRootView();
 
-    protected LoaderFragment createDialogFragment() {
-        return new LoaderFragment();
+    protected OstLoaderFragment createDialogFragment() {
+        return new OstLoaderFragment();
     }
 
     public OstWorkflowLoader getWorkflowLoader() {

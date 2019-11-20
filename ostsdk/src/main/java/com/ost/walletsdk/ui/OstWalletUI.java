@@ -369,6 +369,5 @@ public class OstWalletUI {
      */
     public static void setLoaderManager(@NonNull OstLoaderDelegate ostLoaderDelegate) {
         OstResourceProvider.setApplicationLoaderManager(ostLoaderDelegate);
-        OstLoaderProvider.setLoaderManager(ostLoaderDelegate);
     }
 }

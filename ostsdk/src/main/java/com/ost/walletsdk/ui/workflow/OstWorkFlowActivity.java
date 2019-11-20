@@ -13,11 +13,10 @@ import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.BaseActivity;
 import com.ost.walletsdk.ui.ChildFragmentStack;
-import com.ost.walletsdk.ui.OstLoaderProvider;
 import com.ost.walletsdk.ui.OstResourceProvider;
 import com.ost.walletsdk.ui.WebViewFragment;
 import com.ost.walletsdk.ui.WorkFlowPinFragment;
-import com.ost.walletsdk.ui.loader.LoaderFragment;
+import com.ost.walletsdk.ui.loader.OstLoaderFragment;
 import com.ost.walletsdk.ui.managedevices.Device;
 import com.ost.walletsdk.ui.managedevices.DeviceListRecyclerViewAdapter;
 import com.ost.walletsdk.ui.recovery.AbortRecoveryFragment;
@@ -245,7 +244,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
 
     @Override
     public boolean requestAcknowledged(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity) {
-        boolean waitForFinalization = OstLoaderProvider.getBaseWorkflowLoader().waitForFinalization(ostWorkflowContext.getWorkflowType());
+        boolean waitForFinalization = OstResourceProvider.getLoaderManager().waitForFinalization(ostWorkflowContext.getWorkflowType());
         if (waitForFinalization) {
             getWorkflowLoader().onAcknowledge(getContentConfig(ostWorkflowContext.getWorkflowType()));
             return false;
@@ -363,7 +362,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     }
 
     @Override
-    protected LoaderFragment createDialogFragment() {
+    protected OstLoaderFragment createDialogFragment() {
         return OstResourceProvider.getLoaderManager().getLoader(getWorkflowContext().getWorkflowType());
     }
 

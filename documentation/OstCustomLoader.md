@@ -15,8 +15,8 @@ class LoaderManager implements OstLoaderDelegate {
     }
 
     @Override
-    public LoaderFragment getLoader(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
-    	//Returns Custom Loader Implemtation which inherits LoaderFragment.
+    public OstLoaderFragment getLoader(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
+    	//Returns Custom Loader Implemtation which inherits OstLoaderFragment.
     }
 
     @Override
@@ -36,7 +36,7 @@ OstWalletUI.setLoaderManager(new LoaderManager());
 >Implementing OstLoaderDelegate to Activities or fragment may cause memory leak.<br/>
 
 #### Create Application loader Fragment
-Loader Fragment should be subclass of  `LoaderFragment`.
+Loader Fragment should be subclass of  `OstLoaderFragment`.
 
 * onInitLoader: method gets called when OstWalletUI is processing
 * onPostAuthentication: OstWalletUI call this method after user enters pin
@@ -49,7 +49,7 @@ Loader Fragment should be subclass of  `LoaderFragment`.
 >Not calling delegate `dismissWorkflow` will keep the workflow Acitivty on the screen.
 
 ```java
-import com.ost.walletsdk.ui.loader.LoaderFragment;
+import com.ost.walletsdk.ui.loader.OstLoaderFragment;
 import com.ost.walletsdk.ui.loader.OstWorkflowLoader;
 import com.ost.walletsdk.ui.workflow.OstLoaderCompletionDelegate;
 import com.ost.walletsdk.workflows.OstContextEntity;
@@ -59,7 +59,7 @@ import com.ost.walletsdk.workflows.errors.OstError;
 import org.json.JSONObject;
 
 
-public class AppLoaderFragment extends LoaderFragment implements OstWorkflowLoader {
+public class AppLoaderFragment extends OstLoaderFragment implements OstWorkflowLoader {
 
     public static AppLoaderFragment newInstance() {
         return new AppLoaderFragment();

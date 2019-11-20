@@ -18,7 +18,7 @@ import com.ost.walletsdk.workflows.errors.OstError;
 
 import org.json.JSONObject;
 
-public class LoaderFragment extends DialogFragment implements OstWorkflowLoader {
+public class OstLoaderFragment extends DialogFragment implements OstWorkflowLoader {
 
     private OstWorkflowContext.WORKFLOW_TYPE mWorkflowType;
     private String mLoaderString = "Loading...";
@@ -26,11 +26,11 @@ public class LoaderFragment extends DialogFragment implements OstWorkflowLoader 
     private ProgressBar mProgressBar;
     private TextView mLoaderTextView;
 
-    public LoaderFragment() {
+    public OstLoaderFragment() {
     }
 
-    public static LoaderFragment newInstance(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
-        LoaderFragment loaderFragment = new LoaderFragment();
+    public static OstLoaderFragment newInstance(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
+        OstLoaderFragment loaderFragment = new OstLoaderFragment();
         loaderFragment.mWorkflowType = workflowType;
         return loaderFragment;
     }

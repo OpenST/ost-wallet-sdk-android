@@ -88,7 +88,7 @@ Application loader for OstWalletUI can be initialized by calling `setLoaderManag
 To setup application loader, please refer [CustomLoader](./OstCustomLoader.md) documentation.
 
 **Parameters**<br/>
-&nbsp;_loaderManager: class which inherits `LoaderFragment` protocol_<br/>
+&nbsp;_loaderManager: class which inherits `OstLoaderFragment` protocol_<br/>
 ```java
 OstWalletUI.setLoaderManager(loaderManager)
 ```

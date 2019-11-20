@@ -7,9 +7,9 @@ public interface OstLoaderDelegate {
     /**
      * Get custom loader to show while workflow is in progress
      * @param workflowType OstWorkflowType
-     * @return LoaderFragment
+     * @return OstLoaderFragment
      */
-    LoaderFragment getLoader(OstWorkflowContext.WORKFLOW_TYPE workflowType);
+    OstLoaderFragment getLoader(OstWorkflowContext.WORKFLOW_TYPE workflowType);
 
     /**
      * Check whether workflow should wait till finalization
