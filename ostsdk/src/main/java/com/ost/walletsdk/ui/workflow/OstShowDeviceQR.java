@@ -80,6 +80,7 @@ public class OstShowDeviceQR extends OstWorkFlowActivity implements
             );
 
         } else {
+            showProgress(false);
             String title = qrContentConfig.optJSONObject("unauthorized_alert").optString("title");
             String message = qrContentConfig.optJSONObject("unauthorized_alert").optString("message");
             DialogFactory.createSimpleOkErrorDialog(this, title, message).show();
