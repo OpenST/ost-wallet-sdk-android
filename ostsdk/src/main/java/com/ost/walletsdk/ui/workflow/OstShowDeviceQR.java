@@ -60,7 +60,6 @@ public class OstShowDeviceQR extends OstWorkFlowActivity implements
     }
 
     private void showFeedback() {
-        showProgress(false);
         OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
         if (OstDevice.CONST_STATUS.AUTHORIZED
                 .equalsIgnoreCase(
