@@ -81,7 +81,7 @@ public class AppLoaderFragment extends OstLoaderFragment implements OstWorkflowL
 
     @Override
     public void onAcknowledge(JSONObject contentConfig) {
-        mLoaderTextView.setText("Request Acknowledged");
+        mLoaderTextView.setText("Waiting for Confirmation...");
     }
 
     @Override

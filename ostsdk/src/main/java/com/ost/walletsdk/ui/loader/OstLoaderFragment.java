@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ost.walletsdk.R;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.ui.workflow.OstLoaderCompletionDelegate;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -57,27 +58,45 @@ public class OstLoaderFragment extends DialogFragment implements OstWorkflowLoad
 
     @Override
     public void onInitLoader(JSONObject contentConfig) {
-
+        try {
+            StringConfig stringConfig = StringConfig.instance(contentConfig.optJSONObject("initial_loader"));
+            mLoaderString = stringConfig.getString();
+        } catch (Exception e) {
+              //No handling required
+        }
+        mLoaderTextView.setText(mLoaderString);
     }
 
     @Override
     public void onPostAuthentication(JSONObject contentConfig) {
-
+        try {
+            StringConfig stringConfig = StringConfig.instance(contentConfig.optJSONObject("loader"));
+            mLoaderString = stringConfig.getString();
+        } catch (Exception e) {
+            //No handling required
+        }
+        mLoaderTextView.setText(mLoaderString);
     }
 
     @Override
     public void onAcknowledge(JSONObject contentConfig) {
-
+        try {
+            StringConfig stringConfig = StringConfig.instance(contentConfig.optJSONObject("acknowledge"));
+            mLoaderString = stringConfig.getString();
+        } catch (Exception e) {
+            //No handling required
+        }
+        mLoaderTextView.setText(mLoaderString);
     }
 
     @Override
     public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, JSONObject contentConfig, final OstLoaderCompletionDelegate delegate) {
-
+        delegate.dismissWorkflow();
     }
 
     @Override
     public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, JSONObject contentConfig, final OstLoaderCompletionDelegate delegate) {
-
+        delegate.dismissWorkflow();
     }
 
     @Override
