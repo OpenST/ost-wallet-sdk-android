@@ -24,7 +24,6 @@ import com.ost.ostwallet.network.MappyNetworkClient;
 import com.ost.ostwallet.network.NetworkClient;
 import com.ost.ostwallet.ui.BaseActivity;
 import com.ost.ostwallet.ui.auth.OnBoardingActivity;
-import com.ost.ostwallet.ui.loader.LoaderManager;
 import com.ost.ostwallet.util.CommonUtils;
 import com.ost.ostwallet.util.DBLog;
 import com.ost.ostwallet.util.DialogFactory;
@@ -70,7 +69,6 @@ public class AppProvider {
         if (null != AppProvider.get().getCurrentEconomy()) {
             OstWalletUI.initialize(context.getApplicationContext(),
                     AppProvider.get().getCurrentEconomy().getSaasApiEndpoint());
-            OstWalletUI.setLoaderManager(LoaderManager.getInstance());
         }
 
     }

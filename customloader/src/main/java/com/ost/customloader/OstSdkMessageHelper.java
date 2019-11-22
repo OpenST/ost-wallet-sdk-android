@@ -1,5 +1,6 @@
-package com.ost.ostwallet.ui.loader;
+package com.ost.customloader;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.ost.walletsdk.network.OstApiError;
@@ -8,33 +9,33 @@ import com.ost.walletsdk.workflows.errors.OstError;
 
 import org.json.JSONObject;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OstSdkErrors {
+public class OstSdkMessageHelper {
 
     private final static String DEFAULT_CONTEXT = "__DEFAULT_CONTEXT";
     private static final boolean DEVELOPER_MODE = true;
+    private static final String SUCCESS_MSG_KEY = "SUCCESS_MESSAGE";
     private static JSONObject ALL_ERRORS = new JSONObject();
     private final String DEVICE_OUT_OF_SYNC = "DEVICE_OUT_OF_SYNC";
     private final String DEFAULT_ERROR_MSG = "Something went wrong";
     private static Map<String, String> BASE_ERROR_MSG = new HashMap<>();
 
-    static {
+    private static void init(Context context) {
         InputStream configInputStream = null;
         try {
-            configInputStream = new FileInputStream("SdkErrors.json");
-        int size = configInputStream.available();
-        byte[] buffer = new byte[size];
+            configInputStream = context.getAssets().open("OstSdkMessages.json");
+            int size = configInputStream.available();
+            byte[] buffer = new byte[size];
 
-        configInputStream.read(buffer);
-        configInputStream.close();
+            configInputStream.read(buffer);
+            configInputStream.close();
 
-        String json = new String(buffer, "UTF-8");
-        ALL_ERRORS  = new JSONObject(json);
+            String json = new String(buffer, "UTF-8");
+            ALL_ERRORS = new JSONObject(json);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -126,7 +127,20 @@ public class OstSdkErrors {
         return errMsg;
     }
 
-    public OstSdkErrors() {
+    public String getSuccessText(OstWorkflowContext ostWorkflowContext) {
+        String successText = "Success";
 
+        OstWorkflowContext.WORKFLOW_TYPE type = ostWorkflowContext.getWorkflowType();
+        JSONObject jsonObject = ALL_ERRORS.optJSONObject(type.toString());
+
+        if (null != jsonObject) {
+            successText = jsonObject.optString(SUCCESS_MSG_KEY, "Success");
+        }
+
+        return successText;
+    }
+
+    OstSdkMessageHelper(Context context) {
+        if (0 == ALL_ERRORS.length()) init(context);
     }
 }
