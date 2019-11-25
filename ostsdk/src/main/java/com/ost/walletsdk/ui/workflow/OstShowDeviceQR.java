@@ -1,7 +1,7 @@
 package com.ost.walletsdk.ui.workflow;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.R;
@@ -60,7 +60,6 @@ public class OstShowDeviceQR extends OstWorkFlowActivity implements
     }
 
     private void showFeedback() {
-        showProgress(false);
         OstDevice ostDevice = OstUser.getById(mUserId).getCurrentDevice();
         if (OstDevice.CONST_STATUS.AUTHORIZED
                 .equalsIgnoreCase(
@@ -81,6 +80,7 @@ public class OstShowDeviceQR extends OstWorkFlowActivity implements
             );
 
         } else {
+            showProgress(false);
             String title = qrContentConfig.optJSONObject("unauthorized_alert").optString("title");
             String message = qrContentConfig.optJSONObject("unauthorized_alert").optString("message");
             DialogFactory.createSimpleOkErrorDialog(this, title, message).show();
@@ -90,6 +90,7 @@ public class OstShowDeviceQR extends OstWorkFlowActivity implements
     @Override
     public void onCheckDevice() {
         showProgress(true, loaderString);
+        getWorkflowLoader().onInitLoader(contentConfig);
         OstJsonApi.getCurrentDevice(mUserId, this);
     }
 

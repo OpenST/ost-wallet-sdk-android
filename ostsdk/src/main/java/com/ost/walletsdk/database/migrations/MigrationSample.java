@@ -12,7 +12,7 @@ package com.ost.walletsdk.database.migrations;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.migration.Migration;
-import android.support.annotation.NonNull;
+import com.ost.walletsdk.annotations.NonNull;
 
 public class MigrationSample extends Migration {
 

@@ -1,8 +1,8 @@
 package com.ost.walletsdk.ui.workflow;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -89,6 +89,7 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
 
             //Initiate workflow
             showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
+            getWorkflowLoader().onInitLoader(contentConfig);
             try {
                 OstSdk.performQRAction(
                         mUserId,
@@ -149,11 +150,13 @@ public class OstExecuteTxnViaQRWorkflow extends OstWorkFlowActivity implements
         super.popTopFragment();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
+        getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 
     @Override
     public void onDataVerified() {
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
+        getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 
     @Override

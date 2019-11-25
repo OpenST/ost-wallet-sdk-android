@@ -12,8 +12,8 @@ package com.ost.walletsdk;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 import android.util.Log;
 
 import com.datatheorem.android.trustkit.TrustKit;

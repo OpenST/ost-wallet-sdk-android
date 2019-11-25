@@ -13,6 +13,10 @@ package com.ost.walletsdk.ui.entermnemonics;
 
 import com.ost.walletsdk.ui.BaseView;
 
+import org.json.JSONObject;
+
 interface EnterMnemonicsView extends BaseView {
     void showErrorMessage(boolean show);
+
+    void onInitLoader(JSONObject contentConfig);
 }

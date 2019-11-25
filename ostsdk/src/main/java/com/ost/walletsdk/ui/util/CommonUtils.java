@@ -17,7 +17,7 @@ import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
+import com.ost.walletsdk.annotations.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
