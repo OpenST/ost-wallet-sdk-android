@@ -17,7 +17,7 @@ import java.util.Map;
 public class OstSdkMessageHelper {
 
     private final static String DEFAULT_CONTEXT = "__DEFAULT_CONTEXT";
-    private static final boolean DEVELOPER_MODE = true;
+    private static final boolean DEVELOPER_MODE = false;
     private static final String SUCCESS_MSG_KEY = "SUCCESS_MESSAGE";
     private static JSONObject ALL_ERRORS = new JSONObject();
     private final String DEVICE_OUT_OF_SYNC = "DEVICE_OUT_OF_SYNC";
