@@ -3,11 +3,12 @@ package com.ost.walletsdk.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ui.interfaces.OstWalletUIListener;
+import com.ost.walletsdk.ui.loader.OstLoaderDelegate;
 import com.ost.walletsdk.ui.recovery.RecoveryFragment;
 import com.ost.walletsdk.ui.sdkInteract.SdkInteract;
 import com.ost.walletsdk.ui.sdkInteract.WorkFlowListener;
@@ -360,5 +361,13 @@ public class OstWalletUI {
     public static void showComponentSheet(@NonNull Activity currentActivity) {
         Intent intent = new Intent(currentActivity, OstWorkFlowActivity.class);
         currentActivity.startActivity(intent);
+    }
+
+    /**
+     * To set delegate to get custom loader of UI workflow
+     * @param ostLoaderDelegate loader delegate
+     */
+    public static void setLoaderManager(@NonNull OstLoaderDelegate ostLoaderDelegate) {
+        OstResourceProvider.setApplicationLoaderManager(ostLoaderDelegate);
     }
 }

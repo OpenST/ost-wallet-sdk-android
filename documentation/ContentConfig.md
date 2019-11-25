@@ -130,11 +130,13 @@ OstWalletUI supports 8 workflows
 | get_pin              | Get Pin View where user provides pin for authentication    |
 
 ## Loader Content View Components
-In every workflow we support two loaders with text configuration:
+In every workflow we support three loaders with text configuration:
 * initial_loader</br>
 Loader shown before workflow request construct
 * loader</br>
 Loader shown after workflow request construct
+* acknowledge</br>
+Loader shown after workflow request acknowledged
 
 ## Supported UI Components in PIN Input Views
 Here, we refer follwing views as 'Pin Input' views:

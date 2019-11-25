@@ -31,6 +31,7 @@ public class OstBiometricPrefWorkflow extends OstWorkFlowActivity {
         super.initiateWorkFlow();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
+        getWorkflowLoader().onInitLoader(contentConfig);
 
         boolean enable = getIntent().getBooleanExtra(OstWorkFlowActivity.ENABLE, false);
         OstSdk.updateBiometricPreference(mUserId, enable, mWorkFlowListener);
@@ -53,5 +54,6 @@ public class OstBiometricPrefWorkflow extends OstWorkFlowActivity {
         super.popTopFragment();
 
         showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
+        getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 }

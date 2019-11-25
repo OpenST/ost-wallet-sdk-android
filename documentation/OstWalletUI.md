@@ -82,6 +82,17 @@ try {
 OstWalletUI.setContentConfig(contentConfig)
 ```
 
+### Set Loader Manager
+
+Application loader for OstWalletUI can be initialized by calling `setLoaderManager` API. <br/>
+To setup application loader, please refer [CustomLoader](./OstCustomLoader.md) documentation.
+
+**Parameters**<br/>
+&nbsp;_loaderManager: class which inherits `OstLoaderFragment` protocol_<br/>
+```java
+OstWalletUI.setLoaderManager(loaderManager)
+```
+
 ### Activate User
 
 User activation refers to the deployment of smart-contracts that form the user's Brand Token wallet. An activated user can engage with a Brand Token economy.

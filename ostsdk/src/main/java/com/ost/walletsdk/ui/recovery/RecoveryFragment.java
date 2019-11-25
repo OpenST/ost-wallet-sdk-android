@@ -23,6 +23,8 @@ import com.ost.walletsdk.ui.BaseFragment;
 import com.ost.walletsdk.ui.util.ChildFragmentUtils;
 import com.ost.walletsdk.ui.walletsetup.PinFragment;
 
+import org.json.JSONObject;
+
 import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.USER_ID;
 import static com.ost.walletsdk.ui.workflow.OstWorkFlowActivity.WORKFLOW_ID;
 
@@ -109,6 +111,11 @@ public class RecoveryFragment extends BaseFragment implements RecoveryView,
     @Override
     public void gotoDashboard(String workflowId) {
         goBack();
+    }
+
+    @Override
+    public void onPostAuthentication(JSONObject contentConfig) {
+        getBaseActivity().getWorkflowLoader().onPostAuthentication(contentConfig);
     }
 
     @Override

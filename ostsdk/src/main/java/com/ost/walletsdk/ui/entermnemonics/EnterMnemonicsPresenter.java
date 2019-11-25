@@ -53,6 +53,7 @@ class EnterMnemonicsPresenter extends BasePresenter<EnterMnemonicsView> implemen
         getMvpView().showErrorMessage(false);
 
         getMvpView().showProgress(true, StringConfig.instance(contentConfig.optJSONObject("initial_loader")).getString());
+        getMvpView().onInitLoader(contentConfig);
 
         OstSdk.authorizeCurrentDeviceWithMnemonics(
                 mUserId,

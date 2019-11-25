@@ -15,4 +15,5 @@ import com.ost.walletsdk.ui.BaseView;
 interface DeviceListView extends BaseView {
     void notifyDataSetChanged();
     void setRefreshing(boolean refreshing);
+    void onInitialize();
 }

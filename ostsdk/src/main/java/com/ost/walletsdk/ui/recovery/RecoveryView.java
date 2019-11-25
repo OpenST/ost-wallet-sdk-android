@@ -12,9 +12,13 @@ package com.ost.walletsdk.ui.recovery;
 
 import com.ost.walletsdk.ui.BaseView;
 
+import org.json.JSONObject;
+
 interface RecoveryView extends BaseView {
 
     void showEnterPin();
 
     void gotoDashboard(String workflowId);
+
+    void onPostAuthentication(JSONObject contentConfig);
 }

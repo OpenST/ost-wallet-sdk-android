@@ -135,4 +135,9 @@ public class EnterMnemonicsFragment extends BaseFragment implements EnterMnemoni
             mErrorMessage.setVisibility(View.INVISIBLE);
         }
     }
+
+    @Override
+    public void onInitLoader(JSONObject contentConfig) {
+        getBaseActivity().getWorkflowLoader().onInitLoader(contentConfig);
+    }
 }
