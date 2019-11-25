@@ -10,8 +10,8 @@
 
 package com.ost.walletsdk.workflows;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 

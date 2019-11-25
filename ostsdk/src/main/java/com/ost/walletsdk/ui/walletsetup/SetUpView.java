@@ -26,4 +26,6 @@ interface SetUpView extends BaseView {
     void showPinErrorDialog();
 
     Activity getCurrentActivity();
+
+    void onInitialize();
 }

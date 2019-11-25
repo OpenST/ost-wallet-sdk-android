@@ -86,6 +86,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements RequestAc
     private void startWorkFLow(final String pin) {
 
         getMvpView().showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
+        getMvpView().onInitialize();
 
         final WalletSetUpPresenter walletSetUpPresenter = this;
         final WorkFlowListener workFlowListener = SdkInteract.getInstance().getWorkFlowListener(workflowId);

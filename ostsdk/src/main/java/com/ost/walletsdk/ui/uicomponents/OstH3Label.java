@@ -11,12 +11,8 @@
 package com.ost.walletsdk.ui.uicomponents;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 
-import com.ost.walletsdk.ui.uicomponents.uiutils.Font;
-import com.ost.walletsdk.ui.uicomponents.uiutils.FontFactory;
 import com.ost.walletsdk.ui.uicomponents.uiutils.theme.ThemeConfig;
 
 public class OstH3Label extends OstTextView {
