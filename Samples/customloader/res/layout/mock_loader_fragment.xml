@@ -20,7 +20,7 @@
             android:layout_gravity="center_horizontal"
             android:background="@drawable/ost_success_icon" />
 
-        <com.ost.customloader.GIFView
+        <customloader.src.GIFView
             android:id="@+id/progressGif"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

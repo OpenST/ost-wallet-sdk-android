@@ -1,4 +1,4 @@
-package com.ost.customloader;
+package customloader.src;
 
 import com.ost.walletsdk.ui.loader.OstLoaderDelegate;
 import com.ost.walletsdk.ui.loader.OstLoaderFragment;
@@ -17,7 +17,7 @@ public class OstMockLoaderManager implements OstLoaderDelegate {
 
     @Override
     public OstLoaderFragment getLoader(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
-        return OstMockLoaderFragment.newInstance();
+        return customloader.src.OstMockLoaderFragment.newInstance();
     }
 
     @Override

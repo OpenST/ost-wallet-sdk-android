@@ -9,5 +9,5 @@
   -->
 
 <resources>
-    <color name="transparent_gray">#33000000</color>
+    <color name="trans_gray">#33000000</color>
 </resources>

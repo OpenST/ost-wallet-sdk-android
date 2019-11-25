@@ -1,4 +1,4 @@
-package com.ost.customloader;
+package customloader.src;
 
 import android.content.Context;
 import android.text.TextUtils;

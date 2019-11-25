@@ -1,4 +1,4 @@
-package com.ost.customloader;
+package customloader.src;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+
+import com.ost.ostwallet.R;
 import com.ost.walletsdk.ui.loader.OstLoaderFragment;
 import com.ost.walletsdk.ui.loader.OstWorkflowLoader;
 import com.ost.walletsdk.ui.workflow.OstLoaderCompletionDelegate;
@@ -29,7 +31,7 @@ public class OstMockLoaderFragment extends OstLoaderFragment implements OstWorkf
     private ViewGroup mViewGroup;
     private Button mStatusButton;
     private View mStatusImageView;
-    private GIFView mProgressGif;
+    private customloader.src.GIFView mProgressGif;
 
     public static OstMockLoaderFragment newInstance() {
         return new OstMockLoaderFragment();
@@ -38,7 +40,7 @@ public class OstMockLoaderFragment extends OstLoaderFragment implements OstWorkf
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, com.ost.walletsdk.R.style.FullScreenDialogStyle);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.OstFullScreenDialogStyle);
     }
 
     @Override
@@ -136,7 +138,7 @@ public class OstMockLoaderFragment extends OstLoaderFragment implements OstWorkf
         mStatusImageView.setVisibility(View.VISIBLE);
         mStatusButton.setVisibility(View.GONE);
         mLoaderTextView.setVisibility(View.VISIBLE);
-        mLoaderTextView.setText(new OstSdkMessageHelper(getContext()).getSuccessText(ostWorkflowContext));
+        mLoaderTextView.setText(new customloader.src.OstSdkMessageHelper(getContext()).getSuccessText(ostWorkflowContext));
         mStatusImageView.setBackground(getResources().getDrawable(R.drawable.ost_success_icon, null));
     }
 
@@ -145,7 +147,7 @@ public class OstMockLoaderFragment extends OstLoaderFragment implements OstWorkf
         mStatusButton.setVisibility(View.VISIBLE);
         mLoaderTextView.setVisibility(View.VISIBLE);
 
-        mLoaderTextView.setText(new OstSdkMessageHelper(getContext()).getErrorMessage(ostWorkflowContext, ostError));
+        mLoaderTextView.setText(new customloader.src.OstSdkMessageHelper(getContext()).getErrorMessage(ostWorkflowContext, ostError));
         mStatusImageView.setBackground(getResources().getDrawable(R.drawable.ost_failure_icon, null));
         mStatusButton.setText("Failure");
     }
