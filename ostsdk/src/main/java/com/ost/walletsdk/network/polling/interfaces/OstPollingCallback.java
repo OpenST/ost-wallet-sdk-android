@@ -1,6 +1,6 @@
 package com.ost.walletsdk.network.polling.interfaces;
 
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.Nullable;
 
 import com.ost.walletsdk.models.entities.OstBaseEntity;
 import com.ost.walletsdk.workflows.errors.OstError;

@@ -1,0 +1,25 @@
+<!--
+  ~ Copyright 2019 OST.com Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  -->
+
+<resources>
+  <style name="OstFullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
+    <item name="android:windowNoTitle">true</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorPrimary">@color/colorPrimary</item>
+
+    <!-- Set this to true if you want Full Screen without status bar -->
+    <item name="android:windowFullscreen">false</item>
+
+    <item name="android:windowIsFloating">false</item>
+
+    <!-- This is important! Don't forget to set window background -->
+    <item name="android:windowBackground">@color/trans_gray</item>
+  </style>
+</resources>

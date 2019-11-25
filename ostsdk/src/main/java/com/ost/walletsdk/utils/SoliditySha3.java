@@ -10,7 +10,7 @@
 
 package com.ost.walletsdk.utils;
 
-import android.support.annotation.NonNull;
+import com.ost.walletsdk.annotations.NonNull;
 import android.util.Log;
 
 import org.json.JSONArray;

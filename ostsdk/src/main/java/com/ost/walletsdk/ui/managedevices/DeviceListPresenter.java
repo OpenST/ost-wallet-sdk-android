@@ -10,8 +10,8 @@
 
 package com.ost.walletsdk.ui.managedevices;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import com.ost.walletsdk.annotations.NonNull;
+import com.ost.walletsdk.annotations.Nullable;
 import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
@@ -73,10 +73,20 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
             return;
         }
         showProgress(true);
-        getDeviceList();
+        getMvpView().onInitialize();
+
+        getDeviceList(new DeviceListCallback() {
+            @Override
+            public void done(List<Device> deviceList) {
+                if (ostDeviceList.isEmpty()) {
+                    ostDeviceList.add(Device.newInstance(new JSONObject()));
+                }
+            }
+        });
+
     }
 
-    private void getDeviceList() {
+    private void getDeviceList(final DeviceListCallback callback) {
         Map<String ,Object> mapPayload = new HashMap<>();
         try {
             mapPayload = new CommonUtils().convertJsonToMap(nextPayload);
@@ -110,15 +120,14 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
                             }
                         }
 
-                        if (ostDeviceList.isEmpty()) {
-                            ostDeviceList.add(Device.newInstance(new JSONObject()));
-                        }
-
                         // Make request if did not get enough devices
                         if (hasMoreData && ostDeviceList.size() < MINIMUM_DEVICES) {
-                            getDeviceList();
+                            getDeviceList(callback);
                             return;
                         }
+
+                        if (null != callback) callback.done(ostDeviceList);
+
                     } catch (JSONException e) {
                         //Exception not expected
                     }
@@ -159,5 +168,10 @@ class DeviceListPresenter extends BasePresenter<DeviceListView> {
 
     public void setLoaderString(String initialLoaderString) {
         mLoaderString = initialLoaderString;
+    }
+
+
+    interface DeviceListCallback {
+        void done(List<Device> deviceList);
     }
 }
