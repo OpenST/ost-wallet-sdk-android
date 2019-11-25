@@ -1,15 +1,17 @@
 # Custom Loader Useage
 
 ## Setup
-1. Application project should have `ost-sdk` dependency.
+1. Application project should have `ost-wallet-sdk-android` dependency.
 2. Copy `customloader` directory in Application project `src` directory.
 3. Define `customloader` resources and assets directory in application build.gradle.
 ```
-sourceSets {
-        main.java.srcDirs += 'src/customloader/src'
-        main.assets.srcDirs += 'src/customloader/assets'
-        main.res.srcDirs += 'src/customloader/res'
-    }
+android {
+        sourceSets {
+                main.java.srcDirs += 'src/customloader/src'
+                main.assets.srcDirs += 'src/customloader/assets'
+                main.res.srcDirs += 'src/customloader/res'
+        }
+}
 ```
 4. Add resource import statements in `GIFView.java` and `OstMockLoaderFragment.java`
 ```
