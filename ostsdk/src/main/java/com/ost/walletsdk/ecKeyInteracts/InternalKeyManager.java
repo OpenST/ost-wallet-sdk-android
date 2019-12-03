@@ -170,7 +170,7 @@ class InternalKeyManager {
         ECKeyPair ecKeyPair;
         try {
             osk = metaRepository.getByKey(apiKeyId);
-            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId + "1").decrypt(osk.getData());
+            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
             ecKeyPair = ECKeyPair.create(key);
             //Sign the data
             Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
