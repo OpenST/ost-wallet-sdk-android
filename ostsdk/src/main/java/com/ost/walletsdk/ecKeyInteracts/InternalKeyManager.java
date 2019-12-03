@@ -31,6 +31,8 @@ import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.params.KeyParameter;
 import com.ost.walletsdk.utils.scrypt.SCrypt;
+
+import org.json.JSONObject;
 import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -168,14 +170,15 @@ class InternalKeyManager {
         ECKeyPair ecKeyPair;
         try {
             osk = metaRepository.getByKey(apiKeyId);
-            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
+            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId + "1").decrypt(osk.getData());
             ecKeyPair = ECKeyPair.create(key);
             //Sign the data
             Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
             return signatureDataToString(signatureData);
-        } catch (Exception ex) {
-            Log.e(TAG, "m_s_ikm_sbwps: Unexpected Exception", ex);
-            return null;
+        } catch (Throwable th) {
+            OstError ostError = OstError.SdkError("m_s_ikm_sbwps_1", th);
+            Log.e(TAG, "m_s_ikm_sbwps_1: Unexpected Exception", th);
+            throw ostError;
         } finally {
             clearBytes(key);
             ecKeyPair = null;

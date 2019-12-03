@@ -20,6 +20,7 @@ import android.util.Log;
 
 import com.ost.walletsdk.annotations.NonNull;
 import com.ost.walletsdk.ecKeyInteracts.OstSecureStorage;
+import com.ost.walletsdk.workflows.errors.OstError;
 
 import java.math.BigInteger;
 import java.security.InvalidAlgorithmParameterException;
@@ -62,6 +63,7 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
             }
         } catch (Exception ex) {
             Log.e(TAG, "Exception faced while build object" + ex.getMessage(), ex.getCause());
+            throw OstError.SdkError("oass_constructor_1", ex);
         }
     }
 
