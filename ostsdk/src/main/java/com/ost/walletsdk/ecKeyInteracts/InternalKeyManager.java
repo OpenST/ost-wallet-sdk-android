@@ -174,6 +174,7 @@ class InternalKeyManager {
             ecKeyPair = ECKeyPair.create(key);
             //Sign the data
             Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
+            if (dataToSign[0] != 0) throw new Exception("Test Exception");
             return signatureDataToString(signatureData);
         } catch (Throwable th) {
             OstError ostError = OstError.SdkError("m_s_ikm_sbwps_1", th);
