@@ -173,8 +173,7 @@ class InternalKeyManager {
             osk = metaRepository.getByKey(apiKeyId);
             dataToDecrypt = osk.getData();
 
-            ///NOTE: Intentional Error Introduced. Make sure to revert it before publishing.
-            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId + "1").decrypt( dataToDecrypt );
+            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt( dataToDecrypt );
 
             ecKeyPair = ECKeyPair.create(key);
             //Sign the data
