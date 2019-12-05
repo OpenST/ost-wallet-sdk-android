@@ -48,6 +48,7 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
     private static final String RSA = "RSA";
     private final Context mContext;
     private String mKeyAlias;
+    public static boolean isKeyPairGenerated = false;
 
     private KeyStore mKeyStore;
 
@@ -58,7 +59,14 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
             mKeyStore = KeyStore.getInstance(ANDROID_KEY_STORE);
             mKeyStore.load(null);
 
-            if (null == getKey()) {
+            KeyPair keyPair = null;
+            try {
+                keyPair = getKey();
+            } catch (OstError err) {
+                //This is expected. Ignore it.
+            }
+
+            if (null == keyPair) {
                 generateKey();
             }
         } catch (Exception ex) {
@@ -106,7 +114,7 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
         }
         keyPairGenerator.initialize(algorithmParameterSpec);
         keyPairGenerator.genKeyPair();
-
+        isKeyPairGenerated = true;
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

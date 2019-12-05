@@ -186,6 +186,7 @@ class InternalKeyManager {
             ostError.addErrorInfo("m_s_ikm_sbwps_1.deviceKeyAddress", mKeyMetaStruct.getDeviceAddress() );
             ostError.addErrorInfo("m_s_ikm_sbwps_1.apiKeyId", apiKeyId);
             ostError.addErrorInfo("m_s_ikm_sbwps_1.mUserId", mUserId);
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.isKeyPairGenerated", String.valueOf(OstAndroidSecureStorage.isKeyPairGenerated));
 
             String isKeyNull = "true";
             String keyLength = "0";
