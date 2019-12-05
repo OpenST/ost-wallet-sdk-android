@@ -52,7 +52,12 @@ public class OstError extends Error {
         super(OstErrors.getMessage(errorCode));
         mErrorCode = errorCode;
         mInternalErrorCode = internalErrorCode;
-        mErrorInfo = errorInfo;
+        if ( null == errorInfo ) {
+            mErrorInfo = new JSONObject();
+        } else {
+            mErrorInfo = errorInfo;
+        }
+
         Log.d(Tag, "Error Code: '" + internalErrorCode + "'. Error Message:" + OstErrors.getMessage(errorCode));
     }
 
@@ -110,6 +115,18 @@ public class OstError extends Error {
 
 
         return err;
+    }
+
+    public void addErrorInfo(@NonNull String infoKey, @NonNull String data ) {
+        if ( null == data ) {
+            data = "NULL";
+        }
+
+        try {
+            mErrorInfo.putOpt(infoKey, data);
+        } catch (JSONException e) {
+            //can't do anything. Ignore.
+        }
     }
 
     public static OstError ApiResponseError(String internalErrorCode, String apiMethodName, JSONObject apiResponse) {

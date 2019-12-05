@@ -167,16 +167,46 @@ class InternalKeyManager {
 
         OstSecureKey osk = null;
         byte[] key = null;
+        byte[] dataToDecrypt = null;
         ECKeyPair ecKeyPair;
         try {
             osk = metaRepository.getByKey(apiKeyId);
-            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
+            dataToDecrypt = osk.getData();
+
+            ///NOTE: Intentional Error Introduced. Make sure to revert it before publishing.
+            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId + "1").decrypt( dataToDecrypt );
+
             ecKeyPair = ECKeyPair.create(key);
             //Sign the data
             Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
             return signatureDataToString(signatureData);
         } catch (Throwable th) {
             OstError ostError = OstError.SdkError("m_s_ikm_sbwps_1", th);
+
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.apiKeyAddress", apiKeyAddress);
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.deviceKeyAddress", mKeyMetaStruct.getDeviceAddress() );
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.apiKeyId", apiKeyId);
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.mUserId", mUserId);
+
+            String isKeyNull = "true";
+            String keyLength = "0";
+            if ( null != key ) {
+                isKeyNull = "false";
+                keyLength = String.valueOf( key.length );
+            }
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.isKeyNull", isKeyNull );
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.keyLength", keyLength );
+
+
+            String isDataToDecryptNull = "true";
+            String dataToDecryptLength = "0";
+            if ( null != dataToDecrypt ) {
+                isDataToDecryptNull = "false";
+                dataToDecryptLength = String.valueOf( dataToDecrypt.length );
+            }
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.isDataToDecryptNull", isDataToDecryptNull );
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.dataToDecryptLength", dataToDecryptLength );
+
             Log.e(TAG, "m_s_ikm_sbwps_1: Unexpected Exception", th);
             throw ostError;
         } finally {

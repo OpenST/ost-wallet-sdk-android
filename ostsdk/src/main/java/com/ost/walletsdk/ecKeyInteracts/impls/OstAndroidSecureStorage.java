@@ -89,10 +89,11 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
             Cipher cipher = Cipher.getInstance(TRANSFORMATION_ASYMMETRIC);
             cipher.init(Cipher.DECRYPT_MODE, Objects.requireNonNull(getKey()).getPrivate());
             return cipher.doFinal(data);
-        } catch (Exception ex) {
-            Log.e(TAG, "Exception faced while decryption " + ex.getMessage(), ex.getCause());
+        } catch (Throwable th) {
+            OstError ostError = OstError.SdkError("oass_d_1", th);
+            Log.e(TAG, "Exception faced while decryption " + th.getMessage(), th.getCause());
+            throw ostError;
         }
-        return null;
     }
 
     private void generateKey() throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
@@ -134,17 +135,32 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
     }
 
     private KeyPair getKey() {
+        PrivateKey privateKey = null;
+        Certificate keyStoreCertificate  = null;
+        PublicKey publicKey = null;
         try {
-            PrivateKey privateKey = (PrivateKey) mKeyStore.getKey(mKeyAlias, null);
-            Certificate keyStoreCertificate = mKeyStore.getCertificate(mKeyAlias);
-            PublicKey publicKey = (null == keyStoreCertificate ? null : keyStoreCertificate.getPublicKey());
-            if (null == privateKey || null == publicKey) {
-                return null;
+            privateKey = (PrivateKey) mKeyStore.getKey(mKeyAlias, null);
+            keyStoreCertificate = mKeyStore.getCertificate(mKeyAlias);
+            publicKey = (null == keyStoreCertificate ? null : keyStoreCertificate.getPublicKey());
+            if (null == privateKey || null == keyStoreCertificate || null == publicKey) {
+                throw new Error("Failed to get private key from key store");
             }
             return new KeyPair(publicKey, privateKey);
-        } catch (Exception ex) {
+        } catch (Throwable th) {
+            OstError ostError = OstError.SdkError("oass_kp_gk_1", th);
+            ostError.addErrorInfo("oass_kp_gk_1.key_alias", mKeyAlias);
+
+            String isPrivateKeyNull = null ==  privateKey? "true": "false";
+            ostError.addErrorInfo("oass_kp_gk_1.isPrivateKeyNull", isPrivateKeyNull);
+
+            String isPublicKeyNull = null ==  publicKey? "true": "false";
+            ostError.addErrorInfo("oass_kp_gk_1.isPublicKeyNull", isPublicKeyNull);
+
+            String isKeyStoreCertificateNull = null ==  keyStoreCertificate? "true": "false";
+            ostError.addErrorInfo("oass_kp_gk_1.isKeyStoreCertificateNull", isKeyStoreCertificateNull);
+
             Log.d(TAG, "Exception faced in getId ");
+            throw ostError;
         }
-        return null;
     }
 }
