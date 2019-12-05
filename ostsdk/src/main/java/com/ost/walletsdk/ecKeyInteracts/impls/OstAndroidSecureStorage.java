@@ -143,9 +143,6 @@ public class OstAndroidSecureStorage implements OstSecureStorage {
             keyStoreCertificate = mKeyStore.getCertificate(mKeyAlias);
             publicKey = (null == keyStoreCertificate ? null : keyStoreCertificate.getPublicKey());
 
-            ///NOTE: Intentional Error Introduced. Make sure to revert it before publishing.
-            privateKey = null;
-
             if (null == privateKey || null == keyStoreCertificate || null == publicKey) {
                 throw new Error("Failed to get private key from key store");
             }
