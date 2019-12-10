@@ -71,6 +71,13 @@ public class OstWalletUI {
     }
 
     /**
+     * To Get Theme Configuration of components
+     */
+    public static JSONObject getThemeConfig() {
+        return ThemeConfig.getInstance().getThemeObject();
+    }
+
+    /**
      * To set Content Configuration of Wallet UI Workflow
      *
      * @param context       Application context

@@ -1,5 +1,7 @@
 package com.ost.walletsdk.ui.uicomponents.uiutils.theme;
 
+import org.json.JSONObject;
+
 public interface Theme {
 
     UIConfig H1();
@@ -33,4 +35,6 @@ public interface Theme {
     PinViewConfig getPinViewConfig();
 
     EditTextUIConfig getEditText();
+
+    JSONObject getThemeObject();
 }

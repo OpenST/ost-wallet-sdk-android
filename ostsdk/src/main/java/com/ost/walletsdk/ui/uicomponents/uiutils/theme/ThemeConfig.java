@@ -36,6 +36,10 @@ public class ThemeConfig implements Theme {
         return themeConfig;
     }
 
+    public JSONObject getThemeObject() {
+        return mThemeObject;
+    }
+
     @Override
     public UIConfig H1() {
         return new UIConfig(mThemeObject.optJSONObject("h1"));
