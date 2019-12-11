@@ -699,8 +699,12 @@ class InternalKeyManager {
         } catch (OutOfMemoryError error) {
             throw new OstError("c_ikm_crk_2", ErrorCode.OUT_OF_MEMORY_ERROR);
         } catch (Throwable th) {
-            //Suppress Error.
-            throw new OstError("c_ikm_crk_1", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
+            OstError ostError = OstError.SdkError("c_ikm_crk_1", th);
+            ostError.addErrorInfo("c_ikm_crk_1.passphrase", String.valueOf(null == passphrase ? "null" : passphrase.length));
+            ostError.addErrorInfo("c_ikm_crk_1.salt.length", String.valueOf(salt.length) );
+            ostError.addErrorInfo("c_ikm_crk_1.seed", String.valueOf(null == seed ? "null" :seed.length) );
+
+            throw ostError;
         } finally {
             //Clear the seed.
             clearBytes(seed);
@@ -745,19 +749,22 @@ class InternalKeyManager {
         }
 
         ECKeyPair ecKeyPair = null;
+        String recoveryOwnerAddress = null;
+        String expectedRecoveryOwnerAddress = null;
+        String signatureString = null;
         try {
             OstUser ostUser = OstUser.getById(mUserId);
-            String recoveryOwnerAddress = ostUser.getRecoveryOwnerAddress();
+            recoveryOwnerAddress = ostUser.getRecoveryOwnerAddress();
             // Generate ecKeyPair.
             ecKeyPair = createRecoveryKey(passphrase, salt);
 
             // Validate recoveryOwnerAddress.
-            String expectedRecoveryOwnerAddress = Credentials.create(ecKeyPair).getAddress();
+            expectedRecoveryOwnerAddress = Credentials.create(ecKeyPair).getAddress();
             if ( !expectedRecoveryOwnerAddress.equalsIgnoreCase(recoveryOwnerAddress) ) {
                 // Note that user passphrase is invalid.
                 userPassphraseInvalidated();
                 //Do not throw. Just return null.
-                return null;
+                throw new Error("Recovery owner address didn't match");
             }
 
             // Note that user passphrase is valid.
@@ -765,10 +772,16 @@ class InternalKeyManager {
 
             // Sign the data.
             Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(hexStringToSign), ecKeyPair, false);
-            return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
+            signatureString = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
+            return signatureString;
         } catch (Throwable th) {
-            //Supress it.
-            return null;
+            OstError ostError = OstError.SdkError("m_s_ikm_sdwrk_1", th);
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.recoveryOwnerAddress", recoveryOwnerAddress);
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.salt.length", String.valueOf(salt.length));
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.generatedRecoveryOwnerAddress", expectedRecoveryOwnerAddress);
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.signatureString", signatureString);
+
+            throw ostError;
         } finally {
             if ( null == ecKeyPair ) {
                 clearBytes(salt);
