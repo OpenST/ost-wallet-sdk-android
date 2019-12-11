@@ -701,14 +701,23 @@ class InternalKeyManager {
         } catch (Throwable th) {
             OstError ostError = OstError.SdkError("c_ikm_crk_1", th);
 
-            if (null == passphrase) passphrase = new byte[0];
-            ostError.addErrorInfo("c_ikm_crk_1.passphrase.length", String.valueOf(passphrase.length));
+            String passphraseLength = "null";
+            if (null != passphrase) {
+                passphraseLength = String.valueOf(passphrase.length);
+            }
+            ostError.addErrorInfo("c_ikm_crk_1.passphrase.length", passphraseLength);
 
-            if (null == seed) seed = new byte[0];
-            ostError.addErrorInfo("c_ikm_crk_1.seed.length", String.valueOf(seed.length) );
+            String seedLength = "null";
+            if (null != seed) {
+                seedLength = String.valueOf(seed.length);
+            }
+            ostError.addErrorInfo("c_ikm_crk_1.seed.length", seedLength );
 
-            if (null == salt) salt = new byte[0];
-            ostError.addErrorInfo("c_ikm_crk_1.salt.length", String.valueOf(salt.length) );
+            String saltLength = "null";
+            if (null != salt) {
+                saltLength = String.valueOf(salt.length);
+            }
+            ostError.addErrorInfo("c_ikm_crk_1.salt.length", saltLength );
 
             throw ostError;
         } finally {
@@ -782,21 +791,34 @@ class InternalKeyManager {
         } catch (Throwable th) {
             OstError ostError = OstError.SdkError("m_s_ikm_sdwrk_1", th);
 
-            if (null == recoveryOwnerAddress) recoveryOwnerAddress = "null";
+            if (null == recoveryOwnerAddress) {
+                recoveryOwnerAddress = "null";
+            }
             ostError.addErrorInfo("m_s_ikm_sdwrk_1.recoveryOwnerAddress", recoveryOwnerAddress);
 
-            if (null == expectedRecoveryOwnerAddress) expectedRecoveryOwnerAddress = "null";
+            if (null == expectedRecoveryOwnerAddress) {
+                expectedRecoveryOwnerAddress = "null";
+            }
             ostError.addErrorInfo("m_s_ikm_sdwrk_1.generatedRecoveryOwnerAddress", expectedRecoveryOwnerAddress);
 
-            if (null == salt) salt = new byte[0];
-            ostError.addErrorInfo("m_s_ikm_sdwrk_1.salt.length", String.valueOf(salt.length));
-
-            if (null == signatureData) {
-                signatureData = new Sign.SignatureData((byte) 0, new byte[0], new byte[0]);
+            String saltLength = "null";
+            if (null != salt){
+                saltLength = String.valueOf(salt.length);
             }
-            String signatureString = String.format("R.%sS.%s",
-                    String.valueOf(signatureData.getR().length),
-                    String.valueOf(signatureData.getS().length));
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.salt.length", saltLength);
+
+            String signatureString = "null";
+            if (null != signatureData) {
+                String rLength = "null";
+                if (null != signatureData.getR()) {
+                    rLength = String.valueOf(signatureData.getR().length);
+                }
+                String sLength = "null";
+                if (null != signatureData.getS()) {
+                    sLength = String.valueOf(signatureData.getS().length);
+                }
+                signatureString = String.format("R.%s S.%s", rLength, sLength);
+            }
             ostError.addErrorInfo("m_s_ikm_sdwrk_1.signatureData.length", signatureString);
 
             throw ostError;
