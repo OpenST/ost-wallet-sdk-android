@@ -700,9 +700,15 @@ class InternalKeyManager {
             throw new OstError("c_ikm_crk_2", ErrorCode.OUT_OF_MEMORY_ERROR);
         } catch (Throwable th) {
             OstError ostError = OstError.SdkError("c_ikm_crk_1", th);
-            ostError.addErrorInfo("c_ikm_crk_1.passphrase", String.valueOf(null == passphrase ? "null" : passphrase.length));
+
+            if (null == passphrase) passphrase = new byte[0];
+            ostError.addErrorInfo("c_ikm_crk_1.passphrase.length", String.valueOf(passphrase.length));
+
+            if (null == seed) seed = new byte[0];
+            ostError.addErrorInfo("c_ikm_crk_1.seed.length", String.valueOf(seed.length) );
+
+            if (null == salt) salt = new byte[0];
             ostError.addErrorInfo("c_ikm_crk_1.salt.length", String.valueOf(salt.length) );
-            ostError.addErrorInfo("c_ikm_crk_1.seed", String.valueOf(null == seed ? "null" :seed.length) );
 
             throw ostError;
         } finally {
@@ -751,7 +757,7 @@ class InternalKeyManager {
         ECKeyPair ecKeyPair = null;
         String recoveryOwnerAddress = null;
         String expectedRecoveryOwnerAddress = null;
-        String signatureString = null;
+        Sign.SignatureData signatureData = null;
         try {
             OstUser ostUser = OstUser.getById(mUserId);
             recoveryOwnerAddress = ostUser.getRecoveryOwnerAddress();
@@ -771,15 +777,27 @@ class InternalKeyManager {
             userPassphraseValidated();
 
             // Sign the data.
-            Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(hexStringToSign), ecKeyPair, false);
-            signatureString = Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
-            return signatureString;
+            signatureData = Sign.signMessage(Numeric.hexStringToByteArray(hexStringToSign), ecKeyPair, false);
+            return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
         } catch (Throwable th) {
             OstError ostError = OstError.SdkError("m_s_ikm_sdwrk_1", th);
+
+            if (null == recoveryOwnerAddress) recoveryOwnerAddress = "null";
             ostError.addErrorInfo("m_s_ikm_sdwrk_1.recoveryOwnerAddress", recoveryOwnerAddress);
-            ostError.addErrorInfo("m_s_ikm_sdwrk_1.salt.length", String.valueOf(salt.length));
+
+            if (null == expectedRecoveryOwnerAddress) expectedRecoveryOwnerAddress = "null";
             ostError.addErrorInfo("m_s_ikm_sdwrk_1.generatedRecoveryOwnerAddress", expectedRecoveryOwnerAddress);
-            ostError.addErrorInfo("m_s_ikm_sdwrk_1.signatureString", signatureString);
+
+            if (null == salt) salt = new byte[0];
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.salt.length", String.valueOf(salt.length));
+
+            if (null == signatureData) {
+                signatureData = new Sign.SignatureData((byte) 0, new byte[0], new byte[0]);
+            }
+            String signatureString = String.format("R.%sS.%s",
+                    String.valueOf(signatureData.getR().length),
+                    String.valueOf(signatureData.getS().length));
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.signatureData.length", signatureString);
 
             throw ostError;
         } finally {
