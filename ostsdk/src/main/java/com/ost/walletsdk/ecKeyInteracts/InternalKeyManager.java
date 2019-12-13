@@ -733,9 +733,11 @@ class InternalKeyManager {
             // Sign the data.
             Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(hexStringToSign), ecKeyPair, false);
             return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
+        } catch (OstError ostError) {
+            throw ostError;
         } catch (Throwable th) {
             //Supress it.
-            return null;
+            throw new OstError("c_ikm_sdwrk_1", ErrorCode.FAILED_TO_SIGN_DATA);
         } finally {
             if ( null == ecKeyPair ) {
                 clearBytes(salt);
