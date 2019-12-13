@@ -1,5 +1,9 @@
 # OST Wallet SDK Changelog
 
+## Version 2.3.7
+### Bug Fix:
+* In recover device flow added handling of OutOfMemory error.
+
 ## Version 2.3.6
 ### Changes:
 * Added support for custom loader for OstWalletSDK UI workflows.
