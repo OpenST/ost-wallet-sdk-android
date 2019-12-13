@@ -2,7 +2,7 @@
 
 ## Version 2.3.7
 ### Bug Fix:
-* In recover device flow added handling of OutOfMemory error.
+* In recover device flow added propagation of OstError.
 
 ## Version 2.3.6
 ### Changes:
