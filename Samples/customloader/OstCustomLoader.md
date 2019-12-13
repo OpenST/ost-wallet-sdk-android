@@ -1,4 +1,4 @@
-# Custom Loader Useage
+# Custom Loader Usage
 
 ## Setup
 1. Application project should have `ost-wallet-sdk-android` dependency.
