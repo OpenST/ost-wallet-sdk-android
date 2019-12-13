@@ -2,7 +2,7 @@
 
 ## Version 2.3.7
 ### Bug Fix:
-* In recover device flow added propagation of OstError.
+* Inaccurate error is thrown when application runs out of memory during recover device workflow.
 
 ## Version 2.3.6
 ### Changes:
