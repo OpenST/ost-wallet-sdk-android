@@ -13,6 +13,7 @@ package com.ost.walletsdk.ecKeyInteracts;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.lambdaworks.crypto.SCrypt;
 import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
@@ -30,7 +31,7 @@ import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.params.KeyParameter;
-import com.ost.walletsdk.utils.scrypt.SCrypt;
+
 
 import org.json.JSONObject;
 import org.web3j.crypto.Bip32ECKeyPair;
