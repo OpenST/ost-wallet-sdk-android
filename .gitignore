@@ -16,6 +16,7 @@ out/
 .cxx/
 ostsdk/src/main/jniLibs/
 app/src/obj/
+ostsdk/src/obj/
 
 # Gradle files
 .gradle/

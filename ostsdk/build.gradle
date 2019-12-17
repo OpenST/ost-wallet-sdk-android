@@ -72,14 +72,14 @@ android {
         if (Os.isFamily(Os.FAMILY_WINDOWS)) {
             commandLine ndkDir + '\\ndk-build.cmd',
                     'NDK_LIBS_OUT=main/jniLibs',
-                    'NDK_PROJECT_PATH=' + rootDir + '\\app\\src',
+                    'NDK_PROJECT_PATH=' + rootDir + '\\ostsdk\\src',
                     'APP_BUILD_SCRIPT=jni/Android.mk',
                     '-C',
                     file('src').absolutePath
         } else {
             commandLine ndkDir + '/ndk-build',
                     'NDK_LIBS_OUT=main/jniLibs',
-                    'NDK_PROJECT_PATH=' + rootDir + '/app/src',
+                    'NDK_PROJECT_PATH=' + rootDir + '/ostsdk/src',
                     'APP_BUILD_SCRIPT=jni/Android.mk',
                     '-C',
                     file('src').absolutePath

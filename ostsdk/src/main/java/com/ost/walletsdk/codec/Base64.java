@@ -1,6 +1,6 @@
 // Copyright (C) 2011 - Will Glozer.  All rights reserved.
 
-package com.lambdaworks.codec;
+package com.ost.walletsdk.codec;
 
 import java.util.Arrays;
 

@@ -62,7 +62,7 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
         return -1;
     }
 
-    jclass cls = (*env)->FindClass(env, "com/lambdaworks/crypto/SCrypt");
+    jclass cls = (*env)->FindClass(env, "com/ost/walletsdk/crypto/SCrypt");
     int r = (*env)->RegisterNatives(env, cls, methods, 1);
 
     return (r == JNI_OK) ? JNI_VERSION_1_6 : -1;

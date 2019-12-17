@@ -1,12 +1,12 @@
 // Copyright (C) 2011 - Will Glozer.  All rights reserved.
 
-package com.lambdaworks.crypto;
+package com.ost.walletsdk.crypto;
 
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 
-import static com.lambdaworks.codec.Base64.*;
+import static com.ost.walletsdk.codec.Base64.*;
 
 /**
  * Simple {@link SCrypt} interface for hashing passwords using the

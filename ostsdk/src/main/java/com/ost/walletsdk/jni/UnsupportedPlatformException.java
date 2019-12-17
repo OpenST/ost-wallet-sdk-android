@@ -1,6 +1,6 @@
 // Copyright (C) 2011 - Will Glozer.  All rights reserved.
 
-package com.lambdaworks.jni;
+package com.ost.walletsdk.jni;
 
 /**
  * Exception thrown when the current platform cannot be detected.

@@ -1,6 +1,6 @@
 // Copyright (C) 2013 - Will Glozer.  All rights reserved.
 
-package com.lambdaworks.jni;
+package com.ost.walletsdk.jni;
 
 /**
  * A native library loader that refuses to load libraries.

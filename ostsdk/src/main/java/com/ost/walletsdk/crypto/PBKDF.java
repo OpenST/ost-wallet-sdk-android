@@ -1,6 +1,6 @@
 // Copyright (C) 2011 - Will Glozer.  All rights reserved.
 
-package com.lambdaworks.crypto;
+package com.ost.walletsdk.crypto;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
