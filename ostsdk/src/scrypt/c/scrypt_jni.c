@@ -20,10 +20,11 @@ jbyteArray JNICALL scryptN(JNIEnv *env, jclass cls, jbyteArray passwd, jbyteArra
     if (P == NULL || S == NULL || buf == NULL) goto cleanup;
 
     if (crypto_scrypt((uint8_t *) P, Plen, (uint8_t *) S, Slen, N, r, p, buf, dkLen)) {
-        jclass e = (*env)->FindClass(env, "java/lang/IllegalArgumentException");
+        jclass e = (*env)->FindClass(env, "java/lang/OutOfMemoryError");
         char *msg;
         switch (errno) {
             case EINVAL:
+                e = (*env)->FindClass(env, "java/lang/IllegalArgumentException");
                 msg = "N must be a power of 2 greater than 1";
                 break;
             case EFBIG:
