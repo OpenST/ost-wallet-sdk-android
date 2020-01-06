@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ui.util.CommonUtils;
+import com.ost.walletsdk.workflows.errors.OstError;
+import com.ost.walletsdk.workflows.errors.OstErrors;
 
 import org.json.JSONObject;
 
@@ -29,10 +31,19 @@ public class ThemeConfig implements Theme {
     }
 
     public static Theme getInstance() {
-        if (null == themeConfig) {
-            Context appContext = OstSdk.getContext();
-            init(appContext, new JSONObject());
+        if (null != themeConfig) return themeConfig;
+
+        Context appContext = OstSdk.getContext();
+        if (null == appContext) {
+            throw new OstError("ui_uut_t_tc_1", OstErrors.ErrorCode.SDK_ERROR);
         }
+        return getInstance(appContext);
+    }
+
+    public static Theme getInstance(Context context) {
+        if (null != themeConfig) return themeConfig;
+
+        init(context, new JSONObject());
         return themeConfig;
     }
 

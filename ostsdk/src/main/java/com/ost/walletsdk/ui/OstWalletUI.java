@@ -73,8 +73,8 @@ public class OstWalletUI {
     /**
      * To Get Theme Configuration of components
      */
-    public static JSONObject getThemeConfig() {
-        return ThemeConfig.getInstance().getThemeObject();
+    public static JSONObject getThemeConfig(Context context) {
+        return ThemeConfig.getInstance(context).getThemeObject();
     }
 
     /**
