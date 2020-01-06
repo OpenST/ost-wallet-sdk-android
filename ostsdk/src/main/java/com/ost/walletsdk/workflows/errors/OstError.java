@@ -172,6 +172,13 @@ public class OstError extends Error {
             //can't do anything. Ignore.
         }
 
-        return new OstError(internalErrorCode, OstErrors.ErrorCode.SDK_ERROR, errorInfo);
+        OstError err;
+        if( th instanceof OutOfMemoryError) {
+            err = new OstError(internalErrorCode, OstErrors.ErrorCode.OUT_OF_MEMORY_ERROR, errorInfo);
+        } else {
+            err = new OstError(internalErrorCode, OstErrors.ErrorCode.SDK_ERROR, errorInfo);
+        }
+
+        return err;
     }
 }
