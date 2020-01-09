@@ -51,6 +51,7 @@ class RecoveryPresenter extends BasePresenter<RecoveryView> {
                 getMvpView().showProgress(false);
                 OstError error = new OstError("ws_wsp_cf", OstErrors.ErrorCode.WORKFLOW_CANCELLED);
                 workFlowListener.flowInterrupt(getWorkFlowContext(), error);
+                getMvpView().close();
             }
         });
     }
