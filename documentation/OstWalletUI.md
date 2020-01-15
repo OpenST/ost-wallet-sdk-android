@@ -50,6 +50,13 @@ try {
 OstWalletUI.setThemeConfig(themeConfig)
 ```
 
+### Get Theme Config
+Get currently applied theme config from sdk.
+
+```java
+OstWalletUI.getThemeConfig()
+```
+
 ### Set Content Config
 
 Content for OstWalletUI can be initialized by calling `setContentConfig` API.

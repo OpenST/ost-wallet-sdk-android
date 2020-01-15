@@ -120,6 +120,7 @@ The following UI components properties supported by navigation bar:
 | ---------------------- | :-----------------------------: |
 | bar logo               | nav_bar_logo_image.asset_name   |
 | bar tint color         | navigation_bar.tint_color       |
+| bar title color        | navigation_bar_header.tint_color  |
 | close icon tint color  | icons.close.tint_color          |
 | close icon tint color  | icons.back.tint_color           |
 
@@ -131,6 +132,36 @@ The following UI components properties supported by navigation bar:
 | -------------------- | :----------------: |
 | empty_color          | hex value(String)  |
 | filled_color         | hex value(String)  |
+
+### Cell Separator
+ 
+ The following UI components properties supported by cell separator:
+ 
+| Configuration Keys   | Type               | 
+| -------------------- | :---------------- |
+| color                | hex value(String)  |
+
+ ### Link
+ 
+ The following UI components properties supported by link:
+ 
+| Configuration Keys   | Type               | 
+| -------------------- | :---------------- |
+| size                 | number             |
+| color                | hex value(String)  |
+| system_font_weight   | string             |
+| alignment            | string             |
+
+ ### status
+
+The following UI components properties supported by status:
+
+| Configuration Keys   | Type               | 
+| -------------------- | :---------------- |
+| size                 | number             |
+| color                | hex value(String)  |
+| system_font_weight   | string             |
+| alignment            | string             |
 
 ## UI Components
 

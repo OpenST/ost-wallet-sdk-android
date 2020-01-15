@@ -1,5 +1,4 @@
 {
-
   "nav_bar_logo_image": {
     "asset_name": "ost_nav_bar_logo"
   },
@@ -68,21 +67,12 @@
     "system_font_weight": "medium"
   },
 
-  "edit_text": {
-    "size": 15,
-    "color": "#101010",
-    "background_color": "#ffffff",
-    "alignment": "left",
-    "system_font_weight": "regular",
-    "placeholder": {
-      "size": 15,
-      "color": "#888888",
-      "system_font_weight": "regular"
-    }
-  },
-
   "navigation_bar": {
     "tint_color": "#ffffff"
+  },
+
+  "navigation_bar_header": {
+    "tint_color": "#438bad"
   },
 
   "icons": {
@@ -97,5 +87,37 @@
   "pin_input": {
     "empty_color": "#c7c7cc",
     "filled_color": "#438bad"
+  },
+
+  "edit_text": {
+    "size": 15,
+    "color": "#101010",
+    "background_color": "#ffffff",
+    "alignment": "left",
+    "system_font_weight": "regular",
+    "placeholder": {
+      "size": 15,
+      "color": "#888888",
+      "alignment": "left",
+      "system_font_weight": "regular"
+    }
+  },
+
+  "cell_separator": {
+    "color": "#DBDBDB"
+  },
+
+  "link": {
+    "size": 15,
+    "color": "#007aff",
+    "system_font_weight": "medium",
+    "alignment": "left"
+  },
+
+  "status": {
+    "size": 15,
+    "color": "#0F9D58",
+    "system_font_weight": "regular",
+    "alignment": "left"
   }
 }

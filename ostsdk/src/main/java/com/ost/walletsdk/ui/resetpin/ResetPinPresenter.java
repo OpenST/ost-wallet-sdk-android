@@ -86,6 +86,7 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> {
                         getMvpView().showProgress(false);
                         OstError error = new OstError("rpp_ope_cf", OstErrors.ErrorCode.WORKFLOW_CANCELLED);
                         workFlowListener.flowInterrupt(new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN), error);
+                        getMvpView().close();
                     }
                 });
 
