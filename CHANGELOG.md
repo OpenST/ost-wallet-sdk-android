@@ -1,5 +1,16 @@
 # OST Wallet SDK Changelog
 
+## Version 2.3.7
+### Bug Fix:
+* Inaccurate error is thrown when application runs out of memory during recover device workflow.
+
+## Version 2.3.6
+### Changes:
+* Added support for custom loader for OstWalletSDK UI workflows.
+* OstWalletSDK now uses custom annotations to provide AndroidX compatibility.
+### Bug Fix:
+* Rectified OST_PLATFORM_ERROR error message.
+
 ## Version 2.3.5
 ### Security Enhancements:
 * Use of FLAG_SECURE flag to protect show mnemonices view against screen recording and screen shotting.

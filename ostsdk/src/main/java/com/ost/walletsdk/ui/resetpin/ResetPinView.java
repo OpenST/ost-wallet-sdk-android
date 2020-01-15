@@ -24,4 +24,6 @@ interface ResetPinView extends BaseView {
     void gotoDashboard(String workflowId);
 
     void showPinErrorDialog();
+
+    void onPostAuthentication();
 }

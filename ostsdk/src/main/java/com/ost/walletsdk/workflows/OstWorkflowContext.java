@@ -10,7 +10,7 @@
 
 package com.ost.walletsdk.workflows;
 
-import android.support.annotation.NonNull;
+import com.ost.walletsdk.annotations.NonNull;
 
 /**
  * WorkflowContext to hold work flow type

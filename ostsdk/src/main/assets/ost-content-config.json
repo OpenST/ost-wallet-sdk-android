@@ -47,6 +47,9 @@
         },
         "initial_loader": {
             "text": "Initializing..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     
@@ -70,6 +73,9 @@
         },
         "initial_loader": {
             "text": "Initializing..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     
@@ -106,6 +112,9 @@
         },
         "initial_loader": {
             "text": "Fetching Device List..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     
@@ -129,6 +138,9 @@
         },
         "initial_loader": {
             "text": "Initializing..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     
@@ -166,6 +178,9 @@
         },
         "initial_loader": {
             "text": "Fetching Device List..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     
@@ -189,6 +204,9 @@
         },
         "initial_loader": {
             "text": "Initializing..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     
@@ -242,6 +260,9 @@
         },
         "initial_loader": {
             "text": "Initializing..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     
@@ -277,6 +298,9 @@
         },
         "initial_loader": {
             "text": "Initializing..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     
@@ -318,6 +342,9 @@
         },
         "initial_loader": {
             "text": "Initializing..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     "show_add_device_qr": {
@@ -345,6 +372,9 @@
         },
         "initial_loader": {
             "text": "Initializing..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     
@@ -384,6 +414,9 @@
         },
         "initial_loader": {
             "text": "Verifying Device..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     },
     
@@ -412,6 +445,9 @@
         },
         "initial_loader": {
             "text": "Verifying Transaction..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
         }
     }
 }

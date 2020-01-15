@@ -12,9 +12,13 @@ package com.ost.walletsdk.workflows.errors;
 
 import android.util.Log;
 
+import com.ost.walletsdk.annotations.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 
 /**
@@ -48,7 +52,12 @@ public class OstError extends Error {
         super(OstErrors.getMessage(errorCode));
         mErrorCode = errorCode;
         mInternalErrorCode = internalErrorCode;
-        mErrorInfo = errorInfo;
+        if ( null == errorInfo ) {
+            mErrorInfo = new JSONObject();
+        } else {
+            mErrorInfo = errorInfo;
+        }
+
         Log.d(Tag, "Error Code: '" + internalErrorCode + "'. Error Message:" + OstErrors.getMessage(errorCode));
     }
 
@@ -108,6 +117,18 @@ public class OstError extends Error {
         return err;
     }
 
+    public void addErrorInfo(@NonNull String infoKey, @NonNull String data ) {
+        if ( null == data ) {
+            data = "NULL";
+        }
+
+        try {
+            mErrorInfo.putOpt(infoKey, data);
+        } catch (JSONException e) {
+            //can't do anything. Ignore.
+        }
+    }
+
     public static OstError ApiResponseError(String internalErrorCode, String apiMethodName, JSONObject apiResponse) {
         JSONObject errorInfo = new JSONObject();
 
@@ -124,5 +145,40 @@ public class OstError extends Error {
         }
 
         return new OstError(internalErrorCode, OstErrors.ErrorCode.INVALID_API_RESPONSE, errorInfo);
+    }
+
+    public static OstError SdkError(@NonNull String internalErrorCode, @NonNull Throwable th) {
+        if ( th instanceof OstError ) {
+            //The error is already an OST error.
+            return (OstError) th;
+        }
+
+        JSONObject errorInfo = new JSONObject();
+        try {
+            StringWriter sw = new StringWriter();
+            th.printStackTrace(new PrintWriter(sw));
+            String stackTraceAsString = sw.toString();
+            errorInfo.putOpt("stack_trace", stackTraceAsString);
+
+        } catch (Throwable error) {
+            error.printStackTrace();
+            //can't do anything. Ignore.
+        }
+
+        try {
+            errorInfo.putOpt("error_message", th.getMessage());
+        } catch (Throwable error) {
+            error.printStackTrace();
+            //can't do anything. Ignore.
+        }
+
+        OstError err;
+        if( th instanceof OutOfMemoryError) {
+            err = new OstError(internalErrorCode, OstErrors.ErrorCode.OUT_OF_MEMORY_ERROR, errorInfo);
+        } else {
+            err = new OstError(internalErrorCode, OstErrors.ErrorCode.SDK_ERROR, errorInfo);
+        }
+
+        return err;
     }
 }

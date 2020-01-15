@@ -1,3 +1,5 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
 /*
  * Copyright 2019 OST.com Inc
  *
@@ -56,6 +58,36 @@ android {
 
     lintOptions {
         abortOnError false
+    }
+
+    task ndkBuild(type: Exec) {
+        def rootDir = project.rootDir
+        def localProperties = new File(rootDir, "local.properties")
+        Properties properties = new Properties()
+        localProperties.withInputStream { instr ->
+            properties.load(instr)
+        }
+        def ndkDir = properties.getProperty('ndk.dir')
+
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            commandLine ndkDir + '\\ndk-build.cmd',
+                    'NDK_LIBS_OUT=main/jniLibs',
+                    'NDK_PROJECT_PATH=' + rootDir + '\\ostsdk\\src',
+                    'APP_BUILD_SCRIPT=jni/Android.mk',
+                    '-C',
+                    file('src').absolutePath
+        } else {
+            commandLine ndkDir + '/ndk-build',
+                    'NDK_LIBS_OUT=main/jniLibs',
+                    'NDK_PROJECT_PATH=' + rootDir + '/ostsdk/src',
+                    'APP_BUILD_SCRIPT=jni/Android.mk',
+                    '-C',
+                    file('src').absolutePath
+        }
+    }
+
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn ndkBuild
     }
 }
 

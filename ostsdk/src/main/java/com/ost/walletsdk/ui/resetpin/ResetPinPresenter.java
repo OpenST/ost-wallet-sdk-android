@@ -68,6 +68,7 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> {
             if (mFirstNewPin.equals(pin)) {
                 Log.d(LOG_TAG,"Retyped Pin is equal");
                 getMvpView().showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
+                getMvpView().onPostAuthentication();
 
                 final WorkFlowListener workFlowListener = SdkInteract.getInstance().getWorkFlowListener(mWorkflowId);
                 workFlowListener.getPassphrase(mUserId, new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN), new OstPassphraseAcceptor() {
@@ -85,6 +86,7 @@ class ResetPinPresenter extends BasePresenter<ResetPinView> {
                         getMvpView().showProgress(false);
                         OstError error = new OstError("rpp_ope_cf", OstErrors.ErrorCode.WORKFLOW_CANCELLED);
                         workFlowListener.flowInterrupt(new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.RESET_PIN), error);
+                        getMvpView().close();
                     }
                 });
 

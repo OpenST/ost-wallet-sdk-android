@@ -50,6 +50,13 @@ try {
 OstWalletUI.setThemeConfig(themeConfig)
 ```
 
+### Get Theme Config
+Get currently applied theme config from sdk.
+
+```java
+OstWalletUI.getThemeConfig()
+```
+
 ### Set Content Config
 
 Content for OstWalletUI can be initialized by calling `setContentConfig` API.
@@ -80,6 +87,17 @@ try {
 
 ```java
 OstWalletUI.setContentConfig(contentConfig)
+```
+
+### Set Loader Manager
+
+Application loader for OstWalletUI can be initialized by calling `setLoaderManager` API. <br/>
+To setup application loader, please refer [CustomLoader](./OstCustomLoader.md) documentation.
+
+**Parameters**<br/>
+&nbsp;_loaderManager: class which inherits `OstLoaderFragment` protocol_<br/>
+```java
+OstWalletUI.setLoaderManager(loaderManager)
 ```
 
 ### Activate User
