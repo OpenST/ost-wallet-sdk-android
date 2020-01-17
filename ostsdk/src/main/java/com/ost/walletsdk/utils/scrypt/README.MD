@@ -17,7 +17,7 @@
 
 Usage
 
-  com.lambdaworks.crypto.SCryptUtil implements a modified version of MCF,
+  com.ost.walletsdk.crypto.SCryptUtil implements a modified version of MCF,
   the modular crypt format, similar to the one used for storage of Unix
   passwords in the MD5, SHA-256, and bcrypt formats.
 
@@ -49,7 +49,7 @@ Native Code Implementation
   extracted from the jar and loaded, and on other VMs System.loadLibrary will
   be called.
 
-  The system property "com.lambdaworks.jni.loader" may be set to override
+  The system property "com.ost.walletsdk.jni.loader" may be set to override
   the default native library loader with one of the following values:
 
     nil: refuse to load native libraries and revert to pure Java implementation
