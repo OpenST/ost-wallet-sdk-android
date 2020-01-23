@@ -13,6 +13,7 @@ package com.ost.walletsdk.ecKeyInteracts;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ost.walletsdk.crypto.SCrypt;
 import com.ost.walletsdk.OstConfigs;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.ecKeyInteracts.impls.OstAndroidSecureStorage;
@@ -30,7 +31,8 @@ import com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode;
 import org.bouncycastle.crypto.digests.SHA512Digest;
 import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator;
 import org.bouncycastle.crypto.params.KeyParameter;
-import com.ost.walletsdk.utils.scrypt.SCrypt;
+
+
 import org.web3j.crypto.Bip32ECKeyPair;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.ECKeyPair;
@@ -165,17 +167,48 @@ class InternalKeyManager {
 
         OstSecureKey osk = null;
         byte[] key = null;
+        byte[] dataToDecrypt = null;
         ECKeyPair ecKeyPair;
         try {
             osk = metaRepository.getByKey(apiKeyId);
-            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt(osk.getData());
+            dataToDecrypt = osk.getData();
+
+            key = OstAndroidSecureStorage.getInstance(OstSdk.getContext(), mUserId).decrypt( dataToDecrypt );
+
             ecKeyPair = ECKeyPair.create(key);
             //Sign the data
             Sign.SignatureData signatureData = Sign.signPrefixedMessage(dataToSign, ecKeyPair);
             return signatureDataToString(signatureData);
-        } catch (Exception ex) {
-            Log.e(TAG, "m_s_ikm_sbwps: Unexpected Exception", ex);
-            return null;
+        } catch (Throwable th) {
+            OstError ostError = OstError.SdkError("m_s_ikm_sbwps_1", th);
+
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.apiKeyAddress", apiKeyAddress);
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.deviceKeyAddress", mKeyMetaStruct.getDeviceAddress() );
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.apiKeyId", apiKeyId);
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.mUserId", mUserId);
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.isKeyPairGenerated", String.valueOf(OstAndroidSecureStorage.isKeyPairGenerated));
+
+            String isKeyNull = "true";
+            String keyLength = "0";
+            if ( null != key ) {
+                isKeyNull = "false";
+                keyLength = String.valueOf( key.length );
+            }
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.isKeyNull", isKeyNull );
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.keyLength", keyLength );
+
+
+            String isDataToDecryptNull = "true";
+            String dataToDecryptLength = "0";
+            if ( null != dataToDecrypt ) {
+                isDataToDecryptNull = "false";
+                dataToDecryptLength = String.valueOf( dataToDecrypt.length );
+            }
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.isDataToDecryptNull", isDataToDecryptNull );
+            ostError.addErrorInfo("m_s_ikm_sbwps_1.dataToDecryptLength", dataToDecryptLength );
+
+            Log.e(TAG, "m_s_ikm_sbwps_1: Unexpected Exception", th);
+            throw ostError;
         } finally {
             clearBytes(key);
             ecKeyPair = null;
@@ -666,8 +699,27 @@ class InternalKeyManager {
         } catch (OutOfMemoryError error) {
             throw new OstError("c_ikm_crk_2", ErrorCode.OUT_OF_MEMORY_ERROR);
         } catch (Throwable th) {
-            //Suppress Error.
-            throw new OstError("c_ikm_crk_1", ErrorCode.RECOVERY_KEY_GENERATION_FAILED);
+            OstError ostError = OstError.SdkError("c_ikm_crk_1", th);
+
+            String passphraseLength = "null";
+            if (null != passphrase) {
+                passphraseLength = String.valueOf(passphrase.length);
+            }
+            ostError.addErrorInfo("c_ikm_crk_1.passphrase.length", passphraseLength);
+
+            String seedLength = "null";
+            if (null != seed) {
+                seedLength = String.valueOf(seed.length);
+            }
+            ostError.addErrorInfo("c_ikm_crk_1.seed.length", seedLength );
+
+            String saltLength = "null";
+            if (null != salt) {
+                saltLength = String.valueOf(salt.length);
+            }
+            ostError.addErrorInfo("c_ikm_crk_1.salt.length", saltLength );
+
+            throw ostError;
         } finally {
             //Clear the seed.
             clearBytes(seed);
@@ -712,32 +764,63 @@ class InternalKeyManager {
         }
 
         ECKeyPair ecKeyPair = null;
+        String recoveryOwnerAddress = null;
+        String expectedRecoveryOwnerAddress = null;
+        Sign.SignatureData signatureData = null;
         try {
             OstUser ostUser = OstUser.getById(mUserId);
-            String recoveryOwnerAddress = ostUser.getRecoveryOwnerAddress();
+            recoveryOwnerAddress = ostUser.getRecoveryOwnerAddress();
             // Generate ecKeyPair.
             ecKeyPair = createRecoveryKey(passphrase, salt);
 
             // Validate recoveryOwnerAddress.
-            String expectedRecoveryOwnerAddress = Credentials.create(ecKeyPair).getAddress();
+            expectedRecoveryOwnerAddress = Credentials.create(ecKeyPair).getAddress();
             if ( !expectedRecoveryOwnerAddress.equalsIgnoreCase(recoveryOwnerAddress) ) {
                 // Note that user passphrase is invalid.
                 userPassphraseInvalidated();
-                //Do not throw. Just return null.
-                return null;
+                throw new OstError("m_s_ikm_sdwrk_2", ErrorCode.INVALID_USER_PASSPHRASE);
             }
 
             // Note that user passphrase is valid.
             userPassphraseValidated();
 
             // Sign the data.
-            Sign.SignatureData signatureData = Sign.signMessage(Numeric.hexStringToByteArray(hexStringToSign), ecKeyPair, false);
+            signatureData = Sign.signMessage(Numeric.hexStringToByteArray(hexStringToSign), ecKeyPair, false);
             return Numeric.toHexString(signatureData.getR()) + Numeric.cleanHexPrefix(Numeric.toHexString(signatureData.getS())) + String.format("%02x", (signatureData.getV()));
-        } catch (OstError ostError) {
-            throw ostError;
         } catch (Throwable th) {
-            //Supress it.
-            throw new OstError("c_ikm_sdwrk_1", ErrorCode.FAILED_TO_SIGN_DATA);
+            OstError ostError = OstError.SdkError("m_s_ikm_sdwrk_1", th);
+
+            if (null == recoveryOwnerAddress) {
+                recoveryOwnerAddress = "null";
+            }
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.recoveryOwnerAddress", recoveryOwnerAddress);
+
+            if (null == expectedRecoveryOwnerAddress) {
+                expectedRecoveryOwnerAddress = "null";
+            }
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.generatedRecoveryOwnerAddress", expectedRecoveryOwnerAddress);
+
+            String saltLength = "null";
+            if (null != salt){
+                saltLength = String.valueOf(salt.length);
+            }
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.salt.length", saltLength);
+
+            String signatureString = "null";
+            if (null != signatureData) {
+                String rLength = "null";
+                if (null != signatureData.getR()) {
+                    rLength = String.valueOf(signatureData.getR().length);
+                }
+                String sLength = "null";
+                if (null != signatureData.getS()) {
+                    sLength = String.valueOf(signatureData.getS().length);
+                }
+                signatureString = String.format("R.%s S.%s", rLength, sLength);
+            }
+            ostError.addErrorInfo("m_s_ikm_sdwrk_1.signatureData.length", signatureString);
+
+            throw ostError;
         } finally {
             if ( null == ecKeyPair ) {
                 clearBytes(salt);

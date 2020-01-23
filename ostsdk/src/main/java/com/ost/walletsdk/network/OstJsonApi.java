@@ -61,7 +61,7 @@ public class OstJsonApi {
             if ( err instanceof OstError ) {
                 error = (OstError) err;
             } else {
-                error = new OstError("ojsonapi_egb_2", ErrorCode.SDK_ERROR);
+                error = OstError.SdkError("ojsonapi_egb_1", err);
             }
             sendErrorCallback(callback, error, response);
         }
@@ -98,7 +98,7 @@ public class OstJsonApi {
             if ( err instanceof OstError ) {
                 error = (OstError) err;
             } else {
-                error = new OstError("ojsonapi_egb_2", ErrorCode.SDK_ERROR);
+                error = OstError.SdkError("ojsonapi_egpp_1", err);
             }
             sendErrorCallback(callback, error, response);
         }
@@ -160,8 +160,7 @@ public class OstJsonApi {
             if ( err instanceof OstError ) {
                 error = (OstError) err;
             } else {
-
-                error = new OstError("ojsonapi_egbwpp_4", ErrorCode.SDK_ERROR);
+                error = OstError.SdkError("ojsonapi_egbpp_1", err);
             }
             sendErrorCallback(callback, error, response);
         }
@@ -199,7 +198,7 @@ public class OstJsonApi {
             if ( err instanceof OstError ) {
                 error = (OstError) err;
             } else {
-                error = new OstError("ojsonapi_egt_2", ErrorCode.INVALID_API_RESPONSE);
+                error = OstError.SdkError("ojsonapi_egt_1", err);
             }
             sendErrorCallback(callback, error, response);
         }
@@ -235,7 +234,7 @@ public class OstJsonApi {
             if ( err instanceof OstError ) {
                 error = (OstError) err;
             } else {
-                error = new OstError("ojsonapi_egpr_2", ErrorCode.SDK_ERROR);
+                error = OstError.SdkError("ojsonapi_egpr_1", err);
             }
             sendErrorCallback(callback, error, response);
         }
@@ -273,7 +272,7 @@ public class OstJsonApi {
             if ( err instanceof OstError ) {
                 error = (OstError) err;
             } else {
-                error = new OstError("ojsonapi_egt_2", ErrorCode.INVALID_API_RESPONSE);
+                error = OstError.SdkError("ojsonapi_egdl_1", err);
             }
             sendErrorCallback(callback, error, response);
         }
@@ -310,7 +309,7 @@ public class OstJsonApi {
             if ( err instanceof OstError ) {
                 error = (OstError) err;
             } else {
-                error = new OstError("ojsonapi_egcd_1", ErrorCode.SDK_ERROR);
+                error = OstError.SdkError("ojsonapi_egcd_1", err);
             }
             sendErrorCallback(callback, error, response);
         }

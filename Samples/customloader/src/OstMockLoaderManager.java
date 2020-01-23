@@ -22,6 +22,12 @@ public class OstMockLoaderManager implements OstLoaderDelegate {
 
     @Override
     public boolean waitForFinalization(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
+        if (OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER.equals(workflowType)) {
+            return false;
+        }
+        if (OstWorkflowContext.WORKFLOW_TYPE.EXECUTE_TRANSACTION.equals(workflowType)) {
+            return false;
+        }
         return true;
     }
 }

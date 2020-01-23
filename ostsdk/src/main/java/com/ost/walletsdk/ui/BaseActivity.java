@@ -158,7 +158,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
             mProgressDlg = loaderFragment;
         } else {
             if (null != mProgressDlg) {
-                mProgressDlg.dismiss();
+                mProgressDlg.dismissAllowingStateLoss();
             }
         }
     }
@@ -186,7 +186,9 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     public OstWorkflowLoader getWorkflowLoader() {
-        if (null == mProgressDlg) mProgressDlg = createDialogFragment();
+        if (null == mProgressDlg) {
+            showProgress(true);
+        }
         return new LoaderOnMainThreadWrapper((OstWorkflowLoader)mProgressDlg);
     }
 
