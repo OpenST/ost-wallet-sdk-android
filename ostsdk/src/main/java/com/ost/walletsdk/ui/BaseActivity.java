@@ -158,7 +158,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
             mProgressDlg = loaderFragment;
         } else {
             if (null != mProgressDlg) {
-                mProgressDlg.dismiss();
+                mProgressDlg.dismissAllowingStateLoss();
             }
         }
     }
