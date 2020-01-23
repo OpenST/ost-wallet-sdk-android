@@ -115,7 +115,7 @@ public class WorkFlowPinFragment extends PinFragment {
         if(null != mListener){
             mListener.invalidPin(0, null, "", mOstPinAcceptInterface);
         }
-        goBack();
+        super.close();
     }
 
     public interface OnFragmentInteractionListener extends PinFragment.OnFragmentInteractionListener {

@@ -111,6 +111,7 @@ class WalletSetUpPresenter extends BasePresenter<SetUpView> implements RequestAc
                 getMvpView().showProgress(false);
                 OstError error = new OstError("ws_swf_cf", OstErrors.ErrorCode.WORKFLOW_CANCELLED);
                 workFlowListener.flowInterrupt(new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.ACTIVATE_USER), error);
+                getMvpView().close();
             }
         });
     }

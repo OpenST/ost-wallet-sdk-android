@@ -1,5 +1,12 @@
 # OST Wallet SDK Changelog
 
+## Version 2.3.8
+### Changes:
+* Reduced recovery key generation time substantially by leveraging on NDK.
+
+### Bug Fix:
+* In OstWalletSDK UI workflows progress bar crashes in background.
+
 ## Version 2.3.7
 ### Bug Fix:
 * Inaccurate error is thrown when application runs out of memory during recover device workflow.
