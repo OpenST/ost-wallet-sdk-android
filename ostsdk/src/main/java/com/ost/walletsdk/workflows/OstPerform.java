@@ -114,6 +114,11 @@ public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterfac
                     dataObject,
                     mUserId,
                     getCallback());
+        } else if (OstConstants.DATA_DEFINITION_AUTHORIZE_SESSION.equalsIgnoreCase(dataDefinition)) {
+            return new OstAddSessionWithQR.AddSessionDataDefinitionInstance(
+                    dataObject,
+                    mUserId,
+                    getCallback());
         } else if (OstConstants.DATA_DEFINITION_REVOKE_DEVICE.equalsIgnoreCase(dataDefinition)) {
             return new OstRevokeDevice.RevokeDeviceDataDefinitionInstance(
                     dataObject,
