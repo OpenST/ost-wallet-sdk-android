@@ -50,11 +50,25 @@ class OstAddSessionWithQR extends OstAddSession {
 
         @Override
         public OstContextEntity getContextEntity() {
-            ///TODO: Change this to create and fetch OstSession Entity.
-            String deviceAddress = getDeviceAddress();
-            OstDevice ostDevice = OstDevice.getById(deviceAddress);
-            OstContextEntity contextEntity = new OstContextEntity(ostDevice, OstSdk.DEVICE);
-            return contextEntity;
+            String sessionAddress = getDeviceAddress();
+
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put(OstSession.ADDRESS, sessionAddress);
+                jsonObject.put(OstSession.USER_ID, userId);
+                jsonObject.put(OstSession.SPENDING_LIMIT, getSpendingLimit());
+                jsonObject.put(OstSession.EXPIRATION_HEIGHT, "0");
+                jsonObject.put(OstSession.APPROX_EXPIRATION_TIMESTAMP, getExpiryTimestamp());
+                jsonObject.put(OstSession.NONCE, "0");
+                jsonObject.put(OstSession.UPDATED_TIMESTAMP, System.currentTimeMillis());
+                jsonObject.put(OstSession.STATUS, OstSession.CONST_STATUS.CREATED);
+                OstSession ostSession = OstSession.parse(jsonObject);
+                OstContextEntity contextEntity = new OstContextEntity(ostSession, OstSdk.SESSION);
+                return contextEntity;
+            } catch (Exception ex) {
+                //Can't do anything
+            }
+            return null;
         }
 
 
@@ -326,6 +340,5 @@ class OstAddSessionWithQR extends OstAddSession {
         String getSignature() {
             return dataObject.optString(OstConstants.QR_SIGNATURE);
         }
-
     }
 }

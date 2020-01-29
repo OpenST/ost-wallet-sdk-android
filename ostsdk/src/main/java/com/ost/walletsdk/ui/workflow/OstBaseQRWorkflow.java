@@ -23,7 +23,10 @@ abstract class OstBaseQRWorkflow  extends OstWorkFlowActivity implements
         OstVerifyDeviceFragment.OnFragmentInteractionListener {
 
     private static final String LOG_TAG = "OstADVQRWorkflow";
-    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("scan_qr_to_authorize_device");
+    final JSONObject contentConfig = getContentConfig();
+
+    protected abstract JSONObject getContentConfig();
+
     private QRScannerFragment mQrScannerFragment;
 
     @Override

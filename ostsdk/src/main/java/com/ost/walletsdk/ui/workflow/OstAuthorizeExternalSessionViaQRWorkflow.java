@@ -5,8 +5,9 @@ import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
-import com.ost.walletsdk.models.entities.OstDevice;
-import com.ost.walletsdk.ui.OstVerifyDeviceFragment;
+import com.ost.walletsdk.models.entities.OstSession;
+import com.ost.walletsdk.ui.OstVerifySessionFragment;
+import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
@@ -17,8 +18,15 @@ import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OstAuthorizeExternalSessionViaQRWorkflow extends OstBaseQRWorkflow {
+public class OstAuthorizeExternalSessionViaQRWorkflow extends OstBaseQRWorkflow
+    implements OstVerifySessionFragment.OnFragmentInteractionListener {
     private static final String LOG_TAG = "OstAESVQRWorkflow";
+
+    @Override
+    protected JSONObject getContentConfig() {
+        return ContentConfig.getInstance().getStringConfig("scan_qr_to_authorize_session");
+    }
+
     @Override
     public void onResultString(Intent data) {
         Log.d(LOG_TAG, String.format("QR process result %s", data));
@@ -57,14 +65,14 @@ public class OstAuthorizeExternalSessionViaQRWorkflow extends OstBaseQRWorkflow 
     public boolean verifyData(String workflowId, OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, OstVerifyDataInterface ostVerifyDataInterface) {
         showProgress(false);
 
-        ///TODO: Change this to show Session Data.
-        OstVerifyDeviceFragment bottomSheet = new OstVerifyDeviceFragment();
+        OstVerifySessionFragment bottomSheet = new OstVerifySessionFragment();
         bottomSheet.setCancelable(false);
         bottomSheet.show(getSupportFragmentManager(), bottomSheet.getTag());
-        OstDevice ostDevice = ((OstDevice) ostContextEntity.getEntity());
-        bottomSheet.setDataToVerify(ostDevice);
+        OstSession ostSession = ((OstSession) ostContextEntity.getEntity());
+        bottomSheet.setUserId(mUserId);
+        bottomSheet.setDataToVerify(ostSession);
         bottomSheet.setVerifyDataCallback(ostVerifyDataInterface);
-        bottomSheet.setStringConfig(contentConfig.optJSONObject("verify_device"));
+        bottomSheet.setStringConfig(contentConfig.optJSONObject("verify_session"));
         return true;
     }
 }

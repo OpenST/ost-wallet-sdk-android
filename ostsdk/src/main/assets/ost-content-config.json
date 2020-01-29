@@ -449,5 +449,46 @@
         "acknowledge": {
             "text": "Waiting for confirmation..."
         }
+    },
+    "scan_qr_to_authorize_session": {
+        "scan_qr": {
+            "title_label": {
+                "text": "Scan QR Code"
+            }
+        },
+        "verify_session": {
+            "lead_label": {
+                "text": "Authorize Session"
+            },
+            "accept_button": {
+                "text": "Authorize Session"
+            },
+            "reject_button": {
+                "text": "Cancel"
+            }
+        },
+        "get_pin": {
+            "title_label": {
+                "text": "Authorize Session"
+            },
+            "lead_label": {
+                "text": "Enter your 6-digit PIN to authorize session"
+            },
+            "info_label":{
+                "text":  ""
+            },
+            "terms_and_condition_label": {
+                "text": ""
+            }
+        },
+        "loader": {
+            "text": "Authorizing Session..."
+        },
+        "initial_loader": {
+            "text": "Verifying Session..."
+        },
+        "acknowledge": {
+            "text": "Waiting for confirmation..."
+        }
     }
 }

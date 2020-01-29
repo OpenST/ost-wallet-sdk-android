@@ -27,6 +27,11 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstBaseQRWorkflow {
     private static final String LOG_TAG = "OstADVQRWorkflow";
 
     @Override
+    protected JSONObject getContentConfig() {
+        return ContentConfig.getInstance().getStringConfig("scan_qr_to_authorize_device");
+    }
+
+    @Override
     public void onResultString(Intent data) {
         Log.d(LOG_TAG, String.format("QR process result %s", data));
         if (data != null && data.getData() != null) {
