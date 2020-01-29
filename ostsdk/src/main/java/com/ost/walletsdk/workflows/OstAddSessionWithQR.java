@@ -1,16 +1,17 @@
 package com.ost.walletsdk.workflows;
 
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.ost.walletsdk.OstConstants;
 import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.annotations.Nullable;
+import com.ost.walletsdk.models.Impls.OstModelFactory;
+import com.ost.walletsdk.models.Impls.OstSessionKeyModelRepository;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.network.OstApiClient;
 import com.ost.walletsdk.network.OstApiError;
+import com.ost.walletsdk.utils.AsyncStatus;
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
@@ -119,17 +120,17 @@ class OstAddSessionWithQR extends OstAddSession {
             }
 
             // Validate Api Signer Address
-            if ( !isValidAddress( apiSignerAddress ) ) {
-                OstError error =  new OstError("wf_asddi_vdp_2", OstErrors.ErrorCode.INVALID_API_SIGNER_ADDRESS);
-                if ( null == apiSignerAddress ) {
-                    error.addErrorInfo("qr_api_signer_address", "null");
-                } else {
-                    error.addErrorInfo("qr_api_signer_address", apiSignerAddress);
-                }
-                error.addErrorInfo("userId", userId);
-                error.addErrorInfo("reason", "Invalid api signer address");
-                throw error;
-            }
+//            if ( !isValidAddress( apiSignerAddress ) ) {
+//                OstError error =  new OstError("wf_asddi_vdp_2", OstErrors.ErrorCode.INVALID_API_SIGNER_ADDRESS);
+//                if ( null == apiSignerAddress ) {
+//                    error.addErrorInfo("qr_api_signer_address", "null");
+//                } else {
+//                    error.addErrorInfo("qr_api_signer_address", apiSignerAddress);
+//                }
+//                error.addErrorInfo("userId", userId);
+//                error.addErrorInfo("reason", "Invalid api signer address");
+//                throw error;
+//            }
 
             // Validate Device Address
             if ( !isValidAddress( deviceAddress ) ) {
@@ -204,7 +205,7 @@ class OstAddSessionWithQR extends OstAddSession {
 
             // Device and Api Key Validations
             String deviceAddress = getDeviceAddress();
-            String apiKeyAddress = getApiSignerAddress();
+//            String apiKeyAddress = getApiSignerAddress();
             String externalSessionAddress = getSessionAddress();
             apiClient.getDevice(deviceAddress);
 
@@ -219,16 +220,16 @@ class OstAddSessionWithQR extends OstAddSession {
             }
 
             // Validate the Api Key Address
-            String deviceApiSignerAddress = ostDevice.getApiSignerAddress();
-            if ( null == deviceApiSignerAddress || !deviceApiSignerAddress.equalsIgnoreCase(apiKeyAddress) ) {
-                OstError error =  new OstError("wf_asddi_vadp_5", OstErrors.ErrorCode.INVALID_API_SIGNER_ADDRESS);
-                error.addErrorInfo("qr_device_address", deviceAddress);
-                error.addErrorInfo("qr_api_signer_address", apiKeyAddress);
-                error.addErrorInfo("actual_api_signer_address", deviceApiSignerAddress);
-                error.addErrorInfo("userId", userId);
-                error.addErrorInfo("reason", "Invalid api signer address");
-                throw error;
-            }
+//            String deviceApiSignerAddress = ostDevice.getApiSignerAddress();
+//            if ( null == deviceApiSignerAddress || !deviceApiSignerAddress.equalsIgnoreCase(apiKeyAddress) ) {
+//                OstError error =  new OstError("wf_asddi_vadp_5", OstErrors.ErrorCode.INVALID_API_SIGNER_ADDRESS);
+//                error.addErrorInfo("qr_device_address", deviceAddress);
+//                error.addErrorInfo("qr_api_signer_address", apiKeyAddress);
+//                error.addErrorInfo("actual_api_signer_address", deviceApiSignerAddress);
+//                error.addErrorInfo("userId", userId);
+//                error.addErrorInfo("reason", "Invalid api signer address");
+//                throw error;
+//            }
 
             // Ensure device is in registered state.
             if ( !ostDevice.canBeAuthorized() ) {
@@ -340,5 +341,16 @@ class OstAddSessionWithQR extends OstAddSession {
         String getSignature() {
             return dataObject.optString(OstConstants.QR_SIGNATURE);
         }
+    }
+
+    @Override
+    AsyncStatus postFlowComplete(OstContextEntity ostContextEntity) {
+        wipeSession(mSessionAddressToBeAdded);
+        return super.postFlowComplete(ostContextEntity);
+    }
+
+    private void wipeSession(String address) {
+        OstModelFactory.getSessionModel().deleteEntity(address);
+        new OstSessionKeyModelRepository().deleteSessionKey(address);
     }
 }
