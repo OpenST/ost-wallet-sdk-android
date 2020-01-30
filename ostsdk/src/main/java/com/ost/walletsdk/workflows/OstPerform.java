@@ -32,7 +32,7 @@ import static com.ost.walletsdk.workflows.WorkflowStateManager.PARAMS_VALIDATED;
 /**
  * It perform workflow operations by reading QR data.
  * QR data should be passes as JSON object in the constructor
- * {@link #OstPerform(String, JSONObject, OstWorkFlowCallback)}
+ * {@link #OstPerform(String, String, OstWorkFlowCallback)}
  * It can perform Execute Rule Transactions, Add Device and Revoke Device.
  */
 public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterface {
@@ -200,7 +200,7 @@ public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterfac
                     mUserId,
                     getCallback());
         } else if (OstConstants.DATA_DEFINITION_AUTHORIZE_SESSION.equalsIgnoreCase(dataDefinition)) {
-            return new OstAddSessionWithQR.AddSessionDataDefinitionInstance(
+            return new OstAddSessionDataDefinitionInstance(
                     dataObject,
                     qrVersion,
                     mUserId,
@@ -213,7 +213,7 @@ public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterfac
     private DataDefinitionInstance getV2DataDefinitionInstance() {
         String dataDefinition = getDataDefinition();
         if (OstConstants.DATA_DEFINITION_AUTHORIZE_SESSION.equalsIgnoreCase(dataDefinition)) {
-            return OstAddSessionWithQR.AddSessionDataDefinitionInstance.fromV2QR(
+            return OstAddSessionDataDefinitionInstance.fromV2QR(
                     mStringPayload,
                     mUserId,
                     getCallback());

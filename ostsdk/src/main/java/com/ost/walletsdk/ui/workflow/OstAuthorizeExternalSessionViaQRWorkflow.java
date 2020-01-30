@@ -9,14 +9,20 @@ import com.ost.walletsdk.models.entities.OstSession;
 import com.ost.walletsdk.ui.OstVerifySessionFragment;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
+import com.ost.walletsdk.workflows.OstAddSessionDataDefinitionInstance;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
+
 import com.ost.walletsdk.workflows.errors.OstError;
 import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static com.ost.walletsdk.OstConstants.DATA_DEFINITION_AUTHORIZE_SESSION;
+import static com.ost.walletsdk.OstConstants.QR_DATA_DEFINITION;
+import static com.ost.walletsdk.workflows.errors.OstErrors.ErrorCode.INVALID_QR_CODE;
 
 public class OstAuthorizeExternalSessionViaQRWorkflow extends OstBaseQRWorkflow
     implements OstVerifySessionFragment.OnFragmentInteractionListener {
@@ -32,17 +38,29 @@ public class OstAuthorizeExternalSessionViaQRWorkflow extends OstBaseQRWorkflow
         Log.d(LOG_TAG, String.format("QR process result %s", data));
         if (data != null && data.getData() != null) {
             String returnedResult = data.getData().toString();
+            JSONObject qrPayload = null;
+            try { /* try v2 parsing */
+                qrPayload = OstAddSessionDataDefinitionInstance.getPayloadFromV2QR(returnedResult);
+            } catch (Throwable th) {
+                // try v1.
+            }
+
+            if ( null == qrPayload) { /* try v1 parsing */
+                try {
+                    qrPayload = new JSONObject(returnedResult);
+                } catch (JSONException e) {
+                    if (null != mWorkFlowListener) {
+                        OstError error = new OstError("oadvqrw_ors_aesvqr_ors_0", INVALID_QR_CODE);
+                        mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
+                    }
+                    return;
+                }
+            }
 
             //QR Validation check
-            try {
-                if (!OstConstants.DATA_DEFINITION_AUTHORIZE_SESSION.equalsIgnoreCase(
-                        new JSONObject(returnedResult).getString(OstConstants.QR_DATA_DEFINITION
-                        ))) {
-                    throw new Exception("Invalid QR");
-                }
-            } catch (Exception exception) {
-                if (null != mWorkFlowListener) mWorkFlowListener.flowInterrupt(getWorkflowContext(), new OstError("oadvqrw_ors_aesvqr_ors_1", OstErrors.ErrorCode.INVALID_QR_CODE));
-                return;
+            if ( !DATA_DEFINITION_AUTHORIZE_SESSION.equalsIgnoreCase( qrPayload.optString(QR_DATA_DEFINITION) ) ) {
+                OstError error = new OstError("oadvqrw_ors_aesvqr_ors_1", INVALID_QR_CODE);
+                error.addErrorInfo("qr_string", returnedResult);
             }
 
             //Start workflow
