@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_spending_amount"
                 android:layout_marginTop="11dp"
-                android:text="Spending Amount" />
+                android:text="Expiry Date" />
 
             <com.ost.walletsdk.ui.uicomponents.OstC1Label
                 android:id="@+id/tv_time"
