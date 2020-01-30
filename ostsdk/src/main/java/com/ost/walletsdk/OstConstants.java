@@ -36,6 +36,8 @@ public interface OstConstants {
     String QR_SPENDING_LIMIT = "sl";
     String QR_EXPIRY_TIMESTAMP = "et";
     String QR_SIGNATURE = "sig";
+    String QR_V2_INPUT = "qr_v2_input";
+    String QR_V2_DELIMITER = "|";
     String DATA_DEFINITION_TRANSACTION = "TX";
     String DATA_DEFINITION_AUTHORIZE_DEVICE = "AD";
     String DATA_DEFINITION_REVOKE_DEVICE = "RD";
