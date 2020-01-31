@@ -35,20 +35,23 @@ public class OstAuthorizeExternalSessionViaQRWorkflow extends OstBaseQRWorkflow
 
     @Override
     public void onResultString(Intent data) {
-        Log.d(LOG_TAG, String.format("QR process result %s", data));
+        Log.i(LOG_TAG, String.format("QR process result %s", data));
         if (data != null && data.getData() != null) {
             String returnedResult = data.getData().toString();
+            Log.i(LOG_TAG, "OstAuthorizeExternalSessionViaQRWorkflow returnedResult: " + returnedResult);
             JSONObject qrPayload = null;
             try { /* try v2 parsing */
                 qrPayload = OstAddSessionDataDefinitionInstance.getPayloadFromV2QR(returnedResult);
             } catch (Throwable th) {
                 // try v1.
+                Log.e(LOG_TAG, "v2 - String paring failed");
             }
 
             if ( null == qrPayload) { /* try v1 parsing */
                 try {
                     qrPayload = new JSONObject(returnedResult);
                 } catch (JSONException e) {
+                    Log.e(LOG_TAG, "v1 - JSON paring failed");
                     if (null != mWorkFlowListener) {
                         OstError error = new OstError("oadvqrw_ors_aesvqr_ors_0", INVALID_QR_CODE);
                         mWorkFlowListener.flowInterrupt(getWorkflowContext(), error);
@@ -59,8 +62,12 @@ public class OstAuthorizeExternalSessionViaQRWorkflow extends OstBaseQRWorkflow
 
             //QR Validation check
             if ( !DATA_DEFINITION_AUTHORIZE_SESSION.equalsIgnoreCase( qrPayload.optString(QR_DATA_DEFINITION) ) ) {
-                OstError error = new OstError("oadvqrw_ors_aesvqr_ors_1", INVALID_QR_CODE);
-                error.addErrorInfo("qr_string", returnedResult);
+                Log.e(LOG_TAG, "QR_DATA_DEFINITION mismatched");
+                if (null != mWorkFlowListener) {
+                    OstError error = new OstError("oadvqrw_ors_aesvqr_ors_1", INVALID_QR_CODE);
+                    error.addErrorInfo("qr_string", returnedResult);
+                }
+                return;
             }
 
             //Start workflow
