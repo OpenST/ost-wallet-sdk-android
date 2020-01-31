@@ -8,6 +8,8 @@ import com.ost.walletsdk.annotations.NonNull;
 import com.ost.walletsdk.annotations.Nullable;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstSession;
+import com.ost.walletsdk.models.entities.OstToken;
+import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstApiClient;
 import com.ost.walletsdk.network.OstApiError;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -60,7 +62,7 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
         try {
             jsonObject.put(OstSession.ADDRESS, sessionAddress);
             jsonObject.put(OstSession.USER_ID, userId);
-            jsonObject.put(OstSession.SPENDING_LIMIT, getSpendingLimit());
+            jsonObject.put(OstSession.SPENDING_LIMIT, getSpendingLimitInLowerUnit());
             jsonObject.put(OstSession.EXPIRATION_HEIGHT, "0");
             jsonObject.put(OstSession.APPROX_EXPIRATION_TIMESTAMP, getExpiryTimestamp());
             jsonObject.put(OstSession.NONCE, "0");
@@ -79,7 +81,7 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
     @Override
     public void startDataDefinitionFlow() {
         String sessionAddress = getSessionAddress();
-        String spendingLimit = getSpendingLimit();
+        String spendingLimit = getSpendingLimitInLowerUnit();
         String stringExpiryTimestamp = getExpiryTimestamp();
         long longExpiryTimestamp = Long.parseLong(stringExpiryTimestamp);
         long currentTimestamp = System.currentTimeMillis() / 1000;
@@ -104,7 +106,6 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
         }
 
         String externalSessionAddress = getSessionAddress();
-        String apiSignerAddress = getApiSignerAddress();
         String deviceAddress = getDeviceAddress();
         String stringExpiryTimestamp = getExpiryTimestamp();
         String stringSpendingLimit = getSpendingLimit();
@@ -112,7 +113,7 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
 
         // Validate Session Address
         if ( !isValidAddress( externalSessionAddress ) ) {
-            OstError error =  new OstError("wf_asddi_vdp_1", OstErrors.ErrorCode.INVALID_SESSION_ADDRESS);
+            OstError error =  new OstError("wf_asddi_vdp_1", OstErrors.ErrorCode.INVALID_QR_CODE);
             if ( null == externalSessionAddress ) {
                 error.addErrorInfo("qr_session_address", "null");
             } else {
@@ -123,22 +124,9 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
             throw error;
         }
 
-        // Validate Api Signer Address
-//            if ( !isValidAddress( apiSignerAddress ) ) {
-//                OstError error =  new OstError("wf_asddi_vdp_2", OstErrors.ErrorCode.INVALID_API_SIGNER_ADDRESS);
-//                if ( null == apiSignerAddress ) {
-//                    error.addErrorInfo("qr_api_signer_address", "null");
-//                } else {
-//                    error.addErrorInfo("qr_api_signer_address", apiSignerAddress);
-//                }
-//                error.addErrorInfo("userId", userId);
-//                error.addErrorInfo("reason", "Invalid api signer address");
-//                throw error;
-//            }
-
         // Validate Device Address
         if ( !isValidAddress( deviceAddress ) ) {
-            OstError error =  new OstError("wf_asddi_vdp_3", OstErrors.ErrorCode.INVALID_DEVICE_ADDRESS);
+            OstError error =  new OstError("wf_asddi_vdp_3", OstErrors.ErrorCode.INVALID_QR_CODE);
             if ( null == deviceAddress ) {
                 error.addErrorInfo("qr_device_address", "null");
             } else {
@@ -203,37 +191,24 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
         // Api Client
         OstApiClient apiClient = new OstApiClient(userId);
 
-        // Device and Api Key Validations
+        // Device Address Validations
         String deviceAddress = getDeviceAddress();
-//            String apiKeyAddress = getApiSignerAddress();
         String externalSessionAddress = getSessionAddress();
         apiClient.getDevice(deviceAddress);
 
         // Device Validations
         OstDevice ostDevice = OstDevice.getById(deviceAddress);
         if (null == ostDevice) {
-            OstError error =  new OstError("wf_asddi_vadp_4", OstErrors.ErrorCode.INVALID_DEVICE_ADDRESS);
+            OstError error =  new OstError("wf_asddi_vadp_4", OstErrors.ErrorCode.INVALID_QR_CODE);
             error.addErrorInfo("qr_device_address", deviceAddress);
             error.addErrorInfo("userId", userId);
             error.addErrorInfo("reason", "Device with specified address does not exist for this user");
             throw error;
         }
 
-        // Validate the Api Key Address
-//            String deviceApiSignerAddress = ostDevice.getApiSignerAddress();
-//            if ( null == deviceApiSignerAddress || !deviceApiSignerAddress.equalsIgnoreCase(apiKeyAddress) ) {
-//                OstError error =  new OstError("wf_asddi_vadp_5", OstErrors.ErrorCode.INVALID_API_SIGNER_ADDRESS);
-//                error.addErrorInfo("qr_device_address", deviceAddress);
-//                error.addErrorInfo("qr_api_signer_address", apiKeyAddress);
-//                error.addErrorInfo("actual_api_signer_address", deviceApiSignerAddress);
-//                error.addErrorInfo("userId", userId);
-//                error.addErrorInfo("reason", "Invalid api signer address");
-//                throw error;
-//            }
-
         // Ensure device is in registered state.
         if ( !ostDevice.canBeAuthorized() ) {
-            OstError error =  new OstError("wf_asddi_vadp_6", OstErrors.ErrorCode.INVALID_DEVICE_ADDRESS);
+            OstError error =  new OstError("wf_asddi_vadp_6", OstErrors.ErrorCode.INVALID_QR_CODE);
             error.addErrorInfo("qr_device_address", deviceAddress);
             error.addErrorInfo("userId", userId);
             error.addErrorInfo("device_status", ostDevice.getStatus() );
@@ -251,7 +226,7 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
 
             // If not, session seems to be already existing.
             OstSession session = OstSession.getById( externalSessionAddress );
-            OstError error =  new OstError("wf_asddi_vadp_7", OstErrors.ErrorCode.INVALID_SESSION_ADDRESS);
+            OstError error =  new OstError("wf_asddi_vadp_7", OstErrors.ErrorCode.INVALID_QR_CODE);
             error.addErrorInfo("qr_session_address", externalSessionAddress);
             error.addErrorInfo("userId", userId);
             error.addErrorInfo("session_status", session.getStatus() );
@@ -412,7 +387,7 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
     }
 
     @Nullable
-    String getDataDefination() {
+    String getDataDefinition() {
         return OstConstants.DATA_DEFINITION_AUTHORIZE_SESSION;
     }
 
@@ -427,7 +402,7 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
             String hexString;
 
             //AS
-            parts.add( getDataDefination() );
+            parts.add( getDataDefinition() );
 
             //Version
             parts.add( getQRVersion() );
@@ -482,6 +457,25 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
         return sessionData.optString(OstConstants.QR_SPENDING_LIMIT);
     }
 
+    @Nullable String getSpendingLimitInLowerUnit() {
+        String higherUnit = getSpendingLimit();
+        if ( null == higherUnit ) {
+            return null;
+        }
+
+        OstUser user = OstUser.getById( userId );
+        if ( null == user ) {
+            return null;
+        }
+
+        OstToken token = OstToken.getById( user.getTokenId() );
+        if ( null == token ) {
+            return null;
+        }
+
+        return token.btToLowerUnit( higherUnit );
+    }
+
     @Nullable String getSessionAddress() {
         JSONObject sessionData = getSessionData();
         if ( null == sessionData ) {
@@ -489,21 +483,6 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
         }
 
         String address = sessionData.optString(OstConstants.QR_SESSION_ADDRESS);
-        if ( TextUtils.isEmpty(address) || !WalletUtils.isValidAddress(address) ) {
-            return  address;
-        }
-
-        return Keys.toChecksumAddress(address);
-    }
-
-
-    @Nullable String getApiSignerAddress() {
-        JSONObject sessionData = getSessionData();
-        if ( null == sessionData ) {
-            return null;
-        }
-
-        String address = sessionData.optString(OstConstants.QR_API_KEY_ADDRESS);
         if ( TextUtils.isEmpty(address) || !WalletUtils.isValidAddress(address) ) {
             return  address;
         }

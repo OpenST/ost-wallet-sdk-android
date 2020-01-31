@@ -140,8 +140,6 @@ public class OstErrors {
 
             case INVALID_DEVICE_ADDRESS : return  "Incorrect device address. Please inspect the value being sent is correct and not null, rectify and re-submit.";
 
-            case INVALID_API_SIGNER_ADDRESS : return  "Incorrect Api signer address. Please inspect the value being sent is correct and not null, rectify and re-submit.";
-
             case DEVICE_CAN_NOT_BE_AUTHORIZED: return "Unable to authorize this device. Please ensure the device is 'Registered' for this user with OST platform. Only a registered device can be authorized.";
 
             case FAILED_TO_GENERATE_ETH_KEY: return "This is a generic error that occurs when sdk fails to generate any one of Api Key, Device Key or Session Key. This can be intermittent issue, please re-start the workflow. If Problem persists contact support@ost.com .";
@@ -274,7 +272,6 @@ public class OstErrors {
         RULE_NOT_FOUND,
         INVALID_TOKEN_ID,
         INVALID_DEVICE_ADDRESS,
-        INVALID_API_SIGNER_ADDRESS,
         INVALID_RECOVER_DEVICE_ADDRESS,
         DEVICE_UNAUTHORIZED,
         DEVICE_CAN_NOT_BE_AUTHORIZED,

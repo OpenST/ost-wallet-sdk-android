@@ -31,7 +31,6 @@ public interface OstConstants {
     String QR_DATA_DEFINITION_VERSION = "ddv";
     String QR_DEVICE_ADDRESS = "da";
     String QR_SESSION_DATA = "sd";
-    String QR_API_KEY_ADDRESS = "aa";
     String QR_SESSION_ADDRESS = "sa";
     String QR_SPENDING_LIMIT = "sl";
     String QR_EXPIRY_TIMESTAMP = "et";

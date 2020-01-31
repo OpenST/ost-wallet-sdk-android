@@ -31,6 +31,8 @@ import com.ost.walletsdk.R;
 import com.ost.walletsdk.annotations.NonNull;
 import com.ost.walletsdk.annotations.Nullable;
 import com.ost.walletsdk.models.entities.OstSession;
+import com.ost.walletsdk.models.entities.OstToken;
+import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.ui.util.CommonUtils;
 import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
@@ -139,7 +141,10 @@ public class OstVerifySessionFragment extends BottomSheetDialogFragment {
         mSessionAddress.setText(sessionAddress);
 
         String spendingLimitInBt = new CommonUtils().convertWeiToTokenCurrency(mUserId, spendingLimit);
-        mSpendingAmount.setText(spendingLimitInBt);
+        OstUser user = OstUser.getById( mUserId );
+        OstToken token = OstToken.getById( user.getTokenId() );
+        String displayedAmount = spendingLimitInBt + " " + token.getSymbol();
+        mSpendingAmount.setText( displayedAmount );
 
         String formattedExpiryDate = DateFormat.format("dd/MM/yyyy hh:mm:ss", new Date(Long.parseLong(expiryTimestamp) * 1000)).toString();
         mExpiryTime.setText( formattedExpiryDate );
