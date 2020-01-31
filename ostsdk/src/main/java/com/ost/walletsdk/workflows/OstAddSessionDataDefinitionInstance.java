@@ -373,10 +373,10 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
 
 
             //Data-Definition
-            jsonPayload.putOpt(OstConstants.QR_DATA_DEFINITION, appendHexPrefix(parts[0]));
+            jsonPayload.putOpt(OstConstants.QR_DATA_DEFINITION, parts[0]);
 
             //Data-Definition-Version
-            jsonPayload.putOpt(OstConstants.QR_DATA_DEFINITION_VERSION, appendHexPrefix(parts[1]));
+            jsonPayload.putOpt(OstConstants.QR_DATA_DEFINITION_VERSION, parts[1]);
 
             //Data
             JSONObject dataObject = new JSONObject();
