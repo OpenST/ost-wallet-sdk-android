@@ -205,6 +205,44 @@ public class OstJsonApi {
     }
     // endregion
 
+    // region - getRedemptions
+
+    /**
+     * Api to get user transactions. Transactions of only current logged-in user can be fetched.
+     *
+     * @param userId User Id of the current logged-in user.
+     * @param requestPayload request payload. Such as next-page payload, filters etc.
+     * @param callback callback where to receive data/error.
+     */
+    public static void getRedemptions(@NonNull String userId, @Nullable Map<String, Object> requestPayload, @NonNull OstJsonApiCallback callback) {
+        getAsyncQueue().submit(new Runnable() {
+            @Override
+            public void run() {
+                execGetRedemptions(userId, requestPayload, callback);
+            }
+        });
+    }
+
+    private static void execGetRedemptions(@NonNull String userId, Map<String, Object> requestPayload,  @NonNull OstJsonApiCallback callback) {
+        JSONObject response = null;
+
+        try {
+            OstApiClient apiClient = new OstApiClient(userId);
+            response = apiClient.getRedemptions(requestPayload);
+            JSONObject  data = getDataFromApiResponse( response );
+            sendSuccessCallback(callback, data);
+        } catch (Throwable err) {
+            OstError error = null;
+            if ( err instanceof OstError ) {
+                error = (OstError) err;
+            } else {
+                error = OstError.SdkError("ojsonapi_egt_1", err);
+            }
+            sendErrorCallback(callback, error, response);
+        }
+    }
+    // endregion
+
     // region - getPendingRecovery
     /**
      * Api to get pending ongoing recovery.
