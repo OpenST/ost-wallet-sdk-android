@@ -273,7 +273,6 @@ public class OstJsonApi {
             if (err instanceof OstError ){
                 error = (OstError) err;
             } else {
-                // TODO get these error codes right
                 error = OstError.SdkError('ojsonapi_egrd_1',err);
             }
             sendErrorCallback(callback, error, response);
@@ -315,7 +314,6 @@ public class OstJsonApi {
             if (err instanceof OstError ){
                 error = (OstError) err;
             } else {
-                // TODO get these error codes right
                 error = OstError.SdkError('ojsonapi_egrs_1',err);
             }
             sendErrorCallback(callback, error, response);
@@ -351,7 +349,6 @@ public class OstJsonApi {
             if( err instanceof OstError){
                 error = ( OstError) err;
             } else {
-                //TODO get these codes right
                 error = OstError.SdkError('ojsonapi_egrsd_1',err);
             }
             sendErrorCallback(callback, error, response);
