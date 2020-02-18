@@ -200,7 +200,7 @@ public class OstToken extends OstBaseEntity {
         String btDecimalsString = getBtDecimals();
         int btDecimals = Integer.parseInt( btDecimalsString );
         BigDecimal multiplicationFactor = new BigDecimal(10).pow( btDecimals );
-        return new BigDecimal(btInHigherUnit).multiply( multiplicationFactor ).toString();
+        return new BigDecimal(btInHigherUnit).multiply( multiplicationFactor ).toBigInteger().toString();
     }
 
     @Override
