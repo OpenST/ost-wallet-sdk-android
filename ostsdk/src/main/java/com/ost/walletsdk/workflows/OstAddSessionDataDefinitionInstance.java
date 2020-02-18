@@ -23,6 +23,7 @@ import org.web3j.crypto.Sign;
 import org.web3j.crypto.WalletUtils;
 import org.web3j.utils.Numeric;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -173,7 +174,7 @@ public class OstAddSessionDataDefinitionInstance extends OstDeviceDataDefinition
 
         // Validate spending limit
         try {
-            new BigInteger(stringSpendingLimit);
+            new BigDecimal(stringSpendingLimit);
         } catch (Exception ex) {
             throw new OstError("wf_asddi_vdp_7", OstErrors.ErrorCode.INVALID_SESSION_SPENDING_LIMIT);
         }
