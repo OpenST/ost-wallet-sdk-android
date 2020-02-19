@@ -56,7 +56,9 @@ import java.util.Map;
  * respective amounts.
  */
 public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransactionPollingCallback {
-
+    public static class OPTIONS {
+        public static final String REDEMPTION_DETAILS = "redemption_details";
+    }
     private static final String TAG = "OstExecuteTransaction";
     private final List<String> mTokenHolderAddresses;
     private final List<String> mAmounts;
@@ -64,6 +66,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
     private String transactionId;
     private String sessionAddress;
     private final Map<String, Object> mMeta;
+    private final Map<String , Object> redemptionDetails;
     private Map<String, Object> mOptions;
 
     public OstExecuteTransaction(String userId,
@@ -82,6 +85,13 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
         mRuleName = ruleName;
         mOptions = options;
         mMeta = meta;
+
+        Object oRedemptionDetails = mOptions.get(OPTIONS.REDEMPTION_DETAILS);
+        if ( oRedemptionDetails instanceof Map ) {
+            redemptionDetails = (Map<String, Object>) oRedemptionDetails;
+        } else {
+            redemptionDetails = null;
+        }
     }
 
 
@@ -210,6 +220,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
                 .setSignature(signedTransactionStruct.getSignature())
                 .setSigner(signedTransactionStruct.getSignerAddress())
                 .setMetaProperty(mMeta)
+                .setRedemptionDetails(redemptionDetails)
                 .build();
     }
 
@@ -223,6 +234,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
         private static final String SIGNATURE = "signature";
         private static final String SIGNER = "signer";
         private static final String MATA_PROPERTY = "meta_property";
+        private static final String REDEMPTION_DETAILS = "redemption_details";
         private String toAddress = "0x0";
 
         public ExecuteRuleRequestBuilder setToAddress(String toAddress) {
@@ -266,6 +278,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
         private String signature = "0x0";
         private String signer = "0x0";
         private Map<String, Object> metaProperty = new HashMap<>();
+        private Map<String, Object> redemptionDetails = null;
 
 
         ExecuteRuleRequestBuilder() {
@@ -280,7 +293,15 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
             map.put(SIGNATURE, signature);
             map.put(SIGNER, signer);
             map.put(MATA_PROPERTY, metaProperty);
+            if ( null != redemptionDetails ) {
+                map.put(REDEMPTION_DETAILS, redemptionDetails);
+            }
+
             return map;
+        }
+
+        public void setRedemptionDetails(Map<String, Object> redemptionDetails) {
+            this.redemptionDetails = redemptionDetails;
         }
     }
 
