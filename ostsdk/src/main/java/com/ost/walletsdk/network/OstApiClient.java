@@ -191,10 +191,6 @@ public class OstApiClient {
         return mOstHttpRequestClient.get(String.format("/users/%s/transactions", mUserId), requestMap);
     }
 
-    public JSONObject getRedemptionDetails(String redemptionId) throws OstError {
-        Map<String, Object> requestMap = getPrerequisiteMap();
-        return mOstHttpRequestClient.get(String.format("/users/%s/redemptions/%s", mUserId, redemptionId), requestMap);
-    }
 
     public JSONObject getRedeemableSkus(Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
@@ -204,17 +200,12 @@ public class OstApiClient {
         return mOstHttpRequestClient.get(String.format("/redeemable-skus", mUserId), requestMap);
     }
 
-    public JSONObject getRedeemableSkuDetails(String skuId) throws OstError {
-        Map<String, Object> requestMap = getPrerequisiteMap();
-        return mOstHttpRequestClient.get(String.format("/redeemable-skus/%s", mUserId, skuId), requestMap);
-    }
-
-    public JSONObject getRedemptions(Map<String, Object> map) throws OstError {
+    public JSONObject getRedeemableSkuDetails(String skuId , Map<String, Object> map) throws OstError {
         Map<String, Object> requestMap = getPrerequisiteMap();
         if ( null != map ) {
             requestMap.putAll(map);
         }
-        return mOstHttpRequestClient.get(String.format("/users/%s/redemptions", mUserId), requestMap);
+        return mOstHttpRequestClient.get(String.format("/redeemable-skus/%s", mUserId, skuId), requestMap);
     }
 
     public JSONObject getAllRules() throws OstError {
