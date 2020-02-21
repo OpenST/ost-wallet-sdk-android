@@ -300,8 +300,9 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
             return map;
         }
 
-        public void setRedemptionMeta(Map<String, Object> redemptionMeta) {
+        public ExecuteRuleRequestBuilder setRedemptionMeta(Map<String, Object> redemptionMeta) {
             this.redemptionMeta = redemptionMeta;
+            return this;
         }
     }
 
