@@ -1,0 +1,3 @@
+This is the index.adoc page for OST-WALLET-SDK-ANDROID
+
+This is a test :)
