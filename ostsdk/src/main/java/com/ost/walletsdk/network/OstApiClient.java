@@ -205,7 +205,7 @@ public class OstApiClient {
         if ( null != map ) {
             requestMap.putAll(map);
         }
-        return mOstHttpRequestClient.get(String.format("/redeemable-skus/%s", mUserId, skuId), requestMap);
+        return mOstHttpRequestClient.get(String.format("/redeemable-skus/%s", skuId), requestMap);
     }
 
     public JSONObject getAllRules() throws OstError {
