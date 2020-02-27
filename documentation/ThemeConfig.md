@@ -122,7 +122,8 @@ The following UI components properties supported by navigation bar:
 | bar tint color         | navigation_bar.tint_color       |
 | bar title color        | navigation_bar_header.tint_color  |
 | close icon tint color  | icons.close.tint_color          |
-| close icon tint color  | icons.back.tint_color           |
+| back icon tint color   | icons.back.tint_color           |
+| back icon source       | icons.back.source               |
 
 ### Pin Input(pin_input)
 
@@ -173,6 +174,7 @@ The following UI components properties supported by status:
 | color                | hex value(String)  |
 | system_font_weight   | string             |
 | border_color         | hex value(String)  |
+| alignment            | string             |
 
 ## UI Components
 

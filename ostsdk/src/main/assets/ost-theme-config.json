@@ -80,7 +80,8 @@
       "tint_color": "#438bad"
     },
     "back":{
-      "tint_color": "#438bad"
+      "tint_color": "#438bad",
+      "source": ""
     }
   },
 
