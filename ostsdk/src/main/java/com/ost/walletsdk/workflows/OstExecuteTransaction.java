@@ -110,6 +110,7 @@ public class OstExecuteTransaction extends OstBaseWorkFlow implements OstTransac
             transactionId = postTransactionApi(map);
         } catch (OstApiError ostApiError) {
             handleSessionSync(signedTransactionStruct.getSignerAddress());
+            throw ostApiError;
         }
 
         Log.i(TAG, "Increment nonce");
