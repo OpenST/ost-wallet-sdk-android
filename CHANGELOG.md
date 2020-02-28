@@ -1,5 +1,9 @@
 # OST Wallet SDK Changelog
 
+## Version 2.4.0
+### Feature
+* `getRedeemableSkus` and `getRedeemableSkuDetails` apis added in `OstJsonApi`.
+
 ## Version 2.3.8
 ### Changes:
 * Reduced recovery key generation time substantially by leveraging on NDK.
