@@ -283,7 +283,7 @@ OstJsonApiCallbackImpl ostJsonApiCallback = new OstJsonApiCallbackImpl();
      * @param callback callback where to receive data/error.
 */
 
-OstJsonApi.getPendingRecovery(userId, new ostJsonApiCallbackImpl);
+OstJsonApi.getPendingRecovery(userId, ostJsonApiCallback);
 
 /* After receiving error for this api request, check for following:
    if ("UNPROCESSABLE_ENTITY".equalIsIgnoreCase(err.internalCode)) {
@@ -349,9 +349,8 @@ API to get redeemable sku details.
 */
 String userId = "71c59448-ff77-484c-99d8-abea8a419836";
 String skuDetailId = "2";
-OstJsonApiCallbackImpl ostJsonApiCallback = new OstJsonApiCallbackImpl();
 JSONObject requestPayload = new JSONObject();
-let ostJsonApiCallback = OstJsonApiResponseDelegate()
+OstJsonApiCallbackImpl ostJsonApiCallback = new OstJsonApiCallbackImpl();
 
 /**
      * Api to get Details of single redeemable sku
@@ -679,7 +678,7 @@ OstJsonApiCallbackImpl ostJsonApiCallback = new OstJsonApiCallbackImpl();
      *                       }
      * @param callback       where to receive data/error.
 */
-OstJsonApi.getRedeemableSkus(userId, nextPagePayload, callback);
+OstJsonApi.getRedeemableSkus(userId, nextPagePayload, ostJsonApiCallback);
 
 /* After receiving data for this api request, check for following:
     JSONObject dataJSONObject = parseJSONData(responseData);
