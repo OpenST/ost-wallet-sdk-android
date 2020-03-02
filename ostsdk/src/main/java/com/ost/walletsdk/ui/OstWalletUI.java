@@ -301,6 +301,11 @@ public class OstWalletUI {
         return workFlowListener.getId();
     }
 
+    public static String scanQRCodeToAuthorizeDevice(@NonNull Activity currentActivity, String userId,
+                                                     OstUserPassphraseCallback userPassphraseCallback) {
+        return scanQRCodeToAuthorizeDevice(currentActivity, null, userId, userPassphraseCallback);
+    }
+
     /**
      * Authorize device by scanning QR code.
      * @param currentActivity        Context for current Activity for the application
@@ -308,7 +313,7 @@ public class OstWalletUI {
      * @param userPassphraseCallback - A workflow callback handler.
      * @return workflow Id
      */
-    public static String scanQRCodeToAuthorizeDevice(@NonNull Activity currentActivity, String userId,
+    public static String scanQRCodeToAuthorizeDevice(@NonNull Activity currentActivity, String qrPayload, String userId,
                                                      OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
@@ -316,18 +321,26 @@ public class OstWalletUI {
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.AUTHORIZE_DEVICE_VIA_QR);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
+        intent.putExtra(OstWorkFlowActivity.QR_PAYLOAD, qrPayload);
         currentActivity.startActivity(intent);
         return workFlowListener.getId();
+    }
+
+    public static String scanQRCodeToAuthorizeSession(@NonNull Activity currentActivity, String userId,
+                                                      OstUserPassphraseCallback userPassphraseCallback) {
+
+        return scanQRCodeToAuthorizeSession(currentActivity, null, userId, userPassphraseCallback);
     }
 
     /**
      * Authorize session by scanning QR code.
      * @param currentActivity        Context for current Activity for the application
+     * @param qrPayload              - QR payload
      * @param userId                 - user Id
      * @param userPassphraseCallback - A workflow callback handler.
      * @return workflow Id
      */
-    public static String scanQRCodeToAuthorizeSession(@NonNull Activity currentActivity, String userId,
+    public static String scanQRCodeToAuthorizeSession(@NonNull Activity currentActivity, String qrPayload, String userId,
                                                      OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
@@ -335,18 +348,25 @@ public class OstWalletUI {
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.AUTHORIZE_DEVICE_VIA_QR);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
+        intent.putExtra(OstWorkFlowActivity.QR_PAYLOAD, qrPayload);
         currentActivity.startActivity(intent);
         return workFlowListener.getId();
+    }
+
+    public static String scanQRCodeToExecuteTransaction(@NonNull Activity currentActivity, String userId,
+                                                        OstUserPassphraseCallback userPassphraseCallback) {
+        return scanQRCodeToExecuteTransaction(currentActivity, null, userId, userPassphraseCallback);
     }
 
     /**
      * Execute Transaction by scanning the QR
      * @param currentActivity        Context for current Activity for the application
+     * @param qrPayload              - QR payload
      * @param userId                 - user Id
      * @param userPassphraseCallback - A workflow callback handler.
      * @return workflow Id
      */
-    public static String scanQRCodeToExecuteTransaction(@NonNull Activity currentActivity, String userId,
+    public static String scanQRCodeToExecuteTransaction(@NonNull Activity currentActivity, String qrPayload, String userId,
                                                         OstUserPassphraseCallback userPassphraseCallback) {
         WorkFlowListener workFlowListener = SdkInteract.getInstance().newWorkFlowListener();
         workFlowListener.setUserPassPhraseCallback(userPassphraseCallback);
@@ -354,6 +374,7 @@ public class OstWalletUI {
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_ID, workFlowListener.getId());
         intent.putExtra(OstWorkFlowActivity.WORKFLOW_NAME, OstWorkFlowActivity.AUTHORIZE_TXN_VIA_QR);
         intent.putExtra(OstWorkFlowActivity.USER_ID, userId);
+        intent.putExtra(OstWorkFlowActivity.QR_PAYLOAD, qrPayload);
         currentActivity.startActivity(intent);
         return workFlowListener.getId();
     }

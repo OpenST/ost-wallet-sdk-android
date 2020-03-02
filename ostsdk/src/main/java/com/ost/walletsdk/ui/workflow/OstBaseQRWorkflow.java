@@ -1,13 +1,13 @@
 package com.ost.walletsdk.ui.workflow;
 
 import android.content.Intent;
+import android.net.Uri;
 
 import com.ost.walletsdk.R;
 import com.ost.walletsdk.models.entities.OstDevice;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.ui.OstVerifyDeviceFragment;
 import com.ost.walletsdk.ui.qrscanner.QRScannerFragment;
-import com.ost.walletsdk.ui.uicomponents.uiutils.content.ContentConfig;
 import com.ost.walletsdk.ui.uicomponents.uiutils.content.StringConfig;
 import com.ost.walletsdk.ui.util.FragmentUtils;
 import com.ost.walletsdk.workflows.OstContextEntity;
@@ -43,6 +43,14 @@ abstract class OstBaseQRWorkflow  extends OstWorkFlowActivity implements
     @Override
     void initiateWorkFlow() {
         super.initiateWorkFlow();
+
+        final String qrPayload = getIntent().getStringExtra(QR_PAYLOAD);
+        if (null != qrPayload) {
+            final Intent intent = new Intent();
+            intent.setData(Uri.parse(qrPayload));
+            onResultString(intent);
+            return;
+        }
 
         final String scanQRTitle = StringConfig.instance(
                 contentConfig.optJSONObject("scan_qr").optJSONObject("title_label")
