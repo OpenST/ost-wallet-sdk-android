@@ -106,10 +106,16 @@ abstract class OstBaseQRWorkflow  extends OstWorkFlowActivity implements
     @Override
     public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
         if (isCrossButtonClicked(ostError) ||
-                !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode()) ||
-                null != mQrPayload) {
+                !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
             return super.flowInterrupt(workflowId, ostWorkflowContext, ostError);
         }
+
+        //If QR payload is passed and workflow interrupts not hold the flow
+        if (null != mQrPayload) {
+            super.dismissWorkflow();
+            return super.flowInterrupt(workflowId, ostWorkflowContext, ostError);
+        }
+
         mQrScannerFragment.restartScanning();
         showProgress(false);
         return true;
