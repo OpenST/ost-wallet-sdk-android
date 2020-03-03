@@ -24,6 +24,7 @@ abstract class OstBaseQRWorkflow  extends OstWorkFlowActivity implements
 
     private static final String LOG_TAG = "OstADVQRWorkflow";
     final JSONObject contentConfig = getContentConfig();
+    private String mQrPayload;
 
     protected abstract JSONObject getContentConfig();
 
@@ -44,10 +45,10 @@ abstract class OstBaseQRWorkflow  extends OstWorkFlowActivity implements
     void initiateWorkFlow() {
         super.initiateWorkFlow();
 
-        final String qrPayload = getIntent().getStringExtra(QR_PAYLOAD);
-        if (null != qrPayload) {
+        mQrPayload = getIntent().getStringExtra(QR_PAYLOAD);
+        if (null != mQrPayload) {
             final Intent intent = new Intent();
-            intent.setData(Uri.parse(qrPayload));
+            intent.setData(Uri.parse(mQrPayload));
             onResultString(intent);
             return;
         }
@@ -104,7 +105,9 @@ abstract class OstBaseQRWorkflow  extends OstWorkFlowActivity implements
 
     @Override
     public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        if (isCrossButtonClicked(ostError) || !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
+        if (isCrossButtonClicked(ostError) ||
+                !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode()) ||
+                null != mQrPayload) {
             return super.flowInterrupt(workflowId, ostWorkflowContext, ostError);
         }
         mQrScannerFragment.restartScanning();
