@@ -309,6 +309,7 @@ public class OstWalletUI {
     /**
      * Authorize device by scanning QR code.
      * @param currentActivity        Context for current Activity for the application
+     * @param qrPayload              - payload same as QR payload
      * @param userId                 - user Id
      * @param userPassphraseCallback - A workflow callback handler.
      * @return workflow Id

@@ -3,6 +3,9 @@
 ## Version 2.3.8
 ### Changes:
 * Reduced recovery key generation time substantially by leveraging on NDK.
+* User can authorize external session by scanning QR-Code.
+* User can pass QR-Code payload to perform QR-Code actions without opening Scanner in OstWalletUI.
+This functionality is available for `scanQRCodeToAuthorizeSession`, `scanQRCodeToExecuteTransaction`, `scanQRCodeToAuthorizeDevice`.
 
 ### Bug Fix:
 * In OstWalletSDK UI workflows progress bar crashes in background.
