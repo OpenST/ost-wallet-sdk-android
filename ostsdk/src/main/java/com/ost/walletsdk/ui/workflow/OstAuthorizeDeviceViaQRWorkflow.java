@@ -22,47 +22,13 @@ import com.ost.walletsdk.workflows.interfaces.OstVerifyDataInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity implements
-        QRScannerFragment.OnFragmentInteractionListener,
-        OstVerifyDeviceFragment.OnFragmentInteractionListener {
+public class OstAuthorizeDeviceViaQRWorkflow extends OstBaseQRWorkflow {
 
     private static final String LOG_TAG = "OstADVQRWorkflow";
-    final JSONObject contentConfig = ContentConfig.getInstance().getStringConfig("scan_qr_to_authorize_device");
-    private QRScannerFragment mQrScannerFragment;
 
     @Override
-    void ensureValidState() {
-        super.ensureValidState();
-
-        if (!OstDevice.CONST_STATUS.AUTHORIZED.equalsIgnoreCase(
-                OstUser.getById(mUserId).getCurrentDevice().getStatus()
-        )) {
-            throw new OstError("owfa_evs_advqr_1", OstErrors.ErrorCode.DEVICE_UNAUTHORIZED);
-        }
-    }
-
-    @Override
-    void initiateWorkFlow() {
-        super.initiateWorkFlow();
-
-        final String scanQRTitle = StringConfig.instance(
-                contentConfig.optJSONObject("scan_qr").optJSONObject("title_label")
-        ).getString();
-
-        mQrScannerFragment = QRScannerFragment.newInstance(scanQRTitle);
-        FragmentUtils.clearBackStackAndAddFragment(R.id.layout_container,
-                mQrScannerFragment,
-                this);
-    }
-
-    @Override
-    JSONObject getContentString(OstWorkflowContext ostWorkflowContext) {
-        return contentConfig.optJSONObject("get_pin");
-    }
-
-    @Override
-    OstWorkflowContext getWorkflowContext() {
-        return new OstWorkflowContext(OstWorkflowContext.WORKFLOW_TYPE.AUTHORIZE_DEVICE_WITH_QR_CODE);
+    protected JSONObject getContentConfig() {
+        return ContentConfig.getInstance().getStringConfig("scan_qr_to_authorize_device");
     }
 
     @Override
@@ -110,40 +76,6 @@ public class OstAuthorizeDeviceViaQRWorkflow extends OstWorkFlowActivity impleme
         bottomSheet.setDataToVerify(ostDevice);
         bottomSheet.setVerifyDataCallback(ostVerifyDataInterface);
         bottomSheet.setStringConfig(contentConfig.optJSONObject("verify_device"));
-        return true;
-    }
-
-    @Override
-    public void popTopFragment() {
-        super.popTopFragment();
-
-        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
-        getWorkflowLoader().onPostAuthentication(contentConfig);
-    }
-
-    @Override
-    public void onDataVerified() {
-        showProgress(true, StringConfig.instance(contentConfig.optJSONObject("loader")).getString());
-        getWorkflowLoader().onPostAuthentication(contentConfig);
-    }
-
-    @Override
-    public void onDataRejected() {
-
-    }
-
-    @Override
-    boolean showBackButton() {
-        return true;
-    }
-
-    @Override
-    public boolean flowInterrupt(String workflowId, OstWorkflowContext ostWorkflowContext, OstError ostError) {
-        if (isCrossButtonClicked(ostError) || !OstErrors.ErrorCode.WORKFLOW_CANCELLED.equals(ostError.getErrorCode())) {
-            return super.flowInterrupt(workflowId, ostWorkflowContext, ostError);
-        }
-        mQrScannerFragment.restartScanning();
-        showProgress(false);
         return true;
     }
 }

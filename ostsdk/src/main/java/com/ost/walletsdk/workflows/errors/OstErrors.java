@@ -166,6 +166,8 @@ public class OstErrors {
 
             case INVALID_QR_CODE: return "The QR code does not contain valid data definition. To know the data definition for QR code based on type of operations please visit https://dev.ost.com/platform";
 
+            case INVALID_SIGNATURE: return "The QR code does not contain valid signature.";
+
             case DEVICE_ALREADY_REVOKED:
                 return "Device is already in revoked state.";
 
@@ -278,6 +280,7 @@ public class OstErrors {
         USER_ALREADY_ACTIVATED,
         INVALID_QR_TRANSACTION_DATA,
         INVALID_QR_CODE,
+        INVALID_SIGNATURE,
         NO_PENDING_RECOVERY,
         DEVICE_NOT_REGISTERED,
         INVALID_SESSION_SPENDING_LIMIT,

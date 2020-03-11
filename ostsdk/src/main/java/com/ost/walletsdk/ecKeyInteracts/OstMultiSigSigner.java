@@ -63,11 +63,12 @@ public class OstMultiSigSigner {
         InternalKeyManager ikm;
         try {
             ikm = new InternalKeyManager(mUserId);
-
-            if (!ikm.canSignWithSession(sessionAddress)) {
-                OstError ostError = new OstError("km_gss_as_6", ErrorCode.INVALID_SESSION_ADDRESS);
-                throw ostError;
-            }
+            // Todo:: Removed to allow add session by QR from WebSdk
+            // Todo:: FIX ME:: Add Session QR code data validation need to be moved here.
+//            if (!ikm.canSignWithSession(sessionAddress)) {
+//                OstError ostError = new OstError("km_gss_as_6", ErrorCode.INVALID_SESSION_ADDRESS);
+//                throw ostError;
+//            }
 
             //Sign the data.
             signData(struct, ikm);

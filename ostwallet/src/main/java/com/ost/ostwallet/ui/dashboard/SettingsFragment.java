@@ -31,6 +31,7 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.crashlytics.android.Crashlytics;
 import com.ost.ostwallet.AppProvider;
 import com.ost.ostwallet.R;
+import com.ost.ostwallet.entity.LogInUser;
 import com.ost.ostwallet.sdkInteract.SdkInteract;
 import com.ost.ostwallet.sdkInteract.WorkFlowListener;
 import com.ost.ostwallet.ui.BaseFragment;
@@ -52,6 +53,7 @@ import com.ost.walletsdk.OstSdk;
 import com.ost.walletsdk.models.entities.OstUser;
 import com.ost.walletsdk.network.OstJsonApi;
 import com.ost.walletsdk.network.OstJsonApiCallback;
+import com.ost.walletsdk.ui.OstWalletUI;
 import com.ost.walletsdk.workflows.OstContextEntity;
 import com.ost.walletsdk.workflows.OstWorkflowContext;
 import com.ost.walletsdk.workflows.errors.OstError;
@@ -245,6 +247,20 @@ public class SettingsFragment extends BaseFragment implements
             }
         });
         mScrollViewSettings.addView(authorizeDeviceViaQR);
+
+        View authorizeSessionViaQR = getFeatureView("Authorize Browser Session via QR", isUserActive);
+        authorizeSessionViaQR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (new CommonUtils().handleActionEligibilityCheck(getActivity())) return;
+                LogInUser loggedInUser = AppProvider.get().getCurrentUser();
+                OstWalletUI.scanQRCodeToAuthorizeSession(getActivity(), loggedInUser.getOstUserId(), AppProvider.get());
+
+            }
+        });
+        mScrollViewSettings.addView(authorizeSessionViaQR);
+
 
         View authorizeDeviceViaMnemonics = getFeatureView("Authorize This Device via Mnemonics", isUserActive);
         authorizeDeviceViaMnemonics.setOnClickListener(new View.OnClickListener() {
