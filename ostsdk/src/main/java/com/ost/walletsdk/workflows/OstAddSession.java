@@ -44,7 +44,7 @@ import java.util.Map;
  * To do any rule execution transaction sessions needs to be added.
  * Session added are specific to device and can't be used from another device.
  */
-public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterface {
+public class OstAddSession extends OstBaseWorkFlow {
 
     private static final String TAG = "OstAddSession";
     private final String mSpendingLimit;
@@ -67,9 +67,13 @@ public class OstAddSession extends OstBaseWorkFlow implements OstPinAcceptInterf
         }
     }
 
+    String getSessionAddressToAuthorize() {
+        return new OstKeyManager(mUserId).createSessionKey();
+    }
+
     @Override
     AsyncStatus performOnAuthenticated() {
-        String sessionAddress = new OstKeyManager(mUserId).createSessionKey();
+        String sessionAddress = getSessionAddressToAuthorize();
 
         OstApiClient ostApiClient = new OstApiClient(mUserId);
 

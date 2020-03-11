@@ -39,8 +39,8 @@ public class OstError extends Error {
     private static String Tag = "OstError";
 
     private final OstErrors.ErrorCode mErrorCode;
-    private final String mInternalErrorCode;
-    private final JSONObject mErrorInfo;
+    private String mInternalErrorCode;
+    private JSONObject mErrorInfo;
     private boolean isApiError = false;
 
 
@@ -67,6 +67,18 @@ public class OstError extends Error {
 
     public String getInternalErrorCode() {
         return mInternalErrorCode;
+    }
+
+    public void setInternalErrorCode(@NonNull String internalErrorCode) {
+        mInternalErrorCode = internalErrorCode;
+    }
+
+    public JSONObject getErrorInfo() {
+        return mErrorInfo;
+    }
+
+    public void setErrorInfo(JSONObject mErrorInfo) {
+        this.mErrorInfo = mErrorInfo;
     }
 
     public boolean isApiError() {

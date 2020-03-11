@@ -1,5 +1,11 @@
 # OST Wallet SDK Changelog
 
+## Version 2.4.1
+### Feature
+* User can authorize external session by scanning QR-Code.
+* User can pass QR-Code payload to perform QR-Code actions without opening Scanner in OstWalletUI.
+This functionality is available for `scanQRCodeToAuthorizeSession`, `scanQRCodeToExecuteTransaction`, `scanQRCodeToAuthorizeDevice`.
+
 ## Version 2.4.0
 ### Feature
 * `getRedeemableSkus` and `getRedeemableSkuDetails` apis added in `OstJsonApi`.

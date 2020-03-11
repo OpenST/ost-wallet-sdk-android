@@ -14,11 +14,14 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.util.Log;
 
+import com.ost.walletsdk.annotations.NonNull;
 import com.ost.walletsdk.models.Impls.OstModelFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.math.BigDecimal;
 
 /**
  * To hold Token info
@@ -184,6 +187,20 @@ public class OstToken extends OstBaseEntity {
             Log.e(TAG, "Exception while getting chainId", e);
             return null;
         }
+    }
+
+    public String btToHigherUnit(@NonNull String btInLowerUnit) {
+        String btDecimalsString = getBtDecimals();
+        int btDecimals = Integer.parseInt( btDecimalsString );
+        BigDecimal divisionFactor = new BigDecimal(10).pow( btDecimals );
+        return new BigDecimal(btInLowerUnit).divide( divisionFactor ).toString();
+    }
+
+    public String btToLowerUnit(@NonNull String btInHigherUnit) {
+        String btDecimalsString = getBtDecimals();
+        int btDecimals = Integer.parseInt( btDecimalsString );
+        BigDecimal multiplicationFactor = new BigDecimal(10).pow( btDecimals );
+        return new BigDecimal(btInHigherUnit).multiply( multiplicationFactor ).toBigInteger().toString();
     }
 
     @Override

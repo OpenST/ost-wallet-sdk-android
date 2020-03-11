@@ -31,6 +31,9 @@ import com.ost.ostwallet.network.NetworkClient;
 import com.ost.ostwallet.ui.BaseActivity;
 import com.ost.ostwallet.ui.auth.OnBoardingActivity;
 import com.ost.ostwallet.util.DBLog;
+import com.ost.walletsdk.ui.OstPassphraseAcceptor;
+import com.ost.walletsdk.ui.OstUserPassphraseCallback;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
 
 import org.json.JSONObject;
 
@@ -42,7 +45,7 @@ import static com.ost.ostwallet.entity.CurrentEconomy.TOKEN_SYMBOL;
 import static com.ost.ostwallet.entity.CurrentEconomy.URL_ID;
 import static com.ost.ostwallet.entity.CurrentEconomy.VIEW_API_ENDPOINT;
 
-public class AppProvider {
+public class AppProvider  implements OstUserPassphraseCallback {
     private static final String LOG_TAG = "AppProvider";
 
     private static AppProvider INSTANCE = null;
@@ -268,5 +271,35 @@ public class AppProvider {
         public interface Callback {
             void returnedPreference(Integer preference);
         }
+    }
+
+    public void getPassphrase(String userId, OstWorkflowContext ostWorkflowContext, OstPassphraseAcceptor ostPassphraseAcceptor) {
+        LogInUser currentUser = getCurrentUser();
+        String currentUserOstUserId = currentUser.getOstUserId();
+        if ( null == currentUserOstUserId || !currentUserOstUserId.equalsIgnoreCase( userId )) {
+            ostPassphraseAcceptor.cancelFlow();
+        }
+
+        AppProvider.get().getMappyClient().getLoggedInUserPinSalt(new MappyNetworkClient.ResponseCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {
+                if (new CommonUtils().isValidResponse(jsonObject)){
+                    try {
+                        JSONObject userSaltObject = (JSONObject) new CommonUtils().parseResponseForResultType(jsonObject);
+                        String userPinSalt = userSaltObject.getString("recovery_pin_salt");
+                        ostPassphraseAcceptor.setPassphrase( userPinSalt );
+
+                    } catch (Exception e){
+                        Log.d("getPinSalt", "Exception in fetching Pin Salt.");
+                        ostPassphraseAcceptor.cancelFlow();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                ostPassphraseAcceptor.cancelFlow();
+            }
+        });
     }
 }

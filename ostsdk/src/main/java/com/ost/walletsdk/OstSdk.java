@@ -336,8 +336,8 @@ public class OstSdk {
                                        String data,
                                        OstWorkFlowCallback workFlowCallback) throws JSONException {
         Log.i(TAG, String.format("Scanned text: %s", data));
-        JSONObject payload = new JSONObject(data);
-        final OstPerform ostPerform = new OstPerform(userId, payload, workFlowCallback);
+//        JSONObject payload = new JSONObject(data);
+        final OstPerform ostPerform = new OstPerform(userId, data, workFlowCallback);
         ostPerform.perform();
     }
 

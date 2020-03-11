@@ -32,23 +32,94 @@ import static com.ost.walletsdk.workflows.WorkflowStateManager.PARAMS_VALIDATED;
 /**
  * It perform workflow operations by reading QR data.
  * QR data should be passes as JSON object in the constructor
- * {@link #OstPerform(String, JSONObject, OstWorkFlowCallback)}
+ * {@link #OstPerform(String, String, OstWorkFlowCallback)}
  * It can perform Execute Rule Transactions, Add Device and Revoke Device.
  */
 public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterface {
 
     private static final String TAG = "OstPerform";
-    private final JSONObject mPayload;
+    private JSONObject mPayload;
+    private final String mStringPayload;
+    private String qrVersion;
     private DataDefinitionInstance dataDefinitionInstance;
 
-
+    @Deprecated
     public OstPerform(String userId, JSONObject payload, OstWorkFlowCallback callback) {
         super(userId, callback);
         mPayload = payload;
+        mStringPayload = "";
+        this.populateVersion();
+    }
+
+    public OstPerform(String userId, String payload, OstWorkFlowCallback callback) {
+        super(userId, callback);
+        mStringPayload = payload;
+        this.populatePayload();
+        this.populateVersion();
+    }
+
+    private void populatePayload() {
+        if ( null == mStringPayload ) {
+            return;
+        }
+        try {
+            populateV1Payload();
+            return;
+        } catch (JSONException ex) {
+            // ignore. Lets try v2.
+        }
+
+        try {
+            populateV2Payload();
+            return; /* DO NOT REMOVE THIS RETURN. DEVS WILL GET INTO TROUBLE IF V3 COMES */
+        } catch (Throwable th) {
+            // ignore. Validate Payload shall take care of it.
+        }
+    }
+
+    private void populateV1Payload() throws JSONException {
+        mPayload = new JSONObject( mStringPayload );
+    }
+
+    private void populateV2Payload() {
+        // V2-Format: Data-Definition|Data-Definition-Version|...
+
+        // Split by delimiter
+        String[] parts = mStringPayload.split("\\" + OstConstants.QR_V2_DELIMITER);
+
+        // Must have at-least 3 parts
+        if ( parts.length < 3) {
+            return;
+        }
+        try {
+            mPayload = new JSONObject();
+
+            //Data-Definition
+            mPayload.putOpt(OstConstants.QR_DATA_DEFINITION, parts[0]);
+
+            //Data-Definition-Version
+            mPayload.putOpt(OstConstants.QR_DATA_DEFINITION_VERSION, parts[1]);
+
+            //data
+            JSONObject dataObject = new JSONObject();
+            mPayload.putOpt(OstConstants.QR_DATA, dataObject);
+
+            dataObject.putOpt(OstConstants.QR_V2_INPUT, mStringPayload);
+        } catch (JSONException e) {
+            mPayload = null;
+        }
+    }
+
+    private void populateVersion() {
+        if ( null == mPayload) {
+            return;
+        }
+        qrVersion = mPayload.optString(OstConstants.QR_DATA_DEFINITION_VERSION);
     }
 
 
-    @Override
+
+                      @Override
     protected void setStateManager() {
         super.setStateManager();
         ArrayList<String> orderedStates = stateManager.orderedStates;
@@ -92,13 +163,22 @@ public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterfac
     void ensureValidParams() {
         super.ensureValidParams();
 
+        // Set the qrVersion.
         validatePayload();
-        dataDefinitionInstance = getDataDefinitionInstance();
+
+        if ( qrVersion.startsWith("2.") ) {
+            dataDefinitionInstance = getV2DataDefinitionInstance();
+        } else {
+            dataDefinitionInstance = getV1DataDefinitionInstance();
+        }
+
         dataDefinitionInstance.validateDataPayload();
         dataDefinitionInstance.validateDataParams();
     }
 
-    private DataDefinitionInstance getDataDefinitionInstance() {
+
+
+    private DataDefinitionInstance getV1DataDefinitionInstance() {
         String dataDefinition = getDataDefinition();
         JSONObject dataObject = getDataObject();
 
@@ -119,8 +199,26 @@ public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterfac
                     dataObject,
                     mUserId,
                     getCallback());
+        } else if (OstConstants.DATA_DEFINITION_AUTHORIZE_SESSION.equalsIgnoreCase(dataDefinition)) {
+            return new OstAddSessionDataDefinitionInstance(
+                    dataObject,
+                    qrVersion,
+                    mUserId,
+                    getCallback());
         } else {
-            throw new OstError("wf_pe_pr_1", OstErrors.ErrorCode.INVALID_QR_CODE);
+            throw new OstError("wf_pe_pr_gv1_ddi_1", OstErrors.ErrorCode.INVALID_QR_CODE);
+        }
+    }
+
+    private DataDefinitionInstance getV2DataDefinitionInstance() {
+        String dataDefinition = getDataDefinition();
+        if (OstConstants.DATA_DEFINITION_AUTHORIZE_SESSION.equalsIgnoreCase(dataDefinition)) {
+            return OstAddSessionDataDefinitionInstance.fromV2QR(
+                    mStringPayload,
+                    mUserId,
+                    getCallback());
+        } else {
+            throw new OstError("wf_pe_pr_gv2_ddi_1", OstErrors.ErrorCode.INVALID_QR_CODE);
         }
     }
 
@@ -140,13 +238,17 @@ public class OstPerform extends OstBaseWorkFlow implements OstVerifyDataInterfac
 
     private void validatePayload() {
         if (null == mPayload) {
-            throw new OstError("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_QR_CODE);
+            throw new OstError("wf_pe_pr_vp_1", OstErrors.ErrorCode.INVALID_QR_CODE);
         }
+
+        if ( null == qrVersion ) {
+            throw new OstError("wf_pe_pr_vp_2", OstErrors.ErrorCode.INVALID_QR_CODE);
+        }
+
         boolean hasDataDefinition = mPayload.has(OstConstants.QR_DATA_DEFINITION);
-        boolean hasDataDefinitionVersion = mPayload.has(OstConstants.QR_DATA_DEFINITION_VERSION);
         boolean data = mPayload.has(OstConstants.QR_DATA);
-        if (!(hasDataDefinition && hasDataDefinitionVersion && data)) {
-            throw new OstError("wf_pe_pr_3", OstErrors.ErrorCode.INVALID_QR_CODE);
+        if (!(hasDataDefinition && data)) {
+            throw new OstError("wf_pe_pr_vp_2", OstErrors.ErrorCode.INVALID_QR_CODE);
         }
     }
 
