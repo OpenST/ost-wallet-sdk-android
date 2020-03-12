@@ -1,0 +1,501 @@
+= OST Wallet UI Android
+
+== Introduction
+
+For quick and easy integration with SDK, developers can use built-in User Interface Components which are themeable and support content customization.
+
+== Setup
+
+To setup OstWalletUI, please refer link:../README.md#setup[setup].
+
+== OstWalletUI SDK APIs
+
+=== Important Notes
+
+. App must link:../README.md#initialize-the-sdk[initialize] the sdk _*before*_ initiating any UI workflows.
+. App must perform link:../README.md#set-up-the-device[setupDevice] workflow _*before*_ initiating any UI workflows.
+
+To use OstWalletUI
+
+[source,java]
+----
+import com.ost.walletsdk.ui.OstWalletUI;
+----
+
+=== Set Theme Config
+
+Theme for OstWalletUI can be initialized by calling `setThemeConfig` API.
+To define custom theme config, please refer xref:./ThemeConfig.adoc[ThemeConfig] documentation.
+
+*Parameters* + &nbsp;__config: Config to use for UI__ +
+
+* Create config file by title `theme-config.json` in assets directory
+
+[source,java]
+----
+try {
+     InputStream configInputStream = context.getAssets().open("theme-config.json");
+     int size = configInputStream.available();
+     byte[] buffer = new byte[size];
+
+     configInputStream.read(buffer);
+     configInputStream.close();
+
+     String json = new String(buffer, "UTF-8");
+     JSONObject themeConfig = new JSONObject(json);
+
+     } catch (Exception e) {
+        //Error handling
+     }
+----
+
+[source,java]
+----
+OstWalletUI.setThemeConfig(themeConfig)
+----
+
+=== Get Theme Config
+
+Get currently applied theme config from sdk.
+
+[source,java]
+----
+OstWalletUI.getThemeConfig()
+----
+
+=== Set Content Config
+
+Content for OstWalletUI can be initialized by calling `setContentConfig` API.
+To define custom content config, please refer xref:./ContentConfig.adoc[ContentConfig] documentation.
+
+*Parameters* + &nbsp;__config: Config to use for UI__ +
+
+* Create config file by title `content-config.json` in assets directory For detailed explaination of how to build Content Config.
+xref:ContentConfig.adoc[Ref]
+
+[source,java]
+----
+try {
+     InputStream configInputStream = context.getAssets().open("content-config.json");
+     int size = configInputStream.available();
+     byte[] buffer = new byte[size];
+
+     configInputStream.read(buffer);
+     configInputStream.close();
+
+     String json = new String(buffer, "UTF-8");
+     JSONObject themeConfig = new JSONObject(json);
+
+     } catch (Exception e) {
+        //Error handling
+     }
+----
+
+[source,java]
+----
+OstWalletUI.setContentConfig(contentConfig)
+----
+
+=== Set Loader Manager
+
+Application loader for OstWalletUI can be initialized by calling `setLoaderManager` API.
++ To setup application loader, please refer xref:./OstCustomLoader.adoc[CustomLoader] documentation.
+
+*Parameters* + &nbsp;__loaderManager: class which inherits `OstLoaderFragment` protocol__ +
+
+[source,java]
+----
+OstWalletUI.setLoaderManager(loaderManager)
+----
+
+=== Activate User
+
+User activation refers to the deployment of smart-contracts that form the user's Brand Token wallet.
+An activated user can engage with a Brand Token economy.
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__expireAfterInSec: Session key valid duration__ + &nbsp;__spendingLimit: Spending limit in a transaction in atto BT__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.activateUser(@NonNull Activity currentActivity,
+                         String userId,
+                         long expiredAfterSecs,
+                         String spendingLimit,
+                         OstUserPassphraseCallback userPassphraseCallback
+                         ) -> String
+----
+
+=== Authorize session
+
+A session is a period of time during which a sessionKey is authorized to sign transactions under a pre-set limit on behalf of the user.
+The device manager, which controls the tokens, authorizes sessions.
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__expireAfterInSec: Session key validat duration__ + &nbsp;__spendingLimit: Spending limit in a transaction in atto BT__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.createSession(@NonNull Activity currentActivity,
+                          String userId,
+                          long expireAfterInSec,
+                          String spendingLimit,
+                          OstUserPassphraseCallback userPassphraseCallback
+                          ) -> String
+----
+
+=== Get Mnemonic Phrase
+
+The mnemonic phrase represents a human-readable way to authorize a new device.
+This phrase is 12 words long.
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.getDeviceMnemonics(@NonNull Activity currentActivity,
+                              String userId,
+                              OstUserPassphraseCallback userPassphraseCallback
+                              ) -> String
+----
+
+=== Reset a User's PIN
+
+The user's PIN is set when activating the user.
+This method supports re-setting a PIN and re-creating the recoveryOwner as part of that.
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.resetPin(@NonNull Activity currentActivity,
+                     String userId,
+                     OstUserPassphraseCallback userPassphraseCallback
+                     ) -> String
+----
+
+=== Initialize Recovery
+
+A user can control their Brand Tokens using their authorized devices.
+If they lose their authorized device, they can recover access to their BrandTokens by authorizing a new device via the recovery process.
+To use built-in device list UI, pass `recoverDeviceAddress` as `null`.
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__recoverDeviceAddress: Device address which wants to recover.
+When null is passed, the user is asked to choose a device.__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+If application set `recoverDeviceAddress` then OstWalletUI ask for `pin` to initiate device recovery.
+Else it displays authorized device list for given `userId` to select device from.
+
+[source,java]
+----
+OstWalletUI.initiateDeviceRecovery(@NonNull Activity currentActivity,
+                                   String userId,
+                                   @Nullable String recoverDeviceAddress,
+                                   OstUserPassphraseCallback userPassphraseCallback
+                                   ) -> String
+----
+
+=== Abort Device Recovery
+
+To abort initiated device recovery.
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.abortDeviceRecovery(@NonNull Activity currentActivity,
+                                String userId,
+                                OstUserPassphraseCallback userPassphraseCallback
+                                ) -> String
+----
+
+=== Revoke Device
+
+To revoke device access.
+To use built-in device list UI, pass `revokeDeviceAddress` as `null`.
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__revokeDeviceAddress: Device address to revoke.
+When null is passed, the user is asked to choose a device.__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+If application set `revokeDeviceAddress` then OstWalletUI ask for `pin` to revoke device.
+Else it displays authorized device list for given `userId` to select device from.
+
+[source,java]
+----
+OstWalletUI.revokeDevice(@NonNull Activity currentActivity,
+                         String userId,
+                         @Nullable String revokeDeviceAddress,
+                         OstUserPassphraseCallback userPassphraseCallback
+                         ) -> String
+----
+
+=== Update Biometric Preference
+
+This method can be used to enable or disable the biometric.
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__enable: Preference to use biometric__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.updateBiometricPreference(@NonNull Activity currentActivity,
+                                      String userId,
+                                      boolean enable,
+                                      OstUserPassphraseCallback userPassphraseCallback
+                                      ) -> String
+----
+
+=== Authorize Current Device With Mnemonics
+
+This workflow should be used to add a new device using 12 words recovery phrase.
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.authorizeCurrentDeviceWithMnemonics(@NonNull Activity currentActivity,
+                                      String userId,
+                                      OstUserPassphraseCallback userPassphraseCallback
+                                      ) -> String
+----
+
+=== Get Add Device QR Code
+
+This workflow shows QR Code to scan from another authorized device
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__userId: OST Platform user id provided by application server__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.getAddDeviceQRCode(@NonNull Activity currentActivity,
+                                      String userId,
+                                      ) -> String
+----
+
+=== Scan QR Code To Authorize Device
+
+This workflow can be used to authorize device by scanning QR Code.
+
+____
+The device to be authorized must be a `REGISTERED` device and must be associated with the same user.
+To display the QR code on registered device, application can use `OstWalletUI.getAddDeviceQRCode` workflow.
+____
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__qrPayload: Payload same as QR payload, Passing this value will skip QR-code scanner.__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.scanQRCodeToAuthorizeDevice(@NonNull Activity currentActivity,
+                                      String qrPayload,
+                                      String userId,
+                                      OstUserPassphraseCallback userPassphraseCallback
+                                      ) -> String
+----
+
+=== Scan QR Code To Execute Transaction
+
+This workflow can be used to execute transaction by scanning transaction QR Code.
+
+QR Code Sample:
+
+[source,json]
+----
+{
+    "dd":"TX",
+    "ddv":"1.1.0",
+    "d":{
+            "rn":"direct transfer",
+            "ads":[
+                "0x7701af46018fc57c443b63e839eb24872755a2f8",
+                "0xed09dc167a72d939ecf3d3854ad0978fb13a8fe9"
+            ],
+            "ams":[
+                "1000000000000000000",
+                "1000000000000000000"
+            ],
+            "tid": 1140,
+            "o":{
+                    "cs":"USD",
+                    "s": "$"
+            }
+        },
+    "m":{
+            "tn":"comment",
+            "tt":"user_to_user",
+            "td":"Thanks for comment"
+        }
+}
+----
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__qrPayload: Payload same as QR payload, Passing this value will skip QR-code scanner.__ + &nbsp;__userId: OST Platform user id provided by application server__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.scanQRCodeToExecuteTransaction(@NonNull Activity currentActivity,
+                                      String qrPayload,
+                                      String userId,
+                                      ) -> String
+----
+
+=== Scan QR Code To Authorize Session
+
+This workflow can be used to authorize Session by scanning QR Code.
+
+QR-Code Sample:
+
+----
+as|2.0.0|2a421359d02132e8161cda9518aeaa62647b648e|5369b4d7e0e53e1159d6379b989a8429a7b2dd59|1|1583308559|4d40c46a7302974134a67ce77bdfae0e1f78ee518e87b6cda861ffc5847dfaca11a653651c6cdfadf0224574f6f07e1a78aabacdfed66d8c78e1fb2c9bc750161c
+----
+
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ + &nbsp;__qrPayload: Payload same as QR payload, Passing this value will skip QR-code scanner.__ + &nbsp;__userId: OST Platform user id provided by application server__ + &nbsp;__userPassphraseCallback: Callback implementation object to get passphrase prefix from application__ +
+
+&nbsp;__Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)__ +
+
+[source,java]
+----
+OstWalletUI.scanQRCodeToAuthorizeSession(@NonNull Activity currentActivity,
+                                      String qrPayload,
+                                      String userId,
+                                      OstUserPassphraseCallback userPassphraseCallback
+                                      ) -> String
+----
+
+=== Subscribe
+
+Subscribe to specified event of UI Workflow *Parameters* + &nbsp;__workflowId: Id of the workflow as returned by methods of OstWalletUI__ + &nbsp;__listner: Callback implementation object to listen events__ +
+
+[source,java]
+----
+OstWalletUI.subscribe(String workflowId,
+                      OstWalletUIListener listener)
+----
+
+=== Unsubscribe
+
+Unsubscribes the listner from the specified event of UI Workflow.
+*Parameters* + &nbsp;__workflowId: Id of the workflow as returned by methods of OstWalletUI__ + &nbsp;__listner: Callback implementation object to remove from listing events__ +
+
+[source,java]
+----
+OstWalletUI.unsubscribe(String workflowId,
+                      OstWalletUIListener listener)
+----
+
+=== View Component Sheet
+
+Component sheet is collection of all components present in OstWalletUI.
+Developers can verify how components are going to look with provied theme.
+*Parameters* + &nbsp;__currentActivity: Context of current activity of the application from which workflow will initiate__ +
+
+[source,java]
+----
+OstWalletUI.showComponentSheet(@NonNull Activity currentActivity)
+----
+
+== UI Workflow Delegates
+
+=== OstUserPassphraseCallback
+
+[source,java]
+----
+   /**
+     * Get passphrase prefix from application
+     * @param userId Ost user id
+     * @param ostWorkflowContext Workflow context
+     * @param ostPassphraseAcceptor Passphrase prefix accept callback
+     */
+   void getPassphrase(String userId,
+                   OstWorkflowContext ostWorkflowContext,
+                   OstPassphraseAcceptor ostPassphraseAcceptor)
+
+  /**
+    * To get workflowId call workflowContext.getWorkflowId() method.
+    * To identify the workflow type, use workflowContext.getWorkflowType() property.
+    */
+----
+
+=== OstWalletUIListener
+
+This is a markup interface and does not define any methods.
+The the interfaces defined below are extended from this interface.
+
+=== Request Acknowledged Listener
+
+Implement `RequestAcknowledgedListener` interface to get request acknowlege updates of UI workflow.
+
+[source,java]
+----
+   /**
+     * Acknowledge user about the request which is going to make by SDK.
+     * @param ostWorkflowContext A context that describes the workflow for which the callback was triggered with workflow id.
+     * @param ostContextEntity Context Entity
+     */
+   void requestAcknowledged(OstWorkflowContext ostWorkflowContext,
+                         OstContextEntity ostContextEntity)
+
+  /**
+    * To get workflowId call workflowContext.getWorkflowId() method.
+    * To identify the workflow type, use workflowContext.getWorkflowType() property.
+    */
+----
+
+=== Flow Complete Listener
+
+Implement `FlowCompleteListener` interface to get flow complete update of UI workflow
+
+[source,java]
+----
+   /**
+     * Inform SDK user that the flow is complete.
+     * @param ostWorkflowContext A context that describes the workflow for which the callback was triggered with workflow id.
+     * @param ostContextEntity Context Entity
+     */
+   void flowComplete(OstWorkflowContext ostWorkflowContext,
+                  OstContextEntity ostContextEntity);
+
+  /**
+    * To get workflowId call workflowContext.getWorkflowId() method.
+    * To identify the workflow type, use workflowContext.getWorkflowType() property.
+    */
+----
+
+=== Flow Interrupt Listener
+
+Implement `FlowInterruptListener` interface to get flow interrupt update of UI workflow
+
+[source,java]
+----
+   /**
+     * Inform SDK user that flow is interrupted with errorCode.
+     * @param ostWorkflowContext A context that describes the workflow for which the callback was triggered with workflow id.
+     * @param ostError Error Entity
+     */
+   void flowInterrupt(OstWorkflowContext ostWorkflowContext,
+                   OstError ostError);
+
+  /**
+    * To get workflowId call workflowContext.getWorkflowId() method.
+    * To identify the workflow type, use workflowContext.getWorkflowType() property.
+    */
+----
