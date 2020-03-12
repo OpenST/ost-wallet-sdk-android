@@ -111,7 +111,7 @@ User activation refers to the deployment of smart-contracts that form the user's
 &nbsp;_spendingLimit: Spending limit in a transaction in atto BT_<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 ```java
 OstWalletUI.activateUser(@NonNull Activity currentActivity,
@@ -133,7 +133,7 @@ The device manager, which controls the tokens, authorizes sessions.
 &nbsp;_spendingLimit: Spending limit in a transaction in atto BT_<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 ```java
 OstWalletUI.createSession(@NonNull Activity currentActivity,
@@ -153,7 +153,7 @@ The mnemonic phrase represents a human-readable way to authorize a new device. T
 &nbsp;_userId: OST Platform user id provided by application server_<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 ```java
 OstWalletUI.getDeviceMnemonics(@NonNull Activity currentActivity,
@@ -171,7 +171,7 @@ The user's PIN is set when activating the user. This method supports re-setting 
 &nbsp;_userId: OST Platform user id provided by application server_<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 ```java
 OstWalletUI.resetPin(@NonNull Activity currentActivity,
@@ -192,7 +192,7 @@ To use built-in device list UI, pass `recoverDeviceAddress` as `null`.
 &nbsp;_recoverDeviceAddress: Device address which wants to recover. When null is passed, the user is asked to choose a device._<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 If application set `recoverDeviceAddress` then OstWalletUI ask for `pin` to initiate device recovery. Else it displays authorized device list for given `userId` to select device from. 
 
@@ -213,7 +213,7 @@ To abort initiated device recovery.
 &nbsp;_userId: OST Platform user id provided by application server_<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 ```java
 OstWalletUI.abortDeviceRecovery(@NonNull Activity currentActivity,
@@ -232,7 +232,7 @@ To revoke device access. To use built-in device list UI, pass `revokeDeviceAddre
 &nbsp;_revokeDeviceAddress: Device address to revoke. When null is passed, the user is asked to choose a device._<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 If application set `revokeDeviceAddress` then OstWalletUI ask for `pin` to revoke device. Else it displays authorized device list for given `userId` to select device from.
 
@@ -254,7 +254,7 @@ This method can be used to enable or disable the biometric.
 &nbsp;_enable: Preference to use biometric_<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 ```java
 OstWalletUI.updateBiometricPreference(@NonNull Activity currentActivity,
@@ -273,7 +273,7 @@ This workflow should be used to add a new device using 12 words recovery phrase.
 &nbsp;_userId: OST Platform user id provided by application server_<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 ```java
 OstWalletUI.authorizeCurrentDeviceWithMnemonics(@NonNull Activity currentActivity,
@@ -290,7 +290,7 @@ This workflow shows QR Code to scan from another authorized device
 &nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
 &nbsp;_userId: OST Platform user id provided by application server_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 ```java
 OstWalletUI.getAddDeviceQRCode(@NonNull Activity currentActivity,
@@ -306,13 +306,15 @@ This workflow can be used to authorize device by scanning QR Code.
 
 **Parameters**<br/>
 &nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
+&nbsp;_qrPayload: Payload same as QR payload, Passing this value will skip QR-code scanner._<br/>
 &nbsp;_userId: OST Platform user id provided by application server_<br/>
 &nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 ```java
 OstWalletUI.scanQRCodeToAuthorizeDevice(@NonNull Activity currentActivity,
+                                      String qrPayload,
                                       String userId,
                                       OstUserPassphraseCallback userPassphraseCallback
                                       ) -> String
@@ -353,13 +355,40 @@ QR Code Sample:
 
 **Parameters**<br/>
 &nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
+&nbsp;_qrPayload: Payload same as QR payload, Passing this value will skip QR-code scanner._<br/>
 &nbsp;_userId: OST Platform user id provided by application server_<br/>
 
-&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from perticular workflow id)_<br/>
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
 
 ```java
 OstWalletUI.scanQRCodeToExecuteTransaction(@NonNull Activity currentActivity,
+                                      String qrPayload,
                                       String userId,
+                                      ) -> String
+```
+
+### Scan QR Code To Authorize Session
+
+This workflow can be used to authorize Session by scanning QR Code.
+
+QR-Code Sample:
+```
+as|2.0.0|2a421359d02132e8161cda9518aeaa62647b648e|5369b4d7e0e53e1159d6379b989a8429a7b2dd59|1|1583308559|4d40c46a7302974134a67ce77bdfae0e1f78ee518e87b6cda861ffc5847dfaca11a653651c6cdfadf0224574f6f07e1a78aabacdfed66d8c78e1fb2c9bc750161c
+```
+
+**Parameters**<br/>
+&nbsp;_currentActivity: Context of current activity of the application from which workflow will initiate_<br/>
+&nbsp;_qrPayload: Payload same as QR payload, Passing this value will skip QR-code scanner._<br/>
+&nbsp;_userId: OST Platform user id provided by application server_<br/>
+&nbsp;_userPassphraseCallback: Callback implementation object to get passphrase prefix from application_<br/>
+
+&nbsp;_Returns: Workflow Id(use to subscribe object to listen callbacks from particular workflow id)_<br/>
+
+```java
+OstWalletUI.scanQRCodeToAuthorizeSession(@NonNull Activity currentActivity,
+                                      String qrPayload,
+                                      String userId,
+                                      OstUserPassphraseCallback userPassphraseCallback
                                       ) -> String
 ```
 

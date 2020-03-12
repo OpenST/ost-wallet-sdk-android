@@ -70,6 +70,7 @@ public class OstWorkFlowActivity extends BaseActivity implements WalletSetUpFrag
     public static final String SHOW_QR = "show_qr";
     public static final String AUTHORIZE_DEVICE_VIA_QR = "authorize_device_via_qr";
     public static final String AUTHORIZE_TXN_VIA_QR = "authorize_txn_via_qr";
+    public static final String QR_PAYLOAD = "qr_payload";
 
     private static final String LOG_TAG = "OstWorkFlowActivity";
     private static final String CROSS_BUTTON_CLICK_CODE = "owfa_gb";

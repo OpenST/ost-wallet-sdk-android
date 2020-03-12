@@ -203,7 +203,86 @@ public class OstJsonApi {
             sendErrorCallback(callback, error, response);
         }
     }
-    // endregion
+
+    //region - getRedeemableSkus
+
+    /**
+     * Api to get redeemable Skus
+     *
+     * @param userId         userId of user Logged in
+     * @param requestPayload {
+     *                       paginationId (optional)
+     *                       limit (optional)
+     *                       ids (optional)
+     *                       }
+     * @param callback       where to receive data/error.
+     */
+    public static void getRedeemableSkus(@NonNull String userId, Map<String, Object> requestPayload, @NonNull OstJsonApiCallback callback){
+        getAsyncQueue().submit(new Runnable() {
+            @Override
+            public void run(){
+                execGetRedeemableSkus(userId,requestPayload,callback);
+            }
+        });
+    }
+
+    public static void execGetRedeemableSkus(@NonNull String userId, Map<String, Object> requestPayload,  @NonNull OstJsonApiCallback callback ){
+        JSONObject response = null;
+        try{
+            OstApiClient apiClient = new OstApiClient(userId);
+            response = apiClient.getRedeemableSkus(requestPayload);
+            JSONObject data = getDataFromApiResponse( response );
+            sendSuccessCallback(callback, data);
+        }catch (Throwable err){
+            OstError error = null;
+            if (err instanceof OstError ){
+                error = (OstError) err;
+            } else {
+                error = OstError.SdkError("ojsonapi_egrs_1",err);
+            }
+            sendErrorCallback(callback, error, response);
+        }
+    }
+    //endregion
+
+    //region - getRedeemableSkuDetails
+
+    /**
+     * Api to get Details of single redeemable sku
+     *
+     * @param userId         userId of user Logged in
+     * @param skuId          Id of required Sku
+     * @param requestPayload extra params
+     * @param callback       where to receive data/error.
+     */
+    public static void getRedeemableSkuDetails(@NonNull String userId, @NonNull String skuId, Map<String, Object> requestPayload, @NonNull OstJsonApiCallback callback) {
+        getAsyncQueue().submit(new Runnable() {
+            @Override
+            public void run(){
+                execGetRedeemableSkuDetails(userId,skuId,requestPayload,callback);
+            }
+        });
+    }
+
+    public static void execGetRedeemableSkuDetails(@NonNull String userId, @NonNull String skuId,  Map<String, Object> requestPayload  ,@NonNull OstJsonApiCallback callback){
+        JSONObject response = null;
+        try{
+            OstApiClient apiClient = new OstApiClient(userId);
+            response = apiClient.getRedeemableSkuDetails(skuId, requestPayload);
+            JSONObject data = getDataFromApiResponse( response );
+            sendSuccessCallback(callback, data);
+        }catch(Throwable err){
+            OstError error = null;
+            if( err instanceof OstError){
+                error = ( OstError) err;
+            } else {
+                error = OstError.SdkError("ojsonapi_egrsd_1",err);
+            }
+            sendErrorCallback(callback, error, response);
+        }
+    }
+
+    //endregion
 
     // region - getPendingRecovery
     /**

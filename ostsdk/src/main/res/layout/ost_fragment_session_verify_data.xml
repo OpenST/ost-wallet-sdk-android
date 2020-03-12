@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <com.ost.walletsdk.ui.uicomponents.OstH2Label
+        android:id="@+id/h2VerifyHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="19dp"
+        android:text="Authorize Session "/>
+
+    <RelativeLayout
+        android:id="@+id/ll_content_holder"
+        android:layout_below="@id/h2VerifyHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="24dp"
+        android:background="#f8f8f8">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="14dp"
+            android:layout_centerHorizontal="true">
+
+            <com.ost.walletsdk.ui.uicomponents.OstC2Label
+                android:id="@+id/tv_session_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Session Address" />
+
+            <com.ost.walletsdk.ui.uicomponents.OstC1Label
+                android:id="@+id/tv_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_session_address"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="10dp"
+                android:text="0x0000000000000000000000000000000000000000" />
+
+            <com.ost.walletsdk.ui.uicomponents.OstC2Label
+                android:id="@+id/tv_spending_limit"
+                android:layout_below="@id/tv_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:text="Spending Amount" />
+
+            <com.ost.walletsdk.ui.uicomponents.OstC1Label
+                android:id="@+id/tv_spending_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_spending_limit"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="10dp"
+                android:text="1000" />
+
+            <com.ost.walletsdk.ui.uicomponents.OstC2Label
+                android:id="@+id/tv_expiry_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_spending_amount"
+                android:layout_marginTop="11dp"
+                android:text="Expiry Date" />
+
+            <com.ost.walletsdk.ui.uicomponents.OstC1Label
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_expiry_time"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="10dp"
+                android:text="322342435" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+    <com.ost.walletsdk.ui.uicomponents.OstB1Label
+        android:id="@+id/btnAcceptRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_content_holder"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="Accept Request"/>
+
+    <com.ost.walletsdk.ui.uicomponents.OstB2Label
+        android:id="@+id/btnDenyRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnAcceptRequest"
+        android:layout_marginTop="14dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="23dp"
+        android:text="Deny Request"/>
+
+</RelativeLayout>

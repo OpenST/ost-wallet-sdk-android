@@ -18,6 +18,7 @@ import com.ost.walletsdk.workflows.errors.OstErrors;
 import com.ost.walletsdk.workflows.interfaces.OstWorkFlowCallback;
 
 import org.json.JSONObject;
+import org.web3j.crypto.Keys;
 
 abstract class OstDeviceDataDefinitionInstance implements OstPerform.DataDefinitionInstance {
     private static final String TAG = "DeviceDDInstance";
@@ -32,13 +33,18 @@ abstract class OstDeviceDataDefinitionInstance implements OstPerform.DataDefinit
     }
 
     String getDeviceAddress() {
-        return dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
+        String address = dataObject.optString(OstConstants.QR_DEVICE_ADDRESS);
+        if ( null == address ) {
+            return null;
+        }
+        return Keys.toChecksumAddress(address);
     }
 
     @Override
     public void validateDataPayload() {
-        boolean hasDeviceAddress = dataObject.has(OstConstants.QR_DEVICE_ADDRESS);
-        if (!hasDeviceAddress) {
+        String address = getDeviceAddress();
+//        boolean hasDeviceAddress = dataObject.has(OstConstants.QR_DEVICE_ADDRESS);
+        if (null == address) {
             throw new OstError("wf_pe_pr_2", OstErrors.ErrorCode.INVALID_DEVICE_ADDRESS);
         }
     }

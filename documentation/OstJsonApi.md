@@ -25,6 +25,10 @@ OST JSON APIs are a set of *asynchronous* methods that make API calls to OST Pla
     - [Usage](#usage-4)
     - [Sample Response](#sample-response-4)
     - [Sample Error](#sample-error)
+  - [Get Redeemable Sku Details](#get-redeemable-sku-details)
+    - [Usage](#usage-8)
+    - [Sample Response](#sample-response-8)
+
 - [List API](#list-api)
   - [Get Transactions](#get-transactions)
     - [Usage](#usage-5)
@@ -32,6 +36,9 @@ OST JSON APIs are a set of *asynchronous* methods that make API calls to OST Pla
   - [Get Devices](#get-devices)
     - [Usage](#usage-6)
     - [Sample Response](#sample-response-6)
+  - [Get Redeemable Skus](#get-redeemable-skus)
+      - [Usage](#usage-7)
+      - [Sample Response](#sample-response-7)
 
 
 <a id="before-we-begin"></a>
@@ -276,7 +283,7 @@ OstJsonApiCallbackImpl ostJsonApiCallback = new OstJsonApiCallbackImpl();
      * @param callback callback where to receive data/error.
 */
 
-OstJsonApi.getPendingRecovery(userId, new ostJsonApiCallbackImpl);
+OstJsonApi.getPendingRecovery(userId, ostJsonApiCallback);
 
 /* After receiving error for this api request, check for following:
    if ("UNPROCESSABLE_ENTITY".equalIsIgnoreCase(err.internalCode)) {
@@ -326,6 +333,134 @@ The `getPendingRecoveryForUserId` API will respond with `UNPROCESSABLE_ENTITY` A
   "error_message": "OST Platform Api returned error.",
   "internal_error_code": "***********",
   "error_code": "API_RESPONSE_ERROR"
+}
+```
+
+<a id="get-redeemable-sku-details"></a>
+### Get Redeemable Sku Details
+API to get redeemable sku details.
+
+<a id="usage-8"></a>
+##### Usage
+```java
+/*
+  Please update userId and skuId as per your requirements.
+  Since this userId does not belong to your economy, you will get an error if you do not change it.
+*/
+String userId = "71c59448-ff77-484c-99d8-abea8a419836";
+String skuDetailId = "2";
+JSONObject requestPayload = new JSONObject();
+OstJsonApiCallbackImpl ostJsonApiCallback = new OstJsonApiCallbackImpl();
+
+/**
+     * Api to get Details of single redeemable sku
+     *
+     * @param userId         userId of user Logged in
+     * @param skuId          Id of required Sku
+     * @param requestPayload extra params
+     * @param callback       where to receive data/error.
+*/
+OstJsonApi.getRedeemableSkuDetails(userId, skuDetailId, requestPayload, ostJsonApiCallback);
+```
+
+<a id="sample-response-8"></a>
+##### Sample Response
+```json
+{
+   "result_type":"redemption_product",
+   "redemption_product":{
+      "status":"active",
+      "images":{
+         "detail":{
+            "original":{
+               "size":90821,
+               "url":"https://dxwfxs8b4lg24.cloudfront.net/ost-platform/rskus/stag-starbucks-d-original.png",
+               "width":150,
+               "height":150
+            }
+         },
+         "cover":{
+            "original":{
+               "size":193141,
+               "url":"https://dxwfxs8b4lg24.cloudfront.net/ost-platform/rskus/stag-starbucks-c-original.png",
+               "width":320,
+               "height":320
+            }
+         }
+      },
+      "availability":[
+         {
+            "country_iso_code":"USA",
+            "country":"USA",
+            "currency_iso_code":"USD",
+            "denominations":[
+               {
+                  "amount_in_wei":"49938358",
+                  "amount_in_fiat":5
+               },
+               {
+                  "amount_in_wei":"99876717",
+                  "amount_in_fiat":10
+               },
+               ...
+            ]
+         },
+         {
+            "country_iso_code":"CAN",
+            "country":"Canada",
+            "currency_iso_code":"CAD",
+            "denominations":[
+               {
+                  "amount_in_wei":"37547638",
+                  "amount_in_fiat":5
+               },
+               {
+                  "amount_in_wei":"75095276",
+                  "amount_in_fiat":10
+               },
+               ...
+            ]
+         },
+         {
+            "country_iso_code":"GBR",
+            "country":"United Kingdom",
+            "currency_iso_code":"GBP",
+            "denominations":[
+               {
+                  "amount_in_wei":"64855011",
+                  "amount_in_fiat":5
+               },
+               {
+                  "amount_in_wei":"129710022",
+                  "amount_in_fiat":10
+               },
+               ...
+            ]
+         },
+         {
+            "country_iso_code":"IND",
+            "country":"India",
+            "currency_iso_code":"INR",
+            "denominations":[
+               {
+                  "amount_in_wei":"1396",
+                  "amount_in_fiat":0.01
+               },
+               {
+                  "amount_in_wei":"139609",
+                  "amount_in_fiat":1
+               },
+               ...
+            ]
+         }
+      ],
+      "id":"2",
+      "updated_timestamp":1582024811,
+      "description":{
+         "text":null
+      },
+      "name":"Starbucks"
+   }
 }
 ```
 
@@ -513,5 +648,86 @@ OstJsonApi.getDeviceList(userId, nextPagePayload, ostJsonApiCallback);
     }
   ],
   "result_type": "devices"
+}
+```
+
+<a id="get-redeemable-skus"></a>
+### Get Redeemable Skus
+API to get redeemable skus.
+
+<a id="usage-7"></a>
+##### Usage
+```java
+/*
+  Please update userId as per your needs.
+  Since this userId does not belong to your economy, you will get an error if you do not change it.
+*/
+String userId = "71c59448-ff77-484c-99d8-abea8a419836";
+JSONObject nextPagePayload = null;
+
+OstJsonApiCallbackImpl ostJsonApiCallback = new OstJsonApiCallbackImpl();
+
+/**
+     * Api to get redeemable Skus from server
+     *
+     * @param userId         userId of user Logged in
+     * @param nextPagePayload {
+     *                       paginationId (optional)
+     *                       limit (optional)
+     *                       ids (optional)
+     *                       }
+     * @param callback       where to receive data/error.
+*/
+OstJsonApi.getRedeemableSkus(userId, nextPagePayload, ostJsonApiCallback);
+
+/* After receiving data for this api request, check for following:
+    JSONObject dataJSONObject = parseJSONData(responseData);
+    JSONObject meta = dataJSONObject.optJSONObject("meta");
+    if (null != meta) {
+      nextPagePayload = meta.optJSONObject("next_page_payload");
+    }
+*/
+```
+
+<a id="sample-response-7"></a>
+##### Sample Response
+```json
+{
+   "meta":{
+      "next_page_payload":{
+      }
+   },
+   "result_type":"redemption_products",
+   "redemption_products":[
+      {
+         "status":"active",
+         "updated_timestamp":1582024811,
+         "id":"2",
+         "description":{
+            "text":null
+         },
+         "images":{
+            "detail":{
+               "original":{
+                  "size":90821,
+                  "url":"https://dxwfxs8b4lg24.cloudfront.net/ost-platform/rskus/stag-starbucks-d-original.png",
+                  "width":150,
+                  "height":150
+               }
+            },
+            "cover":{
+               "original":{
+                  "size":193141,
+                  "url":"https://dxwfxs8b4lg24.cloudfront.net/ost-platform/rskus/stag-starbucks-c-original.png",
+            "width":320,
+                  "height":320
+               }
+            }
+         },
+         "name":"Starbucks"
+      },
+      ...
+      ...
+   ]
 }
 ```

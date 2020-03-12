@@ -80,7 +80,8 @@
       "tint_color": "#438bad"
     },
     "back":{
-      "tint_color": "#438bad"
+      "tint_color": "#438bad",
+      "source": ""
     }
   },
 
@@ -119,5 +120,12 @@
     "color": "#0F9D58",
     "system_font_weight": "regular",
     "alignment": "left"
+  },
+
+	"form_field": {
+    "size":15,
+    "system_font_weight":"regular",
+    "color":"#484848",
+    "border_color": "#484848"
   }
 }
