@@ -30,9 +30,17 @@ public interface OstConstants {
     String QR_DATA_DEFINITION = "dd";
     String QR_DATA_DEFINITION_VERSION = "ddv";
     String QR_DEVICE_ADDRESS = "da";
+    String QR_SESSION_DATA = "sd";
+    String QR_SESSION_ADDRESS = "sa";
+    String QR_SPENDING_LIMIT = "sl";
+    String QR_EXPIRY_TIMESTAMP = "et";
+    String QR_SIGNATURE = "sig";
+    String QR_V2_INPUT = "qr_v2_input";
+    String QR_V2_DELIMITER = "|";
     String DATA_DEFINITION_TRANSACTION = "TX";
     String DATA_DEFINITION_AUTHORIZE_DEVICE = "AD";
     String DATA_DEFINITION_REVOKE_DEVICE = "RD";
+    String DATA_DEFINITION_AUTHORIZE_SESSION = "AS";
     String QR_RULE_NAME = "rn";
     String QR_TOKEN_HOLDER_ADDRESSES = "ads";
     String QR_AMOUNTS = "ams";
