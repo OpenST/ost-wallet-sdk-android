@@ -1,0 +1,193 @@
+= OstWalletUI Custom Loader
+
+Developer can set application loader instead of OstWalletSdk default loader while using OstWalletUI
+
+== Setup
+
+=== Set Loader Manager
+
+==== Creade Loader Manager Object
+
+[source,java]
+----
+import com.ost.walletsdk.ui.loader.OstLoaderDelegate;
+
+class LoaderManager implements OstLoaderDelegate {
+
+    private LoaderManager(){
+
+    }
+
+    @Override
+    public OstLoaderFragment getLoader(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
+    	//Returns Custom Loader Implemtation which inherits OstLoaderFragment.
+    }
+
+    @Override
+    public boolean waitForFinalization(OstWorkflowContext.WORKFLOW_TYPE workflowType) {
+       // Returns boolean flag, which determine whether loader should be shown till workflow completion.
+    }
+}
+----
+
+==== Set Loader Manager Object
+
+Loader manager object could be the plan `java` class.
+OstWalletUI holds reference of it.
+Caution:
+
+[source,java]
+----
+OstWalletUI.setLoaderManager(new LoaderManager());
+----
+
+____
+*Caution* + Implementing OstLoaderDelegate to Activities or fragment may cause memory leak.
++
+____
+
+==== Create Application loader Fragment
+
+Loader Fragment should be subclass of  `OstLoaderFragment`.
+
+* onInitLoader: method gets called when OstWalletUI is processing
+* onPostAuthentication: OstWalletUI call this method after user enters pin
+* onAcknowledge: method gets called after request is submitted for confirmation
+* onSuccess: This method gets called after workflow confirmation
+* onFailure: After failure of workflow, sdk calls onFailure
+
+____
+*Note* + Developer should call `dismissWorkflow` of `OstLoaderCompletionDelegate` to close Loader UI.
++ Not calling delegate `dismissWorkflow` will keep the workflow Acitivty on the screen.
+____
+
+[source,java]
+----
+import com.ost.walletsdk.ui.loader.OstLoaderFragment;
+import com.ost.walletsdk.ui.loader.OstWorkflowLoader;
+import com.ost.walletsdk.ui.workflow.OstLoaderCompletionDelegate;
+import com.ost.walletsdk.workflows.OstContextEntity;
+import com.ost.walletsdk.workflows.OstWorkflowContext;
+import com.ost.walletsdk.workflows.errors.OstError;
+
+import org.json.JSONObject;
+
+
+public class AppLoaderFragment extends OstLoaderFragment implements OstWorkflowLoader {
+
+    public static AppLoaderFragment newInstance() {
+        return new AppLoaderFragment();
+    }
+
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        mViewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_app_loader, container, false);
+        return mViewGroup;
+    }
+
+    public void setLoaderString(String loaderString) {
+        StringConfig stringConfig = StringConfig.instance(contentConfig.optJSONObject("initial_loader"));
+        mLoaderTextView.setText(stringConfig.getString());
+        //Method gets called from SDK to set String for the loader
+    }
+
+    @Override
+    public void onInitLoader(JSONObject contentConfig) {
+        //Method gets called from SDK after workflow launch
+        StringConfig stringConfig = StringConfig.instance(contentConfig.optJSONObject("loader"));
+        mLoaderTextView.setText(stringConfig.getString());
+    }
+
+    @Override
+    public void onPostAuthentication(JSONObject contentConfig) {
+        //Method gets called from SDK after authentication through pin or biometric
+        StringConfig stringConfig = StringConfig.instance(contentConfig.optJSONObject("acknowledge"));
+        mLoaderTextView.setText(stringConfig.getString());
+    }
+
+    @Override
+    public void onAcknowledge(JSONObject contentConfig) {
+        //Method gets called from SDK after request is submitted to the Ost platform successfully
+        StringConfig stringConfig = StringConfig.instance(contentConfig.optJSONObject("acknowledge"));
+        mLoaderTextView.setText(stringConfig.getString());
+    }
+
+    @Override
+    public void onSuccess(OstWorkflowContext ostWorkflowContext, OstContextEntity ostContextEntity, JSONObject contentConfig ,final OstLoaderCompletionDelegate delegate) {
+        //Method get called when the worflow has completed successfully, show success dialog here.
+        //To close workflow, call delegate method dismissWorkflow
+        delegate.dismissWorkflow();
+    }
+
+    @Override
+    public void onFailure(OstWorkflowContext ostWorkflowContext, OstError ostError, JSONObject contentConfig, final OstLoaderCompletionDelegate delegate) {
+        //Method get called when the worflow has failed, show failure dialog here.
+        //To close workflow, call delegate method dismissWorkflow
+        delegate.dismissWorkflow();
+    }
+}
+----
+
+= Custom Loader Usage
+
+== Setup
+
+. Application project should have `ost-wallet-sdk-android` dependency.
+. Copy `customloader` directory in Application project `src` directory.
+. Define `customloader` resources and assets directory in application build.gradle.
++
+----
+android {
+     sourceSets {
+             main.java.srcDirs += 'src/customloader/src'
+             main.assets.srcDirs += 'src/customloader/assets'
+             main.res.srcDirs += 'src/customloader/res'
+     }
+}
+----
+
+. Add resource import statements in `GIFView.java` and `OstMockLoaderFragment.java`
++
+----
+import <Your application pacakge name>.R
+----
+
+. Set LoaderManager of Custom loader in your application onCreate method
++
+[source,java]
+----
+public class App extends Application {
+ @Override
+ public void onCreate() {
+     super.onCreate();
+     /* Add below line in you application onCreate */
+     OstWalletUI.setLoaderManager(customloader.src.OstMockLoaderManager.getInstance());
+ }
+}
+----
+
+After performing above steps, you are good to go with custom loader.
+
+== Customize Loader
+
+You can customize icons and text for custom loader as per application need.
+
+=== 1. Loader gif:
+
+To modfiy loader, Add your `.gif` file and rename as `ost_progress_image.gif`.
+After that, replace it with `src/customloader/res/drawable/ost_progress_image.gif` +
+
+=== 2. Success and Failure Icon:
+
+To modify Icons, open `src/customloader/res/drawable/` and replace `ost_success_icon.png` and `ost_failure_icon` with your application icons.
+
+=== 3. Modify success message:
+
+Developer can modify success message by modifying `SUCCESS_MESSAGE` value in `src/customloader/assets/OstSdkMessages.json` file
+
+=== 4. Modify loader text:
+
+To modify loader text, update language for key `text` under `initial_loader`, `loader` and `acknowledge` in ost_content_config.json + ost_content_config is a file, which you set for `setContentConfig` function.
+
